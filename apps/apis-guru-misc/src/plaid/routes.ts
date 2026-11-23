@@ -1,139 +1,13 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ACHClassSchema = z
-  .enum(['ccd', 'ppd', 'tel', 'web'])
-  .openapi({
-    description:
-      'Specifies the use case of the transfer. Required for transfers on an ACH network.\n\n`"ccd"` - Corporate Credit or Debit - fund transfer between two corporate bank accounts\n\n`"ppd"` - Prearranged Payment or Deposit - the transfer is part of a pre-existing relationship with a consumer, eg. bill payment\n\n`"tel"` - Telephone-Initiated Entry\n\n`"web"` - Internet-Initiated Entry - debits from a consumer’s account where their authorization is obtained over the Internet',
-    title: 'ACHClass',
-  })
-  .openapi('ACHClass')
-
-const APIClientIDSchema = z
+const AssetReportIdSchema = z
   .string()
   .openapi({
     description:
-      'Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.',
-    title: 'ClientID',
+      'A unique ID identifying an Asset Report. Like all Plaid identifiers, this ID is case sensitive.',
+    title: 'AssetReportId',
   })
-  .openapi('APIClientID')
-
-const APISecretSchema = z
-  .string()
-  .openapi({
-    description:
-      'Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.',
-    title: 'APISecret',
-  })
-  .openapi('APISecret')
-
-const APRSchema = z
-  .looseObject({
-    apr_percentage: z.float64().openapi({ description: 'Annual Percentage Rate applied.\n' }),
-    apr_type: z
-      .enum(['balance_transfer_apr', 'cash_apr', 'purchase_apr', 'special'])
-      .openapi({ description: 'The type of balance to which the APR applies.' }),
-    balance_subject_to_apr: z
-      .float64()
-      .nullable()
-      .openapi({
-        description:
-          'Amount of money that is subjected to the APR if a balance was carried beyond payment due date. How it is calculated can vary by card issuer. It is often calculated as an average daily balance.',
-      }),
-    interest_charge_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'Amount of money charged due to interest from last statement.' }),
-  })
-  .openapi({
-    description: 'Information about the APR on the account.',
-    required: ['apr_percentage', 'apr_type', 'balance_subject_to_apr', 'interest_charge_amount'],
-    title: 'APR',
-  })
-  .openapi('APR')
-
-const AccessTokenSchema = z
-  .string()
-  .openapi({
-    description: 'The access token associated with the Item data is being requested for.',
-    title: 'AccessToken',
-  })
-  .openapi('AccessToken')
-
-const AccessTokenNullableSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'The access token associated with the Item data is being requested for.',
-  })
-  .openapi('AccessTokenNullable')
-
-const AccountProductAccessSchema = z
-  .object({
-    account_data: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow the application to access account data. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
-      }),
-    statements: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow the application to access bank statements. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
-      }),
-    tax_documents: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow the application to access tax documents. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
-      }),
-  })
-  .openapi({
-    description: 'Allow the application to access specific products on this account',
-    required: [],
-  })
-  .openapi('AccountProductAccess')
-
-const AccountProductAccessNullableSchema = AccountProductAccessSchema.and(z.looseObject({}))
-  .nullable()
-  .openapi({ description: 'Allow the application to access specific products on this account' })
-  .openapi('AccountProductAccessNullable')
-
-const AccountAccessSchema = z
-  .object({
-    account_product_access: AccountProductAccessNullableSchema.exactOptional(),
-    authorized: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow the application to see this account (and associated details, including balance) in the list of accounts  If unset, defaults to `true`.',
-      }),
-    unique_id: z
-      .string()
-      .openapi({
-        description:
-          'The unique account identifier for this account. This value must match that returned by the data access API for this account.',
-      }),
-  })
-  .openapi({
-    description:
-      'Allow or disallow product access by account. Unlisted (e.g. missing) accounts will be considered `new_accounts`.',
-    required: ['unique_id'],
-  })
-  .openapi('AccountAccess')
+  .openapi('AssetReportId')
 
 const AccountBalanceSchema = z
   .looseObject({
@@ -795,19 +669,29 @@ const CreditCategorySchema = z
   .openapi('CreditCategory')
 
 const AssetReportTransactionSchema = TransactionBaseSchema.and(
-  z
-    .looseObject({
-      credit_category: CreditCategorySchema.exactOptional(),
-      date_transacted: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The date on which the transaction took place, in IS0 8601 format.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['original_description'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'original_description')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .looseObject({
+        credit_category: CreditCategorySchema.exactOptional(),
+        date_transacted: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The date on which the transaction took place, in IS0 8601 format.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A transaction on the asset report',
     required: ['original_description'],
@@ -817,39 +701,60 @@ const AssetReportTransactionSchema = TransactionBaseSchema.and(
 
 const AccountAssetsSchema = AccountBaseSchema.and(
   z
-    .looseObject({
-      days_available: z
-        .number()
-        .exactOptional()
-        .openapi({
-          description:
-            'The duration of transaction history available for this Item, typically defined as the time since the date of the earliest transaction in that account. Only returned by Assets endpoints.',
-        }),
-      historical_balances: z
-        .array(HistoricalBalanceSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'Calculated data about the historical balances on the account. Only returned by Assets endpoints and currently not supported by `brokerage` or `investment` accounts.',
-        }),
-      owners: z
-        .array(OwnerSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'Data returned by the financial institution about the account owner or owners. Only returned by Identity or Assets endpoints. For business accounts, the name reported may be either the name of the individual or the name of the business, depending on the institution. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. In API versions 2018-05-22 and earlier, the `owners` object is not returned, and instead identity information is returned in the top level `identity` object. For more details, see [Plaid API versioning](https://plaid.com/docs/api/versioning/#version-2019-05-29)',
-        }),
-      ownership_type: OwnershipTypeSchema.exactOptional(),
-      transactions: z
-        .array(AssetReportTransactionSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'Transaction history associated with the account. Only returned by Assets endpoints. Transaction history returned by endpoints such as `/transactions/get` or `/investments/transactions/get` will be returned in the top-level `transactions` field instead.',
-        }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({ required: ['days_available', 'transactions', 'owners', 'historical_balances'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'days_available')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'transactions')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'owners')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'historical_balances')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .looseObject({
+        days_available: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description:
+              'The duration of transaction history available for this Item, typically defined as the time since the date of the earliest transaction in that account. Only returned by Assets endpoints.',
+          }),
+        historical_balances: z
+          .array(HistoricalBalanceSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Calculated data about the historical balances on the account. Only returned by Assets endpoints and currently not supported by `brokerage` or `investment` accounts.',
+          }),
+        owners: z
+          .array(OwnerSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Data returned by the financial institution about the account owner or owners. Only returned by Identity or Assets endpoints. For business accounts, the name reported may be either the name of the individual or the name of the business, depending on the institution. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. In API versions 2018-05-22 and earlier, the `owners` object is not returned, and instead identity information is returned in the top level `identity` object. For more details, see [Plaid API versioning](https://plaid.com/docs/api/versioning/#version-2019-05-29)',
+          }),
+        ownership_type: OwnershipTypeSchema.exactOptional(),
+        transactions: z
+          .array(AssetReportTransactionSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Transaction history associated with the account. Only returned by Assets endpoints. Transaction history returned by endpoints such as `/transactions/get` or `/investments/transactions/get` will be returned in the top-level `transactions` field instead.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Asset information about an account',
     required: ['days_available', 'transactions', 'owners', 'historical_balances'],
@@ -857,943 +762,372 @@ const AccountAssetsSchema = AccountBaseSchema.and(
   })
   .openapi('AccountAssets')
 
-const AccountFilterSubtypesSchema = z
-  .array(z.string().openapi({ description: 'List of account subtypes.' }))
-  .openapi({ description: 'A list of account subtypes to be filtered.' })
-  .openapi('AccountFilterSubtypes')
-
-const AccountFilterSchema = z
-  .object({
-    credit: AccountFilterSubtypesSchema.exactOptional(),
-    depository: AccountFilterSubtypesSchema.exactOptional(),
-    investment: AccountFilterSubtypesSchema.exactOptional(),
-    loan: AccountFilterSubtypesSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Enumerates the account subtypes that the application wishes for the user to be able to select from. For more details refer to Plaid documentation on account filters.',
-    required: [],
-  })
-  .openapi('AccountFilter')
-
-const CreditAccountSubtypeSchema = z
-  .enum(['credit card', 'paypal', 'all'])
-  .openapi({
-    description:
-      'Valid account subtypes for credit accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-credit).',
-  })
-  .openapi('CreditAccountSubtype')
-
-const CreditAccountSubtypesSchema = z
-  .array(CreditAccountSubtypeSchema)
-  .openapi({
-    description:
-      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
-    title: 'CreditAccountSubtypes',
-  })
-  .openapi('CreditAccountSubtypes')
-
-const CreditFilterSchema = z
-  .looseObject({ account_subtypes: CreditAccountSubtypesSchema })
-  .openapi({
-    description: 'A filter to apply to `credit`-type accounts',
-    required: ['account_subtypes'],
-    title: 'CreditFilter',
-  })
-  .openapi('CreditFilter')
-
-const DepositoryAccountSubtypeSchema = z
-  .enum([
-    'checking',
-    'savings',
-    'hsa',
-    'cd',
-    'money market',
-    'paypal',
-    'prepaid',
-    'cash management',
-    'ebt',
-    'all',
-  ])
-  .openapi({
-    description:
-      'Valid account subtypes for depository accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-depository).',
-  })
-  .openapi('DepositoryAccountSubtype')
-
-const DepositoryAccountSubtypesSchema = z
-  .array(DepositoryAccountSubtypeSchema)
-  .openapi({
-    description:
-      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
-    title: 'DepositoryAccountSubtypes',
-  })
-  .openapi('DepositoryAccountSubtypes')
-
-const DepositoryFilterSchema = z
-  .looseObject({ account_subtypes: DepositoryAccountSubtypesSchema })
-  .openapi({
-    description: 'A filter to apply to `depository`-type accounts',
-    required: ['account_subtypes'],
-    title: 'DepositoryFilter',
-  })
-  .openapi('DepositoryFilter')
-
-const InvestmentAccountSubtypeSchema = z
-  .enum([
-    '529',
-    '401a',
-    '401k',
-    '403B',
-    '457b',
-    'brokerage',
-    'cash isa',
-    'crypto exchange',
-    'education savings account',
-    'fixed annuity',
-    'gic',
-    'health reimbursement arrangement',
-    'hsa',
-    'ira',
-    'isa',
-    'keogh',
-    'lif',
-    'life insurance',
-    'lira',
-    'lrif',
-    'lrsp',
-    'mutual fund',
-    'non-custodial wallet',
-    'non-taxable brokerage account',
-    'other',
-    'other annuity',
-    'other insurance',
-    'pension',
-    'prif',
-    'profit sharing plan',
-    'qshr',
-    'rdsp',
-    'resp',
-    'retirement',
-    'rlif',
-    'roth',
-    'roth 401k',
-    'rrif',
-    'rrsp',
-    'sarsep',
-    'sep ira',
-    'simple ira',
-    'sipp',
-    'stock plan',
-    'tfsa',
-    'trust',
-    'ugma',
-    'utma',
-    'variable annuity',
-    'all',
-  ])
-  .openapi({
-    description:
-      'Valid account subtypes for investment accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-investment).',
-  })
-  .openapi('InvestmentAccountSubtype')
-
-const InvestmentAccountSubtypesSchema = z
-  .array(InvestmentAccountSubtypeSchema)
-  .openapi({
-    description:
-      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
-    title: 'InvestmentAccountSubtypes',
-  })
-  .openapi('InvestmentAccountSubtypes')
-
-const InvestmentFilterSchema = z
-  .looseObject({ account_subtypes: InvestmentAccountSubtypesSchema })
-  .openapi({
-    description:
-      'A filter to apply to `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier).',
-    required: ['account_subtypes'],
-    title: 'InvestmentFilter',
-  })
-  .openapi('InvestmentFilter')
-
-const LoanAccountSubtypeSchema = z
-  .enum([
-    'auto',
-    'business',
-    'commercial',
-    'construction',
-    'consumer',
-    'home equity',
-    'loan',
-    'mortgage',
-    'line of credit',
-    'student',
-    'other',
-    'all',
-  ])
-  .openapi({
-    description:
-      'Valid account subtypes for loan accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-loan).',
-  })
-  .openapi('LoanAccountSubtype')
-
-const LoanAccountSubtypesSchema = z
-  .array(LoanAccountSubtypeSchema)
-  .openapi({
-    description:
-      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
-    title: 'LoanAccountSubtypes',
-  })
-  .openapi('LoanAccountSubtypes')
-
-const LoanFilterSchema = z
-  .looseObject({ account_subtypes: LoanAccountSubtypesSchema })
-  .openapi({
-    description: 'A filter to apply to `loan`-type accounts',
-    required: ['account_subtypes'],
-    title: 'LoanFilter',
-  })
-  .openapi('LoanFilter')
-
-const AccountFiltersResponseSchema = z
-  .looseObject({
-    credit: CreditFilterSchema.exactOptional(),
-    depository: DepositoryFilterSchema.exactOptional(),
-    investment: InvestmentFilterSchema.exactOptional(),
-    loan: LoanFilterSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'The `account_filters` specified in the original call to `/link/token/create`.\n',
-    title: 'AccountFiltersResponse',
-    required: [],
-  })
-  .openapi('AccountFiltersResponse')
-
-const AccountIdentitySchema = AccountBaseSchema.and(
-  z
-    .looseObject({
-      owners: z
-        .array(OwnerSchema)
-        .openapi({
-          description:
-            'Data returned by the financial institution about the account owner or owners. Only returned by Identity or Assets endpoints. For business accounts, the name reported may be either the name of the individual or the name of the business, depending on the institution. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. In API versions 2018-05-22 and earlier, the `owners` object is not returned, and instead identity information is returned in the top level `identity` object. For more details, see [Plaid API versioning](https://plaid.com/docs/api/versioning/#version-2019-05-29)',
-        }),
-    })
-    .openapi({ required: ['owners'] }),
-)
-  .openapi({ description: 'Identity information about an account', title: 'AccountIdentity' })
-  .openapi('AccountIdentity')
-
-const AddressMatchScoreSchema = z
-  .looseObject({
-    is_postal_code_match: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'postal code was provided for both and was a match' }),
-    score: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Match score for address. 100 is a perfect match and 0 is a no match. If the address is missing from either the API or financial institution, this is empty.',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Score found by matching address provided by the API with the address on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.',
-    title: 'AddressMatchScore',
-    required: [],
-  })
-  .openapi('AddressMatchScore')
-
-const EmailAddressMatchScoreSchema = z
-  .looseObject({
-    score: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Match score for normalized email. 100 is a perfect match and 0 is a no match. If the email is missing from either the API or financial institution, this is empty.',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Score found by matching email provided by the API with the email on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.',
-    title: 'EmailAddressMatchScore',
-    required: [],
-  })
-  .openapi('EmailAddressMatchScore')
-
-const NameMatchScoreSchema = z
-  .looseObject({
-    is_business_name_detected: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the name on either of the names that was matched for the score was a business name, with corp, llc, ltd etc in the name. While this being true confirms business name, false means it was either not a business name or Plaid could not detect it as such, since a lot of business names match owner names and are hard to detect.',
-      }),
-    is_first_name_or_last_name_match: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'first or last name completely matched' }),
-    is_nickname_match: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'nickname matched, example Jennifer and Jenn.' }),
-    score: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Represents the match score for name. 100 is a perfect score, 85-99 means a strong match, 50-84 is a partial match, less than 50 is a weak match and 0 is a complete mismatch. If the name is missing from either the API or financial institution, this is empty.',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Score found by matching name provided by the API with the name on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.',
-    title: 'NameMatchScore',
-    required: [],
-  })
-  .openapi('NameMatchScore')
-
-const PhoneNumberMatchScoreSchema = z
-  .looseObject({
-    score: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Match score for normalized phone number. 100 is a perfect match and 0 is a no match. If the phone number is missing from either the API or financial institution, this is empty.',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Score found by matching phone number provided by the API with the phone number on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.',
-    title: 'PhoneNumberMatchScore',
-    required: [],
-  })
-  .openapi('PhoneNumberMatchScore')
-
-const AccountIdentityMatchScoreSchema = AccountBaseSchema.and(
-  z
-    .looseObject({
-      address: AddressMatchScoreSchema.exactOptional(),
-      email_address: EmailAddressMatchScoreSchema.exactOptional(),
-      legal_name: NameMatchScoreSchema.exactOptional(),
-      phone_number: PhoneNumberMatchScoreSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'Identity match scores for an account',
-    title: 'AccountIdentityMatchScore',
-  })
-  .openapi('AccountIdentityMatchScore')
-
-const IdentityUpdateTypesSchema = z
-  .enum(['PHONES', 'ADDRESSES', 'EMAILS', 'NAMES'])
-  .openapi({ description: 'The possible types of identity data that may have changed.' })
-  .openapi('IdentityUpdateTypes')
-
-const AccountIdsWithUpdatedIdentitySchema = z
-  .record(z.string(), z.array(IdentityUpdateTypesSchema))
-  .openapi({
-    description:
-      'An object with keys of `account_id`\'s that are mapped to their respective identity attributes that changed.\n\nExample: `{ "XMBvvyMGQ1UoLbKByoMqH3nXMj84ALSdE5B58": ["PHONES"] }`\n',
-    title: 'AccountIdsWithUpdatedIdentity',
-  })
-  .openapi('AccountIdsWithUpdatedIdentity')
-
-const AccountSelectionCardinalitySchema = z
-  .enum(['SINGLE_SELECT', 'MULTI_SELECT', 'ALL'])
-  .openapi({
-    description:
-      'The application requires that accounts be limited to a specific cardinality.\n`MULTI_SELECT`: indicates that the user should be allowed to pick multiple accounts.\n`SINGLE_SELECT`: indicates that the user should be allowed to pick only a single account.\n`ALL`: indicates that the user must share all of their accounts and should not be given the opportunity to de-select',
-  })
-  .openapi('AccountSelectionCardinality')
-
-const AccountSubtypesSchema = z
-  .array(AccountSubtypeSchema)
-  .openapi({
-    description:
-      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
-    title: 'AccountSubtypes',
-  })
-  .openapi('AccountSubtypes')
-
-const MinLastUpdatedDatetimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'Timestamp in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DDTHH:mm:ssZ`) indicating the oldest acceptable balance when making a request to `/accounts/balance/get`.\n\nIf the balance that is pulled for `ins_128026` (Capital One) is older than the given timestamp, an `INVALID_REQUEST` error with the code of `LAST_UPDATED_DATETIME_OUT_OF_RANGE` will be returned with the most recent timestamp for the requested account contained in the response.\n\nThis field is only used when the institution is `ins_128026` (Capital One), in which case a value must be provided or an `INVALID_REQUEST` error with the code of `INVALID_FIELD` will be returned. For all other institutions, this field is ignored.',
-    title: 'MinLastUpdatedDatetime',
-  })
-  .openapi('MinLastUpdatedDatetime')
-
-const AccountsBalanceGetRequestOptionsSchema = z
-  .object({
-    account_ids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of `account_ids` to retrieve for the Item. The default value is `null`.\n\nNote: An error will be returned if a provided `account_id` is not associated with the Item.',
-      }),
-    min_last_updated_datetime: MinLastUpdatedDatetimeSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'An optional object to filter `/accounts/balance/get` results.',
-    required: [],
-  })
-  .openapi('AccountsBalanceGetRequestOptions')
-
-const AccountsBalanceGetRequestSchema = z
-  .object({
-    access_token: AccessTokenSchema,
-    client_id: APIClientIDSchema.exactOptional(),
-    options: AccountsBalanceGetRequestOptionsSchema.exactOptional(),
-    secret: APISecretSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'AccountsBalanceGetRequest defines the request schema for `/accounts/balance/get`',
-    required: ['access_token'],
-  })
-  .openapi('AccountsBalanceGetRequest')
-
-const AccountsGetRequestOptionsSchema = z
-  .object({
-    account_ids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'An array of `account_ids` to retrieve for the Account.' }),
-  })
-  .openapi({ description: 'An optional object to filter `/accounts/get` results.', required: [] })
-  .openapi('AccountsGetRequestOptions')
-
-const AccountsGetRequestSchema = z
-  .object({
-    access_token: AccessTokenSchema,
-    client_id: APIClientIDSchema.exactOptional(),
-    options: AccountsGetRequestOptionsSchema.exactOptional(),
-    secret: APISecretSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'AccountsGetRequest defines the request schema for `/accounts/get`',
-    required: ['access_token'],
-    'x-examples': { 'example-1': {} },
-  })
-  .openapi('AccountsGetRequest')
-
-const ProductsSchema = z
-  .enum([
-    'assets',
-    'auth',
-    'balance',
-    'identity',
-    'investments',
-    'liabilities',
-    'payment_initiation',
-    'identity_verification',
-    'transactions',
-    'credit_details',
-    'income',
-    'income_verification',
-    'deposit_switch',
-    'standing_orders',
-    'transfer',
-    'employment',
-    'recurring_transactions',
-  ])
-  .openapi({
-    description:
-      'A list of products that an institution can support. All Items must be initialized with at least one product. The Balance product is always available and does not need to be specified during initialization.',
-    title: 'Products',
-  })
-  .openapi('Products')
-
-const PlaidErrorTypeSchema = z
-  .enum([
-    'INVALID_REQUEST',
-    'INVALID_RESULT',
-    'INVALID_INPUT',
-    'INSTITUTION_ERROR',
-    'RATE_LIMIT_EXCEEDED',
-    'API_ERROR',
-    'ITEM_ERROR',
-    'ASSET_REPORT_ERROR',
-    'RECAPTCHA_ERROR',
-    'OAUTH_ERROR',
-    'PAYMENT_ERROR',
-    'BANK_TRANSFER_ERROR',
-    'INCOME_VERIFICATION_ERROR',
-    'MICRODEPOSITS_ERROR',
-  ])
-  .openapi({
-    description: 'A broad categorization of the error. Safe for programmatic use.',
-    title: 'PlaidErrorType',
-  })
-  .openapi('PlaidErrorType')
-
-const PlaidErrorSchema = z
-  .looseObject({
-    causes: z
-      .array(z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'In the Assets product, a request can pertain to more than one Item. If an error is returned for such a request, `causes` will return an array of errors containing a breakdown of these errors on the individual Item level, if any can be identified.\n\n`causes` will only be provided for the `error_type` `ASSET_REPORT_ERROR`. `causes` will also not be populated inside an error nested within a `warning` object.',
-      }),
-    display_message: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'A user-friendly representation of the error code. `null` if the error is not related to user action.\n\nThis may change over time and is not safe for programmatic use.',
-      }),
-    documentation_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The URL of a Plaid documentation page with more information about the error',
-      }),
-    error_code: z
-      .string()
-      .openapi({ description: 'The particular error code. Safe for programmatic use.' }),
-    error_message: z
-      .string()
-      .openapi({
-        description:
-          'A developer-friendly representation of the error code. This may change over time and is not safe for programmatic use.',
-      }),
-    error_type: PlaidErrorTypeSchema,
-    request_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique ID identifying the request, to be used for troubleshooting purposes. This field will be omitted in errors provided by webhooks.',
-      }),
-    status: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The HTTP status code associated with the error. This will only be returned in the response body when the error information is provided via a webhook.',
-      }),
-    suggested_action: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Suggested steps for resolving the error' }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'We use standard HTTP response codes for success and failure notifications, and our errors are further classified by `error_type`. In general, 200 HTTP codes correspond to success, 40X codes are for developer- or user-related failures, and 50X codes are for Plaid-related issues. An Item with a non-`null` error object will only be part of an API response when calling `/item/get` to view Item status. Otherwise, error fields will be `null` if no error has occurred; if an error has occurred, an error code will be returned instead.',
-    required: ['error_type', 'error_code', 'error_message', 'display_message'],
-    title: 'Error',
-  })
-  .openapi('PlaidError')
-
-const ItemSchema = z
-  .looseObject({
-    available_products: z
-      .array(ProductsSchema)
-      .openapi({
-        description:
-          'A list of products available for the Item that have not yet been accessed. The contents of this array will be mutually exclusive with `billed_products`.',
-      }),
-    billed_products: z
-      .array(ProductsSchema)
-      .openapi({
-        description:
-          'A list of products that have been billed for the Item. The contents of this array will be mutually exclusive with `available_products`. Note - `billed_products` is populated in all environments but only requests in Production are billed. Also note that products that are billed on a pay-per-call basis rather than a pay-per-Item basis, such as `balance`, will not appear here.\n',
-      }),
-    consent_expiration_time: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          'The RFC 3339 timestamp after which the consent provided by the end user will expire. Upon consent expiration, the item will enter the `ITEM_LOGIN_REQUIRED` error state. To circumvent the `ITEM_LOGIN_REQUIRED` error and maintain continuous consent, the end user can reauthenticate via Link’s update mode in advance of the consent expiration time.\n\nNote - This is only relevant for certain OAuth-based institutions. For all other institutions, this field will be null.\n',
-      }),
-    consented_products: z
-      .array(ProductsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Beta: A list of products that have gone through consent collection for the Item. Only present for those enabled in the beta.\n',
-      }),
-    error: PlaidErrorSchema,
-    institution_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Plaid Institution ID associated with the Item. Field is `null` for Items created via Same Day Micro-deposits.',
-      }),
-    item_id: z
-      .string()
-      .openapi({
-        description:
-          'The Plaid Item ID. The `item_id` is always unique; linking the same account at the same institution twice will result in two Items with different `item_id` values. Like all Plaid identifiers, the `item_id` is case-sensitive.',
-      }),
-    products: z
-      .array(ProductsSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of authorized products for the Item.\n' }),
-    update_type: z
-      .enum(['background', 'user_present_required'])
-      .openapi({
-        description:
-          'Indicates whether an Item requires user interaction to be updated, which can be the case for Items with some forms of two-factor authentication.\n\n`background` - Item can be updated in the background\n\n`user_present_required` - Item requires user interaction to be updated',
-      }),
-    webhook: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The URL registered to receive webhooks for the Item.' }),
-  })
-  .openapi({
-    description: 'Metadata about the Item.',
-    required: [
-      'item_id',
-      'webhook',
-      'error',
-      'available_products',
-      'billed_products',
-      'consent_expiration_time',
-      'update_type',
-    ],
-  })
-  .openapi('Item')
-
-const RequestIDSchema = z
+const ItemIdSchema = z
   .string()
   .openapi({
-    description:
-      'A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.',
-    title: 'RequestID',
+    description: 'The `item_id` of the Item associated with this webhook, warning, or error',
+    title: 'ItemId',
   })
-  .openapi('RequestID')
+  .openapi('ItemId')
 
-const AccountsGetResponseSchema = z
+type AssetReportItemType = {
+  accounts: z.infer<typeof AccountAssetsSchema>[]
+  date_last_updated: string
+  institution_id: string
+  institution_name: string
+  item_id: z.infer<typeof ItemIdSchema>
+}
+
+const AssetReportItemSchema: z.ZodType<AssetReportItemType> = z
   .looseObject({
     accounts: z
-      .array(AccountBaseSchema)
+      .array(AccountAssetsSchema)
+      .openapi({ description: 'Data about each of the accounts open on the Item.' }),
+    date_last_updated: z.iso
+      .datetime({ offset: true })
       .openapi({
         description:
-          'An array of financial institution accounts associated with the Item.\nIf `/accounts/balance/get` was called, each account will include real-time balance information.',
+          'The date and time when this Item’s data was last retrieved from the financial institution, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format.',
       }),
-    item: ItemSchema,
-    request_id: RequestIDSchema,
+    institution_id: z
+      .string()
+      .openapi({ description: 'The id of the financial institution associated with the Item.' }),
+    institution_name: z
+      .string()
+      .openapi({ description: 'The full financial institution name associated with the Item.' }),
+    item_id: ItemIdSchema,
   })
   .openapi({
-    description:
-      'AccountsGetResponse defines the response schema for `/accounts/get` and `/accounts/balance/get`.',
-    required: ['accounts', 'item', 'request_id'],
+    description: 'A representation of an Item within an Asset Report.',
+    required: ['item_id', 'institution_name', 'institution_id', 'date_last_updated', 'accounts'],
+    title: 'AssetReportItem',
   })
-  .openapi('AccountsGetResponse')
+  .openapi('AssetReportItem')
 
-const ActionStateSchema = z
-  .enum(['UNKNOWN', 'ATTEMPT', 'SUCCESS', 'FAILURE', 'SKIPPED'])
-  .openapi({ description: 'Enum representing the state of the action/activity.' })
-  .openapi('ActionState')
-
-const ActivityTypeSchema = z
-  .enum([
-    'UNKNOWN',
-    'ITEM_CREATE',
-    'ITEM_IMPORT',
-    'ITEM_UPDATE',
-    'ITEM_UNLINK',
-    'PORTAL_UNLINK',
-    'PORTAL_ITEMS_DELETE',
-    'ITEM_REMOVE',
-    'INVARIANT_CHECKER_DELETION',
-    'SCOPES_UPDATE',
-  ])
-  .openapi({ description: 'Types of consent activities' })
-  .openapi('ActivityType')
-
-const ProductAccessSchema = z
+const AssetReportUserSchema = z
   .looseObject({
-    accounts_details_transactions: z
-      .boolean()
+    client_user_id: z
+      .string()
       .nullable()
-      .default(true)
+      .exactOptional()
+      .openapi({ description: 'An identifier you determine and submit for the user.' }),
+    email: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The user's email address." }),
+    first_name: z
+      .string()
+      .nullable()
       .exactOptional()
       .openapi({
-        description:
-          'Allow access to "accounts_details_transactions". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+        description: "The user's first name. Required for the Fannie Mae Day 1 Certainty™ program.",
       }),
-    accounts_routing_number: z
-      .boolean()
+    last_name: z
+      .string()
       .nullable()
-      .default(true)
       .exactOptional()
       .openapi({
-        description:
-          'Allow access to "accounts_routing_number". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+        description: "The user's last name.  Required for the Fannie Mae Day 1 Certainty™ program.",
       }),
-    accounts_statements: z
-      .boolean()
+    middle_name: z
+      .string()
       .nullable()
-      .default(true)
+      .exactOptional()
+      .openapi({ description: "The user's middle name" }),
+    phone_number: z
+      .string()
+      .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Allow access to "accounts_statements". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+          'The user\'s phone number, in E.164 format: +{countrycode}{number}. For example: "+14151234567". Phone numbers provided in other formats will be parsed on a best-effort basis.',
       }),
-    accounts_tax_statements: z
-      .boolean()
+    ssn: z
+      .string()
       .nullable()
-      .default(true)
       .exactOptional()
       .openapi({
         description:
-          'Allow access to "accounts_tax_statements". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
-      }),
-    auth: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow access to account number details. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
-      }),
-    customers_profiles: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow access to "customers_profiles". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
-      }),
-    identity: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow access to the Identity product (name, email, phone, address). Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
-      }),
-    statements: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow access to statements. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
-      }),
-    transactions: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow access to transaction details. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+          'The user\'s Social Security Number. Required for the Fannie Mae Day 1 Certainty™ program.\n\nFormat: "ddd-dd-dddd"',
       }),
   })
   .openapi({
     description:
-      'The product access being requested. Used to or disallow product access across all accounts. If unset, defaults to all products allowed.',
+      'The user object allows you to provide additional information about the user to be appended to the Asset Report. All fields are optional. The `first_name`, `last_name`, and `ssn` fields are required if you would like the Report to be eligible for Fannie Mae’s Day 1 Certainty™ program.',
+    title: 'AssetReportUser',
     required: [],
   })
-  .openapi('ProductAccess')
+  .openapi('AssetReportUser')
 
-const ScopesSchema = z
-  .object({
-    accounts: z.array(AccountAccessSchema).exactOptional(),
-    new_accounts: z
-      .boolean()
-      .nullable()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow access to newly opened accounts as they are opened. If unset, defaults to `true`.',
-      }),
-    product_access: ProductAccessSchema.exactOptional(),
-  })
-  .openapi({ description: 'The scopes object', required: [] })
-  .openapi('Scopes')
+type AssetReportType = {
+  asset_report_id: z.infer<typeof AssetReportIdSchema>
+  client_report_id: string | null
+  date_generated: string
+  days_requested: number
+  items: z.infer<typeof AssetReportItemSchema>[]
+  user: z.infer<typeof AssetReportUserSchema>
+}
 
-const ScopesNullableSchema = ScopesSchema.and(z.looseObject({}))
+const LoanIdentifierTypeSchema = z
+  .enum(['LenderLoan', 'UniversalLoan'])
   .nullable()
-  .openapi({ description: 'The scopes object' })
-  .openapi('ScopesNullable')
+  .openapi({
+    description: 'A value from a MISMO prescribed list that specifies the type of loan identifier.',
+    title: 'LoanIdentifierType',
+  })
+  .openapi('LoanIdentifierType')
 
-const ApplicationIDSchema = z
-  .string()
+const LoanIdentifierSchema = z
+  .looseObject({
+    LoanIdentifier: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The value of the identifier for the specified type.' }),
+    LoanIdentifierType: LoanIdentifierTypeSchema,
+  })
   .openapi({
     description:
-      'This field will map to the application ID that is returned from /item/applications/list, or provided to the institution in an oauth redirect.',
-    title: 'ApplicationID',
+      'The information used to identify this loan by various parties to the transaction or other organizations.',
+    required: ['LoanIdentifier', 'LoanIdentifierType'],
+    title: 'LoanIdentifier',
   })
-  .openapi('ApplicationID')
+  .openapi('LoanIdentifier')
 
-const ActivitySchema = z
-  .object({
-    activity: ActivityTypeSchema,
-    id: z.string().openapi({ description: 'A unique identifier for the activity' }),
-    initiated_date: z
-      .string()
-      .openapi({
-        description:
-          'The date and time this activity was initiated [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format in UTC.',
-        example: '2020-01-01',
-      }),
-    initiator: z
-      .string()
-      .openapi({ description: 'Application ID of the client who initiated the activity.' }),
-    scopes: ScopesNullableSchema.exactOptional(),
-    state: ActionStateSchema,
-    target_application_id: ApplicationIDSchema.exactOptional(),
-  })
+const LoanIdentifiersSchema = z
+  .looseObject({ LOAN_IDENTIFIER: LoanIdentifierSchema })
   .openapi({
-    description: 'Describes a consent activity.',
-    required: ['activity', 'initiated_date', 'id', 'initiator', 'state'],
+    description: 'Collection of current and previous identifiers for this loan.',
+    required: ['LOAN_IDENTIFIER'],
+    title: 'LoanIdentifiers',
   })
-  .openapi('Activity')
+  .openapi('LoanIdentifiers')
 
-const AddressDataNullableSchema = AddressDataSchema.and(z.looseObject({}))
-  .nullable()
-  .openapi({ description: 'Data about the components comprising an address.' })
-  .openapi('AddressDataNullable')
-
-const AddressNullableSchema = AddressSchema.and(z.looseObject({}))
-  .nullable()
-  .openapi({ description: 'A physical mailing address.' })
-  .openapi('AddressNullable')
-
-const AddressPurposeLabelSchema = z
-  .enum(['residential', 'commercial', 'no_data'])
+const LoanSchema = z
+  .looseObject({ LOAN_IDENTIFIERS: LoanIdentifiersSchema })
   .openapi({
     description:
-      "Field describing whether the associated address is being used for commercial or residential purposes.\n\nNote: This value will be `no_data` when Plaid does not have sufficient data to determine the address's use.",
-    example: 'residential',
+      'Information specific to a mortgage loan agreement between one or more borrowers and a mortgage lender.',
+    required: ['LOAN_IDENTIFIERS'],
+    title: 'Loan',
   })
-  .openapi('AddressPurposeLabel')
+  .openapi('Loan')
 
-const ApplicationSchema = z
-  .object({
-    application_id: ApplicationIDSchema,
-    application_url: z
+const LoansSchema = z
+  .looseObject({ LOAN: LoanSchema })
+  .openapi({
+    description: 'A collection of loans that are part of a single deal.',
+    required: ['LOAN'],
+    title: 'Loans',
+  })
+  .openapi('Loans')
+
+const IndividualNameSchema = z
+  .looseObject({
+    FirstName: z
       .string()
-      .nullable()
-      .openapi({ description: "The URL for the application's website" }),
-    city: z
-      .string()
-      .nullable()
-      .openapi({ description: 'A string representing the city of the client’s headquarters.' }),
-    company_legal_name: z
-      .string()
-      .nullable()
-      .openapi({ description: 'A string representing the name of client’s legal entity.' }),
-    country_code: z
-      .string()
-      .nullable()
       .openapi({
-        description: 'A string representing the country code of the client’s headquarters.',
+        description: 'The first name of the individual represented by the parent object.',
       }),
-    display_name: z
+    LastName: z
+      .string()
+      .openapi({
+        description: 'The last name of the individual represented by the parent object.',
+      }),
+  })
+  .openapi({
+    description:
+      'Parent container for name that allows for choice group between parsed and unparsed containers.Parent container for name that allows for choice group between parsed and unparsed containers.',
+    required: ['FirstName', 'LastName'],
+    title: 'NAME',
+  })
+  .openapi('IndividualName')
+
+const PartyIndividualSchema = z
+  .looseObject({ NAME: IndividualNameSchema })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['NAME'],
+    title: 'INDIVIDUAL',
+  })
+  .openapi('PartyIndividual')
+
+const PartyRoleTypeSchema = z
+  .literal('Borrower')
+  .openapi({
+    description:
+      'A value from a MISMO defined list that identifies the role that the party plays in the transaction. Parties may be either a person or legal entity. A party may play multiple roles in a transaction.A value from a MISMO defined list that identifies the role that the party plays in the transaction. Parties may be either a person or legal entity. A party may play multiple roles in a transaction.',
+    title: 'PartyRoleType',
+  })
+  .openapi('PartyRoleType')
+
+const RoleDetailSchema = z
+  .looseObject({ PartyRoleType: PartyRoleTypeSchema })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['PartyRoleType'],
+    title: 'RoleDetail',
+  })
+  .openapi('RoleDetail')
+
+const RoleSchema = z
+  .looseObject({ ROLE_DETAIL: RoleDetailSchema })
+  .openapi({
+    description:
+      'ADocumentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ROLE_DETAIL'],
+    title: 'Role',
+  })
+  .openapi('Role')
+
+const RolesSchema = z
+  .looseObject({ ROLE: RoleSchema })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ROLE'],
+    title: 'Roles',
+  })
+  .openapi('Roles')
+
+const TaxpayerIdentifierTypeSchema = z
+  .enum(['IndividualTaxpayerIdentificationNumber', 'SocialSecurityNumber'])
+  .nullable()
+  .openapi({
+    description:
+      'A value from a MISMO prescribed list that classifies identification numbers used by the Internal Revenue Service (IRS) in the administration of tax laws. A Social Security number (SSN) is issued by the SSA; all other taxpayer identification numbers are issued by the IRS.',
+    title: 'TaxpayerIdentifierType',
+  })
+  .openapi('TaxpayerIdentifierType')
+
+const TaxpayerIdentifierSchema = z
+  .looseObject({
+    TaxpayerIdentifierType: TaxpayerIdentifierTypeSchema,
+    TaxpayerIdentifierValue: z
       .string()
       .nullable()
-      .openapi({ description: 'A human-readable name of the application for display purposes' }),
-    join_date: z.iso
-      .date()
       .openapi({
         description:
-          'The date this application was granted production access at Plaid in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format in UTC.',
+          'The value of the taxpayer identifier as assigned by the IRS to the individual or legal entity.',
       }),
-    logo_url: z
+  })
+  .openapi({
+    description:
+      'Information about the Taxpayer identification values assigned to the individual or legal entity.Information about the Taxpayer identification values assigned to the individual or legal entity.',
+    required: ['TaxpayerIdentifierType', 'TaxpayerIdentifierValue'],
+    title: 'TaxpayerIdentifier',
+  })
+  .openapi('TaxpayerIdentifier')
+
+const TaxpayerIdentifiersSchema = z
+  .looseObject({ TAXPAYER_IDENTIFIER: TaxpayerIdentifierSchema })
+  .openapi({
+    description: 'The collection of TAXPAYER_IDENTIFICATION elements',
+    required: ['TAXPAYER_IDENTIFIER'],
+    title: 'TaxpayerIdentifiers',
+  })
+  .openapi('TaxpayerIdentifiers')
+
+const PartySchema = z
+  .looseObject({
+    INDIVIDUAL: PartyIndividualSchema,
+    ROLES: RolesSchema,
+    TAXPAYER_IDENTIFIERS: TaxpayerIdentifiersSchema,
+  })
+  .openapi({
+    description:
+      'A collection of information about a single party to a transaction. Included direct participants like the borrower and seller as well as indirect participants such as the flood certificate provider.',
+    required: ['INDIVIDUAL', 'ROLES', 'TAXPAYER_IDENTIFIERS'],
+    title: 'Party',
+  })
+  .openapi('Party')
+
+const PartiesSchema = z
+  .looseObject({ PARTY: z.array(PartySchema) })
+  .openapi({
+    description:
+      'A collection of objects that define specific parties to a deal. This includes the direct participating parties, such as borrower and seller and the indirect parties such as the credit report provider.',
+    required: ['PARTY'],
+    title: 'Parties',
+  })
+  .openapi('Parties')
+
+const StatusSchema = z
+  .looseObject({
+    StatusCode: z.string().nullable().openapi({ description: 'Satus Code.' }),
+    StatusDescription: z.string().nullable().openapi({ description: 'Status Description.' }),
+  })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['StatusCode', 'StatusDescription'],
+    title: 'Status',
+  })
+  .openapi('Status')
+
+const StatusesSchema = z
+  .looseObject({ STATUS: StatusSchema })
+  .openapi({
+    description: 'A collection of STATUS containers.',
+    required: ['STATUS'],
+    title: 'Statuses',
+  })
+  .openapi('Statuses')
+
+const ReportingInformationSchema = z
+  .looseObject({
+    ReportingInformationIdentifier: z
       .string()
-      .nullable()
-      .openapi({ description: 'A URL that links to the application logo image.' }),
-    name: z.string().openapi({ description: 'The name of the application' }),
-    postal_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'A string representing the postal code of the client’s headquarters.',
-      }),
-    reason_for_access: z
-      .string()
-      .nullable()
       .openapi({
         description:
-          'A string provided by the connected app stating why they use their respective enabled products.',
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
       }),
-    region: z
-      .string()
-      .nullable()
-      .openapi({ description: 'A string representing the region of the client’s headquarters.' }),
-    use_case: z
+  })
+  .openapi({
+    description: 'Information about an report identifier and a report name.',
+    required: ['ReportingInformationIdentifier'],
+    title: 'ReportingInformation',
+  })
+  .openapi('ReportingInformation')
+
+const ServiceProductFulfillmentIdentifierSchema = z
+  .enum(['VOA', 'VOETRANSACTIONS'])
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    title: 'ServiceProductFulfillmentIdentifier',
+  })
+  .openapi('ServiceProductFulfillmentIdentifier')
+
+const ServiceProductFulfillmentDetailSchema = z
+  .looseObject({
+    ServiceProductFulfillmentIdentifier: ServiceProductFulfillmentIdentifierSchema,
+    VendorOrderIdentifier: z
       .string()
       .nullable()
       .openapi({
-        description: 'A string representing client’s broad use case as assessed by Plaid.',
+        description: 'A string that uniquely identifies a type of order Verification of Asset.',
       }),
   })
   .openapi({
-    description: 'Metadata about the application',
-    required: [
-      'application_id',
-      'join_date',
-      'name',
-      'display_name',
-      'logo_url',
-      'application_url',
-      'reason_for_access',
-      'use_case',
-      'company_legal_name',
-      'city',
-      'region',
-      'postal_code',
-      'country_code',
-    ],
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['VendorOrderIdentifier', 'ServiceProductFulfillmentIdentifier'],
+    title: 'ServiceProductFulfillmentDetail',
   })
-  .openapi('Application')
+  .openapi('ServiceProductFulfillmentDetail')
 
-const ApplicationGetRequestSchema = z
-  .object({
-    application_id: ApplicationIDSchema,
-    client_id: APIClientIDSchema,
-    secret: APISecretSchema,
-  })
+const ServiceProductFulfillmentSchema = z
+  .looseObject({ SERVICE_PRODUCT_FULFILLMENT_DETAIL: ServiceProductFulfillmentDetailSchema })
   .openapi({
-    description: 'ApplicationGetRequest defines the schema for `/application/get`',
-    required: ['client_id', 'secret', 'application_id'],
+    description:
+      'A collection of details related to a fulfillment service or product in terms of request, process and result.',
+    required: ['SERVICE_PRODUCT_FULFILLMENT_DETAIL'],
+    title: 'ServiceProductFulfillment',
   })
-  .openapi('ApplicationGetRequest')
-
-const ApplicationGetResponseSchema = z
-  .looseObject({ application: ApplicationSchema, request_id: RequestIDSchema })
-  .openapi({
-    description: 'ApplicationGetResponse defines the response schema for `/application/get`',
-    required: ['request_id', 'application'],
-  })
-  .openapi('ApplicationGetResponse')
+  .openapi('ServiceProductFulfillment')
 
 const AssetTypeSchema = z
   .enum(['CheckingAccount', 'SavingsAccount', 'Investment', 'MoneyMarketFund', 'Other'])
@@ -2188,106 +1522,118 @@ const AssetSchema = z
   })
   .openapi('Asset')
 
-const AssetReportIdSchema = z
-  .string()
-  .openapi({
-    description:
-      'A unique ID identifying an Asset Report. Like all Plaid identifiers, this ID is case sensitive.',
-    title: 'AssetReportId',
-  })
-  .openapi('AssetReportId')
+type AssetsType = { ASSET: z.infer<typeof AssetSchema>[] }
 
-const ItemIdSchema = z
-  .string()
-  .openapi({
-    description: 'The `item_id` of the Item associated with this webhook, warning, or error',
-    title: 'ItemId',
-  })
-  .openapi('ItemId')
-
-const AssetReportItemSchema = z
+const AssetsSchema: z.ZodType<AssetsType> = z
   .looseObject({
-    accounts: z
-      .array(AccountAssetsSchema)
-      .openapi({ description: 'Data about each of the accounts open on the Item.' }),
-    date_last_updated: z.iso
-      .datetime({ offset: true })
+    ASSET: z
+      .array(AssetSchema)
       .openapi({
         description:
-          'The date and time when this Item’s data was last retrieved from the financial institution, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format.',
-      }),
-    institution_id: z
-      .string()
-      .openapi({ description: 'The id of the financial institution associated with the Item.' }),
-    institution_name: z
-      .string()
-      .openapi({ description: 'The full financial institution name associated with the Item.' }),
-    item_id: ItemIdSchema,
-  })
-  .openapi({
-    description: 'A representation of an Item within an Asset Report.',
-    required: ['item_id', 'institution_name', 'institution_id', 'date_last_updated', 'accounts'],
-    title: 'AssetReportItem',
-  })
-  .openapi('AssetReportItem')
-
-const AssetReportUserSchema = z
-  .looseObject({
-    client_user_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'An identifier you determine and submit for the user.' }),
-    email: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: "The user's email address." }),
-    first_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "The user's first name. Required for the Fannie Mae Day 1 Certainty™ program.",
-      }),
-    last_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "The user's last name.  Required for the Fannie Mae Day 1 Certainty™ program.",
-      }),
-    middle_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: "The user's middle name" }),
-    phone_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user\'s phone number, in E.164 format: +{countrycode}{number}. For example: "+14151234567". Phone numbers provided in other formats will be parsed on a best-effort basis.',
-      }),
-    ssn: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user\'s Social Security Number. Required for the Fannie Mae Day 1 Certainty™ program.\n\nFormat: "ddd-dd-dddd"',
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
       }),
   })
   .openapi({
     description:
-      'The user object allows you to provide additional information about the user to be appended to the Asset Report. All fields are optional. The `first_name`, `last_name`, and `ssn` fields are required if you would like the Report to be eligible for Fannie Mae’s Day 1 Certainty™ program.',
-    title: 'AssetReportUser',
-    required: [],
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ASSET'],
+    title: 'Assets',
   })
-  .openapi('AssetReportUser')
+  .openapi('Assets')
 
-const AssetReportSchema = z
+type VerificationOfAssetResponseType = { ASSETS: z.infer<typeof AssetsSchema> }
+
+const VerificationOfAssetResponseSchema: z.ZodType<VerificationOfAssetResponseType> = z
+  .looseObject({ ASSETS: AssetsSchema })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ASSETS'],
+    title: 'VerificationOfAssetResponse',
+  })
+  .openapi('VerificationOfAssetResponse')
+
+type VerificationOfAssetType = {
+  REPORTING_INFORMATION: z.infer<typeof ReportingInformationSchema>
+  SERVICE_PRODUCT_FULFILLMENT: z.infer<typeof ServiceProductFulfillmentSchema>
+  VERIFICATION_OF_ASSET_RESPONSE: z.infer<typeof VerificationOfAssetResponseSchema>
+}
+
+const VerificationOfAssetSchema: z.ZodType<VerificationOfAssetType> = z
+  .looseObject({
+    REPORTING_INFORMATION: ReportingInformationSchema,
+    SERVICE_PRODUCT_FULFILLMENT: ServiceProductFulfillmentSchema,
+    VERIFICATION_OF_ASSET_RESPONSE: VerificationOfAssetResponseSchema,
+  })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: [
+      'REPORTING_INFORMATION',
+      'SERVICE_PRODUCT_FULFILLMENT',
+      'VERIFICATION_OF_ASSET_RESPONSE',
+    ],
+    title: 'VerificationOfAsset',
+  })
+  .openapi('VerificationOfAsset')
+
+type ServiceType = {
+  STATUSES: z.infer<typeof StatusesSchema>
+  VERIFICATION_OF_ASSET: z.infer<typeof VerificationOfAssetSchema>
+}
+
+const ServiceSchema: z.ZodType<ServiceType> = z
+  .looseObject({ STATUSES: StatusesSchema, VERIFICATION_OF_ASSET: VerificationOfAssetSchema })
+  .openapi({
+    description:
+      'A collection of details related to a fulfillment service or product in terms of request, process and result.',
+    required: ['VERIFICATION_OF_ASSET', 'STATUSES'],
+    title: 'Service',
+  })
+  .openapi('Service')
+
+type ServicesType = { SERVICE: z.infer<typeof ServiceSchema> }
+
+const ServicesSchema: z.ZodType<ServicesType> = z
+  .looseObject({ SERVICE: ServiceSchema })
+  .openapi({
+    description: 'A collection of objects that describe requests and responses for services.',
+    required: ['SERVICE'],
+    title: 'Services',
+  })
+  .openapi('Services')
+
+type AssetReportFreddieType = {
+  LOANS: z.infer<typeof LoansSchema>
+  PARTIES: z.infer<typeof PartiesSchema>
+  SERVICES: z.infer<typeof ServicesSchema>
+}
+
+const AssetReportFreddieSchema: z.ZodType<AssetReportFreddieType> = z
+  .looseObject({ LOANS: LoansSchema, PARTIES: PartiesSchema, SERVICES: ServicesSchema })
+  .openapi({
+    description: 'An object representing an Asset Report with Freddie Mac schema.',
+    required: ['LOANS', 'PARTIES', 'SERVICES'],
+    title: 'AssetReportFreddie',
+  })
+  .openapi('AssetReportFreddie')
+
+const RequestIDSchema = z
+  .string()
+  .openapi({
+    description:
+      'A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.',
+    title: 'RequestID',
+  })
+  .openapi('RequestID')
+
+type AssetReportFreddieGetResponseType = {
+  DEAL: z.infer<typeof AssetReportFreddieSchema>
+  SchemaVersion: number
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const AssetReportSchema: z.ZodType<AssetReportType> = z
   .looseObject({
     asset_report_id: AssetReportIdSchema,
     client_report_id: z
@@ -2323,6 +1669,5872 @@ const AssetReportSchema = z
     title: 'AssetReport',
   })
   .openapi('AssetReport')
+
+const PlaidErrorTypeSchema = z
+  .enum([
+    'INVALID_REQUEST',
+    'INVALID_RESULT',
+    'INVALID_INPUT',
+    'INSTITUTION_ERROR',
+    'RATE_LIMIT_EXCEEDED',
+    'API_ERROR',
+    'ITEM_ERROR',
+    'ASSET_REPORT_ERROR',
+    'RECAPTCHA_ERROR',
+    'OAUTH_ERROR',
+    'PAYMENT_ERROR',
+    'BANK_TRANSFER_ERROR',
+    'INCOME_VERIFICATION_ERROR',
+    'MICRODEPOSITS_ERROR',
+  ])
+  .openapi({
+    description: 'A broad categorization of the error. Safe for programmatic use.',
+    title: 'PlaidErrorType',
+  })
+  .openapi('PlaidErrorType')
+
+const PlaidErrorSchema = z
+  .looseObject({
+    causes: z
+      .array(z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'In the Assets product, a request can pertain to more than one Item. If an error is returned for such a request, `causes` will return an array of errors containing a breakdown of these errors on the individual Item level, if any can be identified.\n\n`causes` will only be provided for the `error_type` `ASSET_REPORT_ERROR`. `causes` will also not be populated inside an error nested within a `warning` object.',
+      }),
+    display_message: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'A user-friendly representation of the error code. `null` if the error is not related to user action.\n\nThis may change over time and is not safe for programmatic use.',
+      }),
+    documentation_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL of a Plaid documentation page with more information about the error',
+      }),
+    error_code: z
+      .string()
+      .openapi({ description: 'The particular error code. Safe for programmatic use.' }),
+    error_message: z
+      .string()
+      .openapi({
+        description:
+          'A developer-friendly representation of the error code. This may change over time and is not safe for programmatic use.',
+      }),
+    error_type: PlaidErrorTypeSchema,
+    request_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique ID identifying the request, to be used for troubleshooting purposes. This field will be omitted in errors provided by webhooks.',
+      }),
+    status: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The HTTP status code associated with the error. This will only be returned in the response body when the error information is provided via a webhook.',
+      }),
+    suggested_action: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Suggested steps for resolving the error' }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'We use standard HTTP response codes for success and failure notifications, and our errors are further classified by `error_type`. In general, 200 HTTP codes correspond to success, 40X codes are for developer- or user-related failures, and 50X codes are for Plaid-related issues. An Item with a non-`null` error object will only be part of an API response when calling `/item/get` to view Item status. Otherwise, error fields will be `null` if no error has occurred; if an error has occurred, an error code will be returned instead.',
+    required: ['error_type', 'error_code', 'error_message', 'display_message'],
+    title: 'Error',
+  })
+  .openapi('PlaidError')
+
+const CauseSchema = PlaidErrorSchema.and(
+  z
+    .object({ item_id: ItemIdSchema.exactOptional() })
+    .openapi({ required: [] })
+    .and(
+      z
+        .looseObject({})
+        .openapi({
+          required: ['item_id', 'error_type', 'error_code', 'error_message', 'display_message'],
+        }),
+    )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'item_id')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'error_type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'error_code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'error_message')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'display_message')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    }),
+)
+  .openapi({
+    description:
+      'An error object and associated `item_id` used to identify a specific Item and error when a batch operation operating on multiple Items has encountered an error in one of the Items.',
+    required: ['item_id', 'error_type', 'error_code', 'error_message', 'display_message'],
+    title: 'Cause',
+  })
+  .openapi('Cause')
+
+const WarningSchema = z
+  .looseObject({
+    cause: CauseSchema,
+    warning_code: z
+      .literal('OWNERS_UNAVAILABLE')
+      .openapi({
+        description:
+          'The warning code identifies a specific kind of warning. Currently, the only possible warning code is `OWNERS_UNAVAILABLE`, which indicates that account-owner information is not available.',
+      }),
+    warning_type: z
+      .string()
+      .openapi({ description: 'The warning type, which will always be `ASSET_REPORT_WARNING`' }),
+  })
+  .openapi({
+    description:
+      'It is possible for an Asset Report to be returned with missing account owner information. In such cases, the Asset Report will contain warning data in the response, indicating why obtaining the owner information failed.',
+    required: ['warning_type', 'warning_code', 'cause'],
+    title: 'Warning',
+    'x-examples': {
+      'example-1': {
+        cause: {
+          display_message: null,
+          error_code: 'PRODUCTS_NOT_SUPPORTED',
+          error_message: 'The following products are not supported by this institution: Identity',
+          error_type: 'ITEM_ERROR',
+          http_code: 400,
+          request_id: 's32PXYOyplhGTHd',
+        },
+        warning_code: 'OWNERS_UNAVAILABLE',
+        warning_type: 'ASSET_REPORT_WARNING',
+      },
+    },
+  })
+  .openapi('Warning')
+
+type AssetReportGetResponseType = {
+  report: z.infer<typeof AssetReportSchema>
+  request_id: z.infer<typeof RequestIDSchema>
+  warnings: z.infer<typeof WarningSchema>[]
+}
+
+const DepositoryAccountSubtypeSchema = z
+  .enum([
+    'checking',
+    'savings',
+    'hsa',
+    'cd',
+    'money market',
+    'paypal',
+    'prepaid',
+    'cash management',
+    'ebt',
+    'all',
+  ])
+  .openapi({
+    description:
+      'Valid account subtypes for depository accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-depository).',
+  })
+  .openapi('DepositoryAccountSubtype')
+
+const CreditBankIncomeAccountTypeSchema = z
+  .literal('depository')
+  .openapi({ description: 'The account type. This will always be `depository`.' })
+  .openapi('CreditBankIncomeAccountType')
+
+const CreditBankIncomeAccountSchema = z
+  .object({
+    account_id: z.string().openapi({ description: "Plaid's unique identifier for the account." }),
+    mask: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          "The last 2-4 alphanumeric characters of an account's official account number.\nNote that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.",
+      }),
+    name: z.string().openapi({ description: 'The name of the bank account.' }),
+    official_name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The official name of the bank account.' }),
+    owners: z.array(OwnerSchema),
+    subtype: DepositoryAccountSubtypeSchema,
+    type: CreditBankIncomeAccountTypeSchema,
+  })
+  .openapi({
+    description: "The Item's bank accounts that have the selected data.",
+    required: ['account_id', 'mask', 'name', 'official_name', 'subtype', 'type', 'owners'],
+  })
+  .openapi('CreditBankIncomeAccount')
+
+const CreditBankEmployerSchema = z
+  .object({ name: z.string().openapi({ description: 'Name of the employer.' }) })
+  .openapi({ description: 'Object containing employer data.', required: ['name'] })
+  .openapi('CreditBankEmployer')
+
+const CreditBankEmploymentSchema = z
+  .object({
+    account_id: z.string().openapi({ description: "Plaid's unique identifier for the account." }),
+    bank_employment_id: z
+      .string()
+      .openapi({ description: 'A unique identifier for the bank employment.' }),
+    earliest_deposit_date: z.iso
+      .date()
+      .openapi({
+        description:
+          'The date of the earliest deposit from this employer from within the period of the days requested.',
+      }),
+    employer: CreditBankEmployerSchema,
+    latest_deposit_date: z.iso
+      .date()
+      .openapi({ description: 'The date of the most recent deposit from this employer.' }),
+  })
+  .openapi({
+    description: 'Detailed information for the bank employment.',
+    required: [
+      'bank_employment_id',
+      'account_id',
+      'employer',
+      'latest_deposit_date',
+      'earliest_deposit_date',
+    ],
+  })
+  .openapi('CreditBankEmployment')
+
+type CreditBankEmploymentItemType = {
+  bank_employment_accounts: z.infer<typeof CreditBankIncomeAccountSchema>[]
+  bank_employments: z.infer<typeof CreditBankEmploymentSchema>[]
+  institution_id: string
+  institution_name: string
+  item_id: string
+  last_updated_time: string
+}
+
+const CreditBankEmploymentItemSchema: z.ZodType<CreditBankEmploymentItemType> = z
+  .object({
+    bank_employment_accounts: z
+      .array(CreditBankIncomeAccountSchema)
+      .openapi({ description: "The Item's accounts that have Bank Employment data." }),
+    bank_employments: z
+      .array(CreditBankEmploymentSchema)
+      .openapi({
+        description:
+          'The bank employment information for this Item. Each entry in the array is a different employer found.',
+      }),
+    institution_id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of the institution associated with the Item.',
+      }),
+    institution_name: z
+      .string()
+      .openapi({ description: 'The name of the institution associated with the Item.' }),
+    item_id: z.string().openapi({ description: 'The unique identifier for the Item.' }),
+    last_updated_time: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The time when this Item\'s data was last retrieved from the financial institution, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (e.g. "2018-04-12T03:32:11Z").',
+      }),
+  })
+  .openapi({
+    description: "The details and metadata for an end user's Item.",
+    required: [
+      'item_id',
+      'last_updated_time',
+      'institution_id',
+      'institution_name',
+      'bank_employments',
+      'bank_employment_accounts',
+    ],
+  })
+  .openapi('CreditBankEmploymentItem')
+
+const CreditBankIncomeErrorTypeSchema = z
+  .enum([
+    'INTERNAL_SERVER_ERROR',
+    'INSUFFICIENT_CREDENTIALS',
+    'ITEM_LOCKED',
+    'USER_SETUP_REQUIRED',
+    'COUNTRY_NOT_SUPPORTED',
+    'INSTITUTION_DOWN',
+    'INSTITUTION_NO_LONGER_SUPPORTED',
+    'INSTITUTION_NOT_RESPONDING',
+    'INVALID_CREDENTIALS',
+    'INVALID_MFA',
+    'INVALID_SEND_METHOD',
+    'ITEM_LOGIN_REQUIRED',
+    'MFA_NOT_SUPPORTED',
+    'NO_ACCOUNTS',
+    'ITEM_NOT_SUPPORTED',
+    'ACCESS_NOT_GRANTED',
+  ])
+  .openapi({ description: 'A broad categorization of the error. Safe for programmatic use.' })
+  .openapi('CreditBankIncomeErrorType')
+
+const CreditBankIncomeCauseSchema = z
+  .object({
+    display_message: z
+      .string()
+      .openapi({
+        description:
+          'A user-friendly representation of the error code. null if the error is not related to user action.\nThis may change over time and is not safe for programmatic use.',
+      }),
+    error_code: z
+      .string()
+      .openapi({
+        description:
+          'We use standard HTTP response codes for success and failure notifications, and our errors are further classified by `error_type`. In general, 200 HTTP codes correspond to success, 40X codes are for developer- or user-related failures, and 50X codes are for Plaid-related issues. Error fields will be `null` if no error has occurred.',
+      }),
+    error_message: z
+      .string()
+      .openapi({
+        description:
+          'A developer-friendly representation of the error code. This may change over time and is not safe for programmatic use.',
+      }),
+    error_type: CreditBankIncomeErrorTypeSchema,
+    item_id: z
+      .string()
+      .openapi({ description: 'The `item_id` of the Item associated with this warning.' }),
+  })
+  .openapi({
+    description:
+      'An error object and associated `item_id` used to identify a specific Item and error when a batch operation operating on multiple Items has encountered an error in one of the Items.',
+    required: ['error_type', 'error_code', 'error_message', 'display_message', 'item_id'],
+  })
+  .openapi('CreditBankIncomeCause')
+
+const CreditBankIncomeWarningCodeSchema = z
+  .enum([
+    'IDENTITY_UNAVAILABLE',
+    'TRANSACTIONS_UNAVAILABLE',
+    'ITEM_UNAPPROVED',
+    'REPORT_DELETED',
+    'DATA_UNAVAILABLE',
+  ])
+  .openapi({
+    description:
+      'The warning code identifies a specific kind of warning.\n`IDENTITY_UNAVAILABLE`: Unable to extract identity for the Item\n`TRANSACTIONS_UNAVAILABLE`: Unable to extract transactions for the Item\n`ITEM_UNAPPROVED`: User did not grant permission to share data for the Item\n`REPORT_DELETED`: Report deleted due to customer or consumer request\n`DATA_UNAVAILABLE`: No relevant data was found for the Item',
+  })
+  .openapi('CreditBankIncomeWarningCode')
+
+const CreditBankEmploymentWarningTypeSchema = z
+  .literal('BANK_EMPLOYMENT_WARNING')
+  .openapi({ description: 'The warning type which will always be `BANK_EMPLOYMENT_WARNING`.' })
+  .openapi('CreditBankEmploymentWarningType')
+
+const CreditBankEmploymentWarningSchema = z
+  .object({
+    cause: CreditBankIncomeCauseSchema,
+    warning_code: CreditBankIncomeWarningCodeSchema,
+    warning_type: CreditBankEmploymentWarningTypeSchema,
+  })
+  .openapi({
+    description:
+      'The warning associated with the data that was unavailable for the Bank Employment Report.',
+    required: ['warning_type', 'warning_code', 'cause'],
+  })
+  .openapi('CreditBankEmploymentWarning')
+
+type CreditBankEmploymentReportType = {
+  bank_employment_report_id: string
+  days_requested: number
+  generated_time: string
+  items: z.infer<typeof CreditBankEmploymentItemSchema>[]
+  warnings: z.infer<typeof CreditBankEmploymentWarningSchema>[]
+}
+
+const CreditBankEmploymentReportSchema: z.ZodType<CreditBankEmploymentReportType> = z
+  .object({
+    bank_employment_report_id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier associated with the Bank Employment Report.',
+      }),
+    days_requested: z
+      .int()
+      .openapi({
+        description: 'The number of days requested by the customer for the Bank Employment Report.',
+      }),
+    generated_time: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The time when the Bank Employment Report was generated, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (e.g. "2018-04-12T03:32:11Z").',
+      }),
+    items: z
+      .array(CreditBankEmploymentItemSchema)
+      .openapi({
+        description:
+          'The list of Items in the report along with the associated metadata about the Item.',
+      }),
+    warnings: z
+      .array(CreditBankEmploymentWarningSchema)
+      .openapi({
+        description:
+          'If data from the Bank Employment report was unable to be retrieved, the warnings will contain information about the error that caused the data to be incomplete.',
+      }),
+  })
+  .openapi({
+    description: 'The report of the Bank Employment data for an end user.',
+    required: [
+      'bank_employment_report_id',
+      'generated_time',
+      'days_requested',
+      'items',
+      'warnings',
+    ],
+  })
+  .openapi('CreditBankEmploymentReport')
+
+type CreditBankEmploymentGetResponseType = {
+  bank_employment_reports: z.infer<typeof CreditBankEmploymentReportSchema>[]
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const CreditIsoCurrencyCodeSchema = z
+  .string()
+  .nullable()
+  .openapi({ description: 'The ISO 4217 currency code of the amount or balance.' })
+  .openapi('CreditIsoCurrencyCode')
+
+const CreditUnofficialCurrencyCodeSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.\nUnofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.',
+  })
+  .openapi('CreditUnofficialCurrencyCode')
+
+const CreditAmountWithCurrencySchema = z
+  .looseObject({
+    amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Value of amount with up to 2 decimal places.' }),
+    iso_currency_code: CreditIsoCurrencyCodeSchema.exactOptional(),
+    unofficial_currency_code: CreditUnofficialCurrencyCodeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'This contains an amount, denominated in the currency specified by either `iso_currency_code` or `unofficial_currency_code`',
+    required: [],
+  })
+  .openapi('CreditAmountWithCurrency')
+
+const CreditBankIncomeTransactionSchema = z
+  .looseObject({
+    amount: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          "The settled value of the transaction, denominated in the transactions's currency as stated in `iso_currency_code` or `unofficial_currency_code`.\nPositive values when money moves out of the account; negative values when money moves in.\nFor example, credit card purchases are positive; credit card payment, direct deposits, and refunds are negative.",
+      }),
+    check_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The check number of the transaction. This field is only populated for check transactions.',
+      }),
+    date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'For pending transactions, the date that the transaction occurred; for posted transactions, the date that the transaction posted.\nBoth dates are returned in an ISO 8601 format (YYYY-MM-DD).',
+      }),
+    iso_currency_code: CreditIsoCurrencyCodeSchema.exactOptional(),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant name or transaction description.' }),
+    original_description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The string returned by the financial institution to describe the transaction.',
+      }),
+    pending: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, identifies the transaction as pending or unsettled.\nPending transaction details (name, type, amount, category ID) may change before they are settled.',
+      }),
+    transaction_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique ID of the transaction. Like all Plaid identifiers, the `transaction_id` is case sensitive.',
+      }),
+    unofficial_currency_code: CreditUnofficialCurrencyCodeSchema.exactOptional(),
+  })
+  .openapi({
+    description: "The transactions data for the end user's income source(s).",
+    required: [],
+  })
+  .openapi('CreditBankIncomeTransaction')
+
+const CreditBankIncomeHistoricalSummarySchema = z
+  .looseObject({
+    end_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The end date of the period included in this monthly summary.\nThis date will be the last day of the month, unless the month being covered is a partial month because it is the last month included in the summary and the date range being requested does not end with the last day of the month.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).',
+      }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The ISO 4217 currency code of the amount or balance.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-items-bank-income-sources-historical-summary-total-amounts) instead.',
+      }),
+    start_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The start date of the period covered in this monthly summary.\nThis date will be the first day of the month, unless the month being covered is a partial month because it is the first month included in the summary and the date range being requested does not begin with the first day of the month.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).',
+      }),
+    total_amount: z
+      .number()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Total amount of earnings for the income source(s) of the user for the month in the summary.\nThis may return an incorrect value if the summary includes income sources in multiple currencies.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-items-bank-income-sources-historical-summary-total-amounts) instead.',
+      }),
+    total_amounts: z
+      .array(CreditAmountWithCurrencySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Total amount of earnings for the income source(s) of the user for the month in the summary.\nThis can contain multiple amounts, with each amount denominated in one unique currency.',
+      }),
+    transactions: z.array(CreditBankIncomeTransactionSchema).exactOptional(),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.\nUnofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-items-bank-income-sources-historical-summary-total-amounts) instead.',
+      }),
+  })
+  .openapi({
+    description: "The end user's monthly summary for the income source(s).",
+    required: [],
+  })
+  .openapi('CreditBankIncomeHistoricalSummary')
+
+const CreditBankIncomeSummarySchema = z
+  .looseObject({
+    end_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          "The latest date in which all income sources identified by Plaid appear in the user's account.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).",
+      }),
+    historical_summary: z.array(CreditBankIncomeHistoricalSummarySchema).exactOptional(),
+    income_categories_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of income categories per end user.' }),
+    income_sources_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of income sources per end user.' }),
+    income_transactions_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of income transactions per end user.' }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The ISO 4217 currency code of the amount or balance.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-bank-income-summary-total-amounts) instead.',
+      }),
+    start_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          "The earliest date within the days requested in which all income sources identified by Plaid appear in a user's account.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).",
+      }),
+    total_amount: z
+      .number()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "Total amount of earnings across all the income sources in the end user's Items for the days requested by the client.\nThis may return an incorrect value if the summary includes income sources in multiple currencies.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-bank-income-summary-total-amounts) instead.",
+      }),
+    total_amounts: z
+      .array(CreditAmountWithCurrencySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Total amount of earnings across all the income sources in the end user's Items for the days requested by the client.\nThis can contain multiple amounts, with each amount denominated in one unique currency.",
+      }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.\nUnofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-bank-income-summary-total-amounts) instead.',
+      }),
+  })
+  .openapi({
+    description:
+      'Summary for bank income across all income sources and items (max history of 730 days).',
+    required: [],
+  })
+  .openapi('CreditBankIncomeSummary')
+
+const CreditBankIncomeCategorySchema = z
+  .enum([
+    'SALARY',
+    'UNEMPLOYMENT',
+    'CASH',
+    'GIG_ECONOMY',
+    'RENTAL',
+    'CHILD_SUPPORT',
+    'MILITARY',
+    'RETIREMENT',
+    'LONG_TERM_DISABILITY',
+    'BANK_INTEREST',
+    'CASH_DEPOSIT',
+    'TRANSFER_FROM_APPLICATION',
+    'TAX_REFUND',
+    'OTHER',
+  ])
+  .openapi({ description: 'The income category.' })
+  .openapi('CreditBankIncomeCategory')
+
+const CreditBankIncomePayFrequencySchema = z
+  .enum(['WEEKLY', 'BIWEEKLY', 'SEMI_MONTHLY', 'MONTHLY', 'UNKNOWN'])
+  .openapi({ description: 'The income pay frequency.' })
+  .openapi('CreditBankIncomePayFrequency')
+
+const CreditBankIncomeSourceSchema = z
+  .object({
+    account_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Plaid's unique identifier for the account." }),
+    end_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum of all dates within the specific income sources in the user’s bank account for days requested by the client.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).',
+      }),
+    historical_summary: z.array(CreditBankIncomeHistoricalSummarySchema).exactOptional(),
+    income_category: CreditBankIncomeCategorySchema.exactOptional(),
+    income_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The most common name or original description for the underlying income transactions.',
+      }),
+    income_source_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique identifier for an income source.' }),
+    pay_frequency: CreditBankIncomePayFrequencySchema.exactOptional(),
+    start_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          "Minimum of all dates within the specific income sources in the user's bank account for days requested by the client.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).",
+      }),
+    total_amount: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total amount of earnings in the user’s bank account for the specific income source for days requested by the client.',
+      }),
+    transaction_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Number of transactions for the income source within the start and end date.',
+      }),
+  })
+  .openapi({ description: 'Detailed information for the income source.', required: [] })
+  .openapi('CreditBankIncomeSource')
+
+type CreditBankIncomeItemType = {
+  bank_income_accounts?: z.infer<typeof CreditBankIncomeAccountSchema>[]
+  bank_income_sources?: z.infer<typeof CreditBankIncomeSourceSchema>[]
+  institution_id?: string
+  institution_name?: string
+  item_id?: string
+  last_updated_time?: string
+}
+
+const CreditBankIncomeItemSchema: z.ZodType<CreditBankIncomeItemType> = z
+  .object({
+    bank_income_accounts: z
+      .array(CreditBankIncomeAccountSchema)
+      .exactOptional()
+      .openapi({ description: "The Item's accounts that have Bank Income data." }),
+    bank_income_sources: z
+      .array(CreditBankIncomeSourceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The income sources for this Item. Each entry in the array is a single income source.',
+      }),
+    institution_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the institution associated with the Item.',
+      }),
+    institution_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the institution associated with the Item.' }),
+    item_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the Item.' }),
+    last_updated_time: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "The time when this Item's data was last retrieved from the financial institution.",
+      }),
+  })
+  .openapi({ description: "The details and metadata for an end user's Item.", required: [] })
+  .openapi('CreditBankIncomeItem')
+
+const CreditBankIncomeWarningTypeSchema = z
+  .literal('BANK_INCOME_WARNING')
+  .openapi({ description: 'The warning type which will always be `BANK_INCOME_WARNING`.' })
+  .openapi('CreditBankIncomeWarningType')
+
+const CreditBankIncomeWarningSchema = z
+  .object({
+    cause: CreditBankIncomeCauseSchema.exactOptional(),
+    warning_code: CreditBankIncomeWarningCodeSchema.exactOptional(),
+    warning_type: CreditBankIncomeWarningTypeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The warning associated with the data that was unavailable for the Bank Income Report.',
+    required: [],
+  })
+  .openapi('CreditBankIncomeWarning')
+
+type CreditBankIncomeType = {
+  bank_income_id?: string
+  bank_income_summary?: z.infer<typeof CreditBankIncomeSummarySchema>
+  days_requested?: number
+  generated_time?: string
+  items?: z.infer<typeof CreditBankIncomeItemSchema>[]
+  warnings?: z.infer<typeof CreditBankIncomeWarningSchema>[]
+}
+
+const CreditBankIncomeSchema: z.ZodType<CreditBankIncomeType> = z
+  .object({
+    bank_income_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier associated with the Bank Income Report.' }),
+    bank_income_summary: CreditBankIncomeSummarySchema.exactOptional(),
+    days_requested: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The number of days requested by the customer for the Bank Income Report.',
+      }),
+    generated_time: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time when the Bank Income Report was generated.' }),
+    items: z
+      .array(CreditBankIncomeItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of Items in the report along with the associated metadata about the Item.',
+      }),
+    warnings: z
+      .array(CreditBankIncomeWarningSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'If data from the Bank Income report was unable to be retrieved, the warnings will contain information about the error that caused the data to be incomplete.',
+      }),
+  })
+  .openapi({ description: 'The report of the Bank Income data for an end user.', required: [] })
+  .openapi('CreditBankIncome')
+
+type CreditBankIncomeGetResponseType = {
+  bank_income?: z.infer<typeof CreditBankIncomeSchema>[]
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const CreditFreddieMacAssetTransactionVOA_2_4Schema = z
+  .looseObject({
+    ASSET_TRANSACTION_DESCRIPTION: z
+      .array(AssetTransactionDescriptionSchema)
+      .openapi({
+        description:
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      }),
+    ASSET_TRANSACTION_DETAIL: AssetTransactionDetailSchema,
+  })
+  .openapi({
+    description: 'An object representing...',
+    required: ['ASSET_TRANSACTION_DETAIL', 'ASSET_TRANSACTION_DESCRIPTION'],
+    title: 'CreditFreddieMacAssetTransaction_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacAssetTransactionVOA_2_4')
+
+const CreditFreddieMacAssetTransactionsVOA_2_4Schema = z
+  .looseObject({ ASSET_TRANSACTION: z.array(CreditFreddieMacAssetTransactionVOA_2_4Schema) })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ASSET_TRANSACTION'],
+    title: 'CreditFreddieMacAssetTransactions_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacAssetTransactionsVOA_2_4')
+
+const CreditFreddieMacAssetVOA_2_4Schema = z
+  .looseObject({
+    ASSET_DETAIL: AssetDetailSchema,
+    ASSET_HOLDER: AssetHolderSchema,
+    ASSET_OWNERS: AssetOwnersSchema,
+    ASSET_TRANSACTIONS: CreditFreddieMacAssetTransactionsVOA_2_4Schema,
+    VALIDATION_SOURCES: ValidationSourcesSchema,
+  })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: [
+      'ASSET_DETAIL',
+      'ASSET_OWNERS',
+      'ASSET_HOLDER',
+      'ASSET_TRANSACTIONS',
+      'VALIDATION_SOURCES',
+    ],
+    title: 'CreditFreddieMacAsset_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacAssetVOA_2_4')
+
+type CreditFreddieMacAssetsVOA_2_4Type = {
+  ASSET: z.infer<typeof CreditFreddieMacAssetVOA_2_4Schema>[]
+}
+
+const CreditFreddieMacAssetDetailVOE_2_5Schema = z
+  .looseObject({
+    AssetAccountIdentifier: z
+      .string()
+      .openapi({ description: 'A unique alphanumeric string identifying an asset.' }),
+    AssetAsOfDate: z
+      .string()
+      .openapi({ description: 'Account Report As of Date / Create Date. Format YYYY-MM-DD' }),
+    AssetDaysRequestedCount: z
+      .int()
+      .openapi({
+        description:
+          'The Number of days requested made to the Financial Institution. Example When looking for 3 months of data from the FI, pass in 90 days.',
+      }),
+    AssetDescription: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'A text description that further defines the Asset. This could be used to describe the shares associated with the stocks, bonds or mutual funds, retirement funds or business owned that the borrower has disclosed (named) as an asset.',
+      }),
+    AssetOwnershipType: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Ownership type of the asset account.' }),
+    AssetType: AssetTypeSchema,
+    AssetTypeAdditionalDescription: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Additional Asset Decription some examples are Investment Tax-Deferred , Loan, 401K, 403B, Checking, Money Market, Credit Card,ROTH,529,Biller,ROLLOVER,CD,Savings,Investment Taxable, IRA, Mortgage, Line Of Credit.',
+      }),
+    AssetUniqueIdentifier: z
+      .string()
+      .openapi({ description: 'A vendor created unique Identifier.' }),
+  })
+  .openapi({
+    description: 'Details about an asset.',
+    required: [
+      'AssetUniqueIdentifier',
+      'AssetAccountIdentifier',
+      'AssetAsOfDate',
+      'AssetDescription',
+      'AssetType',
+      'AssetTypeAdditionalDescription',
+      'AssetDaysRequestedCount',
+      'AssetOwnershipType',
+    ],
+    title: 'CreditFreddieMacAssetDetail_VOE_2_5',
+  })
+  .openapi('CreditFreddieMacAssetDetailVOE_2_5')
+
+const CreditFreddieMacAssetTransactionDetailVOE_2_5Schema = z
+  .looseObject({
+    AssetTransactionCategoryType: AssetTransactionCategoryTypeSchema,
+    AssetTransactionDate: z.iso.date().openapi({ description: 'Asset Transaction Date.' }),
+    AssetTransactionPaidByName: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Populate with who did the transaction.' }),
+    AssetTransactionPaidToName: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Populate with for whom the transaction is done.' }),
+    AssetTransactionPostDate: z.iso.date().openapi({ description: 'Asset Transaction Post Date.' }),
+    AssetTransactionType: AssetTransactionTypeSchema,
+    AssetTransactionTypeAdditionalDescription: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'FI Provided - examples are atm, cash, check, credit, debit, deposit, directDebit, directDeposit, dividend, fee, interest, other, payment, pointOfSale, repeatPayment, serviceCharge, transfer.',
+      }),
+    AssetTransactionUniqueIdentifier: z
+      .string()
+      .openapi({ description: 'A vendor created unique Identifier.' }),
+    FinancialInstitutionTransactionIdentifier: z
+      .string()
+      .nullable()
+      .openapi({ description: 'FI provided Transaction Identifier.' }),
+  })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: [
+      'AssetTransactionUniqueIdentifier',
+      'AssetTransactionDate',
+      'AssetTransactionPostDate',
+      'AssetTransactionType',
+      'AssetTransactionPaidByName',
+      'AssetTransactionPaidToName',
+      'AssetTransactionTypeAdditionalDescription',
+      'AssetTransactionCategoryType',
+      'FinancialInstitutionTransactionIdentifier',
+    ],
+    title: 'CreditFreddieMacAssetTransactionDetail_VOE_2_5',
+  })
+  .openapi('CreditFreddieMacAssetTransactionDetailVOE_2_5')
+
+const CreditFreddieMacAssetTransactionVOE_2_5Schema = z
+  .looseObject({
+    ASSET_TRANSACTION_DESCRIPTION: z
+      .array(AssetTransactionDescriptionSchema)
+      .openapi({
+        description:
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      }),
+    ASSET_TRANSACTION_DETAIL: CreditFreddieMacAssetTransactionDetailVOE_2_5Schema,
+  })
+  .openapi({
+    description: 'An object representing...',
+    required: ['ASSET_TRANSACTION_DETAIL', 'ASSET_TRANSACTION_DESCRIPTION'],
+    title: 'CreditFreddieMacAssetTransaction_VOE_2_5',
+  })
+  .openapi('CreditFreddieMacAssetTransactionVOE_2_5')
+
+const CreditFreddieMacAssetTransactionsVOE_2_5Schema = z
+  .looseObject({ ASSET_TRANSACTION: z.array(CreditFreddieMacAssetTransactionVOE_2_5Schema) })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ASSET_TRANSACTION'],
+    title: 'CreditFreddieMacAssetTransactions_VOE_2_5',
+  })
+  .openapi('CreditFreddieMacAssetTransactionsVOE_2_5')
+
+const CreditFreddieMacAssetVOE_2_5Schema = z
+  .looseObject({
+    ASSET_DETAIL: CreditFreddieMacAssetDetailVOE_2_5Schema,
+    ASSET_HOLDER: AssetHolderSchema,
+    ASSET_OWNERS: AssetOwnersSchema,
+    ASSET_TRANSACTIONS: CreditFreddieMacAssetTransactionsVOE_2_5Schema,
+  })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ASSET_DETAIL', 'ASSET_OWNERS', 'ASSET_HOLDER', 'ASSET_TRANSACTIONS'],
+    title: 'CreditFreddieMacAsset_VOE_2_5',
+  })
+  .openapi('CreditFreddieMacAssetVOE_2_5')
+
+type CreditFreddieMacAssetsVOE_2_5Type = {
+  ASSET: z.infer<typeof CreditFreddieMacAssetVOE_2_5Schema>[]
+}
+
+const CreditFreddieMacLoanIdentifiersVOA_2_4Schema = z
+  .looseObject({ LOAN_IDENTIFIER: z.array(LoanIdentifierSchema) })
+  .openapi({
+    description: 'Collection of current and previous identifiers for this loan.',
+    required: ['LOAN_IDENTIFIER'],
+    title: 'CreditFreddieMacLoanIdentifiers_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacLoanIdentifiersVOA_2_4')
+
+const CreditFreddieMacLoanVOA_2_4Schema = z
+  .looseObject({
+    LOAN_IDENTIFIERS: CreditFreddieMacLoanIdentifiersVOA_2_4Schema,
+    LoanRoleType: z
+      .string()
+      .openapi({ description: 'Type of loan. The value can only be "SubjectLoan"' }),
+  })
+  .openapi({
+    description:
+      'Information specific to a mortgage loan agreement between one or more borrowers and a mortgage lender.',
+    required: ['LOAN_IDENTIFIERS', 'LoanRoleType'],
+    title: 'CreditFreddieMacLoan_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacLoanVOA_2_4')
+
+const CreditFreddieMacLoansVOA_2_4Schema = z
+  .looseObject({ LOAN: CreditFreddieMacLoanVOA_2_4Schema })
+  .openapi({
+    description: 'A collection of loans that are part of a single deal.',
+    required: ['LOAN'],
+    title: 'CreditFreddieMacLoans_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacLoansVOA_2_4')
+
+const CreditFreddieMacIndividualNameVOA_2_4Schema = z
+  .looseObject({
+    FirstName: z
+      .string()
+      .openapi({
+        description: 'The first name of the individual represented by the parent object.',
+      }),
+    LastName: z
+      .string()
+      .openapi({
+        description: 'The last name of the individual represented by the parent object.',
+      }),
+    MiddleName: z
+      .string()
+      .openapi({
+        description: 'The middle name of the individual represented by the parent object.',
+      }),
+  })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['FirstName', 'LastName', 'MiddleName'],
+    title: 'CreditFreddieMacIndividualName_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacIndividualNameVOA_2_4')
+
+const CreditFreddieMacPartyIndividualVOA_2_4Schema = z
+  .looseObject({ NAME: CreditFreddieMacIndividualNameVOA_2_4Schema })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['NAME'],
+    title: 'CreditFreddieMacPartyIndividual_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacPartyIndividualVOA_2_4')
+
+const CreditFreddieMacPartyVOA_2_4Schema = z
+  .looseObject({
+    INDIVIDUAL: CreditFreddieMacPartyIndividualVOA_2_4Schema,
+    ROLES: RolesSchema,
+    TAXPAYER_IDENTIFIERS: TaxpayerIdentifiersSchema,
+  })
+  .openapi({
+    description:
+      'A collection of information about a single party to a transaction. Included direct participants like the borrower and seller as well as indirect participants such as the flood certificate provider.',
+    required: ['INDIVIDUAL', 'ROLES', 'TAXPAYER_IDENTIFIERS'],
+    title: 'CreditFreddieMacParty_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacPartyVOA_2_4')
+
+const CreditFreddieMacPartiesVOA_2_4Schema = z
+  .looseObject({ PARTY: z.array(CreditFreddieMacPartyVOA_2_4Schema) })
+  .openapi({
+    description:
+      'A collection of objects that define specific parties to a deal. This includes the direct participating parties, such as borrower and seller and the indirect parties such as the credit report provider.',
+    required: ['PARTY'],
+    title: 'CreditFreddieMacParties_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacPartiesVOA_2_4')
+
+const CreditFreddieMacReportingInformationVOA_2_4Schema = z
+  .looseObject({
+    ReportDateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      }),
+    ReportIdentifierType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac. The value can only be "ReportID"',
+      }),
+    ReportingInformationIdentifier: z
+      .string()
+      .openapi({
+        description:
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      }),
+  })
+  .openapi({
+    description: 'Information about an report identifier and a report name.',
+    required: ['ReportingInformationIdentifier'],
+    title: 'CreditFreddieMacReportingInformation_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacReportingInformationVOA_2_4')
+
+const CreditFreddieMacAssetsVOA_2_4Schema: z.ZodType<CreditFreddieMacAssetsVOA_2_4Type> = z
+  .looseObject({
+    ASSET: z
+      .array(CreditFreddieMacAssetVOA_2_4Schema)
+      .openapi({
+        description:
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      }),
+  })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ASSET'],
+    title: 'CreditFreddieMacAssets_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacAssetsVOA_2_4')
+
+type CreditFreddieMacVerificationOfAssetResponseVOA_2_4Type = {
+  ASSETS: z.infer<typeof CreditFreddieMacAssetsVOA_2_4Schema>
+}
+
+const CreditFreddieMacVerificationOfAssetResponseVOA_2_4Schema: z.ZodType<CreditFreddieMacVerificationOfAssetResponseVOA_2_4Type> =
+  z
+    .looseObject({ ASSETS: CreditFreddieMacAssetsVOA_2_4Schema })
+    .openapi({
+      description:
+        'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      required: ['ASSETS'],
+      title: 'VerificationOfAssetResponse',
+    })
+    .openapi('CreditFreddieMacVerificationOfAssetResponseVOA_2_4')
+
+type CreditFreddieMacVerificationOfAssetVOA_2_4Type = {
+  REPORTING_INFORMATION: z.infer<typeof CreditFreddieMacReportingInformationVOA_2_4Schema>
+  SERVICE_PRODUCT_FULFILLMENT: z.infer<typeof ServiceProductFulfillmentSchema>
+  VERIFICATION_OF_ASSET_RESPONSE: z.infer<
+    typeof CreditFreddieMacVerificationOfAssetResponseVOA_2_4Schema
+  >
+}
+
+const CreditFreddieMacVerificationOfAssetVOA_2_4Schema: z.ZodType<CreditFreddieMacVerificationOfAssetVOA_2_4Type> =
+  z
+    .looseObject({
+      REPORTING_INFORMATION: CreditFreddieMacReportingInformationVOA_2_4Schema,
+      SERVICE_PRODUCT_FULFILLMENT: ServiceProductFulfillmentSchema,
+      VERIFICATION_OF_ASSET_RESPONSE: CreditFreddieMacVerificationOfAssetResponseVOA_2_4Schema,
+    })
+    .openapi({
+      description:
+        'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      required: [
+        'REPORTING_INFORMATION',
+        'SERVICE_PRODUCT_FULFILLMENT',
+        'VERIFICATION_OF_ASSET_RESPONSE',
+      ],
+      title: 'CreditFreddieMacVerificationOfAsset_VOA_2_4',
+    })
+    .openapi('CreditFreddieMacVerificationOfAssetVOA_2_4')
+
+type CreditFreddieMacServiceVOA_2_4Type = {
+  STATUSES: z.infer<typeof StatusesSchema>
+  VERIFICATION_OF_ASSET: z.infer<typeof CreditFreddieMacVerificationOfAssetVOA_2_4Schema>[]
+}
+
+const CreditFreddieMacServiceVOA_2_4Schema: z.ZodType<CreditFreddieMacServiceVOA_2_4Type> = z
+  .looseObject({
+    STATUSES: StatusesSchema,
+    VERIFICATION_OF_ASSET: z.array(CreditFreddieMacVerificationOfAssetVOA_2_4Schema),
+  })
+  .openapi({
+    description:
+      'A collection of details related to a fulfillment service or product in terms of request, process and result.',
+    required: ['VERIFICATION_OF_ASSET', 'STATUSES'],
+    title: 'CreditFreddieMacService_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacServiceVOA_2_4')
+
+type CreditFreddieMacServicesVOA_2_4Type = {
+  SERVICE: z.infer<typeof CreditFreddieMacServiceVOA_2_4Schema>
+}
+
+const CreditFreddieMacServicesVOA_2_4Schema: z.ZodType<CreditFreddieMacServicesVOA_2_4Type> = z
+  .looseObject({ SERVICE: CreditFreddieMacServiceVOA_2_4Schema })
+  .openapi({
+    description: 'A collection of objects that describe requests and responses for services.',
+    required: ['SERVICE'],
+    title: 'CreditFreddieMacServices_VOA_2_4',
+  })
+  .openapi('CreditFreddieMacServicesVOA_2_4')
+
+type CreditFreddieMacVerificationOfAssetsDealVOA_2_4Type = {
+  LOANS: z.infer<typeof CreditFreddieMacLoansVOA_2_4Schema>
+  PARTIES: z.infer<typeof CreditFreddieMacPartiesVOA_2_4Schema>
+  SERVICES: z.infer<typeof CreditFreddieMacServicesVOA_2_4Schema>
+}
+
+const CreditFreddieMacVerificationOfAssetsDealVOA_2_4Schema: z.ZodType<CreditFreddieMacVerificationOfAssetsDealVOA_2_4Type> =
+  z
+    .looseObject({
+      LOANS: CreditFreddieMacLoansVOA_2_4Schema,
+      PARTIES: CreditFreddieMacPartiesVOA_2_4Schema,
+      SERVICES: CreditFreddieMacServicesVOA_2_4Schema,
+    })
+    .openapi({
+      description: 'An object representing an Asset Report with Freddie Mac schema.',
+      required: ['LOANS', 'PARTIES', 'SERVICES'],
+      title: 'CreditFreddieMacVerificationOfAssetsDeal_VOA_2_4',
+    })
+    .openapi('CreditFreddieMacVerificationOfAssetsDealVOA_2_4')
+
+type CreditFreddieMacVerificationOfAssetsVOA_2_4Type = {
+  DEAL: z.infer<typeof CreditFreddieMacVerificationOfAssetsDealVOA_2_4Schema>
+  SchemaVersion: number
+}
+
+const CreditFreddieMacVerificationOfAssetsVOA_2_4Schema: z.ZodType<CreditFreddieMacVerificationOfAssetsVOA_2_4Type> =
+  z
+    .looseObject({
+      DEAL: CreditFreddieMacVerificationOfAssetsDealVOA_2_4Schema,
+      SchemaVersion: z
+        .number()
+        .openapi({ description: 'The Verification Of Assets (VOA) schema version.' }),
+    })
+    .openapi({
+      description: 'Verification of Assets Report',
+      required: ['DEAL', 'SchemaVersion'],
+      title: 'CreditFreddieMacVerificationOfAssets_VOA_2_4',
+    })
+    .openapi('CreditFreddieMacVerificationOfAssetsVOA_2_4')
+
+const CreditFreddieMacAssetsVOE_2_5Schema: z.ZodType<CreditFreddieMacAssetsVOE_2_5Type> = z
+  .looseObject({
+    ASSET: z
+      .array(CreditFreddieMacAssetVOE_2_5Schema)
+      .openapi({
+        description:
+          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      }),
+  })
+  .openapi({
+    description:
+      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+    required: ['ASSET'],
+    title: 'CreditFreddieMacAssets_VOE_2_5',
+  })
+  .openapi('CreditFreddieMacAssetsVOE_2_5')
+
+type CreditFreddieMacVerificationOfAssetResponseVOE_2_5Type = {
+  ASSETS: z.infer<typeof CreditFreddieMacAssetsVOE_2_5Schema>
+}
+
+const CreditFreddieMacVerificationOfAssetResponseVOE_2_5Schema: z.ZodType<CreditFreddieMacVerificationOfAssetResponseVOE_2_5Type> =
+  z
+    .looseObject({ ASSETS: CreditFreddieMacAssetsVOE_2_5Schema })
+    .openapi({
+      description:
+        'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      required: ['ASSETS'],
+      title: 'CreditFreddieMacVerificationOfAssetResponse_VOE_2_5',
+    })
+    .openapi('CreditFreddieMacVerificationOfAssetResponseVOE_2_5')
+
+type CreditFreddieMacVerificationOfAssetVOE_2_5Type = {
+  REPORTING_INFORMATION: z.infer<typeof CreditFreddieMacReportingInformationVOA_2_4Schema>
+  SERVICE_PRODUCT_FULFILLMENT: z.infer<typeof ServiceProductFulfillmentSchema>
+  VERIFICATION_OF_ASSET_RESPONSE: z.infer<
+    typeof CreditFreddieMacVerificationOfAssetResponseVOE_2_5Schema
+  >
+}
+
+const CreditFreddieMacVerificationOfAssetVOE_2_5Schema: z.ZodType<CreditFreddieMacVerificationOfAssetVOE_2_5Type> =
+  z
+    .looseObject({
+      REPORTING_INFORMATION: CreditFreddieMacReportingInformationVOA_2_4Schema,
+      SERVICE_PRODUCT_FULFILLMENT: ServiceProductFulfillmentSchema,
+      VERIFICATION_OF_ASSET_RESPONSE: CreditFreddieMacVerificationOfAssetResponseVOE_2_5Schema,
+    })
+    .openapi({
+      description:
+        'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
+      required: [
+        'REPORTING_INFORMATION',
+        'SERVICE_PRODUCT_FULFILLMENT',
+        'VERIFICATION_OF_ASSET_RESPONSE',
+      ],
+      title: 'CreditFreddieMacVerificationOfAsset_VOE_2_5',
+    })
+    .openapi('CreditFreddieMacVerificationOfAssetVOE_2_5')
+
+type CreditFreddieMacServiceVOE_2_5Type = {
+  STATUSES: z.infer<typeof StatusesSchema>
+  VERIFICATION_OF_ASSET: z.infer<typeof CreditFreddieMacVerificationOfAssetVOE_2_5Schema>[]
+}
+
+const CreditFreddieMacServiceVOE_2_5Schema: z.ZodType<CreditFreddieMacServiceVOE_2_5Type> = z
+  .looseObject({
+    STATUSES: StatusesSchema,
+    VERIFICATION_OF_ASSET: z.array(CreditFreddieMacVerificationOfAssetVOE_2_5Schema),
+  })
+  .openapi({
+    description:
+      'A collection of details related to a fulfillment service or product in terms of request, process and result.',
+    required: ['VERIFICATION_OF_ASSET', 'STATUSES'],
+    title: 'CreditFreddieMacService_VOE_2_5',
+  })
+  .openapi('CreditFreddieMacServiceVOE_2_5')
+
+type CreditFreddieMacServicesVOE_2_5Type = {
+  SERVICE: z.infer<typeof CreditFreddieMacServiceVOE_2_5Schema>
+}
+
+const CreditFreddieMacServicesVOE_2_5Schema: z.ZodType<CreditFreddieMacServicesVOE_2_5Type> = z
+  .looseObject({ SERVICE: CreditFreddieMacServiceVOE_2_5Schema })
+  .openapi({
+    description: 'A collection of objects that describe requests and responses for services.',
+    required: ['SERVICE'],
+    title: 'CreditFreddieMacServices_VOE_2_5',
+  })
+  .openapi('CreditFreddieMacServicesVOE_2_5')
+
+type CreditFreddieVerificationOfEmploymentDealVOE_2_5Type = {
+  LOANS: z.infer<typeof CreditFreddieMacLoansVOA_2_4Schema>
+  PARTIES: z.infer<typeof CreditFreddieMacPartiesVOA_2_4Schema>
+  SERVICES: z.infer<typeof CreditFreddieMacServicesVOE_2_5Schema>
+}
+
+const CreditFreddieVerificationOfEmploymentDealVOE_2_5Schema: z.ZodType<CreditFreddieVerificationOfEmploymentDealVOE_2_5Type> =
+  z
+    .looseObject({
+      LOANS: CreditFreddieMacLoansVOA_2_4Schema,
+      PARTIES: CreditFreddieMacPartiesVOA_2_4Schema,
+      SERVICES: CreditFreddieMacServicesVOE_2_5Schema,
+    })
+    .openapi({
+      description: 'An object representing a Verification of Employment report.',
+      required: ['LOANS', 'PARTIES', 'SERVICES'],
+      title: 'CreditFreddieVerificationOfEmploymentDeal_VOE_2_5',
+    })
+    .openapi('CreditFreddieVerificationOfEmploymentDealVOE_2_5')
+
+type CreditFreddieVerificationOfEmploymentVOE_2_5Type = {
+  DEAL: z.infer<typeof CreditFreddieVerificationOfEmploymentDealVOE_2_5Schema>
+  SchemaVersion: number
+} | null
+
+const CreditFreddieVerificationOfEmploymentVOE_2_5Schema: z.ZodType<CreditFreddieVerificationOfEmploymentVOE_2_5Type> =
+  z
+    .looseObject({
+      DEAL: CreditFreddieVerificationOfEmploymentDealVOE_2_5Schema,
+      SchemaVersion: z
+        .number()
+        .openapi({ description: 'The Verification Of Employment (VOE) schema version.' }),
+    })
+    .nullable()
+    .openapi({
+      description: 'Verification of Employment Report',
+      required: ['DEAL', 'SchemaVersion'],
+      title: 'CreditFreddieVerificationOfEmployment_VOE_2_5',
+    })
+    .openapi('CreditFreddieVerificationOfEmploymentVOE_2_5')
+
+type CreditFreddieMacReportsGetResponseType = {
+  VOA: z.infer<typeof CreditFreddieMacVerificationOfAssetsVOA_2_4Schema>
+  VOE?: z.infer<typeof CreditFreddieVerificationOfEmploymentVOE_2_5Schema>
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const PayrollIncomeRateOfPaySchema = z
+  .looseObject({
+    pay_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The amount at which an employee is paid.' }),
+    pay_rate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The rate at which an employee is paid.',
+        'x-override-enum-values-shown': [
+          'ANNUAL',
+          'HOURLY',
+          'CONTRACT',
+          'WEEKLY',
+          'BI_WEEKLY',
+          'MONTHLY',
+          'SEMI_MONTHLY',
+          'DAILY',
+          'COMMISSION',
+          'OTHER',
+          null,
+        ],
+      }),
+  })
+  .openapi({
+    description: 'An object representing the rate at which an individual is paid.',
+    title: 'PayrollIncomeRateOfPay',
+    required: [],
+  })
+  .openapi('PayrollIncomeRateOfPay')
+
+const PayrollIncomeAccountDataSchema = z
+  .looseObject({
+    account_id: z
+      .string()
+      .nullable()
+      .openapi({ description: 'ID of the payroll provider account.' }),
+    pay_frequency: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The frequency at which an individual is paid.',
+        'x-override-enum-values-shown': [
+          'DAILY',
+          'WEEKLY',
+          'BIWEEKLY',
+          'SEMI_MONTHLY',
+          'MONTHLY',
+          'CONTRACT',
+          'QUARTERLY',
+          'SEMI_ANNUALLY',
+          'ANNUALLY',
+          'OTHER',
+          null,
+        ],
+      }),
+    rate_of_pay: PayrollIncomeRateOfPaySchema,
+  })
+  .nullable()
+  .openapi({
+    description: 'An object containing account level data.',
+    required: ['account_id', 'rate_of_pay', 'pay_frequency'],
+    title: 'PayrollIncomeAccountData',
+  })
+  .openapi('PayrollIncomeAccountData')
+
+const CreditDocumentTypeSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'The type of document.\n\n`PAYSTUB`: A paystub.\n\n`BANK_STATEMENT`: A bank statement.\n\n`US_TAX_W2`: A W-2 wage and tax statement provided by a US employer reflecting wages earned by the employee.\n\n`US_MILITARY_ERAS`: An electronic Retirement Account Statement (eRAS) issued by the US military.\n\n`US_MILITARY_LES`: A Leave and Earnings Statement (LES) issued by the US military.\n\n`US_MILITARY_CLES`: A Civilian Leave and Earnings Statment (CLES) issued by the US military.\n\n`GIG`: Used to indicate that the income is related to gig work. Does not necessarily correspond to a specific document type.\n\n`PLAID_GENERATED_PAYSTUB_PDF`: Used to indicate that the PDF for the paystub was generated by Plaid.\n\n`NONE`: Used to indicate that there is no underlying document for the data.\n\n`UNKNOWN`: Document type could not be determined.',
+    title: 'CreditDocumentType',
+    'x-override-enum-values-shown': [
+      'UNKNOWN',
+      'PAYSTUB',
+      'BANK_STATEMENT',
+      'US_TAX_W2',
+      'US_MILITARY_ERAS',
+      'US_MILITARY_LES',
+      'US_MILITARY_CLES',
+      'GIG',
+      'PLAID_GENERATED_PAYSTUB_PDF',
+      'NONE',
+    ],
+  })
+  .openapi('CreditDocumentType')
+
+const CreditDocumentMetadataSchema = z
+  .looseObject({
+    document_type: CreditDocumentTypeSchema,
+    download_url: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Signed URL to retrieve the underlying file.' }),
+    name: z.string().openapi({ description: 'The name of the document.' }),
+    status: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The processing status of the document.' }),
+  })
+  .openapi({
+    description: 'Object representing metadata pertaining to the document.',
+    required: ['name', 'document_type', 'download_url', 'status'],
+    title: 'CreditDocumentMetadata',
+  })
+  .openapi('CreditDocumentMetadata')
+
+const CreditPayStubAddressSchema = z
+  .looseObject({
+    city: z.string().nullable().openapi({ description: 'The full city name.' }),
+    country: z.string().nullable().openapi({ description: 'The ISO 3166-1 alpha-2 country code.' }),
+    postal_code: z.string().nullable().openapi({ description: 'The postal code of the address.' }),
+    region: z.string().nullable().openapi({ description: 'The region or state.\nExample: `"NC"`' }),
+    street: z.string().nullable().openapi({ description: 'The full street address.' }),
+  })
+  .openapi({
+    description: 'Address on the pay stub.',
+    required: ['city', 'country', 'postal_code', 'region', 'street'],
+    title: 'CreditPayStubAddress',
+  })
+  .openapi('CreditPayStubAddress')
+
+const Credit1099FilerSchema = z
+  .looseObject({
+    address: CreditPayStubAddressSchema.exactOptional(),
+    name: z.string().nullable().exactOptional().openapi({ description: 'Name of filer.' }),
+    tin: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Tax identification number of filer.' }),
+    type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'One of the following values will be provided: Payment Settlement Entity (PSE), Electronic Payment Facilitator (EPF), Other Third Party',
+        'x-override-enum-values-shown': [
+          'Payment Settlement Entity (PSE)',
+          'Electronic Payment Facilitator (EPF)',
+          'Other Third Party',
+        ],
+      }),
+  })
+  .openapi({
+    description: 'An object representing a filer used by 1099-K tax documents.',
+    title: 'Credit1099Filer',
+    required: [],
+  })
+  .openapi('Credit1099Filer')
+
+const Form1099TypeSchema = z
+  .enum(['FORM_1099_TYPE_UNKNOWN', 'FORM_1099_TYPE_MISC', 'FORM_1099_TYPE_K'])
+  .openapi({ description: 'Form 1099 Type', title: 'Form1099Type' })
+  .openapi('Form1099Type')
+
+const Credit1099PayerSchema = z
+  .looseObject({
+    address: CreditPayStubAddressSchema.exactOptional(),
+    name: z.string().nullable().exactOptional().openapi({ description: 'Name of payer.' }),
+    telephone_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Telephone number of payer.' }),
+    tin: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Tax identification number of payer.' }),
+  })
+  .openapi({
+    description: 'An object representing a payer used by 1099-MISC tax documents.',
+    title: 'Credit1099Payer',
+    required: [],
+  })
+  .openapi('Credit1099Payer')
+
+const Credit1099RecipientSchema = z
+  .looseObject({
+    account_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Account number number of recipient.' }),
+    address: CreditPayStubAddressSchema.exactOptional(),
+    facta_filing_requirement: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Checked if FACTA is a filing requirement.',
+        'x-override-enum-values-shown': ['CHECKED', 'NOT CHECKED'],
+      }),
+    name: z.string().nullable().exactOptional().openapi({ description: 'Name of recipient.' }),
+    second_tin_exists: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Checked if 2nd TIN exists.',
+        'x-override-enum-values-shown': ['CHECKED', 'NOT CHECKED'],
+      }),
+    tin: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Tax identification number of recipient.' }),
+  })
+  .openapi({
+    description:
+      'An object representing a recipient used in both 1099-K and 1099-MISC tax documents.',
+    title: 'Credit1099Recipient',
+    required: [],
+  })
+  .openapi('Credit1099Recipient')
+
+const Credit1099Schema = z
+  .looseObject({
+    april_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for April.' }),
+    august_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for August.' }),
+    card_not_present_transaction: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount in card not present transactions.' }),
+    crop_insurance_proceeds: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of crop insurance proceeds.' }),
+    december_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for December.' }),
+    document_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'An identifier of the document referenced by the document metadata.',
+      }),
+    document_metadata: CreditDocumentMetadataSchema.exactOptional(),
+    excess_golden_parachute_payments: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of golden parachute payments made by payer.' }),
+    february_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for February.' }),
+    federal_income_tax_withheld: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of federal income tax withheld from payer.' }),
+    filer: Credit1099FilerSchema.exactOptional(),
+    fishing_boat_proceeds: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of fishing boat proceeds from payer.' }),
+    form_1099_type: Form1099TypeSchema.exactOptional(),
+    gross_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gross amount reported.' }),
+    gross_proceeds_paid_to_an_attorney: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of gross proceeds paid to an attorney by payer.' }),
+    january_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for January.' }),
+    july_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for July.' }),
+    june_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for June.' }),
+    march_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for March.' }),
+    may_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for May.' }),
+    medical_and_healthcare_payments: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of medical and healthcare payments from payer.' }),
+    merchant_category_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Merchant category of filer.' }),
+    nonemployee_compensation: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of nonemployee compensation from payer.' }),
+    november_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for November.' }),
+    number_of_payment_transactions: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Number of payment transactions made.' }),
+    october_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for October.' }),
+    other_income: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount in other income by payer.' }),
+    payer: Credit1099PayerSchema.exactOptional(),
+    payer_made_direct_sales_of_5000_or_more_of_consumer_products_to_buyer: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not payer made direct sales over $5000 of consumer products.',
+      }),
+    payer_state_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Primary state ID.' }),
+    payer_state_number_lower: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Secondary state ID.' }),
+    primary_state: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Primary state of business.' }),
+    primary_state_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Primary state ID.' }),
+    primary_state_income_tax: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'State income tax reported for primary state.' }),
+    pse_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of the PSE (Payment Settlement Entity).' }),
+    pse_telephone_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Formatted (XXX) XXX-XXXX. Phone number of the PSE (Payment Settlement Entity).',
+      }),
+    recipient: Credit1099RecipientSchema.exactOptional(),
+    rents: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount in rent by payer.' }),
+    royalties: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount in royalties by payer.' }),
+    secondary_state: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Secondary state of business.' }),
+    secondary_state_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Secondary state ID.' }),
+    secondary_state_income_tax: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'State income tax reported for secondary state.' }),
+    section_409a_deferrals: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of 409A deferrals earned by payer.' }),
+    section_409a_income: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of 409A income earned by payer.' }),
+    september_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount reported for September.' }),
+    state_income: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'State income reported for primary state.' }),
+    state_income_lower: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'State income reported for secondary state.' }),
+    state_tax_withheld: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of state tax withheld of payer for primary state.' }),
+    state_tax_withheld_lower: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of state tax withheld of payer for secondary state.' }),
+    substitute_payments_in_lieu_of_dividends_or_interest: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of substitute payments made by payer.' }),
+    tax_year: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Tax year of the tax form.' }),
+    transactions_reported: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'One of the values will be provided Payment card Third party network',
+        'x-override-enum-values-shown': ['Payment card', 'Third party network'],
+      }),
+  })
+  .openapi({
+    description: "An object representing an end user's 1099 tax form",
+    required: ['document_id'],
+    title: 'Credit1099',
+  })
+  .openapi('Credit1099')
+
+const PayStubDeductionsBreakdownSchema = z
+  .looseObject({
+    current_amount: z.float64().nullable().openapi({ description: 'Raw amount of the deduction' }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Description of the deduction line item' }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The ISO-4217 currency code of the line item. Always `null` if `unofficial_currency_code` is non-null.',
+      }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The unofficial currency code associated with the line item. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
+      }),
+    ytd_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'The year-to-date amount of the deduction' }),
+  })
+  .openapi({
+    description: 'An object representing the deduction line items for the pay period',
+    required: [
+      'current_amount',
+      'description',
+      'iso_currency_code',
+      'unofficial_currency_code',
+      'ytd_amount',
+    ],
+    title: 'PayStubDeductionsBreakdown',
+  })
+  .openapi('PayStubDeductionsBreakdown')
+
+const PayStubDeductionsTotalSchema = z
+  .looseObject({
+    current_amount: z.float64().nullable().openapi({ description: 'Raw amount of the deduction' }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The ISO-4217 currency code of the line item. Always `null` if `unofficial_currency_code` is non-null.',
+      }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The unofficial currency code associated with the line item. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
+      }),
+    ytd_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'The year-to-date total amount of the deductions' }),
+  })
+  .openapi({
+    description: 'An object representing the total deductions for the pay period',
+    required: ['current_amount', 'iso_currency_code', 'unofficial_currency_code', 'ytd_amount'],
+    title: 'PayStubDeductionsTotal',
+  })
+  .openapi('PayStubDeductionsTotal')
+
+const CreditPayStubDeductionsSchema = z
+  .looseObject({
+    breakdown: z.array(PayStubDeductionsBreakdownSchema),
+    total: PayStubDeductionsTotalSchema,
+  })
+  .openapi({
+    description: 'An object with the deduction information found on a pay stub.',
+    required: ['breakdown', 'total'],
+    title: 'CreditPayStubDeductions',
+  })
+  .openapi('CreditPayStubDeductions')
+
+const PayStubEarningsBreakdownCanonicalDescriptionSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'Commonly used term to describe the earning line item.',
+    'x-override-enum-values-shown': [
+      'BONUS',
+      'COMMISSION',
+      'OVERTIME',
+      'PAID_TIME_OFF',
+      'REGULAR_PAY',
+      'VACATION',
+      'BASIC_ALLOWANCE_HOUSING',
+      'BASIC_ALLOWANCE_SUBSISTENCE',
+      'OTHER',
+      null,
+    ],
+  })
+  .openapi('PayStubEarningsBreakdownCanonicalDescription')
+
+const PayStubEarningsBreakdownSchema = z
+  .looseObject({
+    canonical_description: PayStubEarningsBreakdownCanonicalDescriptionSchema,
+    current_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'Raw amount of the earning line item.' }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Description of the earning line item.' }),
+    hours: z
+      .number()
+      .nullable()
+      .openapi({ description: 'Number of hours applicable for this earning.' }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The ISO-4217 currency code of the line item. Always `null` if `unofficial_currency_code` is non-null.',
+      }),
+    rate: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'Hourly rate applicable for this earning.' }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The unofficial currency code associated with the line item. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
+      }),
+    ytd_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'The year-to-date amount of the deduction.' }),
+  })
+  .openapi({
+    description: 'An object representing the earnings line items for the pay period.',
+    required: [
+      'canonical_description',
+      'current_amount',
+      'description',
+      'hours',
+      'iso_currency_code',
+      'rate',
+      'unofficial_currency_code',
+      'ytd_amount',
+    ],
+    title: 'PayStubEarningsBreakdown',
+  })
+  .openapi('PayStubEarningsBreakdown')
+
+const PayStubEarningsTotalSchema = z
+  .looseObject({
+    current_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'Total amount of the earnings for this pay period.' }),
+    hours: z
+      .number()
+      .nullable()
+      .openapi({ description: 'Total number of hours worked for this pay period.' }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The ISO-4217 currency code of the line item. Always `null` if `unofficial_currency_code` is non-null.',
+      }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The unofficial currency code associated with the security. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
+      }),
+    ytd_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'The total year-to-date amount of the earnings.' }),
+  })
+  .openapi({
+    description:
+      'An object representing both the current pay period and year to date amount for an earning category.',
+    required: [
+      'current_amount',
+      'hours',
+      'iso_currency_code',
+      'unofficial_currency_code',
+      'ytd_amount',
+    ],
+    title: 'PayStubEarningsTotal',
+  })
+  .openapi('PayStubEarningsTotal')
+
+const CreditPayStubEarningsSchema = z
+  .looseObject({
+    breakdown: z.array(PayStubEarningsBreakdownSchema),
+    total: PayStubEarningsTotalSchema,
+  })
+  .openapi({
+    description:
+      'An object representing both a breakdown of earnings on a pay stub and the total earnings.',
+    required: ['breakdown', 'total'],
+    title: 'CreditPayStubEarnings',
+  })
+  .openapi('CreditPayStubEarnings')
+
+const PayStubTaxpayerIDSchema = z
+  .looseObject({
+    id_mask: z
+      .string()
+      .nullable()
+      .openapi({ description: 'ID mask; i.e. last 4 digits of the taxpayer ID.' }),
+    id_type: z.string().nullable().openapi({ description: "Type of ID, e.g. 'SSN'." }),
+  })
+  .openapi({
+    description: 'Taxpayer ID of the individual receiving the paystub.',
+    required: ['id_type', 'id_mask'],
+    title: 'PayStubTaxpayerID',
+  })
+  .openapi('PayStubTaxpayerID')
+
+const CreditPayStubEmployeeSchema = z
+  .looseObject({
+    address: CreditPayStubAddressSchema,
+    marital_status: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Marital status of the employee - either `SINGLE` or `MARRIED`.',
+        'x-override-enum-values-shown': ['SINGLE', 'MARRIED', null],
+      }),
+    name: z.string().nullable().openapi({ description: 'The name of the employee.' }),
+    taxpayer_id: PayStubTaxpayerIDSchema,
+  })
+  .openapi({
+    description: 'Data about the employee.',
+    required: ['name', 'address', 'marital_status', 'taxpayer_id'],
+    title: 'CreditPayStubEmployee',
+  })
+  .openapi('CreditPayStubEmployee')
+
+const CreditPayStubEmployerSchema = z
+  .looseObject({
+    address: CreditPayStubAddressSchema,
+    name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The name of the employer on the pay stub.' }),
+  })
+  .openapi({
+    description: 'Information about the employer on the pay stub.',
+    required: ['address', 'name'],
+    title: 'CreditPayStubEmployer',
+  })
+  .openapi('CreditPayStubEmployer')
+
+const CreditPayStubNetPaySchema = z
+  .looseObject({
+    current_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'Raw amount of the net pay for the pay period.' }),
+    description: z.string().nullable().openapi({ description: 'Description of the net pay.' }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The ISO-4217 currency code of the net pay. Always `null` if `unofficial_currency_code` is non-null.',
+      }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The unofficial currency code associated with the net pay. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
+      }),
+    ytd_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'The year-to-date amount of the net pay.' }),
+  })
+  .openapi({
+    description: 'An object representing information about the net pay amount on the pay stub.',
+    required: [
+      'current_amount',
+      'description',
+      'iso_currency_code',
+      'unofficial_currency_code',
+      'ytd_amount',
+    ],
+    title: 'CreditPayStubNetPay',
+  })
+  .openapi('CreditPayStubNetPay')
+
+const PayStubDistributionBreakdownSchema = z
+  .looseObject({
+    account_name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Name of the account for the given distribution.' }),
+    bank_name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The name of the bank that the payment is being deposited to.' }),
+    current_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'The amount distributed to this account.' }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The ISO-4217 currency code of the net pay. Always `null` if `unofficial_currency_code` is non-null.',
+      }),
+    mask: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          "The last 2-4 alphanumeric characters of an account's official account number.",
+      }),
+    type: z
+      .string()
+      .nullable()
+      .openapi({
+        description: "Type of the account that the paystub was sent to (e.g. 'checking').",
+      }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The unofficial currency code associated with the net pay. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
+      }),
+  })
+  .openapi({
+    description: 'Information about the accounts that the payment was distributed to.',
+    required: [
+      'account_name',
+      'bank_name',
+      'current_amount',
+      'iso_currency_code',
+      'mask',
+      'type',
+      'unofficial_currency_code',
+    ],
+    title: 'PayStubDistributionBreakdown',
+  })
+  .openapi('PayStubDistributionBreakdown')
+
+const CreditPayStubPayBasisTypeSchema = z
+  .enum(['SALARY', 'HOURLY', 'COMMISSION'])
+  .openapi({ description: 'The explicit pay basis on the paystub (if present).' })
+  .openapi('CreditPayStubPayBasisType')
+
+const PayStubPayPeriodDetailsSchema = z
+  .looseObject({
+    distribution_breakdown: z.array(PayStubDistributionBreakdownSchema),
+    end_date: z.iso
+      .date()
+      .nullable()
+      .openapi({
+        description:
+          'The date on which the pay period ended, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
+      }),
+    gross_earnings: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'Total earnings before tax/deductions.' }),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The ISO-4217 currency code of the net pay. Always `null` if `unofficial_currency_code` is non-null.',
+      }),
+    pay_amount: z.float64().nullable().openapi({ description: 'The amount of the paycheck.' }),
+    pay_basis: CreditPayStubPayBasisTypeSchema.exactOptional(),
+    pay_date: z.iso
+      .date()
+      .nullable()
+      .openapi({
+        description:
+          'The date on which the pay stub was issued, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
+      }),
+    pay_frequency: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The frequency at which an individual is paid.',
+        'x-override-enum-values-shown': [
+          'UNKNOWN',
+          'WEEKLY',
+          'BIWEEKLY',
+          'SEMI_MONTHLY',
+          'MONTHLY',
+          null,
+        ],
+      }),
+    start_date: z.iso
+      .date()
+      .nullable()
+      .openapi({
+        description:
+          'The date on which the pay period started, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
+      }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The unofficial currency code associated with the net pay. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
+      }),
+  })
+  .openapi({
+    description: 'Details about the pay period.',
+    required: [
+      'pay_amount',
+      'distribution_breakdown',
+      'end_date',
+      'gross_earnings',
+      'iso_currency_code',
+      'pay_date',
+      'pay_frequency',
+      'start_date',
+      'unofficial_currency_code',
+    ],
+    title: 'PayStubPayPeriodDetails',
+  })
+  .openapi('PayStubPayPeriodDetails')
+
+const CreditPayStubSchema = z
+  .looseObject({
+    deductions: CreditPayStubDeductionsSchema,
+    document_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'An identifier of the document referenced by the document metadata.',
+      }),
+    document_metadata: CreditDocumentMetadataSchema,
+    earnings: CreditPayStubEarningsSchema,
+    employee: CreditPayStubEmployeeSchema,
+    employer: CreditPayStubEmployerSchema,
+    net_pay: CreditPayStubNetPaySchema,
+    pay_period_details: PayStubPayPeriodDetailsSchema,
+  })
+  .openapi({
+    description: "An object representing an end user's pay stub.",
+    required: [
+      'deductions',
+      'document_id',
+      'document_metadata',
+      'earnings',
+      'employee',
+      'employer',
+      'net_pay',
+      'pay_period_details',
+    ],
+    title: 'CreditPayStub',
+  })
+  .openapi('CreditPayStub')
+
+const W2Box12Schema = z
+  .looseObject({
+    amount: z.string().nullable().exactOptional().openapi({ description: 'W2 Box 12 amount.' }),
+    code: z.string().nullable().exactOptional().openapi({ description: 'W2 Box 12 code.' }),
+  })
+  .openapi({ description: 'Data on the W2 Box 12', title: 'W2Box12', required: [] })
+  .openapi('W2Box12')
+
+const W2StateAndLocalWagesSchema = z
+  .looseObject({
+    employer_state_id_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'State identification number of the employer.' }),
+    local_income_tax: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Income tax from the locality.' }),
+    local_wages_tips: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Wages and tips from the locality.' }),
+    locality_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of the locality.' }),
+    state: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'State associated with the wage.' }),
+    state_income_tax: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Income tax from the specified state.' }),
+    state_wages_tips: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Wages and tips from the specified state.' }),
+  })
+  .openapi({ description: 'W2 state and local wages', title: 'W2StateAndLocalWages', required: [] })
+  .openapi('W2StateAndLocalWages')
+
+const CreditW2Schema = z
+  .looseObject({
+    allocated_tips: z.string().nullable().openapi({ description: 'Allocated tips.' }),
+    box_12: z.array(W2Box12Schema),
+    box_9: z.string().nullable().openapi({ description: 'Contents from box 9 on the W2.' }),
+    dependent_care_benefits: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Dependent care benefits.' }),
+    document_id: z
+      .string()
+      .openapi({
+        description: 'An identifier of the document referenced by the document metadata.',
+      }),
+    document_metadata: CreditDocumentMetadataSchema,
+    employee: CreditPayStubEmployeeSchema,
+    employer: CreditPayStubEmployerSchema,
+    employer_id_number: z
+      .string()
+      .nullable()
+      .openapi({ description: 'An employee identification number or EIN.' }),
+    federal_income_tax_withheld: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Federal income tax withheld for the tax year.' }),
+    medicare_tax_withheld: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Medicare tax withheld for the tax year.' }),
+    medicare_wages_and_tips: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Wages and tips from medicare.' }),
+    nonqualified_plans: z.string().nullable().openapi({ description: 'Nonqualified plans.' }),
+    other: z.string().nullable().openapi({ description: 'Other.' }),
+    retirement_plan: z.string().nullable().openapi({ description: 'Retirement plan.' }),
+    social_security_tax_withheld: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Social security tax withheld for the tax year.' }),
+    social_security_tips: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Tips from social security.' }),
+    social_security_wages: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Wages from social security.' }),
+    state_and_local_wages: z.array(W2StateAndLocalWagesSchema),
+    statutory_employee: z.string().nullable().openapi({ description: 'Statutory employee.' }),
+    tax_year: z.string().nullable().openapi({ description: 'The tax year of the W2 document.' }),
+    third_party_sick_pay: z.string().nullable().openapi({ description: 'Third party sick pay.' }),
+    wages_tips_other_comp: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Wages from tips and other compensation.' }),
+  })
+  .openapi({
+    description: 'W2 is an object that represents income data taken from a W2 tax document.',
+    required: [
+      'document_metadata',
+      'document_id',
+      'employer',
+      'employee',
+      'tax_year',
+      'employer_id_number',
+      'wages_tips_other_comp',
+      'federal_income_tax_withheld',
+      'social_security_wages',
+      'social_security_tax_withheld',
+      'medicare_wages_and_tips',
+      'medicare_tax_withheld',
+      'social_security_tips',
+      'allocated_tips',
+      'box_9',
+      'dependent_care_benefits',
+      'nonqualified_plans',
+      'box_12',
+      'statutory_employee',
+      'retirement_plan',
+      'third_party_sick_pay',
+      'other',
+      'state_and_local_wages',
+    ],
+    title: 'CreditW2',
+  })
+  .openapi('CreditW2')
+
+const PayrollIncomeObjectSchema = z
+  .looseObject({
+    account_id: z
+      .string()
+      .nullable()
+      .openapi({ description: 'ID of the payroll provider account.' }),
+    form1099s: z.array(Credit1099Schema).openapi({ description: 'Array of tax form 1099s.' }),
+    pay_stubs: z
+      .array(CreditPayStubSchema)
+      .openapi({ description: 'Array of pay stubs for the user.' }),
+    w2s: z.array(CreditW2Schema).openapi({ description: 'Array of tax form W-2s.' }),
+  })
+  .openapi({
+    description: 'An object representing payroll data.',
+    required: ['account_id', 'pay_stubs', 'w2s', 'form1099s'],
+    title: 'PayrollIncomeObject',
+  })
+  .openapi('PayrollIncomeObject')
+
+const PayrollItemStatusSchema = z
+  .looseObject({
+    processing_status: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Denotes the processing status for the verification.\n\n`UNKNOWN`: The processing status could not be determined.\n\n`PROCESSING_COMPLETE`: The processing has completed and the user has approved for sharing. The data is available to be retrieved.\n\n`PROCESSING`: The verification is still processing. The data is not available yet.\n\n`FAILED`: The processing failed to complete successfully.\n\n`APPROVAL_STATUS_PENDING`: The processing has completed but the user has not yet approved the sharing of the data.',
+        title: 'PayrollItemStatusProcessingStatus',
+        'x-override-enum-values-shown': [
+          'UNKNOWN',
+          'PROCESSING_COMPLETE',
+          'PROCESSING',
+          'FAILED',
+          'APPROVAL_STATUS_PENDING',
+        ],
+      }),
+  })
+  .nullable()
+  .openapi({
+    description: 'Details about the status of the payroll item.',
+    title: 'PayrollItemStatus',
+    required: [],
+  })
+  .openapi('PayrollItemStatus')
+
+type PayrollItemType = {
+  accounts: z.infer<typeof PayrollIncomeAccountDataSchema>[]
+  institution_id: string
+  institution_name: string
+  item_id: z.infer<typeof ItemIdSchema>
+  payroll_income: z.infer<typeof PayrollIncomeObjectSchema>[]
+  status: z.infer<typeof PayrollItemStatusSchema>
+  updated_at: string | null
+}
+
+const PayrollItemSchema: z.ZodType<PayrollItemType> = z
+  .object({
+    accounts: z.array(PayrollIncomeAccountDataSchema),
+    institution_id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of the institution associated with the Item.',
+      }),
+    institution_name: z
+      .string()
+      .openapi({ description: 'The name of the institution associated with the Item.' }),
+    item_id: ItemIdSchema,
+    payroll_income: z.array(PayrollIncomeObjectSchema),
+    status: PayrollItemStatusSchema,
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'Timestamp in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DDTHH:mm:ssZ) indicating the last time that the Item was updated.',
+      }),
+  })
+  .openapi({
+    description: 'An object containing information about the payroll item.',
+    required: [
+      'item_id',
+      'institution_id',
+      'institution_name',
+      'payroll_income',
+      'status',
+      'accounts',
+      'updated_at',
+    ],
+    title: 'PayrollItem',
+  })
+  .openapi('PayrollItem')
+
+type CreditPayrollIncomeGetResponseType = {
+  error?: z.infer<typeof PlaidErrorSchema>
+  items: z.infer<typeof PayrollItemSchema>[]
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const RiskSignalDocumentReferenceSchema = z
+  .looseObject({
+    document_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'An identifier of the document referenced by the document metadata.',
+      }),
+    document_name: z.string().exactOptional().openapi({ description: 'The name of the document' }),
+  })
+  .openapi({
+    description: 'Object containing metadata for the document',
+    title: 'RiskSignalDocumentReference',
+    required: [],
+  })
+  .openapi('RiskSignalDocumentReference')
+
+const DocumentRiskSignalInstitutionMetadataSchema = z
+  .looseObject({ item_id: ItemIdSchema })
+  .nullable()
+  .openapi({
+    description:
+      'An object which contains additional metadata about the institution used to compute the verification attribute',
+    required: ['item_id'],
+    title: 'DocumentRiskSignalInstitutionMetadata',
+  })
+  .openapi('DocumentRiskSignalInstitutionMetadata')
+
+const DocumentRiskSignalSchema = z
+  .looseObject({
+    actual_value: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The derived value obtained in the risk signal calculation process for this field',
+        title: 'DocumentRiskSignalActualValue',
+      }),
+    expected_value: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The expected value of the field, as seen on the document',
+        title: 'DocumentRiskSignalExpectedValue',
+      }),
+    field: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The field which the risk signal was computed for',
+        title: 'DocumentRiskSignalField',
+      }),
+    has_fraud_risk: z
+      .boolean()
+      .nullable()
+      .openapi({
+        description:
+          'A flag used to quickly identify if the signal indicates that this field is authentic or fraudulent',
+        title: 'DocumentRiskSignalHasFraudRisk',
+      }),
+    institution_metadata: DocumentRiskSignalInstitutionMetadataSchema,
+    page_number: z
+      .int()
+      .nullable()
+      .openapi({
+        description: 'The relevant page associated with the risk signal',
+        title: 'DocumentRiskPageNumber',
+      }),
+    signal_description: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'A human-readable explanation providing more detail into the particular risk signal',
+        title: 'DocumentRiskSignalDescription',
+      }),
+    type: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The result from the risk signal check.',
+        title: 'DocumentRiskSignalResultType',
+        'x-override-enum-values-shown': ['DATA_MATCH', 'DATA_MISMATCH', 'FILE_TAMPERING'],
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Details about a certain reason as to why a document could potentially be fraudulent.',
+    required: [
+      'type',
+      'field',
+      'has_fraud_risk',
+      'institution_metadata',
+      'expected_value',
+      'actual_value',
+      'signal_description',
+      'page_number',
+    ],
+    title: 'DocumentRiskSignal',
+  })
+  .openapi('DocumentRiskSignal')
+
+const MultiDocumentRiskSignalSchema = z
+  .looseObject({
+    document_references: z
+      .array(RiskSignalDocumentReferenceSchema)
+      .openapi({
+        description:
+          'Array of objects containing attributes that could indicate if a document is fraudulent',
+      }),
+    risk_signals: z
+      .array(DocumentRiskSignalSchema)
+      .openapi({
+        description:
+          'Array of attributes that indicate whether or not there is fraud risk with a set of documents',
+      }),
+  })
+  .openapi({
+    description:
+      'Object containing risk signals and relevant metadata for a set of uploaded documents',
+    required: ['document_references', 'risk_signals'],
+    title: 'MultiDocumentRiskSignal',
+  })
+  .openapi('MultiDocumentRiskSignal')
+
+const DocumentRiskSummarySchema = z
+  .looseObject({
+    risk_score: z
+      .number()
+      .nullable()
+      .openapi({
+        description:
+          'A number between 0 and 100, inclusive, where a score closer to 0 indicates a document is likely to be trustworthy and a score closer to 100 indicates a document is likely to be fraudulent',
+      }),
+  })
+  .openapi({
+    description: 'A summary across all risk signals associated with a document',
+    required: ['risk_score'],
+    title: 'DocumentRiskSummary',
+  })
+  .openapi('DocumentRiskSummary')
+
+const SingleDocumentRiskSignalSchema = z
+  .looseObject({
+    document_reference: RiskSignalDocumentReferenceSchema,
+    risk_signals: z
+      .array(DocumentRiskSignalSchema)
+      .openapi({
+        description:
+          'Array of attributes that indicate whether or not there is fraud risk with a document',
+      }),
+    risk_summary: DocumentRiskSummarySchema,
+  })
+  .openapi({
+    description: 'Object containing all risk signals and relevant metadata for a single document',
+    required: ['document_reference', 'risk_signals', 'risk_summary'],
+    title: 'SingleDocumentRiskSignal',
+  })
+  .openapi('SingleDocumentRiskSignal')
+
+const DocumentRiskSignalsObjectSchema = z
+  .looseObject({
+    account_id: z
+      .string()
+      .nullable()
+      .openapi({ description: 'ID of the payroll provider account.' }),
+    multi_document_risk_signals: z
+      .array(MultiDocumentRiskSignalSchema)
+      .openapi({
+        description:
+          "Array of risk signals computed from a set of uploaded documents and the associated documents' metadata",
+      }),
+    single_document_risk_signals: z
+      .array(SingleDocumentRiskSignalSchema)
+      .openapi({
+        description: 'Array of document metadata and associated risk signals per document',
+      }),
+  })
+  .openapi({
+    description: 'Object containing fraud risk data for a set of income documents.',
+    required: ['account_id', 'single_document_risk_signals', 'multi_document_risk_signals'],
+    title: 'DocumentRiskSignalsObject',
+  })
+  .openapi('DocumentRiskSignalsObject')
+
+type PayrollRiskSignalsItemType = {
+  item_id: z.infer<typeof ItemIdSchema>
+  verification_risk_signals: z.infer<typeof DocumentRiskSignalsObjectSchema>[]
+}
+
+const PayrollRiskSignalsItemSchema: z.ZodType<PayrollRiskSignalsItemType> = z
+  .looseObject({
+    item_id: ItemIdSchema,
+    verification_risk_signals: z
+      .array(DocumentRiskSignalsObjectSchema)
+      .openapi({
+        description:
+          "Array of payroll income document authenticity data retrieved for each of the user's accounts.",
+      }),
+  })
+  .openapi({
+    description:
+      'Object containing fraud risk data pertaining to the Item linked as part of the verification.',
+    required: ['item_id', 'verification_risk_signals'],
+    title: 'PayrollRiskSignalsItem',
+  })
+  .openapi('PayrollRiskSignalsItem')
+
+type CreditPayrollIncomeRiskSignalsGetResponseType = {
+  error?: z.infer<typeof PlaidErrorSchema>
+  items: z.infer<typeof PayrollRiskSignalsItemSchema>[]
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const AccountIdentitySchema = AccountBaseSchema.and(
+  z
+    .looseObject({
+      owners: z
+        .array(OwnerSchema)
+        .openapi({
+          description:
+            'Data returned by the financial institution about the account owner or owners. Only returned by Identity or Assets endpoints. For business accounts, the name reported may be either the name of the individual or the name of the business, depending on the institution. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. In API versions 2018-05-22 and earlier, the `owners` object is not returned, and instead identity information is returned in the top level `identity` object. For more details, see [Plaid API versioning](https://plaid.com/docs/api/versioning/#version-2019-05-29)',
+        }),
+    })
+    .openapi({ required: ['owners'] }),
+)
+  .openapi({ description: 'Identity information about an account', title: 'AccountIdentity' })
+  .openapi('AccountIdentity')
+
+const ProductsSchema = z
+  .enum([
+    'assets',
+    'auth',
+    'balance',
+    'identity',
+    'investments',
+    'liabilities',
+    'payment_initiation',
+    'identity_verification',
+    'transactions',
+    'credit_details',
+    'income',
+    'income_verification',
+    'deposit_switch',
+    'standing_orders',
+    'transfer',
+    'employment',
+    'recurring_transactions',
+  ])
+  .openapi({
+    description:
+      'A list of products that an institution can support. All Items must be initialized with at least one product. The Balance product is always available and does not need to be specified during initialization.',
+    title: 'Products',
+  })
+  .openapi('Products')
+
+const ItemSchema = z
+  .looseObject({
+    available_products: z
+      .array(ProductsSchema)
+      .openapi({
+        description:
+          'A list of products available for the Item that have not yet been accessed. The contents of this array will be mutually exclusive with `billed_products`.',
+      }),
+    billed_products: z
+      .array(ProductsSchema)
+      .openapi({
+        description:
+          'A list of products that have been billed for the Item. The contents of this array will be mutually exclusive with `available_products`. Note - `billed_products` is populated in all environments but only requests in Production are billed. Also note that products that are billed on a pay-per-call basis rather than a pay-per-Item basis, such as `balance`, will not appear here.\n',
+      }),
+    consent_expiration_time: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'The RFC 3339 timestamp after which the consent provided by the end user will expire. Upon consent expiration, the item will enter the `ITEM_LOGIN_REQUIRED` error state. To circumvent the `ITEM_LOGIN_REQUIRED` error and maintain continuous consent, the end user can reauthenticate via Link’s update mode in advance of the consent expiration time.\n\nNote - This is only relevant for certain OAuth-based institutions. For all other institutions, this field will be null.\n',
+      }),
+    consented_products: z
+      .array(ProductsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Beta: A list of products that have gone through consent collection for the Item. Only present for those enabled in the beta.\n',
+      }),
+    error: PlaidErrorSchema,
+    institution_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Plaid Institution ID associated with the Item. Field is `null` for Items created via Same Day Micro-deposits.',
+      }),
+    item_id: z
+      .string()
+      .openapi({
+        description:
+          'The Plaid Item ID. The `item_id` is always unique; linking the same account at the same institution twice will result in two Items with different `item_id` values. Like all Plaid identifiers, the `item_id` is case-sensitive.',
+      }),
+    products: z
+      .array(ProductsSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of authorized products for the Item.\n' }),
+    update_type: z
+      .enum(['background', 'user_present_required'])
+      .openapi({
+        description:
+          'Indicates whether an Item requires user interaction to be updated, which can be the case for Items with some forms of two-factor authentication.\n\n`background` - Item can be updated in the background\n\n`user_present_required` - Item requires user interaction to be updated',
+      }),
+    webhook: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The URL registered to receive webhooks for the Item.' }),
+  })
+  .openapi({
+    description: 'Metadata about the Item.',
+    required: [
+      'item_id',
+      'webhook',
+      'error',
+      'available_products',
+      'billed_products',
+      'consent_expiration_time',
+      'update_type',
+    ],
+  })
+  .openapi('Item')
+
+type IdentityGetResponseType = {
+  accounts: z.infer<typeof AccountIdentitySchema>[]
+  item: z.infer<typeof ItemSchema>
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const ClientUserIDSchema = z
+  .string()
+  .min(1)
+  .openapi({
+    description:
+      'An identifier to help you connect this object to your internal systems. For example, your database ID corresponding to this object.',
+    example: 'your-db-id-3b24110',
+    title: 'ClientUserID',
+  })
+  .openapi('ClientUserID')
+
+const TimestampNullableSchema = z.iso
+  .datetime({ offset: true })
+  .nullable()
+  .openapi({
+    description: 'An ISO8601 formatted timestamp.',
+    example: '2020-07-24T03:26:02Z',
+    title: 'Timestamp',
+  })
+  .openapi('TimestampNullable')
+
+const TimestampSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'An ISO8601 formatted timestamp.',
+    example: '2020-07-24T03:26:02Z',
+    title: 'Timestamp',
+  })
+  .openapi('Timestamp')
+
+const DocumentAuthenticityMatchCodeSchema = z
+  .enum(['match', 'partial_match', 'no_match', 'no_data'])
+  .openapi({
+    description:
+      "High level summary of whether the document in the provided image matches the formatting rules and security checks for the associated jurisdiction.\n\nFor example, most identity documents have formatting rules like the following:\n\n\nThe image of the person's face must have a certain contrast in order to highlight skin tone\n\n\nThe subject in the document's image must remove eye glasses and pose in a certain way\n\n\nThe informational fields (name, date of birth, ID number, etc.) must be colored and aligned according to specific rules\n\n\nSecurity features like watermarks and background patterns must be present\n\nSo a `match` status for this field indicates that the document in the provided image seems to conform to the various formatting and security rules associated with the detected document.",
+    example: 'match',
+  })
+  .openapi('DocumentAuthenticityMatchCode')
+
+const DocumentDateOfBirthMatchCodeSchema = z
+  .enum(['match', 'partial_match', 'no_match'])
+  .openapi({
+    description:
+      "A match summary describing the cross comparison between the subject's date of birth, extracted from the document image, and the date of birth they separately provided to the identity verification attempt.",
+    example: 'match',
+  })
+  .openapi('DocumentDateOfBirthMatchCode')
+
+const ExpirationDateSchema = z
+  .enum(['not_expired', 'expired', 'no_data'])
+  .openapi({
+    description:
+      'A description of whether the associated document was expired when the verification was performed.\n\nNote: In the case where an expiration date is not present on the document or failed to be extracted, this value will be `no_data`.',
+    example: 'not_expired',
+  })
+  .openapi('ExpirationDate')
+
+const IssuingCountrySchema = z
+  .enum(['match', 'no_match'])
+  .openapi({
+    description:
+      'A binary match indicator specifying whether the country that issued the provided document matches the country that the user separately provided to Plaid.\n\nNote: You can configure whether a `no_match` on `issuing_country` fails the `documentary_verification` by editing your Plaid Template.',
+  })
+  .openapi('IssuingCountry')
+
+const DocumentNameMatchCodeSchema = z
+  .enum(['match', 'partial_match', 'no_match'])
+  .openapi({
+    description:
+      "A match summary describing the cross comparison between the subject's name, extracted from the document image, and the name they separately provided to identity verification attempt.",
+    example: 'match',
+  })
+  .openapi('DocumentNameMatchCode')
+
+const PhysicalDocumentExtractedDataAnalysisSchema = z
+  .object({
+    date_of_birth: DocumentDateOfBirthMatchCodeSchema,
+    expiration_date: ExpirationDateSchema,
+    issuing_country: IssuingCountrySchema,
+    name: DocumentNameMatchCodeSchema,
+  })
+  .nullable()
+  .openapi({
+    description: 'Analysis of the data extracted from the submitted document.',
+    required: ['name', 'date_of_birth', 'expiration_date', 'issuing_country'],
+  })
+  .openapi('PhysicalDocumentExtractedDataAnalysis')
+
+const ImageQualitySchema = z
+  .enum(['high', 'medium', 'low'])
+  .openapi({
+    description:
+      'A high level description of the quality of the image the user submitted.\n\nFor example, an image that is blurry, distorted by glare from a nearby light source, or improperly framed might be marked as low or medium quality. Poor quality images are more likely to fail OCR and/or template conformity checks.\n\nNote: By default, Plaid will let a user recapture document images twice before failing the entire session if we attribute the failure to low image quality.',
+    example: 'high',
+  })
+  .openapi('ImageQuality')
+
+const DocumentAnalysisSchema = z
+  .object({
+    authenticity: DocumentAuthenticityMatchCodeSchema,
+    extracted_data: PhysicalDocumentExtractedDataAnalysisSchema,
+    image_quality: ImageQualitySchema,
+  })
+  .openapi({
+    description:
+      'High level descriptions of how the associated document was processed. If a document fails verification, the details in the `analysis` object should help clarify why the document was rejected.',
+    required: ['authenticity', 'image_quality', 'extracted_data'],
+  })
+  .openapi('DocumentAnalysis')
+
+const PhysicalDocumentCategorySchema = z
+  .enum(['drivers_license', 'id_card', 'passport', 'residence_permit_card', 'resident_card'])
+  .openapi({
+    description:
+      "The type of identity document detected in the images provided. Will always be one of the following values:\n\n  `drivers_license` - A driver's license for the associated country\n\n  `id_card` - A general national identification card, distinct from driver's licenses\n\n  `passport` - A passport for the associated country\n\n  `residence_permit_card` - An identity document permitting a foreign citizen to <em>temporarily</em> reside in the associated country\n\n  `resident_card` - An identity document permitting a foreign citizen to <em>permanently</em> reside in the associated country\n\nNote: This value may be different from the ID type that the user selects within Link. For example, if they select \"Driver's License\" but then submit a picture of a passport, this field will say `passport`",
+    example: 'drivers_license',
+  })
+  .openapi('PhysicalDocumentCategory')
+
+const ISO8601DateNullableSchema = z.iso
+  .date()
+  .nullable()
+  .openapi({
+    description: 'A date in the format YYYY-MM-DD (RFC 3339 Section 5.6).',
+    example: '1990-05-29',
+    title: 'ISO8601Date',
+  })
+  .openapi('ISO8601DateNullable')
+
+const PhysicalDocumentIDNumberSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: "Alpha-numeric ID number extracted via OCR from the user's document image.",
+    example: 'AB123456',
+  })
+  .openapi('PhysicalDocumentIDNumber')
+
+const GenericCountryCodeSchema = z
+  .string()
+  .min(2)
+  .openapi({
+    description:
+      'Valid, capitalized, two-letter ISO code representing the country of this object. Must be in ISO 3166-1 alpha-2 form.',
+    example: 'US',
+    title: 'GenericCountryCode',
+  })
+  .openapi('GenericCountryCode')
+
+const RegionNullableSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'An ISO 3166-2 subdivision code. Related terms would be "state", "province", "prefecture", "zone", "subdivision", etc.',
+    example: 'IN',
+    title: 'Region',
+  })
+  .openapi('RegionNullable')
+
+const PhysicalDocumentExtractedDataSchema = z
+  .object({
+    category: PhysicalDocumentCategorySchema,
+    expiration_date: ISO8601DateNullableSchema,
+    id_number: PhysicalDocumentIDNumberSchema,
+    issuing_country: GenericCountryCodeSchema,
+    issuing_region: RegionNullableSchema,
+  })
+  .nullable()
+  .openapi({
+    description: 'Data extracted from a user-submitted document.',
+    required: ['id_number', 'category', 'expiration_date', 'issuing_country', 'issuing_region'],
+  })
+  .openapi('PhysicalDocumentExtractedData')
+
+const DocumentImageCroppedBackSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'Temporary URL that expires after 60 seconds for downloading a cropped image containing just the back of the document. Might be null if the back of the document was not collected.',
+    example:
+      'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/cropped_back.jpeg',
+  })
+  .openapi('DocumentImageCroppedBack')
+
+const DocumentImageCroppedFrontSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'Temporary URL that expires after 60 seconds for downloading a cropped image containing just the front of the document.',
+    example:
+      'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/cropped_front.jpeg',
+  })
+  .openapi('DocumentImageCroppedFront')
+
+const DocumentImageFaceSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      "Temporary URL that expires after 60 seconds for downloading a crop of just the user's face from the document image. Might be null if the document does not contain a face photo.",
+    example: 'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/face.jpeg',
+  })
+  .openapi('DocumentImageFace')
+
+const DocumentImageBackSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'Temporary URL that expires after 60 seconds for downloading the original image of the back of the document. Might be null if the back of the document was not collected.',
+    example:
+      'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/original_back.jpeg',
+  })
+  .openapi('DocumentImageBack')
+
+const DocumentImageFrontSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'Temporary URL that expires after 60 seconds for downloading the uncropped original image of the front of the document.',
+    example:
+      'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/original_front.jpeg',
+  })
+  .openapi('DocumentImageFront')
+
+const PhysicalDocumentImagesSchema = z
+  .object({
+    cropped_back: DocumentImageCroppedBackSchema,
+    cropped_front: DocumentImageCroppedFrontSchema,
+    face: DocumentImageFaceSchema,
+    original_back: DocumentImageBackSchema,
+    original_front: DocumentImageFrontSchema,
+  })
+  .openapi({
+    description:
+      'URLs for downloading original and cropped images for this document submission. The URLs are designed to only allow downloading, not hot linking, so the URL will only serve the document image for 60 seconds before expiring. The expiration time is 60 seconds after the `GET` request for the associated Identity Verification attempt. A new expiring URL is generated with each request, so you can always rerequest the Identity Verification attempt if one of your URLs expires.',
+    required: ['original_front', 'original_back', 'cropped_front', 'cropped_back', 'face'],
+  })
+  .openapi('PhysicalDocumentImages')
+
+const DocumentStatusSchema = z
+  .enum(['success', 'failed', 'manually_approved'])
+  .openapi({
+    description:
+      'An outcome status for this specific document submission. Distinct from the overall `documentary_verification.status` that summarizes the verification outcome from one or more documents.',
+    example: 'success',
+    title: 'DocumentStatus',
+  })
+  .openapi('DocumentStatus')
+
+const DocumentaryVerificationDocumentSchema = z
+  .looseObject({
+    analysis: DocumentAnalysisSchema,
+    attempt: z
+      .number()
+      .openapi({
+        description:
+          'The `attempt` field begins with 1 and increments with each subsequent document upload.',
+        example: 1,
+      }),
+    extracted_data: PhysicalDocumentExtractedDataSchema,
+    images: PhysicalDocumentImagesSchema,
+    redacted_at: TimestampNullableSchema,
+    status: DocumentStatusSchema,
+  })
+  .openapi({
+    description: "Images, extracted data, and analysis from a user's identity document",
+    required: ['analysis', 'attempt', 'extracted_data', 'images', 'status', 'redacted_at'],
+  })
+  .openapi('DocumentaryVerificationDocument')
+
+const DocumentaryVerificationSchema = z
+  .object({
+    documents: z
+      .array(DocumentaryVerificationDocumentSchema)
+      .openapi({
+        description:
+          'An array of documents submitted to the `documentary_verification` step. Each entry represents one user submission, where each submission will contain both a front and back image, or just a front image, depending on the document type.\n\nNote: Plaid will automatically let a user submit a new set of document images up to three times if we detect that a previous attempt might have failed due to user error. For example, if the first set of document images are blurry or obscured by glare, the user will be asked to capture their documents again, resulting in at least two separate entries within `documents`. If the overall `documentary_verification` is `failed`, the user has exhausted their retry attempts.',
+      }),
+    status: z
+      .string()
+      .openapi({
+        description:
+          "The outcome status for the associated Identity Verification attempt's `documentary_verification` step. This field will always have the same value as `steps.documentary_verification`.",
+        example: 'success',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Data, images, analysis, and results from the `documentary_verification` step. This field will be `null` unless `steps.documentary_verification` has reached a terminal state of either `success` or `failed`.',
+    required: ['status', 'documents'],
+    title: 'DocumentaryVerification',
+  })
+  .openapi('DocumentaryVerification')
+
+const IdentityVerificationIDSchema = z
+  .string()
+  .openapi({
+    description: 'ID of the associated Identity Verification attempt.',
+    example: 'idv_52xR9LKo77r1Np',
+    title: 'IdentityVerificationID',
+  })
+  .openapi('IdentityVerificationID')
+
+const POBoxStatusSchema = z
+  .enum(['yes', 'no', 'no_data'])
+  .openapi({
+    description:
+      'Field describing whether the associated address is a post office box. Will be `yes` when a P.O. box is detected, `no` when Plaid confirmed the address is not a P.O. box, and `no_data` when Plaid was not able to determine if the address is a P.O. box.',
+    example: 'yes',
+  })
+  .openapi('POBoxStatus')
+
+const MatchSummaryCodeSchema = z
+  .enum(['match', 'partial_match', 'no_match', 'no_data', 'no_input'])
+  .openapi({
+    description:
+      'An enum indicating the match type between data provided by user and data checked against an external data source.\n\n\n`match` indicates that the provided input data was a strong match against external data.\n\n`partial_match` indicates the data approximately matched against external data. For example, "Knope" vs. "Knope-Wyatt" for last name.\n\n`no_match` indicates that Plaid was able to perform a check against an external data source and it did not match the provided input data.\n\n`no_data` indicates that Plaid was unable to find external data to compare against the provided input data.\n\n`no_input` indicates that Plaid was unable to perform a check because no information was provided for this field by the end user.',
+    example: 'match',
+    title: 'MatchSummaryCode',
+  })
+  .openapi('MatchSummaryCode')
+
+const AddressPurposeLabelSchema = z
+  .enum(['residential', 'commercial', 'no_data'])
+  .openapi({
+    description:
+      "Field describing whether the associated address is being used for commercial or residential purposes.\n\nNote: This value will be `no_data` when Plaid does not have sufficient data to determine the address's use.",
+    example: 'residential',
+  })
+  .openapi('AddressPurposeLabel')
+
+const KYCCheckAddressSummarySchema = z
+  .object({
+    po_box: POBoxStatusSchema,
+    summary: MatchSummaryCodeSchema,
+    type: AddressPurposeLabelSchema,
+  })
+  .openapi({
+    description: 'Result summary object specifying how the `address` field matched.',
+    required: ['summary', 'po_box', 'type'],
+  })
+  .openapi('KYCCheckAddressSummary')
+
+const KYCCheckDateOfBirthSummarySchema = z
+  .object({ summary: MatchSummaryCodeSchema })
+  .openapi({
+    description: 'Result summary object specifying how the `date_of_birth` field matched.',
+    required: ['summary'],
+  })
+  .openapi('KYCCheckDateOfBirthSummary')
+
+const KYCCheckIDNumberSummarySchema = z
+  .object({ summary: MatchSummaryCodeSchema })
+  .openapi({
+    description: 'Result summary object specifying how the `id_number` field matched.',
+    required: ['summary'],
+  })
+  .openapi('KYCCheckIDNumberSummary')
+
+const KYCCheckNameSummarySchema = z
+  .object({ summary: MatchSummaryCodeSchema })
+  .openapi({
+    description: 'Result summary object specifying how the `name` field matched.',
+    required: ['summary'],
+  })
+  .openapi('KYCCheckNameSummary')
+
+const KYCCheckPhoneSummarySchema = z
+  .object({ summary: MatchSummaryCodeSchema })
+  .openapi({
+    description: 'Result summary object specifying how the `phone` field matched.',
+    required: ['summary'],
+  })
+  .openapi('KYCCheckPhoneSummary')
+
+const KYCCheckDetailsSchema = z
+  .object({
+    address: KYCCheckAddressSummarySchema,
+    date_of_birth: KYCCheckDateOfBirthSummarySchema,
+    id_number: KYCCheckIDNumberSummarySchema,
+    name: KYCCheckNameSummarySchema,
+    phone_number: KYCCheckPhoneSummarySchema,
+    status: z
+      .string()
+      .openapi({
+        description:
+          "The outcome status for the associated Identity Verification attempt's `kyc_check` step. This field will always have the same value as `steps.kyc_check`.",
+        example: 'success',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Additional information for the `kyc_check` step. This field will be `null` unless `steps.kyc_check` has reached a terminal state of either `success` or `failed`.',
+    required: ['status', 'phone_number', 'address', 'name', 'date_of_birth', 'id_number'],
+  })
+  .openapi('KYCCheckDetails')
+
+const PreviousIdentityVerificationAttemptIDSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'The ID for the Identity Verification preceding this session. This field will only be filled if the current Identity Verification is a retry of a previous attempt.',
+    example: 'idv_42cF1MNo42r9Xj',
+  })
+  .openapi('PreviousIdentityVerificationAttemptID')
+
+const ShareableURLSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'A shareable URL that can be sent directly to the user to complete verification',
+    example:
+      'https://flow.plaid.com/verify/idv_4FrXJvfQU3zGUR?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f',
+  })
+  .openapi('ShareableURL')
+
+const IdentityVerificationStatusSchema = z
+  .enum(['active', 'success', 'failed', 'expired', 'canceled', 'pending_review'])
+  .openapi({
+    description:
+      'The status of this Identity Verification attempt.\n\n\n`active` - The Identity Verification attempt is incomplete. The user may have completed part of the session, but has neither failed or passed.\n\n`success` - The Identity Verification attempt has completed, passing all steps defined to the associated Identity Verification template\n\n`failed` - The user failed one or more steps in the session and was told to contact support.\n\n`expired` - The Identity Verification attempt was active for a long period of time without being completed and was automatically marked as expired. Note that sessions currently do not expire. Automatic expiration is expected to be enabled in the future.\n\n`canceled` - The Identity Verification attempt was canceled, either via the dashboard by a user, or via API. The user may have completed part of the session, but has neither failed or passed.\n\n`pending_review` - The Identity Verification attempt template was configured to perform a screening that had one or more hits needing review.',
+    example: 'success',
+    title: 'IdentityVerificationStatus',
+  })
+  .openapi('IdentityVerificationStatus')
+
+const IdentityVerificationStepStatusSchema = z
+  .enum([
+    'success',
+    'active',
+    'failed',
+    'waiting_for_prerequisite',
+    'not_applicable',
+    'skipped',
+    'expired',
+    'canceled',
+    'pending_review',
+    'manually_approved',
+    'manually_rejected',
+  ])
+  .openapi({
+    description: 'The status of a step in the identity verification process.',
+    example: 'success',
+    title: 'IdentityVerificationStepStatus',
+  })
+  .openapi('IdentityVerificationStepStatus')
+
+const IdentityVerificationStepSummarySchema = z
+  .object({
+    accept_tos: IdentityVerificationStepStatusSchema,
+    documentary_verification: IdentityVerificationStepStatusSchema,
+    kyc_check: IdentityVerificationStepStatusSchema,
+    risk_check: IdentityVerificationStepStatusSchema,
+    selfie_check: IdentityVerificationStepStatusSchema,
+    verify_sms: IdentityVerificationStepStatusSchema,
+    watchlist_screening: IdentityVerificationStepStatusSchema,
+  })
+  .openapi({
+    description:
+      "Each step will be one of the following values:\n\n\n`active` - This step is the user's current step. They are either in the process of completing this step, or they recently closed their Identity Verification attempt while in the middle of this step. Only one step will be marked as `active` at any given point.\n\n`success` - The Identity Verification attempt has completed this step.\n\n`failed` - The user failed this step. This can either call the user to fail the session as a whole, or cause them to fallback to another step depending on how the Identity Verification template is configured. A failed step does not imply a failed session.\n\n`waiting_for_prerequisite` - The user needs to complete another step first, before they progress to this step. This step may never run, depending on if the user fails an earlier step or if the step is only run as a fallback.\n\n`not_applicable` - This step will not be run for this session.\n\n`skipped` - The retry instructions that created this Identity Verification attempt specified that this step should be skipped.\n\n`expired` - This step had not yet been completed when the Identity Verification attempt as a whole expired.\n\n`canceled` - The Identity Verification attempt was canceled before the user completed this step.\n\n`pending_review` - The Identity Verification attempt template was configured to perform a screening that had one or more hits needing review.\n\n`manually_approved` - The step was manually overridden to pass by a team member in the dashboard.\n\n`manually_rejected` - The step was manually overridden to fail by a team member in the dashboard.",
+    required: [
+      'accept_tos',
+      'verify_sms',
+      'kyc_check',
+      'documentary_verification',
+      'selfie_check',
+      'watchlist_screening',
+      'risk_check',
+    ],
+  })
+  .openapi('IdentityVerificationStepSummary')
+
+const IdentityVerificationTemplateIDSchema = z
+  .string()
+  .openapi({
+    description: 'ID of the associated Identity Verification template.',
+    example: 'idvtmp_4FrXJvfQU3zGUR',
+    title: 'IdentityVerificationTemplateID',
+  })
+  .openapi('IdentityVerificationTemplateID')
+
+const IdentityVerificationTemplateVersionSchema = z
+  .number()
+  .openapi({
+    description: 'Version of the associated Identity Verification template.',
+    example: 2,
+    title: 'IdentityVerificationTemplateVersion',
+  })
+  .openapi('IdentityVerificationTemplateVersion')
+
+const IdentityVerificationTemplateReferenceSchema = z
+  .object({
+    id: IdentityVerificationTemplateIDSchema,
+    version: IdentityVerificationTemplateVersionSchema,
+  })
+  .openapi({
+    description:
+      'The resource ID and version number of the template configuring the behavior of a given identity verification.',
+    required: ['id', 'version'],
+  })
+  .openapi('IdentityVerificationTemplateReference')
+
+const CityNullableSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: "City from the end user's address",
+    example: 'Pawnee',
+    title: 'CityName',
+  })
+  .openapi('CityNullable')
+
+const PostalCodeNullableSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'The postal code for the associated address. Between 2 and 10 alphanumeric characters. For US-based addresses this must be 5 numeric digits.',
+    example: '46001',
+    title: 'PostalCode',
+  })
+  .openapi('PostalCodeNullable')
+
+const StreetNullableSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'The primary street portion of an address. If the user has submitted their address, this field will always be filled.',
+    example: '123 Main St.',
+    title: 'Street',
+  })
+  .openapi('StreetNullable')
+
+const Street2Schema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'Extra street information, like an apartment or suite number.',
+    example: 'Unit 42',
+    title: 'Street2',
+  })
+  .openapi('Street2')
+
+const IdentityVerificationUserAddressSchema = z
+  .object({
+    city: CityNullableSchema,
+    country: GenericCountryCodeSchema,
+    postal_code: PostalCodeNullableSchema,
+    region: RegionNullableSchema,
+    street: StreetNullableSchema,
+    street2: Street2Schema,
+  })
+  .nullable()
+  .openapi({
+    description:
+      "Even if an address has been collected, some fields may be null depending on the region's addressing system. For example:\n\nAddresses from the United Kingdom will not include a region\n\nAddresses from Hong Kong will not include postal code",
+    required: ['street', 'street2', 'city', 'region', 'postal_code', 'country'],
+  })
+  .openapi('IdentityVerificationUserAddress')
+
+const EmailAddressNullableSchema = z
+  .email()
+  .nullable()
+  .openapi({
+    description: 'A valid email address.',
+    example: 'user@example.com',
+    title: 'EmailAddress',
+  })
+  .openapi('EmailAddressNullable')
+
+const IDNumberTypeSchema = z
+  .enum([
+    'ar_dni',
+    'au_drivers_license',
+    'au_passport',
+    'br_cpf',
+    'ca_sin',
+    'cl_run',
+    'cn_resident_card',
+    'co_nit',
+    'dk_cpr',
+    'eg_national_id',
+    'es_dni',
+    'es_nie',
+    'hk_hkid',
+    'in_pan',
+    'it_cf',
+    'jo_civil_id',
+    'jp_my_number',
+    'ke_huduma_namba',
+    'kw_civil_id',
+    'mx_curp',
+    'mx_rfc',
+    'my_nric',
+    'ng_nin',
+    'nz_drivers_license',
+    'om_civil_id',
+    'ph_psn',
+    'pl_pesel',
+    'ro_cnp',
+    'sa_national_id',
+    'se_pin',
+    'sg_nric',
+    'tr_tc_kimlik',
+    'us_ssn',
+    'us_ssn_last_4',
+    'za_smart_id',
+  ])
+  .openapi({
+    description:
+      'A globally unique and human readable ID type, specific to the country and document category. For more context on this field, see [Hybrid Input Validation](https://plaid.com/docs/identity-verification/hybrid-input-validation).',
+    example: 'us_ssn',
+    title: 'IDNumberType',
+  })
+  .openapi('IDNumberType')
+
+const IDNumberValueSchema = z
+  .string()
+  .openapi({
+    description:
+      'Value of identity document value typed in by user. Alpha-numeric, with all formatting characters stripped.',
+    example: '123456789',
+    title: 'IDNumberValue',
+  })
+  .openapi('IDNumberValue')
+
+const UserIDNumberSchema = z
+  .object({ type: IDNumberTypeSchema, value: IDNumberValueSchema })
+  .nullable()
+  .openapi({
+    description:
+      'ID number submitted by the user, currently used only for the Identity Verification product. If the user has not submitted this data yet, this field will be `null`. Otherwise, both fields are guaranteed to be filled.',
+    required: ['value', 'type'],
+  })
+  .openapi('UserIDNumber')
+
+const IPAddressSchema = z
+  .string()
+  .nullable()
+  .openapi({ description: 'An IPv4 or IPV6 address.', example: '192.0.2.42', title: 'IPAddress' })
+  .openapi('IPAddress')
+
+const FamilyNameFieldSchema = z
+  .string()
+  .openapi({
+    description:
+      'A string with at least one non-whitespace character, with a max length of 100 characters.',
+    example: 'Knope',
+    title: 'FamilyName',
+  })
+  .openapi('FamilyNameField')
+
+const GivenNameFieldSchema = z
+  .string()
+  .openapi({
+    description:
+      'A string with at least one non-whitespace character, with a max length of 100 characters.',
+    example: 'Leslie',
+    title: 'GivenName',
+  })
+  .openapi('GivenNameField')
+
+const UserNameSchema = z
+  .object({ family_name: FamilyNameFieldSchema, given_name: GivenNameFieldSchema })
+  .nullable()
+  .openapi({
+    description:
+      'The full name provided by the user. If the user has not submitted their name, this field will be null. Otherwise, both fields are guaranteed to be filled.',
+    required: ['given_name', 'family_name'],
+  })
+  .openapi('UserName')
+
+const IdentityVerificationUserPhoneNumberSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'A phone number in E.164 format.',
+    example: '+19876543212',
+    title: 'PhoneNumber',
+  })
+  .openapi('IdentityVerificationUserPhoneNumber')
+
+const IdentityVerificationUserDataSchema = z
+  .object({
+    address: IdentityVerificationUserAddressSchema,
+    date_of_birth: ISO8601DateNullableSchema,
+    email_address: EmailAddressNullableSchema,
+    id_number: UserIDNumberSchema,
+    ip_address: IPAddressSchema,
+    name: UserNameSchema,
+    phone_number: IdentityVerificationUserPhoneNumberSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The identity data that was either collected from the user or provided via API in order to perform an identity verification.',
+    required: ['date_of_birth', 'email_address', 'ip_address', 'name', 'address', 'id_number'],
+  })
+  .openapi('IdentityVerificationUserData')
+
+const WatchlistScreeningIndividualIDNullableSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'ID of the associated screening.',
+    example: 'scr_52xR9LKo77r1Np',
+    title: 'WatchlistScreeningIndividualID',
+  })
+  .openapi('WatchlistScreeningIndividualIDNullable')
+
+const IdentityVerificationSchema = z
+  .looseObject({
+    client_user_id: ClientUserIDSchema,
+    completed_at: TimestampNullableSchema,
+    created_at: TimestampSchema,
+    documentary_verification: DocumentaryVerificationSchema,
+    id: IdentityVerificationIDSchema,
+    kyc_check: KYCCheckDetailsSchema,
+    previous_attempt_id: PreviousIdentityVerificationAttemptIDSchema,
+    redacted_at: TimestampNullableSchema,
+    shareable_url: ShareableURLSchema,
+    status: IdentityVerificationStatusSchema,
+    steps: IdentityVerificationStepSummarySchema,
+    template: IdentityVerificationTemplateReferenceSchema,
+    user: IdentityVerificationUserDataSchema,
+    watchlist_screening_id: WatchlistScreeningIndividualIDNullableSchema,
+  })
+  .openapi({
+    description:
+      "A identity verification attempt represents a customer's attempt to verify their identity, reflecting the required steps for completing the session, the results for each step, and information collected in the process.",
+    required: [
+      'id',
+      'client_user_id',
+      'created_at',
+      'completed_at',
+      'previous_attempt_id',
+      'shareable_url',
+      'template',
+      'user',
+      'status',
+      'steps',
+      'documentary_verification',
+      'kyc_check',
+      'watchlist_screening_id',
+      'redacted_at',
+    ],
+  })
+  .openapi('IdentityVerification')
+
+const CursorSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'An identifier that determines which page of results you receive.',
+    example: 'eyJkaXJlY3Rpb24iOiJuZXh0Iiwib2Zmc2V0IjoiMTU5NDM',
+  })
+  .openapi('Cursor')
+
+type IdentityVerificationListResponseType = {
+  identity_verifications: z.infer<typeof IdentityVerificationSchema>[]
+  next_cursor: z.infer<typeof CursorSchema>
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const AuthSupportedMethodsSchema = z
+  .looseObject({
+    automated_micro_deposits: z
+      .boolean()
+      .openapi({ description: 'Indicates if automated microdeposits are supported.' }),
+    instant_auth: z.boolean().openapi({ description: 'Indicates if instant auth is supported.' }),
+    instant_match: z.boolean().openapi({ description: 'Indicates if instant match is supported.' }),
+  })
+  .nullable()
+  .openapi({
+    description: 'Metadata specifically related to which auth methods an institution supports.',
+    required: ['instant_auth', 'instant_match', 'automated_micro_deposits'],
+    title: 'AuthSupportedMethods',
+  })
+  .openapi('AuthSupportedMethods')
+
+const AuthMetadataSchema = z
+  .looseObject({ supported_methods: AuthSupportedMethodsSchema })
+  .nullable()
+  .openapi({
+    description: 'Metadata that captures information about the Auth features of an institution.',
+    required: ['supported_methods'],
+    title: 'AuthMetadata',
+  })
+  .openapi('AuthMetadata')
+
+const CountryCodeSchema = z
+  .enum([
+    'US',
+    'GB',
+    'ES',
+    'NL',
+    'FR',
+    'IE',
+    'CA',
+    'DE',
+    'IT',
+    'PL',
+    'DK',
+    'NO',
+    'SE',
+    'EE',
+    'LT',
+    'LV',
+  ])
+  .openapi({ description: 'ISO-3166-1 alpha-2 country code standard.', title: 'CountryCode' })
+  .openapi('CountryCode')
+
+const PaymentInitiationMaximumPaymentAmountSchema = z
+  .record(z.string(), z.string())
+  .openapi({
+    description:
+      'A mapping of currency to maximum payment amount (denominated in the smallest unit of currency) supported by the institution.\n\nExample: `{"GBP": "10000"}`\n',
+  })
+  .openapi('PaymentInitiationMaximumPaymentAmount')
+
+const PaymentScheduleIntervalSchema = z
+  .enum(['WEEKLY', 'MONTHLY'])
+  .openapi({
+    description: 'The frequency interval of the payment.',
+    title: 'PaymentScheduleInterval',
+  })
+  .openapi('PaymentScheduleInterval')
+
+const PaymentInitiationStandingOrderMetadataSchema = z
+  .looseObject({
+    supports_standing_order_end_date: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates whether the institution supports closed-ended standing orders by providing an end date.',
+      }),
+    supports_standing_order_negative_execution_days: z
+      .boolean()
+      .openapi({
+        description:
+          'This is only applicable to `MONTHLY` standing orders. Indicates whether the institution supports negative integers (-1 to -5) for setting up a `MONTHLY` standing order relative to the end of the month.',
+      }),
+    valid_standing_order_intervals: z
+      .array(PaymentScheduleIntervalSchema)
+      .openapi({
+        description: 'A list of the valid standing order intervals supported by the institution.',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Metadata specifically related to valid Payment Initiation standing order configurations for the institution.',
+    required: [
+      'supports_standing_order_end_date',
+      'supports_standing_order_negative_execution_days',
+      'valid_standing_order_intervals',
+    ],
+    title: 'PaymentInitiationStandingOrderMetadata',
+  })
+  .openapi('PaymentInitiationStandingOrderMetadata')
+
+const PaymentInitiationMetadataSchema = z
+  .looseObject({
+    maximum_payment_amount: PaymentInitiationMaximumPaymentAmountSchema,
+    standing_order_metadata: PaymentInitiationStandingOrderMetadataSchema,
+    supports_international_payments: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates whether the institution supports payments from a different country.',
+      }),
+    supports_refund_details: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates whether the institution supports returning refund details when initiating a payment.',
+      }),
+    supports_sepa_instant: z
+      .boolean()
+      .openapi({
+        description: 'Indicates whether the institution supports SEPA Instant payments.',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Metadata that captures what specific payment configurations an institution supports when making Payment Initiation requests.',
+    required: [
+      'supports_international_payments',
+      'supports_sepa_instant',
+      'maximum_payment_amount',
+      'supports_refund_details',
+      'standing_order_metadata',
+    ],
+    title: 'PaymentInitiationMetadata',
+  })
+  .openapi('PaymentInitiationMetadata')
+
+const ProductStatusBreakdownSchema = z
+  .looseObject({
+    error_institution: z
+      .float64()
+      .openapi({
+        description:
+          "The percentage of logins that are failing due to an issue in the institution's system, expressed as a decimal.",
+      }),
+    error_plaid: z
+      .float64()
+      .openapi({
+        description:
+          'The percentage of logins that are failing due to an internal Plaid issue, expressed as a decimal.\n',
+      }),
+    refresh_interval: z
+      .enum(['NORMAL', 'DELAYED', 'STOPPED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The `refresh_interval` may be `DELAYED` or `STOPPED` even when the success rate is high. This value is only returned for Transactions status breakdowns.',
+      }),
+    success: z
+      .float64()
+      .openapi({
+        description:
+          'The percentage of login attempts that are successful, expressed as a decimal.',
+      }),
+  })
+  .openapi({
+    description:
+      "A detailed breakdown of the institution's performance for a request type. The values for `success`, `error_plaid`, and `error_institution` sum to 1. The time range used for calculating the breakdown may range from the most recent few minutes to the past six hours. In general, smaller institutions will show status that was calculated over a longer period of time. For Investment updates, which are refreshed less frequently, the period assessed may be 24 hours or more. For more details, see [Institution status details](https://plaid.com/docs/account/activity/#institution-status-details).",
+    required: ['success', 'error_plaid', 'error_institution'],
+    title: 'StatusBreakdown',
+  })
+  .openapi('ProductStatusBreakdown')
+
+const ProductStatusSchema = z
+  .looseObject({
+    breakdown: ProductStatusBreakdownSchema,
+    last_status_change: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          '[ISO 8601](https://wikipedia.org/wiki/ISO_8601) formatted timestamp of the last status change for the institution.\n',
+      }),
+    status: z
+      .enum(['HEALTHY', 'DEGRADED', 'DOWN'])
+      .openapi({
+        deprecated: true,
+        description:
+          'This field is deprecated in favor of the `breakdown` object, which provides more granular institution health data.\n\n`HEALTHY`: the majority of requests are successful\n`DEGRADED`: only some requests are successful\n`DOWN`: all requests are failing',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'A representation of the status health of a request type. Auth requests, Balance requests, Identity requests, Investments requests, Liabilities requests, Transactions updates, Investments updates, Liabilities updates, and Item logins each have their own status object.',
+    required: ['status', 'last_status_change', 'breakdown'],
+    title: 'ProductStatus',
+  })
+  .openapi('ProductStatus')
+
+const IncidentUpdateSchema = z
+  .looseObject({
+    description: z.string().exactOptional().openapi({ description: 'The content of the update.' }),
+    status: z
+      .enum(['INVESTIGATING', 'IDENTIFIED', 'SCHEDULED', 'RESOLVED', 'UNKNOWN'])
+      .exactOptional()
+      .openapi({ description: 'The status of the incident.' }),
+    updated_date: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date when the update was published, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format, e.g. `"2020-10-30T15:26:48Z"`.',
+      }),
+  })
+  .openapi({
+    description: 'An update on the health incident',
+    title: 'IncidentUpdate',
+    required: [],
+  })
+  .openapi('IncidentUpdate')
+
+const HealthIncidentSchema = z
+  .looseObject({
+    end_date: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The end date of the incident, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format, e.g. `"2020-10-30T15:26:48Z"`.',
+      }),
+    incident_updates: z
+      .array(IncidentUpdateSchema)
+      .openapi({ description: 'Updates on the health incident.' }),
+    start_date: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The start date of the incident, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format, e.g. `"2020-10-30T15:26:48Z"`.',
+      }),
+    title: z.string().openapi({ description: 'The title of the incident' }),
+  })
+  .openapi({
+    description: 'A status health incident',
+    required: ['start_date', 'title', 'incident_updates'],
+    title: 'HealthIncident',
+  })
+  .openapi('HealthIncident')
+
+const InstitutionStatusSchema = z
+  .looseObject({
+    auth: ProductStatusSchema.exactOptional(),
+    health_incidents: z
+      .array(HealthIncidentSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Details of recent health incidents associated with the institution.',
+      }),
+    identity: ProductStatusSchema.exactOptional(),
+    investments: ProductStatusSchema.exactOptional(),
+    investments_updates: ProductStatusSchema.exactOptional(),
+    item_logins: ProductStatusSchema.exactOptional(),
+    liabilities: ProductStatusSchema.exactOptional(),
+    liabilities_updates: ProductStatusSchema.exactOptional(),
+    transactions_updates: ProductStatusSchema.exactOptional(),
+  })
+  .nullable()
+  .openapi({
+    description:
+      "The status of an institution is determined by the health of its Item logins, Transactions updates, Investments updates, Liabilities updates, Auth requests, Balance requests, Identity requests, Investments requests, and Liabilities requests. A login attempt is conducted during the initial Item add in Link. If there is not enough traffic to accurately calculate an institution's status, Plaid will return null rather than potentially inaccurate data.\n\nInstitution status is accessible in the Dashboard and via the API using the `/institutions/get_by_id` endpoint with the `include_status` option set to true. Note that institution status is not available in the Sandbox environment.\n",
+    title: 'InstitutionStatus',
+    'x-examples': {
+      'example-1': {
+        status: {
+          auth: {
+            breakdown: { error_institution: 0.08, error_plaid: 0.01, success: 0.91 },
+            last_status_change: '2019-02-15T15:53:00Z',
+            status: 'HEALTHY',
+          },
+          identity: {
+            breakdown: { error_institution: 0.5, error_plaid: 0.08, success: 0.42 },
+            last_status_change: '2019-02-15T15:50:00Z',
+            status: 'DEGRADED',
+          },
+          investments: {
+            breakdown: { error_institution: 0.09, error_plaid: 0.02, success: 0.89 },
+            last_status_change: '2019-02-15T15:53:00Z',
+            status: 'HEALTHY',
+          },
+          investments_updates: {
+            breakdown: {
+              error_institution: 0.03,
+              error_plaid: 0.02,
+              refresh_interval: 'NORMAL',
+              success: 0.95,
+            },
+            last_status_change: '2019-02-12T08:22:00Z',
+            status: 'HEALTHY',
+          },
+          item_logins: {
+            breakdown: { error_institution: 0.09, error_plaid: 0.01, success: 0.9 },
+            last_status_change: '2019-02-15T15:53:00Z',
+            status: 'HEALTHY',
+          },
+          liabilities: {
+            breakdown: { error_institution: 0.09, error_plaid: 0.02, success: 0.89 },
+            last_status_change: '2019-02-15T15:53:00Z',
+            status: 'HEALTHY',
+          },
+          liabilities_updates: {
+            breakdown: {
+              error_institution: 0.03,
+              error_plaid: 0.02,
+              refresh_interval: 'NORMAL',
+              success: 0.95,
+            },
+            last_status_change: '2019-02-12T08:22:00Z',
+            status: 'HEALTHY',
+          },
+          transactions_updates: {
+            breakdown: {
+              error_institution: 0.03,
+              error_plaid: 0.02,
+              refresh_interval: 'NORMAL',
+              success: 0.95,
+            },
+            last_status_change: '2019-02-12T08:22:00Z',
+            status: 'HEALTHY',
+          },
+        },
+      },
+    },
+    required: [],
+  })
+  .openapi('InstitutionStatus')
+
+const InstitutionSchema = z
+  .looseObject({
+    auth_metadata: AuthMetadataSchema.exactOptional(),
+    country_codes: z
+      .array(CountryCodeSchema)
+      .openapi({ description: 'A list of the country codes supported by the institution.' }),
+    institution_id: z.string().openapi({ description: 'Unique identifier for the institution' }),
+    logo: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "Base64 encoded representation of the institution's logo" }),
+    name: z.string().openapi({ description: 'The official name of the institution' }),
+    oauth: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates that the institution has a mandatory OAuth login flow. Note that `oauth` may be `false` even for institutions that support OAuth, if the institution is in the process of migrating to OAuth and some active Items still exist that do not use OAuth.',
+      }),
+    payment_initiation_metadata: PaymentInitiationMetadataSchema.exactOptional(),
+    primary_color: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Hexadecimal representation of the primary color used by the institution',
+      }),
+    products: z
+      .array(ProductsSchema)
+      .openapi({
+        description:
+          'A list of the Plaid products supported by the institution. Note that only institutions that support Instant Auth will return `auth` in the product array; institutions that do not list `auth` may still support other Auth methods such as Instant Match or Automated Micro-deposit Verification. To identify institutions that support those methods, use the `auth_metadata` object. For more details, see [Full Auth coverage](https://plaid.com/docs/auth/coverage/).',
+      }),
+    routing_numbers: z
+      .array(z.string())
+      .openapi({
+        description:
+          'A partial list of routing numbers associated with the institution. This list is provided for the purpose of looking up institutions by routing number. It is not comprehensive and should never be used as a complete list of routing numbers for an institution.',
+      }),
+    status: InstitutionStatusSchema.exactOptional(),
+    url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The URL for the institution's website" }),
+  })
+  .openapi({
+    description: 'Details relating to a specific financial institution',
+    required: ['institution_id', 'name', 'products', 'country_codes', 'routing_numbers', 'oauth'],
+    title: 'Institution',
+  })
+  .openapi('Institution')
+
+type InstitutionsGetResponseType = {
+  institutions: z.infer<typeof InstitutionSchema>[]
+  request_id: z.infer<typeof RequestIDSchema>
+  total: number
+}
+
+type InstitutionsSearchResponseType = {
+  institutions: z.infer<typeof InstitutionSchema>[]
+  request_id: z.infer<typeof RequestIDSchema>
+}
+
+const SecurityOverrideSchema = z
+  .object({
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Either a valid `iso_currency_code` or `unofficial_currency_code`' }),
+    cusip: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "9-character CUSIP, an identifier assigned to North American securities. Please note that Plaid's customers must hold a license directly from CUSIP Global Services to receive CUSIP & ISIN data. This field will be null by default for new customers. For existing customers, this field will be null by default starting on Sept 15, 2023. If you would like access to this field, please contact your Plaid Account Manager or reach out to investments-vendors@plaid.com.",
+      }),
+    isin: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "12-character ISIN, a globally unique securities identifier. Please note that Plaid's customers must hold a license directly from CUSIP Global Services to receive CUSIP & ISIN data. This field will be null by default for new customers. For existing customers, this field will be null by default starting on Sept 15, 2023. If you would like access to this field, please contact your Plaid Account Manager or reach out to investments-vendors@plaid.com.",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A descriptive name for the security, suitable for display.' }),
+    sedol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: '7-character SEDOL, an identifier assigned to securities in the UK.',
+      }),
+    ticker_symbol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The security’s trading symbol for publicly traded securities, and otherwise a short identifier if available.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specify the security associated with the holding or investment transaction. When inputting custom security data to the Sandbox, Plaid will perform post-data-retrieval normalization and enrichment. These processes may cause the data returned by the Sandbox to be slightly different from the data you input. An ISO-4217 currency code and a security identifier (`ticker_symbol`, `cusip`, `isin`, or `sedol`) are required.',
+    title: 'SecurityOverride',
+    required: [],
+  })
+  .openapi('SecurityOverride')
+
+const HoldingsOverrideSchema = z
+  .object({
+    cost_basis: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The average original value of the holding. Multiple cost basis values for the same security purchased at different prices are not supported.',
+      }),
+    currency: z
+      .string()
+      .openapi({ description: 'Either a valid `iso_currency_code` or `unofficial_currency_code`' }),
+    institution_price: z
+      .float64()
+      .openapi({ description: 'The last price given by the institution for this security' }),
+    institution_price_as_of: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date at which `institution_price` was current. Must be formatted as an [ISO 8601](https://wikipedia.org/wiki/ISO_8601) date.',
+      }),
+    quantity: z
+      .float64()
+      .openapi({
+        description:
+          'The total quantity of the asset held, as reported by the financial institution.',
+      }),
+    security: SecurityOverrideSchema,
+  })
+  .openapi({
+    description: 'Specify the holdings on the account.',
+    required: ['institution_price', 'quantity', 'currency', 'security'],
+    title: 'HoldingsOverride',
+  })
+  .openapi('HoldingsOverride')
+
+const OwnerOverrideSchema = z
+  .looseObject({
+    addresses: z
+      .array(AddressSchema)
+      .openapi({ description: 'Data about the various addresses associated with the account.' }),
+    emails: z
+      .array(EmailSchema)
+      .openapi({ description: 'A list of email addresses associated with the account.' }),
+    names: z
+      .array(z.string())
+      .openapi({
+        description:
+          'A list of names associated with the account by the financial institution. These should always be the names of individuals, even for business accounts. Note that the same name data will be used for all accounts associated with an Item.',
+      }),
+    phone_numbers: z
+      .array(PhoneNumberSchema)
+      .openapi({ description: 'A list of phone numbers associated with the account.' }),
+  })
+  .openapi({
+    description:
+      'Data about the owner or owners of an account. Any fields not specified will be filled in with default Sandbox information.',
+    required: ['names', 'phone_numbers', 'emails', 'addresses'],
+    title: 'OwnerOverride',
+  })
+  .openapi('OwnerOverride')
+
+const PaystubOverrideEmployeeAddressSchema = z
+  .object({
+    city: z.string().exactOptional().openapi({ description: 'The full city name.' }),
+    country: z.string().exactOptional().openapi({ description: 'The country of the address.' }),
+    postal_code: z.string().exactOptional().openapi({ description: '5 digit postal code.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The region or state\nExample: `"NC"`' }),
+    street: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full street address\nExample: `"564 Main Street, APT 15"`' }),
+  })
+  .openapi({ description: 'The address of the employee.', required: [] })
+  .openapi('PaystubOverrideEmployeeAddress')
+
+const PaystubOverrideEmployeeSchema = z
+  .object({
+    address: PaystubOverrideEmployeeAddressSchema.exactOptional(),
+    name: z.string().exactOptional().openapi({ description: 'The name of the employee.' }),
+  })
+  .openapi({ description: 'The employee on the paystub.', required: [] })
+  .openapi('PaystubOverrideEmployee')
+
+const PaystubOverrideEmployerSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the employer.' }),
+  })
+  .openapi({ description: 'The employer on the paystub.', required: [] })
+  .openapi('PaystubOverrideEmployer')
+
+const IncomeBreakdownTypeSchema = z
+  .union([z.literal('bonus'), z.literal('overtime'), z.literal('regular'), z.literal(null)])
+  .nullable()
+  .openapi({
+    description:
+      'The type of income. Possible values include:\n  `"regular"`: regular income\n  `"overtime"`: overtime income\n  `"bonus"`: bonus income',
+  })
+  .openapi('IncomeBreakdownType')
+
+const IncomeBreakdownSchema = z
+  .looseObject({
+    hours: z
+      .number()
+      .nullable()
+      .openapi({ description: 'The number of hours logged for this income for this pay period.' }),
+    rate: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'The hourly rate at which the income is paid.' }),
+    total: z.float64().nullable().openapi({ description: 'The total pay for this pay period.' }),
+    type: IncomeBreakdownTypeSchema,
+  })
+  .openapi({
+    deprecated: true,
+    description: 'An object representing a breakdown of the different income types on the paystub.',
+    required: ['type', 'rate', 'hours', 'total'],
+    title: 'IncomeBreakdown',
+  })
+  .openapi('IncomeBreakdown')
+
+const PaySchema = z
+  .looseObject({
+    amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A numerical amount of a specific currency.' }),
+    currency: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Currency code, e.g. USD' }),
+  })
+  .openapi({
+    deprecated: true,
+    description: 'An object representing a monetary amount.',
+    title: 'Pay',
+    required: [],
+  })
+  .openapi('Pay')
+
+const DistributionBreakdownSchema = z
+  .looseObject({
+    account_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of the account for the given distribution.' }),
+    bank_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The name of the bank that the payment is being deposited to.' }),
+    current_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The amount distributed to this account.' }),
+    current_pay: PaySchema.exactOptional(),
+    iso_currency_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ISO-4217 currency code of the net pay. Always `null` if `unofficial_currency_code` is non-null.',
+      }),
+    mask: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The last 2-4 alphanumeric characters of an account's official account number.",
+      }),
+    type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "Type of the account that the paystub was sent to (e.g. 'checking').",
+      }),
+    unofficial_currency_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unofficial currency code associated with the net pay. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
+      }),
+  })
+  .openapi({
+    description: 'Information about the accounts that the payment was distributed to.',
+    title: 'DistributionBreakdown',
+    required: [],
+  })
+  .openapi('DistributionBreakdown')
+
+const PayPeriodDetailsSchema = z
+  .looseObject({
+    check_amount: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The amount of the paycheck.' }),
+    distribution_breakdown: z.array(DistributionBreakdownSchema).exactOptional(),
+    end_date: z.iso
+      .date()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The pay period end date, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format: "yyyy-mm-dd".',
+      }),
+    gross_earnings: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Total earnings before tax/deductions.' }),
+    pay_date: z.iso
+      .date()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date on which the paystub was issued, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
+      }),
+    pay_day: z.iso
+      .date()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The date on which the paystub was issued, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
+      }),
+    pay_frequency: z
+      .union([
+        z.literal('PAY_FREQUENCY_UNKNOWN'),
+        z.literal('PAY_FREQUENCY_WEEKLY'),
+        z.literal('PAY_FREQUENCY_BIWEEKLY'),
+        z.literal('PAY_FREQUENCY_SEMIMONTHLY'),
+        z.literal('PAY_FREQUENCY_MONTHLY'),
+        z.literal(null),
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The frequency at which an individual is paid.' }),
+    start_date: z.iso
+      .date()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The pay period start date, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format: "yyyy-mm-dd".',
+      }),
+  })
+  .openapi({
+    description: 'Details about the pay period.',
+    title: 'PayPeriodDetails',
+    required: [],
+  })
+  .openapi('PayPeriodDetails')
+
+const PaystubOverrideSchema = z
+  .object({
+    employee: PaystubOverrideEmployeeSchema.exactOptional(),
+    employer: PaystubOverrideEmployerSchema.exactOptional(),
+    income_breakdown: z.array(IncomeBreakdownSchema).exactOptional(),
+    pay_period_details: PayPeriodDetailsSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'An object representing data from a paystub.',
+    title: 'PaystubOverride',
+    required: [],
+  })
+  .openapi('PaystubOverride')
+
+const IncomeOverrideSchema = z
+  .object({
+    paystubs: z
+      .array(PaystubOverrideSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of paystubs associated with the account.' }),
+  })
+  .openapi({
+    description: 'Specify payroll data on the account.',
+    title: 'IncomeOverride',
+    required: [],
+  })
+  .openapi('IncomeOverride')
+
+const InflowModelSchema = z
+  .looseObject({
+    income_amount: z
+      .float64()
+      .openapi({
+        description:
+          'Amount of income per month. This value is required if `type` is `monthly-income`.',
+      }),
+    payment_day_of_month: z
+      .number()
+      .openapi({
+        description:
+          'Number between 1 and 28, or `last` meaning the last day of the month. The day of the month on which the income transaction will appear. The name of the income transaction. This field is required if `type` is `monthly-income`, `monthly-balance-payment` or `monthly-interest-only-payment`.',
+      }),
+    statement_day_of_month: z
+      .string()
+      .openapi({
+        description:
+          'Number between 1 and 28, or `last` meaning the last day of the month. The day of the month on which the balance is calculated for the next payment. The name of the income transaction. This field is required if `type` is `monthly-balance-payment` or `monthly-interest-only-payment`.',
+      }),
+    transaction_name: z
+      .string()
+      .openapi({
+        description:
+          'The name of the income transaction. This field is required if `type` is `monthly-income`, `monthly-balance-payment` or `monthly-interest-only-payment`.',
+      }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'Inflow model. One of the following:\n\n`none`: No income\n\n`monthly-income`: Income occurs once per month `monthly-balance-payment`: Pays off the balance on a liability account at the given statement day of month.\n\n`monthly-interest-only-payment`: Makes an interest-only payment on a liability account at the given statement day of month.\n\nNote that account types supported by Liabilities will accrue interest in the Sandbox. The types impacted are account type `credit` with subtype `credit` or `paypal`, and account type `loan` with subtype `student` or `mortgage`.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `inflow_model` allows you to model a test account that receives regular income or make regular payments on a loan. Any transactions generated by the `inflow_model` will appear in addition to randomly generated test data or transactions specified by `override_accounts`.',
+    required: [
+      'type',
+      'income_amount',
+      'payment_day_of_month',
+      'transaction_name',
+      'statement_day_of_month',
+    ],
+    title: 'InflowModel',
+  })
+  .openapi('InflowModel')
+
+const InvestmentsTransactionsOverrideSchema = z
+  .object({
+    currency: z
+      .string()
+      .openapi({ description: 'Either a valid `iso_currency_code` or `unofficial_currency_code`' }),
+    date: z.iso
+      .date()
+      .openapi({
+        description:
+          'Posting date for the transaction. Must be formatted as an [ISO 8601](https://wikipedia.org/wiki/ISO_8601) date.',
+      }),
+    fees: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The combined value of all fees applied to this transaction.' }),
+    name: z.string().openapi({ description: "The institution's description of the transaction." }),
+    price: z
+      .float64()
+      .openapi({ description: 'The price of the security at which this transaction occurred.' }),
+    quantity: z
+      .float64()
+      .openapi({
+        description:
+          'The number of units of the security involved in this transaction. Must be positive if the type is a buy and negative if the type is a sell.',
+      }),
+    security: SecurityOverrideSchema.exactOptional(),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'The type of the investment transaction. Possible values are:\n`buy`: Buying an investment\n`sell`: Selling an investment\n`cash`: Activity that modifies a cash position\n`fee`: A fee on the account\n`transfer`: Activity that modifies a position, but not through buy/sell activity e.g. options exercise, portfolio transfer',
+      }),
+  })
+  .openapi({
+    description: 'Specify the list of investments transactions on the account.',
+    required: ['date', 'name', 'quantity', 'price', 'type', 'currency'],
+    title: 'Investments_TransactionsOverride',
+  })
+  .openapi('InvestmentsTransactionsOverride')
+
+const StudentLoanStatusSchema = z
+  .looseObject({
+    end_date: z.iso
+      .date()
+      .nullable()
+      .openapi({
+        description:
+          'The date until which the loan will be in its current status. Dates are returned in an [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD).\n',
+      }),
+    type: z
+      .enum([
+        'cancelled',
+        'charged off',
+        'claim',
+        'consolidated',
+        'deferment',
+        'delinquent',
+        'discharged',
+        'extension',
+        'forbearance',
+        'in grace',
+        'in military',
+        'in school',
+        'not fully disbursed',
+        'other',
+        'paid in full',
+        'refunded',
+        'repayment',
+        'transferred',
+      ])
+      .nullable()
+      .openapi({ description: 'The status type of the student loan' }),
+  })
+  .openapi({
+    description: 'An object representing the status of the student loan',
+    required: ['end_date', 'type'],
+    title: 'StudentLoanStatus',
+  })
+  .openapi('StudentLoanStatus')
+
+const PSLFStatusSchema = z
+  .looseObject({
+    estimated_eligibility_date: z.iso
+      .date()
+      .nullable()
+      .openapi({
+        description:
+          'The estimated date borrower will have completed 120 qualifying monthly payments. Returned in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD).',
+      }),
+    payments_made: z
+      .number()
+      .nullable()
+      .openapi({ description: 'The number of qualifying payments that have been made.' }),
+    payments_remaining: z
+      .number()
+      .nullable()
+      .openapi({ description: 'The number of qualifying payments remaining.' }),
+  })
+  .openapi({
+    description:
+      "Information about the student's eligibility in the Public Service Loan Forgiveness program. This is only returned if the institution is FedLoan (`ins_116527`). ",
+    required: ['estimated_eligibility_date', 'payments_made', 'payments_remaining'],
+    title: 'PSLFStatus',
+  })
+  .openapi('PSLFStatus')
+
+const StudentLoanRepaymentModelSchema = z
+  .looseObject({
+    non_repayment_months: z
+      .number()
+      .openapi({ description: 'Configures the number of months before repayment starts.' }),
+    repayment_months: z
+      .number()
+      .openapi({
+        description: 'Configures the number of months of repayments before the loan is paid off.',
+      }),
+    type: z
+      .string()
+      .openapi({ description: 'The only currently supported value for this field is `standard`.' }),
+  })
+  .openapi({
+    description:
+      'Student loan repayment information used to configure Sandbox test data for the Liabilities product',
+    required: ['type', 'non_repayment_months', 'repayment_months'],
+    title: 'StudentLoanRepaymentModel',
+  })
+  .openapi('StudentLoanRepaymentModel')
+
+const LiabilityOverrideSchema = z
+  .looseObject({
+    balance_transfer_apr: z
+      .float64()
+      .openapi({
+        description:
+          'The balance transfer APR percentage value. Can only be set if `type` is `credit`.',
+      }),
+    cash_apr: z
+      .float64()
+      .openapi({
+        description: 'The cash APR percentage value. Can only be set if `type` is `credit`.',
+      }),
+    expected_payoff_date: z.iso
+      .date()
+      .openapi({
+        description:
+          'Override the `expected_payoff_date` field. Can only be set if `type` is `student`.',
+      }),
+    guarantor: z
+      .string()
+      .openapi({
+        description: 'Override the `guarantor` field. Can only be set if `type` is `student`.',
+      }),
+    interest_capitalization_grace_period_months: z
+      .number()
+      .openapi({
+        description:
+          'If set, interest capitalization begins at the given number of months after loan origination. By default interest is never capitalized. Can only be set if `type` is `student`.',
+      }),
+    is_federal: z
+      .boolean()
+      .openapi({
+        description: 'Override the `is_federal` field. Can only be set if `type` is `student`.',
+      }),
+    is_overdue: z.boolean().openapi({ description: 'Override the `is_overdue` field' }),
+    last_payment_amount: z
+      .float64()
+      .openapi({
+        description:
+          'Override the `last_payment_amount` field. Can only be set if `type` is `credit`.',
+      }),
+    loan_name: z
+      .string()
+      .openapi({
+        description: 'Override the `loan_name` field. Can only be set if `type` is `student`.',
+      }),
+    loan_status: StudentLoanStatusSchema,
+    minimum_payment_amount: z
+      .float64()
+      .openapi({
+        description:
+          'Override the `minimum_payment_amount` field. Can only be set if `type` is `credit` or `student`.',
+      }),
+    nominal_apr: z
+      .float64()
+      .openapi({
+        description:
+          'The interest rate on the loan as a percentage. Can only be set if `type` is `student`.',
+      }),
+    origination_date: z.iso
+      .date()
+      .openapi({
+        description:
+          'The date on which the loan was initially lent, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format. Can only be set if `type` is `student`.',
+      }),
+    payment_reference_number: z
+      .string()
+      .openapi({
+        description:
+          'Override the `payment_reference_number` field. Can only be set if `type` is `student`.',
+      }),
+    principal: z
+      .float64()
+      .openapi({
+        description: 'The original loan principal. Can only be set if `type` is `student`.',
+      }),
+    pslf_status: PSLFStatusSchema,
+    purchase_apr: z
+      .float64()
+      .openapi({
+        description:
+          'The purchase APR percentage value. For simplicity, this is the only interest rate used to calculate interest charges. Can only be set if `type` is `credit`.',
+      }),
+    repayment_model: StudentLoanRepaymentModelSchema,
+    repayment_plan_description: z
+      .string()
+      .openapi({
+        description:
+          'Override the `repayment_plan.description` field. Can only be set if `type` is `student`.',
+      }),
+    repayment_plan_type: z
+      .string()
+      .openapi({
+        description:
+          'Override the `repayment_plan.type` field. Can only be set if `type` is `student`. Possible values are: `"extended graduated"`, `"extended standard"`, `"graduated"`, `"income-contingent repayment"`, `"income-based repayment"`, `"interest only"`, `"other"`, `"pay as you earn"`, `"revised pay as you earn"`, or `"standard"`.',
+      }),
+    sequence_number: z
+      .string()
+      .openapi({
+        description:
+          'Override the `sequence_number` field. Can only be set if `type` is `student`.',
+      }),
+    servicer_address: AddressSchema,
+    special_apr: z
+      .float64()
+      .openapi({
+        description: 'The special APR percentage value. Can only be set if `type` is `credit`.',
+      }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'The type of the liability object, either `credit` or `student`. Mortgages are not currently supported in the custom Sandbox.',
+      }),
+  })
+  .openapi({
+    description: 'Used to configure Sandbox test data for the Liabilities product',
+    required: [
+      'type',
+      'purchase_apr',
+      'cash_apr',
+      'balance_transfer_apr',
+      'special_apr',
+      'last_payment_amount',
+      'minimum_payment_amount',
+      'is_overdue',
+      'origination_date',
+      'principal',
+      'nominal_apr',
+      'interest_capitalization_grace_period_months',
+      'repayment_model',
+      'expected_payoff_date',
+      'guarantor',
+      'is_federal',
+      'loan_name',
+      'loan_status',
+      'payment_reference_number',
+      'pslf_status',
+      'repayment_plan_description',
+      'repayment_plan_type',
+      'sequence_number',
+      'servicer_address',
+    ],
+    title: 'LiabilityOverride',
+  })
+  .openapi('LiabilityOverride')
+
+const MetaSchema = z
+  .looseObject({
+    limit: z.float64().openapi({ description: "The account's limit" }),
+    mask: z
+      .string()
+      .regex(/^[A-Za-z0-9]{2,4}$/)
+      .min(2)
+      .max(4)
+      .openapi({
+        description:
+          "The account's mask. Should be a string of 2-4 alphanumeric characters. This allows you to model a mask which does not match the account number (such as with a virtual account number).",
+      }),
+    name: z.string().openapi({ description: "The account's name" }),
+    official_name: z.string().openapi({ description: "The account's official name" }),
+  })
+  .openapi({
+    description: 'Allows specifying the metadata of the test account',
+    required: ['name', 'official_name', 'limit', 'mask'],
+    title: 'Meta',
+  })
+  .openapi('Meta')
+
+const NumbersSchema = z
+  .looseObject({
+    account: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Will be used for the account number.' }),
+    ach_routing: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Must be a valid ACH routing number.' }),
+    ach_wire_routing: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Must be a valid wire transfer routing number.' }),
+    bacs_sort_code: z.string().exactOptional().openapi({ description: 'BACS sort code' }),
+    eft_branch: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'EFT branch number. Must be specified alongside `eft_institution`.',
+      }),
+    eft_institution: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'EFT institution number. Must be specified alongside `eft_branch`.',
+      }),
+    international_bic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Bank identifier code (BIC). Must be specified alongside `international_iban`.',
+      }),
+    international_iban: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'International bank account number (IBAN). If no account number is specified via `account`, will also be used as the account number by default. Must be specified alongside `international_bic`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Account and bank identifier number data used to configure the test account. All values are optional.',
+    title: 'Numbers',
+    required: [],
+  })
+  .openapi('Numbers')
+
+const TransactionOverrideSchema = z
+  .looseObject({
+    amount: z.float64().openapi({ description: 'The transaction amount. Can be negative.' }),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ISO-4217 format currency code for the transaction.' }),
+    date_posted: z.iso
+      .date()
+      .openapi({
+        description:
+          'The date the transaction posted, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format. Posted dates in the past or present will result in posted transactions; posted dates in the future will result in pending transactions.',
+      }),
+    date_transacted: z.iso
+      .date()
+      .openapi({
+        description:
+          'The date of the transaction, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format. Transactions in Sandbox will move from pending to posted once their transaction date has been reached. If a `date_transacted` is not provided by the institution, a transaction date may be available in the [`authorized_date`](https://plaid.com/docs/api/products/transactions/#transactions-get-response-transactions-authorized-date) field.',
+      }),
+    description: z.string().openapi({ description: 'The transaction description.' }),
+  })
+  .openapi({
+    description:
+      'Data to populate as test transaction data. If not specified, random transactions will be generated instead.',
+    required: ['date_transacted', 'date_posted', 'amount', 'description'],
+    title: 'TransactionOverride',
+  })
+  .openapi('TransactionOverride')
+
+const OverrideAccountTypeSchema = z
+  .enum(['investment', 'credit', 'depository', 'loan', 'payroll', 'other'])
+  .openapi({
+    description:
+      '`investment:` Investment account.\n\n`credit:` Credit card\n\n`depository:` Depository account\n\n`loan:` Loan account\n\n`payroll:` Payroll account\n\n`other:` Non-specified account type\n\nSee the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.',
+    title: 'OverrideAccountType',
+  })
+  .openapi('OverrideAccountType')
+
+type OverrideAccountsType = {
+  currency: string
+  force_available_balance: number
+  holdings?: z.infer<typeof HoldingsOverrideSchema>
+  identity: z.infer<typeof OwnerOverrideSchema>
+  income?: z.infer<typeof IncomeOverrideSchema>
+  inflow_model: z.infer<typeof InflowModelSchema>
+  investment_transactions?: z.infer<typeof InvestmentsTransactionsOverrideSchema>
+  liability: z.infer<typeof LiabilityOverrideSchema>
+  meta: z.infer<typeof MetaSchema>
+  numbers: z.infer<typeof NumbersSchema>
+  starting_balance: number
+  subtype: z.infer<typeof AccountSubtypeSchema>
+  transactions: z.infer<typeof TransactionOverrideSchema>[]
+  type: z.infer<typeof OverrideAccountTypeSchema>
+}
+
+const MFASchema = z
+  .looseObject({
+    question_rounds: z
+      .number()
+      .openapi({
+        description: 'Number of rounds of questions. Required if value of `type` is `questions`. ',
+      }),
+    questions_per_round: z
+      .number()
+      .openapi({
+        description:
+          'Number of questions per round. Required if value of `type` is `questions`. If value of type is `selections`, default value is 2.',
+      }),
+    selection_rounds: z
+      .number()
+      .openapi({
+        description:
+          'Number of rounds of selections, used if `type` is `selections`. Defaults to 1.',
+      }),
+    selections_per_question: z
+      .number()
+      .openapi({
+        description:
+          'Number of available answers per question, used if `type` is `selection`. Defaults to 2.\n',
+      }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'Possible values are `device`, `selections`, or `questions`.\n\nIf value is `device`, the MFA answer is `1234`.\n\nIf value is `selections`, the MFA answer is always the first option.\n\nIf value is `questions`, the MFA answer is  `answer_<i>_<j>` for the j-th question in the i-th round, starting from 0. For example, the answer to the first question in the second round is `answer_1_0`.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies the multi-factor authentication settings to use with this test account',
+    required: [
+      'type',
+      'question_rounds',
+      'questions_per_round',
+      'selection_rounds',
+      'selections_per_question',
+    ],
+    title: 'MFA',
+  })
+  .openapi('MFA')
+
+const OverrideAccountsSchema: z.ZodType<OverrideAccountsType> = z
+  .looseObject({
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'ISO-4217 currency code. If provided, the account will be denominated in the given currency. Transactions will also be in this currency by default.',
+      }),
+    force_available_balance: z
+      .float64()
+      .openapi({
+        description:
+          'If provided, the account will always have this amount as its  available balance, regardless of current balance or changes in transactions over time.',
+      }),
+    holdings: HoldingsOverrideSchema.exactOptional(),
+    identity: OwnerOverrideSchema,
+    income: IncomeOverrideSchema.exactOptional(),
+    inflow_model: InflowModelSchema,
+    investment_transactions: InvestmentsTransactionsOverrideSchema.exactOptional(),
+    liability: LiabilityOverrideSchema,
+    meta: MetaSchema,
+    numbers: NumbersSchema,
+    starting_balance: z
+      .float64()
+      .openapi({
+        description:
+          'If provided, the account will start with this amount as the current balance.\n',
+      }),
+    subtype: AccountSubtypeSchema,
+    transactions: z
+      .array(TransactionOverrideSchema)
+      .openapi({ description: 'Specify the list of transactions on the account.' }),
+    type: OverrideAccountTypeSchema,
+  })
+  .openapi({
+    description:
+      'Data to use to set values of test accounts. Some values cannot be specified in the schema and will instead will be calculated from other test data in order to achieve more consistent, realistic test data.',
+    required: [
+      'type',
+      'subtype',
+      'starting_balance',
+      'force_available_balance',
+      'currency',
+      'meta',
+      'numbers',
+      'transactions',
+      'identity',
+      'liability',
+      'inflow_model',
+    ],
+    title: 'OverrideAccounts',
+  })
+  .openapi('OverrideAccounts')
+
+type UserCustomPasswordType = {
+  force_error: string
+  mfa: z.infer<typeof MFASchema>
+  override_accounts: z.infer<typeof OverrideAccountsSchema>[]
+  recaptcha: string
+  seed: string
+  version?: string | null
+}
+
+const ACHClassSchema = z
+  .enum(['ccd', 'ppd', 'tel', 'web'])
+  .openapi({
+    description:
+      'Specifies the use case of the transfer. Required for transfers on an ACH network.\n\n`"ccd"` - Corporate Credit or Debit - fund transfer between two corporate bank accounts\n\n`"ppd"` - Prearranged Payment or Deposit - the transfer is part of a pre-existing relationship with a consumer, eg. bill payment\n\n`"tel"` - Telephone-Initiated Entry\n\n`"web"` - Internet-Initiated Entry - debits from a consumer’s account where their authorization is obtained over the Internet',
+    title: 'ACHClass',
+  })
+  .openapi('ACHClass')
+
+const APIClientIDSchema = z
+  .string()
+  .openapi({
+    description:
+      'Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.',
+    title: 'ClientID',
+  })
+  .openapi('APIClientID')
+
+const APISecretSchema = z
+  .string()
+  .openapi({
+    description:
+      'Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.',
+    title: 'APISecret',
+  })
+  .openapi('APISecret')
+
+const APRSchema = z
+  .looseObject({
+    apr_percentage: z.float64().openapi({ description: 'Annual Percentage Rate applied.\n' }),
+    apr_type: z
+      .enum(['balance_transfer_apr', 'cash_apr', 'purchase_apr', 'special'])
+      .openapi({ description: 'The type of balance to which the APR applies.' }),
+    balance_subject_to_apr: z
+      .float64()
+      .nullable()
+      .openapi({
+        description:
+          'Amount of money that is subjected to the APR if a balance was carried beyond payment due date. How it is calculated can vary by card issuer. It is often calculated as an average daily balance.',
+      }),
+    interest_charge_amount: z
+      .float64()
+      .nullable()
+      .openapi({ description: 'Amount of money charged due to interest from last statement.' }),
+  })
+  .openapi({
+    description: 'Information about the APR on the account.',
+    required: ['apr_percentage', 'apr_type', 'balance_subject_to_apr', 'interest_charge_amount'],
+    title: 'APR',
+  })
+  .openapi('APR')
+
+const AccessTokenSchema = z
+  .string()
+  .openapi({
+    description: 'The access token associated with the Item data is being requested for.',
+    title: 'AccessToken',
+  })
+  .openapi('AccessToken')
+
+const AccessTokenNullableSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'The access token associated with the Item data is being requested for.',
+  })
+  .openapi('AccessTokenNullable')
+
+const AccountProductAccessSchema = z
+  .object({
+    account_data: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow the application to access account data. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    statements: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow the application to access bank statements. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    tax_documents: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow the application to access tax documents. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+  })
+  .openapi({
+    description: 'Allow the application to access specific products on this account',
+    required: [],
+  })
+  .openapi('AccountProductAccess')
+
+const AccountProductAccessNullableSchema = AccountProductAccessSchema.and(z.looseObject({}))
+  .nullable()
+  .openapi({ description: 'Allow the application to access specific products on this account' })
+  .openapi('AccountProductAccessNullable')
+
+const AccountAccessSchema = z
+  .object({
+    account_product_access: AccountProductAccessNullableSchema.exactOptional(),
+    authorized: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow the application to see this account (and associated details, including balance) in the list of accounts  If unset, defaults to `true`.',
+      }),
+    unique_id: z
+      .string()
+      .openapi({
+        description:
+          'The unique account identifier for this account. This value must match that returned by the data access API for this account.',
+      }),
+  })
+  .openapi({
+    description:
+      'Allow or disallow product access by account. Unlisted (e.g. missing) accounts will be considered `new_accounts`.',
+    required: ['unique_id'],
+  })
+  .openapi('AccountAccess')
+
+const AccountFilterSubtypesSchema = z
+  .array(z.string().openapi({ description: 'List of account subtypes.' }))
+  .openapi({ description: 'A list of account subtypes to be filtered.' })
+  .openapi('AccountFilterSubtypes')
+
+const AccountFilterSchema = z
+  .object({
+    credit: AccountFilterSubtypesSchema.exactOptional(),
+    depository: AccountFilterSubtypesSchema.exactOptional(),
+    investment: AccountFilterSubtypesSchema.exactOptional(),
+    loan: AccountFilterSubtypesSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Enumerates the account subtypes that the application wishes for the user to be able to select from. For more details refer to Plaid documentation on account filters.',
+    required: [],
+  })
+  .openapi('AccountFilter')
+
+const CreditAccountSubtypeSchema = z
+  .enum(['credit card', 'paypal', 'all'])
+  .openapi({
+    description:
+      'Valid account subtypes for credit accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-credit).',
+  })
+  .openapi('CreditAccountSubtype')
+
+const CreditAccountSubtypesSchema = z
+  .array(CreditAccountSubtypeSchema)
+  .openapi({
+    description:
+      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
+    title: 'CreditAccountSubtypes',
+  })
+  .openapi('CreditAccountSubtypes')
+
+const CreditFilterSchema = z
+  .looseObject({ account_subtypes: CreditAccountSubtypesSchema })
+  .openapi({
+    description: 'A filter to apply to `credit`-type accounts',
+    required: ['account_subtypes'],
+    title: 'CreditFilter',
+  })
+  .openapi('CreditFilter')
+
+const DepositoryAccountSubtypesSchema = z
+  .array(DepositoryAccountSubtypeSchema)
+  .openapi({
+    description:
+      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
+    title: 'DepositoryAccountSubtypes',
+  })
+  .openapi('DepositoryAccountSubtypes')
+
+const DepositoryFilterSchema = z
+  .looseObject({ account_subtypes: DepositoryAccountSubtypesSchema })
+  .openapi({
+    description: 'A filter to apply to `depository`-type accounts',
+    required: ['account_subtypes'],
+    title: 'DepositoryFilter',
+  })
+  .openapi('DepositoryFilter')
+
+const InvestmentAccountSubtypeSchema = z
+  .enum([
+    '529',
+    '401a',
+    '401k',
+    '403B',
+    '457b',
+    'brokerage',
+    'cash isa',
+    'crypto exchange',
+    'education savings account',
+    'fixed annuity',
+    'gic',
+    'health reimbursement arrangement',
+    'hsa',
+    'ira',
+    'isa',
+    'keogh',
+    'lif',
+    'life insurance',
+    'lira',
+    'lrif',
+    'lrsp',
+    'mutual fund',
+    'non-custodial wallet',
+    'non-taxable brokerage account',
+    'other',
+    'other annuity',
+    'other insurance',
+    'pension',
+    'prif',
+    'profit sharing plan',
+    'qshr',
+    'rdsp',
+    'resp',
+    'retirement',
+    'rlif',
+    'roth',
+    'roth 401k',
+    'rrif',
+    'rrsp',
+    'sarsep',
+    'sep ira',
+    'simple ira',
+    'sipp',
+    'stock plan',
+    'tfsa',
+    'trust',
+    'ugma',
+    'utma',
+    'variable annuity',
+    'all',
+  ])
+  .openapi({
+    description:
+      'Valid account subtypes for investment accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-investment).',
+  })
+  .openapi('InvestmentAccountSubtype')
+
+const InvestmentAccountSubtypesSchema = z
+  .array(InvestmentAccountSubtypeSchema)
+  .openapi({
+    description:
+      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
+    title: 'InvestmentAccountSubtypes',
+  })
+  .openapi('InvestmentAccountSubtypes')
+
+const InvestmentFilterSchema = z
+  .looseObject({ account_subtypes: InvestmentAccountSubtypesSchema })
+  .openapi({
+    description:
+      'A filter to apply to `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier).',
+    required: ['account_subtypes'],
+    title: 'InvestmentFilter',
+  })
+  .openapi('InvestmentFilter')
+
+const LoanAccountSubtypeSchema = z
+  .enum([
+    'auto',
+    'business',
+    'commercial',
+    'construction',
+    'consumer',
+    'home equity',
+    'loan',
+    'mortgage',
+    'line of credit',
+    'student',
+    'other',
+    'all',
+  ])
+  .openapi({
+    description:
+      'Valid account subtypes for loan accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-loan).',
+  })
+  .openapi('LoanAccountSubtype')
+
+const LoanAccountSubtypesSchema = z
+  .array(LoanAccountSubtypeSchema)
+  .openapi({
+    description:
+      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
+    title: 'LoanAccountSubtypes',
+  })
+  .openapi('LoanAccountSubtypes')
+
+const LoanFilterSchema = z
+  .looseObject({ account_subtypes: LoanAccountSubtypesSchema })
+  .openapi({
+    description: 'A filter to apply to `loan`-type accounts',
+    required: ['account_subtypes'],
+    title: 'LoanFilter',
+  })
+  .openapi('LoanFilter')
+
+const AccountFiltersResponseSchema = z
+  .looseObject({
+    credit: CreditFilterSchema.exactOptional(),
+    depository: DepositoryFilterSchema.exactOptional(),
+    investment: InvestmentFilterSchema.exactOptional(),
+    loan: LoanFilterSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'The `account_filters` specified in the original call to `/link/token/create`.\n',
+    title: 'AccountFiltersResponse',
+    required: [],
+  })
+  .openapi('AccountFiltersResponse')
+
+const AddressMatchScoreSchema = z
+  .looseObject({
+    is_postal_code_match: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'postal code was provided for both and was a match' }),
+    score: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Match score for address. 100 is a perfect match and 0 is a no match. If the address is missing from either the API or financial institution, this is empty.',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Score found by matching address provided by the API with the address on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.',
+    title: 'AddressMatchScore',
+    required: [],
+  })
+  .openapi('AddressMatchScore')
+
+const EmailAddressMatchScoreSchema = z
+  .looseObject({
+    score: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Match score for normalized email. 100 is a perfect match and 0 is a no match. If the email is missing from either the API or financial institution, this is empty.',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Score found by matching email provided by the API with the email on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.',
+    title: 'EmailAddressMatchScore',
+    required: [],
+  })
+  .openapi('EmailAddressMatchScore')
+
+const NameMatchScoreSchema = z
+  .looseObject({
+    is_business_name_detected: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the name on either of the names that was matched for the score was a business name, with corp, llc, ltd etc in the name. While this being true confirms business name, false means it was either not a business name or Plaid could not detect it as such, since a lot of business names match owner names and are hard to detect.',
+      }),
+    is_first_name_or_last_name_match: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'first or last name completely matched' }),
+    is_nickname_match: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'nickname matched, example Jennifer and Jenn.' }),
+    score: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Represents the match score for name. 100 is a perfect score, 85-99 means a strong match, 50-84 is a partial match, less than 50 is a weak match and 0 is a complete mismatch. If the name is missing from either the API or financial institution, this is empty.',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Score found by matching name provided by the API with the name on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.',
+    title: 'NameMatchScore',
+    required: [],
+  })
+  .openapi('NameMatchScore')
+
+const PhoneNumberMatchScoreSchema = z
+  .looseObject({
+    score: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Match score for normalized phone number. 100 is a perfect match and 0 is a no match. If the phone number is missing from either the API or financial institution, this is empty.',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Score found by matching phone number provided by the API with the phone number on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.',
+    title: 'PhoneNumberMatchScore',
+    required: [],
+  })
+  .openapi('PhoneNumberMatchScore')
+
+const AccountIdentityMatchScoreSchema = AccountBaseSchema.and(
+  z
+    .looseObject({
+      address: AddressMatchScoreSchema.exactOptional(),
+      email_address: EmailAddressMatchScoreSchema.exactOptional(),
+      legal_name: NameMatchScoreSchema.exactOptional(),
+      phone_number: PhoneNumberMatchScoreSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description: 'Identity match scores for an account',
+    title: 'AccountIdentityMatchScore',
+  })
+  .openapi('AccountIdentityMatchScore')
+
+const IdentityUpdateTypesSchema = z
+  .enum(['PHONES', 'ADDRESSES', 'EMAILS', 'NAMES'])
+  .openapi({ description: 'The possible types of identity data that may have changed.' })
+  .openapi('IdentityUpdateTypes')
+
+const AccountIdsWithUpdatedIdentitySchema = z
+  .record(z.string(), z.array(IdentityUpdateTypesSchema))
+  .openapi({
+    description:
+      'An object with keys of `account_id`\'s that are mapped to their respective identity attributes that changed.\n\nExample: `{ "XMBvvyMGQ1UoLbKByoMqH3nXMj84ALSdE5B58": ["PHONES"] }`\n',
+    title: 'AccountIdsWithUpdatedIdentity',
+  })
+  .openapi('AccountIdsWithUpdatedIdentity')
+
+const AccountSelectionCardinalitySchema = z
+  .enum(['SINGLE_SELECT', 'MULTI_SELECT', 'ALL'])
+  .openapi({
+    description:
+      'The application requires that accounts be limited to a specific cardinality.\n`MULTI_SELECT`: indicates that the user should be allowed to pick multiple accounts.\n`SINGLE_SELECT`: indicates that the user should be allowed to pick only a single account.\n`ALL`: indicates that the user must share all of their accounts and should not be given the opportunity to de-select',
+  })
+  .openapi('AccountSelectionCardinality')
+
+const AccountSubtypesSchema = z
+  .array(AccountSubtypeSchema)
+  .openapi({
+    description:
+      'An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). ',
+    title: 'AccountSubtypes',
+  })
+  .openapi('AccountSubtypes')
+
+const MinLastUpdatedDatetimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'Timestamp in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DDTHH:mm:ssZ`) indicating the oldest acceptable balance when making a request to `/accounts/balance/get`.\n\nIf the balance that is pulled for `ins_128026` (Capital One) is older than the given timestamp, an `INVALID_REQUEST` error with the code of `LAST_UPDATED_DATETIME_OUT_OF_RANGE` will be returned with the most recent timestamp for the requested account contained in the response.\n\nThis field is only used when the institution is `ins_128026` (Capital One), in which case a value must be provided or an `INVALID_REQUEST` error with the code of `INVALID_FIELD` will be returned. For all other institutions, this field is ignored.',
+    title: 'MinLastUpdatedDatetime',
+  })
+  .openapi('MinLastUpdatedDatetime')
+
+const AccountsBalanceGetRequestOptionsSchema = z
+  .object({
+    account_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of `account_ids` to retrieve for the Item. The default value is `null`.\n\nNote: An error will be returned if a provided `account_id` is not associated with the Item.',
+      }),
+    min_last_updated_datetime: MinLastUpdatedDatetimeSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'An optional object to filter `/accounts/balance/get` results.',
+    required: [],
+  })
+  .openapi('AccountsBalanceGetRequestOptions')
+
+const AccountsBalanceGetRequestSchema = z
+  .object({
+    access_token: AccessTokenSchema,
+    client_id: APIClientIDSchema.exactOptional(),
+    options: AccountsBalanceGetRequestOptionsSchema.exactOptional(),
+    secret: APISecretSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'AccountsBalanceGetRequest defines the request schema for `/accounts/balance/get`',
+    required: ['access_token'],
+  })
+  .openapi('AccountsBalanceGetRequest')
+
+const AccountsGetRequestOptionsSchema = z
+  .object({
+    account_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'An array of `account_ids` to retrieve for the Account.' }),
+  })
+  .openapi({ description: 'An optional object to filter `/accounts/get` results.', required: [] })
+  .openapi('AccountsGetRequestOptions')
+
+const AccountsGetRequestSchema = z
+  .object({
+    access_token: AccessTokenSchema,
+    client_id: APIClientIDSchema.exactOptional(),
+    options: AccountsGetRequestOptionsSchema.exactOptional(),
+    secret: APISecretSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'AccountsGetRequest defines the request schema for `/accounts/get`',
+    required: ['access_token'],
+    'x-examples': { 'example-1': {} },
+  })
+  .openapi('AccountsGetRequest')
+
+const AccountsGetResponseSchema = z
+  .looseObject({
+    accounts: z
+      .array(AccountBaseSchema)
+      .openapi({
+        description:
+          'An array of financial institution accounts associated with the Item.\nIf `/accounts/balance/get` was called, each account will include real-time balance information.',
+      }),
+    item: ItemSchema,
+    request_id: RequestIDSchema,
+  })
+  .openapi({
+    description:
+      'AccountsGetResponse defines the response schema for `/accounts/get` and `/accounts/balance/get`.',
+    required: ['accounts', 'item', 'request_id'],
+  })
+  .openapi('AccountsGetResponse')
+
+const ActionStateSchema = z
+  .enum(['UNKNOWN', 'ATTEMPT', 'SUCCESS', 'FAILURE', 'SKIPPED'])
+  .openapi({ description: 'Enum representing the state of the action/activity.' })
+  .openapi('ActionState')
+
+const ActivityTypeSchema = z
+  .enum([
+    'UNKNOWN',
+    'ITEM_CREATE',
+    'ITEM_IMPORT',
+    'ITEM_UPDATE',
+    'ITEM_UNLINK',
+    'PORTAL_UNLINK',
+    'PORTAL_ITEMS_DELETE',
+    'ITEM_REMOVE',
+    'INVARIANT_CHECKER_DELETION',
+    'SCOPES_UPDATE',
+  ])
+  .openapi({ description: 'Types of consent activities' })
+  .openapi('ActivityType')
+
+const ProductAccessSchema = z
+  .looseObject({
+    accounts_details_transactions: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to "accounts_details_transactions". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    accounts_routing_number: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to "accounts_routing_number". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    accounts_statements: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to "accounts_statements". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    accounts_tax_statements: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to "accounts_tax_statements". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    auth: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to account number details. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    customers_profiles: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to "customers_profiles". Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    identity: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to the Identity product (name, email, phone, address). Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    statements: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to statements. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+    transactions: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to transaction details. Only used by certain partners. If relevant to the partner and unset, defaults to `true`.',
+      }),
+  })
+  .openapi({
+    description:
+      'The product access being requested. Used to or disallow product access across all accounts. If unset, defaults to all products allowed.',
+    required: [],
+  })
+  .openapi('ProductAccess')
+
+const ScopesSchema = z
+  .object({
+    accounts: z.array(AccountAccessSchema).exactOptional(),
+    new_accounts: z
+      .boolean()
+      .nullable()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow access to newly opened accounts as they are opened. If unset, defaults to `true`.',
+      }),
+    product_access: ProductAccessSchema.exactOptional(),
+  })
+  .openapi({ description: 'The scopes object', required: [] })
+  .openapi('Scopes')
+
+const ScopesNullableSchema = ScopesSchema.and(z.looseObject({}))
+  .nullable()
+  .openapi({ description: 'The scopes object' })
+  .openapi('ScopesNullable')
+
+const ApplicationIDSchema = z
+  .string()
+  .openapi({
+    description:
+      'This field will map to the application ID that is returned from /item/applications/list, or provided to the institution in an oauth redirect.',
+    title: 'ApplicationID',
+  })
+  .openapi('ApplicationID')
+
+const ActivitySchema = z
+  .object({
+    activity: ActivityTypeSchema,
+    id: z.string().openapi({ description: 'A unique identifier for the activity' }),
+    initiated_date: z
+      .string()
+      .openapi({
+        description:
+          'The date and time this activity was initiated [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format in UTC.',
+        example: '2020-01-01',
+      }),
+    initiator: z
+      .string()
+      .openapi({ description: 'Application ID of the client who initiated the activity.' }),
+    scopes: ScopesNullableSchema.exactOptional(),
+    state: ActionStateSchema,
+    target_application_id: ApplicationIDSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Describes a consent activity.',
+    required: ['activity', 'initiated_date', 'id', 'initiator', 'state'],
+  })
+  .openapi('Activity')
+
+const AddressDataNullableSchema = AddressDataSchema.and(z.looseObject({}))
+  .nullable()
+  .openapi({ description: 'Data about the components comprising an address.' })
+  .openapi('AddressDataNullable')
+
+const AddressNullableSchema = AddressSchema.and(z.looseObject({}))
+  .nullable()
+  .openapi({ description: 'A physical mailing address.' })
+  .openapi('AddressNullable')
+
+const ApplicationSchema = z
+  .object({
+    application_id: ApplicationIDSchema,
+    application_url: z
+      .string()
+      .nullable()
+      .openapi({ description: "The URL for the application's website" }),
+    city: z
+      .string()
+      .nullable()
+      .openapi({ description: 'A string representing the city of the client’s headquarters.' }),
+    company_legal_name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'A string representing the name of client’s legal entity.' }),
+    country_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'A string representing the country code of the client’s headquarters.',
+      }),
+    display_name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'A human-readable name of the application for display purposes' }),
+    join_date: z.iso
+      .date()
+      .openapi({
+        description:
+          'The date this application was granted production access at Plaid in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format in UTC.',
+      }),
+    logo_url: z
+      .string()
+      .nullable()
+      .openapi({ description: 'A URL that links to the application logo image.' }),
+    name: z.string().openapi({ description: 'The name of the application' }),
+    postal_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'A string representing the postal code of the client’s headquarters.',
+      }),
+    reason_for_access: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'A string provided by the connected app stating why they use their respective enabled products.',
+      }),
+    region: z
+      .string()
+      .nullable()
+      .openapi({ description: 'A string representing the region of the client’s headquarters.' }),
+    use_case: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'A string representing client’s broad use case as assessed by Plaid.',
+      }),
+  })
+  .openapi({
+    description: 'Metadata about the application',
+    required: [
+      'application_id',
+      'join_date',
+      'name',
+      'display_name',
+      'logo_url',
+      'application_url',
+      'reason_for_access',
+      'use_case',
+      'company_legal_name',
+      'city',
+      'region',
+      'postal_code',
+      'country_code',
+    ],
+  })
+  .openapi('Application')
+
+const ApplicationGetRequestSchema = z
+  .object({
+    application_id: ApplicationIDSchema,
+    client_id: APIClientIDSchema,
+    secret: APISecretSchema,
+  })
+  .openapi({
+    description: 'ApplicationGetRequest defines the schema for `/application/get`',
+    required: ['client_id', 'secret', 'application_id'],
+  })
+  .openapi('ApplicationGetRequest')
+
+const ApplicationGetResponseSchema = z
+  .looseObject({ application: ApplicationSchema, request_id: RequestIDSchema })
+  .openapi({
+    description: 'ApplicationGetResponse defines the response schema for `/application/get`',
+    required: ['request_id', 'application'],
+  })
+  .openapi('ApplicationGetResponse')
 
 const AssetReportAddOnsSchema = z
   .enum(['investments', 'fast_assets'])
@@ -2562,339 +7774,6 @@ const AssetReportFilterResponseSchema = z
   })
   .openapi('AssetReportFilterResponse')
 
-const LoanIdentifierTypeSchema = z
-  .enum(['LenderLoan', 'UniversalLoan'])
-  .nullable()
-  .openapi({
-    description: 'A value from a MISMO prescribed list that specifies the type of loan identifier.',
-    title: 'LoanIdentifierType',
-  })
-  .openapi('LoanIdentifierType')
-
-const LoanIdentifierSchema = z
-  .looseObject({
-    LoanIdentifier: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The value of the identifier for the specified type.' }),
-    LoanIdentifierType: LoanIdentifierTypeSchema,
-  })
-  .openapi({
-    description:
-      'The information used to identify this loan by various parties to the transaction or other organizations.',
-    required: ['LoanIdentifier', 'LoanIdentifierType'],
-    title: 'LoanIdentifier',
-  })
-  .openapi('LoanIdentifier')
-
-const LoanIdentifiersSchema = z
-  .looseObject({ LOAN_IDENTIFIER: LoanIdentifierSchema })
-  .openapi({
-    description: 'Collection of current and previous identifiers for this loan.',
-    required: ['LOAN_IDENTIFIER'],
-    title: 'LoanIdentifiers',
-  })
-  .openapi('LoanIdentifiers')
-
-const LoanSchema = z
-  .looseObject({ LOAN_IDENTIFIERS: LoanIdentifiersSchema })
-  .openapi({
-    description:
-      'Information specific to a mortgage loan agreement between one or more borrowers and a mortgage lender.',
-    required: ['LOAN_IDENTIFIERS'],
-    title: 'Loan',
-  })
-  .openapi('Loan')
-
-const LoansSchema = z
-  .looseObject({ LOAN: LoanSchema })
-  .openapi({
-    description: 'A collection of loans that are part of a single deal.',
-    required: ['LOAN'],
-    title: 'Loans',
-  })
-  .openapi('Loans')
-
-const IndividualNameSchema = z
-  .looseObject({
-    FirstName: z
-      .string()
-      .openapi({
-        description: 'The first name of the individual represented by the parent object.',
-      }),
-    LastName: z
-      .string()
-      .openapi({
-        description: 'The last name of the individual represented by the parent object.',
-      }),
-  })
-  .openapi({
-    description:
-      'Parent container for name that allows for choice group between parsed and unparsed containers.Parent container for name that allows for choice group between parsed and unparsed containers.',
-    required: ['FirstName', 'LastName'],
-    title: 'NAME',
-  })
-  .openapi('IndividualName')
-
-const PartyIndividualSchema = z
-  .looseObject({ NAME: IndividualNameSchema })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['NAME'],
-    title: 'INDIVIDUAL',
-  })
-  .openapi('PartyIndividual')
-
-const PartyRoleTypeSchema = z
-  .literal('Borrower')
-  .openapi({
-    description:
-      'A value from a MISMO defined list that identifies the role that the party plays in the transaction. Parties may be either a person or legal entity. A party may play multiple roles in a transaction.A value from a MISMO defined list that identifies the role that the party plays in the transaction. Parties may be either a person or legal entity. A party may play multiple roles in a transaction.',
-    title: 'PartyRoleType',
-  })
-  .openapi('PartyRoleType')
-
-const RoleDetailSchema = z
-  .looseObject({ PartyRoleType: PartyRoleTypeSchema })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['PartyRoleType'],
-    title: 'RoleDetail',
-  })
-  .openapi('RoleDetail')
-
-const RoleSchema = z
-  .looseObject({ ROLE_DETAIL: RoleDetailSchema })
-  .openapi({
-    description:
-      'ADocumentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ROLE_DETAIL'],
-    title: 'Role',
-  })
-  .openapi('Role')
-
-const RolesSchema = z
-  .looseObject({ ROLE: RoleSchema })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ROLE'],
-    title: 'Roles',
-  })
-  .openapi('Roles')
-
-const TaxpayerIdentifierTypeSchema = z
-  .enum(['IndividualTaxpayerIdentificationNumber', 'SocialSecurityNumber'])
-  .nullable()
-  .openapi({
-    description:
-      'A value from a MISMO prescribed list that classifies identification numbers used by the Internal Revenue Service (IRS) in the administration of tax laws. A Social Security number (SSN) is issued by the SSA; all other taxpayer identification numbers are issued by the IRS.',
-    title: 'TaxpayerIdentifierType',
-  })
-  .openapi('TaxpayerIdentifierType')
-
-const TaxpayerIdentifierSchema = z
-  .looseObject({
-    TaxpayerIdentifierType: TaxpayerIdentifierTypeSchema,
-    TaxpayerIdentifierValue: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The value of the taxpayer identifier as assigned by the IRS to the individual or legal entity.',
-      }),
-  })
-  .openapi({
-    description:
-      'Information about the Taxpayer identification values assigned to the individual or legal entity.Information about the Taxpayer identification values assigned to the individual or legal entity.',
-    required: ['TaxpayerIdentifierType', 'TaxpayerIdentifierValue'],
-    title: 'TaxpayerIdentifier',
-  })
-  .openapi('TaxpayerIdentifier')
-
-const TaxpayerIdentifiersSchema = z
-  .looseObject({ TAXPAYER_IDENTIFIER: TaxpayerIdentifierSchema })
-  .openapi({
-    description: 'The collection of TAXPAYER_IDENTIFICATION elements',
-    required: ['TAXPAYER_IDENTIFIER'],
-    title: 'TaxpayerIdentifiers',
-  })
-  .openapi('TaxpayerIdentifiers')
-
-const PartySchema = z
-  .looseObject({
-    INDIVIDUAL: PartyIndividualSchema,
-    ROLES: RolesSchema,
-    TAXPAYER_IDENTIFIERS: TaxpayerIdentifiersSchema,
-  })
-  .openapi({
-    description:
-      'A collection of information about a single party to a transaction. Included direct participants like the borrower and seller as well as indirect participants such as the flood certificate provider.',
-    required: ['INDIVIDUAL', 'ROLES', 'TAXPAYER_IDENTIFIERS'],
-    title: 'Party',
-  })
-  .openapi('Party')
-
-const PartiesSchema = z
-  .looseObject({ PARTY: z.array(PartySchema) })
-  .openapi({
-    description:
-      'A collection of objects that define specific parties to a deal. This includes the direct participating parties, such as borrower and seller and the indirect parties such as the credit report provider.',
-    required: ['PARTY'],
-    title: 'Parties',
-  })
-  .openapi('Parties')
-
-const StatusSchema = z
-  .looseObject({
-    StatusCode: z.string().nullable().openapi({ description: 'Satus Code.' }),
-    StatusDescription: z.string().nullable().openapi({ description: 'Status Description.' }),
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['StatusCode', 'StatusDescription'],
-    title: 'Status',
-  })
-  .openapi('Status')
-
-const StatusesSchema = z
-  .looseObject({ STATUS: StatusSchema })
-  .openapi({
-    description: 'A collection of STATUS containers.',
-    required: ['STATUS'],
-    title: 'Statuses',
-  })
-  .openapi('Statuses')
-
-const ReportingInformationSchema = z
-  .looseObject({
-    ReportingInformationIdentifier: z
-      .string()
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-      }),
-  })
-  .openapi({
-    description: 'Information about an report identifier and a report name.',
-    required: ['ReportingInformationIdentifier'],
-    title: 'ReportingInformation',
-  })
-  .openapi('ReportingInformation')
-
-const ServiceProductFulfillmentIdentifierSchema = z
-  .enum(['VOA', 'VOETRANSACTIONS'])
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    title: 'ServiceProductFulfillmentIdentifier',
-  })
-  .openapi('ServiceProductFulfillmentIdentifier')
-
-const ServiceProductFulfillmentDetailSchema = z
-  .looseObject({
-    ServiceProductFulfillmentIdentifier: ServiceProductFulfillmentIdentifierSchema,
-    VendorOrderIdentifier: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'A string that uniquely identifies a type of order Verification of Asset.',
-      }),
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['VendorOrderIdentifier', 'ServiceProductFulfillmentIdentifier'],
-    title: 'ServiceProductFulfillmentDetail',
-  })
-  .openapi('ServiceProductFulfillmentDetail')
-
-const ServiceProductFulfillmentSchema = z
-  .looseObject({ SERVICE_PRODUCT_FULFILLMENT_DETAIL: ServiceProductFulfillmentDetailSchema })
-  .openapi({
-    description:
-      'A collection of details related to a fulfillment service or product in terms of request, process and result.',
-    required: ['SERVICE_PRODUCT_FULFILLMENT_DETAIL'],
-    title: 'ServiceProductFulfillment',
-  })
-  .openapi('ServiceProductFulfillment')
-
-const AssetsSchema = z
-  .looseObject({
-    ASSET: z
-      .array(AssetSchema)
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-      }),
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSET'],
-    title: 'Assets',
-  })
-  .openapi('Assets')
-
-const VerificationOfAssetResponseSchema = z
-  .looseObject({ ASSETS: AssetsSchema })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSETS'],
-    title: 'VerificationOfAssetResponse',
-  })
-  .openapi('VerificationOfAssetResponse')
-
-const VerificationOfAssetSchema = z
-  .looseObject({
-    REPORTING_INFORMATION: ReportingInformationSchema,
-    SERVICE_PRODUCT_FULFILLMENT: ServiceProductFulfillmentSchema,
-    VERIFICATION_OF_ASSET_RESPONSE: VerificationOfAssetResponseSchema,
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: [
-      'REPORTING_INFORMATION',
-      'SERVICE_PRODUCT_FULFILLMENT',
-      'VERIFICATION_OF_ASSET_RESPONSE',
-    ],
-    title: 'VerificationOfAsset',
-  })
-  .openapi('VerificationOfAsset')
-
-const ServiceSchema = z
-  .looseObject({ STATUSES: StatusesSchema, VERIFICATION_OF_ASSET: VerificationOfAssetSchema })
-  .openapi({
-    description:
-      'A collection of details related to a fulfillment service or product in terms of request, process and result.',
-    required: ['VERIFICATION_OF_ASSET', 'STATUSES'],
-    title: 'Service',
-  })
-  .openapi('Service')
-
-const ServicesSchema = z
-  .looseObject({ SERVICE: ServiceSchema })
-  .openapi({
-    description: 'A collection of objects that describe requests and responses for services.',
-    required: ['SERVICE'],
-    title: 'Services',
-  })
-  .openapi('Services')
-
-const AssetReportFreddieSchema = z
-  .looseObject({ LOANS: LoansSchema, PARTIES: PartiesSchema, SERVICES: ServicesSchema })
-  .openapi({
-    description: 'An object representing an Asset Report with Freddie Mac schema.',
-    required: ['LOANS', 'PARTIES', 'SERVICES'],
-    title: 'AssetReportFreddie',
-  })
-  .openapi('AssetReportFreddie')
-
 const AssetReportFreddieGetRequestSchema = z
   .looseObject({
     audit_copy_token: z
@@ -2914,7 +7793,7 @@ const AssetReportFreddieGetRequestSchema = z
   })
   .openapi('AssetReportFreddieGetRequest')
 
-const AssetReportFreddieGetResponseSchema = z
+const AssetReportFreddieGetResponseSchema: z.ZodType<AssetReportFreddieGetResponseType> = z
   .looseObject({
     DEAL: AssetReportFreddieSchema,
     SchemaVersion: z
@@ -2984,53 +7863,7 @@ const AssetReportGetRequestSchema = z
   })
   .openapi('AssetReportGetRequest')
 
-const CauseSchema = PlaidErrorSchema.and(
-  z.object({ item_id: ItemIdSchema.exactOptional() }).openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'An error object and associated `item_id` used to identify a specific Item and error when a batch operation operating on multiple Items has encountered an error in one of the Items.',
-    required: ['item_id', 'error_type', 'error_code', 'error_message', 'display_message'],
-    title: 'Cause',
-  })
-  .openapi('Cause')
-
-const WarningSchema = z
-  .looseObject({
-    cause: CauseSchema,
-    warning_code: z
-      .literal('OWNERS_UNAVAILABLE')
-      .openapi({
-        description:
-          'The warning code identifies a specific kind of warning. Currently, the only possible warning code is `OWNERS_UNAVAILABLE`, which indicates that account-owner information is not available.',
-      }),
-    warning_type: z
-      .string()
-      .openapi({ description: 'The warning type, which will always be `ASSET_REPORT_WARNING`' }),
-  })
-  .openapi({
-    description:
-      'It is possible for an Asset Report to be returned with missing account owner information. In such cases, the Asset Report will contain warning data in the response, indicating why obtaining the owner information failed.',
-    required: ['warning_type', 'warning_code', 'cause'],
-    title: 'Warning',
-    'x-examples': {
-      'example-1': {
-        cause: {
-          display_message: null,
-          error_code: 'PRODUCTS_NOT_SUPPORTED',
-          error_message: 'The following products are not supported by this institution: Identity',
-          error_type: 'ITEM_ERROR',
-          http_code: 400,
-          request_id: 's32PXYOyplhGTHd',
-        },
-        warning_code: 'OWNERS_UNAVAILABLE',
-        warning_type: 'ASSET_REPORT_WARNING',
-      },
-    },
-  })
-  .openapi('Warning')
-
-const AssetReportGetResponseSchema = z
+const AssetReportGetResponseSchema: z.ZodType<AssetReportGetResponseType> = z
   .looseObject({
     report: AssetReportSchema,
     request_id: RequestIDSchema,
@@ -3405,32 +8238,6 @@ const AuthGetResponseSchema = z
     required: ['accounts', 'numbers', 'item', 'request_id'],
   })
   .openapi('AuthGetResponse')
-
-const AuthSupportedMethodsSchema = z
-  .looseObject({
-    automated_micro_deposits: z
-      .boolean()
-      .openapi({ description: 'Indicates if automated microdeposits are supported.' }),
-    instant_auth: z.boolean().openapi({ description: 'Indicates if instant auth is supported.' }),
-    instant_match: z.boolean().openapi({ description: 'Indicates if instant match is supported.' }),
-  })
-  .nullable()
-  .openapi({
-    description: 'Metadata specifically related to which auth methods an institution supports.',
-    required: ['instant_auth', 'instant_match', 'automated_micro_deposits'],
-    title: 'AuthSupportedMethods',
-  })
-  .openapi('AuthSupportedMethods')
-
-const AuthMetadataSchema = z
-  .looseObject({ supported_methods: AuthSupportedMethodsSchema })
-  .nullable()
-  .openapi({
-    description: 'Metadata that captures information about the Auth features of an institution.',
-    required: ['supported_methods'],
-    title: 'AuthMetadata',
-  })
-  .openapi('AuthMetadata')
 
 const WebhookEnvironmentValuesSchema = z
   .enum(['development', 'sandbox', 'production'])
@@ -4308,7 +9115,7 @@ const BankTransfersEventsUpdateWebhookForAuthSchema = z
   .openapi('BankTransfersEventsUpdateWebhookForAuth')
 
 const CategoriesGetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'CategoriesGetRequest defines the request schema for `/categories/get`' })
   .openapi('CategoriesGetRequest')
 
@@ -4360,16 +9167,6 @@ const CitySchema = z
     title: 'CityName',
   })
   .openapi('City')
-
-const CityNullableSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: "City from the end user's address",
-    example: 'Pawnee',
-    title: 'CityName',
-  })
-  .openapi('CityNullable')
 
 const CounterpartyTypeSchema = z
   .enum(['merchant', 'financial_institution', 'payment_app', 'marketplace', 'payment_terminal'])
@@ -4766,17 +9563,6 @@ const ClientProvidedTransactionSchema = z
   })
   .openapi('ClientProvidedTransaction')
 
-const ClientUserIDSchema = z
-  .string()
-  .min(1)
-  .openapi({
-    description:
-      'An identifier to help you connect this object to your internal systems. For example, your database ID corresponding to this object.',
-    example: 'your-db-id-3b24110',
-    title: 'ClientUserID',
-  })
-  .openapi('ClientUserID')
-
 const ClientUserIDNullableSchema = z
   .string()
   .min(1)
@@ -4842,445 +9628,8 @@ const ConsentPaymentIdempotencyKeySchema = z
   })
   .openapi('ConsentPaymentIdempotencyKey')
 
-const CountryCodeSchema = z
-  .enum([
-    'US',
-    'GB',
-    'ES',
-    'NL',
-    'FR',
-    'IE',
-    'CA',
-    'DE',
-    'IT',
-    'PL',
-    'DK',
-    'NO',
-    'SE',
-    'EE',
-    'LT',
-    'LV',
-  ])
-  .openapi({ description: 'ISO-3166-1 alpha-2 country code standard.', title: 'CountryCode' })
-  .openapi('CountryCode')
-
-const CreditDocumentTypeSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'The type of document.\n\n`PAYSTUB`: A paystub.\n\n`BANK_STATEMENT`: A bank statement.\n\n`US_TAX_W2`: A W-2 wage and tax statement provided by a US employer reflecting wages earned by the employee.\n\n`US_MILITARY_ERAS`: An electronic Retirement Account Statement (eRAS) issued by the US military.\n\n`US_MILITARY_LES`: A Leave and Earnings Statement (LES) issued by the US military.\n\n`US_MILITARY_CLES`: A Civilian Leave and Earnings Statment (CLES) issued by the US military.\n\n`GIG`: Used to indicate that the income is related to gig work. Does not necessarily correspond to a specific document type.\n\n`PLAID_GENERATED_PAYSTUB_PDF`: Used to indicate that the PDF for the paystub was generated by Plaid.\n\n`NONE`: Used to indicate that there is no underlying document for the data.\n\n`UNKNOWN`: Document type could not be determined.',
-    title: 'CreditDocumentType',
-    'x-override-enum-values-shown': [
-      'UNKNOWN',
-      'PAYSTUB',
-      'BANK_STATEMENT',
-      'US_TAX_W2',
-      'US_MILITARY_ERAS',
-      'US_MILITARY_LES',
-      'US_MILITARY_CLES',
-      'GIG',
-      'PLAID_GENERATED_PAYSTUB_PDF',
-      'NONE',
-    ],
-  })
-  .openapi('CreditDocumentType')
-
-const CreditDocumentMetadataSchema = z
-  .looseObject({
-    document_type: CreditDocumentTypeSchema,
-    download_url: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Signed URL to retrieve the underlying file.' }),
-    name: z.string().openapi({ description: 'The name of the document.' }),
-    status: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The processing status of the document.' }),
-  })
-  .openapi({
-    description: 'Object representing metadata pertaining to the document.',
-    required: ['name', 'document_type', 'download_url', 'status'],
-    title: 'CreditDocumentMetadata',
-  })
-  .openapi('CreditDocumentMetadata')
-
-const CreditPayStubAddressSchema = z
-  .looseObject({
-    city: z.string().nullable().openapi({ description: 'The full city name.' }),
-    country: z.string().nullable().openapi({ description: 'The ISO 3166-1 alpha-2 country code.' }),
-    postal_code: z.string().nullable().openapi({ description: 'The postal code of the address.' }),
-    region: z.string().nullable().openapi({ description: 'The region or state.\nExample: `"NC"`' }),
-    street: z.string().nullable().openapi({ description: 'The full street address.' }),
-  })
-  .openapi({
-    description: 'Address on the pay stub.',
-    required: ['city', 'country', 'postal_code', 'region', 'street'],
-    title: 'CreditPayStubAddress',
-  })
-  .openapi('CreditPayStubAddress')
-
-const Credit1099FilerSchema = z
-  .looseObject({
-    address: CreditPayStubAddressSchema.exactOptional(),
-    name: z.string().nullable().exactOptional().openapi({ description: 'Name of filer.' }),
-    tin: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Tax identification number of filer.' }),
-    type: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'One of the following values will be provided: Payment Settlement Entity (PSE), Electronic Payment Facilitator (EPF), Other Third Party',
-        'x-override-enum-values-shown': [
-          'Payment Settlement Entity (PSE)',
-          'Electronic Payment Facilitator (EPF)',
-          'Other Third Party',
-        ],
-      }),
-  })
-  .openapi({
-    description: 'An object representing a filer used by 1099-K tax documents.',
-    title: 'Credit1099Filer',
-    required: [],
-  })
-  .openapi('Credit1099Filer')
-
-const Form1099TypeSchema = z
-  .enum(['FORM_1099_TYPE_UNKNOWN', 'FORM_1099_TYPE_MISC', 'FORM_1099_TYPE_K'])
-  .openapi({ description: 'Form 1099 Type', title: 'Form1099Type' })
-  .openapi('Form1099Type')
-
-const Credit1099PayerSchema = z
-  .looseObject({
-    address: CreditPayStubAddressSchema.exactOptional(),
-    name: z.string().nullable().exactOptional().openapi({ description: 'Name of payer.' }),
-    telephone_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Telephone number of payer.' }),
-    tin: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Tax identification number of payer.' }),
-  })
-  .openapi({
-    description: 'An object representing a payer used by 1099-MISC tax documents.',
-    title: 'Credit1099Payer',
-    required: [],
-  })
-  .openapi('Credit1099Payer')
-
-const Credit1099RecipientSchema = z
-  .looseObject({
-    account_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Account number number of recipient.' }),
-    address: CreditPayStubAddressSchema.exactOptional(),
-    facta_filing_requirement: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Checked if FACTA is a filing requirement.',
-        'x-override-enum-values-shown': ['CHECKED', 'NOT CHECKED'],
-      }),
-    name: z.string().nullable().exactOptional().openapi({ description: 'Name of recipient.' }),
-    second_tin_exists: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Checked if 2nd TIN exists.',
-        'x-override-enum-values-shown': ['CHECKED', 'NOT CHECKED'],
-      }),
-    tin: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Tax identification number of recipient.' }),
-  })
-  .openapi({
-    description:
-      'An object representing a recipient used in both 1099-K and 1099-MISC tax documents.',
-    title: 'Credit1099Recipient',
-    required: [],
-  })
-  .openapi('Credit1099Recipient')
-
-const Credit1099Schema = z
-  .looseObject({
-    april_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for April.' }),
-    august_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for August.' }),
-    card_not_present_transaction: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount in card not present transactions.' }),
-    crop_insurance_proceeds: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of crop insurance proceeds.' }),
-    december_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for December.' }),
-    document_id: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'An identifier of the document referenced by the document metadata.',
-      }),
-    document_metadata: CreditDocumentMetadataSchema.exactOptional(),
-    excess_golden_parachute_payments: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of golden parachute payments made by payer.' }),
-    february_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for February.' }),
-    federal_income_tax_withheld: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of federal income tax withheld from payer.' }),
-    filer: Credit1099FilerSchema.exactOptional(),
-    fishing_boat_proceeds: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of fishing boat proceeds from payer.' }),
-    form_1099_type: Form1099TypeSchema.exactOptional(),
-    gross_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gross amount reported.' }),
-    gross_proceeds_paid_to_an_attorney: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of gross proceeds paid to an attorney by payer.' }),
-    january_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for January.' }),
-    july_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for July.' }),
-    june_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for June.' }),
-    march_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for March.' }),
-    may_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for May.' }),
-    medical_and_healthcare_payments: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of medical and healthcare payments from payer.' }),
-    merchant_category_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Merchant category of filer.' }),
-    nonemployee_compensation: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of nonemployee compensation from payer.' }),
-    november_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for November.' }),
-    number_of_payment_transactions: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Number of payment transactions made.' }),
-    october_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for October.' }),
-    other_income: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount in other income by payer.' }),
-    payer: Credit1099PayerSchema.exactOptional(),
-    payer_made_direct_sales_of_5000_or_more_of_consumer_products_to_buyer: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not payer made direct sales over $5000 of consumer products.',
-      }),
-    payer_state_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Primary state ID.' }),
-    payer_state_number_lower: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Secondary state ID.' }),
-    primary_state: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Primary state of business.' }),
-    primary_state_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Primary state ID.' }),
-    primary_state_income_tax: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'State income tax reported for primary state.' }),
-    pse_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Name of the PSE (Payment Settlement Entity).' }),
-    pse_telephone_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Formatted (XXX) XXX-XXXX. Phone number of the PSE (Payment Settlement Entity).',
-      }),
-    recipient: Credit1099RecipientSchema.exactOptional(),
-    rents: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount in rent by payer.' }),
-    royalties: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount in royalties by payer.' }),
-    secondary_state: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Secondary state of business.' }),
-    secondary_state_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Secondary state ID.' }),
-    secondary_state_income_tax: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'State income tax reported for secondary state.' }),
-    section_409a_deferrals: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of 409A deferrals earned by payer.' }),
-    section_409a_income: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of 409A income earned by payer.' }),
-    september_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount reported for September.' }),
-    state_income: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'State income reported for primary state.' }),
-    state_income_lower: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'State income reported for secondary state.' }),
-    state_tax_withheld: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of state tax withheld of payer for primary state.' }),
-    state_tax_withheld_lower: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of state tax withheld of payer for secondary state.' }),
-    substitute_payments_in_lieu_of_dividends_or_interest: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount of substitute payments made by payer.' }),
-    tax_year: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Tax year of the tax form.' }),
-    transactions_reported: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'One of the values will be provided Payment card Third party network',
-        'x-override-enum-values-shown': ['Payment card', 'Third party network'],
-      }),
-  })
-  .openapi({
-    description: "An object representing an end user's 1099 tax form",
-    required: ['document_id'],
-    title: 'Credit1099',
-  })
-  .openapi('Credit1099')
-
 const CreditAccountSchema = z
-  .object({
-    'credit card': z.string().openapi({ description: 'Bank-issued credit card' }),
-    paypal: z.string().openapi({ description: 'PayPal-issued credit card' }),
-  })
+  .string()
   .openapi({
     description:
       'A credit card type account. Supported products for `credit` accounts are: Balance, Transactions, Identity, and Liabilities.',
@@ -5288,37 +9637,6 @@ const CreditAccountSchema = z
     title: 'CreditAccount',
   })
   .openapi('CreditAccount')
-
-const CreditIsoCurrencyCodeSchema = z
-  .string()
-  .nullable()
-  .openapi({ description: 'The ISO 4217 currency code of the amount or balance.' })
-  .openapi('CreditIsoCurrencyCode')
-
-const CreditUnofficialCurrencyCodeSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.\nUnofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.',
-  })
-  .openapi('CreditUnofficialCurrencyCode')
-
-const CreditAmountWithCurrencySchema = z
-  .looseObject({
-    amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Value of amount with up to 2 decimal places.' }),
-    iso_currency_code: CreditIsoCurrencyCodeSchema.exactOptional(),
-    unofficial_currency_code: CreditUnofficialCurrencyCodeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'This contains an amount, denominated in the currency specified by either `iso_currency_code` or `unofficial_currency_code`',
-    required: [],
-  })
-  .openapi('CreditAmountWithCurrency')
 
 const CreditAuditCopyTokenCreateRequestSchema = z
   .object({
@@ -5429,40 +9747,6 @@ const CreditAuditCopyTokenUpdateResponseSchema = z
   })
   .openapi('CreditAuditCopyTokenUpdateResponse')
 
-const CreditBankEmployerSchema = z
-  .object({ name: z.string().openapi({ description: 'Name of the employer.' }) })
-  .openapi({ description: 'Object containing employer data.', required: ['name'] })
-  .openapi('CreditBankEmployer')
-
-const CreditBankEmploymentSchema = z
-  .object({
-    account_id: z.string().openapi({ description: "Plaid's unique identifier for the account." }),
-    bank_employment_id: z
-      .string()
-      .openapi({ description: 'A unique identifier for the bank employment.' }),
-    earliest_deposit_date: z.iso
-      .date()
-      .openapi({
-        description:
-          'The date of the earliest deposit from this employer from within the period of the days requested.',
-      }),
-    employer: CreditBankEmployerSchema,
-    latest_deposit_date: z.iso
-      .date()
-      .openapi({ description: 'The date of the most recent deposit from this employer.' }),
-  })
-  .openapi({
-    description: 'Detailed information for the bank employment.',
-    required: [
-      'bank_employment_id',
-      'account_id',
-      'employer',
-      'latest_deposit_date',
-      'earliest_deposit_date',
-    ],
-  })
-  .openapi('CreditBankEmployment')
-
 const UserTokenSchema = z
   .string()
   .openapi({
@@ -5485,206 +9769,7 @@ const CreditBankEmploymentGetRequestSchema = z
   })
   .openapi('CreditBankEmploymentGetRequest')
 
-const CreditBankIncomeAccountTypeSchema = z
-  .literal('depository')
-  .openapi({ description: 'The account type. This will always be `depository`.' })
-  .openapi('CreditBankIncomeAccountType')
-
-const CreditBankIncomeAccountSchema = z
-  .object({
-    account_id: z.string().openapi({ description: "Plaid's unique identifier for the account." }),
-    mask: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          "The last 2-4 alphanumeric characters of an account's official account number.\nNote that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.",
-      }),
-    name: z.string().openapi({ description: 'The name of the bank account.' }),
-    official_name: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The official name of the bank account.' }),
-    owners: z.array(OwnerSchema),
-    subtype: DepositoryAccountSubtypeSchema,
-    type: CreditBankIncomeAccountTypeSchema,
-  })
-  .openapi({
-    description: "The Item's bank accounts that have the selected data.",
-    required: ['account_id', 'mask', 'name', 'official_name', 'subtype', 'type', 'owners'],
-  })
-  .openapi('CreditBankIncomeAccount')
-
-const CreditBankEmploymentItemSchema = z
-  .object({
-    bank_employment_accounts: z
-      .array(CreditBankIncomeAccountSchema)
-      .openapi({ description: "The Item's accounts that have Bank Employment data." }),
-    bank_employments: z
-      .array(CreditBankEmploymentSchema)
-      .openapi({
-        description:
-          'The bank employment information for this Item. Each entry in the array is a different employer found.',
-      }),
-    institution_id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of the institution associated with the Item.',
-      }),
-    institution_name: z
-      .string()
-      .openapi({ description: 'The name of the institution associated with the Item.' }),
-    item_id: z.string().openapi({ description: 'The unique identifier for the Item.' }),
-    last_updated_time: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The time when this Item\'s data was last retrieved from the financial institution, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (e.g. "2018-04-12T03:32:11Z").',
-      }),
-  })
-  .openapi({
-    description: "The details and metadata for an end user's Item.",
-    required: [
-      'item_id',
-      'last_updated_time',
-      'institution_id',
-      'institution_name',
-      'bank_employments',
-      'bank_employment_accounts',
-    ],
-  })
-  .openapi('CreditBankEmploymentItem')
-
-const CreditBankIncomeErrorTypeSchema = z
-  .enum([
-    'INTERNAL_SERVER_ERROR',
-    'INSUFFICIENT_CREDENTIALS',
-    'ITEM_LOCKED',
-    'USER_SETUP_REQUIRED',
-    'COUNTRY_NOT_SUPPORTED',
-    'INSTITUTION_DOWN',
-    'INSTITUTION_NO_LONGER_SUPPORTED',
-    'INSTITUTION_NOT_RESPONDING',
-    'INVALID_CREDENTIALS',
-    'INVALID_MFA',
-    'INVALID_SEND_METHOD',
-    'ITEM_LOGIN_REQUIRED',
-    'MFA_NOT_SUPPORTED',
-    'NO_ACCOUNTS',
-    'ITEM_NOT_SUPPORTED',
-    'ACCESS_NOT_GRANTED',
-  ])
-  .openapi({ description: 'A broad categorization of the error. Safe for programmatic use.' })
-  .openapi('CreditBankIncomeErrorType')
-
-const CreditBankIncomeCauseSchema = z
-  .object({
-    display_message: z
-      .string()
-      .openapi({
-        description:
-          'A user-friendly representation of the error code. null if the error is not related to user action.\nThis may change over time and is not safe for programmatic use.',
-      }),
-    error_code: z
-      .string()
-      .openapi({
-        description:
-          'We use standard HTTP response codes for success and failure notifications, and our errors are further classified by `error_type`. In general, 200 HTTP codes correspond to success, 40X codes are for developer- or user-related failures, and 50X codes are for Plaid-related issues. Error fields will be `null` if no error has occurred.',
-      }),
-    error_message: z
-      .string()
-      .openapi({
-        description:
-          'A developer-friendly representation of the error code. This may change over time and is not safe for programmatic use.',
-      }),
-    error_type: CreditBankIncomeErrorTypeSchema,
-    item_id: z
-      .string()
-      .openapi({ description: 'The `item_id` of the Item associated with this warning.' }),
-  })
-  .openapi({
-    description:
-      'An error object and associated `item_id` used to identify a specific Item and error when a batch operation operating on multiple Items has encountered an error in one of the Items.',
-    required: ['error_type', 'error_code', 'error_message', 'display_message', 'item_id'],
-  })
-  .openapi('CreditBankIncomeCause')
-
-const CreditBankIncomeWarningCodeSchema = z
-  .enum([
-    'IDENTITY_UNAVAILABLE',
-    'TRANSACTIONS_UNAVAILABLE',
-    'ITEM_UNAPPROVED',
-    'REPORT_DELETED',
-    'DATA_UNAVAILABLE',
-  ])
-  .openapi({
-    description:
-      'The warning code identifies a specific kind of warning.\n`IDENTITY_UNAVAILABLE`: Unable to extract identity for the Item\n`TRANSACTIONS_UNAVAILABLE`: Unable to extract transactions for the Item\n`ITEM_UNAPPROVED`: User did not grant permission to share data for the Item\n`REPORT_DELETED`: Report deleted due to customer or consumer request\n`DATA_UNAVAILABLE`: No relevant data was found for the Item',
-  })
-  .openapi('CreditBankIncomeWarningCode')
-
-const CreditBankEmploymentWarningTypeSchema = z
-  .literal('BANK_EMPLOYMENT_WARNING')
-  .openapi({ description: 'The warning type which will always be `BANK_EMPLOYMENT_WARNING`.' })
-  .openapi('CreditBankEmploymentWarningType')
-
-const CreditBankEmploymentWarningSchema = z
-  .object({
-    cause: CreditBankIncomeCauseSchema,
-    warning_code: CreditBankIncomeWarningCodeSchema,
-    warning_type: CreditBankEmploymentWarningTypeSchema,
-  })
-  .openapi({
-    description:
-      'The warning associated with the data that was unavailable for the Bank Employment Report.',
-    required: ['warning_type', 'warning_code', 'cause'],
-  })
-  .openapi('CreditBankEmploymentWarning')
-
-const CreditBankEmploymentReportSchema = z
-  .object({
-    bank_employment_report_id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier associated with the Bank Employment Report.',
-      }),
-    days_requested: z
-      .int()
-      .openapi({
-        description: 'The number of days requested by the customer for the Bank Employment Report.',
-      }),
-    generated_time: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The time when the Bank Employment Report was generated, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (e.g. "2018-04-12T03:32:11Z").',
-      }),
-    items: z
-      .array(CreditBankEmploymentItemSchema)
-      .openapi({
-        description:
-          'The list of Items in the report along with the associated metadata about the Item.',
-      }),
-    warnings: z
-      .array(CreditBankEmploymentWarningSchema)
-      .openapi({
-        description:
-          'If data from the Bank Employment report was unable to be retrieved, the warnings will contain information about the error that caused the data to be incomplete.',
-      }),
-  })
-  .openapi({
-    description: 'The report of the Bank Employment data for an end user.',
-    required: [
-      'bank_employment_report_id',
-      'generated_time',
-      'days_requested',
-      'items',
-      'warnings',
-    ],
-  })
-  .openapi('CreditBankEmploymentReport')
-
-const CreditBankEmploymentGetResponseSchema = z
+const CreditBankEmploymentGetResponseSchema: z.ZodType<CreditBankEmploymentGetResponseType> = z
   .looseObject({
     bank_employment_reports: z
       .array(CreditBankEmploymentReportSchema)
@@ -5701,359 +9786,6 @@ const CreditBankEmploymentGetResponseSchema = z
     title: 'CreditBankEmploymentGetResponse',
   })
   .openapi('CreditBankEmploymentGetResponse')
-
-const CreditBankIncomeTransactionSchema = z
-  .looseObject({
-    amount: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          "The settled value of the transaction, denominated in the transactions's currency as stated in `iso_currency_code` or `unofficial_currency_code`.\nPositive values when money moves out of the account; negative values when money moves in.\nFor example, credit card purchases are positive; credit card payment, direct deposits, and refunds are negative.",
-      }),
-    check_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The check number of the transaction. This field is only populated for check transactions.',
-      }),
-    date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'For pending transactions, the date that the transaction occurred; for posted transactions, the date that the transaction posted.\nBoth dates are returned in an ISO 8601 format (YYYY-MM-DD).',
-      }),
-    iso_currency_code: CreditIsoCurrencyCodeSchema.exactOptional(),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The merchant name or transaction description.' }),
-    original_description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The string returned by the financial institution to describe the transaction.',
-      }),
-    pending: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When true, identifies the transaction as pending or unsettled.\nPending transaction details (name, type, amount, category ID) may change before they are settled.',
-      }),
-    transaction_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique ID of the transaction. Like all Plaid identifiers, the `transaction_id` is case sensitive.',
-      }),
-    unofficial_currency_code: CreditUnofficialCurrencyCodeSchema.exactOptional(),
-  })
-  .openapi({
-    description: "The transactions data for the end user's income source(s).",
-    required: [],
-  })
-  .openapi('CreditBankIncomeTransaction')
-
-const CreditBankIncomeHistoricalSummarySchema = z
-  .looseObject({
-    end_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The end date of the period included in this monthly summary.\nThis date will be the last day of the month, unless the month being covered is a partial month because it is the last month included in the summary and the date range being requested does not end with the last day of the month.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).',
-      }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The ISO 4217 currency code of the amount or balance.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-items-bank-income-sources-historical-summary-total-amounts) instead.',
-      }),
-    start_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The start date of the period covered in this monthly summary.\nThis date will be the first day of the month, unless the month being covered is a partial month because it is the first month included in the summary and the date range being requested does not begin with the first day of the month.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).',
-      }),
-    total_amount: z
-      .number()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Total amount of earnings for the income source(s) of the user for the month in the summary.\nThis may return an incorrect value if the summary includes income sources in multiple currencies.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-items-bank-income-sources-historical-summary-total-amounts) instead.',
-      }),
-    total_amounts: z
-      .array(CreditAmountWithCurrencySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Total amount of earnings for the income source(s) of the user for the month in the summary.\nThis can contain multiple amounts, with each amount denominated in one unique currency.',
-      }),
-    transactions: z.array(CreditBankIncomeTransactionSchema).exactOptional(),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.\nUnofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-items-bank-income-sources-historical-summary-total-amounts) instead.',
-      }),
-  })
-  .openapi({
-    description: "The end user's monthly summary for the income source(s).",
-    required: [],
-  })
-  .openapi('CreditBankIncomeHistoricalSummary')
-
-const CreditBankIncomeSummarySchema = z
-  .looseObject({
-    end_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          "The latest date in which all income sources identified by Plaid appear in the user's account.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).",
-      }),
-    historical_summary: z.array(CreditBankIncomeHistoricalSummarySchema).exactOptional(),
-    income_categories_count: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Number of income categories per end user.' }),
-    income_sources_count: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Number of income sources per end user.' }),
-    income_transactions_count: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Number of income transactions per end user.' }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The ISO 4217 currency code of the amount or balance.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-bank-income-summary-total-amounts) instead.',
-      }),
-    start_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          "The earliest date within the days requested in which all income sources identified by Plaid appear in a user's account.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).",
-      }),
-    total_amount: z
-      .number()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          "Total amount of earnings across all the income sources in the end user's Items for the days requested by the client.\nThis may return an incorrect value if the summary includes income sources in multiple currencies.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-bank-income-summary-total-amounts) instead.",
-      }),
-    total_amounts: z
-      .array(CreditAmountWithCurrencySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Total amount of earnings across all the income sources in the end user's Items for the days requested by the client.\nThis can contain multiple amounts, with each amount denominated in one unique currency.",
-      }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.\nUnofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\nPlease use [`total_amounts`](https://plaid.com/docs/api/products/income/#credit-bank_income-get-response-bank-income-bank-income-summary-total-amounts) instead.',
-      }),
-  })
-  .openapi({
-    description:
-      'Summary for bank income across all income sources and items (max history of 730 days).',
-    required: [],
-  })
-  .openapi('CreditBankIncomeSummary')
-
-const CreditBankIncomeCategorySchema = z
-  .enum([
-    'SALARY',
-    'UNEMPLOYMENT',
-    'CASH',
-    'GIG_ECONOMY',
-    'RENTAL',
-    'CHILD_SUPPORT',
-    'MILITARY',
-    'RETIREMENT',
-    'LONG_TERM_DISABILITY',
-    'BANK_INTEREST',
-    'CASH_DEPOSIT',
-    'TRANSFER_FROM_APPLICATION',
-    'TAX_REFUND',
-    'OTHER',
-  ])
-  .openapi({ description: 'The income category.' })
-  .openapi('CreditBankIncomeCategory')
-
-const CreditBankIncomePayFrequencySchema = z
-  .enum(['WEEKLY', 'BIWEEKLY', 'SEMI_MONTHLY', 'MONTHLY', 'UNKNOWN'])
-  .openapi({ description: 'The income pay frequency.' })
-  .openapi('CreditBankIncomePayFrequency')
-
-const CreditBankIncomeSourceSchema = z
-  .object({
-    account_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Plaid's unique identifier for the account." }),
-    end_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum of all dates within the specific income sources in the user’s bank account for days requested by the client.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).',
-      }),
-    historical_summary: z.array(CreditBankIncomeHistoricalSummarySchema).exactOptional(),
-    income_category: CreditBankIncomeCategorySchema.exactOptional(),
-    income_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The most common name or original description for the underlying income transactions.',
-      }),
-    income_source_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A unique identifier for an income source.' }),
-    pay_frequency: CreditBankIncomePayFrequencySchema.exactOptional(),
-    start_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          "Minimum of all dates within the specific income sources in the user's bank account for days requested by the client.\nThe date will be returned in an ISO 8601 format (YYYY-MM-DD).",
-      }),
-    total_amount: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total amount of earnings in the user’s bank account for the specific income source for days requested by the client.',
-      }),
-    transaction_count: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Number of transactions for the income source within the start and end date.',
-      }),
-  })
-  .openapi({ description: 'Detailed information for the income source.', required: [] })
-  .openapi('CreditBankIncomeSource')
-
-const CreditBankIncomeItemSchema = z
-  .object({
-    bank_income_accounts: z
-      .array(CreditBankIncomeAccountSchema)
-      .exactOptional()
-      .openapi({ description: "The Item's accounts that have Bank Income data." }),
-    bank_income_sources: z
-      .array(CreditBankIncomeSourceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The income sources for this Item. Each entry in the array is a single income source.',
-      }),
-    institution_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of the institution associated with the Item.',
-      }),
-    institution_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the institution associated with the Item.' }),
-    item_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the Item.' }),
-    last_updated_time: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          "The time when this Item's data was last retrieved from the financial institution.",
-      }),
-  })
-  .openapi({ description: "The details and metadata for an end user's Item.", required: [] })
-  .openapi('CreditBankIncomeItem')
-
-const CreditBankIncomeWarningTypeSchema = z
-  .literal('BANK_INCOME_WARNING')
-  .openapi({ description: 'The warning type which will always be `BANK_INCOME_WARNING`.' })
-  .openapi('CreditBankIncomeWarningType')
-
-const CreditBankIncomeWarningSchema = z
-  .object({
-    cause: CreditBankIncomeCauseSchema.exactOptional(),
-    warning_code: CreditBankIncomeWarningCodeSchema.exactOptional(),
-    warning_type: CreditBankIncomeWarningTypeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'The warning associated with the data that was unavailable for the Bank Income Report.',
-    required: [],
-  })
-  .openapi('CreditBankIncomeWarning')
-
-const CreditBankIncomeSchema = z
-  .object({
-    bank_income_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier associated with the Bank Income Report.' }),
-    bank_income_summary: CreditBankIncomeSummarySchema.exactOptional(),
-    days_requested: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The number of days requested by the customer for the Bank Income Report.',
-      }),
-    generated_time: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time when the Bank Income Report was generated.' }),
-    items: z
-      .array(CreditBankIncomeItemSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of Items in the report along with the associated metadata about the Item.',
-      }),
-    warnings: z
-      .array(CreditBankIncomeWarningSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If data from the Bank Income report was unable to be retrieved, the warnings will contain information about the error that caused the data to be incomplete.',
-      }),
-  })
-  .openapi({ description: 'The report of the Bank Income data for an end user.', required: [] })
-  .openapi('CreditBankIncome')
 
 const CreditBankIncomeGetRequestOptionsSchema = z
   .object({
@@ -6087,7 +9819,7 @@ const CreditBankIncomeGetRequestSchema = z
   })
   .openapi('CreditBankIncomeGetRequest')
 
-const CreditBankIncomeGetResponseSchema = z
+const CreditBankIncomeGetResponseSchema: z.ZodType<CreditBankIncomeGetResponseType> = z
   .looseObject({
     bank_income: z.array(CreditBankIncomeSchema).exactOptional(),
     request_id: RequestIDSchema,
@@ -6394,354 +10126,6 @@ const CreditEmploymentGetResponseSchema = z
   })
   .openapi('CreditEmploymentGetResponse')
 
-const CreditFreddieMacAssetDetailVOE_2_5Schema = z
-  .looseObject({
-    AssetAccountIdentifier: z
-      .string()
-      .openapi({ description: 'A unique alphanumeric string identifying an asset.' }),
-    AssetAsOfDate: z
-      .string()
-      .openapi({ description: 'Account Report As of Date / Create Date. Format YYYY-MM-DD' }),
-    AssetDaysRequestedCount: z
-      .int()
-      .openapi({
-        description:
-          'The Number of days requested made to the Financial Institution. Example When looking for 3 months of data from the FI, pass in 90 days.',
-      }),
-    AssetDescription: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'A text description that further defines the Asset. This could be used to describe the shares associated with the stocks, bonds or mutual funds, retirement funds or business owned that the borrower has disclosed (named) as an asset.',
-      }),
-    AssetOwnershipType: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Ownership type of the asset account.' }),
-    AssetType: AssetTypeSchema,
-    AssetTypeAdditionalDescription: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Additional Asset Decription some examples are Investment Tax-Deferred , Loan, 401K, 403B, Checking, Money Market, Credit Card,ROTH,529,Biller,ROLLOVER,CD,Savings,Investment Taxable, IRA, Mortgage, Line Of Credit.',
-      }),
-    AssetUniqueIdentifier: z
-      .string()
-      .openapi({ description: 'A vendor created unique Identifier.' }),
-  })
-  .openapi({
-    description: 'Details about an asset.',
-    required: [
-      'AssetUniqueIdentifier',
-      'AssetAccountIdentifier',
-      'AssetAsOfDate',
-      'AssetDescription',
-      'AssetType',
-      'AssetTypeAdditionalDescription',
-      'AssetDaysRequestedCount',
-      'AssetOwnershipType',
-    ],
-    title: 'CreditFreddieMacAssetDetail_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacAssetDetailVOE_2_5')
-
-const CreditFreddieMacAssetTransactionDetailVOE_2_5Schema = z
-  .looseObject({
-    AssetTransactionCategoryType: AssetTransactionCategoryTypeSchema,
-    AssetTransactionDate: z.iso.date().openapi({ description: 'Asset Transaction Date.' }),
-    AssetTransactionPaidByName: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Populate with who did the transaction.' }),
-    AssetTransactionPaidToName: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Populate with for whom the transaction is done.' }),
-    AssetTransactionPostDate: z.iso.date().openapi({ description: 'Asset Transaction Post Date.' }),
-    AssetTransactionType: AssetTransactionTypeSchema,
-    AssetTransactionTypeAdditionalDescription: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'FI Provided - examples are atm, cash, check, credit, debit, deposit, directDebit, directDeposit, dividend, fee, interest, other, payment, pointOfSale, repeatPayment, serviceCharge, transfer.',
-      }),
-    AssetTransactionUniqueIdentifier: z
-      .string()
-      .openapi({ description: 'A vendor created unique Identifier.' }),
-    FinancialInstitutionTransactionIdentifier: z
-      .string()
-      .nullable()
-      .openapi({ description: 'FI provided Transaction Identifier.' }),
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: [
-      'AssetTransactionUniqueIdentifier',
-      'AssetTransactionDate',
-      'AssetTransactionPostDate',
-      'AssetTransactionType',
-      'AssetTransactionPaidByName',
-      'AssetTransactionPaidToName',
-      'AssetTransactionTypeAdditionalDescription',
-      'AssetTransactionCategoryType',
-      'FinancialInstitutionTransactionIdentifier',
-    ],
-    title: 'CreditFreddieMacAssetTransactionDetail_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacAssetTransactionDetailVOE_2_5')
-
-const CreditFreddieMacAssetTransactionVOA_2_4Schema = z
-  .looseObject({
-    ASSET_TRANSACTION_DESCRIPTION: z
-      .array(AssetTransactionDescriptionSchema)
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-      }),
-    ASSET_TRANSACTION_DETAIL: AssetTransactionDetailSchema,
-  })
-  .openapi({
-    description: 'An object representing...',
-    required: ['ASSET_TRANSACTION_DETAIL', 'ASSET_TRANSACTION_DESCRIPTION'],
-    title: 'CreditFreddieMacAssetTransaction_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacAssetTransactionVOA_2_4')
-
-const CreditFreddieMacAssetTransactionVOE_2_5Schema = z
-  .looseObject({
-    ASSET_TRANSACTION_DESCRIPTION: z
-      .array(AssetTransactionDescriptionSchema)
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-      }),
-    ASSET_TRANSACTION_DETAIL: CreditFreddieMacAssetTransactionDetailVOE_2_5Schema,
-  })
-  .openapi({
-    description: 'An object representing...',
-    required: ['ASSET_TRANSACTION_DETAIL', 'ASSET_TRANSACTION_DESCRIPTION'],
-    title: 'CreditFreddieMacAssetTransaction_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacAssetTransactionVOE_2_5')
-
-const CreditFreddieMacAssetTransactionsVOA_2_4Schema = z
-  .looseObject({ ASSET_TRANSACTION: z.array(CreditFreddieMacAssetTransactionVOA_2_4Schema) })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSET_TRANSACTION'],
-    title: 'CreditFreddieMacAssetTransactions_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacAssetTransactionsVOA_2_4')
-
-const CreditFreddieMacAssetTransactionsVOE_2_5Schema = z
-  .looseObject({ ASSET_TRANSACTION: z.array(CreditFreddieMacAssetTransactionVOE_2_5Schema) })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSET_TRANSACTION'],
-    title: 'CreditFreddieMacAssetTransactions_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacAssetTransactionsVOE_2_5')
-
-const CreditFreddieMacAssetVOA_2_4Schema = z
-  .looseObject({
-    ASSET_DETAIL: AssetDetailSchema,
-    ASSET_HOLDER: AssetHolderSchema,
-    ASSET_OWNERS: AssetOwnersSchema,
-    ASSET_TRANSACTIONS: CreditFreddieMacAssetTransactionsVOA_2_4Schema,
-    VALIDATION_SOURCES: ValidationSourcesSchema,
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: [
-      'ASSET_DETAIL',
-      'ASSET_OWNERS',
-      'ASSET_HOLDER',
-      'ASSET_TRANSACTIONS',
-      'VALIDATION_SOURCES',
-    ],
-    title: 'CreditFreddieMacAsset_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacAssetVOA_2_4')
-
-const CreditFreddieMacAssetVOE_2_5Schema = z
-  .looseObject({
-    ASSET_DETAIL: CreditFreddieMacAssetDetailVOE_2_5Schema,
-    ASSET_HOLDER: AssetHolderSchema,
-    ASSET_OWNERS: AssetOwnersSchema,
-    ASSET_TRANSACTIONS: CreditFreddieMacAssetTransactionsVOE_2_5Schema,
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSET_DETAIL', 'ASSET_OWNERS', 'ASSET_HOLDER', 'ASSET_TRANSACTIONS'],
-    title: 'CreditFreddieMacAsset_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacAssetVOE_2_5')
-
-const CreditFreddieMacAssetsVOA_2_4Schema = z
-  .looseObject({
-    ASSET: z
-      .array(CreditFreddieMacAssetVOA_2_4Schema)
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-      }),
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSET'],
-    title: 'CreditFreddieMacAssets_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacAssetsVOA_2_4')
-
-const CreditFreddieMacAssetsVOE_2_5Schema = z
-  .looseObject({
-    ASSET: z
-      .array(CreditFreddieMacAssetVOE_2_5Schema)
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-      }),
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSET'],
-    title: 'CreditFreddieMacAssets_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacAssetsVOE_2_5')
-
-const CreditFreddieMacIndividualNameVOA_2_4Schema = z
-  .looseObject({
-    FirstName: z
-      .string()
-      .openapi({
-        description: 'The first name of the individual represented by the parent object.',
-      }),
-    LastName: z
-      .string()
-      .openapi({
-        description: 'The last name of the individual represented by the parent object.',
-      }),
-    MiddleName: z
-      .string()
-      .openapi({
-        description: 'The middle name of the individual represented by the parent object.',
-      }),
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['FirstName', 'LastName', 'MiddleName'],
-    title: 'CreditFreddieMacIndividualName_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacIndividualNameVOA_2_4')
-
-const CreditFreddieMacLoanIdentifiersVOA_2_4Schema = z
-  .looseObject({ LOAN_IDENTIFIER: z.array(LoanIdentifierSchema) })
-  .openapi({
-    description: 'Collection of current and previous identifiers for this loan.',
-    required: ['LOAN_IDENTIFIER'],
-    title: 'CreditFreddieMacLoanIdentifiers_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacLoanIdentifiersVOA_2_4')
-
-const CreditFreddieMacLoanVOA_2_4Schema = z
-  .looseObject({
-    LOAN_IDENTIFIERS: CreditFreddieMacLoanIdentifiersVOA_2_4Schema,
-    LoanRoleType: z
-      .string()
-      .openapi({ description: 'Type of loan. The value can only be "SubjectLoan"' }),
-  })
-  .openapi({
-    description:
-      'Information specific to a mortgage loan agreement between one or more borrowers and a mortgage lender.',
-    required: ['LOAN_IDENTIFIERS', 'LoanRoleType'],
-    title: 'CreditFreddieMacLoan_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacLoanVOA_2_4')
-
-const CreditFreddieMacLoansVOA_2_4Schema = z
-  .looseObject({ LOAN: CreditFreddieMacLoanVOA_2_4Schema })
-  .openapi({
-    description: 'A collection of loans that are part of a single deal.',
-    required: ['LOAN'],
-    title: 'CreditFreddieMacLoans_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacLoansVOA_2_4')
-
-const CreditFreddieMacPartyIndividualVOA_2_4Schema = z
-  .looseObject({ NAME: CreditFreddieMacIndividualNameVOA_2_4Schema })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['NAME'],
-    title: 'CreditFreddieMacPartyIndividual_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacPartyIndividualVOA_2_4')
-
-const CreditFreddieMacPartyVOA_2_4Schema = z
-  .looseObject({
-    INDIVIDUAL: CreditFreddieMacPartyIndividualVOA_2_4Schema,
-    ROLES: RolesSchema,
-    TAXPAYER_IDENTIFIERS: TaxpayerIdentifiersSchema,
-  })
-  .openapi({
-    description:
-      'A collection of information about a single party to a transaction. Included direct participants like the borrower and seller as well as indirect participants such as the flood certificate provider.',
-    required: ['INDIVIDUAL', 'ROLES', 'TAXPAYER_IDENTIFIERS'],
-    title: 'CreditFreddieMacParty_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacPartyVOA_2_4')
-
-const CreditFreddieMacPartiesVOA_2_4Schema = z
-  .looseObject({ PARTY: z.array(CreditFreddieMacPartyVOA_2_4Schema) })
-  .openapi({
-    description:
-      'A collection of objects that define specific parties to a deal. This includes the direct participating parties, such as borrower and seller and the indirect parties such as the credit report provider.',
-    required: ['PARTY'],
-    title: 'CreditFreddieMacParties_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacPartiesVOA_2_4')
-
-const CreditFreddieMacReportingInformationVOA_2_4Schema = z
-  .looseObject({
-    ReportDateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-      }),
-    ReportIdentifierType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac. The value can only be "ReportID"',
-      }),
-    ReportingInformationIdentifier: z
-      .string()
-      .openapi({
-        description:
-          'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-      }),
-  })
-  .openapi({
-    description: 'Information about an report identifier and a report name.',
-    required: ['ReportingInformationIdentifier'],
-    title: 'CreditFreddieMacReportingInformation_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacReportingInformationVOA_2_4')
-
 const CreditFreddieMacReportsGetRequestSchema = z
   .looseObject({
     audit_copy_token: z
@@ -6761,643 +10145,20 @@ const CreditFreddieMacReportsGetRequestSchema = z
   })
   .openapi('CreditFreddieMacReportsGetRequest')
 
-const CreditFreddieMacVerificationOfAssetResponseVOA_2_4Schema = z
-  .looseObject({ ASSETS: CreditFreddieMacAssetsVOA_2_4Schema })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSETS'],
-    title: 'VerificationOfAssetResponse',
-  })
-  .openapi('CreditFreddieMacVerificationOfAssetResponseVOA_2_4')
-
-const CreditFreddieMacVerificationOfAssetVOA_2_4Schema = z
-  .looseObject({
-    REPORTING_INFORMATION: CreditFreddieMacReportingInformationVOA_2_4Schema,
-    SERVICE_PRODUCT_FULFILLMENT: ServiceProductFulfillmentSchema,
-    VERIFICATION_OF_ASSET_RESPONSE: CreditFreddieMacVerificationOfAssetResponseVOA_2_4Schema,
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: [
-      'REPORTING_INFORMATION',
-      'SERVICE_PRODUCT_FULFILLMENT',
-      'VERIFICATION_OF_ASSET_RESPONSE',
-    ],
-    title: 'CreditFreddieMacVerificationOfAsset_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacVerificationOfAssetVOA_2_4')
-
-const CreditFreddieMacServiceVOA_2_4Schema = z
-  .looseObject({
-    STATUSES: StatusesSchema,
-    VERIFICATION_OF_ASSET: z.array(CreditFreddieMacVerificationOfAssetVOA_2_4Schema),
-  })
-  .openapi({
-    description:
-      'A collection of details related to a fulfillment service or product in terms of request, process and result.',
-    required: ['VERIFICATION_OF_ASSET', 'STATUSES'],
-    title: 'CreditFreddieMacService_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacServiceVOA_2_4')
-
-const CreditFreddieMacServicesVOA_2_4Schema = z
-  .looseObject({ SERVICE: CreditFreddieMacServiceVOA_2_4Schema })
-  .openapi({
-    description: 'A collection of objects that describe requests and responses for services.',
-    required: ['SERVICE'],
-    title: 'CreditFreddieMacServices_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacServicesVOA_2_4')
-
-const CreditFreddieMacVerificationOfAssetsDealVOA_2_4Schema = z
-  .looseObject({
-    LOANS: CreditFreddieMacLoansVOA_2_4Schema,
-    PARTIES: CreditFreddieMacPartiesVOA_2_4Schema,
-    SERVICES: CreditFreddieMacServicesVOA_2_4Schema,
-  })
-  .openapi({
-    description: 'An object representing an Asset Report with Freddie Mac schema.',
-    required: ['LOANS', 'PARTIES', 'SERVICES'],
-    title: 'CreditFreddieMacVerificationOfAssetsDeal_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacVerificationOfAssetsDealVOA_2_4')
-
-const CreditFreddieMacVerificationOfAssetsVOA_2_4Schema = z
-  .looseObject({
-    DEAL: CreditFreddieMacVerificationOfAssetsDealVOA_2_4Schema,
-    SchemaVersion: z
-      .number()
-      .openapi({ description: 'The Verification Of Assets (VOA) schema version.' }),
-  })
-  .openapi({
-    description: 'Verification of Assets Report',
-    required: ['DEAL', 'SchemaVersion'],
-    title: 'CreditFreddieMacVerificationOfAssets_VOA_2_4',
-  })
-  .openapi('CreditFreddieMacVerificationOfAssetsVOA_2_4')
-
-const CreditFreddieMacVerificationOfAssetResponseVOE_2_5Schema = z
-  .looseObject({ ASSETS: CreditFreddieMacAssetsVOE_2_5Schema })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: ['ASSETS'],
-    title: 'CreditFreddieMacVerificationOfAssetResponse_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacVerificationOfAssetResponseVOE_2_5')
-
-const CreditFreddieMacVerificationOfAssetVOE_2_5Schema = z
-  .looseObject({
-    REPORTING_INFORMATION: CreditFreddieMacReportingInformationVOA_2_4Schema,
-    SERVICE_PRODUCT_FULFILLMENT: ServiceProductFulfillmentSchema,
-    VERIFICATION_OF_ASSET_RESPONSE: CreditFreddieMacVerificationOfAssetResponseVOE_2_5Schema,
-  })
-  .openapi({
-    description:
-      'Documentation not found in the MISMO model viewer and not provided by Freddie Mac.',
-    required: [
-      'REPORTING_INFORMATION',
-      'SERVICE_PRODUCT_FULFILLMENT',
-      'VERIFICATION_OF_ASSET_RESPONSE',
-    ],
-    title: 'CreditFreddieMacVerificationOfAsset_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacVerificationOfAssetVOE_2_5')
-
-const CreditFreddieMacServiceVOE_2_5Schema = z
-  .looseObject({
-    STATUSES: StatusesSchema,
-    VERIFICATION_OF_ASSET: z.array(CreditFreddieMacVerificationOfAssetVOE_2_5Schema),
-  })
-  .openapi({
-    description:
-      'A collection of details related to a fulfillment service or product in terms of request, process and result.',
-    required: ['VERIFICATION_OF_ASSET', 'STATUSES'],
-    title: 'CreditFreddieMacService_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacServiceVOE_2_5')
-
-const CreditFreddieMacServicesVOE_2_5Schema = z
-  .looseObject({ SERVICE: CreditFreddieMacServiceVOE_2_5Schema })
-  .openapi({
-    description: 'A collection of objects that describe requests and responses for services.',
-    required: ['SERVICE'],
-    title: 'CreditFreddieMacServices_VOE_2_5',
-  })
-  .openapi('CreditFreddieMacServicesVOE_2_5')
-
-const CreditFreddieVerificationOfEmploymentDealVOE_2_5Schema = z
-  .looseObject({
-    LOANS: CreditFreddieMacLoansVOA_2_4Schema,
-    PARTIES: CreditFreddieMacPartiesVOA_2_4Schema,
-    SERVICES: CreditFreddieMacServicesVOE_2_5Schema,
-  })
-  .openapi({
-    description: 'An object representing a Verification of Employment report.',
-    required: ['LOANS', 'PARTIES', 'SERVICES'],
-    title: 'CreditFreddieVerificationOfEmploymentDeal_VOE_2_5',
-  })
-  .openapi('CreditFreddieVerificationOfEmploymentDealVOE_2_5')
-
-const CreditFreddieVerificationOfEmploymentVOE_2_5Schema = z
-  .looseObject({
-    DEAL: CreditFreddieVerificationOfEmploymentDealVOE_2_5Schema,
-    SchemaVersion: z
-      .number()
-      .openapi({ description: 'The Verification Of Employment (VOE) schema version.' }),
-  })
-  .nullable()
-  .openapi({
-    description: 'Verification of Employment Report',
-    required: ['DEAL', 'SchemaVersion'],
-    title: 'CreditFreddieVerificationOfEmployment_VOE_2_5',
-  })
-  .openapi('CreditFreddieVerificationOfEmploymentVOE_2_5')
-
-const CreditFreddieMacReportsGetResponseSchema = z
-  .looseObject({
-    VOA: CreditFreddieMacVerificationOfAssetsVOA_2_4Schema,
-    VOE: CreditFreddieVerificationOfEmploymentVOE_2_5Schema.exactOptional(),
-    request_id: RequestIDSchema,
-  })
-  .openapi({
-    description:
-      'CreditFreddieMacReportsGetResponse defines the response schema for `/credit/freddie_mac/reports/get`',
-    required: ['VOA', 'request_id'],
-    title: 'CreditFreddieMacReportsGetResponse',
-  })
-  .openapi('CreditFreddieMacReportsGetResponse')
-
-const PayStubDeductionsBreakdownSchema = z
-  .looseObject({
-    current_amount: z.float64().nullable().openapi({ description: 'Raw amount of the deduction' }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Description of the deduction line item' }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The ISO-4217 currency code of the line item. Always `null` if `unofficial_currency_code` is non-null.',
-      }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The unofficial currency code associated with the line item. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
-      }),
-    ytd_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'The year-to-date amount of the deduction' }),
-  })
-  .openapi({
-    description: 'An object representing the deduction line items for the pay period',
-    required: [
-      'current_amount',
-      'description',
-      'iso_currency_code',
-      'unofficial_currency_code',
-      'ytd_amount',
-    ],
-    title: 'PayStubDeductionsBreakdown',
-  })
-  .openapi('PayStubDeductionsBreakdown')
-
-const PayStubDeductionsTotalSchema = z
-  .looseObject({
-    current_amount: z.float64().nullable().openapi({ description: 'Raw amount of the deduction' }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The ISO-4217 currency code of the line item. Always `null` if `unofficial_currency_code` is non-null.',
-      }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The unofficial currency code associated with the line item. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
-      }),
-    ytd_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'The year-to-date total amount of the deductions' }),
-  })
-  .openapi({
-    description: 'An object representing the total deductions for the pay period',
-    required: ['current_amount', 'iso_currency_code', 'unofficial_currency_code', 'ytd_amount'],
-    title: 'PayStubDeductionsTotal',
-  })
-  .openapi('PayStubDeductionsTotal')
-
-const CreditPayStubDeductionsSchema = z
-  .looseObject({
-    breakdown: z.array(PayStubDeductionsBreakdownSchema),
-    total: PayStubDeductionsTotalSchema,
-  })
-  .openapi({
-    description: 'An object with the deduction information found on a pay stub.',
-    required: ['breakdown', 'total'],
-    title: 'CreditPayStubDeductions',
-  })
-  .openapi('CreditPayStubDeductions')
-
-const PayStubEarningsBreakdownCanonicalDescriptionSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'Commonly used term to describe the earning line item.',
-    'x-override-enum-values-shown': [
-      'BONUS',
-      'COMMISSION',
-      'OVERTIME',
-      'PAID_TIME_OFF',
-      'REGULAR_PAY',
-      'VACATION',
-      'BASIC_ALLOWANCE_HOUSING',
-      'BASIC_ALLOWANCE_SUBSISTENCE',
-      'OTHER',
-      null,
-    ],
-  })
-  .openapi('PayStubEarningsBreakdownCanonicalDescription')
-
-const PayStubEarningsBreakdownSchema = z
-  .looseObject({
-    canonical_description: PayStubEarningsBreakdownCanonicalDescriptionSchema,
-    current_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'Raw amount of the earning line item.' }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Description of the earning line item.' }),
-    hours: z
-      .number()
-      .nullable()
-      .openapi({ description: 'Number of hours applicable for this earning.' }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The ISO-4217 currency code of the line item. Always `null` if `unofficial_currency_code` is non-null.',
-      }),
-    rate: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'Hourly rate applicable for this earning.' }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The unofficial currency code associated with the line item. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
-      }),
-    ytd_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'The year-to-date amount of the deduction.' }),
-  })
-  .openapi({
-    description: 'An object representing the earnings line items for the pay period.',
-    required: [
-      'canonical_description',
-      'current_amount',
-      'description',
-      'hours',
-      'iso_currency_code',
-      'rate',
-      'unofficial_currency_code',
-      'ytd_amount',
-    ],
-    title: 'PayStubEarningsBreakdown',
-  })
-  .openapi('PayStubEarningsBreakdown')
-
-const PayStubEarningsTotalSchema = z
-  .looseObject({
-    current_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'Total amount of the earnings for this pay period.' }),
-    hours: z
-      .number()
-      .nullable()
-      .openapi({ description: 'Total number of hours worked for this pay period.' }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The ISO-4217 currency code of the line item. Always `null` if `unofficial_currency_code` is non-null.',
-      }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The unofficial currency code associated with the security. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
-      }),
-    ytd_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'The total year-to-date amount of the earnings.' }),
-  })
-  .openapi({
-    description:
-      'An object representing both the current pay period and year to date amount for an earning category.',
-    required: [
-      'current_amount',
-      'hours',
-      'iso_currency_code',
-      'unofficial_currency_code',
-      'ytd_amount',
-    ],
-    title: 'PayStubEarningsTotal',
-  })
-  .openapi('PayStubEarningsTotal')
-
-const CreditPayStubEarningsSchema = z
-  .looseObject({
-    breakdown: z.array(PayStubEarningsBreakdownSchema),
-    total: PayStubEarningsTotalSchema,
-  })
-  .openapi({
-    description:
-      'An object representing both a breakdown of earnings on a pay stub and the total earnings.',
-    required: ['breakdown', 'total'],
-    title: 'CreditPayStubEarnings',
-  })
-  .openapi('CreditPayStubEarnings')
-
-const PayStubTaxpayerIDSchema = z
-  .looseObject({
-    id_mask: z
-      .string()
-      .nullable()
-      .openapi({ description: 'ID mask; i.e. last 4 digits of the taxpayer ID.' }),
-    id_type: z.string().nullable().openapi({ description: "Type of ID, e.g. 'SSN'." }),
-  })
-  .openapi({
-    description: 'Taxpayer ID of the individual receiving the paystub.',
-    required: ['id_type', 'id_mask'],
-    title: 'PayStubTaxpayerID',
-  })
-  .openapi('PayStubTaxpayerID')
-
-const CreditPayStubEmployeeSchema = z
-  .looseObject({
-    address: CreditPayStubAddressSchema,
-    marital_status: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'Marital status of the employee - either `SINGLE` or `MARRIED`.',
-        'x-override-enum-values-shown': ['SINGLE', 'MARRIED', null],
-      }),
-    name: z.string().nullable().openapi({ description: 'The name of the employee.' }),
-    taxpayer_id: PayStubTaxpayerIDSchema,
-  })
-  .openapi({
-    description: 'Data about the employee.',
-    required: ['name', 'address', 'marital_status', 'taxpayer_id'],
-    title: 'CreditPayStubEmployee',
-  })
-  .openapi('CreditPayStubEmployee')
-
-const CreditPayStubEmployerSchema = z
-  .looseObject({
-    address: CreditPayStubAddressSchema,
-    name: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The name of the employer on the pay stub.' }),
-  })
-  .openapi({
-    description: 'Information about the employer on the pay stub.',
-    required: ['address', 'name'],
-    title: 'CreditPayStubEmployer',
-  })
-  .openapi('CreditPayStubEmployer')
-
-const CreditPayStubNetPaySchema = z
-  .looseObject({
-    current_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'Raw amount of the net pay for the pay period.' }),
-    description: z.string().nullable().openapi({ description: 'Description of the net pay.' }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The ISO-4217 currency code of the net pay. Always `null` if `unofficial_currency_code` is non-null.',
-      }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The unofficial currency code associated with the net pay. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
-      }),
-    ytd_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'The year-to-date amount of the net pay.' }),
-  })
-  .openapi({
-    description: 'An object representing information about the net pay amount on the pay stub.',
-    required: [
-      'current_amount',
-      'description',
-      'iso_currency_code',
-      'unofficial_currency_code',
-      'ytd_amount',
-    ],
-    title: 'CreditPayStubNetPay',
-  })
-  .openapi('CreditPayStubNetPay')
-
-const PayStubDistributionBreakdownSchema = z
-  .looseObject({
-    account_name: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Name of the account for the given distribution.' }),
-    bank_name: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The name of the bank that the payment is being deposited to.' }),
-    current_amount: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'The amount distributed to this account.' }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The ISO-4217 currency code of the net pay. Always `null` if `unofficial_currency_code` is non-null.',
-      }),
-    mask: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          "The last 2-4 alphanumeric characters of an account's official account number.",
-      }),
-    type: z
-      .string()
-      .nullable()
-      .openapi({
-        description: "Type of the account that the paystub was sent to (e.g. 'checking').",
-      }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The unofficial currency code associated with the net pay. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
-      }),
-  })
-  .openapi({
-    description: 'Information about the accounts that the payment was distributed to.',
-    required: [
-      'account_name',
-      'bank_name',
-      'current_amount',
-      'iso_currency_code',
-      'mask',
-      'type',
-      'unofficial_currency_code',
-    ],
-    title: 'PayStubDistributionBreakdown',
-  })
-  .openapi('PayStubDistributionBreakdown')
-
-const CreditPayStubPayBasisTypeSchema = z
-  .enum(['SALARY', 'HOURLY', 'COMMISSION'])
-  .openapi({ description: 'The explicit pay basis on the paystub (if present).' })
-  .openapi('CreditPayStubPayBasisType')
-
-const PayStubPayPeriodDetailsSchema = z
-  .looseObject({
-    distribution_breakdown: z.array(PayStubDistributionBreakdownSchema),
-    end_date: z.iso
-      .date()
-      .nullable()
-      .openapi({
-        description:
-          'The date on which the pay period ended, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
-      }),
-    gross_earnings: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'Total earnings before tax/deductions.' }),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The ISO-4217 currency code of the net pay. Always `null` if `unofficial_currency_code` is non-null.',
-      }),
-    pay_amount: z.float64().nullable().openapi({ description: 'The amount of the paycheck.' }),
-    pay_basis: CreditPayStubPayBasisTypeSchema.exactOptional(),
-    pay_date: z.iso
-      .date()
-      .nullable()
-      .openapi({
-        description:
-          'The date on which the pay stub was issued, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
-      }),
-    pay_frequency: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'The frequency at which an individual is paid.',
-        'x-override-enum-values-shown': [
-          'UNKNOWN',
-          'WEEKLY',
-          'BIWEEKLY',
-          'SEMI_MONTHLY',
-          'MONTHLY',
-          null,
-        ],
-      }),
-    start_date: z.iso
-      .date()
-      .nullable()
-      .openapi({
-        description:
-          'The date on which the pay period started, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
-      }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The unofficial currency code associated with the net pay. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
-      }),
-  })
-  .openapi({
-    description: 'Details about the pay period.',
-    required: [
-      'pay_amount',
-      'distribution_breakdown',
-      'end_date',
-      'gross_earnings',
-      'iso_currency_code',
-      'pay_date',
-      'pay_frequency',
-      'start_date',
-      'unofficial_currency_code',
-    ],
-    title: 'PayStubPayPeriodDetails',
-  })
-  .openapi('PayStubPayPeriodDetails')
-
-const CreditPayStubSchema = z
-  .looseObject({
-    deductions: CreditPayStubDeductionsSchema,
-    document_id: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'An identifier of the document referenced by the document metadata.',
-      }),
-    document_metadata: CreditDocumentMetadataSchema,
-    earnings: CreditPayStubEarningsSchema,
-    employee: CreditPayStubEmployeeSchema,
-    employer: CreditPayStubEmployerSchema,
-    net_pay: CreditPayStubNetPaySchema,
-    pay_period_details: PayStubPayPeriodDetailsSchema,
-  })
-  .openapi({
-    description: "An object representing an end user's pay stub.",
-    required: [
-      'deductions',
-      'document_id',
-      'document_metadata',
-      'earnings',
-      'employee',
-      'employer',
-      'net_pay',
-      'pay_period_details',
-    ],
-    title: 'CreditPayStub',
-  })
-  .openapi('CreditPayStub')
+const CreditFreddieMacReportsGetResponseSchema: z.ZodType<CreditFreddieMacReportsGetResponseType> =
+  z
+    .looseObject({
+      VOA: CreditFreddieMacVerificationOfAssetsVOA_2_4Schema,
+      VOE: CreditFreddieVerificationOfEmploymentVOE_2_5Schema.exactOptional(),
+      request_id: RequestIDSchema,
+    })
+    .openapi({
+      description:
+        'CreditFreddieMacReportsGetResponse defines the response schema for `/credit/freddie_mac/reports/get`',
+      required: ['VOA', 'request_id'],
+      title: 'CreditFreddieMacReportsGetResponse',
+    })
+    .openapi('CreditFreddieMacReportsGetResponse')
 
 const CreditPayrollIncomeGetRequestSchema = z
   .object({
@@ -7413,297 +10174,7 @@ const CreditPayrollIncomeGetRequestSchema = z
   })
   .openapi('CreditPayrollIncomeGetRequest')
 
-const PayrollIncomeRateOfPaySchema = z
-  .looseObject({
-    pay_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The amount at which an employee is paid.' }),
-    pay_rate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The rate at which an employee is paid.',
-        'x-override-enum-values-shown': [
-          'ANNUAL',
-          'HOURLY',
-          'CONTRACT',
-          'WEEKLY',
-          'BI_WEEKLY',
-          'MONTHLY',
-          'SEMI_MONTHLY',
-          'DAILY',
-          'COMMISSION',
-          'OTHER',
-          null,
-        ],
-      }),
-  })
-  .openapi({
-    description: 'An object representing the rate at which an individual is paid.',
-    title: 'PayrollIncomeRateOfPay',
-    required: [],
-  })
-  .openapi('PayrollIncomeRateOfPay')
-
-const PayrollIncomeAccountDataSchema = z
-  .looseObject({
-    account_id: z
-      .string()
-      .nullable()
-      .openapi({ description: 'ID of the payroll provider account.' }),
-    pay_frequency: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'The frequency at which an individual is paid.',
-        'x-override-enum-values-shown': [
-          'DAILY',
-          'WEEKLY',
-          'BIWEEKLY',
-          'SEMI_MONTHLY',
-          'MONTHLY',
-          'CONTRACT',
-          'QUARTERLY',
-          'SEMI_ANNUALLY',
-          'ANNUALLY',
-          'OTHER',
-          null,
-        ],
-      }),
-    rate_of_pay: PayrollIncomeRateOfPaySchema,
-  })
-  .nullable()
-  .openapi({
-    description: 'An object containing account level data.',
-    required: ['account_id', 'rate_of_pay', 'pay_frequency'],
-    title: 'PayrollIncomeAccountData',
-  })
-  .openapi('PayrollIncomeAccountData')
-
-const W2Box12Schema = z
-  .looseObject({
-    amount: z.string().nullable().exactOptional().openapi({ description: 'W2 Box 12 amount.' }),
-    code: z.string().nullable().exactOptional().openapi({ description: 'W2 Box 12 code.' }),
-  })
-  .openapi({ description: 'Data on the W2 Box 12', title: 'W2Box12', required: [] })
-  .openapi('W2Box12')
-
-const W2StateAndLocalWagesSchema = z
-  .looseObject({
-    employer_state_id_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'State identification number of the employer.' }),
-    local_income_tax: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Income tax from the locality.' }),
-    local_wages_tips: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Wages and tips from the locality.' }),
-    locality_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Name of the locality.' }),
-    state: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'State associated with the wage.' }),
-    state_income_tax: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Income tax from the specified state.' }),
-    state_wages_tips: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Wages and tips from the specified state.' }),
-  })
-  .openapi({ description: 'W2 state and local wages', title: 'W2StateAndLocalWages', required: [] })
-  .openapi('W2StateAndLocalWages')
-
-const CreditW2Schema = z
-  .looseObject({
-    allocated_tips: z.string().nullable().openapi({ description: 'Allocated tips.' }),
-    box_12: z.array(W2Box12Schema),
-    box_9: z.string().nullable().openapi({ description: 'Contents from box 9 on the W2.' }),
-    dependent_care_benefits: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Dependent care benefits.' }),
-    document_id: z
-      .string()
-      .openapi({
-        description: 'An identifier of the document referenced by the document metadata.',
-      }),
-    document_metadata: CreditDocumentMetadataSchema,
-    employee: CreditPayStubEmployeeSchema,
-    employer: CreditPayStubEmployerSchema,
-    employer_id_number: z
-      .string()
-      .nullable()
-      .openapi({ description: 'An employee identification number or EIN.' }),
-    federal_income_tax_withheld: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Federal income tax withheld for the tax year.' }),
-    medicare_tax_withheld: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Medicare tax withheld for the tax year.' }),
-    medicare_wages_and_tips: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Wages and tips from medicare.' }),
-    nonqualified_plans: z.string().nullable().openapi({ description: 'Nonqualified plans.' }),
-    other: z.string().nullable().openapi({ description: 'Other.' }),
-    retirement_plan: z.string().nullable().openapi({ description: 'Retirement plan.' }),
-    social_security_tax_withheld: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Social security tax withheld for the tax year.' }),
-    social_security_tips: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Tips from social security.' }),
-    social_security_wages: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Wages from social security.' }),
-    state_and_local_wages: z.array(W2StateAndLocalWagesSchema),
-    statutory_employee: z.string().nullable().openapi({ description: 'Statutory employee.' }),
-    tax_year: z.string().nullable().openapi({ description: 'The tax year of the W2 document.' }),
-    third_party_sick_pay: z.string().nullable().openapi({ description: 'Third party sick pay.' }),
-    wages_tips_other_comp: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Wages from tips and other compensation.' }),
-  })
-  .openapi({
-    description: 'W2 is an object that represents income data taken from a W2 tax document.',
-    required: [
-      'document_metadata',
-      'document_id',
-      'employer',
-      'employee',
-      'tax_year',
-      'employer_id_number',
-      'wages_tips_other_comp',
-      'federal_income_tax_withheld',
-      'social_security_wages',
-      'social_security_tax_withheld',
-      'medicare_wages_and_tips',
-      'medicare_tax_withheld',
-      'social_security_tips',
-      'allocated_tips',
-      'box_9',
-      'dependent_care_benefits',
-      'nonqualified_plans',
-      'box_12',
-      'statutory_employee',
-      'retirement_plan',
-      'third_party_sick_pay',
-      'other',
-      'state_and_local_wages',
-    ],
-    title: 'CreditW2',
-  })
-  .openapi('CreditW2')
-
-const PayrollIncomeObjectSchema = z
-  .looseObject({
-    account_id: z
-      .string()
-      .nullable()
-      .openapi({ description: 'ID of the payroll provider account.' }),
-    form1099s: z.array(Credit1099Schema).openapi({ description: 'Array of tax form 1099s.' }),
-    pay_stubs: z
-      .array(CreditPayStubSchema)
-      .openapi({ description: 'Array of pay stubs for the user.' }),
-    w2s: z.array(CreditW2Schema).openapi({ description: 'Array of tax form W-2s.' }),
-  })
-  .openapi({
-    description: 'An object representing payroll data.',
-    required: ['account_id', 'pay_stubs', 'w2s', 'form1099s'],
-    title: 'PayrollIncomeObject',
-  })
-  .openapi('PayrollIncomeObject')
-
-const PayrollItemStatusSchema = z
-  .looseObject({
-    processing_status: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Denotes the processing status for the verification.\n\n`UNKNOWN`: The processing status could not be determined.\n\n`PROCESSING_COMPLETE`: The processing has completed and the user has approved for sharing. The data is available to be retrieved.\n\n`PROCESSING`: The verification is still processing. The data is not available yet.\n\n`FAILED`: The processing failed to complete successfully.\n\n`APPROVAL_STATUS_PENDING`: The processing has completed but the user has not yet approved the sharing of the data.',
-        title: 'PayrollItemStatusProcessingStatus',
-        'x-override-enum-values-shown': [
-          'UNKNOWN',
-          'PROCESSING_COMPLETE',
-          'PROCESSING',
-          'FAILED',
-          'APPROVAL_STATUS_PENDING',
-        ],
-      }),
-  })
-  .nullable()
-  .openapi({
-    description: 'Details about the status of the payroll item.',
-    title: 'PayrollItemStatus',
-    required: [],
-  })
-  .openapi('PayrollItemStatus')
-
-const PayrollItemSchema = z
-  .object({
-    accounts: z.array(PayrollIncomeAccountDataSchema),
-    institution_id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of the institution associated with the Item.',
-      }),
-    institution_name: z
-      .string()
-      .openapi({ description: 'The name of the institution associated with the Item.' }),
-    item_id: ItemIdSchema,
-    payroll_income: z.array(PayrollIncomeObjectSchema),
-    status: PayrollItemStatusSchema,
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          'Timestamp in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DDTHH:mm:ssZ) indicating the last time that the Item was updated.',
-      }),
-  })
-  .openapi({
-    description: 'An object containing information about the payroll item.',
-    required: [
-      'item_id',
-      'institution_id',
-      'institution_name',
-      'payroll_income',
-      'status',
-      'accounts',
-      'updated_at',
-    ],
-    title: 'PayrollItem',
-  })
-  .openapi('PayrollItem')
-
-const CreditPayrollIncomeGetResponseSchema = z
+const CreditPayrollIncomeGetResponseSchema: z.ZodType<CreditPayrollIncomeGetResponseType> = z
   .looseObject({
     error: PlaidErrorSchema.exactOptional(),
     items: z.array(PayrollItemSchema).openapi({ description: 'Array of payroll items.' }),
@@ -7911,226 +10382,22 @@ const CreditPayrollIncomeRiskSignalsGetRequestSchema = z
   })
   .openapi('CreditPayrollIncomeRiskSignalsGetRequest')
 
-const RiskSignalDocumentReferenceSchema = z
-  .looseObject({
-    document_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'An identifier of the document referenced by the document metadata.',
-      }),
-    document_name: z.string().exactOptional().openapi({ description: 'The name of the document' }),
-  })
-  .openapi({
-    description: 'Object containing metadata for the document',
-    title: 'RiskSignalDocumentReference',
-    required: [],
-  })
-  .openapi('RiskSignalDocumentReference')
-
-const DocumentRiskSignalInstitutionMetadataSchema = z
-  .looseObject({ item_id: ItemIdSchema })
-  .nullable()
-  .openapi({
-    description:
-      'An object which contains additional metadata about the institution used to compute the verification attribute',
-    required: ['item_id'],
-    title: 'DocumentRiskSignalInstitutionMetadata',
-  })
-  .openapi('DocumentRiskSignalInstitutionMetadata')
-
-const DocumentRiskSignalSchema = z
-  .looseObject({
-    actual_value: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The derived value obtained in the risk signal calculation process for this field',
-        title: 'DocumentRiskSignalActualValue',
-      }),
-    expected_value: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'The expected value of the field, as seen on the document',
-        title: 'DocumentRiskSignalExpectedValue',
-      }),
-    field: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'The field which the risk signal was computed for',
-        title: 'DocumentRiskSignalField',
-      }),
-    has_fraud_risk: z
-      .boolean()
-      .nullable()
-      .openapi({
-        description:
-          'A flag used to quickly identify if the signal indicates that this field is authentic or fraudulent',
-        title: 'DocumentRiskSignalHasFraudRisk',
-      }),
-    institution_metadata: DocumentRiskSignalInstitutionMetadataSchema,
-    page_number: z
-      .int()
-      .nullable()
-      .openapi({
-        description: 'The relevant page associated with the risk signal',
-        title: 'DocumentRiskPageNumber',
-      }),
-    signal_description: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'A human-readable explanation providing more detail into the particular risk signal',
-        title: 'DocumentRiskSignalDescription',
-      }),
-    type: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'The result from the risk signal check.',
-        title: 'DocumentRiskSignalResultType',
-        'x-override-enum-values-shown': ['DATA_MATCH', 'DATA_MISMATCH', 'FILE_TAMPERING'],
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Details about a certain reason as to why a document could potentially be fraudulent.',
-    required: [
-      'type',
-      'field',
-      'has_fraud_risk',
-      'institution_metadata',
-      'expected_value',
-      'actual_value',
-      'signal_description',
-      'page_number',
-    ],
-    title: 'DocumentRiskSignal',
-  })
-  .openapi('DocumentRiskSignal')
-
-const MultiDocumentRiskSignalSchema = z
-  .looseObject({
-    document_references: z
-      .array(RiskSignalDocumentReferenceSchema)
-      .openapi({
-        description:
-          'Array of objects containing attributes that could indicate if a document is fraudulent',
-      }),
-    risk_signals: z
-      .array(DocumentRiskSignalSchema)
-      .openapi({
-        description:
-          'Array of attributes that indicate whether or not there is fraud risk with a set of documents',
-      }),
-  })
-  .openapi({
-    description:
-      'Object containing risk signals and relevant metadata for a set of uploaded documents',
-    required: ['document_references', 'risk_signals'],
-    title: 'MultiDocumentRiskSignal',
-  })
-  .openapi('MultiDocumentRiskSignal')
-
-const DocumentRiskSummarySchema = z
-  .looseObject({
-    risk_score: z
-      .number()
-      .nullable()
-      .openapi({
-        description:
-          'A number between 0 and 100, inclusive, where a score closer to 0 indicates a document is likely to be trustworthy and a score closer to 100 indicates a document is likely to be fraudulent',
-      }),
-  })
-  .openapi({
-    description: 'A summary across all risk signals associated with a document',
-    required: ['risk_score'],
-    title: 'DocumentRiskSummary',
-  })
-  .openapi('DocumentRiskSummary')
-
-const SingleDocumentRiskSignalSchema = z
-  .looseObject({
-    document_reference: RiskSignalDocumentReferenceSchema,
-    risk_signals: z
-      .array(DocumentRiskSignalSchema)
-      .openapi({
-        description:
-          'Array of attributes that indicate whether or not there is fraud risk with a document',
-      }),
-    risk_summary: DocumentRiskSummarySchema,
-  })
-  .openapi({
-    description: 'Object containing all risk signals and relevant metadata for a single document',
-    required: ['document_reference', 'risk_signals', 'risk_summary'],
-    title: 'SingleDocumentRiskSignal',
-  })
-  .openapi('SingleDocumentRiskSignal')
-
-const DocumentRiskSignalsObjectSchema = z
-  .looseObject({
-    account_id: z
-      .string()
-      .nullable()
-      .openapi({ description: 'ID of the payroll provider account.' }),
-    multi_document_risk_signals: z
-      .array(MultiDocumentRiskSignalSchema)
-      .openapi({
-        description:
-          "Array of risk signals computed from a set of uploaded documents and the associated documents' metadata",
-      }),
-    single_document_risk_signals: z
-      .array(SingleDocumentRiskSignalSchema)
-      .openapi({
-        description: 'Array of document metadata and associated risk signals per document',
-      }),
-  })
-  .openapi({
-    description: 'Object containing fraud risk data for a set of income documents.',
-    required: ['account_id', 'single_document_risk_signals', 'multi_document_risk_signals'],
-    title: 'DocumentRiskSignalsObject',
-  })
-  .openapi('DocumentRiskSignalsObject')
-
-const PayrollRiskSignalsItemSchema = z
-  .looseObject({
-    item_id: ItemIdSchema,
-    verification_risk_signals: z
-      .array(DocumentRiskSignalsObjectSchema)
-      .openapi({
-        description:
-          "Array of payroll income document authenticity data retrieved for each of the user's accounts.",
-      }),
-  })
-  .openapi({
-    description:
-      'Object containing fraud risk data pertaining to the Item linked as part of the verification.',
-    required: ['item_id', 'verification_risk_signals'],
-    title: 'PayrollRiskSignalsItem',
-  })
-  .openapi('PayrollRiskSignalsItem')
-
-const CreditPayrollIncomeRiskSignalsGetResponseSchema = z
-  .looseObject({
-    error: PlaidErrorSchema.exactOptional(),
-    items: z
-      .array(PayrollRiskSignalsItemSchema)
-      .openapi({ description: 'Array of payroll items.' }),
-    request_id: RequestIDSchema,
-  })
-  .openapi({
-    description:
-      'CreditPayrollIncomeRiskSignalsGetRequest defines the response schema for `/beta/credit/payroll_income/risk_signals/get`',
-    required: ['items', 'request_id'],
-    title: 'CreditPayrollIncomeRiskSignalsGetReponse',
-  })
-  .openapi('CreditPayrollIncomeRiskSignalsGetResponse')
+const CreditPayrollIncomeRiskSignalsGetResponseSchema: z.ZodType<CreditPayrollIncomeRiskSignalsGetResponseType> =
+  z
+    .looseObject({
+      error: PlaidErrorSchema.exactOptional(),
+      items: z
+        .array(PayrollRiskSignalsItemSchema)
+        .openapi({ description: 'Array of payroll items.' }),
+      request_id: RequestIDSchema,
+    })
+    .openapi({
+      description:
+        'CreditPayrollIncomeRiskSignalsGetRequest defines the response schema for `/beta/credit/payroll_income/risk_signals/get`',
+      required: ['items', 'request_id'],
+      title: 'CreditPayrollIncomeRiskSignalsGetReponse',
+    })
+    .openapi('CreditPayrollIncomeRiskSignalsGetResponse')
 
 const CreditRelayCreateRequestSchema = z
   .object({
@@ -8450,15 +10717,6 @@ const CreditSessionsGetResponseSchema = z
   })
   .openapi('CreditSessionsGetResponse')
 
-const CursorSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'An identifier that determines which page of results you receive.',
-    example: 'eyJkaXJlY3Rpb24iOiJuZXh0Iiwib2Zmc2V0IjoiMTU5NDM',
-  })
-  .openapi('Cursor')
-
 const CustomerInitiatedRiskTierSchema = z
   .int()
   .min(1)
@@ -8478,15 +10736,6 @@ const CustomerInitiatedReturnRiskSchema = z
     title: 'CustomerInitiatedReturnRisk',
   })
   .openapi('CustomerInitiatedReturnRisk')
-
-const TimestampSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'An ISO8601 formatted timestamp.',
-    example: '2020-07-24T03:26:02Z',
-    title: 'Timestamp',
-  })
-  .openapi('Timestamp')
 
 const EmailAddressSchema = z
   .email()
@@ -8669,27 +10918,6 @@ const TotalCanonicalDescriptionSchema = z
   .nullable()
   .openapi({ description: 'Commonly used term to describe the line item.' })
   .openapi('TotalCanonicalDescription')
-
-const PaySchema = z
-  .looseObject({
-    amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'A numerical amount of a specific currency.' }),
-    currency: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Currency code, e.g. USD' }),
-  })
-  .openapi({
-    deprecated: true,
-    description: 'An object representing a monetary amount.',
-    title: 'Pay',
-    required: [],
-  })
-  .openapi('Pay')
 
 const TotalSchema = z
   .looseObject({
@@ -9181,28 +11409,7 @@ const DepositSwitchTokenCreateResponseSchema = z
   .openapi('DepositSwitchTokenCreateResponse')
 
 const DepositoryAccountSchema = z
-  .object({
-    'cash management': z
-      .string()
-      .openapi({
-        description: 'A cash management account, typically a cash account at a brokerage',
-      }),
-    cd: z.string().openapi({ description: 'Certificate of deposit account' }),
-    checking: z.string().openapi({ description: 'Checking account' }),
-    ebt: z
-      .string()
-      .openapi({
-        description:
-          'An Electronic Benefit Transfer (EBT) account, used by certain public assistance programs to distribute funds (US only)',
-      }),
-    hsa: z
-      .string()
-      .openapi({ description: 'Health Savings Account (US only) that can only hold cash' }),
-    'money market': z.string().openapi({ description: 'Money market account' }),
-    paypal: z.string().openapi({ description: 'PayPal depository account' }),
-    prepaid: z.string().openapi({ description: 'Prepaid debit card' }),
-    savings: z.string().openapi({ description: 'Savings account' }),
-  })
+  .string()
   .openapi({
     description:
       'An account type holding cash, in which funds are deposited. Supported products for `depository` accounts are: Auth (`checking` and `savings` types only), Balance, Transactions, Identity, Payment Initiation, and Assets.',
@@ -9239,63 +11446,6 @@ const DetailedOriginatorSchema = z
   })
   .openapi('DetailedOriginator')
 
-const DistributionBreakdownSchema = z
-  .looseObject({
-    account_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Name of the account for the given distribution.' }),
-    bank_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The name of the bank that the payment is being deposited to.' }),
-    current_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The amount distributed to this account.' }),
-    current_pay: PaySchema.exactOptional(),
-    iso_currency_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ISO-4217 currency code of the net pay. Always `null` if `unofficial_currency_code` is non-null.',
-      }),
-    mask: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The last 2-4 alphanumeric characters of an account's official account number.",
-      }),
-    type: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "Type of the account that the paystub was sent to (e.g. 'checking').",
-      }),
-    unofficial_currency_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unofficial currency code associated with the net pay. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.\n\nSee the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `iso_currency_code`s.',
-      }),
-  })
-  .openapi({
-    description: 'Information about the accounts that the payment was distributed to.',
-    title: 'DistributionBreakdown',
-    required: [],
-  })
-  .openapi('DistributionBreakdown')
-
 const DocTypeSchema = z
   .enum([
     'UNKNOWN',
@@ -9317,140 +11467,6 @@ const DocTypeSchema = z
     title: 'DocType',
   })
   .openapi('DocType')
-
-const DocumentAuthenticityMatchCodeSchema = z
-  .enum(['match', 'partial_match', 'no_match', 'no_data'])
-  .openapi({
-    description:
-      "High level summary of whether the document in the provided image matches the formatting rules and security checks for the associated jurisdiction.\n\nFor example, most identity documents have formatting rules like the following:\n\n\nThe image of the person's face must have a certain contrast in order to highlight skin tone\n\n\nThe subject in the document's image must remove eye glasses and pose in a certain way\n\n\nThe informational fields (name, date of birth, ID number, etc.) must be colored and aligned according to specific rules\n\n\nSecurity features like watermarks and background patterns must be present\n\nSo a `match` status for this field indicates that the document in the provided image seems to conform to the various formatting and security rules associated with the detected document.",
-    example: 'match',
-  })
-  .openapi('DocumentAuthenticityMatchCode')
-
-const DocumentDateOfBirthMatchCodeSchema = z
-  .enum(['match', 'partial_match', 'no_match'])
-  .openapi({
-    description:
-      "A match summary describing the cross comparison between the subject's date of birth, extracted from the document image, and the date of birth they separately provided to the identity verification attempt.",
-    example: 'match',
-  })
-  .openapi('DocumentDateOfBirthMatchCode')
-
-const ExpirationDateSchema = z
-  .enum(['not_expired', 'expired', 'no_data'])
-  .openapi({
-    description:
-      'A description of whether the associated document was expired when the verification was performed.\n\nNote: In the case where an expiration date is not present on the document or failed to be extracted, this value will be `no_data`.',
-    example: 'not_expired',
-  })
-  .openapi('ExpirationDate')
-
-const IssuingCountrySchema = z
-  .enum(['match', 'no_match'])
-  .openapi({
-    description:
-      'A binary match indicator specifying whether the country that issued the provided document matches the country that the user separately provided to Plaid.\n\nNote: You can configure whether a `no_match` on `issuing_country` fails the `documentary_verification` by editing your Plaid Template.',
-  })
-  .openapi('IssuingCountry')
-
-const DocumentNameMatchCodeSchema = z
-  .enum(['match', 'partial_match', 'no_match'])
-  .openapi({
-    description:
-      "A match summary describing the cross comparison between the subject's name, extracted from the document image, and the name they separately provided to identity verification attempt.",
-    example: 'match',
-  })
-  .openapi('DocumentNameMatchCode')
-
-const PhysicalDocumentExtractedDataAnalysisSchema = z
-  .object({
-    date_of_birth: DocumentDateOfBirthMatchCodeSchema,
-    expiration_date: ExpirationDateSchema,
-    issuing_country: IssuingCountrySchema,
-    name: DocumentNameMatchCodeSchema,
-  })
-  .nullable()
-  .openapi({
-    description: 'Analysis of the data extracted from the submitted document.',
-    required: ['name', 'date_of_birth', 'expiration_date', 'issuing_country'],
-  })
-  .openapi('PhysicalDocumentExtractedDataAnalysis')
-
-const ImageQualitySchema = z
-  .enum(['high', 'medium', 'low'])
-  .openapi({
-    description:
-      'A high level description of the quality of the image the user submitted.\n\nFor example, an image that is blurry, distorted by glare from a nearby light source, or improperly framed might be marked as low or medium quality. Poor quality images are more likely to fail OCR and/or template conformity checks.\n\nNote: By default, Plaid will let a user recapture document images twice before failing the entire session if we attribute the failure to low image quality.',
-    example: 'high',
-  })
-  .openapi('ImageQuality')
-
-const DocumentAnalysisSchema = z
-  .object({
-    authenticity: DocumentAuthenticityMatchCodeSchema,
-    extracted_data: PhysicalDocumentExtractedDataAnalysisSchema,
-    image_quality: ImageQualitySchema,
-  })
-  .openapi({
-    description:
-      'High level descriptions of how the associated document was processed. If a document fails verification, the details in the `analysis` object should help clarify why the document was rejected.',
-    required: ['authenticity', 'image_quality', 'extracted_data'],
-  })
-  .openapi('DocumentAnalysis')
-
-const DocumentImageBackSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'Temporary URL that expires after 60 seconds for downloading the original image of the back of the document. Might be null if the back of the document was not collected.',
-    example:
-      'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/original_back.jpeg',
-  })
-  .openapi('DocumentImageBack')
-
-const DocumentImageCroppedBackSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'Temporary URL that expires after 60 seconds for downloading a cropped image containing just the back of the document. Might be null if the back of the document was not collected.',
-    example:
-      'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/cropped_back.jpeg',
-  })
-  .openapi('DocumentImageCroppedBack')
-
-const DocumentImageCroppedFrontSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'Temporary URL that expires after 60 seconds for downloading a cropped image containing just the front of the document.',
-    example:
-      'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/cropped_front.jpeg',
-  })
-  .openapi('DocumentImageCroppedFront')
-
-const DocumentImageFaceSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      "Temporary URL that expires after 60 seconds for downloading a crop of just the user's face from the document image. Might be null if the document does not contain a face photo.",
-    example: 'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/face.jpeg',
-  })
-  .openapi('DocumentImageFace')
-
-const DocumentImageFrontSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'Temporary URL that expires after 60 seconds for downloading the uncropped original image of the front of the document.',
-    example:
-      'https://example.plaid.com/verifications/idv_52xR9LKo77r1Np/documents/1/original_front.jpeg',
-  })
-  .openapi('DocumentImageFront')
 
 const DocumentMetadataSchema = z
   .looseObject({
@@ -9478,152 +11494,6 @@ const DocumentMetadataSchema = z
     required: [],
   })
   .openapi('DocumentMetadata')
-
-const DocumentStatusSchema = z
-  .enum(['success', 'failed', 'manually_approved'])
-  .openapi({
-    description:
-      'An outcome status for this specific document submission. Distinct from the overall `documentary_verification.status` that summarizes the verification outcome from one or more documents.',
-    example: 'success',
-    title: 'DocumentStatus',
-  })
-  .openapi('DocumentStatus')
-
-const PhysicalDocumentCategorySchema = z
-  .enum(['drivers_license', 'id_card', 'passport', 'residence_permit_card', 'resident_card'])
-  .openapi({
-    description:
-      "The type of identity document detected in the images provided. Will always be one of the following values:\n\n  `drivers_license` - A driver's license for the associated country\n\n  `id_card` - A general national identification card, distinct from driver's licenses\n\n  `passport` - A passport for the associated country\n\n  `residence_permit_card` - An identity document permitting a foreign citizen to <em>temporarily</em> reside in the associated country\n\n  `resident_card` - An identity document permitting a foreign citizen to <em>permanently</em> reside in the associated country\n\nNote: This value may be different from the ID type that the user selects within Link. For example, if they select \"Driver's License\" but then submit a picture of a passport, this field will say `passport`",
-    example: 'drivers_license',
-  })
-  .openapi('PhysicalDocumentCategory')
-
-const ISO8601DateNullableSchema = z.iso
-  .date()
-  .nullable()
-  .openapi({
-    description: 'A date in the format YYYY-MM-DD (RFC 3339 Section 5.6).',
-    example: '1990-05-29',
-    title: 'ISO8601Date',
-  })
-  .openapi('ISO8601DateNullable')
-
-const PhysicalDocumentIDNumberSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: "Alpha-numeric ID number extracted via OCR from the user's document image.",
-    example: 'AB123456',
-  })
-  .openapi('PhysicalDocumentIDNumber')
-
-const GenericCountryCodeSchema = z
-  .string()
-  .min(2)
-  .openapi({
-    description:
-      'Valid, capitalized, two-letter ISO code representing the country of this object. Must be in ISO 3166-1 alpha-2 form.',
-    example: 'US',
-    title: 'GenericCountryCode',
-  })
-  .openapi('GenericCountryCode')
-
-const RegionNullableSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'An ISO 3166-2 subdivision code. Related terms would be "state", "province", "prefecture", "zone", "subdivision", etc.',
-    example: 'IN',
-    title: 'Region',
-  })
-  .openapi('RegionNullable')
-
-const PhysicalDocumentExtractedDataSchema = z
-  .object({
-    category: PhysicalDocumentCategorySchema,
-    expiration_date: ISO8601DateNullableSchema,
-    id_number: PhysicalDocumentIDNumberSchema,
-    issuing_country: GenericCountryCodeSchema,
-    issuing_region: RegionNullableSchema,
-  })
-  .nullable()
-  .openapi({
-    description: 'Data extracted from a user-submitted document.',
-    required: ['id_number', 'category', 'expiration_date', 'issuing_country', 'issuing_region'],
-  })
-  .openapi('PhysicalDocumentExtractedData')
-
-const PhysicalDocumentImagesSchema = z
-  .object({
-    cropped_back: DocumentImageCroppedBackSchema,
-    cropped_front: DocumentImageCroppedFrontSchema,
-    face: DocumentImageFaceSchema,
-    original_back: DocumentImageBackSchema,
-    original_front: DocumentImageFrontSchema,
-  })
-  .openapi({
-    description:
-      'URLs for downloading original and cropped images for this document submission. The URLs are designed to only allow downloading, not hot linking, so the URL will only serve the document image for 60 seconds before expiring. The expiration time is 60 seconds after the `GET` request for the associated Identity Verification attempt. A new expiring URL is generated with each request, so you can always rerequest the Identity Verification attempt if one of your URLs expires.',
-    required: ['original_front', 'original_back', 'cropped_front', 'cropped_back', 'face'],
-  })
-  .openapi('PhysicalDocumentImages')
-
-const TimestampNullableSchema = z.iso
-  .datetime({ offset: true })
-  .nullable()
-  .openapi({
-    description: 'An ISO8601 formatted timestamp.',
-    example: '2020-07-24T03:26:02Z',
-    title: 'Timestamp',
-  })
-  .openapi('TimestampNullable')
-
-const DocumentaryVerificationDocumentSchema = z
-  .looseObject({
-    analysis: DocumentAnalysisSchema,
-    attempt: z
-      .number()
-      .openapi({
-        description:
-          'The `attempt` field begins with 1 and increments with each subsequent document upload.',
-        example: 1,
-      }),
-    extracted_data: PhysicalDocumentExtractedDataSchema,
-    images: PhysicalDocumentImagesSchema,
-    redacted_at: TimestampNullableSchema,
-    status: DocumentStatusSchema,
-  })
-  .openapi({
-    description: "Images, extracted data, and analysis from a user's identity document",
-    required: ['analysis', 'attempt', 'extracted_data', 'images', 'status', 'redacted_at'],
-  })
-  .openapi('DocumentaryVerificationDocument')
-
-const DocumentaryVerificationSchema = z
-  .object({
-    documents: z
-      .array(DocumentaryVerificationDocumentSchema)
-      .openapi({
-        description:
-          'An array of documents submitted to the `documentary_verification` step. Each entry represents one user submission, where each submission will contain both a front and back image, or just a front image, depending on the document type.\n\nNote: Plaid will automatically let a user submit a new set of document images up to three times if we detect that a previous attempt might have failed due to user error. For example, if the first set of document images are blurry or obscured by glare, the user will be asked to capture their documents again, resulting in at least two separate entries within `documents`. If the overall `documentary_verification` is `failed`, the user has exhausted their retry attempts.',
-      }),
-    status: z
-      .string()
-      .openapi({
-        description:
-          "The outcome status for the associated Identity Verification attempt's `documentary_verification` step. This field will always have the same value as `steps.documentary_verification`.",
-        example: 'success',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Data, images, analysis, and results from the `documentary_verification` step. This field will be `null` unless `steps.documentary_verification` has reached a terminal state of either `success` or `failed`.',
-    required: ['status', 'documents'],
-    title: 'DocumentaryVerification',
-  })
-  .openapi('DocumentaryVerification')
 
 const EarningsBreakdownCanonicalDescriptionSchema = z
   .union([
@@ -9752,16 +11622,6 @@ const EarningsSchema = z
     required: [],
   })
   .openapi('Earnings')
-
-const EmailAddressNullableSchema = z
-  .email()
-  .nullable()
-  .openapi({
-    description: 'A valid email address.',
-    example: 'user@example.com',
-    title: 'EmailAddress',
-  })
-  .openapi('EmailAddressNullable')
 
 const PaystubAddressSchema = z
   .looseObject({
@@ -10093,16 +11953,6 @@ const EntityDocumentSchema = z
     title: 'EntityDocument',
   })
   .openapi('EntityDocument')
-
-const MatchSummaryCodeSchema = z
-  .enum(['match', 'partial_match', 'no_match', 'no_data', 'no_input'])
-  .openapi({
-    description:
-      'An enum indicating the match type between data provided by user and data checked against an external data source.\n\n\n`match` indicates that the provided input data was a strong match against external data.\n\n`partial_match` indicates the data approximately matched against external data. For example, "Knope" vs. "Knope-Wyatt" for last name.\n\n`no_match` indicates that Plaid was able to perform a check against an external data source and it did not match the provided input data.\n\n`no_data` indicates that Plaid was unable to find external data to compare against the provided input data.\n\n`no_input` indicates that Plaid was unable to perform a check because no information was provided for this field by the end user.',
-    example: 'match',
-    title: 'MatchSummaryCode',
-  })
-  .openapi('MatchSummaryCode')
 
 const EntityScreeningHitAnalysisSchema = z
   .object({
@@ -10844,14 +12694,6 @@ const ExternalPaymentRefundDetailsSchema = z
   })
   .openapi('ExternalPaymentRefundDetails')
 
-const PaymentScheduleIntervalSchema = z
-  .enum(['WEEKLY', 'MONTHLY'])
-  .openapi({
-    description: 'The frequency interval of the payment.',
-    title: 'PaymentScheduleInterval',
-  })
-  .openapi('PaymentScheduleInterval')
-
 const ExternalPaymentScheduleBaseSchema = z
   .looseObject({
     adjusted_start_date: z.iso
@@ -10895,7 +12737,42 @@ const ExternalPaymentScheduleBaseSchema = z
   })
   .openapi('ExternalPaymentScheduleBase')
 
-const ExternalPaymentScheduleGetSchema = ExternalPaymentScheduleBaseSchema.and(z.object({}))
+const ExternalPaymentScheduleGetSchema = ExternalPaymentScheduleBaseSchema.and(
+  z
+    .looseObject({})
+    .and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'adjusted_start_date',
+            'end_date',
+            'interval',
+            'interval_execution_day',
+            'start_date',
+          ],
+        }),
+    )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'adjusted_start_date')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'end_date')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'interval')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'interval_execution_day')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'start_date')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    }),
+)
   .nullable()
   .openapi({
     description:
@@ -10911,7 +12788,26 @@ const ExternalPaymentScheduleGetSchema = ExternalPaymentScheduleBaseSchema.and(z
   })
   .openapi('ExternalPaymentScheduleGet')
 
-const ExternalPaymentScheduleRequestSchema = ExternalPaymentScheduleBaseSchema.and(z.object({}))
+const ExternalPaymentScheduleRequestSchema = ExternalPaymentScheduleBaseSchema.and(
+  z
+    .looseObject({})
+    .and(
+      z.looseObject({}).openapi({ required: ['start_date', 'interval', 'interval_execution_day'] }),
+    )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'start_date')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'interval')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'interval_execution_day')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    }),
+)
   .openapi({
     description:
       'The schedule that the payment will be executed on. If a schedule is provided, the payment is automatically set up as a standing order. If no schedule is specified, the payment will be executed only once.',
@@ -11148,76 +13044,6 @@ const FallbackAuthMicrodepositVerificationExpiredWebhookSchema = z
   })
   .openapi('FallbackAuthMicrodepositVerificationExpiredWebhook')
 
-const FamilyNameFieldSchema = z
-  .string()
-  .openapi({
-    description:
-      'A string with at least one non-whitespace character, with a max length of 100 characters.',
-    example: 'Knope',
-    title: 'FamilyName',
-  })
-  .openapi('FamilyNameField')
-
-const GivenNameFieldSchema = z
-  .string()
-  .openapi({
-    description:
-      'A string with at least one non-whitespace character, with a max length of 100 characters.',
-    example: 'Leslie',
-    title: 'GivenName',
-  })
-  .openapi('GivenNameField')
-
-const IncidentUpdateSchema = z
-  .looseObject({
-    description: z.string().exactOptional().openapi({ description: 'The content of the update.' }),
-    status: z
-      .enum(['INVESTIGATING', 'IDENTIFIED', 'SCHEDULED', 'RESOLVED', 'UNKNOWN'])
-      .exactOptional()
-      .openapi({ description: 'The status of the incident.' }),
-    updated_date: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date when the update was published, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format, e.g. `"2020-10-30T15:26:48Z"`.',
-      }),
-  })
-  .openapi({
-    description: 'An update on the health incident',
-    title: 'IncidentUpdate',
-    required: [],
-  })
-  .openapi('IncidentUpdate')
-
-const HealthIncidentSchema = z
-  .looseObject({
-    end_date: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The end date of the incident, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format, e.g. `"2020-10-30T15:26:48Z"`.',
-      }),
-    incident_updates: z
-      .array(IncidentUpdateSchema)
-      .openapi({ description: 'Updates on the health incident.' }),
-    start_date: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The start date of the incident, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format, e.g. `"2020-10-30T15:26:48Z"`.',
-      }),
-    title: z.string().openapi({ description: 'The title of the incident' }),
-  })
-  .openapi({
-    description: 'A status health incident',
-    required: ['start_date', 'title', 'incident_updates'],
-    title: 'HealthIncident',
-  })
-  .openapi('HealthIncident')
-
 const HistoricalUpdateWebhookSchema = z
   .looseObject({
     environment: WebhookEnvironmentValuesSchema,
@@ -11367,151 +13193,6 @@ const HoldingsDefaultUpdateWebhookSchema = z
   })
   .openapi('HoldingsDefaultUpdateWebhook')
 
-const SecurityOverrideSchema = z
-  .object({
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Either a valid `iso_currency_code` or `unofficial_currency_code`' }),
-    cusip: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "9-character CUSIP, an identifier assigned to North American securities. Please note that Plaid's customers must hold a license directly from CUSIP Global Services to receive CUSIP & ISIN data. This field will be null by default for new customers. For existing customers, this field will be null by default starting on Sept 15, 2023. If you would like access to this field, please contact your Plaid Account Manager or reach out to investments-vendors@plaid.com.",
-      }),
-    isin: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "12-character ISIN, a globally unique securities identifier. Please note that Plaid's customers must hold a license directly from CUSIP Global Services to receive CUSIP & ISIN data. This field will be null by default for new customers. For existing customers, this field will be null by default starting on Sept 15, 2023. If you would like access to this field, please contact your Plaid Account Manager or reach out to investments-vendors@plaid.com.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A descriptive name for the security, suitable for display.' }),
-    sedol: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: '7-character SEDOL, an identifier assigned to securities in the UK.',
-      }),
-    ticker_symbol: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The security’s trading symbol for publicly traded securities, and otherwise a short identifier if available.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specify the security associated with the holding or investment transaction. When inputting custom security data to the Sandbox, Plaid will perform post-data-retrieval normalization and enrichment. These processes may cause the data returned by the Sandbox to be slightly different from the data you input. An ISO-4217 currency code and a security identifier (`ticker_symbol`, `cusip`, `isin`, or `sedol`) are required.',
-    title: 'SecurityOverride',
-    required: [],
-  })
-  .openapi('SecurityOverride')
-
-const HoldingsOverrideSchema = z
-  .object({
-    cost_basis: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The average original value of the holding. Multiple cost basis values for the same security purchased at different prices are not supported.',
-      }),
-    currency: z
-      .string()
-      .openapi({ description: 'Either a valid `iso_currency_code` or `unofficial_currency_code`' }),
-    institution_price: z
-      .float64()
-      .openapi({ description: 'The last price given by the institution for this security' }),
-    institution_price_as_of: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date at which `institution_price` was current. Must be formatted as an [ISO 8601](https://wikipedia.org/wiki/ISO_8601) date.',
-      }),
-    quantity: z
-      .float64()
-      .openapi({
-        description:
-          'The total quantity of the asset held, as reported by the financial institution.',
-      }),
-    security: SecurityOverrideSchema,
-  })
-  .openapi({
-    description: 'Specify the holdings on the account.',
-    required: ['institution_price', 'quantity', 'currency', 'security'],
-    title: 'HoldingsOverride',
-  })
-  .openapi('HoldingsOverride')
-
-const IDNumberTypeSchema = z
-  .enum([
-    'ar_dni',
-    'au_drivers_license',
-    'au_passport',
-    'br_cpf',
-    'ca_sin',
-    'cl_run',
-    'cn_resident_card',
-    'co_nit',
-    'dk_cpr',
-    'eg_national_id',
-    'es_dni',
-    'es_nie',
-    'hk_hkid',
-    'in_pan',
-    'it_cf',
-    'jo_civil_id',
-    'jp_my_number',
-    'ke_huduma_namba',
-    'kw_civil_id',
-    'mx_curp',
-    'mx_rfc',
-    'my_nric',
-    'ng_nin',
-    'nz_drivers_license',
-    'om_civil_id',
-    'ph_psn',
-    'pl_pesel',
-    'ro_cnp',
-    'sa_national_id',
-    'se_pin',
-    'sg_nric',
-    'tr_tc_kimlik',
-    'us_ssn',
-    'us_ssn_last_4',
-    'za_smart_id',
-  ])
-  .openapi({
-    description:
-      'A globally unique and human readable ID type, specific to the country and document category. For more context on this field, see [Hybrid Input Validation](https://plaid.com/docs/identity-verification/hybrid-input-validation).',
-    example: 'us_ssn',
-    title: 'IDNumberType',
-  })
-  .openapi('IDNumberType')
-
-const IDNumberValueSchema = z
-  .string()
-  .openapi({
-    description:
-      'Value of identity document value typed in by user. Alpha-numeric, with all formatting characters stripped.',
-    example: '123456789',
-    title: 'IDNumberValue',
-  })
-  .openapi('IDNumberValue')
-
-const IPAddressSchema = z
-  .string()
-  .nullable()
-  .openapi({ description: 'An IPv4 or IPV6 address.', example: '192.0.2.42', title: 'IPAddress' })
-  .openapi('IPAddress')
-
 const IdempotencyFlagSchema = z
   .boolean()
   .nullable()
@@ -11582,7 +13263,7 @@ const IdentityGetRequestSchema = z
   })
   .openapi('IdentityGetRequest')
 
-const IdentityGetResponseSchema = z
+const IdentityGetResponseSchema: z.ZodType<IdentityGetResponseType> = z
   .looseObject({
     accounts: z
       .array(AccountIdentitySchema)
@@ -11663,342 +13344,6 @@ const IdentityMatchResponseSchema = z
     required: ['accounts', 'item', 'request_id'],
   })
   .openapi('IdentityMatchResponse')
-
-const IdentityVerificationIDSchema = z
-  .string()
-  .openapi({
-    description: 'ID of the associated Identity Verification attempt.',
-    example: 'idv_52xR9LKo77r1Np',
-    title: 'IdentityVerificationID',
-  })
-  .openapi('IdentityVerificationID')
-
-const POBoxStatusSchema = z
-  .enum(['yes', 'no', 'no_data'])
-  .openapi({
-    description:
-      'Field describing whether the associated address is a post office box. Will be `yes` when a P.O. box is detected, `no` when Plaid confirmed the address is not a P.O. box, and `no_data` when Plaid was not able to determine if the address is a P.O. box.',
-    example: 'yes',
-  })
-  .openapi('POBoxStatus')
-
-const KYCCheckAddressSummarySchema = z
-  .object({
-    po_box: POBoxStatusSchema,
-    summary: MatchSummaryCodeSchema,
-    type: AddressPurposeLabelSchema,
-  })
-  .openapi({
-    description: 'Result summary object specifying how the `address` field matched.',
-    required: ['summary', 'po_box', 'type'],
-  })
-  .openapi('KYCCheckAddressSummary')
-
-const KYCCheckDateOfBirthSummarySchema = z
-  .object({ summary: MatchSummaryCodeSchema })
-  .openapi({
-    description: 'Result summary object specifying how the `date_of_birth` field matched.',
-    required: ['summary'],
-  })
-  .openapi('KYCCheckDateOfBirthSummary')
-
-const KYCCheckIDNumberSummarySchema = z
-  .object({ summary: MatchSummaryCodeSchema })
-  .openapi({
-    description: 'Result summary object specifying how the `id_number` field matched.',
-    required: ['summary'],
-  })
-  .openapi('KYCCheckIDNumberSummary')
-
-const KYCCheckNameSummarySchema = z
-  .object({ summary: MatchSummaryCodeSchema })
-  .openapi({
-    description: 'Result summary object specifying how the `name` field matched.',
-    required: ['summary'],
-  })
-  .openapi('KYCCheckNameSummary')
-
-const KYCCheckPhoneSummarySchema = z
-  .object({ summary: MatchSummaryCodeSchema })
-  .openapi({
-    description: 'Result summary object specifying how the `phone` field matched.',
-    required: ['summary'],
-  })
-  .openapi('KYCCheckPhoneSummary')
-
-const KYCCheckDetailsSchema = z
-  .object({
-    address: KYCCheckAddressSummarySchema,
-    date_of_birth: KYCCheckDateOfBirthSummarySchema,
-    id_number: KYCCheckIDNumberSummarySchema,
-    name: KYCCheckNameSummarySchema,
-    phone_number: KYCCheckPhoneSummarySchema,
-    status: z
-      .string()
-      .openapi({
-        description:
-          "The outcome status for the associated Identity Verification attempt's `kyc_check` step. This field will always have the same value as `steps.kyc_check`.",
-        example: 'success',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Additional information for the `kyc_check` step. This field will be `null` unless `steps.kyc_check` has reached a terminal state of either `success` or `failed`.',
-    required: ['status', 'phone_number', 'address', 'name', 'date_of_birth', 'id_number'],
-  })
-  .openapi('KYCCheckDetails')
-
-const PreviousIdentityVerificationAttemptIDSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'The ID for the Identity Verification preceding this session. This field will only be filled if the current Identity Verification is a retry of a previous attempt.',
-    example: 'idv_42cF1MNo42r9Xj',
-  })
-  .openapi('PreviousIdentityVerificationAttemptID')
-
-const ShareableURLSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'A shareable URL that can be sent directly to the user to complete verification',
-    example:
-      'https://flow.plaid.com/verify/idv_4FrXJvfQU3zGUR?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f',
-  })
-  .openapi('ShareableURL')
-
-const IdentityVerificationStatusSchema = z
-  .enum(['active', 'success', 'failed', 'expired', 'canceled', 'pending_review'])
-  .openapi({
-    description:
-      'The status of this Identity Verification attempt.\n\n\n`active` - The Identity Verification attempt is incomplete. The user may have completed part of the session, but has neither failed or passed.\n\n`success` - The Identity Verification attempt has completed, passing all steps defined to the associated Identity Verification template\n\n`failed` - The user failed one or more steps in the session and was told to contact support.\n\n`expired` - The Identity Verification attempt was active for a long period of time without being completed and was automatically marked as expired. Note that sessions currently do not expire. Automatic expiration is expected to be enabled in the future.\n\n`canceled` - The Identity Verification attempt was canceled, either via the dashboard by a user, or via API. The user may have completed part of the session, but has neither failed or passed.\n\n`pending_review` - The Identity Verification attempt template was configured to perform a screening that had one or more hits needing review.',
-    example: 'success',
-    title: 'IdentityVerificationStatus',
-  })
-  .openapi('IdentityVerificationStatus')
-
-const IdentityVerificationStepStatusSchema = z
-  .enum([
-    'success',
-    'active',
-    'failed',
-    'waiting_for_prerequisite',
-    'not_applicable',
-    'skipped',
-    'expired',
-    'canceled',
-    'pending_review',
-    'manually_approved',
-    'manually_rejected',
-  ])
-  .openapi({
-    description: 'The status of a step in the identity verification process.',
-    example: 'success',
-    title: 'IdentityVerificationStepStatus',
-  })
-  .openapi('IdentityVerificationStepStatus')
-
-const IdentityVerificationStepSummarySchema = z
-  .object({
-    accept_tos: IdentityVerificationStepStatusSchema,
-    documentary_verification: IdentityVerificationStepStatusSchema,
-    kyc_check: IdentityVerificationStepStatusSchema,
-    risk_check: IdentityVerificationStepStatusSchema,
-    selfie_check: IdentityVerificationStepStatusSchema,
-    verify_sms: IdentityVerificationStepStatusSchema,
-    watchlist_screening: IdentityVerificationStepStatusSchema,
-  })
-  .openapi({
-    description:
-      "Each step will be one of the following values:\n\n\n`active` - This step is the user's current step. They are either in the process of completing this step, or they recently closed their Identity Verification attempt while in the middle of this step. Only one step will be marked as `active` at any given point.\n\n`success` - The Identity Verification attempt has completed this step.\n\n`failed` - The user failed this step. This can either call the user to fail the session as a whole, or cause them to fallback to another step depending on how the Identity Verification template is configured. A failed step does not imply a failed session.\n\n`waiting_for_prerequisite` - The user needs to complete another step first, before they progress to this step. This step may never run, depending on if the user fails an earlier step or if the step is only run as a fallback.\n\n`not_applicable` - This step will not be run for this session.\n\n`skipped` - The retry instructions that created this Identity Verification attempt specified that this step should be skipped.\n\n`expired` - This step had not yet been completed when the Identity Verification attempt as a whole expired.\n\n`canceled` - The Identity Verification attempt was canceled before the user completed this step.\n\n`pending_review` - The Identity Verification attempt template was configured to perform a screening that had one or more hits needing review.\n\n`manually_approved` - The step was manually overridden to pass by a team member in the dashboard.\n\n`manually_rejected` - The step was manually overridden to fail by a team member in the dashboard.",
-    required: [
-      'accept_tos',
-      'verify_sms',
-      'kyc_check',
-      'documentary_verification',
-      'selfie_check',
-      'watchlist_screening',
-      'risk_check',
-    ],
-  })
-  .openapi('IdentityVerificationStepSummary')
-
-const IdentityVerificationTemplateIDSchema = z
-  .string()
-  .openapi({
-    description: 'ID of the associated Identity Verification template.',
-    example: 'idvtmp_4FrXJvfQU3zGUR',
-    title: 'IdentityVerificationTemplateID',
-  })
-  .openapi('IdentityVerificationTemplateID')
-
-const IdentityVerificationTemplateVersionSchema = z
-  .number()
-  .openapi({
-    description: 'Version of the associated Identity Verification template.',
-    example: 2,
-    title: 'IdentityVerificationTemplateVersion',
-  })
-  .openapi('IdentityVerificationTemplateVersion')
-
-const IdentityVerificationTemplateReferenceSchema = z
-  .object({
-    id: IdentityVerificationTemplateIDSchema,
-    version: IdentityVerificationTemplateVersionSchema,
-  })
-  .openapi({
-    description:
-      'The resource ID and version number of the template configuring the behavior of a given identity verification.',
-    required: ['id', 'version'],
-  })
-  .openapi('IdentityVerificationTemplateReference')
-
-const PostalCodeNullableSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'The postal code for the associated address. Between 2 and 10 alphanumeric characters. For US-based addresses this must be 5 numeric digits.',
-    example: '46001',
-    title: 'PostalCode',
-  })
-  .openapi('PostalCodeNullable')
-
-const StreetNullableSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'The primary street portion of an address. If the user has submitted their address, this field will always be filled.',
-    example: '123 Main St.',
-    title: 'Street',
-  })
-  .openapi('StreetNullable')
-
-const Street2Schema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'Extra street information, like an apartment or suite number.',
-    example: 'Unit 42',
-    title: 'Street2',
-  })
-  .openapi('Street2')
-
-const IdentityVerificationUserAddressSchema = z
-  .object({
-    city: CityNullableSchema,
-    country: GenericCountryCodeSchema,
-    postal_code: PostalCodeNullableSchema,
-    region: RegionNullableSchema,
-    street: StreetNullableSchema,
-    street2: Street2Schema,
-  })
-  .nullable()
-  .openapi({
-    description:
-      "Even if an address has been collected, some fields may be null depending on the region's addressing system. For example:\n\nAddresses from the United Kingdom will not include a region\n\nAddresses from Hong Kong will not include postal code",
-    required: ['street', 'street2', 'city', 'region', 'postal_code', 'country'],
-  })
-  .openapi('IdentityVerificationUserAddress')
-
-const UserIDNumberSchema = z
-  .object({ type: IDNumberTypeSchema, value: IDNumberValueSchema })
-  .nullable()
-  .openapi({
-    description:
-      'ID number submitted by the user, currently used only for the Identity Verification product. If the user has not submitted this data yet, this field will be `null`. Otherwise, both fields are guaranteed to be filled.',
-    required: ['value', 'type'],
-  })
-  .openapi('UserIDNumber')
-
-const UserNameSchema = z
-  .object({ family_name: FamilyNameFieldSchema, given_name: GivenNameFieldSchema })
-  .nullable()
-  .openapi({
-    description:
-      'The full name provided by the user. If the user has not submitted their name, this field will be null. Otherwise, both fields are guaranteed to be filled.',
-    required: ['given_name', 'family_name'],
-  })
-  .openapi('UserName')
-
-const IdentityVerificationUserPhoneNumberSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'A phone number in E.164 format.',
-    example: '+19876543212',
-    title: 'PhoneNumber',
-  })
-  .openapi('IdentityVerificationUserPhoneNumber')
-
-const IdentityVerificationUserDataSchema = z
-  .object({
-    address: IdentityVerificationUserAddressSchema,
-    date_of_birth: ISO8601DateNullableSchema,
-    email_address: EmailAddressNullableSchema,
-    id_number: UserIDNumberSchema,
-    ip_address: IPAddressSchema,
-    name: UserNameSchema,
-    phone_number: IdentityVerificationUserPhoneNumberSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'The identity data that was either collected from the user or provided via API in order to perform an identity verification.',
-    required: ['date_of_birth', 'email_address', 'ip_address', 'name', 'address', 'id_number'],
-  })
-  .openapi('IdentityVerificationUserData')
-
-const WatchlistScreeningIndividualIDNullableSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'ID of the associated screening.',
-    example: 'scr_52xR9LKo77r1Np',
-    title: 'WatchlistScreeningIndividualID',
-  })
-  .openapi('WatchlistScreeningIndividualIDNullable')
-
-const IdentityVerificationSchema = z
-  .looseObject({
-    client_user_id: ClientUserIDSchema,
-    completed_at: TimestampNullableSchema,
-    created_at: TimestampSchema,
-    documentary_verification: DocumentaryVerificationSchema,
-    id: IdentityVerificationIDSchema,
-    kyc_check: KYCCheckDetailsSchema,
-    previous_attempt_id: PreviousIdentityVerificationAttemptIDSchema,
-    redacted_at: TimestampNullableSchema,
-    shareable_url: ShareableURLSchema,
-    status: IdentityVerificationStatusSchema,
-    steps: IdentityVerificationStepSummarySchema,
-    template: IdentityVerificationTemplateReferenceSchema,
-    user: IdentityVerificationUserDataSchema,
-    watchlist_screening_id: WatchlistScreeningIndividualIDNullableSchema,
-  })
-  .openapi({
-    description:
-      "A identity verification attempt represents a customer's attempt to verify their identity, reflecting the required steps for completing the session, the results for each step, and information collected in the process.",
-    required: [
-      'id',
-      'client_user_id',
-      'created_at',
-      'completed_at',
-      'previous_attempt_id',
-      'shareable_url',
-      'template',
-      'user',
-      'status',
-      'steps',
-      'documentary_verification',
-      'kyc_check',
-      'watchlist_screening_id',
-      'redacted_at',
-    ],
-  })
-  .openapi('IdentityVerification')
 
 const IdentityVerificationConsentSchema = z
   .boolean()
@@ -12205,7 +13550,7 @@ const IdentityVerificationListRequestSchema = z
   })
   .openapi('IdentityVerificationListRequest')
 
-const IdentityVerificationListResponseSchema = z
+const IdentityVerificationListResponseSchema: z.ZodType<IdentityVerificationListResponseType> = z
   .looseObject({
     identity_verifications: z
       .array(IdentityVerificationSchema)
@@ -12392,162 +13737,6 @@ const IdentityVerificationStepUpdatedWebhookSchema = z
     },
   })
   .openapi('IdentityVerificationStepUpdatedWebhook')
-
-const IncomeBreakdownTypeSchema = z
-  .union([z.literal('bonus'), z.literal('overtime'), z.literal('regular'), z.literal(null)])
-  .nullable()
-  .openapi({
-    description:
-      'The type of income. Possible values include:\n  `"regular"`: regular income\n  `"overtime"`: overtime income\n  `"bonus"`: bonus income',
-  })
-  .openapi('IncomeBreakdownType')
-
-const IncomeBreakdownSchema = z
-  .looseObject({
-    hours: z
-      .number()
-      .nullable()
-      .openapi({ description: 'The number of hours logged for this income for this pay period.' }),
-    rate: z
-      .float64()
-      .nullable()
-      .openapi({ description: 'The hourly rate at which the income is paid.' }),
-    total: z.float64().nullable().openapi({ description: 'The total pay for this pay period.' }),
-    type: IncomeBreakdownTypeSchema,
-  })
-  .openapi({
-    deprecated: true,
-    description: 'An object representing a breakdown of the different income types on the paystub.',
-    required: ['type', 'rate', 'hours', 'total'],
-    title: 'IncomeBreakdown',
-  })
-  .openapi('IncomeBreakdown')
-
-const PaystubOverrideEmployeeAddressSchema = z
-  .object({
-    city: z.string().exactOptional().openapi({ description: 'The full city name.' }),
-    country: z.string().exactOptional().openapi({ description: 'The country of the address.' }),
-    postal_code: z.string().exactOptional().openapi({ description: '5 digit postal code.' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The region or state\nExample: `"NC"`' }),
-    street: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The full street address\nExample: `"564 Main Street, APT 15"`' }),
-  })
-  .openapi({ description: 'The address of the employee.', required: [] })
-  .openapi('PaystubOverrideEmployeeAddress')
-
-const PaystubOverrideEmployeeSchema = z
-  .object({
-    address: PaystubOverrideEmployeeAddressSchema.exactOptional(),
-    name: z.string().exactOptional().openapi({ description: 'The name of the employee.' }),
-  })
-  .openapi({ description: 'The employee on the paystub.', required: [] })
-  .openapi('PaystubOverrideEmployee')
-
-const PaystubOverrideEmployerSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the employer.' }),
-  })
-  .openapi({ description: 'The employer on the paystub.', required: [] })
-  .openapi('PaystubOverrideEmployer')
-
-const PayPeriodDetailsSchema = z
-  .looseObject({
-    check_amount: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The amount of the paycheck.' }),
-    distribution_breakdown: z.array(DistributionBreakdownSchema).exactOptional(),
-    end_date: z.iso
-      .date()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The pay period end date, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format: "yyyy-mm-dd".',
-      }),
-    gross_earnings: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Total earnings before tax/deductions.' }),
-    pay_date: z.iso
-      .date()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date on which the paystub was issued, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
-      }),
-    pay_day: z.iso
-      .date()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The date on which the paystub was issued, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ("yyyy-mm-dd").',
-      }),
-    pay_frequency: z
-      .union([
-        z.literal('PAY_FREQUENCY_UNKNOWN'),
-        z.literal('PAY_FREQUENCY_WEEKLY'),
-        z.literal('PAY_FREQUENCY_BIWEEKLY'),
-        z.literal('PAY_FREQUENCY_SEMIMONTHLY'),
-        z.literal('PAY_FREQUENCY_MONTHLY'),
-        z.literal(null),
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The frequency at which an individual is paid.' }),
-    start_date: z.iso
-      .date()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The pay period start date, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format: "yyyy-mm-dd".',
-      }),
-  })
-  .openapi({
-    description: 'Details about the pay period.',
-    title: 'PayPeriodDetails',
-    required: [],
-  })
-  .openapi('PayPeriodDetails')
-
-const PaystubOverrideSchema = z
-  .object({
-    employee: PaystubOverrideEmployeeSchema.exactOptional(),
-    employer: PaystubOverrideEmployerSchema.exactOptional(),
-    income_breakdown: z.array(IncomeBreakdownSchema).exactOptional(),
-    pay_period_details: PayPeriodDetailsSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'An object representing data from a paystub.',
-    title: 'PaystubOverride',
-    required: [],
-  })
-  .openapi('PaystubOverride')
-
-const IncomeOverrideSchema = z
-  .object({
-    paystubs: z
-      .array(PaystubOverrideSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of paystubs associated with the account.' }),
-  })
-  .openapi({
-    description: 'Specify payroll data on the account.',
-    title: 'IncomeOverride',
-    required: [],
-  })
-  .openapi('IncomeOverride')
 
 const PayFrequencyValueSchema = z
   .union([
@@ -13403,53 +14592,6 @@ const IndividualWatchlistProgramSchema = z
   })
   .openapi('IndividualWatchlistProgram')
 
-const InflowModelSchema = z
-  .looseObject({
-    income_amount: z
-      .float64()
-      .openapi({
-        description:
-          'Amount of income per month. This value is required if `type` is `monthly-income`.',
-      }),
-    payment_day_of_month: z
-      .number()
-      .openapi({
-        description:
-          'Number between 1 and 28, or `last` meaning the last day of the month. The day of the month on which the income transaction will appear. The name of the income transaction. This field is required if `type` is `monthly-income`, `monthly-balance-payment` or `monthly-interest-only-payment`.',
-      }),
-    statement_day_of_month: z
-      .string()
-      .openapi({
-        description:
-          'Number between 1 and 28, or `last` meaning the last day of the month. The day of the month on which the balance is calculated for the next payment. The name of the income transaction. This field is required if `type` is `monthly-balance-payment` or `monthly-interest-only-payment`.',
-      }),
-    transaction_name: z
-      .string()
-      .openapi({
-        description:
-          'The name of the income transaction. This field is required if `type` is `monthly-income`, `monthly-balance-payment` or `monthly-interest-only-payment`.',
-      }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'Inflow model. One of the following:\n\n`none`: No income\n\n`monthly-income`: Income occurs once per month `monthly-balance-payment`: Pays off the balance on a liability account at the given statement day of month.\n\n`monthly-interest-only-payment`: Makes an interest-only payment on a liability account at the given statement day of month.\n\nNote that account types supported by Liabilities will accrue interest in the Sandbox. The types impacted are account type `credit` with subtype `credit` or `paypal`, and account type `loan` with subtype `student` or `mortgage`.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `inflow_model` allows you to model a test account that receives regular income or make regular payments on a loan. Any transactions generated by the `inflow_model` will appear in addition to randomly generated test data or transactions specified by `override_accounts`.',
-    required: [
-      'type',
-      'income_amount',
-      'payment_day_of_month',
-      'transaction_name',
-      'statement_day_of_month',
-    ],
-    title: 'InflowModel',
-  })
-  .openapi('InflowModel')
-
 const InitialUpdateWebhookSchema = z
   .looseObject({
     environment: WebhookEnvironmentValuesSchema,
@@ -13482,287 +14624,6 @@ const InitialUpdateWebhookSchema = z
     },
   })
   .openapi('InitialUpdateWebhook')
-
-const PaymentInitiationMaximumPaymentAmountSchema = z
-  .record(z.string(), z.string())
-  .openapi({
-    description:
-      'A mapping of currency to maximum payment amount (denominated in the smallest unit of currency) supported by the institution.\n\nExample: `{"GBP": "10000"}`\n',
-  })
-  .openapi('PaymentInitiationMaximumPaymentAmount')
-
-const PaymentInitiationStandingOrderMetadataSchema = z
-  .looseObject({
-    supports_standing_order_end_date: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates whether the institution supports closed-ended standing orders by providing an end date.',
-      }),
-    supports_standing_order_negative_execution_days: z
-      .boolean()
-      .openapi({
-        description:
-          'This is only applicable to `MONTHLY` standing orders. Indicates whether the institution supports negative integers (-1 to -5) for setting up a `MONTHLY` standing order relative to the end of the month.',
-      }),
-    valid_standing_order_intervals: z
-      .array(PaymentScheduleIntervalSchema)
-      .openapi({
-        description: 'A list of the valid standing order intervals supported by the institution.',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Metadata specifically related to valid Payment Initiation standing order configurations for the institution.',
-    required: [
-      'supports_standing_order_end_date',
-      'supports_standing_order_negative_execution_days',
-      'valid_standing_order_intervals',
-    ],
-    title: 'PaymentInitiationStandingOrderMetadata',
-  })
-  .openapi('PaymentInitiationStandingOrderMetadata')
-
-const PaymentInitiationMetadataSchema = z
-  .looseObject({
-    maximum_payment_amount: PaymentInitiationMaximumPaymentAmountSchema,
-    standing_order_metadata: PaymentInitiationStandingOrderMetadataSchema,
-    supports_international_payments: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates whether the institution supports payments from a different country.',
-      }),
-    supports_refund_details: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates whether the institution supports returning refund details when initiating a payment.',
-      }),
-    supports_sepa_instant: z
-      .boolean()
-      .openapi({
-        description: 'Indicates whether the institution supports SEPA Instant payments.',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Metadata that captures what specific payment configurations an institution supports when making Payment Initiation requests.',
-    required: [
-      'supports_international_payments',
-      'supports_sepa_instant',
-      'maximum_payment_amount',
-      'supports_refund_details',
-      'standing_order_metadata',
-    ],
-    title: 'PaymentInitiationMetadata',
-  })
-  .openapi('PaymentInitiationMetadata')
-
-const ProductStatusBreakdownSchema = z
-  .looseObject({
-    error_institution: z
-      .float64()
-      .openapi({
-        description:
-          "The percentage of logins that are failing due to an issue in the institution's system, expressed as a decimal.",
-      }),
-    error_plaid: z
-      .float64()
-      .openapi({
-        description:
-          'The percentage of logins that are failing due to an internal Plaid issue, expressed as a decimal.\n',
-      }),
-    refresh_interval: z
-      .enum(['NORMAL', 'DELAYED', 'STOPPED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The `refresh_interval` may be `DELAYED` or `STOPPED` even when the success rate is high. This value is only returned for Transactions status breakdowns.',
-      }),
-    success: z
-      .float64()
-      .openapi({
-        description:
-          'The percentage of login attempts that are successful, expressed as a decimal.',
-      }),
-  })
-  .openapi({
-    description:
-      "A detailed breakdown of the institution's performance for a request type. The values for `success`, `error_plaid`, and `error_institution` sum to 1. The time range used for calculating the breakdown may range from the most recent few minutes to the past six hours. In general, smaller institutions will show status that was calculated over a longer period of time. For Investment updates, which are refreshed less frequently, the period assessed may be 24 hours or more. For more details, see [Institution status details](https://plaid.com/docs/account/activity/#institution-status-details).",
-    required: ['success', 'error_plaid', 'error_institution'],
-    title: 'StatusBreakdown',
-  })
-  .openapi('ProductStatusBreakdown')
-
-const ProductStatusSchema = z
-  .looseObject({
-    breakdown: ProductStatusBreakdownSchema,
-    last_status_change: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          '[ISO 8601](https://wikipedia.org/wiki/ISO_8601) formatted timestamp of the last status change for the institution.\n',
-      }),
-    status: z
-      .enum(['HEALTHY', 'DEGRADED', 'DOWN'])
-      .openapi({
-        deprecated: true,
-        description:
-          'This field is deprecated in favor of the `breakdown` object, which provides more granular institution health data.\n\n`HEALTHY`: the majority of requests are successful\n`DEGRADED`: only some requests are successful\n`DOWN`: all requests are failing',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'A representation of the status health of a request type. Auth requests, Balance requests, Identity requests, Investments requests, Liabilities requests, Transactions updates, Investments updates, Liabilities updates, and Item logins each have their own status object.',
-    required: ['status', 'last_status_change', 'breakdown'],
-    title: 'ProductStatus',
-  })
-  .openapi('ProductStatus')
-
-const InstitutionStatusSchema = z
-  .looseObject({
-    auth: ProductStatusSchema.exactOptional(),
-    health_incidents: z
-      .array(HealthIncidentSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Details of recent health incidents associated with the institution.',
-      }),
-    identity: ProductStatusSchema.exactOptional(),
-    investments: ProductStatusSchema.exactOptional(),
-    investments_updates: ProductStatusSchema.exactOptional(),
-    item_logins: ProductStatusSchema.exactOptional(),
-    liabilities: ProductStatusSchema.exactOptional(),
-    liabilities_updates: ProductStatusSchema.exactOptional(),
-    transactions_updates: ProductStatusSchema.exactOptional(),
-  })
-  .nullable()
-  .openapi({
-    description:
-      "The status of an institution is determined by the health of its Item logins, Transactions updates, Investments updates, Liabilities updates, Auth requests, Balance requests, Identity requests, Investments requests, and Liabilities requests. A login attempt is conducted during the initial Item add in Link. If there is not enough traffic to accurately calculate an institution's status, Plaid will return null rather than potentially inaccurate data.\n\nInstitution status is accessible in the Dashboard and via the API using the `/institutions/get_by_id` endpoint with the `include_status` option set to true. Note that institution status is not available in the Sandbox environment.\n",
-    title: 'InstitutionStatus',
-    'x-examples': {
-      'example-1': {
-        status: {
-          auth: {
-            breakdown: { error_institution: 0.08, error_plaid: 0.01, success: 0.91 },
-            last_status_change: '2019-02-15T15:53:00Z',
-            status: 'HEALTHY',
-          },
-          identity: {
-            breakdown: { error_institution: 0.5, error_plaid: 0.08, success: 0.42 },
-            last_status_change: '2019-02-15T15:50:00Z',
-            status: 'DEGRADED',
-          },
-          investments: {
-            breakdown: { error_institution: 0.09, error_plaid: 0.02, success: 0.89 },
-            last_status_change: '2019-02-15T15:53:00Z',
-            status: 'HEALTHY',
-          },
-          investments_updates: {
-            breakdown: {
-              error_institution: 0.03,
-              error_plaid: 0.02,
-              refresh_interval: 'NORMAL',
-              success: 0.95,
-            },
-            last_status_change: '2019-02-12T08:22:00Z',
-            status: 'HEALTHY',
-          },
-          item_logins: {
-            breakdown: { error_institution: 0.09, error_plaid: 0.01, success: 0.9 },
-            last_status_change: '2019-02-15T15:53:00Z',
-            status: 'HEALTHY',
-          },
-          liabilities: {
-            breakdown: { error_institution: 0.09, error_plaid: 0.02, success: 0.89 },
-            last_status_change: '2019-02-15T15:53:00Z',
-            status: 'HEALTHY',
-          },
-          liabilities_updates: {
-            breakdown: {
-              error_institution: 0.03,
-              error_plaid: 0.02,
-              refresh_interval: 'NORMAL',
-              success: 0.95,
-            },
-            last_status_change: '2019-02-12T08:22:00Z',
-            status: 'HEALTHY',
-          },
-          transactions_updates: {
-            breakdown: {
-              error_institution: 0.03,
-              error_plaid: 0.02,
-              refresh_interval: 'NORMAL',
-              success: 0.95,
-            },
-            last_status_change: '2019-02-12T08:22:00Z',
-            status: 'HEALTHY',
-          },
-        },
-      },
-    },
-    required: [],
-  })
-  .openapi('InstitutionStatus')
-
-const InstitutionSchema = z
-  .looseObject({
-    auth_metadata: AuthMetadataSchema.exactOptional(),
-    country_codes: z
-      .array(CountryCodeSchema)
-      .openapi({ description: 'A list of the country codes supported by the institution.' }),
-    institution_id: z.string().openapi({ description: 'Unique identifier for the institution' }),
-    logo: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: "Base64 encoded representation of the institution's logo" }),
-    name: z.string().openapi({ description: 'The official name of the institution' }),
-    oauth: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates that the institution has a mandatory OAuth login flow. Note that `oauth` may be `false` even for institutions that support OAuth, if the institution is in the process of migrating to OAuth and some active Items still exist that do not use OAuth.',
-      }),
-    payment_initiation_metadata: PaymentInitiationMetadataSchema.exactOptional(),
-    primary_color: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Hexadecimal representation of the primary color used by the institution',
-      }),
-    products: z
-      .array(ProductsSchema)
-      .openapi({
-        description:
-          'A list of the Plaid products supported by the institution. Note that only institutions that support Instant Auth will return `auth` in the product array; institutions that do not list `auth` may still support other Auth methods such as Instant Match or Automated Micro-deposit Verification. To identify institutions that support those methods, use the `auth_metadata` object. For more details, see [Full Auth coverage](https://plaid.com/docs/auth/coverage/).',
-      }),
-    routing_numbers: z
-      .array(z.string())
-      .openapi({
-        description:
-          'A partial list of routing numbers associated with the institution. This list is provided for the purpose of looking up institutions by routing number. It is not comprehensive and should never be used as a complete list of routing numbers for an institution.',
-      }),
-    status: InstitutionStatusSchema.exactOptional(),
-    url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: "The URL for the institution's website" }),
-  })
-  .openapi({
-    description: 'Details relating to a specific financial institution',
-    required: ['institution_id', 'name', 'products', 'country_codes', 'routing_numbers', 'oauth'],
-    title: 'Institution',
-  })
-  .openapi('Institution')
 
 const TransferCapabilitiesGetRTPSchema = z
   .looseObject({
@@ -13960,7 +14821,7 @@ const InstitutionsGetRequestSchema = z
   })
   .openapi('InstitutionsGetRequest')
 
-const InstitutionsGetResponseSchema = z
+const InstitutionsGetResponseSchema: z.ZodType<InstitutionsGetResponseType> = z
   .looseObject({
     institutions: z
       .array(InstitutionSchema)
@@ -14101,7 +14962,7 @@ const InstitutionsSearchRequestSchema = z
   })
   .openapi('InstitutionsSearchRequest')
 
-const InstitutionsSearchResponseSchema = z
+const InstitutionsSearchResponseSchema: z.ZodType<InstitutionsSearchResponseType> = z
   .looseObject({
     institutions: z
       .array(InstitutionSchema)
@@ -14116,146 +14977,7 @@ const InstitutionsSearchResponseSchema = z
   .openapi('InstitutionsSearchResponse')
 
 const InvestmentAccountSubtypeStandaloneSchema = z
-  .object({
-    '529': z
-      .string()
-      .openapi({
-        description: 'Tax-advantaged college savings and prepaid tuition 529 plans (US)\n',
-      }),
-    '401a': z
-      .string()
-      .openapi({ description: 'Employer-sponsored money-purchase 401(a) retirement plan (US)' }),
-    '401k': z.string().openapi({ description: 'Standard 401(k) retirement account (US)' }),
-    '403B': z
-      .string()
-      .openapi({
-        description: '403(b) retirement savings account for non-profits and schools (US)',
-      }),
-    '457b': z
-      .string()
-      .openapi({
-        description:
-          'Tax-advantaged deferred-compensation 457(b) retirement plan for governments and non-profits (US)',
-      }),
-    brokerage: z.string().openapi({ description: 'Standard brokerage account' }),
-    'cash isa': z
-      .string()
-      .openapi({
-        description: 'Individual Savings Account (ISA) that pays interest tax-free (UK)',
-      }),
-    'crypto exchange': z
-      .string()
-      .openapi({ description: 'Standard cryptocurrency exchange account' }),
-    'education savings account': z
-      .string()
-      .openapi({ description: 'Tax-advantaged Coverdell Education Savings Account (ESA) (US)' }),
-    'fixed annuity': z.string().openapi({ description: 'Fixed annuity' }),
-    gic: z.string().openapi({ description: 'Guaranteed Investment Certificate (Canada)' }),
-    'health reimbursement arrangement': z
-      .string()
-      .openapi({
-        description: 'Tax-advantaged Health Reimbursement Arrangement (HRA) benefit plan (US)',
-      }),
-    hsa: z
-      .string()
-      .openapi({
-        description: 'Non-cash tax-advantaged medical Health Savings Account (HSA) (US)\n',
-      }),
-    ira: z
-      .string()
-      .openapi({ description: 'Traditional Individual Retirement Account (IRA) (US)' }),
-    isa: z.string().openapi({ description: 'Non-cash Individual Savings Account (ISA) (UK)' }),
-    keogh: z.string().openapi({ description: 'Keogh self-employed retirement plan (US)' }),
-    lif: z
-      .string()
-      .openapi({ description: 'Life Income Fund (LIF) retirement account (Canada)\n' }),
-    'life insurance': z.string().openapi({ description: 'Life insurance account' }),
-    lira: z.string().openapi({ description: 'Locked-in Retirement Account (LIRA) (Canada)' }),
-    lrif: z.string().openapi({ description: 'Locked-in Retirement Income Fund (LRIF) (Canada)' }),
-    lrsp: z.string().openapi({ description: 'Locked-in Retirement Savings Plan (Canada)' }),
-    'mutual fund': z.string().openapi({ description: 'Mutual fund account' }),
-    'non-custodial wallet': z
-      .string()
-      .openapi({ description: 'A cryptocurrency wallet where the user controls the private key' }),
-    'non-taxable brokerage account': z
-      .string()
-      .openapi({
-        description:
-          'A non-taxable brokerage account that is not covered by a more specific subtype',
-      }),
-    other: z.string().openapi({ description: 'An account whose type could not be determined' }),
-    'other annuity': z
-      .string()
-      .openapi({ description: 'An annuity account not covered by other subtypes' }),
-    'other insurance': z
-      .string()
-      .openapi({ description: 'An insurance account not covered by other subtypes' }),
-    pension: z.string().openapi({ description: 'Standard pension account' }),
-    prif: z
-      .string()
-      .openapi({ description: 'Prescribed Registered Retirement Income Fund (Canada)' }),
-    'profit sharing plan': z
-      .string()
-      .openapi({ description: 'Plan that gives employees share of company profits' }),
-    qshr: z.string().openapi({ description: 'Qualifying share account' }),
-    rdsp: z.string().openapi({ description: 'Registered Disability Savings Plan (RSDP) (Canada)' }),
-    resp: z.string().openapi({ description: 'Registered Education Savings Plan (Canada)' }),
-    retirement: z
-      .string()
-      .openapi({ description: 'Retirement account not covered by other subtypes' }),
-    rlif: z.string().openapi({ description: 'Restricted Life Income Fund (RLIF) (Canada)' }),
-    roth: z.string().openapi({ description: 'Roth IRA (US)' }),
-    'roth 401k': z.string().openapi({ description: 'Employer-sponsored Roth 401(k) plan (US)' }),
-    rrif: z.string().openapi({ description: 'Registered Retirement Income Fund (RRIF) (Canada)' }),
-    rrsp: z
-      .string()
-      .openapi({
-        description: 'Registered Retirement Savings Plan (Canadian, similar to US 401(k))',
-      }),
-    sarsep: z
-      .string()
-      .openapi({
-        description:
-          'Salary Reduction Simplified Employee Pension Plan (SARSEP), discontinued retirement plan (US)',
-      }),
-    'sep ira': z
-      .string()
-      .openapi({
-        description:
-          'Simplified Employee Pension IRA (SEP IRA), retirement plan for small businesses and self-employed (US)',
-      }),
-    'simple ira': z
-      .string()
-      .openapi({
-        description:
-          'Savings Incentive Match Plan for Employees IRA, retirement plan for small businesses (US)',
-      }),
-    sipp: z.string().openapi({ description: 'Self-Invested Personal Pension (SIPP) (UK)' }),
-    'stock plan': z.string().openapi({ description: 'Standard stock plan account' }),
-    tfsa: z
-      .string()
-      .openapi({
-        description:
-          'Tax-Free Savings Account (TFSA), a retirement plan similar to a Roth IRA (Canada)',
-      }),
-    trust: z
-      .string()
-      .openapi({
-        description:
-          'Account representing funds or assets held by a trustee for the benefit of a beneficiary. Includes both revocable and irrevocable trusts.',
-      }),
-    ugma: z
-      .string()
-      .openapi({ description: "'Uniform Gift to Minors Act' (brokerage account for minors, US)" }),
-    utma: z
-      .string()
-      .openapi({
-        description: "'Uniform Transfers to Minors Act' (brokerage account for minors, US)\n",
-      }),
-    'variable annuity': z
-      .string()
-      .openapi({ description: 'Tax-deferred capital accumulation annuity contract' }),
-  })
+  .string()
   .openapi({
     description:
       'An investment account. Supported products for `investment` accounts are: Balance and Investments. In API versions 2018-05-22 and earlier, this type is called `brokerage`.',
@@ -14793,46 +15515,6 @@ const InvestmentsTransactionsGetResponseSchema = z
     ],
   })
   .openapi('InvestmentsTransactionsGetResponse')
-
-const InvestmentsTransactionsOverrideSchema = z
-  .object({
-    currency: z
-      .string()
-      .openapi({ description: 'Either a valid `iso_currency_code` or `unofficial_currency_code`' }),
-    date: z.iso
-      .date()
-      .openapi({
-        description:
-          'Posting date for the transaction. Must be formatted as an [ISO 8601](https://wikipedia.org/wiki/ISO_8601) date.',
-      }),
-    fees: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The combined value of all fees applied to this transaction.' }),
-    name: z.string().openapi({ description: "The institution's description of the transaction." }),
-    price: z
-      .float64()
-      .openapi({ description: 'The price of the security at which this transaction occurred.' }),
-    quantity: z
-      .float64()
-      .openapi({
-        description:
-          'The number of units of the security involved in this transaction. Must be positive if the type is a buy and negative if the type is a sell.',
-      }),
-    security: SecurityOverrideSchema.exactOptional(),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'The type of the investment transaction. Possible values are:\n`buy`: Buying an investment\n`sell`: Selling an investment\n`cash`: Activity that modifies a cash position\n`fee`: A fee on the account\n`transfer`: Activity that modifies a position, but not through buy/sell activity e.g. options exercise, portfolio transfer',
-      }),
-  })
-  .openapi({
-    description: 'Specify the list of investments transactions on the account.',
-    required: ['date', 'name', 'quantity', 'price', 'type', 'currency'],
-    title: 'Investments_TransactionsOverride',
-  })
-  .openapi('InvestmentsTransactionsOverride')
 
 const ItemAccessTokenInvalidateRequestSchema = z
   .object({
@@ -15639,72 +16321,6 @@ const MortgageLiabilitySchema = z
   })
   .openapi('MortgageLiability')
 
-const StudentLoanStatusSchema = z
-  .looseObject({
-    end_date: z.iso
-      .date()
-      .nullable()
-      .openapi({
-        description:
-          'The date until which the loan will be in its current status. Dates are returned in an [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD).\n',
-      }),
-    type: z
-      .enum([
-        'cancelled',
-        'charged off',
-        'claim',
-        'consolidated',
-        'deferment',
-        'delinquent',
-        'discharged',
-        'extension',
-        'forbearance',
-        'in grace',
-        'in military',
-        'in school',
-        'not fully disbursed',
-        'other',
-        'paid in full',
-        'refunded',
-        'repayment',
-        'transferred',
-      ])
-      .nullable()
-      .openapi({ description: 'The status type of the student loan' }),
-  })
-  .openapi({
-    description: 'An object representing the status of the student loan',
-    required: ['end_date', 'type'],
-    title: 'StudentLoanStatus',
-  })
-  .openapi('StudentLoanStatus')
-
-const PSLFStatusSchema = z
-  .looseObject({
-    estimated_eligibility_date: z.iso
-      .date()
-      .nullable()
-      .openapi({
-        description:
-          'The estimated date borrower will have completed 120 qualifying monthly payments. Returned in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD).',
-      }),
-    payments_made: z
-      .number()
-      .nullable()
-      .openapi({ description: 'The number of qualifying payments that have been made.' }),
-    payments_remaining: z
-      .number()
-      .nullable()
-      .openapi({ description: 'The number of qualifying payments remaining.' }),
-  })
-  .openapi({
-    description:
-      "Information about the student's eligibility in the Public Service Loan Forgiveness program. This is only returned if the institution is FedLoan (`ins_116527`). ",
-    required: ['estimated_eligibility_date', 'payments_made', 'payments_remaining'],
-    title: 'PSLFStatus',
-  })
-  .openapi('PSLFStatus')
-
 const StudentRepaymentPlanSchema = z
   .looseObject({
     description: z
@@ -15949,176 +16565,6 @@ const LiabilitiesGetResponseSchema = z
     required: ['accounts', 'item', 'liabilities', 'request_id'],
   })
   .openapi('LiabilitiesGetResponse')
-
-const StudentLoanRepaymentModelSchema = z
-  .looseObject({
-    non_repayment_months: z
-      .number()
-      .openapi({ description: 'Configures the number of months before repayment starts.' }),
-    repayment_months: z
-      .number()
-      .openapi({
-        description: 'Configures the number of months of repayments before the loan is paid off.',
-      }),
-    type: z
-      .string()
-      .openapi({ description: 'The only currently supported value for this field is `standard`.' }),
-  })
-  .openapi({
-    description:
-      'Student loan repayment information used to configure Sandbox test data for the Liabilities product',
-    required: ['type', 'non_repayment_months', 'repayment_months'],
-    title: 'StudentLoanRepaymentModel',
-  })
-  .openapi('StudentLoanRepaymentModel')
-
-const LiabilityOverrideSchema = z
-  .looseObject({
-    balance_transfer_apr: z
-      .float64()
-      .openapi({
-        description:
-          'The balance transfer APR percentage value. Can only be set if `type` is `credit`.',
-      }),
-    cash_apr: z
-      .float64()
-      .openapi({
-        description: 'The cash APR percentage value. Can only be set if `type` is `credit`.',
-      }),
-    expected_payoff_date: z.iso
-      .date()
-      .openapi({
-        description:
-          'Override the `expected_payoff_date` field. Can only be set if `type` is `student`.',
-      }),
-    guarantor: z
-      .string()
-      .openapi({
-        description: 'Override the `guarantor` field. Can only be set if `type` is `student`.',
-      }),
-    interest_capitalization_grace_period_months: z
-      .number()
-      .openapi({
-        description:
-          'If set, interest capitalization begins at the given number of months after loan origination. By default interest is never capitalized. Can only be set if `type` is `student`.',
-      }),
-    is_federal: z
-      .boolean()
-      .openapi({
-        description: 'Override the `is_federal` field. Can only be set if `type` is `student`.',
-      }),
-    is_overdue: z.boolean().openapi({ description: 'Override the `is_overdue` field' }),
-    last_payment_amount: z
-      .float64()
-      .openapi({
-        description:
-          'Override the `last_payment_amount` field. Can only be set if `type` is `credit`.',
-      }),
-    loan_name: z
-      .string()
-      .openapi({
-        description: 'Override the `loan_name` field. Can only be set if `type` is `student`.',
-      }),
-    loan_status: StudentLoanStatusSchema,
-    minimum_payment_amount: z
-      .float64()
-      .openapi({
-        description:
-          'Override the `minimum_payment_amount` field. Can only be set if `type` is `credit` or `student`.',
-      }),
-    nominal_apr: z
-      .float64()
-      .openapi({
-        description:
-          'The interest rate on the loan as a percentage. Can only be set if `type` is `student`.',
-      }),
-    origination_date: z.iso
-      .date()
-      .openapi({
-        description:
-          'The date on which the loan was initially lent, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format. Can only be set if `type` is `student`.',
-      }),
-    payment_reference_number: z
-      .string()
-      .openapi({
-        description:
-          'Override the `payment_reference_number` field. Can only be set if `type` is `student`.',
-      }),
-    principal: z
-      .float64()
-      .openapi({
-        description: 'The original loan principal. Can only be set if `type` is `student`.',
-      }),
-    pslf_status: PSLFStatusSchema,
-    purchase_apr: z
-      .float64()
-      .openapi({
-        description:
-          'The purchase APR percentage value. For simplicity, this is the only interest rate used to calculate interest charges. Can only be set if `type` is `credit`.',
-      }),
-    repayment_model: StudentLoanRepaymentModelSchema,
-    repayment_plan_description: z
-      .string()
-      .openapi({
-        description:
-          'Override the `repayment_plan.description` field. Can only be set if `type` is `student`.',
-      }),
-    repayment_plan_type: z
-      .string()
-      .openapi({
-        description:
-          'Override the `repayment_plan.type` field. Can only be set if `type` is `student`. Possible values are: `"extended graduated"`, `"extended standard"`, `"graduated"`, `"income-contingent repayment"`, `"income-based repayment"`, `"interest only"`, `"other"`, `"pay as you earn"`, `"revised pay as you earn"`, or `"standard"`.',
-      }),
-    sequence_number: z
-      .string()
-      .openapi({
-        description:
-          'Override the `sequence_number` field. Can only be set if `type` is `student`.',
-      }),
-    servicer_address: AddressSchema,
-    special_apr: z
-      .float64()
-      .openapi({
-        description: 'The special APR percentage value. Can only be set if `type` is `credit`.',
-      }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'The type of the liability object, either `credit` or `student`. Mortgages are not currently supported in the custom Sandbox.',
-      }),
-  })
-  .openapi({
-    description: 'Used to configure Sandbox test data for the Liabilities product',
-    required: [
-      'type',
-      'purchase_apr',
-      'cash_apr',
-      'balance_transfer_apr',
-      'special_apr',
-      'last_payment_amount',
-      'minimum_payment_amount',
-      'is_overdue',
-      'origination_date',
-      'principal',
-      'nominal_apr',
-      'interest_capitalization_grace_period_months',
-      'repayment_model',
-      'expected_payoff_date',
-      'guarantor',
-      'is_federal',
-      'loan_name',
-      'loan_status',
-      'payment_reference_number',
-      'pslf_status',
-      'repayment_plan_description',
-      'repayment_plan_type',
-      'sequence_number',
-      'servicer_address',
-    ],
-    title: 'LiabilityOverride',
-  })
-  .openapi('LiabilityOverride')
 
 const LinkDeliveryVerificationStatusSchema = z
   .enum([
@@ -16908,14 +17354,10 @@ const LinkTokenCreateRequestUserSchema = z
         description:
           "The user's full legal name, used for [micro-deposit based verification flows](https://plaid.com/docs/auth/coverage/). For a small number of customers on legacy flows, providing this field is required to enable micro-deposit-based flows. For all other customers, this field is optional, but providing the user's name in this field when using micro-deposit-based verification will enable certain risk checks and can reduce micro-deposit fraud.",
       }),
-    name: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The user's full name. Optional if using the [Identity Verification](https://plaid.com/docs/api/products/identity-verification) product; if not using Identity Verification, this field is not allowed. Users will not be asked for their name when this field is provided.",
-        }),
-    ).exactOptional(),
+    name: UserNameSchema.exactOptional().openapi({
+      description:
+        "The user's full name. Optional if using the [Identity Verification](https://plaid.com/docs/api/products/identity-verification) product; if not using Identity Verification, this field is not allowed. Users will not be asked for their name when this field is provided.",
+    }),
     phone_number: z
       .string()
       .exactOptional()
@@ -17242,24 +17684,7 @@ const LinkUserDeliveryStatusWebhookSchema = z
   .openapi('LinkUserDeliveryStatusWebhook')
 
 const LoanAccountSchema = z
-  .object({
-    auto: z.string().openapi({ description: 'Auto loan' }),
-    business: z.string().openapi({ description: 'Business loan' }),
-    commercial: z.string().openapi({ description: 'Commercial loan' }),
-    construction: z.string().openapi({ description: 'Construction loan' }),
-    consumer: z.string().openapi({ description: 'Consumer loan' }),
-    'home equity': z.string().openapi({ description: 'Home Equity Line of Credit (HELOC)' }),
-    'line of credit': z.string().openapi({ description: 'Pre-approved line of credit' }),
-    loan: z.string().openapi({ description: 'General loan' }),
-    mortgage: z.string().openapi({ description: 'Mortgage loan' }),
-    other: z.string().openapi({ description: 'Other loan type or unknown loan type' }),
-    overdraft: z
-      .string()
-      .openapi({
-        description: 'Pre-approved overdraft account, usually tied to a checking account',
-      }),
-    student: z.string().openapi({ description: 'Student loan' }),
-  })
+  .string()
   .openapi({
     description:
       'A loan type account. Supported products for `loan` accounts are: Balance, Liabilities, and Transactions.',
@@ -17280,73 +17705,6 @@ const LoanAccountSchema = z
     title: 'LoanAccount',
   })
   .openapi('LoanAccount')
-
-const MFASchema = z
-  .looseObject({
-    question_rounds: z
-      .number()
-      .openapi({
-        description: 'Number of rounds of questions. Required if value of `type` is `questions`. ',
-      }),
-    questions_per_round: z
-      .number()
-      .openapi({
-        description:
-          'Number of questions per round. Required if value of `type` is `questions`. If value of type is `selections`, default value is 2.',
-      }),
-    selection_rounds: z
-      .number()
-      .openapi({
-        description:
-          'Number of rounds of selections, used if `type` is `selections`. Defaults to 1.',
-      }),
-    selections_per_question: z
-      .number()
-      .openapi({
-        description:
-          'Number of available answers per question, used if `type` is `selection`. Defaults to 2.\n',
-      }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'Possible values are `device`, `selections`, or `questions`.\n\nIf value is `device`, the MFA answer is `1234`.\n\nIf value is `selections`, the MFA answer is always the first option.\n\nIf value is `questions`, the MFA answer is  `answer_<i>_<j>` for the j-th question in the i-th round, starting from 0. For example, the answer to the first question in the second round is `answer_1_0`.',
-      }),
-  })
-  .openapi({
-    description: 'Specifies the multi-factor authentication settings to use with this test account',
-    required: [
-      'type',
-      'question_rounds',
-      'questions_per_round',
-      'selection_rounds',
-      'selections_per_question',
-    ],
-    title: 'MFA',
-  })
-  .openapi('MFA')
-
-const MetaSchema = z
-  .looseObject({
-    limit: z.float64().openapi({ description: "The account's limit" }),
-    mask: z
-      .string()
-      .regex(/^[A-Za-z0-9]{2,4}$/)
-      .min(2)
-      .max(4)
-      .openapi({
-        description:
-          "The account's mask. Should be a string of 2-4 alphanumeric characters. This allows you to model a mask which does not match the account number (such as with a virtual account number).",
-      }),
-    name: z.string().openapi({ description: "The account's name" }),
-    official_name: z.string().openapi({ description: "The account's official name" }),
-  })
-  .openapi({
-    description: 'Allows specifying the metadata of the test account',
-    required: ['name', 'official_name', 'limit', 'mask'],
-    title: 'Meta',
-  })
-  .openapi('Meta')
 
 const NewAccountsAvailableWebhookSchema = z
   .object({
@@ -17372,56 +17730,6 @@ const NewAccountsAvailableWebhookSchema = z
     required: [],
   })
   .openapi('NewAccountsAvailableWebhook')
-
-const NumbersSchema = z
-  .looseObject({
-    account: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Will be used for the account number.' }),
-    ach_routing: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Must be a valid ACH routing number.' }),
-    ach_wire_routing: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Must be a valid wire transfer routing number.' }),
-    bacs_sort_code: z.string().exactOptional().openapi({ description: 'BACS sort code' }),
-    eft_branch: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'EFT branch number. Must be specified alongside `eft_institution`.',
-      }),
-    eft_institution: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'EFT institution number. Must be specified alongside `eft_branch`.',
-      }),
-    international_bic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Bank identifier code (BIC). Must be specified alongside `international_iban`.',
-      }),
-    international_iban: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'International bank account number (IBAN). If no account number is specified via `account`, will also be used as the account number by default. Must be specified alongside `international_bic`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Account and bank identifier number data used to configure the test account. All values are optional.',
-    title: 'Numbers',
-    required: [],
-  })
-  .openapi('Numbers')
 
 const NumbersACHNullableSchema = NumbersACHSchema.and(z.looseObject({}))
   .nullable()
@@ -17497,124 +17805,6 @@ const OriginatorSchema = z
     title: 'Originator',
   })
   .openapi('Originator')
-
-const OverrideAccountTypeSchema = z
-  .enum(['investment', 'credit', 'depository', 'loan', 'payroll', 'other'])
-  .openapi({
-    description:
-      '`investment:` Investment account.\n\n`credit:` Credit card\n\n`depository:` Depository account\n\n`loan:` Loan account\n\n`payroll:` Payroll account\n\n`other:` Non-specified account type\n\nSee the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.',
-    title: 'OverrideAccountType',
-  })
-  .openapi('OverrideAccountType')
-
-const OwnerOverrideSchema = z
-  .looseObject({
-    addresses: z
-      .array(AddressSchema)
-      .openapi({ description: 'Data about the various addresses associated with the account.' }),
-    emails: z
-      .array(EmailSchema)
-      .openapi({ description: 'A list of email addresses associated with the account.' }),
-    names: z
-      .array(z.string())
-      .openapi({
-        description:
-          'A list of names associated with the account by the financial institution. These should always be the names of individuals, even for business accounts. Note that the same name data will be used for all accounts associated with an Item.',
-      }),
-    phone_numbers: z
-      .array(PhoneNumberSchema)
-      .openapi({ description: 'A list of phone numbers associated with the account.' }),
-  })
-  .openapi({
-    description:
-      'Data about the owner or owners of an account. Any fields not specified will be filled in with default Sandbox information.',
-    required: ['names', 'phone_numbers', 'emails', 'addresses'],
-    title: 'OwnerOverride',
-  })
-  .openapi('OwnerOverride')
-
-const TransactionOverrideSchema = z
-  .looseObject({
-    amount: z.float64().openapi({ description: 'The transaction amount. Can be negative.' }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ISO-4217 format currency code for the transaction.' }),
-    date_posted: z.iso
-      .date()
-      .openapi({
-        description:
-          'The date the transaction posted, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format. Posted dates in the past or present will result in posted transactions; posted dates in the future will result in pending transactions.',
-      }),
-    date_transacted: z.iso
-      .date()
-      .openapi({
-        description:
-          'The date of the transaction, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format. Transactions in Sandbox will move from pending to posted once their transaction date has been reached. If a `date_transacted` is not provided by the institution, a transaction date may be available in the [`authorized_date`](https://plaid.com/docs/api/products/transactions/#transactions-get-response-transactions-authorized-date) field.',
-      }),
-    description: z.string().openapi({ description: 'The transaction description.' }),
-  })
-  .openapi({
-    description:
-      'Data to populate as test transaction data. If not specified, random transactions will be generated instead.',
-    required: ['date_transacted', 'date_posted', 'amount', 'description'],
-    title: 'TransactionOverride',
-  })
-  .openapi('TransactionOverride')
-
-const OverrideAccountsSchema = z
-  .looseObject({
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'ISO-4217 currency code. If provided, the account will be denominated in the given currency. Transactions will also be in this currency by default.',
-      }),
-    force_available_balance: z
-      .float64()
-      .openapi({
-        description:
-          'If provided, the account will always have this amount as its  available balance, regardless of current balance or changes in transactions over time.',
-      }),
-    holdings: HoldingsOverrideSchema.exactOptional(),
-    identity: OwnerOverrideSchema,
-    income: IncomeOverrideSchema.exactOptional(),
-    inflow_model: InflowModelSchema,
-    investment_transactions: InvestmentsTransactionsOverrideSchema.exactOptional(),
-    liability: LiabilityOverrideSchema,
-    meta: MetaSchema,
-    numbers: NumbersSchema,
-    starting_balance: z
-      .float64()
-      .openapi({
-        description:
-          'If provided, the account will start with this amount as the current balance.\n',
-      }),
-    subtype: AccountSubtypeSchema,
-    transactions: z
-      .array(TransactionOverrideSchema)
-      .openapi({ description: 'Specify the list of transactions on the account.' }),
-    type: OverrideAccountTypeSchema,
-  })
-  .openapi({
-    description:
-      'Data to use to set values of test accounts. Some values cannot be specified in the schema and will instead will be calculated from other test data in order to achieve more consistent, realistic test data.',
-    required: [
-      'type',
-      'subtype',
-      'starting_balance',
-      'force_available_balance',
-      'currency',
-      'meta',
-      'numbers',
-      'transactions',
-      'identity',
-      'liability',
-      'inflow_model',
-    ],
-    title: 'OverrideAccounts',
-  })
-  .openapi('OverrideAccounts')
 
 const PartnerEndCustomerAddressSchema = z
   .looseObject({
@@ -18311,8 +18501,16 @@ const PaymentInitiationConsentGetRequestSchema = z
   .openapi('PaymentInitiationConsentGetRequest')
 
 const PaymentInitiationConsentGetResponseSchema = PaymentInitiationConsentSchema.and(
-  z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['request_id'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'request_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
     description:
       'PaymentInitiationConsentGetResponse defines the response schema for `/payment_initation/consent/get`',
@@ -18557,8 +18755,54 @@ const PaymentInitiationPaymentGetRequestSchema = z
   .openapi('PaymentInitiationPaymentGetRequest')
 
 const PaymentInitiationPaymentGetResponseSchema = PaymentInitiationPaymentSchema.and(
-  z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }),
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'request_id',
+        'payment_id',
+        'amount',
+        'status',
+        'recipient_id',
+        'reference',
+        'last_status_update',
+        'bacs',
+        'iban',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'request_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'payment_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'recipient_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'reference')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'last_status_update')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'bacs')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'iban')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
     description:
       'PaymentInitiationPaymentGetResponse defines the response schema for `/payment_initation/payment/get`',
@@ -18810,8 +19054,22 @@ const PaymentInitiationRecipientGetRequestSchema = z
   .openapi('PaymentInitiationRecipientGetRequest')
 
 const PaymentInitiationRecipientGetResponseSchema = PaymentInitiationRecipientSchema.and(
-  z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['recipient_id', 'name', 'request_id'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'recipient_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'request_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
     description:
       'PaymentInitiationRecipientGetResponse defines the response schema for `/payment_initiation/recipient/get`',
@@ -20542,7 +20800,7 @@ const RecurringTransferSchema = z
   })
   .openapi('RecurringTransfer')
 
-const RecurringTransferNullableSchema = RecurringTransferSchema.and(z.object({}).nullable())
+const RecurringTransferNullableSchema = RecurringTransferSchema.and(z.looseObject({}).nullable())
   .openapi({
     description: 'Represents a recurring transfer within the Transfers API.',
     title: 'RecurringTransferNullable',
@@ -21189,7 +21447,7 @@ const TransferSweepSchema = z
   })
   .openapi('TransferSweep')
 
-const SimulatedTransferSweepSchema = TransferSweepSchema.and(z.object({}).nullable())
+const SimulatedTransferSweepSchema = TransferSweepSchema.and(z.looseObject({}).nullable())
   .openapi({
     description:
       'A sweep returned from the `/sandbox/transfer/sweep/simulate` endpoint.\nCan be null if there are no transfers to include in a sweep.',
@@ -21692,31 +21950,7 @@ const StandaloneAccountTypeSchema = z
   .openapi('StandaloneAccountType')
 
 const UnofficialCurrencyCodeListSchema = z
-  .object({
-    ADA: z.string().openapi({ description: 'Cardano' }),
-    BAT: z.string().openapi({ description: 'Basic Attention Token' }),
-    BCH: z.string().openapi({ description: 'Bitcoin Cash' }),
-    BNB: z.string().openapi({ description: 'Binance Coin' }),
-    BSV: z.string().exactOptional().openapi({ description: 'Bitcoin Satoshi Vision' }),
-    BTC: z.string().openapi({ description: 'Bitcoin' }),
-    BTG: z.string().openapi({ description: 'Bitcoin Gold' }),
-    CNH: z.string().openapi({ description: 'Chinese Yuan (offshore)' }),
-    DASH: z.string().openapi({ description: 'Dash' }),
-    DOGE: z.string().openapi({ description: 'Dogecoin' }),
-    ETC: z.string().openapi({ description: 'Ethereum Classic' }),
-    ETH: z.string().openapi({ description: 'Ethereum' }),
-    GBX: z.string().openapi({ description: 'Pence sterling, i.e. British penny' }),
-    LSK: z.string().openapi({ description: 'Lisk' }),
-    NEO: z.string().openapi({ description: 'Neo' }),
-    OMG: z.string().openapi({ description: 'OmiseGO' }),
-    QTUM: z.string().openapi({ description: 'Qtum' }),
-    USDT: z.string().openapi({ description: 'Tether' }),
-    XLM: z.string().openapi({ description: 'Stellar Lumen' }),
-    XMR: z.string().openapi({ description: 'Monero' }),
-    XRP: z.string().openapi({ description: 'Ripple' }),
-    ZEC: z.string().openapi({ description: 'Zcash' }),
-    ZRX: z.string().openapi({ description: '0x' }),
-  })
+  .string()
   .openapi({
     description: 'List of unofficial currency codes',
     required: [
@@ -21762,300 +21996,34 @@ const StandaloneCurrencyCodeListSchema = z
   .openapi('StandaloneCurrencyCodeList')
 
 const StandaloneInvestmentTransactionBuyTypeSchema = z
-  .object({
-    assignment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Assignment of short option holding' }),
-    buy: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Purchase to open or increase a position' }),
-    'buy to cover': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Purchase to close a short position' }),
-    contribution: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of assets into a tax-advantaged account' }),
-    'dividend reinvestment': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Purchase using proceeds from a cash dividend' }),
-    'interest reinvestment': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Purchase using proceeds from a cash interest payment' }),
-    'long-term capital gain reinvestment': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Purchase using long-term capital gain cash proceeds' }),
-    'short-term capital gain reinvestment': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Purchase using short-term capital gain cash proceeds' }),
-  })
-  .openapi({ description: 'Buying an investment', title: 'BuyType', required: [] })
+  .string()
+  .openapi({ description: 'Buying an investment', title: 'BuyType' })
   .openapi('StandaloneInvestmentTransactionBuyType')
 
 const StandaloneInvestmentTransactionCashTypeSchema = z
-  .object({
-    'account fee': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees paid for account maintenance' }),
-    contribution: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of assets into a tax-advantaged account' }),
-    deposit: z.string().exactOptional().openapi({ description: 'Inflow of cash into an account' }),
-    dividend: z.string().exactOptional().openapi({ description: 'Inflow of cash from a dividend' }),
-    interest: z.string().exactOptional().openapi({ description: 'Inflow of cash from interest' }),
-    'legal fee': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees paid for legal charges or services' }),
-    'long-term capital gain': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Long-term capital gain received as cash' }),
-    'management fee': z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fees paid for investment management of a mutual fund or other pooled investment vehicle',
-      }),
-    'margin expense': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees paid for maintaining margin debt' }),
-    'non-qualified dividend': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of cash from a non-qualified dividend' }),
-    'non-resident tax': z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Taxes paid on behalf of the investor for non-residency in investment jurisdiction',
-      }),
-    'pending credit': z.string().exactOptional().openapi({ description: 'Pending inflow of cash' }),
-    'pending debit': z.string().exactOptional().openapi({ description: 'Pending outflow of cash' }),
-    'qualified dividend': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of cash from a qualified dividend' }),
-    'short-term capital gain': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Short-term capital gain received as cash' }),
-    'stock distribution': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of stock from a distribution' }),
-    tax: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Taxes paid on behalf of the investor' }),
-    'tax withheld': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Taxes withheld on behalf of the customer' }),
-    'transfer fee': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees incurred for transfer of a holding or account' }),
-    'trust fee': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees related to administration of a trust account' }),
-    'unqualified gain': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unqualified capital gain received as cash' }),
-    withdrawal: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Outflow of cash from an account' }),
-  })
-  .openapi({
-    description: 'Activity that modifies a cash position',
-    title: 'CashType',
-    required: [],
-  })
+  .string()
+  .openapi({ description: 'Activity that modifies a cash position', title: 'CashType' })
   .openapi('StandaloneInvestmentTransactionCashType')
 
 const StandaloneInvestmentTransactionFeeTypeSchema = z
-  .object({
-    'account fee': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees paid for account maintenance' }),
-    adjustment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Increase or decrease in quantity of item' }),
-    dividend: z.string().exactOptional().openapi({ description: 'Inflow of cash from a dividend' }),
-    interest: z.string().exactOptional().openapi({ description: 'Inflow of cash from interest' }),
-    'interest receivable': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of cash from interest receivable' }),
-    'legal fee': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees paid for legal charges or services' }),
-    'long-term capital gain': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Long-term capital gain received as cash' }),
-    'management fee': z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fees paid for investment management of a mutual fund or other pooled investment vehicle',
-      }),
-    'margin expense': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees paid for maintaining margin debt' }),
-    'non-qualified dividend': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of cash from a non-qualified dividend' }),
-    'non-resident tax': z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Taxes paid on behalf of the investor for non-residency in investment jurisdiction',
-      }),
-    'qualified dividend': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of cash from a qualified dividend' }),
-    'return of principal': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Repayment of loan principal' }),
-    'short-term capital gain': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Short-term capital gain received as cash' }),
-    'stock distribution': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of stock from a distribution' }),
-    tax: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Taxes paid on behalf of the investor' }),
-    'tax withheld': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Taxes withheld on behalf of the customer' }),
-    'transfer fee': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees incurred for transfer of a holding or account' }),
-    'trust fee': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fees related to administration of a trust account' }),
-    'unqualified gain': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unqualified capital gain received as cash' }),
-  })
+  .string()
   .openapi({
     description: 'Fees on the account, e.g. commission, bookkeeping, options-related.',
     title: 'FeeType',
-    required: [],
   })
   .openapi('StandaloneInvestmentTransactionFeeType')
 
 const StandaloneInvestmentTransactionSellTypeSchema = z
-  .object({
-    distribution: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Outflow of assets from a tax-advantaged account' }),
-    exercise: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Exercise of an option or warrant contract' }),
-    sell: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Sell to close or decrease an existing holding' }),
-    'sell short': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Sell to open a short position' }),
-  })
-  .openapi({ description: 'Selling an investment', title: 'SellType', required: [] })
+  .string()
+  .openapi({ description: 'Selling an investment', title: 'SellType' })
   .openapi('StandaloneInvestmentTransactionSellType')
 
 const StandaloneInvestmentTransactionTransferTypeSchema = z
-  .object({
-    adjustment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Increase or decrease in quantity of item' }),
-    assignment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Assignment of short option holding' }),
-    exercise: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Exercise of an option or warrant contract' }),
-    expire: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expiration of an option or warrant contract' }),
-    merger: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Stock exchanged at a pre-defined ratio as part of a merger between companies',
-      }),
-    request: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Request fiat or cryptocurrency to an address or email' }),
-    send: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Inflow or outflow of fiat or cryptocurrency to an address or email',
-      }),
-    'spin off': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of stock from spin-off transaction of an existing holding' }),
-    split: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Inflow of stock from a forward split of an existing holding' }),
-    trade: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Trade of one cryptocurrency for another' }),
-    transfer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Movement of assets into or out of an account' }),
-  })
+  .string()
   .openapi({
     description:
       'Activity that modifies a position, but not through buy/sell activity e.g. options exercise, portfolio transfer',
     title: 'TransferType',
-    required: [],
   })
   .openapi('StandaloneInvestmentTransactionTransferType')
 
@@ -25059,7 +25027,7 @@ const UserCreateResponseSchema = z
   })
   .openapi('UserCreateResponse')
 
-const UserCustomPasswordSchema = z
+const UserCustomPasswordSchema: z.ZodType<UserCustomPasswordType> = z
   .looseObject({
     force_error: z
       .string()
@@ -25250,8 +25218,22 @@ const WalletCreateRequestSchema = z
   .openapi('WalletCreateRequest')
 
 const WalletCreateResponseSchema = WalletSchema.and(
-  z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['wallet_id', 'balance', 'request_id'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'wallet_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'balance')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'request_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
     description: 'WalletCreateResponse defines the response schema for `/wallet/create`',
     required: ['wallet_id', 'balance', 'request_id'],
@@ -25271,8 +25253,22 @@ const WalletGetRequestSchema = z
   .openapi('WalletGetRequest')
 
 const WalletGetResponseSchema = WalletSchema.and(
-  z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['wallet_id', 'balance', 'request_id'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'wallet_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'balance')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'request_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
     description: 'WalletGetResponse defines the response schema for `/wallet/get`',
     required: ['wallet_id', 'balance', 'request_id'],
@@ -25491,8 +25487,50 @@ const WalletTransactionGetRequestSchema = z
   .openapi('WalletTransactionGetRequest')
 
 const WalletTransactionGetResponseSchema = WalletTransactionSchema.and(
-  z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }),
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'transaction_id',
+        'reference',
+        'type',
+        'amount',
+        'counterparty',
+        'status',
+        'created_at',
+        'request_id',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'transaction_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'reference')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'counterparty')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'request_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(z.object({ request_id: RequestIDSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
     description:
       'WalletTransactionGetResponse defines the response schema for `/wallet/transaction/get`',

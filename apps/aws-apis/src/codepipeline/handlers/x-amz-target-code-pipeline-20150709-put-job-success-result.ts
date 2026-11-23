@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetCodePipeline20150709PutJobSuccessResultRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetCodePipeline20150709PutJobSuccessResultHandler = app.openapi(
+  postXAmzTargetCodePipeline20150709PutJobSuccessResultRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

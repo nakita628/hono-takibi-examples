@@ -4,14 +4,10 @@ const GenericStringSchema = z.string().max(255).openapi('GenericString')
 
 const CustomRoutingEndpointDescriptionSchema = z
   .object({
-    EndpointId: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID. ',
-        }),
-    ).exactOptional(),
+    EndpointId: GenericStringSchema.exactOptional().openapi({
+      description:
+        'An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID. ',
+    }),
   })
   .openapi({
     description:
@@ -26,33 +22,23 @@ const CustomRoutingEndpointDescriptionsSchema = z
 
 const AddCustomRoutingEndpointsResponseSchema = z
   .object({
-    EndpointDescriptions: CustomRoutingEndpointDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The endpoint objects added to the custom routing accelerator.' }),
-    ).exactOptional(),
-    EndpointGroupArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the endpoint group for the custom routing endpoint.',
-        }),
-    ).exactOptional(),
+    EndpointDescriptions: CustomRoutingEndpointDescriptionsSchema.exactOptional().openapi({
+      description: 'The endpoint objects added to the custom routing accelerator.',
+    }),
+    EndpointGroupArn: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the endpoint group for the custom routing endpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddCustomRoutingEndpointsResponse')
 
 const CustomRoutingEndpointConfigurationSchema = z
   .object({
-    EndpointId: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID. ',
-        }),
-    ).exactOptional(),
+    EndpointId: GenericStringSchema.exactOptional().openapi({
+      description:
+        'An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID. ',
+    }),
   })
   .openapi({
     description:
@@ -69,21 +55,13 @@ const CustomRoutingEndpointConfigurationsSchema = z
 
 const AddCustomRoutingEndpointsRequestSchema = z
   .object({
-    EndpointConfigurations: CustomRoutingEndpointConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of endpoint objects to add to a custom routing accelerator.',
-        }),
-    ),
-    EndpointGroupArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the endpoint group for the custom routing endpoint.',
-        }),
-    ),
+    EndpointConfigurations: CustomRoutingEndpointConfigurationsSchema.openapi({
+      description: 'The list of endpoint objects to add to a custom routing accelerator.',
+    }),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the endpoint group for the custom routing endpoint.',
+    }),
   })
   .openapi({
     required: ['EndpointConfigurations', 'EndpointGroupArn'],
@@ -113,36 +91,24 @@ const GenericBooleanSchema = z.boolean().openapi('GenericBoolean')
 
 const EndpointDescriptionSchema = z
   .object({
-    EndpointId: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. </p> <p>An Application Load Balancer can be either internal or internet-facing.</p>',
-        }),
-    ).exactOptional(),
-    Weight: EndpointWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The weight associated with the endpoint. When you add weights to endpoints, you configure Global Accelerator to route traffic based on proportions that you specify. For example, you might specify endpoint weights of 4, 5, 5, and 6 (sum=20). The result is that 4/20 of your traffic, on average, is routed to the first endpoint, 5/20 is routed both to the second and third endpoints, and 6/20 is routed to the last endpoint. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoints-endpoint-weights.html">Endpoint weights</a> in the <i>Global Accelerator Developer Guide</i>. ',
-        }),
-    ).exactOptional(),
-    HealthState: HealthStateSchema.and(
-      z.any().openapi({ description: 'The health status of the endpoint.' }),
-    ).exactOptional(),
-    HealthReason: GenericStringSchema.and(
-      z.any().openapi({ description: 'Returns a null result.' }),
-    ).exactOptional(),
-    ClientIPPreservationEnabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. The default value is true for new accelerators. </p> <p>If the value is set to true, the client\'s IP address is preserved in the <code>X-Forwarded-For</code> request header as traffic travels to applications on the endpoint fronted by the accelerator.</p> <p>Client IP address preservation is supported, in specific Amazon Web Services Regions, for endpoints that are Application Load Balancers and Amazon EC2 instances.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/preserve-client-ip-address.html"> Preserve client IP addresses in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    EndpointId: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. </p> <p>An Application Load Balancer can be either internal or internet-facing.</p>',
+    }),
+    Weight: EndpointWeightSchema.exactOptional().openapi({
+      description:
+        'The weight associated with the endpoint. When you add weights to endpoints, you configure Global Accelerator to route traffic based on proportions that you specify. For example, you might specify endpoint weights of 4, 5, 5, and 6 (sum=20). The result is that 4/20 of your traffic, on average, is routed to the first endpoint, 5/20 is routed both to the second and third endpoints, and 6/20 is routed to the last endpoint. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoints-endpoint-weights.html">Endpoint weights</a> in the <i>Global Accelerator Developer Guide</i>. ',
+    }),
+    HealthState: HealthStateSchema.exactOptional().openapi({
+      description: 'The health status of the endpoint.',
+    }),
+    HealthReason: GenericStringSchema.exactOptional().openapi({
+      description: 'Returns a null result.',
+    }),
+    ClientIPPreservationEnabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. The default value is true for new accelerators. </p> <p>If the value is set to true, the client\'s IP address is preserved in the <code>X-Forwarded-For</code> request header as traffic travels to applications on the endpoint fronted by the accelerator.</p> <p>Client IP address preservation is supported, in specific Amazon Web Services Regions, for endpoints that are Application Load Balancers and Amazon EC2 instances.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/preserve-client-ip-address.html"> Preserve client IP addresses in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -157,42 +123,30 @@ const EndpointDescriptionsSchema = z
 
 const AddEndpointsResponseSchema = z
   .object({
-    EndpointDescriptions: EndpointDescriptionsSchema.and(
-      z.any().openapi({ description: 'The list of endpoint objects.' }),
-    ).exactOptional(),
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ).exactOptional(),
+    EndpointDescriptions: EndpointDescriptionsSchema.exactOptional().openapi({
+      description: 'The list of endpoint objects.',
+    }),
+    EndpointGroupArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddEndpointsResponse')
 
 const EndpointConfigurationSchema = z
   .object({
-    EndpointId: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. A resource must be valid and active when you add it as an endpoint.</p> <p>An Application Load Balancer can be either internal or internet-facing.</p>',
-        }),
-    ).exactOptional(),
-    Weight: EndpointWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The weight associated with the endpoint. When you add weights to endpoints, you configure Global Accelerator to route traffic based on proportions that you specify. For example, you might specify endpoint weights of 4, 5, 5, and 6 (sum=20). The result is that 4/20 of your traffic, on average, is routed to the first endpoint, 5/20 is routed both to the second and third endpoints, and 6/20 is routed to the last endpoint. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoints-endpoint-weights.html">Endpoint weights</a> in the <i>Global Accelerator Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    ClientIPPreservationEnabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. The default value is true for new accelerators. </p> <p>If the value is set to true, the client\'s IP address is preserved in the <code>X-Forwarded-For</code> request header as traffic travels to applications on the endpoint fronted by the accelerator.</p> <p>Client IP address preservation is supported, in specific Amazon Web Services Regions, for endpoints that are Application Load Balancers and Amazon EC2 instances.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/preserve-client-ip-address.html"> Preserve client IP addresses in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    EndpointId: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. A resource must be valid and active when you add it as an endpoint.</p> <p>An Application Load Balancer can be either internal or internet-facing.</p>',
+    }),
+    Weight: EndpointWeightSchema.exactOptional().openapi({
+      description:
+        'The weight associated with the endpoint. When you add weights to endpoints, you configure Global Accelerator to route traffic based on proportions that you specify. For example, you might specify endpoint weights of 4, 5, 5, and 6 (sum=20). The result is that 4/20 of your traffic, on average, is routed to the first endpoint, 5/20 is routed both to the second and third endpoints, and 6/20 is routed to the last endpoint. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoints-endpoint-weights.html">Endpoint weights</a> in the <i>Global Accelerator Developer Guide</i>.',
+    }),
+    ClientIPPreservationEnabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. The default value is true for new accelerators. </p> <p>If the value is set to true, the client\'s IP address is preserved in the <code>X-Forwarded-For</code> request header as traffic travels to applications on the endpoint fronted by the accelerator.</p> <p>Client IP address preservation is supported, in specific Amazon Web Services Regions, for endpoints that are Application Load Balancers and Amazon EC2 instances.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/preserve-client-ip-address.html"> Preserve client IP addresses in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -209,12 +163,12 @@ const EndpointConfigurationsSchema = z
 
 const AddEndpointsRequestSchema = z
   .object({
-    EndpointConfigurations: EndpointConfigurationsSchema.and(
-      z.any().openapi({ description: 'The list of endpoint objects.' }),
-    ),
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ),
+    EndpointConfigurations: EndpointConfigurationsSchema.openapi({
+      description: 'The list of endpoint objects.',
+    }),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
   })
   .openapi({
     required: ['EndpointConfigurations', 'EndpointGroupArn'],
@@ -244,22 +198,14 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const ByoipCidrEventSchema = z
   .object({
-    Message: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that contains an <code>Event</code> message describing changes that you make in the status of an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).',
-        }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp for when you make a status change for an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).',
-        }),
-    ).exactOptional(),
+    Message: GenericStringSchema.exactOptional().openapi({
+      description:
+        'A string that contains an <code>Event</code> message describing changes that you make in the status of an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'A timestamp for when you make a status change for an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).',
+    }),
   })
   .openapi({
     description:
@@ -272,20 +218,16 @@ const ByoipCidrEventsSchema = z.array(ByoipCidrEventSchema).openapi('ByoipCidrEv
 
 const ByoipCidrSchema = z
   .object({
-    Cidr: GenericStringSchema.and(
-      z.any().openapi({ description: 'The address range, in CIDR notation.' }),
-    ).exactOptional(),
-    State: ByoipCidrStateSchema.and(
-      z.any().openapi({ description: 'The state of the address pool.' }),
-    ).exactOptional(),
-    Events: ByoipCidrEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A history of status changes for an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).',
-        }),
-    ).exactOptional(),
+    Cidr: GenericStringSchema.exactOptional().openapi({
+      description: 'The address range, in CIDR notation.',
+    }),
+    State: ByoipCidrStateSchema.exactOptional().openapi({
+      description: 'The state of the address pool.',
+    }),
+    Events: ByoipCidrEventsSchema.exactOptional().openapi({
+      description:
+        'A history of status changes for an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).',
+    }),
   })
   .openapi({
     description:
@@ -296,23 +238,19 @@ const ByoipCidrSchema = z
 
 const AdvertiseByoipCidrResponseSchema = z
   .object({
-    ByoipCidr: ByoipCidrSchema.and(
-      z.any().openapi({ description: 'Information about the address range.' }),
-    ).exactOptional(),
+    ByoipCidr: ByoipCidrSchema.exactOptional().openapi({
+      description: 'Information about the address range.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AdvertiseByoipCidrResponse')
 
 const AdvertiseByoipCidrRequestSchema = z
   .object({
-    Cidr: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The address range, in CIDR notation. This must be the exact range that you provisioned. You can't advertise only a portion of the provisioned range.",
-        }),
-    ),
+    Cidr: GenericStringSchema.openapi({
+      description:
+        "The address range, in CIDR notation. This must be the exact range that you provisioned. You can't advertise only a portion of the provisioned range.",
+    }),
   })
   .openapi({ required: ['Cidr'], title: 'AdvertiseByoipCidrRequest' })
   .openapi('AdvertiseByoipCidrRequest')
@@ -331,41 +269,25 @@ const DestinationPortsSchema = z.array(PortNumberSchema).max(100).openapi('Desti
 
 const AllowCustomRoutingTrafficRequestSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ),
-    EndpointId: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID.',
-        }),
-    ),
-    DestinationAddresses: DestinationAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of specific Amazon EC2 instance IP addresses (destination addresses) in a subnet that you want to allow to receive traffic. The IP addresses must be a subset of the IP addresses that you specified for the endpoint group.</p> <p> <code>DestinationAddresses</code> is required if <code>AllowAllTrafficToEndpoint</code> is <code>FALSE</code> or is not specified.</p>',
-        }),
-    ).exactOptional(),
-    DestinationPorts: DestinationPortsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of specific Amazon EC2 instance ports (destination ports) that you want to allow to receive traffic.',
-        }),
-    ).exactOptional(),
-    AllowAllTrafficToEndpoint: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether all destination IP addresses and ports for a specified VPC subnet endpoint can receive traffic from a custom routing accelerator. The value is TRUE or FALSE. </p> <p>When set to TRUE, <i>all</i> destinations in the custom routing VPC subnet can receive traffic. Note that you cannot specify destination IP addresses and ports when the value is set to TRUE.</p> <p>When set to FALSE (or not specified), you <i>must</i> specify a list of destination IP addresses that are allowed to receive traffic. A list of ports is optional. If you don't specify a list of ports, the ports that can accept traffic is the same as the ports configured for the endpoint group.</p> <p>The default value is FALSE.</p>",
-        }),
-    ).exactOptional(),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
+    EndpointId: GenericStringSchema.openapi({
+      description:
+        'An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID.',
+    }),
+    DestinationAddresses: DestinationAddressesSchema.exactOptional().openapi({
+      description:
+        '<p>A list of specific Amazon EC2 instance IP addresses (destination addresses) in a subnet that you want to allow to receive traffic. The IP addresses must be a subset of the IP addresses that you specified for the endpoint group.</p> <p> <code>DestinationAddresses</code> is required if <code>AllowAllTrafficToEndpoint</code> is <code>FALSE</code> or is not specified.</p>',
+    }),
+    DestinationPorts: DestinationPortsSchema.exactOptional().openapi({
+      description:
+        'A list of specific Amazon EC2 instance ports (destination ports) that you want to allow to receive traffic.',
+    }),
+    AllowAllTrafficToEndpoint: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether all destination IP addresses and ports for a specified VPC subnet endpoint can receive traffic from a custom routing accelerator. The value is TRUE or FALSE. </p> <p>When set to TRUE, <i>all</i> destinations in the custom routing VPC subnet can receive traffic. Note that you cannot specify destination IP addresses and ports when the value is set to TRUE.</p> <p>When set to FALSE (or not specified), you <i>must</i> specify a list of destination IP addresses that are allowed to receive traffic. A list of ports is optional. If you don't specify a list of ports, the ports that can accept traffic is the same as the ports configured for the endpoint group.</p> <p>The default value is FALSE.</p>",
+    }),
   })
   .openapi({
     required: ['EndpointGroupArn', 'EndpointId'],
@@ -381,26 +303,18 @@ const IpAddressFamilySchema = z.enum(['IPv4', 'IPv6']).openapi('IpAddressFamily'
 
 const IpSetSchema = z
   .object({
-    IpFamily: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'IpFamily is deprecated and has been replaced by IpAddressFamily.IpFamily has been replaced by IpAddressFamily',
-        }),
-    ).exactOptional(),
-    IpAddresses: IpAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of IP addresses in the IP address set. An IP address set can have a maximum of two IP addresses.',
-        }),
-    ).exactOptional(),
-    IpAddressFamily: IpAddressFamilySchema.and(
-      z.any().openapi({ description: 'The types of IP addresses included in this IP set. ' }),
-    ).exactOptional(),
+    IpFamily: GenericStringSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'IpFamily is deprecated and has been replaced by IpAddressFamily.IpFamily has been replaced by IpAddressFamily',
+    }),
+    IpAddresses: IpAddressesSchema.exactOptional().openapi({
+      description:
+        'The array of IP addresses in the IP address set. An IP address set can have a maximum of two IP addresses.',
+    }),
+    IpAddressFamily: IpAddressFamilySchema.exactOptional().openapi({
+      description: 'The types of IP addresses included in this IP set. ',
+    }),
   })
   .openapi({
     description: 'A complex type for the set of IP addresses for an accelerator.',
@@ -414,22 +328,14 @@ const AcceleratorStatusSchema = z.enum(['DEPLOYED', 'IN_PROGRESS']).openapi('Acc
 
 const AcceleratorEventSchema = z
   .object({
-    Message: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that contains an <code>Event</code> message describing changes or errors when you update an accelerator in Global Accelerator from IPv4 to dual-stack, or dual-stack to IPv4.',
-        }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp for when you update an accelerator in Global Accelerator from IPv4 to dual-stack, or dual-stack to IPv4.',
-        }),
-    ).exactOptional(),
+    Message: GenericStringSchema.exactOptional().openapi({
+      description:
+        'A string that contains an <code>Event</code> message describing changes or errors when you update an accelerator in Global Accelerator from IPv4 to dual-stack, or dual-stack to IPv4.',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'A timestamp for when you update an accelerator in Global Accelerator from IPv4 to dual-stack, or dual-stack to IPv4.',
+    }),
   })
   .openapi({
     description:
@@ -442,74 +348,45 @@ const AcceleratorEventsSchema = z.array(AcceleratorEventSchema).openapi('Acceler
 
 const AcceleratorSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the accelerator.' }),
-    ).exactOptional(),
-    Name: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the accelerator. The name must contain only alphanumeric characters or hyphens (-), and must not begin or end with a hyphen.',
-        }),
-    ).exactOptional(),
-    IpAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type that an accelerator supports. For a standard accelerator, the value can be IPV4 or DUAL_STACK.',
-        }),
-    ).exactOptional(),
-    Enabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, the accelerator cannot be deleted. If set to false, accelerator can be deleted.</p>',
-        }),
-    ).exactOptional(),
-    IpSets: IpSetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The static IP addresses that Global Accelerator associates with the accelerator.',
-        }),
-    ).exactOptional(),
-    DnsName: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Domain Name System (DNS) name that Global Accelerator creates that points to an accelerator\'s static IPv4 addresses.</p> <p>The naming convention for the DNS name for an accelerator is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .awsglobalaccelerator.com. For example: a1234567890abcdef.awsglobalaccelerator.com.</p> <p>If you have a dual-stack accelerator, you also have a second DNS name, <code>DualStackDnsName</code>, that points to both the A record and the AAAA record for all four static addresses for the accelerator: two IPv4 addresses and two IPv6 addresses.</p> <p>For more information about the default DNS name, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/dns-addressing-custom-domains.dns-addressing.html"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Status: AcceleratorStatusSchema.and(
-      z.any().openapi({ description: 'Describes the deployment status of the accelerator.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the accelerator was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the accelerator was last modified.' }),
-    ).exactOptional(),
-    DualStackDnsName: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Domain Name System (DNS) name that Global Accelerator creates that points to a dual-stack accelerator\'s four static IP addresses: two IPv4 addresses and two IPv6 addresses.</p> <p>The naming convention for the dual-stack DNS name is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .dualstack.awsglobalaccelerator.com. For example: a1234567890abcdef.dualstack.awsglobalaccelerator.com.</p> <p>Note: Global Accelerator also assigns a default DNS name, <code>DnsName</code>, to your accelerator that points just to the static IPv4 addresses. </p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-accelerators.html#about-accelerators.dns-addressing"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Events: AcceleratorEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A history of changes that you make to an accelerator in Global Accelerator.',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the accelerator.',
+    }),
+    Name: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The name of the accelerator. The name must contain only alphanumeric characters or hyphens (-), and must not begin or end with a hyphen.',
+    }),
+    IpAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        'The IP address type that an accelerator supports. For a standard accelerator, the value can be IPV4 or DUAL_STACK.',
+    }),
+    Enabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, the accelerator cannot be deleted. If set to false, accelerator can be deleted.</p>',
+    }),
+    IpSets: IpSetsSchema.exactOptional().openapi({
+      description:
+        'The static IP addresses that Global Accelerator associates with the accelerator.',
+    }),
+    DnsName: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>The Domain Name System (DNS) name that Global Accelerator creates that points to an accelerator\'s static IPv4 addresses.</p> <p>The naming convention for the DNS name for an accelerator is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .awsglobalaccelerator.com. For example: a1234567890abcdef.awsglobalaccelerator.com.</p> <p>If you have a dual-stack accelerator, you also have a second DNS name, <code>DualStackDnsName</code>, that points to both the A record and the AAAA record for all four static addresses for the accelerator: two IPv4 addresses and two IPv6 addresses.</p> <p>For more information about the default DNS name, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/dns-addressing-custom-domains.dns-addressing.html"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
+    Status: AcceleratorStatusSchema.exactOptional().openapi({
+      description: 'Describes the deployment status of the accelerator.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the accelerator was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the accelerator was last modified.',
+    }),
+    DualStackDnsName: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>The Domain Name System (DNS) name that Global Accelerator creates that points to a dual-stack accelerator\'s four static IP addresses: two IPv4 addresses and two IPv6 addresses.</p> <p>The naming convention for the dual-stack DNS name is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .dualstack.awsglobalaccelerator.com. For example: a1234567890abcdef.dualstack.awsglobalaccelerator.com.</p> <p>Note: Global Accelerator also assigns a default DNS name, <code>DnsName</code>, to your accelerator that points just to the static IPv4 addresses. </p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-accelerators.html#about-accelerators.dns-addressing"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
+    Events: AcceleratorEventsSchema.exactOptional().openapi({
+      description: 'A history of changes that you make to an accelerator in Global Accelerator.',
+    }),
   })
   .openapi({
     description:
@@ -520,14 +397,10 @@ const AcceleratorSchema = z
 
 const CreateAcceleratorResponseSchema = z
   .object({
-    Accelerator: AcceleratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The accelerator that is created by specifying a listener and the supported IP address types.',
-        }),
-    ).exactOptional(),
+    Accelerator: AcceleratorSchema.exactOptional().openapi({
+      description:
+        'The accelerator that is created by specifying a listener and the supported IP address types.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAcceleratorResponse')
@@ -540,12 +413,10 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: 'A string that contains a <code>Tag</code> key.' }),
-    ),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'A string that contains a <code>Tag</code> value.' }),
-    ),
+    Key: TagKeySchema.openapi({ description: 'A string that contains a <code>Tag</code> key.' }),
+    Value: TagValueSchema.openapi({
+      description: 'A string that contains a <code>Tag</code> value.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -557,54 +428,30 @@ const TagsSchema = z.array(TagSchema).openapi('Tags')
 
 const CreateAcceleratorRequestSchema = z
   .object({
-    Name: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the accelerator. The name can have a maximum of 64 characters, must contain only alphanumeric characters, periods (.), or hyphens (-), and must not begin or end with a hyphen or period.',
-        }),
-    ),
-    IpAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type that an accelerator supports. For a standard accelerator, the value can be IPV4 or DUAL_STACK.',
-        }),
-    ).exactOptional(),
-    IpAddresses: IpAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Optionally, if you've added your own IP address pool to Global Accelerator (BYOIP), you can choose an IPv4 address from your own pool to use for the accelerator's static IPv4 address when you create an accelerator. </p> <p>After you bring an address range to Amazon Web Services, it appears in your account as an address pool. When you create an accelerator, you can assign one IPv4 address from your range to it. Global Accelerator assigns you a second static IPv4 address from an Amazon IP address range. If you bring two IPv4 address ranges to Amazon Web Services, you can assign one IPv4 address from each range to your accelerator. This restriction is because Global Accelerator assigns each address range to a different network zone, for high availability.</p> <p>You can specify one or two addresses, separated by a space. Do not include the /32 suffix.</p> <p>Note that you can't update IP addresses for an existing accelerator. To change them, you must create a new accelerator with the new addresses.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the <i>Global Accelerator Developer Guide</i>.</p>",
-        }),
-    ).exactOptional(),
-    Enabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether an accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, an accelerator cannot be deleted. If set to false, the accelerator can be deleted.</p>',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of an accelerator.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Create tags for an accelerator.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/tagging-in-global-accelerator.html">Tagging in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    Name: GenericStringSchema.openapi({
+      description:
+        'The name of the accelerator. The name can have a maximum of 64 characters, must contain only alphanumeric characters, periods (.), or hyphens (-), and must not begin or end with a hyphen or period.',
+    }),
+    IpAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        'The IP address type that an accelerator supports. For a standard accelerator, the value can be IPV4 or DUAL_STACK.',
+    }),
+    IpAddresses: IpAddressesSchema.exactOptional().openapi({
+      description:
+        "<p>Optionally, if you've added your own IP address pool to Global Accelerator (BYOIP), you can choose an IPv4 address from your own pool to use for the accelerator's static IPv4 address when you create an accelerator. </p> <p>After you bring an address range to Amazon Web Services, it appears in your account as an address pool. When you create an accelerator, you can assign one IPv4 address from your range to it. Global Accelerator assigns you a second static IPv4 address from an Amazon IP address range. If you bring two IPv4 address ranges to Amazon Web Services, you can assign one IPv4 address from each range to your accelerator. This restriction is because Global Accelerator assigns each address range to a different network zone, for high availability.</p> <p>You can specify one or two addresses, separated by a space. Do not include the /32 suffix.</p> <p>Note that you can't update IP addresses for an existing accelerator. To change them, you must create a new accelerator with the new addresses.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the <i>Global Accelerator Developer Guide</i>.</p>",
+    }),
+    Enabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether an accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, an accelerator cannot be deleted. If set to false, the accelerator can be deleted.</p>',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of an accelerator.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>Create tags for an accelerator.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/tagging-in-global-accelerator.html">Tagging in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['Name', 'IdempotencyToken'], title: 'CreateAcceleratorRequest' })
   .openapi('CreateAcceleratorRequest')
@@ -615,125 +462,77 @@ const CustomRoutingAcceleratorStatusSchema = z
 
 const CustomRoutingAcceleratorSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the custom routing accelerator.',
-        }),
-    ).exactOptional(),
-    Name: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the accelerator. The name must contain only alphanumeric characters or hyphens (-), and must not begin or end with a hyphen.',
-        }),
-    ).exactOptional(),
-    IpAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type that an accelerator supports. For a custom routing accelerator, the value must be IPV4.',
-        }),
-    ).exactOptional(),
-    Enabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, the accelerator cannot be deleted. If set to false, accelerator can be deleted.</p>',
-        }),
-    ).exactOptional(),
-    IpSets: IpSetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The static IP addresses that Global Accelerator associates with the accelerator.',
-        }),
-    ).exactOptional(),
-    DnsName: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Domain Name System (DNS) name that Global Accelerator creates that points to an accelerator\'s static IPv4 addresses. </p> <p>The naming convention for the DNS name is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .awsglobalaccelerator.com. For example: a1234567890abcdef.awsglobalaccelerator.com.</p> <p>If you have a dual-stack accelerator, you also have a second DNS name, <code>DualStackDnsName</code>, that points to both the A record and the AAAA record for all four static addresses for the accelerator: two IPv4 addresses and two IPv6 addresses.</p> <p>For more information about the default DNS name, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/dns-addressing-custom-domains.dns-addressing.html"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Status: CustomRoutingAcceleratorStatusSchema.and(
-      z.any().openapi({ description: 'Describes the deployment status of the accelerator.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the accelerator was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the accelerator was last modified.' }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom routing accelerator.',
+    }),
+    Name: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The name of the accelerator. The name must contain only alphanumeric characters or hyphens (-), and must not begin or end with a hyphen.',
+    }),
+    IpAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        'The IP address type that an accelerator supports. For a custom routing accelerator, the value must be IPV4.',
+    }),
+    Enabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, the accelerator cannot be deleted. If set to false, accelerator can be deleted.</p>',
+    }),
+    IpSets: IpSetsSchema.exactOptional().openapi({
+      description:
+        'The static IP addresses that Global Accelerator associates with the accelerator.',
+    }),
+    DnsName: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>The Domain Name System (DNS) name that Global Accelerator creates that points to an accelerator\'s static IPv4 addresses. </p> <p>The naming convention for the DNS name is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .awsglobalaccelerator.com. For example: a1234567890abcdef.awsglobalaccelerator.com.</p> <p>If you have a dual-stack accelerator, you also have a second DNS name, <code>DualStackDnsName</code>, that points to both the A record and the AAAA record for all four static addresses for the accelerator: two IPv4 addresses and two IPv6 addresses.</p> <p>For more information about the default DNS name, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/dns-addressing-custom-domains.dns-addressing.html"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
+    Status: CustomRoutingAcceleratorStatusSchema.exactOptional().openapi({
+      description: 'Describes the deployment status of the accelerator.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the accelerator was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the accelerator was last modified.',
+    }),
   })
   .openapi({ description: 'Attributes of a custom routing accelerator.', required: [] })
   .openapi('CustomRoutingAccelerator')
 
 const CreateCustomRoutingAcceleratorResponseSchema = z
   .object({
-    Accelerator: CustomRoutingAcceleratorSchema.and(
-      z.any().openapi({ description: 'The accelerator that is created.' }),
-    ).exactOptional(),
+    Accelerator: CustomRoutingAcceleratorSchema.exactOptional().openapi({
+      description: 'The accelerator that is created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCustomRoutingAcceleratorResponse')
 
 const CreateCustomRoutingAcceleratorRequestSchema = z
   .object({
-    Name: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a custom routing accelerator. The name can have a maximum of 64 characters, must contain only alphanumeric characters or hyphens (-), and must not begin or end with a hyphen.',
-        }),
-    ),
-    IpAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type that an accelerator supports. For a custom routing accelerator, the value must be IPV4.',
-        }),
-    ).exactOptional(),
-    IpAddresses: IpAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Optionally, if you've added your own IP address pool to Global Accelerator (BYOIP), you can choose an IPv4 address from your own pool to use for the accelerator's static IPv4 address when you create an accelerator. </p> <p>After you bring an address range to Amazon Web Services, it appears in your account as an address pool. When you create an accelerator, you can assign one IPv4 address from your range to it. Global Accelerator assigns you a second static IPv4 address from an Amazon IP address range. If you bring two IPv4 address ranges to Amazon Web Services, you can assign one IPv4 address from each range to your accelerator. This restriction is because Global Accelerator assigns each address range to a different network zone, for high availability.</p> <p>You can specify one or two addresses, separated by a space. Do not include the /32 suffix.</p> <p>Note that you can't update IP addresses for an existing accelerator. To change them, you must create a new accelerator with the new addresses.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the <i>Global Accelerator Developer Guide</i>.</p>",
-        }),
-    ).exactOptional(),
-    Enabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether an accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, an accelerator cannot be deleted. If set to false, the accelerator can be deleted.</p>',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Create tags for an accelerator.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/tagging-in-global-accelerator.html">Tagging in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    Name: GenericStringSchema.openapi({
+      description:
+        'The name of a custom routing accelerator. The name can have a maximum of 64 characters, must contain only alphanumeric characters or hyphens (-), and must not begin or end with a hyphen.',
+    }),
+    IpAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        'The IP address type that an accelerator supports. For a custom routing accelerator, the value must be IPV4.',
+    }),
+    IpAddresses: IpAddressesSchema.exactOptional().openapi({
+      description:
+        "<p>Optionally, if you've added your own IP address pool to Global Accelerator (BYOIP), you can choose an IPv4 address from your own pool to use for the accelerator's static IPv4 address when you create an accelerator. </p> <p>After you bring an address range to Amazon Web Services, it appears in your account as an address pool. When you create an accelerator, you can assign one IPv4 address from your range to it. Global Accelerator assigns you a second static IPv4 address from an Amazon IP address range. If you bring two IPv4 address ranges to Amazon Web Services, you can assign one IPv4 address from each range to your accelerator. This restriction is because Global Accelerator assigns each address range to a different network zone, for high availability.</p> <p>You can specify one or two addresses, separated by a space. Do not include the /32 suffix.</p> <p>Note that you can't update IP addresses for an existing accelerator. To change them, you must create a new accelerator with the new addresses.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the <i>Global Accelerator Developer Guide</i>.</p>",
+    }),
+    Enabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether an accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, an accelerator cannot be deleted. If set to false, the accelerator can be deleted.</p>',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>Create tags for an accelerator.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/tagging-in-global-accelerator.html">Tagging in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['Name', 'IdempotencyToken'],
@@ -747,30 +546,18 @@ const ProtocolsSchema = z.array(ProtocolSchema).openapi('Protocols')
 
 const CustomRoutingDestinationDescriptionSchema = z
   .object({
-    FromPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The first port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.',
-        }),
-    ).exactOptional(),
-    ToPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.',
-        }),
-    ).exactOptional(),
-    Protocols: ProtocolsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol for the endpoint group that is associated with a custom routing accelerator. The protocol can be either TCP or UDP.',
-        }),
-    ).exactOptional(),
+    FromPort: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The first port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.',
+    }),
+    ToPort: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The last port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.',
+    }),
+    Protocols: ProtocolsSchema.exactOptional().openapi({
+      description:
+        'The protocol for the endpoint group that is associated with a custom routing accelerator. The protocol can be either TCP or UDP.',
+    }),
   })
   .openapi({
     description:
@@ -785,32 +572,20 @@ const CustomRoutingDestinationDescriptionsSchema = z
 
 const CustomRoutingEndpointGroupSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ).exactOptional(),
-    EndpointGroupRegion: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the endpoint group is located.',
-        }),
-    ).exactOptional(),
-    DestinationDescriptions: CustomRoutingDestinationDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a custom routing accelerator, describes the port range and protocol for all endpoints (virtual private cloud subnets) in an endpoint group to accept client traffic on.',
-        }),
-    ).exactOptional(),
-    EndpointDescriptions: CustomRoutingEndpointDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a custom routing accelerator, describes the endpoints (virtual private cloud subnets) in an endpoint group to accept client traffic on.',
-        }),
-    ).exactOptional(),
+    EndpointGroupArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
+    EndpointGroupRegion: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the endpoint group is located.',
+    }),
+    DestinationDescriptions: CustomRoutingDestinationDescriptionsSchema.exactOptional().openapi({
+      description:
+        'For a custom routing accelerator, describes the port range and protocol for all endpoints (virtual private cloud subnets) in an endpoint group to accept client traffic on.',
+    }),
+    EndpointDescriptions: CustomRoutingEndpointDescriptionsSchema.exactOptional().openapi({
+      description:
+        'For a custom routing accelerator, describes the endpoints (virtual private cloud subnets) in an endpoint group to accept client traffic on.',
+    }),
   })
   .openapi({
     description:
@@ -821,14 +596,10 @@ const CustomRoutingEndpointGroupSchema = z
 
 const CreateCustomRoutingEndpointGroupResponseSchema = z
   .object({
-    EndpointGroup: CustomRoutingEndpointGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The information about the endpoint group created for a custom routing accelerator.',
-        }),
-    ).exactOptional(),
+    EndpointGroup: CustomRoutingEndpointGroupSchema.exactOptional().openapi({
+      description:
+        'The information about the endpoint group created for a custom routing accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCustomRoutingEndpointGroupResponse')
@@ -843,30 +614,18 @@ const CustomRoutingProtocolsSchema = z
 
 const CustomRoutingDestinationConfigurationSchema = z
   .object({
-    FromPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The first port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.',
-        }),
-    ),
-    ToPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.',
-        }),
-    ),
-    Protocols: CustomRoutingProtocolsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol for the endpoint group that is associated with a custom routing accelerator. The protocol can be either TCP or UDP.',
-        }),
-    ),
+    FromPort: PortNumberSchema.openapi({
+      description:
+        'The first port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.',
+    }),
+    ToPort: PortNumberSchema.openapi({
+      description:
+        'The last port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.',
+    }),
+    Protocols: CustomRoutingProtocolsSchema.openapi({
+      description:
+        'The protocol for the endpoint group that is associated with a custom routing accelerator. The protocol can be either TCP or UDP.',
+    }),
   })
   .openapi({
     required: ['FromPort', 'ToPort', 'Protocols'],
@@ -883,38 +642,21 @@ const CustomRoutingDestinationConfigurationsSchema = z
 
 const CreateCustomRoutingEndpointGroupRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the listener for a custom routing endpoint.',
-        }),
-    ),
-    EndpointGroupRegion: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region where the endpoint group is located. A listener can have only one endpoint group in a specific Region.',
-        }),
-    ),
-    DestinationConfigurations: CustomRoutingDestinationConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the port range and protocol for all endpoints (virtual private cloud subnets) in a custom routing endpoint group to accept client traffic on.',
-        }),
-    ),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
-        }),
-    ),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener for a custom routing endpoint.',
+    }),
+    EndpointGroupRegion: GenericStringSchema.openapi({
+      description:
+        'The Amazon Web Services Region where the endpoint group is located. A listener can have only one endpoint group in a specific Region.',
+    }),
+    DestinationConfigurations: CustomRoutingDestinationConfigurationsSchema.openapi({
+      description:
+        'Sets the port range and protocol for all endpoints (virtual private cloud subnets) in a custom routing endpoint group to accept client traffic on.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
+    }),
   })
   .openapi({
     required: [
@@ -939,12 +681,12 @@ const InvalidPortRangeExceptionSchema = z.any().openapi('InvalidPortRangeExcepti
 
 const PortRangeSchema = z
   .object({
-    FromPort: PortNumberSchema.and(
-      z.any().openapi({ description: 'The first port in the range of ports, inclusive.' }),
-    ).exactOptional(),
-    ToPort: PortNumberSchema.and(
-      z.any().openapi({ description: 'The last port in the range of ports, inclusive.' }),
-    ).exactOptional(),
+    FromPort: PortNumberSchema.exactOptional().openapi({
+      description: 'The first port in the range of ports, inclusive.',
+    }),
+    ToPort: PortNumberSchema.exactOptional().openapi({
+      description: 'The last port in the range of ports, inclusive.',
+    }),
   })
   .openapi({ description: 'A complex type for a range of ports for a listener.', required: [] })
   .openapi('PortRange')
@@ -953,17 +695,13 @@ const PortRangesSchema = z.array(PortRangeSchema).min(1).max(10).openapi('PortRa
 
 const CustomRoutingListenerSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the listener.' }),
-    ).exactOptional(),
-    PortRanges: PortRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port range to support for connections from clients to your accelerator.</p> <p>Separately, you set port ranges for endpoints. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-endpoints.html">About endpoints for custom routing accelerators</a>.</p>',
-        }),
-    ).exactOptional(),
+    ListenerArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener.',
+    }),
+    PortRanges: PortRangesSchema.exactOptional().openapi({
+      description:
+        '<p>The port range to support for connections from clients to your accelerator.</p> <p>Separately, you set port ranges for endpoints. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-endpoints.html">About endpoints for custom routing accelerators</a>.</p>',
+    }),
   })
   .openapi({
     description: 'A complex type for a listener for a custom routing accelerator.',
@@ -973,43 +711,27 @@ const CustomRoutingListenerSchema = z
 
 const CreateCustomRoutingListenerResponseSchema = z
   .object({
-    Listener: CustomRoutingListenerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The listener that you've created for a custom routing accelerator.",
-        }),
-    ).exactOptional(),
+    Listener: CustomRoutingListenerSchema.exactOptional().openapi({
+      description: "The listener that you've created for a custom routing accelerator.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCustomRoutingListenerResponse')
 
 const CreateCustomRoutingListenerRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the accelerator for a custom routing listener.',
-        }),
-    ),
-    PortRanges: PortRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port range to support for connections from clients to your accelerator.</p> <p>Separately, you set port ranges for endpoints. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-endpoints.html">About endpoints for custom routing accelerators</a>.</p>',
-        }),
-    ),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
-        }),
-    ),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the accelerator for a custom routing listener.',
+    }),
+    PortRanges: PortRangesSchema.openapi({
+      description:
+        '<p>The port range to support for connections from clients to your accelerator.</p> <p>Separately, you set port ranges for endpoints. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-endpoints.html">About endpoints for custom routing accelerators</a>.</p>',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
+    }),
   })
   .openapi({
     required: ['AcceleratorArn', 'PortRanges', 'IdempotencyToken'],
@@ -1039,22 +761,14 @@ const ThresholdCountSchema = z.int().min(1).max(10).openapi('ThresholdCount')
 
 const PortOverrideSchema = z
   .object({
-    ListenerPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The listener port that you want to map to a specific endpoint port. This is the port that user traffic arrives to the Global Accelerator on.',
-        }),
-    ).exactOptional(),
-    EndpointPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint port that you want a listener port to be mapped to. This is the port on the endpoint, such as the Application Load Balancer or Amazon EC2 instance.',
-        }),
-    ).exactOptional(),
+    ListenerPort: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The listener port that you want to map to a specific endpoint port. This is the port that user traffic arrives to the Global Accelerator on.',
+    }),
+    EndpointPort: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The endpoint port that you want a listener port to be mapped to. This is the port on the endpoint, such as the Application Load Balancer or Amazon EC2 instance.',
+    }),
   })
   .openapi({
     description:
@@ -1067,75 +781,43 @@ const PortOverridesSchema = z.array(PortOverrideSchema).min(0).max(10).openapi('
 
 const EndpointGroupSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ).exactOptional(),
-    EndpointGroupRegion: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the endpoint group is located.',
-        }),
-    ).exactOptional(),
-    EndpointDescriptions: EndpointDescriptionsSchema.and(
-      z.any().openapi({ description: 'The list of endpoint objects.' }),
-    ).exactOptional(),
-    TrafficDialPercentage: TrafficDialPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The percentage of traffic to send to an Amazon Web Services Region. Additional traffic is distributed to other endpoint groups for this listener. </p> <p>Use this action to increase (dial up) or decrease (dial down) traffic to a specific Region. The percentage is applied to the traffic that would otherwise have been routed to the Region based on optimal routing.</p> <p>The default value is 100.</p>',
-        }),
-    ).exactOptional(),
-    HealthCheckPort: HealthCheckPortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port that Global Accelerator uses to perform health checks on endpoints that are part of this endpoint group. </p> <p>The default port is the port for the listener that this endpoint group is associated with. If the listener port is a list, Global Accelerator uses the first specified port in the list of ports.</p>',
-        }),
-    ).exactOptional(),
-    HealthCheckProtocol: HealthCheckProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol that Global Accelerator uses to perform health checks on endpoints that are part of this endpoint group. The default value is TCP.',
-        }),
-    ).exactOptional(),
-    HealthCheckPath: HealthCheckPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the protocol is HTTP/S, then this value provides the ping path that Global Accelerator uses for the destination on the endpoints for health checks. The default is slash (/).',
-        }),
-    ).exactOptional(),
-    HealthCheckIntervalSeconds: HealthCheckIntervalSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time—10 seconds or 30 seconds—between health checks for each endpoint. The default value is 30.',
-        }),
-    ).exactOptional(),
-    ThresholdCount: ThresholdCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.',
-        }),
-    ).exactOptional(),
-    PortOverrides: PortOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows you to override the destination ports used to route traffic to an endpoint. Using a port override lets you map a list of external destination ports (that your users send traffic to) to a list of internal destination ports that you want an application endpoint to receive traffic on. ',
-        }),
-    ).exactOptional(),
+    EndpointGroupArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
+    EndpointGroupRegion: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the endpoint group is located.',
+    }),
+    EndpointDescriptions: EndpointDescriptionsSchema.exactOptional().openapi({
+      description: 'The list of endpoint objects.',
+    }),
+    TrafficDialPercentage: TrafficDialPercentageSchema.exactOptional().openapi({
+      description:
+        '<p>The percentage of traffic to send to an Amazon Web Services Region. Additional traffic is distributed to other endpoint groups for this listener. </p> <p>Use this action to increase (dial up) or decrease (dial down) traffic to a specific Region. The percentage is applied to the traffic that would otherwise have been routed to the Region based on optimal routing.</p> <p>The default value is 100.</p>',
+    }),
+    HealthCheckPort: HealthCheckPortSchema.exactOptional().openapi({
+      description:
+        '<p>The port that Global Accelerator uses to perform health checks on endpoints that are part of this endpoint group. </p> <p>The default port is the port for the listener that this endpoint group is associated with. If the listener port is a list, Global Accelerator uses the first specified port in the list of ports.</p>',
+    }),
+    HealthCheckProtocol: HealthCheckProtocolSchema.exactOptional().openapi({
+      description:
+        'The protocol that Global Accelerator uses to perform health checks on endpoints that are part of this endpoint group. The default value is TCP.',
+    }),
+    HealthCheckPath: HealthCheckPathSchema.exactOptional().openapi({
+      description:
+        'If the protocol is HTTP/S, then this value provides the ping path that Global Accelerator uses for the destination on the endpoints for health checks. The default is slash (/).',
+    }),
+    HealthCheckIntervalSeconds: HealthCheckIntervalSecondsSchema.exactOptional().openapi({
+      description:
+        'The time—10 seconds or 30 seconds—between health checks for each endpoint. The default value is 30.',
+    }),
+    ThresholdCount: ThresholdCountSchema.exactOptional().openapi({
+      description:
+        'The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.',
+    }),
+    PortOverrides: PortOverridesSchema.exactOptional().openapi({
+      description:
+        'Allows you to override the destination ports used to route traffic to an endpoint. Using a port override lets you map a list of external destination ports (that your users send traffic to) to a list of internal destination ports that you want an application endpoint to receive traffic on. ',
+    }),
   })
   .openapi({
     description:
@@ -1146,95 +828,57 @@ const EndpointGroupSchema = z
 
 const CreateEndpointGroupResponseSchema = z
   .object({
-    EndpointGroup: EndpointGroupSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The information about the endpoint group that was created.' }),
-    ).exactOptional(),
+    EndpointGroup: EndpointGroupSchema.exactOptional().openapi({
+      description: 'The information about the endpoint group that was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEndpointGroupResponse')
 
 const CreateEndpointGroupRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the listener.' }),
-    ),
-    EndpointGroupRegion: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region where the endpoint group is located. A listener can have only one endpoint group in a specific Region.',
-        }),
-    ),
-    EndpointConfigurations: EndpointConfigurationsSchema.and(
-      z.any().openapi({ description: 'The list of endpoint objects.' }),
-    ).exactOptional(),
-    TrafficDialPercentage: TrafficDialPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The percentage of traffic to send to an Amazon Web Services Region. Additional traffic is distributed to other endpoint groups for this listener. </p> <p>Use this action to increase (dial up) or decrease (dial down) traffic to a specific Region. The percentage is applied to the traffic that would otherwise have been routed to the Region based on optimal routing.</p> <p>The default value is 100.</p>',
-        }),
-    ).exactOptional(),
-    HealthCheckPort: HealthCheckPortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port that Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default port is the listener port that this endpoint group is associated with. If listener port is a list of ports, Global Accelerator uses the first port in the list.',
-        }),
-    ).exactOptional(),
-    HealthCheckProtocol: HealthCheckProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol that Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default value is TCP.',
-        }),
-    ).exactOptional(),
-    HealthCheckPath: HealthCheckPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the protocol is HTTP/S, then this specifies the path that is the destination for health check targets. The default value is slash (/).',
-        }),
-    ).exactOptional(),
-    HealthCheckIntervalSeconds: HealthCheckIntervalSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time—10 seconds or 30 seconds—between each health check for an endpoint. The default value is 30.',
-        }),
-    ).exactOptional(),
-    ThresholdCount: ThresholdCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
-        }),
-    ),
-    PortOverrides: PortOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Override specific listener ports used to route traffic to endpoints that are part of this endpoint group. For example, you can create a port override in which the listener receives user traffic on ports 80 and 443, but your accelerator routes that traffic to ports 1080 and 1443, respectively, on the endpoints.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoint-groups-port-override.html"> Overriding listener ports</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener.',
+    }),
+    EndpointGroupRegion: GenericStringSchema.openapi({
+      description:
+        'The Amazon Web Services Region where the endpoint group is located. A listener can have only one endpoint group in a specific Region.',
+    }),
+    EndpointConfigurations: EndpointConfigurationsSchema.exactOptional().openapi({
+      description: 'The list of endpoint objects.',
+    }),
+    TrafficDialPercentage: TrafficDialPercentageSchema.exactOptional().openapi({
+      description:
+        '<p>The percentage of traffic to send to an Amazon Web Services Region. Additional traffic is distributed to other endpoint groups for this listener. </p> <p>Use this action to increase (dial up) or decrease (dial down) traffic to a specific Region. The percentage is applied to the traffic that would otherwise have been routed to the Region based on optimal routing.</p> <p>The default value is 100.</p>',
+    }),
+    HealthCheckPort: HealthCheckPortSchema.exactOptional().openapi({
+      description:
+        'The port that Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default port is the listener port that this endpoint group is associated with. If listener port is a list of ports, Global Accelerator uses the first port in the list.',
+    }),
+    HealthCheckProtocol: HealthCheckProtocolSchema.exactOptional().openapi({
+      description:
+        'The protocol that Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default value is TCP.',
+    }),
+    HealthCheckPath: HealthCheckPathSchema.exactOptional().openapi({
+      description:
+        'If the protocol is HTTP/S, then this specifies the path that is the destination for health check targets. The default value is slash (/).',
+    }),
+    HealthCheckIntervalSeconds: HealthCheckIntervalSecondsSchema.exactOptional().openapi({
+      description:
+        'The time—10 seconds or 30 seconds—between each health check for an endpoint. The default value is 30.',
+    }),
+    ThresholdCount: ThresholdCountSchema.exactOptional().openapi({
+      description:
+        'The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
+    }),
+    PortOverrides: PortOverridesSchema.exactOptional().openapi({
+      description:
+        '<p>Override specific listener ports used to route traffic to endpoints that are part of this endpoint group. For example, you can create a port override in which the listener receives user traffic on ports 80 and 443, but your accelerator routes that traffic to ports 1080 and 1443, respectively, on the endpoints.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoint-groups-port-override.html"> Overriding listener ports</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['ListenerArn', 'EndpointGroupRegion', 'IdempotencyToken'],
@@ -1246,79 +890,52 @@ const ClientAffinitySchema = z.enum(['NONE', 'SOURCE_IP']).openapi('ClientAffini
 
 const ListenerSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the listener.' }),
-    ).exactOptional(),
-    PortRanges: PortRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of port ranges for the connections from clients to the accelerator.',
-        }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The protocol for the connections from clients to the accelerator.',
-        }),
-    ).exactOptional(),
-    ClientAffinity: ClientAffinitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Client affinity lets you direct all requests from a user to the same endpoint, if you have stateful applications, regardless of the port and protocol of the client request. Client affinity gives you control over whether to always route each client to the same specific endpoint.</p> <p>Global Accelerator uses a consistent-flow hashing algorithm to choose the optimal endpoint for a connection. If client affinity is <code>NONE</code>, Global Accelerator uses the "five-tuple" (5-tuple) properties—source IP address, source port, destination IP address, destination port, and protocol—to select the hash value, and then chooses the best endpoint. However, with this setting, if someone uses different ports to connect to Global Accelerator, their connections might not be always routed to the same endpoint because the hash value changes. </p> <p>If you want a given client to always be routed to the same endpoint, set client affinity to <code>SOURCE_IP</code> instead. When you use the <code>SOURCE_IP</code> setting, Global Accelerator uses the "two-tuple" (2-tuple) properties— source (client) IP address and destination IP address—to select the hash value.</p> <p>The default value is <code>NONE</code>.</p>',
-        }),
-    ).exactOptional(),
+    ListenerArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener.',
+    }),
+    PortRanges: PortRangesSchema.exactOptional().openapi({
+      description: 'The list of port ranges for the connections from clients to the accelerator.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      description: 'The protocol for the connections from clients to the accelerator.',
+    }),
+    ClientAffinity: ClientAffinitySchema.exactOptional().openapi({
+      description:
+        '<p>Client affinity lets you direct all requests from a user to the same endpoint, if you have stateful applications, regardless of the port and protocol of the client request. Client affinity gives you control over whether to always route each client to the same specific endpoint.</p> <p>Global Accelerator uses a consistent-flow hashing algorithm to choose the optimal endpoint for a connection. If client affinity is <code>NONE</code>, Global Accelerator uses the "five-tuple" (5-tuple) properties—source IP address, source port, destination IP address, destination port, and protocol—to select the hash value, and then chooses the best endpoint. However, with this setting, if someone uses different ports to connect to Global Accelerator, their connections might not be always routed to the same endpoint because the hash value changes. </p> <p>If you want a given client to always be routed to the same endpoint, set client affinity to <code>SOURCE_IP</code> instead. When you use the <code>SOURCE_IP</code> setting, Global Accelerator uses the "two-tuple" (2-tuple) properties— source (client) IP address and destination IP address—to select the hash value.</p> <p>The default value is <code>NONE</code>.</p>',
+    }),
   })
   .openapi({ description: 'A complex type for a listener.', required: [] })
   .openapi('Listener')
 
 const CreateListenerResponseSchema = z
   .object({
-    Listener: ListenerSchema.and(
-      z.any().openapi({ description: "The listener that you've created." }),
-    ).exactOptional(),
+    Listener: ListenerSchema.exactOptional().openapi({
+      description: "The listener that you've created.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateListenerResponse')
 
 const CreateListenerRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of your accelerator.' }),
-    ),
-    PortRanges: PortRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of port ranges to support for connections from clients to your accelerator.',
-        }),
-    ),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The protocol for connections from clients to your accelerator.' }),
-    ),
-    ClientAffinity: ClientAffinitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Client affinity lets you direct all requests from a user to the same endpoint, if you have stateful applications, regardless of the port and protocol of the client request. Client affinity gives you control over whether to always route each client to the same specific endpoint.</p> <p>Global Accelerator uses a consistent-flow hashing algorithm to choose the optimal endpoint for a connection. If client affinity is <code>NONE</code>, Global Accelerator uses the "five-tuple" (5-tuple) properties—source IP address, source port, destination IP address, destination port, and protocol—to select the hash value, and then chooses the best endpoint. However, with this setting, if someone uses different ports to connect to Global Accelerator, their connections might not be always routed to the same endpoint because the hash value changes. </p> <p>If you want a given client to always be routed to the same endpoint, set client affinity to <code>SOURCE_IP</code> instead. When you use the <code>SOURCE_IP</code> setting, Global Accelerator uses the "two-tuple" (2-tuple) properties— source (client) IP address and destination IP address—to select the hash value.</p> <p>The default value is <code>NONE</code>.</p>',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
-        }),
-    ),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of your accelerator.',
+    }),
+    PortRanges: PortRangesSchema.openapi({
+      description:
+        'The list of port ranges to support for connections from clients to your accelerator.',
+    }),
+    Protocol: ProtocolSchema.openapi({
+      description: 'The protocol for connections from clients to your accelerator.',
+    }),
+    ClientAffinity: ClientAffinitySchema.exactOptional().openapi({
+      description:
+        '<p>Client affinity lets you direct all requests from a user to the same endpoint, if you have stateful applications, regardless of the port and protocol of the client request. Client affinity gives you control over whether to always route each client to the same specific endpoint.</p> <p>Global Accelerator uses a consistent-flow hashing algorithm to choose the optimal endpoint for a connection. If client affinity is <code>NONE</code>, Global Accelerator uses the "five-tuple" (5-tuple) properties—source IP address, source port, destination IP address, destination port, and protocol—to select the hash value, and then chooses the best endpoint. However, with this setting, if someone uses different ports to connect to Global Accelerator, their connections might not be always routed to the same endpoint because the hash value changes. </p> <p>If you want a given client to always be routed to the same endpoint, set client affinity to <code>SOURCE_IP</code> instead. When you use the <code>SOURCE_IP</code> setting, Global Accelerator uses the "two-tuple" (2-tuple) properties— source (client) IP address and destination IP address—to select the hash value.</p> <p>The default value is <code>NONE</code>.</p>',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.',
+    }),
   })
   .openapi({
     required: ['AcceleratorArn', 'PortRanges', 'Protocol', 'IdempotencyToken'],
@@ -1328,9 +945,9 @@ const CreateListenerRequestSchema = z
 
 const DeleteAcceleratorRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of an accelerator.' }),
-    ),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of an accelerator.',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'DeleteAcceleratorRequest' })
   .openapi('DeleteAcceleratorRequest')
@@ -1341,36 +958,27 @@ const AssociatedListenerFoundExceptionSchema = z.any().openapi('AssociatedListen
 
 const DeleteCustomRoutingAcceleratorRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the custom routing accelerator to delete.',
-        }),
-    ),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom routing accelerator to delete.',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'DeleteCustomRoutingAcceleratorRequest' })
   .openapi('DeleteCustomRoutingAcceleratorRequest')
 
 const DeleteCustomRoutingEndpointGroupRequestSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the endpoint group to delete.',
-        }),
-    ),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group to delete.',
+    }),
   })
   .openapi({ required: ['EndpointGroupArn'], title: 'DeleteCustomRoutingEndpointGroupRequest' })
   .openapi('DeleteCustomRoutingEndpointGroupRequest')
 
 const DeleteCustomRoutingListenerRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the listener to delete.' }),
-    ),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener to delete.',
+    }),
   })
   .openapi({ required: ['ListenerArn'], title: 'DeleteCustomRoutingListenerRequest' })
   .openapi('DeleteCustomRoutingListenerRequest')
@@ -1381,63 +989,43 @@ const AssociatedEndpointGroupFoundExceptionSchema = z
 
 const DeleteEndpointGroupRequestSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the endpoint group to delete.',
-        }),
-    ),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group to delete.',
+    }),
   })
   .openapi({ required: ['EndpointGroupArn'], title: 'DeleteEndpointGroupRequest' })
   .openapi('DeleteEndpointGroupRequest')
 
 const DeleteListenerRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the listener.' }),
-    ),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener.',
+    }),
   })
   .openapi({ required: ['ListenerArn'], title: 'DeleteListenerRequest' })
   .openapi('DeleteListenerRequest')
 
 const DenyCustomRoutingTrafficRequestSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ),
-    EndpointId: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID.',
-        }),
-    ),
-    DestinationAddresses: DestinationAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of specific Amazon EC2 instance IP addresses (destination addresses) in a subnet that you want to prevent from receiving traffic. The IP addresses must be a subset of the IP addresses allowed for the VPC subnet associated with the endpoint group.',
-        }),
-    ).exactOptional(),
-    DestinationPorts: DestinationPortsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of specific Amazon EC2 instance ports (destination ports) in a subnet endpoint that you want to prevent from receiving traffic.',
-        }),
-    ).exactOptional(),
-    DenyAllTrafficToEndpoint: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether all destination IP addresses and ports for a specified VPC subnet endpoint <i>cannot</i> receive traffic from a custom routing accelerator. The value is TRUE or FALSE. </p> <p>When set to TRUE, <i>no</i> destinations in the custom routing VPC subnet can receive traffic. Note that you cannot specify destination IP addresses and ports when the value is set to TRUE.</p> <p>When set to FALSE (or not specified), you <i>must</i> specify a list of destination IP addresses that cannot receive traffic. A list of ports is optional. If you don't specify a list of ports, the ports that can accept traffic is the same as the ports configured for the endpoint group.</p> <p>The default value is FALSE.</p>",
-        }),
-    ).exactOptional(),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
+    EndpointId: GenericStringSchema.openapi({
+      description:
+        'An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID.',
+    }),
+    DestinationAddresses: DestinationAddressesSchema.exactOptional().openapi({
+      description:
+        'A list of specific Amazon EC2 instance IP addresses (destination addresses) in a subnet that you want to prevent from receiving traffic. The IP addresses must be a subset of the IP addresses allowed for the VPC subnet associated with the endpoint group.',
+    }),
+    DestinationPorts: DestinationPortsSchema.exactOptional().openapi({
+      description:
+        'A list of specific Amazon EC2 instance ports (destination ports) in a subnet endpoint that you want to prevent from receiving traffic.',
+    }),
+    DenyAllTrafficToEndpoint: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether all destination IP addresses and ports for a specified VPC subnet endpoint <i>cannot</i> receive traffic from a custom routing accelerator. The value is TRUE or FALSE. </p> <p>When set to TRUE, <i>no</i> destinations in the custom routing VPC subnet can receive traffic. Note that you cannot specify destination IP addresses and ports when the value is set to TRUE.</p> <p>When set to FALSE (or not specified), you <i>must</i> specify a list of destination IP addresses that cannot receive traffic. A list of ports is optional. If you don't specify a list of ports, the ports that can accept traffic is the same as the ports configured for the endpoint group.</p> <p>The default value is FALSE.</p>",
+    }),
   })
   .openapi({
     required: ['EndpointGroupArn', 'EndpointId'],
@@ -1447,169 +1035,129 @@ const DenyCustomRoutingTrafficRequestSchema = z
 
 const DeprovisionByoipCidrResponseSchema = z
   .object({
-    ByoipCidr: ByoipCidrSchema.and(
-      z.any().openapi({ description: 'Information about the address range.' }),
-    ).exactOptional(),
+    ByoipCidr: ByoipCidrSchema.exactOptional().openapi({
+      description: 'Information about the address range.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeprovisionByoipCidrResponse')
 
 const DeprovisionByoipCidrRequestSchema = z
   .object({
-    Cidr: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address range, in CIDR notation. The prefix must be the same prefix that you specified when you provisioned the address range.',
-        }),
-    ),
+    Cidr: GenericStringSchema.openapi({
+      description:
+        'The address range, in CIDR notation. The prefix must be the same prefix that you specified when you provisioned the address range.',
+    }),
   })
   .openapi({ required: ['Cidr'], title: 'DeprovisionByoipCidrRequest' })
   .openapi('DeprovisionByoipCidrRequest')
 
 const DescribeAcceleratorResponseSchema = z
   .object({
-    Accelerator: AcceleratorSchema.and(
-      z.any().openapi({ description: 'The description of the accelerator.' }),
-    ).exactOptional(),
+    Accelerator: AcceleratorSchema.exactOptional().openapi({
+      description: 'The description of the accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAcceleratorResponse')
 
 const DescribeAcceleratorRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the accelerator to describe.' }),
-    ),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the accelerator to describe.',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'DescribeAcceleratorRequest' })
   .openapi('DescribeAcceleratorRequest')
 
 const AcceleratorAttributesSchema = z
   .object({
-    FlowLogsEnabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether flow logs are enabled. The default value is false. If the value is true, <code>FlowLogsS3Bucket</code> and <code>FlowLogsS3Prefix</code> must be specified.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html">Flow logs</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    FlowLogsS3Bucket: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.',
-        }),
-    ).exactOptional(),
-    FlowLogsS3Prefix: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>.</p> <p>If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>s3-bucket_name//AWSLogs/aws_account_id</p>',
-        }),
-    ).exactOptional(),
+    FlowLogsEnabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether flow logs are enabled. The default value is false. If the value is true, <code>FlowLogsS3Bucket</code> and <code>FlowLogsS3Prefix</code> must be specified.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html">Flow logs</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
+    FlowLogsS3Bucket: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.',
+    }),
+    FlowLogsS3Prefix: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>The prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>.</p> <p>If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>s3-bucket_name//AWSLogs/aws_account_id</p>',
+    }),
   })
   .openapi({ description: 'Attributes of an accelerator.', required: [] })
   .openapi('AcceleratorAttributes')
 
 const DescribeAcceleratorAttributesResponseSchema = z
   .object({
-    AcceleratorAttributes: AcceleratorAttributesSchema.and(
-      z.any().openapi({ description: 'The attributes of the accelerator.' }),
-    ).exactOptional(),
+    AcceleratorAttributes: AcceleratorAttributesSchema.exactOptional().openapi({
+      description: 'The attributes of the accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAcceleratorAttributesResponse')
 
 const DescribeAcceleratorAttributesRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the accelerator with the attributes that you want to describe.',
-        }),
-    ),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the accelerator with the attributes that you want to describe.',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'DescribeAcceleratorAttributesRequest' })
   .openapi('DescribeAcceleratorAttributesRequest')
 
 const DescribeCustomRoutingAcceleratorResponseSchema = z
   .object({
-    Accelerator: CustomRoutingAcceleratorSchema.and(
-      z.any().openapi({ description: 'The description of the custom routing accelerator.' }),
-    ).exactOptional(),
+    Accelerator: CustomRoutingAcceleratorSchema.exactOptional().openapi({
+      description: 'The description of the custom routing accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCustomRoutingAcceleratorResponse')
 
 const DescribeCustomRoutingAcceleratorRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the accelerator to describe.' }),
-    ),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the accelerator to describe.',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'DescribeCustomRoutingAcceleratorRequest' })
   .openapi('DescribeCustomRoutingAcceleratorRequest')
 
 const CustomRoutingAcceleratorAttributesSchema = z
   .object({
-    FlowLogsEnabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether flow logs are enabled. The default value is false. If the value is true, <code>FlowLogsS3Bucket</code> and <code>FlowLogsS3Prefix</code> must be specified.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html">Flow logs</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    FlowLogsS3Bucket: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.',
-        }),
-    ).exactOptional(),
-    FlowLogsS3Prefix: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>.</p> <p>If you don’t specify a prefix, the flow logs are stored in the root of the bucket. If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>DOC-EXAMPLE-BUCKET//AWSLogs/aws_account_id</p>',
-        }),
-    ).exactOptional(),
+    FlowLogsEnabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether flow logs are enabled. The default value is false. If the value is true, <code>FlowLogsS3Bucket</code> and <code>FlowLogsS3Prefix</code> must be specified.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html">Flow logs</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
+    FlowLogsS3Bucket: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.',
+    }),
+    FlowLogsS3Prefix: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>The prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>.</p> <p>If you don’t specify a prefix, the flow logs are stored in the root of the bucket. If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>DOC-EXAMPLE-BUCKET//AWSLogs/aws_account_id</p>',
+    }),
   })
   .openapi({ description: 'Attributes of a custom routing accelerator.', required: [] })
   .openapi('CustomRoutingAcceleratorAttributes')
 
 const DescribeCustomRoutingAcceleratorAttributesResponseSchema = z
   .object({
-    AcceleratorAttributes: CustomRoutingAcceleratorAttributesSchema.and(
-      z.any().openapi({ description: 'The attributes of the custom routing accelerator.' }),
-    ).exactOptional(),
+    AcceleratorAttributes: CustomRoutingAcceleratorAttributesSchema.exactOptional().openapi({
+      description: 'The attributes of the custom routing accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCustomRoutingAcceleratorAttributesResponse')
 
 const DescribeCustomRoutingAcceleratorAttributesRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the custom routing accelerator to describe the attributes for.',
-        }),
-    ),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the custom routing accelerator to describe the attributes for.',
+    }),
   })
   .openapi({
     required: ['AcceleratorArn'],
@@ -1619,92 +1167,72 @@ const DescribeCustomRoutingAcceleratorAttributesRequestSchema = z
 
 const DescribeCustomRoutingEndpointGroupResponseSchema = z
   .object({
-    EndpointGroup: CustomRoutingEndpointGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of an endpoint group for a custom routing accelerator.',
-        }),
-    ).exactOptional(),
+    EndpointGroup: CustomRoutingEndpointGroupSchema.exactOptional().openapi({
+      description: 'The description of an endpoint group for a custom routing accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCustomRoutingEndpointGroupResponse')
 
 const DescribeCustomRoutingEndpointGroupRequestSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the endpoint group to describe.',
-        }),
-    ),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group to describe.',
+    }),
   })
   .openapi({ required: ['EndpointGroupArn'], title: 'DescribeCustomRoutingEndpointGroupRequest' })
   .openapi('DescribeCustomRoutingEndpointGroupRequest')
 
 const DescribeCustomRoutingListenerResponseSchema = z
   .object({
-    Listener: CustomRoutingListenerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of a listener for a custom routing accelerator.',
-        }),
-    ).exactOptional(),
+    Listener: CustomRoutingListenerSchema.exactOptional().openapi({
+      description: 'The description of a listener for a custom routing accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCustomRoutingListenerResponse')
 
 const DescribeCustomRoutingListenerRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the listener to describe.' }),
-    ),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener to describe.',
+    }),
   })
   .openapi({ required: ['ListenerArn'], title: 'DescribeCustomRoutingListenerRequest' })
   .openapi('DescribeCustomRoutingListenerRequest')
 
 const DescribeEndpointGroupResponseSchema = z
   .object({
-    EndpointGroup: EndpointGroupSchema.and(
-      z.any().openapi({ description: 'The description of an endpoint group.' }),
-    ).exactOptional(),
+    EndpointGroup: EndpointGroupSchema.exactOptional().openapi({
+      description: 'The description of an endpoint group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEndpointGroupResponse')
 
 const DescribeEndpointGroupRequestSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the endpoint group to describe.',
-        }),
-    ),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group to describe.',
+    }),
   })
   .openapi({ required: ['EndpointGroupArn'], title: 'DescribeEndpointGroupRequest' })
   .openapi('DescribeEndpointGroupRequest')
 
 const DescribeListenerResponseSchema = z
   .object({
-    Listener: ListenerSchema.and(
-      z.any().openapi({ description: 'The description of a listener.' }),
-    ).exactOptional(),
+    Listener: ListenerSchema.exactOptional().openapi({
+      description: 'The description of a listener.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeListenerResponse')
 
 const DescribeListenerRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the listener to describe.' }),
-    ),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener to describe.',
+    }),
   })
   .openapi({ required: ['ListenerArn'], title: 'DescribeListenerRequest' })
   .openapi('DescribeListenerRequest')
@@ -1713,17 +1241,13 @@ const AcceleratorsSchema = z.array(AcceleratorSchema).openapi('Accelerators')
 
 const ListAcceleratorsResponseSchema = z
   .object({
-    Accelerators: AcceleratorsSchema.and(
-      z.any().openapi({ description: 'The list of accelerators for a customer account.' }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    Accelerators: AcceleratorsSchema.exactOptional().openapi({
+      description: 'The list of accelerators for a customer account.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAcceleratorsResponse')
@@ -1732,22 +1256,14 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListAcceleratorsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Global Accelerator objects that you want to return with this call. The default value is 10.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The number of Global Accelerator objects that you want to return with this call. The default value is 10.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ title: 'ListAcceleratorsRequest', required: [] })
   .openapi('ListAcceleratorsRequest')
@@ -1758,29 +1274,25 @@ const ByoipCidrsSchema = z.array(ByoipCidrSchema).openapi('ByoipCidrs')
 
 const ListByoipCidrsResponseSchema = z
   .object({
-    ByoipCidrs: ByoipCidrsSchema.and(
-      z.any().openapi({ description: 'Information about your address ranges.' }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    ByoipCidrs: ByoipCidrsSchema.exactOptional().openapi({
+      description: 'Information about your address ranges.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListByoipCidrsResponse')
 
 const ListByoipCidrsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ title: 'ListByoipCidrsRequest', required: [] })
   .openapi('ListByoipCidrsRequest')
@@ -1791,43 +1303,27 @@ const CustomRoutingAcceleratorsSchema = z
 
 const ListCustomRoutingAcceleratorsResponseSchema = z
   .object({
-    Accelerators: CustomRoutingAcceleratorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of custom routing accelerators for a customer account.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    Accelerators: CustomRoutingAcceleratorsSchema.exactOptional().openapi({
+      description: 'The list of custom routing accelerators for a customer account.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCustomRoutingAcceleratorsResponse')
 
 const ListCustomRoutingAcceleratorsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of custom routing Global Accelerator objects that you want to return with this call. The default value is 10.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The number of custom routing Global Accelerator objects that you want to return with this call. The default value is 10.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ title: 'ListCustomRoutingAcceleratorsRequest', required: [] })
   .openapi('ListCustomRoutingAcceleratorsRequest')
@@ -1838,52 +1334,31 @@ const CustomRoutingEndpointGroupsSchema = z
 
 const ListCustomRoutingEndpointGroupsResponseSchema = z
   .object({
-    EndpointGroups: CustomRoutingEndpointGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of the endpoint groups associated with a listener for a custom routing accelerator.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    EndpointGroups: CustomRoutingEndpointGroupsSchema.exactOptional().openapi({
+      description:
+        'The list of the endpoint groups associated with a listener for a custom routing accelerator.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCustomRoutingEndpointGroupsResponse')
 
 const ListCustomRoutingEndpointGroupsRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the listener to list endpoint groups for.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of endpoint group objects that you want to return with this call. The default value is 10.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener to list endpoint groups for.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The number of endpoint group objects that you want to return with this call. The default value is 10.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: ['ListenerArn'], title: 'ListCustomRoutingEndpointGroupsRequest' })
   .openapi('ListCustomRoutingEndpointGroupsRequest')
@@ -1894,58 +1369,42 @@ const CustomRoutingListenersSchema = z
 
 const ListCustomRoutingListenersResponseSchema = z
   .object({
-    Listeners: CustomRoutingListenersSchema.and(
-      z.any().openapi({ description: 'The list of listeners for a custom routing accelerator.' }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    Listeners: CustomRoutingListenersSchema.exactOptional().openapi({
+      description: 'The list of listeners for a custom routing accelerator.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCustomRoutingListenersResponse')
 
 const ListCustomRoutingListenersRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the accelerator to list listeners for.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of listener objects that you want to return with this call. The default value is 10.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the accelerator to list listeners for.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The number of listener objects that you want to return with this call. The default value is 10.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'ListCustomRoutingListenersRequest' })
   .openapi('ListCustomRoutingListenersRequest')
 
 const SocketAddressSchema = z
   .object({
-    IpAddress: GenericStringSchema.and(
-      z.any().openapi({ description: 'The IP address for the socket address.' }),
-    ).exactOptional(),
-    Port: PortNumberSchema.and(
-      z.any().openapi({ description: 'The port for the socket address.' }),
-    ).exactOptional(),
+    IpAddress: GenericStringSchema.exactOptional().openapi({
+      description: 'The IP address for the socket address.',
+    }),
+    Port: PortNumberSchema.exactOptional().openapi({
+      description: 'The port for the socket address.',
+    }),
   })
   .openapi({ description: 'An IP address/port combination.', required: [] })
   .openapi('SocketAddress')
@@ -1956,34 +1415,26 @@ const CustomRoutingDestinationTrafficStateSchema = z
 
 const PortMappingSchema = z
   .object({
-    AcceleratorPort: PortNumberSchema.and(
-      z.any().openapi({ description: 'The accelerator port.' }),
-    ).exactOptional(),
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ).exactOptional(),
-    EndpointId: GenericStringSchema.and(
-      z.any().openapi({ description: 'The IP address of the VPC subnet (the subnet ID).' }),
-    ).exactOptional(),
-    DestinationSocketAddress: SocketAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The EC2 instance IP address and port number in the virtual private cloud (VPC) subnet.',
-        }),
-    ).exactOptional(),
-    Protocols: CustomRoutingProtocolsSchema.and(
-      z.any().openapi({ description: 'The protocols supported by the endpoint group.' }),
-    ).exactOptional(),
-    DestinationTrafficState: CustomRoutingDestinationTrafficStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not a port mapping destination can receive traffic. The value is either ALLOW, if traffic is allowed to the destination, or DENY, if traffic is not allowed to the destination.',
-        }),
-    ).exactOptional(),
+    AcceleratorPort: PortNumberSchema.exactOptional().openapi({
+      description: 'The accelerator port.',
+    }),
+    EndpointGroupArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
+    EndpointId: GenericStringSchema.exactOptional().openapi({
+      description: 'The IP address of the VPC subnet (the subnet ID).',
+    }),
+    DestinationSocketAddress: SocketAddressSchema.exactOptional().openapi({
+      description:
+        'The EC2 instance IP address and port number in the virtual private cloud (VPC) subnet.',
+    }),
+    Protocols: CustomRoutingProtocolsSchema.exactOptional().openapi({
+      description: 'The protocols supported by the endpoint group.',
+    }),
+    DestinationTrafficState: CustomRoutingDestinationTrafficStateSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not a port mapping destination can receive traffic. The value is either ALLOW, if traffic is allowed to the destination, or DENY, if traffic is not allowed to the destination.',
+    }),
   })
   .openapi({
     description:
@@ -1996,17 +1447,13 @@ const PortMappingsSchema = z.array(PortMappingSchema).openapi('PortMappings')
 
 const ListCustomRoutingPortMappingsResponseSchema = z
   .object({
-    PortMappings: PortMappingsSchema.and(
-      z.any().openapi({ description: 'The port mappings for a custom routing accelerator.' }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    PortMappings: PortMappingsSchema.exactOptional().openapi({
+      description: 'The port mappings for a custom routing accelerator.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCustomRoutingPortMappingsResponse')
@@ -2015,38 +1462,22 @@ const PortMappingsMaxResultsSchema = z.int().min(1).max(20000).openapi('PortMapp
 
 const ListCustomRoutingPortMappingsRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the accelerator to list the custom routing port mappings for.',
-        }),
-    ),
-    EndpointGroupArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the endpoint group to list the custom routing port mappings for.',
-        }),
-    ).exactOptional(),
-    MaxResults: PortMappingsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of destination port mappings that you want to return with this call. The default value is 10.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the accelerator to list the custom routing port mappings for.',
+    }),
+    EndpointGroupArn: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the endpoint group to list the custom routing port mappings for.',
+    }),
+    MaxResults: PortMappingsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The number of destination port mappings that you want to return with this call. The default value is 10.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'ListCustomRoutingPortMappingsRequest' })
   .openapi('ListCustomRoutingPortMappingsRequest')
@@ -2055,55 +1486,35 @@ const SocketAddressesSchema = z.array(SocketAddressSchema).openapi('SocketAddres
 
 const DestinationPortMappingSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the custom routing accelerator that you have port mappings for.',
-        }),
-    ).exactOptional(),
-    AcceleratorSocketAddresses: SocketAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address/port combinations (sockets) that map to a given destination socket address.',
-        }),
-    ).exactOptional(),
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ).exactOptional(),
-    EndpointId: GenericStringSchema.and(
-      z.any().openapi({ description: 'The ID for the virtual private cloud (VPC) subnet.' }),
-    ).exactOptional(),
-    EndpointGroupRegion: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services Region for the endpoint group.' }),
-    ).exactOptional(),
-    DestinationSocketAddress: SocketAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint IP address/port combination for traffic received on the accelerator socket address.',
-        }),
-    ).exactOptional(),
-    IpAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type that an accelerator supports. For a custom routing accelerator, the value must be IPV4.',
-        }),
-    ).exactOptional(),
-    DestinationTrafficState: CustomRoutingDestinationTrafficStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not a port mapping destination can receive traffic. The value is either ALLOW, if traffic is allowed to the destination, or DENY, if traffic is not allowed to the destination.',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the custom routing accelerator that you have port mappings for.',
+    }),
+    AcceleratorSocketAddresses: SocketAddressesSchema.exactOptional().openapi({
+      description:
+        'The IP address/port combinations (sockets) that map to a given destination socket address.',
+    }),
+    EndpointGroupArn: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
+    EndpointId: GenericStringSchema.exactOptional().openapi({
+      description: 'The ID for the virtual private cloud (VPC) subnet.',
+    }),
+    EndpointGroupRegion: GenericStringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region for the endpoint group.',
+    }),
+    DestinationSocketAddress: SocketAddressSchema.exactOptional().openapi({
+      description:
+        'The endpoint IP address/port combination for traffic received on the accelerator socket address.',
+    }),
+    IpAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        'The IP address type that an accelerator supports. For a custom routing accelerator, the value must be IPV4.',
+    }),
+    DestinationTrafficState: CustomRoutingDestinationTrafficStateSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not a port mapping destination can receive traffic. The value is either ALLOW, if traffic is allowed to the destination, or DENY, if traffic is not allowed to the destination.',
+    }),
   })
   .openapi({
     description: 'The port mappings for a specified endpoint IP address (destination).',
@@ -2117,55 +1528,35 @@ const DestinationPortMappingsSchema = z
 
 const ListCustomRoutingPortMappingsByDestinationResponseSchema = z
   .object({
-    DestinationPortMappings: DestinationPortMappingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port mappings for the endpoint IP address that you specified in the request.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    DestinationPortMappings: DestinationPortMappingsSchema.exactOptional().openapi({
+      description:
+        'The port mappings for the endpoint IP address that you specified in the request.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCustomRoutingPortMappingsByDestinationResponse')
 
 const ListCustomRoutingPortMappingsByDestinationRequestSchema = z
   .object({
-    EndpointId: GenericStringSchema.and(
-      z.any().openapi({ description: 'The ID for the virtual private cloud (VPC) subnet.' }),
-    ),
-    DestinationAddress: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint IP address in a virtual private cloud (VPC) subnet for which you want to receive back port mappings.',
-        }),
-    ),
-    MaxResults: PortMappingsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of destination port mappings that you want to return with this call. The default value is 10.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    EndpointId: GenericStringSchema.openapi({
+      description: 'The ID for the virtual private cloud (VPC) subnet.',
+    }),
+    DestinationAddress: GenericStringSchema.openapi({
+      description:
+        'The endpoint IP address in a virtual private cloud (VPC) subnet for which you want to receive back port mappings.',
+    }),
+    MaxResults: PortMappingsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The number of destination port mappings that you want to return with this call. The default value is 10.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({
     required: ['EndpointId', 'DestinationAddress'],
@@ -2179,44 +1570,30 @@ const EndpointGroupsSchema = z.array(EndpointGroupSchema).openapi('EndpointGroup
 
 const ListEndpointGroupsResponseSchema = z
   .object({
-    EndpointGroups: EndpointGroupsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of the endpoint groups associated with a listener.' }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    EndpointGroups: EndpointGroupsSchema.exactOptional().openapi({
+      description: 'The list of the endpoint groups associated with a listener.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEndpointGroupsResponse')
 
 const ListEndpointGroupsRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the listener.' }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of endpoint group objects that you want to return with this call. The default value is 10.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The number of endpoint group objects that you want to return with this call. The default value is 10.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: ['ListenerArn'], title: 'ListEndpointGroupsRequest' })
   .openapi('ListEndpointGroupsRequest')
@@ -2225,56 +1602,40 @@ const ListenersSchema = z.array(ListenerSchema).openapi('Listeners')
 
 const ListListenersResponseSchema = z
   .object({
-    Listeners: ListenersSchema.and(
-      z.any().openapi({ description: 'The list of listeners for an accelerator.' }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    Listeners: ListenersSchema.exactOptional().openapi({
+      description: 'The list of listeners for an accelerator.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListListenersResponse')
 
 const ListListenersRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the accelerator for which you want to list listener objects.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of listener objects that you want to return with this call. The default value is 10.',
-        }),
-    ).exactOptional(),
-    NextToken: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. You receive this token from a previous call.',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the accelerator for which you want to list listener objects.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The number of listener objects that you want to return with this call. The default value is 10.',
+    }),
+    NextToken: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. You receive this token from a previous call.',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'ListListenersRequest' })
   .openapi('ListListenersRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'Root level tag for the Tags parameters.' }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Root level tag for the Tags parameters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -2283,41 +1644,31 @@ const ResourceArnSchema = z.string().min(1).max(1011).openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the accelerator to list tags for. An ARN uniquely identifies an accelerator.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the accelerator to list tags for. An ARN uniquely identifies an accelerator.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ProvisionByoipCidrResponseSchema = z
   .object({
-    ByoipCidr: ByoipCidrSchema.and(
-      z.any().openapi({ description: 'Information about the address range.' }),
-    ).exactOptional(),
+    ByoipCidr: ByoipCidrSchema.exactOptional().openapi({
+      description: 'Information about the address range.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ProvisionByoipCidrResponse')
 
 const CidrAuthorizationContextSchema = z
   .object({
-    Message: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The plain-text authorization message for the prefix and account.',
-        }),
-    ),
-    Signature: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The signed authorization message for the prefix and account.' }),
-    ),
+    Message: GenericStringSchema.openapi({
+      description: 'The plain-text authorization message for the prefix and account.',
+    }),
+    Signature: GenericStringSchema.openapi({
+      description: 'The signed authorization message for the prefix and account.',
+    }),
   })
   .openapi({
     required: ['Message', 'Signature'],
@@ -2328,22 +1679,14 @@ const CidrAuthorizationContextSchema = z
 
 const ProvisionByoipCidrRequestSchema = z
   .object({
-    Cidr: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The public IPv4 address range, in CIDR notation. The most specific IP prefix that you can specify is /24. The address range cannot overlap with another address range that you've brought to this or another Region.",
-        }),
-    ),
-    CidrAuthorizationContext: CidrAuthorizationContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A signed document that proves that you are authorized to bring the specified IP address range to Amazon using BYOIP. ',
-        }),
-    ),
+    Cidr: GenericStringSchema.openapi({
+      description:
+        "The public IPv4 address range, in CIDR notation. The most specific IP prefix that you can specify is /24. The address range cannot overlap with another address range that you've brought to this or another Region.",
+    }),
+    CidrAuthorizationContext: CidrAuthorizationContextSchema.openapi({
+      description:
+        'A signed document that proves that you are authorized to bring the specified IP address range to Amazon using BYOIP. ',
+    }),
   })
   .openapi({ required: ['Cidr', 'CidrAuthorizationContext'], title: 'ProvisionByoipCidrRequest' })
   .openapi('ProvisionByoipCidrRequest')
@@ -2352,22 +1695,13 @@ const EndpointIdsSchema = z.array(GenericStringSchema).openapi('EndpointIds')
 
 const RemoveCustomRoutingEndpointsRequestSchema = z
   .object({
-    EndpointIds: EndpointIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs for the endpoints. For custom routing accelerators, endpoint IDs are the virtual private cloud (VPC) subnet IDs. ',
-        }),
-    ),
-    EndpointGroupArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the endpoint group to remove endpoints from.',
-        }),
-    ),
+    EndpointIds: EndpointIdsSchema.openapi({
+      description:
+        'The IDs for the endpoints. For custom routing accelerators, endpoint IDs are the virtual private cloud (VPC) subnet IDs. ',
+    }),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group to remove endpoints from.',
+    }),
   })
   .openapi({
     required: ['EndpointIds', 'EndpointGroupArn'],
@@ -2377,22 +1711,14 @@ const RemoveCustomRoutingEndpointsRequestSchema = z
 
 const EndpointIdentifierSchema = z
   .object({
-    EndpointId: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. </p> <p>An Application Load Balancer can be either internal or internet-facing.</p>',
-        }),
-    ),
-    ClientIPPreservationEnabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. </p> <p>If the value is set to true, the client's IP address is preserved in the <code>X-Forwarded-For</code> request header as traffic travels to applications on the endpoint fronted by the accelerator.</p>",
-        }),
-    ).exactOptional(),
+    EndpointId: GenericStringSchema.openapi({
+      description:
+        '<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. </p> <p>An Application Load Balancer can be either internal or internet-facing.</p>',
+    }),
+    ClientIPPreservationEnabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. </p> <p>If the value is set to true, the client's IP address is preserved in the <code>X-Forwarded-For</code> request header as traffic travels to applications on the endpoint fronted by the accelerator.</p>",
+    }),
   })
   .openapi({
     required: ['EndpointId'],
@@ -2409,12 +1735,12 @@ const EndpointIdentifiersSchema = z
 
 const RemoveEndpointsRequestSchema = z
   .object({
-    EndpointIdentifiers: EndpointIdentifiersSchema.and(
-      z.any().openapi({ description: 'The identifiers of the endpoints that you want to remove.' }),
-    ),
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ),
+    EndpointIdentifiers: EndpointIdentifiersSchema.openapi({
+      description: 'The identifiers of the endpoints that you want to remove.',
+    }),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
   })
   .openapi({
     required: ['EndpointIdentifiers', 'EndpointGroupArn'],
@@ -2422,232 +1748,156 @@ const RemoveEndpointsRequestSchema = z
   })
   .openapi('RemoveEndpointsRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Global Accelerator resource to add tags to. An ARN uniquely identifies a resource.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to a resource. A tag consists of a key and a value that you define.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Global Accelerator resource to add tags to. An ARN uniquely identifies a resource.',
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        'The tags to add to a resource. A tag consists of a key and a value that you define.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeysSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeys')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Global Accelerator resource to remove tags from. An ARN uniquely identifies a resource.',
-        }),
-    ),
-    TagKeys: TagKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tag key pairs that you want to remove from the specified resources.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Global Accelerator resource to remove tags from. An ARN uniquely identifies a resource.',
+    }),
+    TagKeys: TagKeysSchema.openapi({
+      description: 'The tag key pairs that you want to remove from the specified resources.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAcceleratorResponseSchema = z
   .object({
-    Accelerator: AcceleratorSchema.and(
-      z.any().openapi({ description: 'Information about the updated accelerator.' }),
-    ).exactOptional(),
+    Accelerator: AcceleratorSchema.exactOptional().openapi({
+      description: 'Information about the updated accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAcceleratorResponse')
 
 const UpdateAcceleratorRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the accelerator to update.' }),
-    ),
-    Name: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the accelerator. The name can have a maximum of 64 characters, must contain only alphanumeric characters, periods (.), or hyphens (-), and must not begin or end with a hyphen or period.',
-        }),
-    ).exactOptional(),
-    IpAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type that an accelerator supports. For a standard accelerator, the value can be IPV4 or DUAL_STACK.',
-        }),
-    ).exactOptional(),
-    Enabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether an accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, the accelerator cannot be deleted. If set to false, the accelerator can be deleted.</p>',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the accelerator to update.',
+    }),
+    Name: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The name of the accelerator. The name can have a maximum of 64 characters, must contain only alphanumeric characters, periods (.), or hyphens (-), and must not begin or end with a hyphen or period.',
+    }),
+    IpAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        'The IP address type that an accelerator supports. For a standard accelerator, the value can be IPV4 or DUAL_STACK.',
+    }),
+    Enabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether an accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, the accelerator cannot be deleted. If set to false, the accelerator can be deleted.</p>',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'UpdateAcceleratorRequest' })
   .openapi('UpdateAcceleratorRequest')
 
 const UpdateAcceleratorAttributesResponseSchema = z
   .object({
-    AcceleratorAttributes: AcceleratorAttributesSchema.and(
-      z.any().openapi({ description: 'Updated attributes for the accelerator.' }),
-    ).exactOptional(),
+    AcceleratorAttributes: AcceleratorAttributesSchema.exactOptional().openapi({
+      description: 'Updated attributes for the accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAcceleratorAttributesResponse')
 
 const UpdateAcceleratorAttributesRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the accelerator that you want to update.',
-        }),
-    ),
-    FlowLogsEnabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Update whether flow logs are enabled. The default value is false. If the value is true, <code>FlowLogsS3Bucket</code> and <code>FlowLogsS3Prefix</code> must be specified.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html">Flow Logs</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    FlowLogsS3Bucket: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.',
-        }),
-    ).exactOptional(),
-    FlowLogsS3Prefix: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Update the prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. </p> <p>If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>s3-bucket_name//AWSLogs/aws_account_id</p>',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the accelerator that you want to update.',
+    }),
+    FlowLogsEnabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Update whether flow logs are enabled. The default value is false. If the value is true, <code>FlowLogsS3Bucket</code> and <code>FlowLogsS3Prefix</code> must be specified.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html">Flow Logs</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
+    FlowLogsS3Bucket: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.',
+    }),
+    FlowLogsS3Prefix: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>Update the prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. </p> <p>If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>s3-bucket_name//AWSLogs/aws_account_id</p>',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'UpdateAcceleratorAttributesRequest' })
   .openapi('UpdateAcceleratorAttributesRequest')
 
 const UpdateCustomRoutingAcceleratorResponseSchema = z
   .object({
-    Accelerator: CustomRoutingAcceleratorSchema.and(
-      z.any().openapi({ description: 'Information about the updated custom routing accelerator.' }),
-    ).exactOptional(),
+    Accelerator: CustomRoutingAcceleratorSchema.exactOptional().openapi({
+      description: 'Information about the updated custom routing accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateCustomRoutingAcceleratorResponse')
 
 const UpdateCustomRoutingAcceleratorRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the accelerator to update.' }),
-    ),
-    Name: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the accelerator. The name can have a maximum of 64 characters, must contain only alphanumeric characters, periods (.), or hyphens (-), and must not begin or end with a hyphen or period.',
-        }),
-    ).exactOptional(),
-    IpAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type that an accelerator supports. For a custom routing accelerator, the value must be IPV4.',
-        }),
-    ).exactOptional(),
-    Enabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether an accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, the accelerator cannot be deleted. If set to false, the accelerator can be deleted.</p>',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the accelerator to update.',
+    }),
+    Name: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The name of the accelerator. The name can have a maximum of 64 characters, must contain only alphanumeric characters, periods (.), or hyphens (-), and must not begin or end with a hyphen or period.',
+    }),
+    IpAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        'The IP address type that an accelerator supports. For a custom routing accelerator, the value must be IPV4.',
+    }),
+    Enabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether an accelerator is enabled. The value is true or false. The default value is true. </p> <p>If the value is set to true, the accelerator cannot be deleted. If set to false, the accelerator can be deleted.</p>',
+    }),
   })
   .openapi({ required: ['AcceleratorArn'], title: 'UpdateCustomRoutingAcceleratorRequest' })
   .openapi('UpdateCustomRoutingAcceleratorRequest')
 
 const UpdateCustomRoutingAcceleratorAttributesResponseSchema = z
   .object({
-    AcceleratorAttributes: CustomRoutingAcceleratorAttributesSchema.and(
-      z.any().openapi({ description: 'Updated custom routing accelerator.' }),
-    ).exactOptional(),
+    AcceleratorAttributes: CustomRoutingAcceleratorAttributesSchema.exactOptional().openapi({
+      description: 'Updated custom routing accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateCustomRoutingAcceleratorAttributesResponse')
 
 const UpdateCustomRoutingAcceleratorAttributesRequestSchema = z
   .object({
-    AcceleratorArn: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the custom routing accelerator to update attributes for.',
-        }),
-    ),
-    FlowLogsEnabled: GenericBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Update whether flow logs are enabled. The default value is false. If the value is true, <code>FlowLogsS3Bucket</code> and <code>FlowLogsS3Prefix</code> must be specified.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html">Flow logs</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    FlowLogsS3Bucket: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.',
-        }),
-    ).exactOptional(),
-    FlowLogsS3Prefix: GenericStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Update the prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. </p> <p>If you don’t specify a prefix, the flow logs are stored in the root of the bucket. If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>DOC-EXAMPLE-BUCKET//AWSLogs/aws_account_id</p>',
-        }),
-    ).exactOptional(),
+    AcceleratorArn: GenericStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the custom routing accelerator to update attributes for.',
+    }),
+    FlowLogsEnabled: GenericBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Update whether flow logs are enabled. The default value is false. If the value is true, <code>FlowLogsS3Bucket</code> and <code>FlowLogsS3Prefix</code> must be specified.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html">Flow logs</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
+    FlowLogsS3Bucket: GenericStringSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.',
+    }),
+    FlowLogsS3Prefix: GenericStringSchema.exactOptional().openapi({
+      description:
+        '<p>Update the prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. </p> <p>If you don’t specify a prefix, the flow logs are stored in the root of the bucket. If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>DOC-EXAMPLE-BUCKET//AWSLogs/aws_account_id</p>',
+    }),
   })
   .openapi({
     required: ['AcceleratorArn'],
@@ -2657,173 +1907,117 @@ const UpdateCustomRoutingAcceleratorAttributesRequestSchema = z
 
 const UpdateCustomRoutingListenerResponseSchema = z
   .object({
-    Listener: CustomRoutingListenerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information for the updated listener for a custom routing accelerator.',
-        }),
-    ).exactOptional(),
+    Listener: CustomRoutingListenerSchema.exactOptional().openapi({
+      description: 'Information for the updated listener for a custom routing accelerator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateCustomRoutingListenerResponse')
 
 const UpdateCustomRoutingListenerRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the listener to update.' }),
-    ),
-    PortRanges: PortRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The updated port range to support for connections from clients to your accelerator. If you remove ports that are currently being used by a subnet endpoint, the call fails.</p> <p>Separately, you set port ranges for endpoints. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-endpoints.html">About endpoints for custom routing accelerators</a>.</p>',
-        }),
-    ),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener to update.',
+    }),
+    PortRanges: PortRangesSchema.openapi({
+      description:
+        '<p>The updated port range to support for connections from clients to your accelerator. If you remove ports that are currently being used by a subnet endpoint, the call fails.</p> <p>Separately, you set port ranges for endpoints. For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-endpoints.html">About endpoints for custom routing accelerators</a>.</p>',
+    }),
   })
   .openapi({ required: ['ListenerArn', 'PortRanges'], title: 'UpdateCustomRoutingListenerRequest' })
   .openapi('UpdateCustomRoutingListenerRequest')
 
 const UpdateEndpointGroupResponseSchema = z
   .object({
-    EndpointGroup: EndpointGroupSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The information about the endpoint group that was updated.' }),
-    ).exactOptional(),
+    EndpointGroup: EndpointGroupSchema.exactOptional().openapi({
+      description: 'The information about the endpoint group that was updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateEndpointGroupResponse')
 
 const UpdateEndpointGroupRequestSchema = z
   .object({
-    EndpointGroupArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint group.' }),
-    ),
-    EndpointConfigurations: EndpointConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of endpoint objects. A resource must be valid and active when you add it as an endpoint.',
-        }),
-    ).exactOptional(),
-    TrafficDialPercentage: TrafficDialPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The percentage of traffic to send to an Amazon Web Services Region. Additional traffic is distributed to other endpoint groups for this listener. </p> <p>Use this action to increase (dial up) or decrease (dial down) traffic to a specific Region. The percentage is applied to the traffic that would otherwise have been routed to the Region based on optimal routing.</p> <p>The default value is 100.</p>',
-        }),
-    ).exactOptional(),
-    HealthCheckPort: HealthCheckPortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port that Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default port is the listener port that this endpoint group is associated with. If the listener port is a list of ports, Global Accelerator uses the first port in the list.',
-        }),
-    ).exactOptional(),
-    HealthCheckProtocol: HealthCheckProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol that Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default value is TCP.',
-        }),
-    ).exactOptional(),
-    HealthCheckPath: HealthCheckPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the protocol is HTTP/S, then this specifies the path that is the destination for health check targets. The default value is slash (/).',
-        }),
-    ).exactOptional(),
-    HealthCheckIntervalSeconds: HealthCheckIntervalSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time—10 seconds or 30 seconds—between each health check for an endpoint. The default value is 30.',
-        }),
-    ).exactOptional(),
-    ThresholdCount: ThresholdCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.',
-        }),
-    ).exactOptional(),
-    PortOverrides: PortOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Override specific listener ports used to route traffic to endpoints that are part of this endpoint group. For example, you can create a port override in which the listener receives user traffic on ports 80 and 443, but your accelerator routes that traffic to ports 1080 and 1443, respectively, on the endpoints.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoint-groups-port-override.html"> Overriding listener ports</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    EndpointGroupArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint group.',
+    }),
+    EndpointConfigurations: EndpointConfigurationsSchema.exactOptional().openapi({
+      description:
+        'The list of endpoint objects. A resource must be valid and active when you add it as an endpoint.',
+    }),
+    TrafficDialPercentage: TrafficDialPercentageSchema.exactOptional().openapi({
+      description:
+        '<p>The percentage of traffic to send to an Amazon Web Services Region. Additional traffic is distributed to other endpoint groups for this listener. </p> <p>Use this action to increase (dial up) or decrease (dial down) traffic to a specific Region. The percentage is applied to the traffic that would otherwise have been routed to the Region based on optimal routing.</p> <p>The default value is 100.</p>',
+    }),
+    HealthCheckPort: HealthCheckPortSchema.exactOptional().openapi({
+      description:
+        'The port that Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default port is the listener port that this endpoint group is associated with. If the listener port is a list of ports, Global Accelerator uses the first port in the list.',
+    }),
+    HealthCheckProtocol: HealthCheckProtocolSchema.exactOptional().openapi({
+      description:
+        'The protocol that Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default value is TCP.',
+    }),
+    HealthCheckPath: HealthCheckPathSchema.exactOptional().openapi({
+      description:
+        'If the protocol is HTTP/S, then this specifies the path that is the destination for health check targets. The default value is slash (/).',
+    }),
+    HealthCheckIntervalSeconds: HealthCheckIntervalSecondsSchema.exactOptional().openapi({
+      description:
+        'The time—10 seconds or 30 seconds—between each health check for an endpoint. The default value is 30.',
+    }),
+    ThresholdCount: ThresholdCountSchema.exactOptional().openapi({
+      description:
+        'The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.',
+    }),
+    PortOverrides: PortOverridesSchema.exactOptional().openapi({
+      description:
+        '<p>Override specific listener ports used to route traffic to endpoints that are part of this endpoint group. For example, you can create a port override in which the listener receives user traffic on ports 80 and 443, but your accelerator routes that traffic to ports 1080 and 1443, respectively, on the endpoints.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoint-groups-port-override.html"> Overriding listener ports</a> in the <i>Global Accelerator Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['EndpointGroupArn'], title: 'UpdateEndpointGroupRequest' })
   .openapi('UpdateEndpointGroupRequest')
 
 const UpdateListenerResponseSchema = z
   .object({
-    Listener: ListenerSchema.and(
-      z.any().openapi({ description: 'Information for the updated listener.' }),
-    ).exactOptional(),
+    Listener: ListenerSchema.exactOptional().openapi({
+      description: 'Information for the updated listener.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateListenerResponse')
 
 const UpdateListenerRequestSchema = z
   .object({
-    ListenerArn: GenericStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the listener to update.' }),
-    ),
-    PortRanges: PortRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated list of port ranges for the connections from clients to the accelerator.',
-        }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated protocol for the connections from clients to the accelerator.',
-        }),
-    ).exactOptional(),
-    ClientAffinity: ClientAffinitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Client affinity lets you direct all requests from a user to the same endpoint, if you have stateful applications, regardless of the port and protocol of the client request. Client affinity gives you control over whether to always route each client to the same specific endpoint.</p> <p>Global Accelerator uses a consistent-flow hashing algorithm to choose the optimal endpoint for a connection. If client affinity is <code>NONE</code>, Global Accelerator uses the "five-tuple" (5-tuple) properties—source IP address, source port, destination IP address, destination port, and protocol—to select the hash value, and then chooses the best endpoint. However, with this setting, if someone uses different ports to connect to Global Accelerator, their connections might not be always routed to the same endpoint because the hash value changes. </p> <p>If you want a given client to always be routed to the same endpoint, set client affinity to <code>SOURCE_IP</code> instead. When you use the <code>SOURCE_IP</code> setting, Global Accelerator uses the "two-tuple" (2-tuple) properties— source (client) IP address and destination IP address—to select the hash value.</p> <p>The default value is <code>NONE</code>.</p>',
-        }),
-    ).exactOptional(),
+    ListenerArn: GenericStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the listener to update.',
+    }),
+    PortRanges: PortRangesSchema.exactOptional().openapi({
+      description:
+        'The updated list of port ranges for the connections from clients to the accelerator.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      description: 'The updated protocol for the connections from clients to the accelerator.',
+    }),
+    ClientAffinity: ClientAffinitySchema.exactOptional().openapi({
+      description:
+        '<p>Client affinity lets you direct all requests from a user to the same endpoint, if you have stateful applications, regardless of the port and protocol of the client request. Client affinity gives you control over whether to always route each client to the same specific endpoint.</p> <p>Global Accelerator uses a consistent-flow hashing algorithm to choose the optimal endpoint for a connection. If client affinity is <code>NONE</code>, Global Accelerator uses the "five-tuple" (5-tuple) properties—source IP address, source port, destination IP address, destination port, and protocol—to select the hash value, and then chooses the best endpoint. However, with this setting, if someone uses different ports to connect to Global Accelerator, their connections might not be always routed to the same endpoint because the hash value changes. </p> <p>If you want a given client to always be routed to the same endpoint, set client affinity to <code>SOURCE_IP</code> instead. When you use the <code>SOURCE_IP</code> setting, Global Accelerator uses the "two-tuple" (2-tuple) properties— source (client) IP address and destination IP address—to select the hash value.</p> <p>The default value is <code>NONE</code>.</p>',
+    }),
   })
   .openapi({ required: ['ListenerArn'], title: 'UpdateListenerRequest' })
   .openapi('UpdateListenerRequest')
 
 const WithdrawByoipCidrResponseSchema = z
   .object({
-    ByoipCidr: ByoipCidrSchema.and(
-      z.any().openapi({ description: 'Information about the address pool.' }),
-    ).exactOptional(),
+    ByoipCidr: ByoipCidrSchema.exactOptional().openapi({
+      description: 'Information about the address pool.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('WithdrawByoipCidrResponse')
 
 const WithdrawByoipCidrRequestSchema = z
   .object({
-    Cidr: GenericStringSchema.and(
-      z.any().openapi({ description: 'The address range, in CIDR notation.' }),
-    ),
+    Cidr: GenericStringSchema.openapi({ description: 'The address range, in CIDR notation.' }),
   })
   .openapi({ required: ['Cidr'], title: 'WithdrawByoipCidrRequest' })
   .openapi('WithdrawByoipCidrRequest')

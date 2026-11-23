@@ -12,43 +12,29 @@ const StringSchema = z.string().openapi('String')
 
 const IdentitySchema = z
   .object({
-    SourceIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceIp' },
-          description:
-            'The source IP address of the TCP connection making the request to API Gateway.',
-        }),
-    ),
-    UserAgent: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'userAgent' }, description: 'The User Agent of the API caller.' }),
-    ),
+    SourceIp: StringSchema.openapi({
+      xml: { name: 'sourceIp' },
+      description: 'The source IP address of the TCP connection making the request to API Gateway.',
+    }),
+    UserAgent: StringSchema.openapi({
+      xml: { name: 'userAgent' },
+      description: 'The User Agent of the API caller.',
+    }),
   })
   .openapi({ required: ['SourceIp', 'UserAgent'] })
   .openapi('Identity')
 
 const GetConnectionResponseSchema = z
   .object({
-    ConnectedAt: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectedAt' },
-          description: 'The time in ISO 8601 format for when the connection was established.',
-        }),
-    ).exactOptional(),
-    Identity: IdentitySchema.and(z.any().openapi({ xml: { name: 'identity' } })).exactOptional(),
-    LastActiveAt: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastActiveAt' },
-          description: 'The time in ISO 8601 format for when the connection was last active.',
-        }),
-    ).exactOptional(),
+    ConnectedAt: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'connectedAt' },
+      description: 'The time in ISO 8601 format for when the connection was established.',
+    }),
+    Identity: IdentitySchema.exactOptional().openapi({ xml: { name: 'identity' } }),
+    LastActiveAt: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'lastActiveAt' },
+      description: 'The time in ISO 8601 format for when the connection was last active.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectionResponse')
@@ -62,24 +48,20 @@ const DataSchema = z
   .openapi('Data')
 
 const DeleteConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteConnectionRequest' })
   .openapi('DeleteConnectionRequest')
 
 const GetConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectionRequest' })
   .openapi('GetConnectionRequest')
 
 const PostToConnectionRequestSchema = z
   .object({
-    Data: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The data to be sent to the client specified by its connection id.',
-        }),
-    ),
+    Data: DataSchema.openapi({
+      description: 'The data to be sent to the client specified by its connection id.',
+    }),
   })
   .openapi({ required: ['Data'], title: 'PostToConnectionRequest' })
   .openapi('PostToConnectionRequest')

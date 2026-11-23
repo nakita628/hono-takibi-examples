@@ -4,7 +4,7 @@ const CollectionsAddMetadataBodyRequestBody = {
   content: {
     'application/json': {
       schema: z
-        .object({})
+        .looseObject({})
         .openapi({
           example: {
             'application/json': {
@@ -23,7 +23,7 @@ const CollectionsAddMetadataBodyRequestBody = {
 const CollectionsLinkedNodesRelationshipsBodyRequestBody = {
   content: {
     'application/json': {
-      schema: z.object({}).openapi({
+      schema: z.looseObject({}).openapi({
         example: {
           data: [
             { id: 'guid0', type: 'linked_nodes' },
@@ -41,7 +41,7 @@ const CollectionsLinkedNodesRelationshipsBodyRequestBody = {
 const CollectionsLinkedRegistrationsRelationshipsBodyRequestBody = {
   content: {
     'application/json': {
-      schema: z.object({}).openapi({
+      schema: z.looseObject({}).openapi({
         example: {
           data: [
             { id: 'guid0', type: 'linked_registrations' },
@@ -605,14 +605,14 @@ const NodesDraftRegistrationsCreateBodyRequestBody = {
                 .exactOptional()
                 .openapi({ title: 'Node License', required: [] }),
               registration_metadata: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'This is a legacy format for `registration_responses`.',
                   readOnly: false,
                 }),
               registration_responses: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1186,7 +1186,7 @@ const SchemaResponsePpostBodyRequestBody = {
                   readOnly: false,
                 }),
               revision_responses: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1461,7 +1461,7 @@ export const getCitationsStylesIndexRoute = createRoute({
                     readOnly: true,
                   }),
                 links: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description:
@@ -1555,7 +1555,7 @@ export const getCitationsStylesStyleIdIndexRoute = createRoute({
                   readOnly: true,
                 }),
               links: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'URLs to alternative representations of the citation style entity.',
@@ -1793,7 +1793,7 @@ export const postCollectionsIndexRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 data: {
@@ -2295,7 +2295,7 @@ export const postCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubje
         content: {
           'application/json': {
             schema: z
-              .object({})
+              .looseObject({})
               .openapi({
                 example: {
                   'application/json': {
@@ -2823,7 +2823,7 @@ export const putCommentsCommentIdIndexRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 data: {
@@ -2956,14 +2956,14 @@ export const getDraftRegistrationsIndexRoute = createRoute({
                     .exactOptional()
                     .openapi({ title: 'Node License', required: [] }),
                   registration_metadata: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'This is a legacy format for `registration_responses`.',
                       readOnly: false,
                     }),
                   registration_responses: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3164,14 +3164,14 @@ export const postDraftRegistrationsIndexRoute = createRoute({
                     .exactOptional()
                     .openapi({ title: 'Node License', required: [] }),
                   registration_metadata: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'This is a legacy format for `registration_responses`.',
                       readOnly: false,
                     }),
                   registration_responses: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3385,14 +3385,14 @@ export const getDraftRegistrationsDraftIdIndexRoute = createRoute({
                     .exactOptional()
                     .openapi({ title: 'Node License', required: [] }),
                   registration_metadata: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'This is a legacy format for `registration_responses`.',
                       readOnly: false,
                     }),
                   registration_responses: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3553,7 +3553,7 @@ export const patchDraftRegistrationsDraftIdIndexRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 data: {
@@ -3882,7 +3882,7 @@ export const getDraftRegistrationsDraftIdSubjectsIndexRoute = createRoute({
                               required: [],
                             }),
                           data: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description: 'A JSON object containing the embedded information.',
@@ -4083,7 +4083,7 @@ export const getFilesFileIdIndexRoute = createRoute({
                         readOnly: true,
                       }),
                     extra: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
@@ -4305,7 +4305,7 @@ export const patchFilesFileIdIndexRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 data: { attributes: { name: 'new file name.jpg' }, id: '{file_id}', type: 'files' },
@@ -4354,7 +4354,7 @@ export const getFilesFileIdVersionsIndexRoute = createRoute({
                 attributes: z
                   .object({
                     content_type: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description: 'MIME content-type for the file (null if unavailable).',
@@ -4466,7 +4466,7 @@ export const getFilesFileIdVersionsVersionIdIndexRoute = createRoute({
                 attributes: z
                   .object({
                     content_type: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description: 'MIME content-type for the file (null if unavailable).',
@@ -6888,7 +6888,7 @@ export const patchNodesNodeIdIndexRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 data: {
@@ -7192,7 +7192,7 @@ export const patchNodesNodeIdAddonsProviderIndexRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 data: {
@@ -8879,14 +8879,14 @@ export const getNodesNodeIdDraftRegistrationsIndexRoute = createRoute({
                       .exactOptional()
                       .openapi({ title: 'Node License', required: [] }),
                     registration_metadata: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description: 'This is a legacy format for `registration_responses`.',
                         readOnly: false,
                       }),
                     registration_responses: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
@@ -9140,14 +9140,14 @@ export const getNodesNodeIdDraftRegistrationsDraftIdIndexRoute = createRoute({
                     .exactOptional()
                     .openapi({ title: 'Node License', required: [] }),
                   registration_metadata: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'This is a legacy format for `registration_responses`.',
                       readOnly: false,
                     }),
                   registration_responses: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -9408,7 +9408,7 @@ export const getNodesNodeIdFilesIndexRoute = createRoute({
                         readOnly: true,
                       }),
                     extra: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
@@ -9689,7 +9689,7 @@ export const getNodesNodeIdFilesProvidersProviderIndexRoute = createRoute({
                       readOnly: true,
                     }),
                   extra: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -9967,7 +9967,7 @@ export const getNodesNodeIdFilesProviderIndexRoute = createRoute({
                         readOnly: true,
                       }),
                     extra: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
@@ -10259,7 +10259,7 @@ export const getNodesNodeIdFilesProviderPathIndexRoute = createRoute({
                       readOnly: true,
                     }),
                   extra: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -14649,7 +14649,7 @@ export const patchPreprintsPreprintIdIndexRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 data: {
@@ -16740,7 +16740,7 @@ export const getRegistrationsRegistrationIdCitationsIndexRoute = createRoute({
                     readOnly: true,
                   }),
                 links: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description:
@@ -17485,7 +17485,7 @@ export const getRegistrationsRegistrationIdFilesIndexRoute = createRoute({
                         readOnly: true,
                       }),
                     extra: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
@@ -17767,7 +17767,7 @@ export const getRegistrationsRegistrationIdFilesProviderIndexRoute = createRoute
                         readOnly: true,
                       }),
                     extra: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
@@ -18059,7 +18059,7 @@ export const getRegistrationsRegistrationIdFilesProviderPathIndexRoute = createR
                       readOnly: true,
                     }),
                   extra: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -20332,7 +20332,7 @@ export const getSchemaResponsesIndexRoute = createRoute({
                       readOnly: false,
                     }),
                   revision_responses: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -20516,7 +20516,7 @@ export const postSchemaResponsesIndexRoute = createRoute({
                       readOnly: false,
                     }),
                   revision_responses: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -20715,7 +20715,7 @@ export const getSchemaResponsesSchemaResponseIdRoute = createRoute({
                       readOnly: false,
                     }),
                   revision_responses: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -20942,7 +20942,7 @@ export const patchSchemaResponsesSchemaResponseIdRoute = createRoute({
                       readOnly: false,
                     }),
                   revision_responses: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -21766,7 +21766,7 @@ export const getSchemasRegistrationsIndexRoute = createRoute({
                       readOnly: true,
                     }),
                   schema: z
-                    .record(z.string(), z.object({}))
+                    .record(z.string(), z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
@@ -21897,7 +21897,7 @@ export const getSchemasRegistrationsRegistrationSchemaIdRoute = createRoute({
                       readOnly: true,
                     }),
                   schema: z
-                    .record(z.string(), z.object({}))
+                    .record(z.string(), z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
@@ -22749,7 +22749,7 @@ export const getUsersUserIdAddonsIndexRoute = createRoute({
                 links: z
                   .object({
                     accounts: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
@@ -22850,7 +22850,7 @@ export const getUsersUserIdAddonsProviderIndexRoute = createRoute({
               links: z
                 .object({
                   accounts: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:

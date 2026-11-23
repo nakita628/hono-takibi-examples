@@ -37,7 +37,7 @@ const ContentDispositionSchema: z.ZodType<ContentDispositionType> = z
 type MessageBodyWorkersType = { [key: string]: unknown }
 
 const MessageBodyWorkersSchema: z.ZodType<MessageBodyWorkersType> = z
-  .object({})
+  .looseObject({})
   .openapi('MessageBodyWorkers')
 
 const MultiPartSchema: z.ZodType<MultiPartType> = z
@@ -46,11 +46,12 @@ const MultiPartSchema: z.ZodType<MultiPartType> = z
       .object({
         bodyParts: z.array(BodyPartSchema).exactOptional(),
         contentDisposition: ContentDispositionSchema.exactOptional(),
-        entity: z.object({}).exactOptional(),
+        entity: z.looseObject({}).exactOptional(),
         headers: z
           .object({ empty: z.boolean().exactOptional() })
           .catchall(z.array(z.string()))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ required: [] }),
         mediaType: z
           .object({
             parameters: z.record(z.string(), z.string()).exactOptional(),
@@ -65,9 +66,10 @@ const MultiPartSchema: z.ZodType<MultiPartType> = z
         parameterizedHeaders: z
           .object({ empty: z.boolean().exactOptional() })
           .catchall(z.array(ParameterizedHeaderSchema))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ required: [] }),
         parent: MultiPartSchema.exactOptional(),
-        providers: z.object({}).exactOptional(),
+        providers: z.looseObject({}).exactOptional(),
       })
       .openapi({ required: [] }),
   )
@@ -95,11 +97,12 @@ const BodyPartSchema: z.ZodType<BodyPartType> = z
     z
       .object({
         contentDisposition: ContentDispositionSchema.exactOptional(),
-        entity: z.object({}).exactOptional(),
+        entity: z.looseObject({}).exactOptional(),
         headers: z
           .object({ empty: z.boolean().exactOptional() })
           .catchall(z.array(z.string()))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ required: [] }),
         mediaType: z
           .object({
             parameters: z.record(z.string(), z.string()).exactOptional(),
@@ -114,13 +117,103 @@ const BodyPartSchema: z.ZodType<BodyPartType> = z
         parameterizedHeaders: z
           .object({ empty: z.boolean().exactOptional() })
           .catchall(z.array(ParameterizedHeaderSchema))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ required: [] }),
         parent: MultiPartSchema.exactOptional(),
-        providers: z.object({}).exactOptional(),
+        providers: z.looseObject({}).exactOptional(),
       })
       .openapi({ required: [] }),
   )
   .openapi('BodyPart')
+
+const FormDataContentDispositionSchema = z
+  .object({
+    creationDate: z.iso.datetime({ offset: true }).exactOptional(),
+    fileName: z.string().exactOptional(),
+    modificationDate: z.iso.datetime({ offset: true }).exactOptional(),
+    name: z.string().exactOptional(),
+    parameters: z.record(z.string(), z.string()).exactOptional(),
+    readDate: z.iso.datetime({ offset: true }).exactOptional(),
+    size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FormDataContentDisposition')
+
+type ParameterizedHeaderType = { parameters?: { [key: string]: string }; value?: string }
+
+const ParameterizedHeaderSchema: z.ZodType<ParameterizedHeaderType> = z
+  .object({
+    parameters: z.record(z.string(), z.string()).exactOptional(),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ParameterizedHeader')
+
+const FormDataBodyPartSchema = z
+  .object({
+    contentDisposition: ContentDispositionSchema.exactOptional(),
+    entity: z.looseObject({}).exactOptional(),
+    formDataContentDisposition: FormDataContentDispositionSchema.exactOptional(),
+    headers: z
+      .object({ empty: z.boolean().exactOptional() })
+      .catchall(z.array(z.string()))
+      .exactOptional()
+      .openapi({ required: [] }),
+    mediaType: z
+      .object({
+        parameters: z.record(z.string(), z.string()).exactOptional(),
+        subtype: z.string().exactOptional(),
+        type: z.string().exactOptional(),
+        wildcardSubtype: z.boolean().exactOptional(),
+        wildcardType: z.boolean().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    messageBodyWorkers: MessageBodyWorkersSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    parameterizedHeaders: z
+      .object({ empty: z.boolean().exactOptional() })
+      .catchall(z.array(ParameterizedHeaderSchema))
+      .exactOptional()
+      .openapi({ required: [] }),
+    parent: MultiPartSchema.exactOptional(),
+    providers: z.looseObject({}).exactOptional(),
+    simple: z.boolean().exactOptional(),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FormDataBodyPart')
+
+type FormDataMultiPartType = {
+  bodyParts?: z.infer<typeof BodyPartSchema>[]
+  contentDisposition?: z.infer<typeof ContentDispositionSchema>
+  entity?: { [key: string]: unknown }
+  fields?: { [key: string]: z.infer<typeof FormDataBodyPartSchema>[] }
+  headers?: { empty?: boolean }
+  mediaType?: {
+    parameters?: { [key: string]: string }
+    subtype?: string
+    type?: string
+    wildcardSubtype?: boolean
+    wildcardType?: boolean
+  }
+  messageBodyWorkers?: z.infer<typeof MessageBodyWorkersSchema>
+  parameterizedHeaders?: { empty?: boolean }
+  parent?: z.infer<typeof MultiPartSchema>
+  providers?: { [key: string]: unknown }
+}
 
 type MultiPartType = {
   bodyParts?: z.infer<typeof BodyPartSchema>[]
@@ -139,15 +232,6 @@ type MultiPartType = {
   parent?: MultiPartType
   providers?: { [key: string]: unknown }
 }
-
-type ParameterizedHeaderType = { parameters?: { [key: string]: string }; value?: string }
-
-const LocalSettingsDTOSchema = z
-  .object({ maxLinesInRow: z.int32().exactOptional(), maxRows: z.int32().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('LocalSettingsDTO')
-
-type SettingsDTOType = { local?: z.infer<typeof LocalSettingsDTOSchema>; name?: string }
 
 const AccessDTOSchema = z
   .object({ change: z.boolean().exactOptional(), delete: z.boolean().exactOptional() })
@@ -343,8 +427,19 @@ const CalculationUnitDTOSchema = z
   .openapi('CalculationUnitDTO')
 
 const CategoriesDTOSchema = z
-  .object({ empty: z.boolean().exactOptional() })
-  .openapi({ required: [] })
+  .array(
+    z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+  )
   .openapi('CategoriesDTO')
 
 const CategoryDTOSchema = z
@@ -752,7 +847,7 @@ const ClassicProjectCreateDTOSchema = z
   .openapi({ required: ['customerId', 'serviceId', 'specializationId'] })
   .openapi('ClassicProjectCreateDTO')
 
-const JsonNodeSchema = z.object({}).openapi('JsonNode')
+const JsonNodeSchema = z.looseObject({}).openapi('JsonNode')
 
 const ColumnDTOSchema = z
   .object({ name: z.string().exactOptional(), settings: JsonNodeSchema.exactOptional() })
@@ -931,20 +1026,14 @@ const CustomFieldDTOSchema = z
     type: z
       .enum(['TEXT', 'DATE', 'DATE_AND_TIME', 'NUMBER', 'CHECKBOX', 'SELECTION', 'MULTI_SELECTION'])
       .exactOptional(),
-    value: z.object({}).exactOptional(),
+    value: z.looseObject({}).exactOptional(),
   })
   .openapi({ xml: { name: 'customField' }, required: [] })
   .openapi('CustomFieldDTO')
 
 const CustomFieldsDTOSchema = z
-  .object({
-    customFields: z
-      .array(CustomFieldDTOSchema)
-      .exactOptional()
-      .openapi({ xml: { name: 'customField' } }),
-    empty: z.boolean().exactOptional(),
-  })
-  .openapi({ xml: { name: 'customFields' }, required: [] })
+  .array(CustomFieldDTOSchema)
+  .openapi({ xml: { name: 'customFields' } })
   .openapi('CustomFieldsDTO')
 
 const CustomerTaxNoDTOSchema = z
@@ -997,15 +1086,9 @@ const CustomerPersonDTOSchema = z
     active: z.boolean().exactOptional(),
     contact: PersonContactDTOSchema.exactOptional(),
     customFields: z
-      .object({
-        customFields: z
-          .array(CustomFieldDTOSchema)
-          .exactOptional()
-          .openapi({ xml: { name: 'customField' } }),
-        empty: z.boolean().exactOptional(),
-      })
+      .array(CustomFieldDTOSchema)
       .exactOptional()
-      .openapi({ xml: { name: 'customFields' }, required: [] }),
+      .openapi({ xml: { name: 'customFields' } }),
     customerId: z
       .preprocess(
         (val) =>
@@ -1148,9 +1231,20 @@ const CustomerDTOSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
     categoriesIds: z
-      .object({ empty: z.boolean().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional(),
     clientFirstProjectDate: z.iso.datetime({ offset: true }).exactOptional(),
     clientFirstQuoteDate: z.iso.datetime({ offset: true }).exactOptional(),
     clientLastProjectDate: z.iso.datetime({ offset: true }).exactOptional(),
@@ -1161,15 +1255,9 @@ const CustomerDTOSchema = z
     contractNumber: z.string().exactOptional(),
     correspondenceAddress: AddressDTOSchema.exactOptional(),
     customFields: z
-      .object({
-        customFields: z
-          .array(CustomFieldDTOSchema)
-          .exactOptional()
-          .openapi({ xml: { name: 'customField' } }),
-        empty: z.boolean().exactOptional(),
-      })
+      .array(CustomFieldDTOSchema)
       .exactOptional()
-      .openapi({ xml: { name: 'customFields' }, required: [] }),
+      .openapi({ xml: { name: 'customFields' } }),
     fullName: z.string().exactOptional(),
     id: z
       .preprocess(
@@ -1185,9 +1273,20 @@ const CustomerDTOSchema = z
       .openapi({ type: 'integer', format: 'int64' }),
     idNumber: z.string().exactOptional(),
     industriesIds: z
-      .object({ empty: z.boolean().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional(),
     leadSourceId: z
       .preprocess(
         (val) =>
@@ -1348,15 +1447,9 @@ const TaskDTOSchema = z
       .exactOptional()
       .openapi({ description: 'client task PO number' }),
     customFields: z
-      .object({
-        customFields: z
-          .array(CustomFieldDTOSchema)
-          .exactOptional()
-          .openapi({ xml: { name: 'customField' } }),
-        empty: z.boolean().exactOptional(),
-      })
+      .array(CustomFieldDTOSchema)
       .exactOptional()
-      .openapi({ xml: { name: 'customFields' }, required: [] }),
+      .openapi({ xml: { name: 'customFields' } }),
     dates: ProjectDatesDTOSchema.exactOptional(),
     finance: TaskFinanceDTOSchema.exactOptional(),
     id: z
@@ -1849,14 +1942,14 @@ const FilesShareStatusDtoSchema = z
   .openapi('FilesShareStatusDto')
 
 const FilterDTOSchema = z
-  .object({ properties: z.array(z.object({})).exactOptional() })
+  .object({ properties: z.array(z.looseObject({})).exactOptional() })
   .openapi({ required: [] })
   .openapi('FilterDTO')
 
 const FilterPropertyDTOSchema = z
   .object({
     name: z.string().exactOptional(),
-    settings: z.object({}).exactOptional(),
+    settings: z.looseObject({}).exactOptional(),
     settingsPresent: z.boolean().exactOptional(),
     type: z.string().exactOptional(),
   })
@@ -1888,82 +1981,17 @@ const FinanceDTOSchema = z
   .openapi({ required: [] })
   .openapi('FinanceDTO')
 
-const FormDataContentDispositionSchema = z
-  .object({
-    creationDate: z.iso.datetime({ offset: true }).exactOptional(),
-    fileName: z.string().exactOptional(),
-    modificationDate: z.iso.datetime({ offset: true }).exactOptional(),
-    name: z.string().exactOptional(),
-    parameters: z.record(z.string(), z.string()).exactOptional(),
-    readDate: z.iso.datetime({ offset: true }).exactOptional(),
-    size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    type: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('FormDataContentDisposition')
-
-const ParameterizedHeaderSchema: z.ZodType<ParameterizedHeaderType> = z
-  .object({
-    parameters: z.record(z.string(), z.string()).exactOptional(),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ParameterizedHeader')
-
-const FormDataBodyPartSchema = z
-  .object({
-    contentDisposition: ContentDispositionSchema.exactOptional(),
-    entity: z.object({}).exactOptional(),
-    formDataContentDisposition: FormDataContentDispositionSchema.exactOptional(),
-    headers: z
-      .object({ empty: z.boolean().exactOptional() })
-      .catchall(z.array(z.string()))
-      .exactOptional(),
-    mediaType: z
-      .object({
-        parameters: z.record(z.string(), z.string()).exactOptional(),
-        subtype: z.string().exactOptional(),
-        type: z.string().exactOptional(),
-        wildcardSubtype: z.boolean().exactOptional(),
-        wildcardType: z.boolean().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    messageBodyWorkers: MessageBodyWorkersSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    parameterizedHeaders: z
-      .object({ empty: z.boolean().exactOptional() })
-      .catchall(z.array(ParameterizedHeaderSchema))
-      .exactOptional(),
-    parent: MultiPartSchema.exactOptional(),
-    providers: z.object({}).exactOptional(),
-    simple: z.boolean().exactOptional(),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('FormDataBodyPart')
-
-const FormDataMultiPartSchema = z
+const FormDataMultiPartSchema: z.ZodType<FormDataMultiPartType> = z
   .object({
     bodyParts: z.array(BodyPartSchema).exactOptional(),
     contentDisposition: ContentDispositionSchema.exactOptional(),
-    entity: z.object({}).exactOptional(),
+    entity: z.looseObject({}).exactOptional(),
     fields: z.record(z.string(), z.array(FormDataBodyPartSchema)).exactOptional(),
     headers: z
       .object({ empty: z.boolean().exactOptional() })
       .catchall(z.array(z.string()))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ required: [] }),
     mediaType: z
       .object({
         parameters: z.record(z.string(), z.string()).exactOptional(),
@@ -1978,9 +2006,10 @@ const FormDataMultiPartSchema = z
     parameterizedHeaders: z
       .object({ empty: z.boolean().exactOptional() })
       .catchall(z.array(ParameterizedHeaderSchema))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ required: [] }),
     parent: MultiPartSchema.exactOptional(),
-    providers: z.object({}).exactOptional(),
+    providers: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('FormDataMultiPart')
@@ -2014,8 +2043,19 @@ const ImportResultDTOSchema = z
   .openapi('ImportResultDTO')
 
 const IndustriesDTOSchema = z
-  .object({ empty: z.boolean().exactOptional() })
-  .openapi({ required: [] })
+  .array(
+    z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+  )
   .openapi('IndustriesDTO')
 
 const IndustryDTOSchema = z
@@ -2616,6 +2656,11 @@ const LeadSourceDTOSchema = z
   })
   .openapi('LeadSourceDTO')
 
+const LocalSettingsDTOSchema = z
+  .object({ maxLinesInRow: z.int32().exactOptional(), maxRows: z.int32().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('LocalSettingsDTO')
+
 const LongDTOSchema = z
   .object({
     value: z
@@ -2671,7 +2716,7 @@ const MacroRequestDTOSchema = z
       .record(
         z.string(),
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'map of custom key-value pairs that can optionally parametrize the macro execution',
@@ -2874,7 +2919,7 @@ const PayableCreateDTOSchema = z
       .openapi({ type: 'integer', format: 'int64' }),
     ignoreMinimumCharge: z.boolean().exactOptional(),
     invoiceId: z.string().exactOptional(),
-    jobId: z.object({}).exactOptional(),
+    jobId: z.looseObject({}).exactOptional(),
     jobTypeId: z
       .preprocess(
         (val) =>
@@ -2942,7 +2987,7 @@ const PayableDTOSchema = z
       .openapi({ type: 'integer', format: 'int64' }),
     ignoreMinimumCharge: z.boolean().exactOptional(),
     invoiceId: z.string().exactOptional(),
-    jobId: z.object({}).exactOptional(),
+    jobId: z.looseObject({}).exactOptional(),
     jobTypeId: z
       .preprocess(
         (val) =>
@@ -3113,15 +3158,9 @@ const ProjectDTOv1Schema = z
       .openapi({ type: 'integer', format: 'int64' }),
     contacts: ContactsDTOSchema.exactOptional(),
     customFields: z
-      .object({
-        customFields: z
-          .array(CustomFieldDTOSchema)
-          .exactOptional()
-          .openapi({ xml: { name: 'customField' } }),
-        empty: z.boolean().exactOptional(),
-      })
+      .array(CustomFieldDTOSchema)
       .exactOptional()
-      .openapi({ xml: { name: 'customFields' }, required: [] }),
+      .openapi({ xml: { name: 'customFields' } }),
     customerId: z
       .preprocess(
         (val) =>
@@ -3445,15 +3484,9 @@ const ProviderPersonDTOSchema = z
     active: z.boolean().exactOptional(),
     contact: PersonContactDTOSchema.exactOptional(),
     customFields: z
-      .object({
-        customFields: z
-          .array(CustomFieldDTOSchema)
-          .exactOptional()
-          .openapi({ xml: { name: 'customField' } }),
-        empty: z.boolean().exactOptional(),
-      })
+      .array(CustomFieldDTOSchema)
       .exactOptional()
-      .openapi({ xml: { name: 'customFields' }, required: [] }),
+      .openapi({ xml: { name: 'customFields' } }),
     gender: z.enum(['FEMALE', 'MALE']).exactOptional(),
     id: z
       .preprocess(
@@ -3539,15 +3572,9 @@ const ProviderDTOSchema = z
     contact: ContactDTOSchema.exactOptional(),
     correspondenceAddress: AddressDTOSchema.exactOptional(),
     customFields: z
-      .object({
-        customFields: z
-          .array(CustomFieldDTOSchema)
-          .exactOptional()
-          .openapi({ xml: { name: 'customField' } }),
-        empty: z.boolean().exactOptional(),
-      })
+      .array(CustomFieldDTOSchema)
       .exactOptional()
-      .openapi({ xml: { name: 'customFields' }, required: [] }),
+      .openapi({ xml: { name: 'customFields' } }),
     fullName: z.string().exactOptional(),
     id: z
       .preprocess(
@@ -3795,15 +3822,9 @@ const QuoteDTOv1Schema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
     customFields: z
-      .object({
-        customFields: z
-          .array(CustomFieldDTOSchema)
-          .exactOptional()
-          .openapi({ xml: { name: 'customField' } }),
-        empty: z.boolean().exactOptional(),
-      })
+      .array(CustomFieldDTOSchema)
       .exactOptional()
-      .openapi({ xml: { name: 'customFields' }, required: [] }),
+      .openapi({ xml: { name: 'customFields' } }),
     customerId: z
       .preprocess(
         (val) =>
@@ -4209,12 +4230,9 @@ const ServiceDTOSchema = z
   .openapi({ required: [] })
   .openapi('ServiceDTO')
 
-const SettingsDTOSchema: z.ZodType<SettingsDTOType> = z
-  .lazy(() =>
-    z
-      .object({ local: LocalSettingsDTOSchema.exactOptional(), name: z.string().exactOptional() })
-      .openapi({ required: [] }),
-  )
+const SettingsDTOSchema = z
+  .object({ local: LocalSettingsDTOSchema.exactOptional(), name: z.string().exactOptional() })
+  .openapi({ required: [] })
   .openapi('SettingsDTO')
 
 const SmartContactsDTOSchema = z
@@ -4259,7 +4277,7 @@ const SmartContactsDTOSchema = z
   .openapi('SmartContactsDTO')
 
 const SmartCustomFieldDTOSchema = z
-  .object({ value: z.object({}).exactOptional() })
+  .object({ value: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('SmartCustomFieldDTO')
 
@@ -4428,15 +4446,9 @@ const UrlResultDTOSchema = z
 const UserDTOSchema = z
   .object({
     customFields: z
-      .object({
-        customFields: z
-          .array(CustomFieldDTOSchema)
-          .exactOptional()
-          .openapi({ xml: { name: 'customField' } }),
-        empty: z.boolean().exactOptional(),
-      })
+      .array(CustomFieldDTOSchema)
       .exactOptional()
-      .openapi({ xml: { name: 'customFields' }, required: [] }),
+      .openapi({ xml: { name: 'customFields' } }),
     email: z.string().exactOptional(),
     firstName: z.string().exactOptional(),
     gender: z.string().exactOptional(),
@@ -5855,7 +5867,7 @@ export const getBrowserRoute = createRoute({
       description: 'Success',
       content: {
         'application/vnd.xtrf-v1+json;charset=UTF-8': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             ref: {
               description: 'ref',
@@ -5937,7 +5949,7 @@ export const getBrowserCsvRoute = createRoute({
       description: 'Success',
       content: {
         'application/vnd.xtrf-v1+json;charset=UTF-8': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             ref: {
               description: 'ref',
@@ -6586,7 +6598,7 @@ export const getBrowserViewsViewIdColumnsColumnNameSettingsRoute = createRoute({
       description: 'Success',
       content: {
         'application/vnd.xtrf-v1+json;charset=UTF-8': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             ref: {
               description: 'ref',
@@ -6642,7 +6654,7 @@ export const putBrowserViewsViewIdColumnsColumnNameSettingsRoute = createRoute({
       description: "Updated column's specific settings.",
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             ref: {
               description: 'ref',
@@ -6660,7 +6672,7 @@ export const putBrowserViewsViewIdColumnsColumnNameSettingsRoute = createRoute({
       description: 'Success',
       content: {
         'application/vnd.xtrf-v1+json;charset=UTF-8': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             ref: {
               description: 'ref',
@@ -6842,7 +6854,7 @@ export const putBrowserViewsViewIdFilterFilterPropertyRoute = createRoute({
       description: 'Success',
       content: {
         'application/vnd.xtrf-v1+json;charset=UTF-8': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             ref: {
               description: 'ref',

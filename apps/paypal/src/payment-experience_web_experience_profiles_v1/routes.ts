@@ -522,7 +522,7 @@ const PatchSchema = z
           'The <a href="https://tools.ietf.org/html/rfc6901">JSON Pointer</a> to the target document location at which to complete the operation.',
       }),
     value: z
-      .union([z.number(), z.int(), z.string(), z.boolean(), z.array(z.any()), z.object({})])
+      .union([z.number(), z.int(), z.string(), z.boolean(), z.array(z.any()), z.looseObject({})])
       .nullable()
       .exactOptional()
       .openapi({

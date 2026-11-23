@@ -1,104 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const MiradoreCredentialFieldsSchema = z
-  .object({
-    api_key: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    hostname: z.string().openapi({ example: 'yourcompanyinc.online.miradore.com' }),
-  })
-  .openapi({ required: ['hostname', 'api_key'] })
-  .openapi('MiradoreCredentialFields')
-
-const AWSCredentialFieldsSchema = z
-  .object({
-    access_key: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    regions: z.string().exactOptional().openapi({ example: 'us-west-1, us-east-2' }),
-    role: z.string().exactOptional().openapi({ example: 'rumble-role' }),
-    secret_access_key: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    use_cross_account_org: z.string().exactOptional().openapi({ example: 'true' }),
-  })
-  .openapi({ required: ['access_key', 'secret_access_key'] })
-  .openapi('AWSCredentialFields')
-
-const AzureClientSecretCredentialFieldsSchema = z
-  .object({
-    client_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    client_secret: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    multi_subscription: z.string().exactOptional().openapi({ example: 'true' }),
-    subscription_id: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    tenant_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-  })
-  .openapi({ required: ['client_id', 'client_secret', 'tenant_id'] })
-  .openapi('AzureClientSecretCredentialFields')
-
-const AzureUsernamePasswordCredentialFieldsSchema = z
-  .object({
-    client_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    password: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    tenant_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    username: z.string().openapi({ example: 'user@example.com' }),
-  })
-  .openapi({ required: ['client_id', 'tenant_id', 'username', 'password'] })
-  .openapi('AzureUsernamePasswordCredentialFields')
-
-const CrowdstrikeCredentialFieldsSchema = z
-  .object({
-    api_url: z.string().openapi({ example: 'example.crowdstrike.com' }),
-    client_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    client_secret: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-  })
-  .openapi({ required: ['client_id', 'client_secret', 'api_url'] })
-  .openapi('CrowdstrikeCredentialFields')
-
-const CensysCredentialFieldsSchema = z
-  .object({
-    api_url: z.string().exactOptional().openapi({ example: 'https://search.censys.io' }),
-    client_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    client_secret: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-  })
-  .openapi({ required: ['client_id', 'client_secret'] })
-  .openapi('CensysCredentialFields')
-
-const SNMPv2CommunitiesCredentialFieldsSchema = z
-  .object({ community: z.string().openapi({ example: 'public,private' }) })
-  .openapi({ required: ['community'] })
-  .openapi('SNMPv2CommunitiesCredentialFields')
-
-const SNMPv3CredentialFieldsSchema = z
-  .object({
-    'auth-passphrase': z.string().exactOptional().openapi({ example: 'authpass' }),
-    'auth-protocol': z.string().exactOptional().openapi({ example: 'sha' }),
-    context: z.string().exactOptional().openapi({ example: 'vlan-32' }),
-    'privacy-passphrase': z.string().exactOptional().openapi({ example: 'privpass' }),
-    'privacy-protocol': z.string().exactOptional().openapi({ example: 'aes' }),
-    username: z.string().openapi({ example: 'user' }),
-  })
-  .openapi({ required: ['username'] })
-  .openapi('SNMPv3CredentialFields')
-
-const VMwareCredentialFieldsSchema = z
-  .object({
-    insecure: z.string().exactOptional().openapi({ example: 'true' }),
-    password: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
-    thumbprints: z.string().exactOptional().openapi({ example: 'IP=SHA256:B64HASH' }),
-    username: z.string().openapi({ example: 'user' }),
-  })
-  .openapi({ required: ['username', 'password'] })
-  .openapi('VMwareCredentialFields')
-
-type CredentialFieldsType =
-  | z.infer<typeof MiradoreCredentialFieldsSchema>
-  | z.infer<typeof AWSCredentialFieldsSchema>
-  | z.infer<typeof AzureClientSecretCredentialFieldsSchema>
-  | z.infer<typeof AzureUsernamePasswordCredentialFieldsSchema>
-  | z.infer<typeof CrowdstrikeCredentialFieldsSchema>
-  | z.infer<typeof CensysCredentialFieldsSchema>
-  | z.infer<typeof SNMPv2CommunitiesCredentialFieldsSchema>
-  | z.infer<typeof SNMPv3CredentialFieldsSchema>
-  | z.infer<typeof VMwareCredentialFieldsSchema>
-
 const APIKeySchema = z
   .object({
     client_id: z
@@ -191,6 +92,17 @@ const APIKeyOptionsSchema = z
   })
   .openapi({ required: [] })
   .openapi('APIKeyOptions')
+
+const AWSCredentialFieldsSchema = z
+  .object({
+    access_key: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    regions: z.string().exactOptional().openapi({ example: 'us-west-1, us-east-2' }),
+    role: z.string().exactOptional().openapi({ example: 'rumble-role' }),
+    secret_access_key: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    use_cross_account_org: z.string().exactOptional().openapi({ example: 'true' }),
+  })
+  .openapi({ required: ['access_key', 'secret_access_key'] })
+  .openapi('AWSCredentialFields')
 
 const AgentSchema = z
   .object({
@@ -622,6 +534,39 @@ const AssetsWithCheckpointSchema = z
   .openapi({ required: ['since', 'assets'] })
   .openapi('AssetsWithCheckpoint')
 
+const AzureClientSecretCredentialFieldsSchema = z
+  .object({
+    client_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    client_secret: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    multi_subscription: z.string().exactOptional().openapi({ example: 'true' }),
+    subscription_id: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    tenant_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+  })
+  .openapi({ required: ['client_id', 'client_secret', 'tenant_id'] })
+  .openapi('AzureClientSecretCredentialFields')
+
+const AzureUsernamePasswordCredentialFieldsSchema = z
+  .object({
+    client_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    password: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    tenant_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    username: z.string().openapi({ example: 'user@example.com' }),
+  })
+  .openapi({ required: ['client_id', 'tenant_id', 'username', 'password'] })
+  .openapi('AzureUsernamePasswordCredentialFields')
+
+const CensysCredentialFieldsSchema = z
+  .object({
+    api_url: z.string().exactOptional().openapi({ example: 'https://search.censys.io' }),
+    client_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    client_secret: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+  })
+  .openapi({ required: ['client_id', 'client_secret'] })
+  .openapi('CensysCredentialFields')
+
 const ComponentVersionSchema = z
   .object({
     id: z.string().openapi({ example: 'agent' }),
@@ -698,20 +643,62 @@ const CredentialSchema = z
   .openapi({ required: ['id'] })
   .openapi('Credential')
 
-const CredentialFieldsSchema: z.ZodType<CredentialFieldsType> = z
-  .lazy(() =>
-    z.xor([
-      MiradoreCredentialFieldsSchema,
-      AWSCredentialFieldsSchema,
-      AzureClientSecretCredentialFieldsSchema,
-      AzureUsernamePasswordCredentialFieldsSchema,
-      CrowdstrikeCredentialFieldsSchema,
-      CensysCredentialFieldsSchema,
-      SNMPv2CommunitiesCredentialFieldsSchema,
-      SNMPv3CredentialFieldsSchema,
-      VMwareCredentialFieldsSchema,
-    ]),
-  )
+const MiradoreCredentialFieldsSchema = z
+  .object({
+    api_key: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    hostname: z.string().openapi({ example: 'yourcompanyinc.online.miradore.com' }),
+  })
+  .openapi({ required: ['hostname', 'api_key'] })
+  .openapi('MiradoreCredentialFields')
+
+const CrowdstrikeCredentialFieldsSchema = z
+  .object({
+    api_url: z.string().openapi({ example: 'example.crowdstrike.com' }),
+    client_id: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    client_secret: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+  })
+  .openapi({ required: ['client_id', 'client_secret', 'api_url'] })
+  .openapi('CrowdstrikeCredentialFields')
+
+const SNMPv2CommunitiesCredentialFieldsSchema = z
+  .object({ community: z.string().openapi({ example: 'public,private' }) })
+  .openapi({ required: ['community'] })
+  .openapi('SNMPv2CommunitiesCredentialFields')
+
+const SNMPv3CredentialFieldsSchema = z
+  .object({
+    'auth-passphrase': z.string().exactOptional().openapi({ example: 'authpass' }),
+    'auth-protocol': z.string().exactOptional().openapi({ example: 'sha' }),
+    context: z.string().exactOptional().openapi({ example: 'vlan-32' }),
+    'privacy-passphrase': z.string().exactOptional().openapi({ example: 'privpass' }),
+    'privacy-protocol': z.string().exactOptional().openapi({ example: 'aes' }),
+    username: z.string().openapi({ example: 'user' }),
+  })
+  .openapi({ required: ['username'] })
+  .openapi('SNMPv3CredentialFields')
+
+const VMwareCredentialFieldsSchema = z
+  .object({
+    insecure: z.string().exactOptional().openapi({ example: 'true' }),
+    password: z.string().openapi({ example: 'e77602e0-3fb8-4734-aef9-fbc6fdcb0fa8' }),
+    thumbprints: z.string().exactOptional().openapi({ example: 'IP=SHA256:B64HASH' }),
+    username: z.string().openapi({ example: 'user' }),
+  })
+  .openapi({ required: ['username', 'password'] })
+  .openapi('VMwareCredentialFields')
+
+const CredentialFieldsSchema = z
+  .xor([
+    MiradoreCredentialFieldsSchema,
+    AWSCredentialFieldsSchema,
+    AzureClientSecretCredentialFieldsSchema,
+    AzureUsernamePasswordCredentialFieldsSchema,
+    CrowdstrikeCredentialFieldsSchema,
+    CensysCredentialFieldsSchema,
+    SNMPv2CommunitiesCredentialFieldsSchema,
+    SNMPv3CredentialFieldsSchema,
+    VMwareCredentialFieldsSchema,
+  ])
   .openapi('CredentialFields')
 
 const CredentialOptionsSchema = z
@@ -1846,7 +1833,7 @@ const SiteOptionsSchema = z
   .openapi({ required: ['name'] })
   .openapi('SiteOptions')
 
-const StatusMessageSchema = z.object({}).openapi('StatusMessage')
+const StatusMessageSchema = z.looseObject({}).openapi('StatusMessage')
 
 const TaskSchema = z
   .object({

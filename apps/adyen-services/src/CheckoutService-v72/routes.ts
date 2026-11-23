@@ -673,7 +673,7 @@ const AdditionalData3DSecureSchema = z
       .openapi({
         deprecated: true,
         description:
-          "Indicates if you want to perform 3D Secure authentication on a transaction.\n\n > Alternatively, you can use [Dynamic 3D Secure](/risk-management/dynamic-3d-secure) to configure rules for applying 3D Secure.\n\nPossible values:\n* **true** – Perform 3D Secure authentication.\n* **false** – Don't perform 3D Secure authentication. Note that this setting results in refusals if the issuer mandates 3D Secure because of the PSD2 directive  or other, national regulations. \n",
+          "Indicates if you want to perform 3D Secure authentication on a transaction.\n\n > Alternatively, you can use [Dynamic 3D Secure](/risk-management/dynamic-3d-secure) to configure rules for applying 3D Secure.\n\nPossible values:\n* **true** – Perform 3D Secure authentication. For browser-based payments, make sure the payment request also contains complete `browserInfo` and, for the Checkout API, `origin`. Without them, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift.\n* **false** – Don't perform 3D Secure authentication. Note that this setting results in refusals if the issuer mandates 3D Secure because of the PSD2 directive  or other, national regulations. \n",
         'x-deprecatedInVersion': '69',
         'x-deprecatedMessage':
           'Use [`authenticationData.attemptAuthentication`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments?target=_blank#request-authenticationData-attemptAuthentication) instead',
@@ -2957,7 +2957,7 @@ const AuthenticationDataSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Indicates when 3D Secure authentication should be attempted. This overrides all other rules, including [Dynamic 3D Secure settings](https://docs.adyen.com/risk-management/dynamic-3d-secure).\n\nPossible values:\n\n* **always**: Perform 3D Secure authentication.\n* **never**: Don't perform 3D Secure authentication. If PSD2 SCA or other national regulations require authentication, the transaction gets declined.",
+          "Indicates when 3D Secure authentication should be attempted. This overrides all other rules, including [Dynamic 3D Secure settings](https://docs.adyen.com/risk-management/dynamic-3d-secure).\n\nPossible values:\n\n* **always**: Perform 3D Secure authentication. For browser-based payments, make sure the payment request also contains complete `browserInfo` and `origin`. Without them, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift.\n* **never**: Don't perform 3D Secure authentication. If PSD2 SCA or other national regulations require authentication, the transaction gets declined.",
         'x-addedInVersion': '69',
       }),
     authenticationOnly: z
@@ -3882,7 +3882,7 @@ const BalanceCheckRequestSchema = z
     }),
     browserInfo: BrowserInfoSchema.exactOptional().openapi({
       description:
-        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.",
+        "The shopper's browser information.\n> The 3D Secure 2 guidance for `browserInfo` applies to the later `/payments` request, not to this balance check. For browser-based 3D Secure 2 payments, include complete `browserInfo`. For mobile app integrations that can be routed to a 3D Secure 2 redirect, include the `userAgent` and `acceptHeader` fields. Native app 3D Secure 2 authentication does not require `browserInfo`.\n>\n> This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment.",
     }),
     captureDelayHours: z
       .int32()
@@ -4117,7 +4117,7 @@ const BalanceCheckRequestSchema = z
       .openapi({
         deprecated: true,
         description:
-          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.',
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.\n\nDefault: **false**.',
         'x-addedInVersion': '50',
         'x-deprecatedInVersion': '69',
         'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
@@ -4747,6 +4747,14 @@ const CardDetailsSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The reference for the Click to Pay token.' }),
+    storeClickToPayProfile: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "When enrolling a new user, this field determines whether to store the shopper's card in their Click to Pay profile. When this is set to **True**, the request must include `shopperEmail`, `shopperName`, and `telephoneNumber`.",
+        'x-addedInVersion': '72',
+      }),
     storedPaymentMethodId: z
       .string()
       .max(64)
@@ -4992,6 +5000,14 @@ const CardDonationsSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The reference for the Click to Pay token.' }),
+    storeClickToPayProfile: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "When enrolling a new user, this field determines whether to store the shopper's card in their Click to Pay profile. When this is set to **True**, the request must include `shopperEmail`, `shopperName`, and `telephoneNumber`.",
+        'x-addedInVersion': '72',
+      }),
     storedPaymentMethodId: z
       .string()
       .max(64)
@@ -5457,9 +5473,10 @@ const CheckoutForwardRequestSchema = z
     }),
     shopperReference: z
       .string()
+      .exactOptional()
       .openapi({
         description:
-          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\nThis parameter is required unless the request is for PAN forwarding and `options.tokenize` is false (the default).\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
       }),
     storedPaymentMethodId: z
       .string()
@@ -5469,7 +5486,7 @@ const CheckoutForwardRequestSchema = z
           'The unique identifier of the token that you want to forward to the third party. This is the `storedPaymentMethodId` you received in the webhook after you created the token.',
       }),
   })
-  .openapi({ required: ['baseUrl', 'merchantAccount', 'request', 'shopperReference'] })
+  .openapi({ required: ['baseUrl', 'merchantAccount', 'request'] })
   .openapi('CheckoutForwardRequest')
 
 const CheckoutForwardResponseFromUrlSchema = z
@@ -7418,7 +7435,7 @@ const CreateCheckoutSessionRequestSchema = z
       .openapi({
         deprecated: true,
         description:
-          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.',
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.\n\nDefault: **false**.',
         'x-deprecatedInVersion': '69',
         'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
       }),
@@ -7819,7 +7836,7 @@ const CreateCheckoutSessionResponseSchema = z
       .openapi({
         deprecated: true,
         description:
-          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.',
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.\n\nDefault: **false**.',
         'x-deprecatedInVersion': '69',
         'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
       }),
@@ -8001,7 +8018,7 @@ const DetailsRequestAuthenticationDataSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.',
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.\n\nDefault: **false**.',
         'x-addedInVersion': '69',
       }),
   })
@@ -8762,7 +8779,7 @@ const DonationPaymentRequestSchema = z
     }),
     browserInfo: BrowserInfoSchema.exactOptional().openapi({
       description:
-        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.",
+        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.\n>\n> For browser-based payments, missing or incomplete `browserInfo` means 3D Secure 2 cannot be initiated. The transaction is then treated as ineligible for 3D Secure 2 and can be authorized without liability shift. Native app 3D Secure 2 authentication does not require `browserInfo`. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).",
     }),
     channel: z
       .enum(['iOS', 'Android', 'Web'])
@@ -8862,7 +8879,7 @@ const DonationPaymentRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          '> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.',
+          '> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.\n\nSet this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.\n\n> If `origin` is missing or incorrect, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift. Set this value on your server. If you receive it from the client, validate it first. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).',
         'x-addedInVersion': '40',
       }),
     paymentMethod: z
@@ -9656,6 +9673,14 @@ const ExternalTokenDetailsSchema = z
       .openapi({
         description:
           'The card number. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    storeClickToPayProfile: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "When enrolling a new user, this field determines whether to store the shopper's card in their Click to Pay profile. When this is set to **True**, the request must include `shopperEmail`, `shopperName`, and `telephoneNumber`.",
+        'x-addedInVersion': '72',
       }),
     storedPaymentMethodId: z
       .string()
@@ -12388,7 +12413,7 @@ const PaymentMethodsRequestSchema = z
       }),
     browserInfo: BrowserInfoSchema.exactOptional().openapi({
       description:
-        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.",
+        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.\n>\n> If you proceed with a 3D Secure 2 payment, the following requirements apply to `browserInfo` in the `/payments` request. For browser-based 3D Secure 2 payments, include complete `browserInfo`. For mobile app integrations that can be routed to a 3D Secure 2 redirect, include the `userAgent` and `acceptHeader` fields. Native app 3D Secure 2 authentication does not require `browserInfo`. If the `/payments` request of a browser-based payment has missing or incomplete `browserInfo`, the transaction is treated as ineligible for 3D Secure 2 and can be authorized without liability shift. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).",
     }),
     channel: z
       .enum(['iOS', 'Android', 'Web'])
@@ -13636,6 +13661,19 @@ const PaymentValidationsSchema = z
   .openapi({ required: [] })
   .openapi('PaymentValidations')
 
+const TokenizedShopperTaxIdentificationSchema = z
+  .strictObject({
+    verifiedShopperTaxIdentificationToken: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'The `verifiedShopperTaxIdentificationToken` returned by `/verifyShopperTaxIdentification`. Treat the token as opaque: do not parse or modify it.',
+      }),
+  })
+  .openapi({ required: ['verifiedShopperTaxIdentificationToken'] })
+  .openapi('TokenizedShopperTaxIdentification')
+
 const ShopperTaxInfoSchema = z
   .strictObject({
     taxCountryCode: z
@@ -13674,6 +13712,19 @@ const SurchargeSchema = z
   })
   .openapi({ required: ['value'] })
   .openapi('Surcharge')
+
+const TokenizedTaxCalculationSchema = z
+  .strictObject({
+    taxCalculationToken: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'The `taxCalculationToken` returned by `/calculateTax`. Treat the token as opaque: do not parse or modify it.',
+      }),
+  })
+  .openapi({ required: ['taxCalculationToken'] })
+  .openapi('TokenizedTaxCalculation')
 
 const PaymentRequestSchema = z
   .strictObject({
@@ -13733,7 +13784,7 @@ const PaymentRequestSchema = z
     }),
     browserInfo: BrowserInfoSchema.exactOptional().openapi({
       description:
-        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.",
+        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.\n>\n> For browser-based payments, missing or incomplete `browserInfo` means 3D Secure 2 cannot be initiated. The transaction is then treated as ineligible for 3D Secure 2 and can be authorized without liability shift. Native app 3D Secure 2 authentication does not require `browserInfo`. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).",
     }),
     captureDelayHours: z
       .int32()
@@ -13942,7 +13993,7 @@ const PaymentRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          '> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.',
+          '> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.\n\nSet this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.\n\n> If `origin` is missing or incorrect, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift. Set this value on your server. If you receive it from the client, validate it first. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).',
         'x-addedInVersion': '40',
       }),
     paymentMethod: z
@@ -14390,6 +14441,11 @@ const PaymentRequestSchema = z
         description:
           "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
       }),
+    shopperTaxIdentification: TokenizedShopperTaxIdentificationSchema.exactOptional().openapi({
+      description:
+        "The shopper's tax identification, verified by Adyen. Contains the token returned by `/verifyShopperTaxIdentification`.",
+      'x-addedInVersion': '72',
+    }),
     shopperTaxInfo: ShopperTaxInfoSchema.exactOptional().openapi({
       deprecated: true,
       description: 'The tax info of the shopper',
@@ -14439,6 +14495,11 @@ const PaymentRequestSchema = z
       description:
         'The [surcharge](https://docs.adyen.com/online-payments/surcharge/) amount to apply to the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). When you apply surcharge, include the surcharge in the `amount.value` field.\n\nReview our [Surcharge compliance guide](https://docs.adyen.com/development-resources/surcharge-compliance/) to learn about how to comply with regulatory requirements when applying surcharge.',
     }),
+    taxCalculation: TokenizedTaxCalculationSchema.exactOptional().openapi({
+      description:
+        'The tax calculated by Adyen for this payment. Contains the token returned by `/calculateTax`.',
+      'x-addedInVersion': '72',
+    }),
     telephoneNumber: z
       .string()
       .max(64)
@@ -14463,7 +14524,7 @@ const PaymentRequestSchema = z
       .openapi({
         deprecated: true,
         description:
-          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorisation.Default: **false**.',
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.\n\nDefault: **false**.',
         'x-addedInVersion': '50',
         'x-deprecatedInVersion': '69',
         'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
@@ -15509,10 +15570,12 @@ const SublimitStatusSchema = z.enum(['EXCEEDED', 'NOT_EXCEEDED']).openapi('Subli
 const LrsContextSchema = z
   .object({
     remittancePurpose: RemittancePurposeSchema.openapi({
-      description: 'The remittance category, for example TOUR_PROGRAMME or EDUCATION.',
+      description:
+        'The purpose of the remittance under the Liberalised Remittance Scheme. Possible values:\n\n* **TOUR_PROGRAMME**: a tour program.\n* **TRAVEL_NON_TOUR**: travel that is not a tour program.\n* **EDUCATION**: education.\n* **DIGITAL**: digital services.\n',
     }),
     sublimitStatus: SublimitStatusSchema.openapi({
-      description: 'The status of the INR 1 million LRS sublimit, for example EXCEEDED.',
+      description:
+        'The status of the INR 1 million Liberalised Remittance Scheme sublimit. Possible values:\n\n* **EXCEEDED**: the sublimit is exceeded.\n* **NOT_EXCEEDED**: the sublimit is not exceeded.\n',
     }),
   })
   .openapi({ required: ['remittancePurpose', 'sublimitStatus'] })
@@ -15521,14 +15584,19 @@ const LrsContextSchema = z
 const TaxCalculationContextSchema = z
   .object({
     calculationType: CalculationTypeSchema.openapi({
-      description: 'The type of calculation requested. Initially only LRS_TCS is supported.',
+      description:
+        'The type of tax calculation. Supported value: **LRS_TCS**, the Indian Liberalised Remittance Scheme Tax Collected at Source.',
     }),
-    lrs: LrsContextSchema.openapi({ description: 'India-specific LRS declarations.' }),
+    lrs: LrsContextSchema.openapi({
+      description: "The shopper's declarations for the Indian Liberalised Remittance Scheme (LRS).",
+    }),
     taxCountryCode: z
       .string()
-      .min(1)
+      .regex(/^[a-zA-Z]{2}$/)
+      .length(2)
       .openapi({
-        description: 'The country governing tax processing. Initially only IN is supported.',
+        description:
+          'The two-letter country code governing tax processing, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Supported value: **IN**.',
       }),
   })
   .openapi({ required: ['calculationType', 'lrs', 'taxCountryCode'] })
@@ -15539,10 +15607,61 @@ const TaxableAmountSchema = z
     currency: z
       .string()
       .regex(/^[A-Z]{3}$/)
-      .min(1)
+      .length(3)
       .openapi({
         description:
-          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount.',
+      }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n).max(10000000000n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        maximum: 10000000000,
+        description:
+          'The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units)',
+      }),
+  })
+  .openapi({ required: ['currency', 'value'] })
+  .openapi('TaxableAmount')
+
+const CalculateTaxRequestSchema = z
+  .object({
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    taxCalculationContext: TaxCalculationContextSchema.openapi({
+      description: 'The context used to calculate the tax.',
+    }),
+    taxableAmount: TaxableAmountSchema.openapi({
+      description:
+        'The amount on which Adyen calculates the tax. The value must be greater than zero.',
+    }),
+  })
+  .openapi({ required: ['merchantAccount', 'taxCalculationContext', 'taxableAmount'] })
+  .openapi('CalculateTaxRequest')
+
+const TaxAmountSchema = z
+  .object({
+    currency: z
+      .string()
+      .regex(/^[A-Z]{3}$/)
+      .length(3)
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount.',
       }),
     value: z
       .preprocess(
@@ -15560,55 +15679,7 @@ const TaxableAmountSchema = z
         minimum: 0,
         maximum: 10000000000,
         description:
-          'The amount in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
-      }),
-  })
-  .openapi({ required: ['currency', 'value'] })
-  .openapi('TaxableAmount')
-
-const CalculateTaxRequestSchema = z
-  .object({
-    merchantAccount: z
-      .string()
-      .min(0)
-      .max(1000)
-      .openapi({ description: 'The merchant account identifier requesting the tax calculation.' }),
-    taxCalculationContext: TaxCalculationContextSchema.openapi({
-      description: 'The context used to calculate the tax.',
-    }),
-    taxableAmount: TaxableAmountSchema.openapi({
-      description: 'The amount on which Adyen calculates the tax.',
-    }),
-  })
-  .openapi({ required: ['merchantAccount', 'taxCalculationContext', 'taxableAmount'] })
-  .openapi('CalculateTaxRequest')
-
-const TaxAmountSchema = z
-  .object({
-    currency: z
-      .string()
-      .regex(/^[A-Z]{3}$/)
-      .min(1)
-      .openapi({
-        description:
-          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
-      }),
-    value: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(0n),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        minimum: 0,
-        description:
-          'The amount in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+          'The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).',
       }),
   })
   .openapi({ required: ['currency', 'value'] })
@@ -15620,7 +15691,8 @@ const TaxCalculationComponentSchema = z
       description: 'The calculated tax amount of this component.',
     }),
     type: CalculationTypeSchema.exactOptional().openapi({
-      description: 'The type of the calculated tax component, for example LRS_TCS.',
+      description:
+        'The type of tax calculated. Supported value: **LRS_TCS**, the Indian Liberalised Remittance Scheme Tax Collected at Source.',
     }),
   })
   .openapi({ required: [] })
@@ -15631,23 +15703,26 @@ const TaxCalculationSchema = z
     merchantAccount: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The merchant account for which the calculation was made.' }),
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
     taxCalculationContext: TaxCalculationContextSchema.exactOptional().openapi({
-      description: 'The tax country, calculation type, and LRS declarations accepted by Adyen.',
+      description: 'The tax country, calculation type, and LRS declarations from the request.',
     }),
     taxCalculations: z
       .array(TaxCalculationComponentSchema)
       .exactOptional()
       .openapi({ description: 'The individual tax components calculated by Adyen.' }),
     taxableAmount: TaxAmountSchema.exactOptional().openapi({
-      description: 'The taxable amount accepted by Adyen.',
+      description: 'The taxable amount from the request, before tax.',
     }),
     totalAmount: TaxAmountSchema.exactOptional().openapi({
       description:
-        'The taxable amount plus the calculated tax. Use this amount in /payments.amount.',
+        'The sum of `taxableAmount` and `totalTaxAmount`. Use this amount as `amount` in `/payments`.',
     }),
     totalTaxAmount: TaxAmountSchema.exactOptional().openapi({
-      description: 'The total tax amount calculated by Adyen.',
+      description: 'The sum of the individual tax amounts in `taxCalculations`.',
     }),
   })
   .openapi({ required: [] })
@@ -15656,19 +15731,20 @@ const TaxCalculationSchema = z
 const CalculateTaxResponseSchema = z
   .object({
     taxCalculation: TaxCalculationSchema.exactOptional().openapi({
-      description:
-        'The canonical calculation accepted and produced by Adyen. Informational in the initial release.',
+      description: 'The tax calculation results.',
     }),
     taxCalculationReference: z
       .string()
+      .min(8)
+      .max(64)
       .exactOptional()
-      .openapi({ description: 'The unique reference for this calculation attempt.' }),
+      .openapi({ description: 'The unique reference for the tax calculation.' }),
     taxCalculationToken: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The opaque, encrypted, and signed token that represents the complete canonical calculation. Required in /payments.',
+          'The encrypted and signed token representing the tax calculation. Submit this value as `taxCalculation.taxCalculationToken` in `/payments`.',
       }),
   })
   .openapi({ required: [] })
@@ -15762,10 +15838,20 @@ const ShopperIdPaymentMethodSchema = z
   .openapi('ShopperIdPaymentMethod')
 
 const PayToPaymentMethodSchema = ShopperIdPaymentMethodSchema.and(
-  z
-    .object({ shopperReference: z.string().min(0).max(256).exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ shopperReference: z.string().min(0).max(256).exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['type'] })
   .openapi('PayToPaymentMethod')
 
@@ -15780,24 +15866,35 @@ const ShopperTaxIdentificationSchema = z
       .min(1)
       .openapi({
         description:
-          "The country governing the shopper's tax processing. Initially only IN is supported.",
+          "The two-letter country code governing the shopper's tax processing, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Supported value: **IN**.",
       }),
     taxIdentificationNumber: z
       .string()
       .min(1)
       .openapi({ description: 'The tax identification number submitted for verification.' }),
     taxIdentificationType: TaxIdentificationTypeSchema.openapi({
-      description: 'The type of the tax identification. Initially only PAN is supported.',
+      description:
+        'The type of tax identification. Supported value: **PAN**, an Indian Permanent Account Number.',
     }),
   })
   .openapi({ required: ['taxCountryCode', 'taxIdentificationNumber', 'taxIdentificationType'] })
   .openapi('ShopperTaxIdentification')
 
 const UPIPaymentMethodSchema = ShopperIdPaymentMethodSchema.and(
-  z
-    .object({ virtualPaymentAddress: z.string().min(1).max(256).exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ virtualPaymentAddress: z.string().min(1).max(256).exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['type'] })
   .openapi('UPIPaymentMethod')
 
@@ -15834,13 +15931,22 @@ const VerifiedShopperTaxIdentificationSchema = z
     maskedName: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The masked name of the tax identification holder.' }),
+      .openapi({
+        description:
+          'The masked name of the tax identification holder. The full name is not returned.',
+      }),
     taxCountryCode: z
       .string()
+      .regex(/^[a-zA-Z]{2}$/)
+      .length(2)
       .exactOptional()
-      .openapi({ description: "The country governing the shopper's tax processing." }),
+      .openapi({
+        description:
+          "The two-letter country code governing the shopper's tax processing, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Supported value: **IN**.",
+      }),
     taxIdentificationType: TaxIdentificationTypeSchema.exactOptional().openapi({
-      description: 'The type of the verified tax identification.',
+      description:
+        'The type of verified tax identification. Supported value: **PAN**, an Indian Permanent Account Number.',
     }),
   })
   .openapi({ required: [] })
@@ -15850,19 +15956,20 @@ const VerifyShopperTaxIdentificationRequestSchema = z
   .object({
     merchantAccount: z
       .string()
-      .min(0)
-      .max(1000)
-      .openapi({ description: 'The merchant account identifier requesting the tax verification.' }),
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
     shopperReference: z
       .string()
       .min(3)
       .max(256)
       .openapi({
         description:
-          'Your reference to uniquely identify this shopper, for example user ID or account ID. Used to bind the verification to the shopper context.\n\n> Your reference must not include personally identifiable information (PII), for example name or email address.',
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters. Use the same `shopperReference` in `/payments`.\n\n> Your reference must not include personally identifiable information (PII), for example name or email address.',
       }),
     shopperTaxIdentification: ShopperTaxIdentificationSchema.openapi({
-      description: 'The shopper tax identification to verify.',
+      description: "The shopper's tax identification to verify.",
     }),
   })
   .openapi({ required: ['merchantAccount', 'shopperReference', 'shopperTaxIdentification'] })
@@ -15873,28 +15980,38 @@ const VerifyShopperTaxIdentificationResponseSchema = z
     reason: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The human-readable reason for the unsuccessful result.' }),
+      .openapi({
+        description:
+          'The human-readable reason for an **INVALID** or **UNKNOWN** verification result.',
+      }),
     reasonCode: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The reason code for the unsuccessful result, when available.' }),
+      .openapi({ description: 'The code for an unsuccessful verification, if available.' }),
     result: ResultSchema.exactOptional().openapi({
-      description: 'The verification result, for example valid or invalid.',
+      description:
+        "The result of verifying the shopper's tax identification. Possible results for this endpoint:\n\n* **VALID**: verification succeeded. The response includes a token and masked tax identification.\n* **INVALID**: the tax identification is invalid or unsupported. The response includes a `reason` and no token.\n* **UNKNOWN**: verification did not return the required details. The response includes a `reason` and no token.\n",
     }),
     taxVerificationReference: z
       .string()
+      .min(8)
+      .max(64)
       .exactOptional()
-      .openapi({ description: 'The unique reference for the verification attempt.' }),
+      .openapi({
+        description:
+          'The unique reference for the verification. Returned only when `result` is **VALID**.',
+      }),
     verifiedShopperTaxIdentification:
       VerifiedShopperTaxIdentificationSchema.exactOptional().openapi({
-        description: 'The masked representation of the verified tax identification.',
+        description:
+          'The masked representation of the verified tax identification. Returned only when `result` is **VALID**.',
       }),
     verifiedShopperTaxIdentificationToken: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The opaque, encrypted, and signed token representing the successful verification. Required in /payments.',
+          'The encrypted and signed token representing a successful verification. Returned only when `result` is **VALID**. Submit this value as `shopperTaxIdentification.verifiedShopperTaxIdentificationToken` in `/payments` with the same `shopperReference` used for verification.',
       }),
   })
   .openapi({ required: [] })

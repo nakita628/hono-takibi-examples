@@ -1,5 +1,14 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const UrlSchema = z
+  .string()
+  .openapi({
+    description: 'Url to the individual resource.',
+    example: 'https://brain.intellifi.nl/api/foobar',
+    readOnly: true,
+  })
+  .openapi('Url')
+
 const IdReadOnlySchema = z
   .string()
   .openapi({
@@ -18,89 +27,6 @@ const TimeCreatedSchema = z
     readOnly: true,
   })
   .openapi('TimeCreated')
-
-const TimeEventSchema = z
-  .string()
-  .openapi({
-    description:
-      "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) formatted string for when this event was generated on the device. This is the device's own timestamp. Could be different due to buffering and clock differences.",
-    example: '2018-08-30T09:51:59.737Z',
-    readOnly: true,
-  })
-  .openapi('TimeEvent')
-
-const TimeExpireSchema = z
-  .string()
-  .openapi({
-    description:
-      '[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) formatted string for when this resource is going to be deleted.',
-    example: '2018-08-30T09:51:59.737Z',
-    readOnly: true,
-  })
-  .openapi('TimeExpire')
-
-const EventTopicActionSchema = z
-  .enum(['created', 'updated', 'deleted', 'disappeared', 'connection-rssi-changed'])
-  .openapi({
-    description:
-      "Indicates the kind of event that was executed. In most cases it's a verb. I.e. 'connected', 'created' etc...",
-    example: 'created',
-  })
-  .openapi('EventTopicAction')
-
-const EventTopicArgumentSchema = z
-  .any()
-  .openapi({
-    description:
-      'Extra arguments may be added to a topic string, it depends on the `resource_type` and the `action` what extra arguments are added.',
-    example: { foo: 'bar' },
-  })
-  .openapi('EventTopicArgument')
-
-const EventTopicResourceTypeSchema = z
-  .enum([
-    'blobs',
-    'items',
-    'keys',
-    'kvpairs',
-    'locations',
-    'presences',
-    'services',
-    'spots',
-    'subscriptions',
-    'users',
-  ])
-  .openapi({
-    description:
-      'The The available event topic resources types on the API. Is written in its plural form.',
-    example: 'items',
-  })
-  .openapi('EventTopicResourceType')
-
-const UrlSchema = z
-  .string()
-  .openapi({
-    description: 'Url to the individual resource.',
-    example: 'https://brain.intellifi.nl/api/foobar',
-    readOnly: true,
-  })
-  .openapi('Url')
-
-type EventType = {
-  id?: z.infer<typeof IdReadOnlySchema>
-  payload?: { [key: string]: unknown }
-  time_created?: z.infer<typeof TimeCreatedSchema>
-  time_event?: z.infer<typeof TimeEventSchema>
-  time_expire?: z.infer<typeof TimeExpireSchema>
-  topic?: {
-    action?: z.infer<typeof EventTopicActionSchema>
-    arguments?: z.infer<typeof EventTopicArgumentSchema>
-    resource_id?: z.infer<typeof IdReadOnlySchema>
-    resource_type?: z.infer<typeof EventTopicResourceTypeSchema>
-    resource_url?: z.infer<typeof UrlSchema>
-  }
-  url?: z.infer<typeof UrlSchema>
-}
 
 const TimeLastAccessedSchema = z
   .string()
@@ -178,7 +104,7 @@ const CodeHexSchema = z
   .openapi('CodeHex')
 
 const ConfigSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'JSON object with possible settings. Refer to individual service documentation for a good overview.',
@@ -188,7 +114,7 @@ const ConfigSchema = z
   .openapi('Config')
 
 const ConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Object containing the new configuration. This will be applied automatically when the values are valid.',
@@ -206,35 +132,90 @@ const CustomSchema = z
   })
   .openapi('Custom')
 
-const EventSchema: z.ZodType<EventType> = z
-  .lazy(() =>
-    z
+const TimeEventSchema = z
+  .string()
+  .openapi({
+    description:
+      "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) formatted string for when this event was generated on the device. This is the device's own timestamp. Could be different due to buffering and clock differences.",
+    example: '2018-08-30T09:51:59.737Z',
+    readOnly: true,
+  })
+  .openapi('TimeEvent')
+
+const TimeExpireSchema = z
+  .string()
+  .openapi({
+    description:
+      '[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) formatted string for when this resource is going to be deleted.',
+    example: '2018-08-30T09:51:59.737Z',
+    readOnly: true,
+  })
+  .openapi('TimeExpire')
+
+const EventTopicActionSchema = z
+  .enum(['created', 'updated', 'deleted', 'disappeared', 'connection-rssi-changed'])
+  .openapi({
+    description:
+      "Indicates the kind of event that was executed. In most cases it's a verb. I.e. 'connected', 'created' etc...",
+    example: 'created',
+  })
+  .openapi('EventTopicAction')
+
+const EventTopicArgumentSchema = z
+  .any()
+  .openapi({
+    description:
+      'Extra arguments may be added to a topic string, it depends on the `resource_type` and the `action` what extra arguments are added.',
+    example: { foo: 'bar' },
+  })
+  .openapi('EventTopicArgument')
+
+const EventTopicResourceTypeSchema = z
+  .enum([
+    'blobs',
+    'items',
+    'keys',
+    'kvpairs',
+    'locations',
+    'presences',
+    'services',
+    'spots',
+    'subscriptions',
+    'users',
+  ])
+  .openapi({
+    description:
+      'The The available event topic resources types on the API. Is written in its plural form.',
+    example: 'items',
+  })
+  .openapi('EventTopicResourceType')
+
+const EventSchema = z
+  .object({
+    id: IdReadOnlySchema.exactOptional(),
+    payload: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description: 'An object containing the payload, if any, of the event.',
+        example: { foo: 'bar' },
+      }),
+    time_created: TimeCreatedSchema.exactOptional(),
+    time_event: TimeEventSchema.exactOptional(),
+    time_expire: TimeExpireSchema.exactOptional(),
+    topic: z
       .object({
-        id: IdReadOnlySchema.exactOptional(),
-        payload: z
-          .any()
-          .exactOptional()
-          .openapi({
-            description: 'An object containing the payload, if any, of the event.',
-            example: { foo: 'bar' },
-          }),
-        time_created: TimeCreatedSchema.exactOptional(),
-        time_event: TimeEventSchema.exactOptional(),
-        time_expire: TimeExpireSchema.exactOptional(),
-        topic: z
-          .object({
-            action: EventTopicActionSchema.exactOptional(),
-            arguments: EventTopicArgumentSchema.exactOptional(),
-            resource_id: IdReadOnlySchema.exactOptional(),
-            resource_type: EventTopicResourceTypeSchema.exactOptional(),
-            resource_url: UrlSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        url: UrlSchema.exactOptional(),
+        action: EventTopicActionSchema.exactOptional(),
+        arguments: EventTopicArgumentSchema.exactOptional(),
+        resource_id: IdReadOnlySchema.exactOptional(),
+        resource_type: EventTopicResourceTypeSchema.exactOptional(),
+        resource_url: UrlSchema.exactOptional(),
       })
+      .exactOptional()
       .openapi({ required: [] }),
-  )
+    url: UrlSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('Event')
 
 const GeoCoordsSchema = z
@@ -303,7 +284,7 @@ const LocationRequestSchema = z
   .openapi('LocationRequest')
 
 const MetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Object of searchable metadata for this resource. Can be freely used to store metadata properties.',
@@ -524,7 +505,7 @@ const RuleEnabledSchema = z
   .openapi('RuleEnabled')
 
 const LocationRuleParametersSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Parameters for this rule; depends on the rule type. Refer to the rule type specification for details.',
@@ -716,7 +697,7 @@ const RestartRequestSchema = z
   .openapi('RestartRequest')
 
 const SensesSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Senses are values that in most cases are generated inside the spot (number of presences, spot booted etc.). We also have a few senses that can be controlled by the brain. See [Sense & Control](https://intellifi.zendesk.com/hc/en-us/sections/360001568254) documentation for more information.',
@@ -726,7 +707,7 @@ const SensesSchema = z
   .openapi('Senses')
 
 const SensesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Object containing the new senses configuration. See [Sense & Control](https://intellifi.zendesk.com/hc/en-us/sections/360001568254) documentation for more information.',
@@ -1158,7 +1139,7 @@ const SubscriptionSchema = z
           'If set to `true`, resource references in an event (e.g. the location an item moved to) are resolved and populated with data instead of giving just an ID.',
       }),
     target_delivery_last_failure: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1166,7 +1147,7 @@ const SubscriptionSchema = z
         readOnly: true,
       }),
     target_delivery_status: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:

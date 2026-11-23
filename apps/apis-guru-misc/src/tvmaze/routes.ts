@@ -9,11 +9,11 @@ const BulkResponseSchema = z
           .exactOptional()
           .openapi({ description: 'The HTTP code that corresponds to this item' }),
         errors: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'A list of validation errors for this item (in case of error)' }),
         input: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'The request data that belonged to this response (in case of error)',
@@ -23,7 +23,7 @@ const BulkResponseSchema = z
           .exactOptional()
           .openapi({ description: 'A human-readable error message (in case of error)' }),
         result: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The resulting created/updated object (in case of success)' }),
       })
@@ -34,7 +34,7 @@ const BulkResponseSchema = z
   })
   .openapi('BulkResponse')
 
-const EpisodeSchema = z.object({}).openapi('Episode')
+const EpisodeSchema = z.looseObject({}).openapi('Episode')
 
 const EpisodeVoteSchema = z
   .object({
@@ -74,7 +74,7 @@ const MarkedEpisodeSchema = z
   .openapi({ required: [] })
   .openapi('MarkedEpisode')
 
-const NetworkSchema = z.object({}).openapi('Network')
+const NetworkSchema = z.looseObject({}).openapi('Network')
 
 const NetworkFollowSchema = z
   .object({
@@ -87,7 +87,7 @@ const NetworkFollowSchema = z
   .openapi({ required: [] })
   .openapi('NetworkFollow')
 
-const PersonSchema = z.object({}).openapi('Person')
+const PersonSchema = z.looseObject({}).openapi('Person')
 
 const PersonFollowSchema = z
   .object({
@@ -100,7 +100,7 @@ const PersonFollowSchema = z
   .openapi({ required: [] })
   .openapi('PersonFollow')
 
-const ShowSchema = z.object({}).openapi('Show')
+const ShowSchema = z.looseObject({}).openapi('Show')
 
 const ShowFollowSchema = z
   .object({
@@ -147,7 +147,7 @@ const TagInstanceSchema = z
   .openapi({ required: [] })
   .openapi('TagInstance')
 
-const WebchannelSchema = z.object({}).openapi('Webchannel')
+const WebchannelSchema = z.looseObject({}).openapi('Webchannel')
 
 const WebchannelFollowSchema = z
   .object({

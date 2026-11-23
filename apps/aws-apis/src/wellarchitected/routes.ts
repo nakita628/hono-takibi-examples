@@ -1,56 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const LensAliasSchema = z
-  .string()
-  .min(1)
-  .max(128)
-  .openapi({
-    description:
-      '<p>The alias of the lens.</p> <p>For Amazon Web Services official lenses, this is either the lens alias, such as <code>serverless</code>, or the lens ARN, such as <code>arn:aws:wellarchitected:us-east-1::lens/serverless</code>. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses.</p> <p>For custom lenses, this is the lens ARN, such as <code>arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef</code>. </p> <p>Each lens is identified by its <a>LensSummary$LensAlias</a>.</p>',
-  })
-  .openapi('LensAlias')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const ConflictExceptionSchema = z.any().openapi('ConflictException')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
-
-const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
-
-const ShareIdSchema = z
-  .string()
-  .regex(/[0-9a-f]{32}/)
-  .openapi({ description: 'The ID associated with the workload share.' })
-  .openapi('ShareId')
-
-const CreateLensShareOutputSchema = z
-  .object({ ShareId: ShareIdSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('CreateLensShareOutput')
-
-const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
-
-const LensArnSchema = z.string().openapi('LensArn')
-
-const LensVersionSchema = z.string().min(1).max(32).openapi('LensVersion')
-
-const CreateLensVersionOutputSchema = z
-  .object({
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
-    LensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The version of the lens.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateLensVersionOutput')
-
 const WorkloadIdSchema = z
   .string()
   .regex(/[0-9a-f]{32}/)
@@ -70,43 +19,24 @@ const MilestoneNumberSchema = z
   })
   .openapi('MilestoneNumber')
 
-const CreateMilestoneOutputSchema = z
-  .object({
-    WorkloadId: WorkloadIdSchema.exactOptional(),
-    MilestoneNumber: MilestoneNumberSchema.exactOptional(),
-  })
-  .openapi({ description: 'Output of a create milestone call.', required: [] })
-  .openapi('CreateMilestoneOutput')
-
-const WorkloadArnSchema = z
+const LensAliasSchema = z
   .string()
-  .openapi({ description: 'The ARN for the workload.' })
-  .openapi('WorkloadArn')
-
-const CreateWorkloadOutputSchema = z
-  .object({
-    WorkloadId: WorkloadIdSchema.exactOptional(),
-    WorkloadArn: WorkloadArnSchema.exactOptional(),
-  })
-  .openapi({ description: 'Output of a create workload call.', required: [] })
-  .openapi('CreateWorkloadOutput')
-
-const AwsAccountIdSchema = z
-  .string()
-  .regex(/[0-9]{12}/)
-  .openapi({ description: 'An Amazon Web Services account ID.' })
-  .openapi('AwsAccountId')
-
-const AwsRegionSchema = z
-  .string()
-  .max(100)
+  .min(1)
+  .max(128)
   .openapi({
     description:
-      'An Amazon Web Services Region, for example, <code>us-west-2</code> or <code>ap-northeast-1</code>.',
+      '<p>The alias of the lens.</p> <p>For Amazon Web Services official lenses, this is either the lens alias, such as <code>serverless</code>, or the lens ARN, such as <code>arn:aws:wellarchitected:us-east-1::lens/serverless</code>. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses.</p> <p>For custom lenses, this is the lens ARN, such as <code>arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef</code>. </p> <p>Each lens is identified by its <a>LensSummary$LensAlias</a>.</p>',
   })
-  .openapi('AwsRegion')
+  .openapi('LensAlias')
 
-const WorkloadNonAwsRegionSchema = z.string().min(3).max(25).openapi('WorkloadNonAwsRegion')
+const LensArnSchema = z.string().openapi('LensArn')
+
+const QuestionIdSchema = z
+  .string()
+  .min(1)
+  .max(128)
+  .openapi({ description: 'The ID of the question.' })
+  .openapi('QuestionId')
 
 const PillarIdSchema = z
   .string()
@@ -117,41 +47,6 @@ const PillarIdSchema = z
       '<p>The ID used to identify a pillar, for example, <code>security</code>.</p> <p>A pillar is identified by its <a>PillarReviewSummary$PillarId</a>.</p>',
   })
   .openapi('PillarId')
-
-const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
-
-const TrustedAdvisorIntegrationStatusSchema = z
-  .enum(['ENABLED', 'DISABLED'])
-  .openapi('TrustedAdvisorIntegrationStatus')
-
-const ApplicationArnSchema = z
-  .string()
-  .regex(/arn:aws[-a-z]*:servicecatalog:[a-z]{2}(-gov)?-[a-z]+-\d:\d{12}:\/applications\/[a-z0-9]+/)
-  .max(2084)
-  .openapi('ApplicationArn')
-
-const CreateWorkloadShareOutputSchema = z
-  .object({ WorkloadId: WorkloadIdSchema.exactOptional(), ShareId: ShareIdSchema.exactOptional() })
-  .openapi({ description: 'Input for Create Workload Share', required: [] })
-  .openapi('CreateWorkloadShareOutput')
-
-const LensJSONSchema = z.string().min(2).max(500000).openapi('LensJSON')
-
-const ExportLensOutputSchema = z
-  .object({
-    LensJSON: LensJSONSchema.and(
-      z.any().openapi({ description: 'The JSON representation of a lens.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ExportLensOutput')
-
-const QuestionIdSchema = z
-  .string()
-  .min(1)
-  .max(128)
-  .openapi({ description: 'The ID of the question.' })
-  .openapi('QuestionId')
 
 const QuestionTitleSchema = z
   .string()
@@ -220,12 +115,12 @@ const ChoiceContentUrlSchema = z.string().min(1).max(1024).openapi('ChoiceConten
 
 const ChoiceContentSchema = z
   .object({
-    DisplayText: ChoiceContentDisplayTextSchema.and(
-      z.any().openapi({ description: 'The display text for the choice content.' }),
-    ).exactOptional(),
-    Url: ChoiceContentUrlSchema.and(
-      z.any().openapi({ description: 'The URL for the choice content.' }),
-    ).exactOptional(),
+    DisplayText: ChoiceContentDisplayTextSchema.exactOptional().openapi({
+      description: 'The display text for the choice content.',
+    }),
+    Url: ChoiceContentUrlSchema.exactOptional().openapi({
+      description: 'The URL for the choice content.',
+    }),
   })
   .openapi({ description: 'The choice content.', required: [] })
   .openapi('ChoiceContent')
@@ -238,17 +133,13 @@ const UrlsSchema = z.array(ChoiceContentSchema).openapi('Urls')
 
 const AdditionalResourcesSchema = z
   .object({
-    Type: AdditionalResourceTypeSchema.and(
-      z.any().openapi({ description: 'Type of additional resource for a custom lens.' }),
-    ).exactOptional(),
-    Content: UrlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URLs for additional resources, either helpful resources or improvement plans, for a custom lens. Up to five additional URLs can be specified.',
-        }),
-    ).exactOptional(),
+    Type: AdditionalResourceTypeSchema.exactOptional().openapi({
+      description: 'Type of additional resource for a custom lens.',
+    }),
+    Content: UrlsSchema.exactOptional().openapi({
+      description:
+        'The URLs for additional resources, either helpful resources or improvement plans, for a custom lens. Up to five additional URLs can be specified.',
+    }),
   })
   .openapi({
     description:
@@ -266,30 +157,18 @@ const ChoiceSchema = z
     ChoiceId: ChoiceIdSchema.exactOptional(),
     Title: ChoiceTitleSchema.exactOptional(),
     Description: ChoiceDescriptionSchema.exactOptional(),
-    HelpfulResource: ChoiceContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The helpful resource (both text and URL) for a particular choice.</p> <p>This field only applies to custom lenses. Each choice can have only one helpful resource.</p>',
-        }),
-    ).exactOptional(),
-    ImprovementPlan: ChoiceContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The improvement plan (both text and URL) for a particular choice.</p> <p>This field only applies to custom lenses. Each choice can have only one improvement plan.</p>',
-        }),
-    ).exactOptional(),
-    AdditionalResources: AdditionalResourcesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The additional resources for a choice in a custom lens.</p> <p>A choice can have up to two additional resources: one of type <code>HELPFUL_RESOURCE</code>, one of type <code>IMPROVEMENT_PLAN</code>, or both.</p>',
-        }),
-    ).exactOptional(),
+    HelpfulResource: ChoiceContentSchema.exactOptional().openapi({
+      description:
+        '<p>The helpful resource (both text and URL) for a particular choice.</p> <p>This field only applies to custom lenses. Each choice can have only one helpful resource.</p>',
+    }),
+    ImprovementPlan: ChoiceContentSchema.exactOptional().openapi({
+      description:
+        '<p>The improvement plan (both text and URL) for a particular choice.</p> <p>This field only applies to custom lenses. Each choice can have only one improvement plan.</p>',
+    }),
+    AdditionalResources: AdditionalResourcesListSchema.exactOptional().openapi({
+      description:
+        '<p>The additional resources for a choice in a custom lens.</p> <p>A choice can have up to two additional resources: one of type <code>HELPFUL_RESOURCE</code>, one of type <code>IMPROVEMENT_PLAN</code>, or both.</p>',
+    }),
   })
   .openapi({ description: 'A choice available to answer question.', required: [] })
   .openapi('Choice')
@@ -320,19 +199,13 @@ const ChoiceNotesSchema = z.string().max(250).openapi('ChoiceNotes')
 const ChoiceAnswerSchema = z
   .object({
     ChoiceId: ChoiceIdSchema.exactOptional(),
-    Status: ChoiceStatusSchema.and(
-      z.any().openapi({ description: 'The status of a choice.' }),
-    ).exactOptional(),
-    Reason: ChoiceReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason why a choice is non-applicable to a question in your workload.',
-        }),
-    ).exactOptional(),
-    Notes: ChoiceNotesSchema.and(
-      z.any().openapi({ description: 'The notes associated with a choice.' }),
-    ).exactOptional(),
+    Status: ChoiceStatusSchema.exactOptional().openapi({ description: 'The status of a choice.' }),
+    Reason: ChoiceReasonSchema.exactOptional().openapi({
+      description: 'The reason why a choice is non-applicable to a question in your workload.',
+    }),
+    Notes: ChoiceNotesSchema.exactOptional().openapi({
+      description: 'The notes associated with a choice.',
+    }),
   })
   .openapi({
     description: 'A choice that has been answered on a question in your workload.',
@@ -370,47 +243,32 @@ const AnswerSchema = z
     QuestionDescription: QuestionDescriptionSchema.exactOptional(),
     ImprovementPlanUrl: ImprovementPlanUrlSchema.exactOptional(),
     HelpfulResourceUrl: HelpfulResourceUrlSchema.exactOptional(),
-    HelpfulResourceDisplayText: DisplayTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The helpful resource text to be displayed for a custom lens.</p> <p>This field does not apply to Amazon Web Services official lenses.</p>',
-        }),
-    ).exactOptional(),
+    HelpfulResourceDisplayText: DisplayTextSchema.exactOptional().openapi({
+      description:
+        '<p>The helpful resource text to be displayed for a custom lens.</p> <p>This field does not apply to Amazon Web Services official lenses.</p>',
+    }),
     Choices: ChoicesSchema.exactOptional(),
     SelectedChoices: SelectedChoicesSchema.exactOptional(),
-    ChoiceAnswers: ChoiceAnswersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of selected choices to a question in your workload.' }),
-    ).exactOptional(),
+    ChoiceAnswers: ChoiceAnswersSchema.exactOptional().openapi({
+      description: 'A list of selected choices to a question in your workload.',
+    }),
     IsApplicable: IsApplicableSchema.exactOptional(),
     Risk: RiskSchema.exactOptional(),
     Notes: NotesSchema.exactOptional(),
-    Reason: AnswerReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason why the question is not applicable to your workload.',
-        }),
-    ).exactOptional(),
+    Reason: AnswerReasonSchema.exactOptional().openapi({
+      description: 'The reason why the question is not applicable to your workload.',
+    }),
   })
   .openapi({ description: 'An answer of the question.', required: [] })
   .openapi('Answer')
 
-const GetAnswerOutputSchema = z
-  .object({
-    WorkloadId: WorkloadIdSchema.exactOptional(),
-    MilestoneNumber: MilestoneNumberSchema.exactOptional(),
-    LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
-    Answer: AnswerSchema.exactOptional(),
-  })
-  .openapi({ description: 'Output of a get answer call.', required: [] })
-  .openapi('GetAnswerOutput')
+type GetAnswerOutputType = {
+  WorkloadId?: z.infer<typeof WorkloadIdSchema>
+  MilestoneNumber?: z.infer<typeof MilestoneNumberSchema>
+  LensAlias?: z.infer<typeof LensAliasSchema>
+  LensArn?: z.infer<typeof LensArnSchema> & unknown
+  Answer?: z.infer<typeof AnswerSchema>
+}
 
 const MetricTypeSchema = z.literal('WORKLOAD').openapi('MetricType')
 
@@ -437,6 +295,11 @@ const WorkloadNameSchema = z
   })
   .openapi('WorkloadName')
 
+const WorkloadArnSchema = z
+  .string()
+  .openapi({ description: 'The ARN for the workload.' })
+  .openapi('WorkloadArn')
+
 const TimestampSchema = z.iso
   .datetime({ offset: true })
   .openapi({ description: 'The date and time recorded.' })
@@ -460,14 +323,10 @@ const QuestionMetricSchema = z
   .object({
     QuestionId: QuestionIdSchema.exactOptional(),
     Risk: RiskSchema.exactOptional(),
-    BestPractices: BestPracticesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The best practices, or choices, that have been identified as contributing to risk in a question.',
-        }),
-    ).exactOptional(),
+    BestPractices: BestPracticesSchema.exactOptional().openapi({
+      description:
+        'The best practices, or choices, that have been identified as contributing to risk in a question.',
+    }),
   })
   .openapi({ description: 'A metric for a particular question in the pillar. ', required: [] })
   .openapi('QuestionMetric')
@@ -478,13 +337,9 @@ const PillarMetricSchema = z
   .object({
     PillarId: PillarIdSchema.exactOptional(),
     RiskCounts: RiskCountsSchema.exactOptional(),
-    Questions: QuestionMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The questions that have been identified as risks in the pillar.',
-        }),
-    ).exactOptional(),
+    Questions: QuestionMetricsSchema.exactOptional().openapi({
+      description: 'The questions that have been identified as risks in the pillar.',
+    }),
   })
   .openapi({ description: 'A metric for a particular pillar in a lens.', required: [] })
   .openapi('PillarMetric')
@@ -493,45 +348,58 @@ const PillarMetricsSchema = z.array(PillarMetricSchema).openapi('PillarMetrics')
 
 const LensMetricSchema = z
   .object({
-    LensArn: LensArnSchema.and(z.any().openapi({ description: 'The lens ARN.' })).exactOptional(),
-    Pillars: PillarMetricsSchema.and(
-      z.any().openapi({ description: 'The metrics for the pillars in a lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The lens ARN.' }),
+    Pillars: PillarMetricsSchema.exactOptional().openapi({
+      description: 'The metrics for the pillars in a lens.',
+    }),
     RiskCounts: RiskCountsSchema.exactOptional(),
   })
   .openapi({ description: 'A metric for a particular lens in a workload.', required: [] })
   .openapi('LensMetric')
 
-const LensMetricsSchema = z.array(LensMetricSchema).openapi('LensMetrics')
+type LensMetricsType = z.infer<typeof LensMetricSchema>[]
+
+const LensMetricsSchema: z.ZodType<LensMetricsType> = z
+  .array(LensMetricSchema)
+  .openapi('LensMetrics')
 
 const LensesAppliedCountSchema = z.int().min(0).openapi('LensesAppliedCount')
 
-const ConsolidatedReportMetricSchema = z
+type ConsolidatedReportMetricType = {
+  MetricType?: z.infer<typeof MetricTypeSchema> & unknown
+  RiskCounts?: z.infer<typeof RiskCountsSchema>
+  WorkloadId?: z.infer<typeof WorkloadIdSchema>
+  WorkloadName?: z.infer<typeof WorkloadNameSchema>
+  WorkloadArn?: z.infer<typeof WorkloadArnSchema>
+  UpdatedAt?: z.infer<typeof TimestampSchema>
+  Lenses?: z.infer<typeof LensMetricsSchema> & unknown
+  LensesAppliedCount?: z.infer<typeof LensesAppliedCountSchema> & unknown
+}
+
+const ConsolidatedReportMetricSchema: z.ZodType<ConsolidatedReportMetricType> = z
   .object({
-    MetricType: MetricTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric type of a metric in the consolidated report. Currently only WORKLOAD metric types are supported.',
-        }),
-    ).exactOptional(),
+    MetricType: MetricTypeSchema.exactOptional().openapi({
+      description:
+        'The metric type of a metric in the consolidated report. Currently only WORKLOAD metric types are supported.',
+    }),
     RiskCounts: RiskCountsSchema.exactOptional(),
     WorkloadId: WorkloadIdSchema.exactOptional(),
     WorkloadName: WorkloadNameSchema.exactOptional(),
     WorkloadArn: WorkloadArnSchema.exactOptional(),
     UpdatedAt: TimestampSchema.exactOptional(),
-    Lenses: LensMetricsSchema.and(
-      z.any().openapi({ description: 'The metrics for the lenses in the workload.' }),
-    ).exactOptional(),
-    LensesAppliedCount: LensesAppliedCountSchema.and(
-      z.any().openapi({ description: 'The total number of lenses applied to the workload.' }),
-    ).exactOptional(),
+    Lenses: LensMetricsSchema.exactOptional().openapi({
+      description: 'The metrics for the lenses in the workload.',
+    }),
+    LensesAppliedCount: LensesAppliedCountSchema.exactOptional().openapi({
+      description: 'The total number of lenses applied to the workload.',
+    }),
   })
   .openapi({ description: 'A metric that contributes to the consolidated report.', required: [] })
   .openapi('ConsolidatedReportMetric')
 
-const ConsolidatedReportMetricsSchema = z
+type ConsolidatedReportMetricsType = z.infer<typeof ConsolidatedReportMetricSchema>[]
+
+const ConsolidatedReportMetricsSchema: z.ZodType<ConsolidatedReportMetricsType> = z
   .array(ConsolidatedReportMetricSchema)
   .openapi('ConsolidatedReportMetrics')
 
@@ -548,16 +416,187 @@ const Base64StringSchema = z
   })
   .openapi('Base64String')
 
-const GetConsolidatedReportOutputSchema = z
+type GetConsolidatedReportOutputType = {
+  Metrics?: z.infer<typeof ConsolidatedReportMetricsSchema> & unknown
+  NextToken?: z.infer<typeof NextTokenSchema>
+  Base64String?: z.infer<typeof Base64StringSchema>
+}
+
+const ChoiceAnswerSummarySchema = z
   .object({
-    Metrics: ConsolidatedReportMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metrics that make up the consolidated report.</p> <p>Only returned when <code>JSON</code> format is requested.</p>',
-        }),
-    ).exactOptional(),
+    ChoiceId: ChoiceIdSchema.exactOptional(),
+    Status: ChoiceStatusSchema.exactOptional().openapi({ description: 'The status of a choice.' }),
+    Reason: ChoiceReasonSchema.exactOptional().openapi({
+      description: 'The reason why a choice is non-applicable to a question in your workload.',
+    }),
+  })
+  .openapi({
+    description: 'A choice summary that has been answered on a question in your workload.',
+    required: [],
+  })
+  .openapi('ChoiceAnswerSummary')
+
+const ChoiceAnswerSummariesSchema = z
+  .array(ChoiceAnswerSummarySchema)
+  .openapi('ChoiceAnswerSummaries')
+
+const AnswerSummarySchema = z
+  .object({
+    QuestionId: QuestionIdSchema.exactOptional(),
+    PillarId: PillarIdSchema.exactOptional(),
+    QuestionTitle: QuestionTitleSchema.exactOptional(),
+    Choices: ChoicesSchema.exactOptional(),
+    SelectedChoices: SelectedChoicesSchema.exactOptional(),
+    ChoiceAnswerSummaries: ChoiceAnswerSummariesSchema.exactOptional().openapi({
+      description: 'A list of selected choices to a question in your workload.',
+    }),
+    IsApplicable: IsApplicableSchema.exactOptional(),
+    Risk: RiskSchema.exactOptional(),
+    Reason: AnswerReasonSchema.exactOptional().openapi({
+      description: 'The reason why a choice is non-applicable to a question in your workload.',
+    }),
+  })
+  .openapi({ description: 'An answer summary of a lens review in a workload.', required: [] })
+  .openapi('AnswerSummary')
+
+type AnswerSummariesType = z.infer<typeof AnswerSummarySchema>[]
+
+const AnswerSummariesSchema: z.ZodType<AnswerSummariesType> = z
+  .array(AnswerSummarySchema)
+  .openapi({ description: 'List of answer summaries of lens review in a workload.' })
+  .openapi('AnswerSummaries')
+
+type ListAnswersOutputType = {
+  WorkloadId?: z.infer<typeof WorkloadIdSchema>
+  MilestoneNumber?: z.infer<typeof MilestoneNumberSchema>
+  LensAlias?: z.infer<typeof LensAliasSchema>
+  LensArn?: z.infer<typeof LensArnSchema> & unknown
+  AnswerSummaries?: z.infer<typeof AnswerSummariesSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
+}
+
+type UpdateAnswerOutputType = {
+  WorkloadId?: z.infer<typeof WorkloadIdSchema>
+  LensAlias?: z.infer<typeof LensAliasSchema>
+  LensArn?: z.infer<typeof LensArnSchema> & unknown
+  Answer?: z.infer<typeof AnswerSchema>
+}
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const ConflictExceptionSchema = z.any().openapi('ConflictException')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
+
+const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
+
+const ShareIdSchema = z
+  .string()
+  .regex(/[0-9a-f]{32}/)
+  .openapi({ description: 'The ID associated with the workload share.' })
+  .openapi('ShareId')
+
+const CreateLensShareOutputSchema = z
+  .object({ ShareId: ShareIdSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CreateLensShareOutput')
+
+const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
+
+const LensVersionSchema = z.string().min(1).max(32).openapi('LensVersion')
+
+const CreateLensVersionOutputSchema = z
+  .object({
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
+    LensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The version of the lens.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateLensVersionOutput')
+
+const CreateMilestoneOutputSchema = z
+  .object({
+    WorkloadId: WorkloadIdSchema.exactOptional(),
+    MilestoneNumber: MilestoneNumberSchema.exactOptional(),
+  })
+  .openapi({ description: 'Output of a create milestone call.', required: [] })
+  .openapi('CreateMilestoneOutput')
+
+const CreateWorkloadOutputSchema = z
+  .object({
+    WorkloadId: WorkloadIdSchema.exactOptional(),
+    WorkloadArn: WorkloadArnSchema.exactOptional(),
+  })
+  .openapi({ description: 'Output of a create workload call.', required: [] })
+  .openapi('CreateWorkloadOutput')
+
+const AwsAccountIdSchema = z
+  .string()
+  .regex(/[0-9]{12}/)
+  .openapi({ description: 'An Amazon Web Services account ID.' })
+  .openapi('AwsAccountId')
+
+const AwsRegionSchema = z
+  .string()
+  .max(100)
+  .openapi({
+    description:
+      'An Amazon Web Services Region, for example, <code>us-west-2</code> or <code>ap-northeast-1</code>.',
+  })
+  .openapi('AwsRegion')
+
+const WorkloadNonAwsRegionSchema = z.string().min(3).max(25).openapi('WorkloadNonAwsRegion')
+
+const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
+
+const TrustedAdvisorIntegrationStatusSchema = z
+  .enum(['ENABLED', 'DISABLED'])
+  .openapi('TrustedAdvisorIntegrationStatus')
+
+const ApplicationArnSchema = z
+  .string()
+  .regex(/arn:aws[-a-z]*:servicecatalog:[a-z]{2}(-gov)?-[a-z]+-\d:\d{12}:\/applications\/[a-z0-9]+/)
+  .max(2084)
+  .openapi('ApplicationArn')
+
+const CreateWorkloadShareOutputSchema = z
+  .object({ WorkloadId: WorkloadIdSchema.exactOptional(), ShareId: ShareIdSchema.exactOptional() })
+  .openapi({ description: 'Input for Create Workload Share', required: [] })
+  .openapi('CreateWorkloadShareOutput')
+
+const LensJSONSchema = z.string().min(2).max(500000).openapi('LensJSON')
+
+const ExportLensOutputSchema = z
+  .object({
+    LensJSON: LensJSONSchema.exactOptional().openapi({
+      description: 'The JSON representation of a lens.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ExportLensOutput')
+
+const GetAnswerOutputSchema: z.ZodType<GetAnswerOutputType> = z
+  .object({
+    WorkloadId: WorkloadIdSchema.exactOptional(),
+    MilestoneNumber: MilestoneNumberSchema.exactOptional(),
+    LensAlias: LensAliasSchema.exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
+    Answer: AnswerSchema.exactOptional(),
+  })
+  .openapi({ description: 'Output of a get answer call.', required: [] })
+  .openapi('GetAnswerOutput')
+
+const GetConsolidatedReportOutputSchema: z.ZodType<GetConsolidatedReportOutputType> = z
+  .object({
+    Metrics: ConsolidatedReportMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>The metrics that make up the consolidated report.</p> <p>Only returned when <code>JSON</code> format is requested.</p>',
+    }),
     NextToken: NextTokenSchema.exactOptional(),
     Base64String: Base64StringSchema.exactOptional(),
   })
@@ -593,31 +632,25 @@ const TagMapSchema = z
 
 const LensSchema = z
   .object({
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a lens.' }),
-    ).exactOptional(),
-    LensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The version of a lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN of a lens.' }),
+    LensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The version of a lens.',
+    }),
     Name: LensNameSchema.exactOptional(),
     Description: LensDescriptionSchema.exactOptional(),
-    Owner: LensOwnerSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID that owns the lens.' }),
-    ).exactOptional(),
-    ShareInvitationId: ShareInvitationIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to the share invitation.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags assigned to the lens.' }),
-    ).exactOptional(),
+    Owner: LensOwnerSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID that owns the lens.',
+    }),
+    ShareInvitationId: ShareInvitationIdSchema.exactOptional().openapi({
+      description: 'The ID assigned to the share invitation.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({ description: 'The tags assigned to the lens.' }),
   })
   .openapi({ description: 'A lens return object.', required: [] })
   .openapi('Lens')
 
 const GetLensOutputSchema = z
-  .object({
-    Lens: LensSchema.and(z.any().openapi({ description: 'A lens return object.' })).exactOptional(),
-  })
+  .object({ Lens: LensSchema.exactOptional().openapi({ description: 'A lens return object.' }) })
   .openapi({ required: [] })
   .openapi('GetLensOutput')
 
@@ -650,16 +683,14 @@ const PillarReviewSummariesSchema = z
 const LensReviewSchema = z
   .object({
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
-    LensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The version of the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
+    LensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The version of the lens.',
+    }),
     LensName: LensNameSchema.exactOptional(),
-    LensStatus: LensStatusSchema.and(
-      z.any().openapi({ description: 'The status of the lens.' }),
-    ).exactOptional(),
+    LensStatus: LensStatusSchema.exactOptional().openapi({
+      description: 'The status of the lens.',
+    }),
     PillarReviewSummaries: PillarReviewSummariesSchema.exactOptional(),
     UpdatedAt: TimestampSchema.exactOptional(),
     Notes: NotesSchema.exactOptional(),
@@ -681,9 +712,7 @@ const GetLensReviewOutputSchema = z
 const LensReviewReportSchema = z
   .object({
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
     Base64String: Base64StringSchema.exactOptional(),
   })
   .openapi({ description: 'A report of a lens review.', required: [] })
@@ -704,9 +733,9 @@ const QuestionDifferenceSchema = z
   .object({
     QuestionId: QuestionIdSchema.exactOptional(),
     QuestionTitle: QuestionTitleSchema.exactOptional(),
-    DifferenceStatus: DifferenceStatusSchema.and(
-      z.any().openapi({ description: 'Indicates the type of change to the question.' }),
-    ).exactOptional(),
+    DifferenceStatus: DifferenceStatusSchema.exactOptional().openapi({
+      description: 'Indicates the type of change to the question.',
+    }),
   })
   .openapi({ description: 'A question difference return object.', required: [] })
   .openapi('QuestionDifference')
@@ -717,12 +746,12 @@ const PillarDifferenceSchema = z
   .object({
     PillarId: PillarIdSchema.exactOptional(),
     PillarName: PillarNameSchema.exactOptional(),
-    DifferenceStatus: DifferenceStatusSchema.and(
-      z.any().openapi({ description: 'Indicates the type of change to the pillar.' }),
-    ).exactOptional(),
-    QuestionDifferences: QuestionDifferencesSchema.and(
-      z.any().openapi({ description: 'List of question differences.' }),
-    ).exactOptional(),
+    DifferenceStatus: DifferenceStatusSchema.exactOptional().openapi({
+      description: 'Indicates the type of change to the pillar.',
+    }),
+    QuestionDifferences: QuestionDifferencesSchema.exactOptional().openapi({
+      description: 'List of question differences.',
+    }),
   })
   .openapi({ description: 'A pillar difference return object.', required: [] })
   .openapi('PillarDifference')
@@ -731,13 +760,9 @@ const PillarDifferencesSchema = z.array(PillarDifferenceSchema).openapi('PillarD
 
 const VersionDifferencesSchema = z
   .object({
-    PillarDifferences: PillarDifferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The differences between the base and latest versions of the lens.',
-        }),
-    ).exactOptional(),
+    PillarDifferences: PillarDifferencesSchema.exactOptional().openapi({
+      description: 'The differences between the base and latest versions of the lens.',
+    }),
   })
   .openapi({
     description: 'The differences between the base and latest versions of the lens.',
@@ -748,18 +773,16 @@ const VersionDifferencesSchema = z
 const GetLensVersionDifferenceOutputSchema = z
   .object({
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
-    BaseLensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The base version of the lens.' }),
-    ).exactOptional(),
-    TargetLensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The target lens version for the lens.' }),
-    ).exactOptional(),
-    LatestLensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The latest version of the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
+    BaseLensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The base version of the lens.',
+    }),
+    TargetLensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The target lens version for the lens.',
+    }),
+    LatestLensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The latest version of the lens.',
+    }),
     VersionDifferences: VersionDifferencesSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -869,14 +892,9 @@ const WorkloadLensesSchema = z
 
 const WorkloadDiscoveryConfigSchema = z
   .object({
-    TrustedAdvisorIntegrationStatus: TrustedAdvisorIntegrationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Discovery integration status in respect to Trusted Advisor for the workload.',
-        }),
-    ).exactOptional(),
+    TrustedAdvisorIntegrationStatus: TrustedAdvisorIntegrationStatusSchema.exactOptional().openapi({
+      description: 'Discovery integration status in respect to Trusted Advisor for the workload.',
+    }),
   })
   .openapi({ description: 'Discovery configuration associated to the workload.', required: [] })
   .openapi('WorkloadDiscoveryConfig')
@@ -900,14 +918,10 @@ const WorkloadSchema = z
     ArchitecturalDesign: WorkloadArchitecturalDesignSchema.exactOptional(),
     ReviewOwner: WorkloadReviewOwnerSchema.exactOptional(),
     ReviewRestrictionDate: TimestampSchema.exactOptional(),
-    IsReviewOwnerUpdateAcknowledged: IsReviewOwnerUpdateAcknowledgedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Flag indicating whether the workload owner has acknowledged that the <i>Review owner</i> field is required.</p> <p>If a <b>Review owner</b> is not added to the workload within 60 days of acknowledgement, access to the workload is restricted until an owner is added.</p>',
-        }),
-    ).exactOptional(),
+    IsReviewOwnerUpdateAcknowledged: IsReviewOwnerUpdateAcknowledgedSchema.exactOptional().openapi({
+      description:
+        '<p>Flag indicating whether the workload owner has acknowledged that the <i>Review owner</i> field is required.</p> <p>If a <b>Review owner</b> is not added to the workload within 60 days of acknowledgement, access to the workload is restricted until an owner is added.</p>',
+    }),
     IndustryType: WorkloadIndustryTypeSchema.exactOptional(),
     Industry: WorkloadIndustrySchema.exactOptional(),
     Notes: NotesSchema.exactOptional(),
@@ -916,22 +930,18 @@ const WorkloadSchema = z
     PillarPriorities: WorkloadPillarPrioritiesSchema.exactOptional(),
     Lenses: WorkloadLensesSchema.exactOptional(),
     Owner: AwsAccountIdSchema.exactOptional(),
-    ShareInvitationId: ShareInvitationIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to the share invitation.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags associated with the workload.' }),
-    ).exactOptional(),
-    DiscoveryConfig: WorkloadDiscoveryConfigSchema.and(
-      z.any().openapi({ description: 'Discovery configuration associated to the workload.' }),
-    ).exactOptional(),
-    Applications: WorkloadApplicationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of AppRegistry application ARNs associated to the workload.',
-        }),
-    ).exactOptional(),
+    ShareInvitationId: ShareInvitationIdSchema.exactOptional().openapi({
+      description: 'The ID assigned to the share invitation.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags associated with the workload.',
+    }),
+    DiscoveryConfig: WorkloadDiscoveryConfigSchema.exactOptional().openapi({
+      description: 'Discovery configuration associated to the workload.',
+    }),
+    Applications: WorkloadApplicationsSchema.exactOptional().openapi({
+      description: 'List of AppRegistry application ARNs associated to the workload.',
+    }),
   })
   .openapi({ description: 'A workload return object.', required: [] })
   .openapi('Workload')
@@ -965,78 +975,22 @@ const ImportLensStatusSchema = z
 
 const ImportLensOutputSchema = z
   .object({
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens that was created or updated.' }),
-    ).exactOptional(),
-    Status: ImportLensStatusSchema.and(
-      z.any().openapi({ description: 'The status of the imported lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({
+      description: 'The ARN for the lens that was created or updated.',
+    }),
+    Status: ImportLensStatusSchema.exactOptional().openapi({
+      description: 'The status of the imported lens.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportLensOutput')
 
-const ChoiceAnswerSummarySchema = z
-  .object({
-    ChoiceId: ChoiceIdSchema.exactOptional(),
-    Status: ChoiceStatusSchema.and(
-      z.any().openapi({ description: 'The status of a choice.' }),
-    ).exactOptional(),
-    Reason: ChoiceReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason why a choice is non-applicable to a question in your workload.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A choice summary that has been answered on a question in your workload.',
-    required: [],
-  })
-  .openapi('ChoiceAnswerSummary')
-
-const ChoiceAnswerSummariesSchema = z
-  .array(ChoiceAnswerSummarySchema)
-  .openapi('ChoiceAnswerSummaries')
-
-const AnswerSummarySchema = z
-  .object({
-    QuestionId: QuestionIdSchema.exactOptional(),
-    PillarId: PillarIdSchema.exactOptional(),
-    QuestionTitle: QuestionTitleSchema.exactOptional(),
-    Choices: ChoicesSchema.exactOptional(),
-    SelectedChoices: SelectedChoicesSchema.exactOptional(),
-    ChoiceAnswerSummaries: ChoiceAnswerSummariesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of selected choices to a question in your workload.' }),
-    ).exactOptional(),
-    IsApplicable: IsApplicableSchema.exactOptional(),
-    Risk: RiskSchema.exactOptional(),
-    Reason: AnswerReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason why a choice is non-applicable to a question in your workload.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'An answer summary of a lens review in a workload.', required: [] })
-  .openapi('AnswerSummary')
-
-const AnswerSummariesSchema = z
-  .array(AnswerSummarySchema)
-  .openapi({ description: 'List of answer summaries of lens review in a workload.' })
-  .openapi('AnswerSummaries')
-
-const ListAnswersOutputSchema = z
+const ListAnswersOutputSchema: z.ZodType<ListAnswersOutputType> = z
   .object({
     WorkloadId: WorkloadIdSchema.exactOptional(),
     MilestoneNumber: MilestoneNumberSchema.exactOptional(),
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
     AnswerSummaries: AnswerSummariesSchema.exactOptional(),
     NextToken: NextTokenSchema.exactOptional(),
   })
@@ -1063,34 +1017,30 @@ const CheckFailureReasonSchema = z
 
 const CheckDetailSchema = z
   .object({
-    Id: CheckIdSchema.and(
-      z.any().openapi({ description: 'Trusted Advisor check ID.' }),
-    ).exactOptional(),
-    Name: CheckNameSchema.and(
-      z.any().openapi({ description: 'Trusted Advisor check name.' }),
-    ).exactOptional(),
-    Description: CheckDescriptionSchema.and(
-      z.any().openapi({ description: 'Trusted Advisor check description.' }),
-    ).exactOptional(),
-    Provider: CheckProviderSchema.and(
-      z.any().openapi({ description: 'Provider of the check related to the best practice.' }),
-    ).exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'Well-Architected Lens ARN associated to the check.' }),
-    ).exactOptional(),
+    Id: CheckIdSchema.exactOptional().openapi({ description: 'Trusted Advisor check ID.' }),
+    Name: CheckNameSchema.exactOptional().openapi({ description: 'Trusted Advisor check name.' }),
+    Description: CheckDescriptionSchema.exactOptional().openapi({
+      description: 'Trusted Advisor check description.',
+    }),
+    Provider: CheckProviderSchema.exactOptional().openapi({
+      description: 'Provider of the check related to the best practice.',
+    }),
+    LensArn: LensArnSchema.exactOptional().openapi({
+      description: 'Well-Architected Lens ARN associated to the check.',
+    }),
     PillarId: PillarIdSchema.exactOptional(),
     QuestionId: QuestionIdSchema.exactOptional(),
     ChoiceId: ChoiceIdSchema.exactOptional(),
-    Status: CheckStatusSchema.and(
-      z.any().openapi({ description: 'Status associated to the check.' }),
-    ).exactOptional(),
+    Status: CheckStatusSchema.exactOptional().openapi({
+      description: 'Status associated to the check.',
+    }),
     AccountId: AwsAccountIdSchema.exactOptional(),
-    FlaggedResources: FlaggedResourcesSchema.and(
-      z.any().openapi({ description: 'Count of flagged resources associated to the check.' }),
-    ).exactOptional(),
-    Reason: CheckFailureReasonSchema.and(
-      z.any().openapi({ description: 'Reason associated to the check.' }),
-    ).exactOptional(),
+    FlaggedResources: FlaggedResourcesSchema.exactOptional().openapi({
+      description: 'Count of flagged resources associated to the check.',
+    }),
+    Reason: CheckFailureReasonSchema.exactOptional().openapi({
+      description: 'Reason associated to the check.',
+    }),
     UpdatedAt: TimestampSchema.exactOptional(),
   })
   .openapi({
@@ -1104,14 +1054,10 @@ const CheckDetailsSchema = z.array(CheckDetailSchema).openapi('CheckDetails')
 
 const ListCheckDetailsOutputSchema = z
   .object({
-    CheckDetails: CheckDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details about the Trusted Advisor checks related to the Well-Architected best practice.',
-        }),
-    ).exactOptional(),
+    CheckDetails: CheckDetailsSchema.exactOptional().openapi({
+      description:
+        'The details about the Trusted Advisor checks related to the Well-Architected best practice.',
+    }),
     NextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1129,31 +1075,27 @@ const AccountSummarySchema = z
 
 const CheckSummarySchema = z
   .object({
-    Id: CheckIdSchema.and(
-      z.any().openapi({ description: 'Trusted Advisor check ID.' }),
-    ).exactOptional(),
-    Name: CheckNameSchema.and(
-      z.any().openapi({ description: 'Trusted Advisor check name.' }),
-    ).exactOptional(),
-    Provider: CheckProviderSchema.and(
-      z.any().openapi({ description: 'Provider of the check related to the best practice.' }),
-    ).exactOptional(),
-    Description: CheckDescriptionSchema.and(
-      z.any().openapi({ description: 'Trusted Advisor check description.' }),
-    ).exactOptional(),
+    Id: CheckIdSchema.exactOptional().openapi({ description: 'Trusted Advisor check ID.' }),
+    Name: CheckNameSchema.exactOptional().openapi({ description: 'Trusted Advisor check name.' }),
+    Provider: CheckProviderSchema.exactOptional().openapi({
+      description: 'Provider of the check related to the best practice.',
+    }),
+    Description: CheckDescriptionSchema.exactOptional().openapi({
+      description: 'Trusted Advisor check description.',
+    }),
     UpdatedAt: TimestampSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'Well-Architected Lens ARN associated to the check.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({
+      description: 'Well-Architected Lens ARN associated to the check.',
+    }),
     PillarId: PillarIdSchema.exactOptional(),
     QuestionId: QuestionIdSchema.exactOptional(),
     ChoiceId: ChoiceIdSchema.exactOptional(),
-    Status: CheckStatusSchema.and(
-      z.any().openapi({ description: 'Status associated to the check.' }),
-    ).exactOptional(),
-    AccountSummary: AccountSummarySchema.and(
-      z.any().openapi({ description: 'Account summary associated to the check.' }),
-    ).exactOptional(),
+    Status: CheckStatusSchema.exactOptional().openapi({
+      description: 'Status associated to the check.',
+    }),
+    AccountSummary: AccountSummarySchema.exactOptional().openapi({
+      description: 'Account summary associated to the check.',
+    }),
   })
   .openapi({ description: 'Trusted Advisor check summary.', required: [] })
   .openapi('CheckSummary')
@@ -1162,14 +1104,10 @@ const CheckSummariesSchema = z.array(CheckSummarySchema).openapi('CheckSummaries
 
 const ListCheckSummariesOutputSchema = z
   .object({
-    CheckSummaries: CheckSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of Trusted Advisor summaries related to the Well-Architected best practice.',
-        }),
-    ).exactOptional(),
+    CheckSummaries: CheckSummariesSchema.exactOptional().openapi({
+      description:
+        'List of Trusted Advisor summaries related to the Well-Architected best practice.',
+    }),
     NextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1178,9 +1116,9 @@ const ListCheckSummariesOutputSchema = z
 const ChoiceImprovementPlanSchema = z
   .object({
     ChoiceId: ChoiceIdSchema.exactOptional(),
-    DisplayText: DisplayTextSchema.and(
-      z.any().openapi({ description: 'The display text for the improvement plan.' }),
-    ).exactOptional(),
+    DisplayText: DisplayTextSchema.exactOptional().openapi({
+      description: 'The display text for the improvement plan.',
+    }),
     ImprovementPlanUrl: ImprovementPlanUrlSchema.exactOptional(),
   })
   .openapi({ description: 'The choice level improvement plan.', required: [] })
@@ -1197,9 +1135,9 @@ const ImprovementSummarySchema = z
     QuestionTitle: QuestionTitleSchema.exactOptional(),
     Risk: RiskSchema.exactOptional(),
     ImprovementPlanUrl: ImprovementPlanUrlSchema.exactOptional(),
-    ImprovementPlans: ChoiceImprovementPlansSchema.and(
-      z.any().openapi({ description: 'The improvement plan details.' }),
-    ).exactOptional(),
+    ImprovementPlans: ChoiceImprovementPlansSchema.exactOptional().openapi({
+      description: 'The improvement plan details.',
+    }),
   })
   .openapi({ description: 'An improvement summary of a lens review in a workload.', required: [] })
   .openapi('ImprovementSummary')
@@ -1214,9 +1152,7 @@ const ListLensReviewImprovementsOutputSchema = z
     WorkloadId: WorkloadIdSchema.exactOptional(),
     MilestoneNumber: MilestoneNumberSchema.exactOptional(),
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
     ImprovementSummaries: ImprovementSummariesSchema.exactOptional(),
     NextToken: NextTokenSchema.exactOptional(),
   })
@@ -1226,16 +1162,14 @@ const ListLensReviewImprovementsOutputSchema = z
 const LensReviewSummarySchema = z
   .object({
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
-    LensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The version of the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
+    LensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The version of the lens.',
+    }),
     LensName: LensNameSchema.exactOptional(),
-    LensStatus: LensStatusSchema.and(
-      z.any().openapi({ description: 'The status of the lens.' }),
-    ).exactOptional(),
+    LensStatus: LensStatusSchema.exactOptional().openapi({
+      description: 'The status of the lens.',
+    }),
     UpdatedAt: TimestampSchema.exactOptional(),
     RiskCounts: RiskCountsSchema.exactOptional(),
   })
@@ -1288,9 +1222,9 @@ const LensShareSummarySchema = z
     ShareId: ShareIdSchema.exactOptional(),
     SharedWith: SharedWithSchema.exactOptional(),
     Status: ShareStatusSchema.exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'Optional message to compliment the Status field.' }),
-    ).exactOptional(),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'Optional message to compliment the Status field.',
+    }),
   })
   .openapi({ description: 'A lens share summary return object.', required: [] })
   .openapi('LensShareSummary')
@@ -1299,9 +1233,9 @@ const LensShareSummariesSchema = z.array(LensShareSummarySchema).openapi('LensSh
 
 const ListLensSharesOutputSchema = z
   .object({
-    LensShareSummaries: LensShareSummariesSchema.and(
-      z.any().openapi({ description: 'A list of lens share summaries.' }),
-    ).exactOptional(),
+    LensShareSummaries: LensShareSummariesSchema.exactOptional().openapi({
+      description: 'A list of lens share summaries.',
+    }),
     NextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1311,24 +1245,20 @@ const LensTypeSchema = z.enum(['AWS_OFFICIAL', 'CUSTOM_SHARED', 'CUSTOM_SELF']).
 
 const LensSummarySchema = z
   .object({
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN of the lens.' }),
     LensAlias: LensAliasSchema.exactOptional(),
     LensName: LensNameSchema.exactOptional(),
-    LensType: LensTypeSchema.and(
-      z.any().openapi({ description: 'The type of the lens.' }),
-    ).exactOptional(),
+    LensType: LensTypeSchema.exactOptional().openapi({ description: 'The type of the lens.' }),
     Description: LensDescriptionSchema.exactOptional(),
     CreatedAt: TimestampSchema.exactOptional(),
     UpdatedAt: TimestampSchema.exactOptional(),
-    LensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The version of the lens.' }),
-    ).exactOptional(),
+    LensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The version of the lens.',
+    }),
     Owner: AwsAccountIdSchema.exactOptional(),
-    LensStatus: LensStatusSchema.and(
-      z.any().openapi({ description: 'The status of the lens.' }),
-    ).exactOptional(),
+    LensStatus: LensStatusSchema.exactOptional().openapi({
+      description: 'The status of the lens.',
+    }),
   })
   .openapi({ description: 'A lens summary of a lens.', required: [] })
   .openapi('LensSummary')
@@ -1393,27 +1323,25 @@ const LensUpgradeSummarySchema = z
     WorkloadId: WorkloadIdSchema.exactOptional(),
     WorkloadName: WorkloadNameSchema.exactOptional(),
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
-    CurrentLensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The current version of the lens.' }),
-    ).exactOptional(),
-    LatestLensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The latest version of the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
+    CurrentLensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The current version of the lens.',
+    }),
+    LatestLensVersion: LensVersionSchema.exactOptional().openapi({
+      description: 'The latest version of the lens.',
+    }),
   })
   .openapi({ description: 'Lens upgrade summary return object.', required: [] })
   .openapi('LensUpgradeSummary')
 
 const NotificationSummarySchema = z
   .object({
-    Type: NotificationTypeSchema.and(
-      z.any().openapi({ description: 'The type of notification.' }),
-    ).exactOptional(),
-    LensUpgradeSummary: LensUpgradeSummarySchema.and(
-      z.any().openapi({ description: 'Summary of lens upgrade.' }),
-    ).exactOptional(),
+    Type: NotificationTypeSchema.exactOptional().openapi({
+      description: 'The type of notification.',
+    }),
+    LensUpgradeSummary: LensUpgradeSummarySchema.exactOptional().openapi({
+      description: 'Summary of lens upgrade.',
+    }),
   })
   .openapi({ description: 'A notification summary return object.', required: [] })
   .openapi('NotificationSummary')
@@ -1424,9 +1352,9 @@ const NotificationSummariesSchema = z
 
 const ListNotificationsOutputSchema = z
   .object({
-    NotificationSummaries: NotificationSummariesSchema.and(
-      z.any().openapi({ description: 'List of lens notification summaries in a workload.' }),
-    ).exactOptional(),
+    NotificationSummaries: NotificationSummariesSchema.exactOptional().openapi({
+      description: 'List of lens notification summaries in a workload.',
+    }),
     NextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1441,21 +1369,19 @@ const ShareResourceTypeSchema = z.enum(['WORKLOAD', 'LENS']).openapi('ShareResou
 
 const ShareInvitationSummarySchema = z
   .object({
-    ShareInvitationId: ShareInvitationIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to the share invitation.' }),
-    ).exactOptional(),
+    ShareInvitationId: ShareInvitationIdSchema.exactOptional().openapi({
+      description: 'The ID assigned to the share invitation.',
+    }),
     SharedBy: AwsAccountIdSchema.exactOptional(),
     SharedWith: SharedWithSchema.exactOptional(),
     PermissionType: PermissionTypeSchema.exactOptional(),
-    ShareResourceType: ShareResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type of the share invitation.' }),
-    ).exactOptional(),
+    ShareResourceType: ShareResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type of the share invitation.',
+    }),
     WorkloadName: WorkloadNameSchema.exactOptional(),
     WorkloadId: WorkloadIdSchema.exactOptional(),
     LensName: LensNameSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
   })
   .openapi({ description: 'A share invitation summary return object.', required: [] })
   .openapi('ShareInvitationSummary')
@@ -1466,9 +1392,9 @@ const ShareInvitationSummariesSchema = z
 
 const ListShareInvitationsOutputSchema = z
   .object({
-    ShareInvitationSummaries: ShareInvitationSummariesSchema.and(
-      z.any().openapi({ description: 'List of share invitation summaries in a workload.' }),
-    ).exactOptional(),
+    ShareInvitationSummaries: ShareInvitationSummariesSchema.exactOptional().openapi({
+      description: 'List of share invitation summaries in a workload.',
+    }),
     NextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ description: 'Input for List Share Invitations', required: [] })
@@ -1476,9 +1402,7 @@ const ListShareInvitationsOutputSchema = z
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the resource.' }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({ description: 'The tags for the resource.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
@@ -1489,9 +1413,9 @@ const WorkloadShareSummarySchema = z
     SharedWith: SharedWithSchema.exactOptional(),
     PermissionType: PermissionTypeSchema.exactOptional(),
     Status: ShareStatusSchema.exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'Optional message to compliment the Status field.' }),
-    ).exactOptional(),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'Optional message to compliment the Status field.',
+    }),
   })
   .openapi({ description: 'A workload share summary return object.', required: [] })
   .openapi('WorkloadShareSummary')
@@ -1523,19 +1447,17 @@ const ListWorkloadsOutputSchema = z
   .openapi({ description: 'Output of a list workloads call.', required: [] })
   .openapi('ListWorkloadsOutput')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
 const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
-const UpdateAnswerOutputSchema = z
+const UpdateAnswerOutputSchema: z.ZodType<UpdateAnswerOutputType> = z
   .object({
     WorkloadId: WorkloadIdSchema.exactOptional(),
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
     Answer: AnswerSchema.exactOptional(),
   })
   .openapi({ description: 'Output of a update answer call.', required: [] })
@@ -1543,17 +1465,13 @@ const UpdateAnswerOutputSchema = z
 
 const ChoiceUpdateSchema = z
   .object({
-    Status: ChoiceStatusSchema.and(z.any().openapi({ description: 'The status of a choice.' })),
-    Reason: ChoiceReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason why a choice is non-applicable to a question in your workload.',
-        }),
-    ).exactOptional(),
-    Notes: ChoiceNotesSchema.and(
-      z.any().openapi({ description: 'The notes associated with a choice.' }),
-    ).exactOptional(),
+    Status: ChoiceStatusSchema.openapi({ description: 'The status of a choice.' }),
+    Reason: ChoiceReasonSchema.exactOptional().openapi({
+      description: 'The reason why a choice is non-applicable to a question in your workload.',
+    }),
+    Notes: ChoiceNotesSchema.exactOptional().openapi({
+      description: 'The notes associated with a choice.',
+    }),
   })
   .openapi({ required: ['Status'], description: 'A list of choices to be updated.' })
   .openapi('ChoiceUpdate')
@@ -1568,26 +1486,24 @@ const UpdateLensReviewOutputSchema = z
 
 const ShareInvitationSchema = z
   .object({
-    ShareInvitationId: ShareInvitationIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to the share invitation.' }),
-    ).exactOptional(),
-    ShareResourceType: ShareResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type of the share invitation.' }),
-    ).exactOptional(),
+    ShareInvitationId: ShareInvitationIdSchema.exactOptional().openapi({
+      description: 'The ID assigned to the share invitation.',
+    }),
+    ShareResourceType: ShareResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type of the share invitation.',
+    }),
     WorkloadId: WorkloadIdSchema.exactOptional(),
     LensAlias: LensAliasSchema.exactOptional(),
-    LensArn: LensArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the lens.' }),
-    ).exactOptional(),
+    LensArn: LensArnSchema.exactOptional().openapi({ description: 'The ARN for the lens.' }),
   })
   .openapi({ description: 'The share invitation.', required: [] })
   .openapi('ShareInvitation')
 
 const UpdateShareInvitationOutputSchema = z
   .object({
-    ShareInvitation: ShareInvitationSchema.and(
-      z.any().openapi({ description: 'The updated workload or custom lens share invitation.' }),
-    ).exactOptional(),
+    ShareInvitation: ShareInvitationSchema.exactOptional().openapi({
+      description: 'The updated workload or custom lens share invitation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateShareInvitationOutput')
@@ -1655,12 +1571,12 @@ const IsMajorVersionSchema = z.boolean().openapi('IsMajorVersion')
 
 const CreateLensVersionInputSchema = z
   .object({
-    LensVersion: LensVersionSchema.and(
-      z.any().openapi({ description: 'The version of the lens being created.' }),
-    ),
-    IsMajorVersion: IsMajorVersionSchema.and(
-      z.any().openapi({ description: 'Set to true if this new major lens version.' }),
-    ).exactOptional(),
+    LensVersion: LensVersionSchema.openapi({
+      description: 'The version of the lens being created.',
+    }),
+    IsMajorVersion: IsMajorVersionSchema.exactOptional().openapi({
+      description: 'Set to true if this new major lens version.',
+    }),
     ClientRequestToken: ClientRequestTokenSchema,
   })
   .openapi({ required: ['LensVersion', 'ClientRequestToken'], title: 'CreateLensVersionInput' })
@@ -1691,24 +1607,15 @@ const CreateWorkloadInputSchema = z
     Lenses: WorkloadLensesSchema,
     Notes: NotesSchema.exactOptional(),
     ClientRequestToken: ClientRequestTokenSchema,
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags to be associated with the workload.' }),
-    ).exactOptional(),
-    DiscoveryConfig: WorkloadDiscoveryConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Well-Architected discovery configuration settings associated to the workload.',
-        }),
-    ).exactOptional(),
-    Applications: WorkloadApplicationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of AppRegistry application ARNs associated to the workload.',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags to be associated with the workload.',
+    }),
+    DiscoveryConfig: WorkloadDiscoveryConfigSchema.exactOptional().openapi({
+      description: 'Well-Architected discovery configuration settings associated to the workload.',
+    }),
+    Applications: WorkloadApplicationsSchema.exactOptional().openapi({
+      description: 'List of AppRegistry application ARNs associated to the workload.',
+    }),
   })
   .openapi({
     required: ['WorkloadName', 'Description', 'Environment', 'Lenses', 'ClientRequestToken'],
@@ -1733,22 +1640,22 @@ const CreateWorkloadShareInputSchema = z
 const LensStatusTypeSchema = z.enum(['ALL', 'DRAFT', 'PUBLISHED']).openapi('LensStatusType')
 
 const DeleteLensInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLensInput' })
   .openapi('DeleteLensInput')
 
 const DeleteLensShareInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLensShareInput' })
   .openapi('DeleteLensShareInput')
 
 const DeleteWorkloadInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteWorkloadInput', description: 'Input for workload deletion.' })
   .openapi('DeleteWorkloadInput')
 
 const DeleteWorkloadShareInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteWorkloadShareInput', description: 'Input for Delete Workload Share' })
   .openapi('DeleteWorkloadShareInput')
 
@@ -1762,12 +1669,12 @@ const DisassociateLensesInputSchema = z
   .openapi('DisassociateLensesInput')
 
 const ExportLensInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ExportLensInput' })
   .openapi('ExportLensInput')
 
 const GetAnswerInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAnswerInput', description: 'Input to get answer.' })
   .openapi('GetAnswerInput')
 
@@ -1782,47 +1689,46 @@ const GetConsolidatedReportMaxResultsSchema = z
   .openapi('GetConsolidatedReportMaxResults')
 
 const GetConsolidatedReportInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConsolidatedReportInput' })
   .openapi('GetConsolidatedReportInput')
 
-const GetLensInputSchema = z.object({}).openapi({ title: 'GetLensInput' }).openapi('GetLensInput')
+const GetLensInputSchema = z
+  .looseObject({})
+  .openapi({ title: 'GetLensInput' })
+  .openapi('GetLensInput')
 
 const GetLensReviewInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLensReviewInput', description: 'Input to get lens review.' })
   .openapi('GetLensReviewInput')
 
 const GetLensReviewReportInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLensReviewReportInput', description: 'Input to get lens review report.' })
   .openapi('GetLensReviewReportInput')
 
 const GetLensVersionDifferenceInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLensVersionDifferenceInput' })
   .openapi('GetLensVersionDifferenceInput')
 
 const GetMilestoneInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMilestoneInput', description: 'Input to get a milestone.' })
   .openapi('GetMilestoneInput')
 
 const GetWorkloadInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWorkloadInput', description: 'Input to get a workload.' })
   .openapi('GetWorkloadInput')
 
 const ImportLensInputSchema = z
   .object({
     LensAlias: LensAliasSchema.exactOptional(),
-    JSONString: LensJSONSchema.and(
-      z.any().openapi({ description: 'The JSON representation of a lens.' }),
-    ),
+    JSONString: LensJSONSchema.openapi({ description: 'The JSON representation of a lens.' }),
     ClientRequestToken: ClientRequestTokenSchema,
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Tags to associate to a lens.' }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({ description: 'Tags to associate to a lens.' }),
   })
   .openapi({ required: ['JSONString', 'ClientRequestToken'], title: 'ImportLensInput' })
   .openapi('ImportLensInput')
@@ -1832,7 +1738,7 @@ const LensNamePrefixSchema = z.string().max(100).openapi('LensNamePrefix')
 const ListAnswersMaxResultsSchema = z.int().min(1).max(50).openapi('ListAnswersMaxResults')
 
 const ListAnswersInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAnswersInput', description: 'Input to list answers.' })
   .openapi('ListAnswersInput')
 
@@ -1847,7 +1753,7 @@ const ListCheckDetailsInputSchema = z
   .object({
     NextToken: NextTokenSchema.exactOptional(),
     MaxResults: MaxResultsSchema.exactOptional(),
-    LensArn: LensArnSchema.and(z.any().openapi({ description: 'Well-Architected Lens ARN.' })),
+    LensArn: LensArnSchema.openapi({ description: 'Well-Architected Lens ARN.' }),
     PillarId: PillarIdSchema,
     QuestionId: QuestionIdSchema,
     ChoiceId: ChoiceIdSchema,
@@ -1862,7 +1768,7 @@ const ListCheckSummariesInputSchema = z
   .object({
     NextToken: NextTokenSchema.exactOptional(),
     MaxResults: MaxResultsSchema.exactOptional(),
-    LensArn: LensArnSchema.and(z.any().openapi({ description: 'Well-Architected Lens ARN.' })),
+    LensArn: LensArnSchema.openapi({ description: 'Well-Architected Lens ARN.' }),
     PillarId: PillarIdSchema,
     QuestionId: QuestionIdSchema,
     ChoiceId: ChoiceIdSchema,
@@ -1880,7 +1786,7 @@ const ListLensReviewImprovementsMaxResultsSchema = z
   .openapi('ListLensReviewImprovementsMaxResults')
 
 const ListLensReviewImprovementsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListLensReviewImprovementsInput',
     description: 'Input to list lens review improvements.',
@@ -1888,7 +1794,7 @@ const ListLensReviewImprovementsInputSchema = z
   .openapi('ListLensReviewImprovementsInput')
 
 const ListLensReviewsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLensReviewsInput', description: 'Input to list lens reviews.' })
   .openapi('ListLensReviewsInput')
 
@@ -1901,12 +1807,12 @@ const ListWorkloadSharesMaxResultsSchema = z
   .openapi('ListWorkloadSharesMaxResults')
 
 const ListLensSharesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLensSharesInput' })
   .openapi('ListLensSharesInput')
 
 const ListLensesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLensesInput', description: 'Input to list lenses.' })
   .openapi('ListLensesInput')
 
@@ -1932,9 +1838,9 @@ const ListNotificationsInputSchema = z
   .object({
     WorkloadId: WorkloadIdSchema.exactOptional(),
     NextToken: NextTokenSchema.exactOptional(),
-    MaxResults: ListNotificationsMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return for this request.' }),
-    ).exactOptional(),
+    MaxResults: ListNotificationsMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return for this request.',
+    }),
   })
   .openapi({ title: 'ListNotificationsInput', required: [] })
   .openapi('ListNotificationsInput')
@@ -1955,17 +1861,17 @@ const ListShareInvitationsMaxResultsSchema = z
   .openapi('ListShareInvitationsMaxResults')
 
 const ListShareInvitationsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListShareInvitationsInput', description: 'Input for List Share Invitations' })
   .openapi('ListShareInvitationsInput')
 
 const ListTagsForResourceInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
 
 const ListWorkloadSharesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListWorkloadSharesInput', description: 'Input for List Workload Share' })
   .openapi('ListWorkloadSharesInput')
 
@@ -1975,9 +1881,9 @@ const ListWorkloadsInputSchema = z
   .object({
     WorkloadNamePrefix: WorkloadNamePrefixSchema.exactOptional(),
     NextToken: NextTokenSchema.exactOptional(),
-    MaxResults: ListWorkloadsMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return for this request.' }),
-    ).exactOptional(),
+    MaxResults: ListWorkloadsMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return for this request.',
+    }),
   })
   .openapi({
     title: 'ListWorkloadsInput',
@@ -2003,44 +1909,36 @@ const ShareInvitationActionSchema = z
 const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyList')
 
 const TagResourceInputSchema = z
-  .object({
-    Tags: TagMapSchema.and(z.any().openapi({ description: 'The tags for the resource.' })),
-  })
+  .object({ Tags: TagMapSchema.openapi({ description: 'The tags for the resource.' }) })
   .openapi({ required: ['Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
 const UntagResourceInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
 
 const UpdateAnswerInputSchema = z
   .object({
     SelectedChoices: SelectedChoicesSchema.exactOptional(),
-    ChoiceUpdates: ChoiceUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of choices to update on a question in your workload. The String key corresponds to the choice ID to be updated.',
-        }),
-    ).exactOptional(),
+    ChoiceUpdates: ChoiceUpdatesSchema.exactOptional().openapi({
+      description:
+        'A list of choices to update on a question in your workload. The String key corresponds to the choice ID to be updated.',
+    }),
     Notes: NotesSchema.exactOptional(),
     IsApplicable: IsApplicableSchema.exactOptional(),
-    Reason: AnswerReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The reason why a question is not applicable to your workload.' }),
-    ).exactOptional(),
+    Reason: AnswerReasonSchema.exactOptional().openapi({
+      description: 'The reason why a question is not applicable to your workload.',
+    }),
   })
   .openapi({ title: 'UpdateAnswerInput', description: 'Input to update answer.', required: [] })
   .openapi('UpdateAnswerInput')
 
 const UpdateGlobalSettingsInputSchema = z
   .object({
-    OrganizationSharingStatus: OrganizationSharingStatusSchema.and(
-      z.any().openapi({ description: 'The status of organization sharing settings.' }),
-    ).exactOptional(),
+    OrganizationSharingStatus: OrganizationSharingStatusSchema.exactOptional().openapi({
+      description: 'The status of organization sharing settings.',
+    }),
   })
   .openapi({ title: 'UpdateGlobalSettingsInput', required: [] })
   .openapi('UpdateGlobalSettingsInput')
@@ -2077,33 +1975,21 @@ const UpdateWorkloadInputSchema = z
     PillarPriorities: WorkloadPillarPrioritiesSchema.exactOptional(),
     ArchitecturalDesign: WorkloadArchitecturalDesignSchema.exactOptional(),
     ReviewOwner: WorkloadReviewOwnerSchema.exactOptional(),
-    IsReviewOwnerUpdateAcknowledged: IsReviewOwnerUpdateAcknowledgedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Flag indicating whether the workload owner has acknowledged that the <i>Review owner</i> field is required.</p> <p>If a <b>Review owner</b> is not added to the workload within 60 days of acknowledgement, access to the workload is restricted until an owner is added.</p>',
-        }),
-    ).exactOptional(),
+    IsReviewOwnerUpdateAcknowledged: IsReviewOwnerUpdateAcknowledgedSchema.exactOptional().openapi({
+      description:
+        '<p>Flag indicating whether the workload owner has acknowledged that the <i>Review owner</i> field is required.</p> <p>If a <b>Review owner</b> is not added to the workload within 60 days of acknowledgement, access to the workload is restricted until an owner is added.</p>',
+    }),
     IndustryType: WorkloadIndustryTypeSchema.exactOptional(),
     Industry: WorkloadIndustrySchema.exactOptional(),
     Notes: NotesSchema.exactOptional(),
     ImprovementStatus: WorkloadImprovementStatusSchema.exactOptional(),
-    DiscoveryConfig: WorkloadDiscoveryConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Well-Architected discovery configuration settings to associate to the workload.',
-        }),
-    ).exactOptional(),
-    Applications: WorkloadApplicationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of AppRegistry application ARNs to associate to the workload.',
-        }),
-    ).exactOptional(),
+    DiscoveryConfig: WorkloadDiscoveryConfigSchema.exactOptional().openapi({
+      description:
+        'Well-Architected discovery configuration settings to associate to the workload.',
+    }),
+    Applications: WorkloadApplicationsSchema.exactOptional().openapi({
+      description: 'List of AppRegistry application ARNs to associate to the workload.',
+    }),
   })
   .openapi({
     title: 'UpdateWorkloadInput',
@@ -2862,14 +2748,11 @@ export const postWorkloadsRoute = createRoute({
                 .openapi({ description: 'The tags to be associated with the workload.' }),
               DiscoveryConfig: z
                 .object({
-                  TrustedAdvisorIntegrationStatus: TrustedAdvisorIntegrationStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Discovery integration status in respect to Trusted Advisor for the workload.',
-                      }),
-                  ).exactOptional(),
+                  TrustedAdvisorIntegrationStatus:
+                    TrustedAdvisorIntegrationStatusSchema.exactOptional().openapi({
+                      description:
+                        'Discovery integration status in respect to Trusted Advisor for the workload.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4970,14 +4853,11 @@ export const patchWorkloadsWorkloadIdRoute = createRoute({
                 .openapi({ description: 'The improvement status for a workload.' }),
               DiscoveryConfig: z
                 .object({
-                  TrustedAdvisorIntegrationStatus: TrustedAdvisorIntegrationStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Discovery integration status in respect to Trusted Advisor for the workload.',
-                      }),
-                  ).exactOptional(),
+                  TrustedAdvisorIntegrationStatus:
+                    TrustedAdvisorIntegrationStatusSchema.exactOptional().openapi({
+                      description:
+                        'Discovery integration status in respect to Trusted Advisor for the workload.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({

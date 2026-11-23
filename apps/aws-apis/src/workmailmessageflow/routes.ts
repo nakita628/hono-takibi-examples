@@ -4,16 +4,16 @@ const MessageContentBlobSchema = z.string().openapi('MessageContentBlob')
 
 const GetRawMessageContentResponseSchema = z
   .object({
-    messageContent: MessageContentBlobSchema.and(
-      z.any().openapi({ description: 'The raw content of the email message, in MIME format.' }),
-    ),
+    messageContent: MessageContentBlobSchema.openapi({
+      description: 'The raw content of the email message, in MIME format.',
+    }),
   })
   .openapi({ required: ['messageContent'] })
   .openapi('GetRawMessageContentResponse')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const PutRawMessageContentResponseSchema = z.object({}).openapi('PutRawMessageContentResponse')
+const PutRawMessageContentResponseSchema = z.looseObject({}).openapi('PutRawMessageContentResponse')
 
 const S3BucketIdTypeSchema = z
   .string()
@@ -33,16 +33,11 @@ const S3VersionTypeSchema = z.string().regex(/.+/).min(1).max(1024).openapi('S3V
 
 const S3ReferenceSchema = z
   .object({
-    bucket: S3BucketIdTypeSchema.and(z.any().openapi({ description: 'The S3 bucket name.' })),
-    key: S3KeyIdTypeSchema.and(z.any().openapi({ description: 'The S3 key object name.' })),
-    objectVersion: S3VersionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you enable versioning for the bucket, you can specify the object version.',
-        }),
-    ).exactOptional(),
+    bucket: S3BucketIdTypeSchema.openapi({ description: 'The S3 bucket name.' }),
+    key: S3KeyIdTypeSchema.openapi({ description: 'The S3 key object name.' }),
+    objectVersion: S3VersionTypeSchema.exactOptional().openapi({
+      description: 'If you enable versioning for the bucket, you can specify the object version.',
+    }),
   })
   .openapi({
     required: ['bucket', 'key'],
@@ -65,15 +60,15 @@ const MessageIdTypeSchema = z
   .openapi('MessageIdType')
 
 const GetRawMessageContentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRawMessageContentRequest' })
   .openapi('GetRawMessageContentRequest')
 
 const RawMessageContentSchema = z
   .object({
-    s3Reference: S3ReferenceSchema.and(
-      z.any().openapi({ description: 'The S3 reference of an email message.' }),
-    ),
+    s3Reference: S3ReferenceSchema.openapi({
+      description: 'The S3 reference of an email message.',
+    }),
   })
   .openapi({
     required: ['s3Reference'],
@@ -84,13 +79,9 @@ const RawMessageContentSchema = z
 
 const PutRawMessageContentRequestSchema = z
   .object({
-    content: RawMessageContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the raw message content of the updated email message.',
-        }),
-    ),
+    content: RawMessageContentSchema.openapi({
+      description: 'Describes the raw message content of the updated email message.',
+    }),
   })
   .openapi({ required: ['content'], title: 'PutRawMessageContentRequest' })
   .openapi('PutRawMessageContentRequest')
@@ -250,9 +241,9 @@ export const postMessagesMessageIdRoute = createRoute({
             .object({
               content: z
                 .object({
-                  s3Reference: S3ReferenceSchema.and(
-                    z.any().openapi({ description: 'The S3 reference of an email message.' }),
-                  ).exactOptional(),
+                  s3Reference: S3ReferenceSchema.exactOptional().openapi({
+                    description: 'The S3 reference of an email message.',
+                  }),
                 })
                 .openapi({
                   description:

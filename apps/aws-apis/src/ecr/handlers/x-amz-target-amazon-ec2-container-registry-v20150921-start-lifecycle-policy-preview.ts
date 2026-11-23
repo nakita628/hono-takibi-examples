@@ -1,0 +1,12 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAmazonEC2ContainerRegistryV20150921StartLifecyclePolicyPreviewRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetAmazonEc2ContainerRegistryV20150921StartLifecyclePolicyPreviewHandler =
+  app.openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921StartLifecyclePolicyPreviewRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )

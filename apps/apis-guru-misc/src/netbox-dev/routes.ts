@@ -1,24 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const NestedContactGroupSchema = z
-  .object({
-    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-    contact_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Contact count' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedContactGroup')
-
 const NestedTagSchema = z
   .object({
     color: z
@@ -37,189 +18,6 @@ const NestedTagSchema = z
   .openapi({ required: ['name', 'slug'] })
   .openapi('NestedTag')
 
-type ContactGroupType = {
-  _depth?: number
-  contact_count?: number
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  display?: string
-  id?: number
-  last_updated?: string | null
-  name: string
-  parent?: z.infer<typeof NestedContactGroupSchema>
-  slug: string
-  tags?: z.infer<typeof NestedTagSchema>[]
-  url?: string
-}
-
-const NestedClusterSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    virtualmachine_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
-  })
-  .nullable()
-  .openapi({ required: ['name'] })
-  .openapi('NestedCluster')
-
-const NestedDeviceRoleSchema = z
-  .object({
-    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    virtualmachine_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
-  })
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedDeviceRole')
-
-const NestedManufacturerSchema = z
-  .object({
-    devicetype_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Devicetype count' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedManufacturer')
-
-const NestedDeviceTypeSchema = z
-  .object({
-    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    manufacturer: NestedManufacturerSchema.exactOptional(),
-    model: z.string().min(1).max(100).openapi({ title: 'Model' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['model', 'slug'] })
-  .openapi('NestedDeviceType')
-
-const NestedLocationSchema = z
-  .object({
-    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    rack_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Rack count' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedLocation')
-
-const NestedDeviceSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().max(64).nullable().exactOptional().openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NestedDevice')
-
-const NestedPlatformSchema = z
-  .object({
-    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    virtualmachine_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedPlatform')
-
-const NestedIPAddressSchema = z
-  .object({
-    address: z
-      .string()
-      .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    family: z.int().exactOptional().openapi({ readOnly: true, title: 'Family' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['address'] })
-  .openapi('NestedIPAddress')
-
-const NestedRackSchema = z
-  .object({
-    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name'] })
-  .openapi('NestedRack')
-
-const NestedSiteSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedSite')
-
 const NestedTenantSchema = z
   .object({
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -237,1169 +35,6 @@ const NestedTenantSchema = z
   .openapi({ required: ['name', 'slug'] })
   .openapi('NestedTenant')
 
-const NestedVirtualChassisSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    master: NestedDeviceSchema,
-    member_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Member count' }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'master'] })
-  .openapi('NestedVirtualChassis')
-
-type DeviceType = {
-  airflow?: {
-    label:
-      | 'Front to rear'
-      | 'Rear to front'
-      | 'Left to right'
-      | 'Right to left'
-      | 'Side to rear'
-      | 'Passive'
-      | 'Mixed'
-    value:
-      | 'front-to-rear'
-      | 'rear-to-front'
-      | 'left-to-right'
-      | 'right-to-left'
-      | 'side-to-rear'
-      | 'passive'
-      | 'mixed'
-  }
-  asset_tag?: string | null
-  cluster?: z.infer<typeof NestedClusterSchema>
-  comments?: string
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  device_role: z.infer<typeof NestedDeviceRoleSchema>
-  device_type: z.infer<typeof NestedDeviceTypeSchema>
-  display?: string
-  face?: { label: 'Front' | 'Rear'; value: 'front' | 'rear' }
-  id?: number
-  last_updated?: string | null
-  local_context_data?: { [key: string]: unknown } | null
-  location?: z.infer<typeof NestedLocationSchema>
-  name?: string | null
-  parent_device?: z.infer<typeof NestedDeviceSchema>
-  platform?: z.infer<typeof NestedPlatformSchema>
-  position?: number | null
-  primary_ip?: z.infer<typeof NestedIPAddressSchema>
-  primary_ip4?: z.infer<typeof NestedIPAddressSchema>
-  primary_ip6?: z.infer<typeof NestedIPAddressSchema>
-  rack?: z.infer<typeof NestedRackSchema>
-  serial?: string
-  site: z.infer<typeof NestedSiteSchema>
-  status?: {
-    label: 'Offline' | 'Active' | 'Planned' | 'Staged' | 'Failed' | 'Inventory' | 'Decommissioning'
-    value: 'offline' | 'active' | 'planned' | 'staged' | 'failed' | 'inventory' | 'decommissioning'
-  }
-  tags?: z.infer<typeof NestedTagSchema>[]
-  tenant?: z.infer<typeof NestedTenantSchema>
-  url?: string
-  vc_position?: number | null
-  vc_priority?: number | null
-  virtual_chassis?: z.infer<typeof NestedVirtualChassisSchema>
-}
-
-const NestedVRFSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    prefix_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Prefix count' }),
-    rd: z
-      .string()
-      .max(21)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Unique route distinguisher (as defined in RFC 4364)',
-        title: 'Route distinguisher',
-      }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name'] })
-  .openapi('NestedVRF')
-
-type IPAddressType = {
-  address: string
-  assigned_object?: { [key: string]: unknown }
-  assigned_object_id?: number | null
-  assigned_object_type?: string | null
-  comments?: string
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  display?: string
-  dns_name?: string
-  family?: { label: 'IPv4' | 'IPv6'; value: 4 | 6 }
-  id?: number
-  last_updated?: string | null
-  nat_inside?: z.infer<typeof NestedIPAddressSchema>
-  nat_outside?: z.infer<typeof NestedIPAddressSchema>[]
-  role?: {
-    label: 'Loopback' | 'Secondary' | 'Anycast' | 'VIP' | 'VRRP' | 'HSRP' | 'GLBP' | 'CARP'
-    value: 'loopback' | 'secondary' | 'anycast' | 'vip' | 'vrrp' | 'hsrp' | 'glbp' | 'carp'
-  }
-  status?: {
-    label: 'Active' | 'Reserved' | 'Deprecated' | 'DHCP' | 'SLAAC'
-    value: 'active' | 'reserved' | 'deprecated' | 'dhcp' | 'slaac'
-  }
-  tags?: z.infer<typeof NestedTagSchema>[]
-  tenant?: z.infer<typeof NestedTenantSchema>
-  url?: string
-  vrf?: z.infer<typeof NestedVRFSchema>
-}
-
-const NestedInterfaceSchema = z
-  .object({
-    _occupied: z.boolean().exactOptional().openapi({ readOnly: true, title: 'occupied' }),
-    cable: z.int().nullable().exactOptional().openapi({ title: 'Cable' }),
-    device: NestedDeviceSchema.exactOptional(),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name'] })
-  .openapi('NestedInterface')
-
-const NestedCableSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    label: z.string().max(100).exactOptional().openapi({ title: 'Label' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NestedCable')
-
-const NestedL2VPNSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    identifier: z
-      .int()
-      .min(-9223372036854776000)
-      .max(9223372036854776000)
-      .nullable()
-      .exactOptional()
-      .openapi({ title: 'Identifier' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    type: z
-      .enum([
-        'vpws',
-        'vpls',
-        'vxlan',
-        'vxlan-evpn',
-        'mpls-evpn',
-        'pbb-evpn',
-        'epl',
-        'evpl',
-        'ep-lan',
-        'evp-lan',
-        'ep-tree',
-        'evp-tree',
-      ])
-      .openapi({ title: 'Type' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug', 'type'] })
-  .openapi('NestedL2VPN')
-
-const NestedL2VPNTerminationSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    l2vpn: NestedL2VPNSchema,
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['l2vpn'] })
-  .openapi('NestedL2VPNTermination')
-
-const ModuleNestedModuleBaySchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('ModuleNestedModuleBay')
-
-const ComponentNestedModuleSchema = z
-  .object({
-    device: z.int().openapi({ title: 'Device' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    module_bay: ModuleNestedModuleBaySchema.exactOptional(),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['device'] })
-  .openapi('ComponentNestedModule')
-
-const NestedVLANSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    vid: z.int().min(1).max(4094).openapi({ title: 'ID' }),
-  })
-  .nullable()
-  .openapi({ required: ['vid', 'name'] })
-  .openapi('NestedVLAN')
-
-const NestedVirtualDeviceContextSchema = z
-  .object({
-    device: NestedDeviceSchema,
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    identifier: z
-      .int()
-      .min(0)
-      .max(32767)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Numeric identifier unique to the parent device',
-        title: 'Identifier',
-      }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'device'] })
-  .openapi('NestedVirtualDeviceContext')
-
-const NestedWirelessLANSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    ssid: z.string().min(1).max(32).openapi({ title: 'SSID' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['ssid'] })
-  .openapi('NestedWirelessLAN')
-
-const NestedWirelessLinkSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    ssid: z.string().max(32).exactOptional().openapi({ title: 'SSID' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NestedWirelessLink')
-
-type InterfaceType = {
-  _occupied?: boolean
-  bridge?: z.infer<typeof NestedInterfaceSchema>
-  cable?: z.infer<typeof NestedCableSchema>
-  cable_end?: string
-  connected_endpoints?: (string | null)[]
-  connected_endpoints_reachable?: boolean
-  connected_endpoints_type?: string
-  count_fhrp_groups?: number
-  count_ipaddresses?: number
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  device: z.infer<typeof NestedDeviceSchema>
-  display?: string
-  duplex?: { label: 'Half' | 'Full' | 'Auto'; value: 'half' | 'full' | 'auto' }
-  enabled?: boolean
-  id?: number
-  l2vpn_termination?: z.infer<typeof NestedL2VPNTerminationSchema>
-  label?: string
-  lag?: z.infer<typeof NestedInterfaceSchema>
-  last_updated?: string | null
-  link_peers?: (string | null)[]
-  link_peers_type?: string
-  mac_address?: string | null
-  mark_connected?: boolean
-  mgmt_only?: boolean
-  mode?: { label: 'Access' | 'Tagged' | 'Tagged (All)'; value: 'access' | 'tagged' | 'tagged-all' }
-  module?: z.infer<typeof ComponentNestedModuleSchema>
-  mtu?: number | null
-  name: string
-  parent?: z.infer<typeof NestedInterfaceSchema>
-  poe_mode?: { label: 'PD' | 'PSE'; value: 'pd' | 'pse' }
-  poe_type?: {
-    label:
-      | '802.3af (Type 1)'
-      | '802.3at (Type 2)'
-      | '802.3az (Type 2)'
-      | '802.3bt (Type 3)'
-      | '802.3bt (Type 4)'
-      | 'Passive 24V (2-pair)'
-      | 'Passive 24V (4-pair)'
-      | 'Passive 48V (2-pair)'
-      | 'Passive 48V (4-pair)'
-    value:
-      | 'type1-ieee802.3af'
-      | 'type2-ieee802.3at'
-      | 'type2-ieee802.3az'
-      | 'type3-ieee802.3bt'
-      | 'type4-ieee802.3bt'
-      | 'passive-24v-2pair'
-      | 'passive-24v-4pair'
-      | 'passive-48v-2pair'
-      | 'passive-48v-4pair'
-  }
-  rf_channel?: {
-    label:
-      | '1 (2412 MHz)'
-      | '2 (2417 MHz)'
-      | '3 (2422 MHz)'
-      | '4 (2427 MHz)'
-      | '5 (2432 MHz)'
-      | '6 (2437 MHz)'
-      | '7 (2442 MHz)'
-      | '8 (2447 MHz)'
-      | '9 (2452 MHz)'
-      | '10 (2457 MHz)'
-      | '11 (2462 MHz)'
-      | '12 (2467 MHz)'
-      | '13 (2472 MHz)'
-      | '32 (5160/20 MHz)'
-      | '34 (5170/40 MHz)'
-      | '36 (5180/20 MHz)'
-      | '38 (5190/40 MHz)'
-      | '40 (5200/20 MHz)'
-      | '42 (5210/80 MHz)'
-      | '44 (5220/20 MHz)'
-      | '46 (5230/40 MHz)'
-      | '48 (5240/20 MHz)'
-      | '50 (5250/160 MHz)'
-      | '52 (5260/20 MHz)'
-      | '54 (5270/40 MHz)'
-      | '56 (5280/20 MHz)'
-      | '58 (5290/80 MHz)'
-      | '60 (5300/20 MHz)'
-      | '62 (5310/40 MHz)'
-      | '64 (5320/20 MHz)'
-      | '100 (5500/20 MHz)'
-      | '102 (5510/40 MHz)'
-      | '104 (5520/20 MHz)'
-      | '106 (5530/80 MHz)'
-      | '108 (5540/20 MHz)'
-      | '110 (5550/40 MHz)'
-      | '112 (5560/20 MHz)'
-      | '114 (5570/160 MHz)'
-      | '116 (5580/20 MHz)'
-      | '118 (5590/40 MHz)'
-      | '120 (5600/20 MHz)'
-      | '122 (5610/80 MHz)'
-      | '124 (5620/20 MHz)'
-      | '126 (5630/40 MHz)'
-      | '128 (5640/20 MHz)'
-      | '132 (5660/20 MHz)'
-      | '134 (5670/40 MHz)'
-      | '136 (5680/20 MHz)'
-      | '138 (5690/80 MHz)'
-      | '140 (5700/20 MHz)'
-      | '142 (5710/40 MHz)'
-      | '144 (5720/20 MHz)'
-      | '149 (5745/20 MHz)'
-      | '151 (5755/40 MHz)'
-      | '153 (5765/20 MHz)'
-      | '155 (5775/80 MHz)'
-      | '157 (5785/20 MHz)'
-      | '159 (5795/40 MHz)'
-      | '161 (5805/20 MHz)'
-      | '163 (5815/160 MHz)'
-      | '165 (5825/20 MHz)'
-      | '167 (5835/40 MHz)'
-      | '169 (5845/20 MHz)'
-      | '171 (5855/80 MHz)'
-      | '173 (5865/20 MHz)'
-      | '175 (5875/40 MHz)'
-      | '177 (5885/20 MHz)'
-      | '1 (5955/20 MHz)'
-      | '3 (5965/40 MHz)'
-      | '5 (5975/20 MHz)'
-      | '7 (5985/80 MHz)'
-      | '9 (5995/20 MHz)'
-      | '11 (6005/40 MHz)'
-      | '13 (6015/20 MHz)'
-      | '15 (6025/160 MHz)'
-      | '17 (6035/20 MHz)'
-      | '19 (6045/40 MHz)'
-      | '21 (6055/20 MHz)'
-      | '23 (6065/80 MHz)'
-      | '25 (6075/20 MHz)'
-      | '27 (6085/40 MHz)'
-      | '29 (6095/20 MHz)'
-      | '31 (6105/320 MHz)'
-      | '33 (6115/20 MHz)'
-      | '35 (6125/40 MHz)'
-      | '37 (6135/20 MHz)'
-      | '39 (6145/80 MHz)'
-      | '41 (6155/20 MHz)'
-      | '43 (6165/40 MHz)'
-      | '45 (6175/20 MHz)'
-      | '47 (6185/160 MHz)'
-      | '49 (6195/20 MHz)'
-      | '51 (6205/40 MHz)'
-      | '53 (6215/20 MHz)'
-      | '55 (6225/80 MHz)'
-      | '57 (6235/20 MHz)'
-      | '59 (6245/40 MHz)'
-      | '61 (6255/20 MHz)'
-      | '65 (6275/20 MHz)'
-      | '67 (6285/40 MHz)'
-      | '69 (6295/20 MHz)'
-      | '71 (6305/80 MHz)'
-      | '73 (6315/20 MHz)'
-      | '75 (6325/40 MHz)'
-      | '77 (6335/20 MHz)'
-      | '79 (6345/160 MHz)'
-      | '81 (6355/20 MHz)'
-      | '83 (6365/40 MHz)'
-      | '85 (6375/20 MHz)'
-      | '87 (6385/80 MHz)'
-      | '89 (6395/20 MHz)'
-      | '91 (6405/40 MHz)'
-      | '93 (6415/20 MHz)'
-      | '95 (6425/320 MHz)'
-      | '97 (6435/20 MHz)'
-      | '99 (6445/40 MHz)'
-      | '101 (6455/20 MHz)'
-      | '103 (6465/80 MHz)'
-      | '105 (6475/20 MHz)'
-      | '107 (6485/40 MHz)'
-      | '109 (6495/20 MHz)'
-      | '111 (6505/160 MHz)'
-      | '113 (6515/20 MHz)'
-      | '115 (6525/40 MHz)'
-      | '117 (6535/20 MHz)'
-      | '119 (6545/80 MHz)'
-      | '121 (6555/20 MHz)'
-      | '123 (6565/40 MHz)'
-      | '125 (6575/20 MHz)'
-      | '129 (6595/20 MHz)'
-      | '131 (6605/40 MHz)'
-      | '133 (6615/20 MHz)'
-      | '135 (6625/80 MHz)'
-      | '137 (6635/20 MHz)'
-      | '139 (6645/40 MHz)'
-      | '141 (6655/20 MHz)'
-      | '143 (6665/160 MHz)'
-      | '145 (6675/20 MHz)'
-      | '147 (6685/40 MHz)'
-      | '149 (6695/20 MHz)'
-      | '151 (6705/80 MHz)'
-      | '153 (6715/20 MHz)'
-      | '155 (6725/40 MHz)'
-      | '157 (6735/20 MHz)'
-      | '159 (6745/320 MHz)'
-      | '161 (6755/20 MHz)'
-      | '163 (6765/40 MHz)'
-      | '165 (6775/20 MHz)'
-      | '167 (6785/80 MHz)'
-      | '169 (6795/20 MHz)'
-      | '171 (6805/40 MHz)'
-      | '173 (6815/20 MHz)'
-      | '175 (6825/160 MHz)'
-      | '177 (6835/20 MHz)'
-      | '179 (6845/40 MHz)'
-      | '181 (6855/20 MHz)'
-      | '183 (6865/80 MHz)'
-      | '185 (6875/20 MHz)'
-      | '187 (6885/40 MHz)'
-      | '189 (6895/20 MHz)'
-      | '193 (6915/20 MHz)'
-      | '195 (6925/40 MHz)'
-      | '197 (6935/20 MHz)'
-      | '199 (6945/80 MHz)'
-      | '201 (6955/20 MHz)'
-      | '203 (6965/40 MHz)'
-      | '205 (6975/20 MHz)'
-      | '207 (6985/160 MHz)'
-      | '209 (6995/20 MHz)'
-      | '211 (7005/40 MHz)'
-      | '213 (7015/20 MHz)'
-      | '215 (7025/80 MHz)'
-      | '217 (7035/20 MHz)'
-      | '219 (7045/40 MHz)'
-      | '221 (7055/20 MHz)'
-      | '225 (7075/20 MHz)'
-      | '227 (7085/40 MHz)'
-      | '229 (7095/20 MHz)'
-      | '233 (7115/20 MHz)'
-      | '1 (58.32/2.16 GHz)'
-      | '2 (60.48/2.16 GHz)'
-      | '3 (62.64/2.16 GHz)'
-      | '4 (64.80/2.16 GHz)'
-      | '5 (66.96/2.16 GHz)'
-      | '6 (69.12/2.16 GHz)'
-      | '9 (59.40/4.32 GHz)'
-      | '10 (61.56/4.32 GHz)'
-      | '11 (63.72/4.32 GHz)'
-      | '12 (65.88/4.32 GHz)'
-      | '13 (68.04/4.32 GHz)'
-      | '17 (60.48/6.48 GHz)'
-      | '18 (62.64/6.48 GHz)'
-      | '19 (64.80/6.48 GHz)'
-      | '20 (66.96/6.48 GHz)'
-      | '25 (61.56/8.64 GHz)'
-      | '26 (63.72/8.64 GHz)'
-      | '27 (65.88/8.64 GHz)'
-    value:
-      | '2.4g-1-2412-22'
-      | '2.4g-2-2417-22'
-      | '2.4g-3-2422-22'
-      | '2.4g-4-2427-22'
-      | '2.4g-5-2432-22'
-      | '2.4g-6-2437-22'
-      | '2.4g-7-2442-22'
-      | '2.4g-8-2447-22'
-      | '2.4g-9-2452-22'
-      | '2.4g-10-2457-22'
-      | '2.4g-11-2462-22'
-      | '2.4g-12-2467-22'
-      | '2.4g-13-2472-22'
-      | '5g-32-5160-20'
-      | '5g-34-5170-40'
-      | '5g-36-5180-20'
-      | '5g-38-5190-40'
-      | '5g-40-5200-20'
-      | '5g-42-5210-80'
-      | '5g-44-5220-20'
-      | '5g-46-5230-40'
-      | '5g-48-5240-20'
-      | '5g-50-5250-160'
-      | '5g-52-5260-20'
-      | '5g-54-5270-40'
-      | '5g-56-5280-20'
-      | '5g-58-5290-80'
-      | '5g-60-5300-20'
-      | '5g-62-5310-40'
-      | '5g-64-5320-20'
-      | '5g-100-5500-20'
-      | '5g-102-5510-40'
-      | '5g-104-5520-20'
-      | '5g-106-5530-80'
-      | '5g-108-5540-20'
-      | '5g-110-5550-40'
-      | '5g-112-5560-20'
-      | '5g-114-5570-160'
-      | '5g-116-5580-20'
-      | '5g-118-5590-40'
-      | '5g-120-5600-20'
-      | '5g-122-5610-80'
-      | '5g-124-5620-20'
-      | '5g-126-5630-40'
-      | '5g-128-5640-20'
-      | '5g-132-5660-20'
-      | '5g-134-5670-40'
-      | '5g-136-5680-20'
-      | '5g-138-5690-80'
-      | '5g-140-5700-20'
-      | '5g-142-5710-40'
-      | '5g-144-5720-20'
-      | '5g-149-5745-20'
-      | '5g-151-5755-40'
-      | '5g-153-5765-20'
-      | '5g-155-5775-80'
-      | '5g-157-5785-20'
-      | '5g-159-5795-40'
-      | '5g-161-5805-20'
-      | '5g-163-5815-160'
-      | '5g-165-5825-20'
-      | '5g-167-5835-40'
-      | '5g-169-5845-20'
-      | '5g-171-5855-80'
-      | '5g-173-5865-20'
-      | '5g-175-5875-40'
-      | '5g-177-5885-20'
-      | '6g-1-5955-20'
-      | '6g-3-5965-40'
-      | '6g-5-5975-20'
-      | '6g-7-5985-80'
-      | '6g-9-5995-20'
-      | '6g-11-6005-40'
-      | '6g-13-6015-20'
-      | '6g-15-6025-160'
-      | '6g-17-6035-20'
-      | '6g-19-6045-40'
-      | '6g-21-6055-20'
-      | '6g-23-6065-80'
-      | '6g-25-6075-20'
-      | '6g-27-6085-40'
-      | '6g-29-6095-20'
-      | '6g-31-6105-320'
-      | '6g-33-6115-20'
-      | '6g-35-6125-40'
-      | '6g-37-6135-20'
-      | '6g-39-6145-80'
-      | '6g-41-6155-20'
-      | '6g-43-6165-40'
-      | '6g-45-6175-20'
-      | '6g-47-6185-160'
-      | '6g-49-6195-20'
-      | '6g-51-6205-40'
-      | '6g-53-6215-20'
-      | '6g-55-6225-80'
-      | '6g-57-6235-20'
-      | '6g-59-6245-40'
-      | '6g-61-6255-20'
-      | '6g-65-6275-20'
-      | '6g-67-6285-40'
-      | '6g-69-6295-20'
-      | '6g-71-6305-80'
-      | '6g-73-6315-20'
-      | '6g-75-6325-40'
-      | '6g-77-6335-20'
-      | '6g-79-6345-160'
-      | '6g-81-6355-20'
-      | '6g-83-6365-40'
-      | '6g-85-6375-20'
-      | '6g-87-6385-80'
-      | '6g-89-6395-20'
-      | '6g-91-6405-40'
-      | '6g-93-6415-20'
-      | '6g-95-6425-320'
-      | '6g-97-6435-20'
-      | '6g-99-6445-40'
-      | '6g-101-6455-20'
-      | '6g-103-6465-80'
-      | '6g-105-6475-20'
-      | '6g-107-6485-40'
-      | '6g-109-6495-20'
-      | '6g-111-6505-160'
-      | '6g-113-6515-20'
-      | '6g-115-6525-40'
-      | '6g-117-6535-20'
-      | '6g-119-6545-80'
-      | '6g-121-6555-20'
-      | '6g-123-6565-40'
-      | '6g-125-6575-20'
-      | '6g-129-6595-20'
-      | '6g-131-6605-40'
-      | '6g-133-6615-20'
-      | '6g-135-6625-80'
-      | '6g-137-6635-20'
-      | '6g-139-6645-40'
-      | '6g-141-6655-20'
-      | '6g-143-6665-160'
-      | '6g-145-6675-20'
-      | '6g-147-6685-40'
-      | '6g-149-6695-20'
-      | '6g-151-6705-80'
-      | '6g-153-6715-20'
-      | '6g-155-6725-40'
-      | '6g-157-6735-20'
-      | '6g-159-6745-320'
-      | '6g-161-6755-20'
-      | '6g-163-6765-40'
-      | '6g-165-6775-20'
-      | '6g-167-6785-80'
-      | '6g-169-6795-20'
-      | '6g-171-6805-40'
-      | '6g-173-6815-20'
-      | '6g-175-6825-160'
-      | '6g-177-6835-20'
-      | '6g-179-6845-40'
-      | '6g-181-6855-20'
-      | '6g-183-6865-80'
-      | '6g-185-6875-20'
-      | '6g-187-6885-40'
-      | '6g-189-6895-20'
-      | '6g-193-6915-20'
-      | '6g-195-6925-40'
-      | '6g-197-6935-20'
-      | '6g-199-6945-80'
-      | '6g-201-6955-20'
-      | '6g-203-6965-40'
-      | '6g-205-6975-20'
-      | '6g-207-6985-160'
-      | '6g-209-6995-20'
-      | '6g-211-7005-40'
-      | '6g-213-7015-20'
-      | '6g-215-7025-80'
-      | '6g-217-7035-20'
-      | '6g-219-7045-40'
-      | '6g-221-7055-20'
-      | '6g-225-7075-20'
-      | '6g-227-7085-40'
-      | '6g-229-7095-20'
-      | '6g-233-7115-20'
-      | '60g-1-58320-2160'
-      | '60g-2-60480-2160'
-      | '60g-3-62640-2160'
-      | '60g-4-64800-2160'
-      | '60g-5-66960-2160'
-      | '60g-6-69120-2160'
-      | '60g-9-59400-4320'
-      | '60g-10-61560-4320'
-      | '60g-11-63720-4320'
-      | '60g-12-65880-4320'
-      | '60g-13-68040-4320'
-      | '60g-17-60480-6480'
-      | '60g-18-62640-6480'
-      | '60g-19-64800-6480'
-      | '60g-20-66960-6480'
-      | '60g-25-61560-6480'
-      | '60g-26-63720-6480'
-      | '60g-27-65880-6480'
-  }
-  rf_channel_frequency?: number | null
-  rf_channel_width?: number | null
-  rf_role?: { label: 'Access point' | 'Station'; value: 'ap' | 'station' }
-  speed?: number | null
-  tagged_vlans?: z.infer<typeof NestedVLANSchema>[]
-  tags?: z.infer<typeof NestedTagSchema>[]
-  tx_power?: number | null
-  type: {
-    label:
-      | 'Virtual'
-      | 'Bridge'
-      | 'Link Aggregation Group (LAG)'
-      | '100BASE-FX (10/100ME FIBER)'
-      | '100BASE-LFX (10/100ME FIBER)'
-      | '100BASE-TX (10/100ME)'
-      | '100BASE-T1 (10/100ME Single Pair)'
-      | '1000BASE-T (1GE)'
-      | '2.5GBASE-T (2.5GE)'
-      | '5GBASE-T (5GE)'
-      | '10GBASE-T (10GE)'
-      | '10GBASE-CX4 (10GE)'
-      | 'GBIC (1GE)'
-      | 'SFP (1GE)'
-      | 'SFP+ (10GE)'
-      | 'XFP (10GE)'
-      | 'XENPAK (10GE)'
-      | 'X2 (10GE)'
-      | 'SFP28 (25GE)'
-      | 'SFP56 (50GE)'
-      | 'QSFP+ (40GE)'
-      | 'QSFP28 (50GE)'
-      | 'CFP (100GE)'
-      | 'CFP2 (100GE)'
-      | 'CFP2 (200GE)'
-      | 'CFP4 (100GE)'
-      | 'Cisco CPAK (100GE)'
-      | 'QSFP28 (100GE)'
-      | 'QSFP56 (200GE)'
-      | 'QSFP-DD (400GE)'
-      | 'OSFP (400GE)'
-      | 'QSFP-DD (800GE)'
-      | 'OSFP (800GE)'
-      | '1000BASE-KX (1GE)'
-      | '10GBASE-KR (10GE)'
-      | '10GBASE-KX4 (10GE)'
-      | '25GBASE-KR (25GE)'
-      | '40GBASE-KR4 (40GE)'
-      | '50GBASE-KR (50GE)'
-      | '100GBASE-KP4 (100GE)'
-      | '100GBASE-KR2 (100GE)'
-      | '100GBASE-KR4 (100GE)'
-      | 'IEEE 802.11a'
-      | 'IEEE 802.11b/g'
-      | 'IEEE 802.11n'
-      | 'IEEE 802.11ac'
-      | 'IEEE 802.11ad'
-      | 'IEEE 802.11ax'
-      | 'IEEE 802.11ay'
-      | 'IEEE 802.15.1 (Bluetooth)'
-      | 'Other (Wireless)'
-      | 'GSM'
-      | 'CDMA'
-      | 'LTE'
-      | 'OC-3/STM-1'
-      | 'OC-12/STM-4'
-      | 'OC-48/STM-16'
-      | 'OC-192/STM-64'
-      | 'OC-768/STM-256'
-      | 'OC-1920/STM-640'
-      | 'OC-3840/STM-1234'
-      | 'SFP (1GFC)'
-      | 'SFP (2GFC)'
-      | 'SFP (4GFC)'
-      | 'SFP+ (8GFC)'
-      | 'SFP+ (16GFC)'
-      | 'SFP28 (32GFC)'
-      | 'QSFP+ (64GFC)'
-      | 'QSFP28 (128GFC)'
-      | 'SDR (2 Gbps)'
-      | 'DDR (4 Gbps)'
-      | 'QDR (8 Gbps)'
-      | 'FDR10 (10 Gbps)'
-      | 'FDR (13.5 Gbps)'
-      | 'EDR (25 Gbps)'
-      | 'HDR (50 Gbps)'
-      | 'NDR (100 Gbps)'
-      | 'XDR (250 Gbps)'
-      | 'T1 (1.544 Mbps)'
-      | 'E1 (2.048 Mbps)'
-      | 'T3 (45 Mbps)'
-      | 'E3 (34 Mbps)'
-      | 'xDSL'
-      | 'DOCSIS'
-      | 'GPON (2.5 Gbps / 1.25 Gps)'
-      | 'XG-PON (10 Gbps / 2.5 Gbps)'
-      | 'XGS-PON (10 Gbps)'
-      | 'NG-PON2 (TWDM-PON) (4x10 Gbps)'
-      | 'EPON (1 Gbps)'
-      | '10G-EPON (10 Gbps)'
-      | 'Cisco StackWise'
-      | 'Cisco StackWise Plus'
-      | 'Cisco FlexStack'
-      | 'Cisco FlexStack Plus'
-      | 'Cisco StackWise-80'
-      | 'Cisco StackWise-160'
-      | 'Cisco StackWise-320'
-      | 'Cisco StackWise-480'
-      | 'Cisco StackWise-1T'
-      | 'Juniper VCP'
-      | 'Extreme SummitStack'
-      | 'Extreme SummitStack-128'
-      | 'Extreme SummitStack-256'
-      | 'Extreme SummitStack-512'
-      | 'Other'
-    value:
-      | 'virtual'
-      | 'bridge'
-      | 'lag'
-      | '100base-fx'
-      | '100base-lfx'
-      | '100base-tx'
-      | '100base-t1'
-      | '1000base-t'
-      | '2.5gbase-t'
-      | '5gbase-t'
-      | '10gbase-t'
-      | '10gbase-cx4'
-      | '1000base-x-gbic'
-      | '1000base-x-sfp'
-      | '10gbase-x-sfpp'
-      | '10gbase-x-xfp'
-      | '10gbase-x-xenpak'
-      | '10gbase-x-x2'
-      | '25gbase-x-sfp28'
-      | '50gbase-x-sfp56'
-      | '40gbase-x-qsfpp'
-      | '50gbase-x-sfp28'
-      | '100gbase-x-cfp'
-      | '100gbase-x-cfp2'
-      | '200gbase-x-cfp2'
-      | '100gbase-x-cfp4'
-      | '100gbase-x-cpak'
-      | '100gbase-x-qsfp28'
-      | '200gbase-x-qsfp56'
-      | '400gbase-x-qsfpdd'
-      | '400gbase-x-osfp'
-      | '800gbase-x-qsfpdd'
-      | '800gbase-x-osfp'
-      | '1000base-kx'
-      | '10gbase-kr'
-      | '10gbase-kx4'
-      | '25gbase-kr'
-      | '40gbase-kr4'
-      | '50gbase-kr'
-      | '100gbase-kp4'
-      | '100gbase-kr2'
-      | '100gbase-kr4'
-      | 'ieee802.11a'
-      | 'ieee802.11g'
-      | 'ieee802.11n'
-      | 'ieee802.11ac'
-      | 'ieee802.11ad'
-      | 'ieee802.11ax'
-      | 'ieee802.11ay'
-      | 'ieee802.15.1'
-      | 'other-wireless'
-      | 'gsm'
-      | 'cdma'
-      | 'lte'
-      | 'sonet-oc3'
-      | 'sonet-oc12'
-      | 'sonet-oc48'
-      | 'sonet-oc192'
-      | 'sonet-oc768'
-      | 'sonet-oc1920'
-      | 'sonet-oc3840'
-      | '1gfc-sfp'
-      | '2gfc-sfp'
-      | '4gfc-sfp'
-      | '8gfc-sfpp'
-      | '16gfc-sfpp'
-      | '32gfc-sfp28'
-      | '64gfc-qsfpp'
-      | '128gfc-qsfp28'
-      | 'infiniband-sdr'
-      | 'infiniband-ddr'
-      | 'infiniband-qdr'
-      | 'infiniband-fdr10'
-      | 'infiniband-fdr'
-      | 'infiniband-edr'
-      | 'infiniband-hdr'
-      | 'infiniband-ndr'
-      | 'infiniband-xdr'
-      | 't1'
-      | 'e1'
-      | 't3'
-      | 'e3'
-      | 'xdsl'
-      | 'docsis'
-      | 'gpon'
-      | 'xg-pon'
-      | 'xgs-pon'
-      | 'ng-pon2'
-      | 'epon'
-      | '10g-epon'
-      | 'cisco-stackwise'
-      | 'cisco-stackwise-plus'
-      | 'cisco-flexstack'
-      | 'cisco-flexstack-plus'
-      | 'cisco-stackwise-80'
-      | 'cisco-stackwise-160'
-      | 'cisco-stackwise-320'
-      | 'cisco-stackwise-480'
-      | 'cisco-stackwise-1t'
-      | 'juniper-vcp'
-      | 'extreme-summitstack'
-      | 'extreme-summitstack-128'
-      | 'extreme-summitstack-256'
-      | 'extreme-summitstack-512'
-      | 'other'
-  }
-  untagged_vlan?: z.infer<typeof NestedVLANSchema>
-  url?: string
-  vdcs?: z.infer<typeof NestedVirtualDeviceContextSchema>[]
-  vrf?: z.infer<typeof NestedVRFSchema>
-  wireless_lans?: z.infer<typeof NestedWirelessLANSchema>[]
-  wireless_link?: z.infer<typeof NestedWirelessLinkSchema>
-  wwn?: string | null
-}
-
-type LocationType = {
-  _depth?: number
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  device_count?: number
-  display?: string
-  id?: number
-  last_updated?: string | null
-  name: string
-  parent?: z.infer<typeof NestedLocationSchema>
-  rack_count?: number
-  site: z.infer<typeof NestedSiteSchema>
-  slug: string
-  status?: {
-    label: 'Planned' | 'Staging' | 'Active' | 'Decommissioning' | 'Retired'
-    value: 'planned' | 'staging' | 'active' | 'decommissioning' | 'retired'
-  }
-  tags?: z.infer<typeof NestedTagSchema>[]
-  tenant?: z.infer<typeof NestedTenantSchema>
-  url?: string
-}
-
-const NestedRegionSchema = z
-  .object({
-    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedRegion')
-
-type RegionType = {
-  _depth?: number
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  display?: string
-  id?: number
-  last_updated?: string | null
-  name: string
-  parent?: z.infer<typeof NestedRegionSchema>
-  site_count?: number
-  slug: string
-  tags?: z.infer<typeof NestedTagSchema>[]
-  url?: string
-}
-
-const NestedSiteGroupSchema = z
-  .object({
-    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedSiteGroup')
-
-type SiteGroupType = {
-  _depth?: number
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  display?: string
-  id?: number
-  last_updated?: string | null
-  name: string
-  parent?: z.infer<typeof NestedSiteGroupSchema>
-  site_count?: number
-  slug: string
-  tags?: z.infer<typeof NestedTagSchema>[]
-  url?: string
-}
-
-const NestedTenantGroupSchema = z
-  .object({
-    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    tenant_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Tenant count' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedTenantGroup')
-
-type TenantGroupType = {
-  _depth?: number
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  display?: string
-  id?: number
-  last_updated?: string | null
-  name: string
-  parent?: z.infer<typeof NestedTenantGroupSchema>
-  slug: string
-  tags?: z.infer<typeof NestedTagSchema>[]
-  tenant_count?: number
-  url?: string
-}
-
-const NestedVirtualMachineSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .nullable()
-  .openapi({ required: ['name'] })
-  .openapi('NestedVirtualMachine')
-
-const NestedVMInterfaceSchema = z
-  .object({
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    virtual_machine: NestedVirtualMachineSchema.exactOptional(),
-  })
-  .nullable()
-  .openapi({ required: ['name'] })
-  .openapi('NestedVMInterface')
-
-type VMInterfaceType = {
-  bridge?: z.infer<typeof NestedVMInterfaceSchema>
-  count_fhrp_groups?: number
-  count_ipaddresses?: number
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  display?: string
-  enabled?: boolean
-  id?: number
-  l2vpn_termination?: z.infer<typeof NestedL2VPNTerminationSchema>
-  last_updated?: string | null
-  mac_address?: string | null
-  mode?: { label: 'Access' | 'Tagged' | 'Tagged (All)'; value: 'access' | 'tagged' | 'tagged-all' }
-  mtu?: number | null
-  name: string
-  parent?: z.infer<typeof NestedVMInterfaceSchema>
-  tagged_vlans?: z.infer<typeof NestedVLANSchema>[]
-  tags?: z.infer<typeof NestedTagSchema>[]
-  untagged_vlan?: z.infer<typeof NestedVLANSchema>
-  url?: string
-  virtual_machine: z.infer<typeof NestedVirtualMachineSchema>
-  vrf?: z.infer<typeof NestedVRFSchema>
-}
-
-const NestedWirelessLANGroupSchema = z
-  .object({
-    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    wirelesslan_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Wirelesslan count' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedWirelessLANGroup')
-
-type WirelessLANGroupType = {
-  _depth?: number
-  created?: string | null
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  display?: string
-  id?: number
-  last_updated?: string | null
-  name: string
-  parent?: z.infer<typeof NestedWirelessLANGroupSchema>
-  slug: string
-  tags?: z.infer<typeof NestedTagSchema>[]
-  url?: string
-  wirelesslan_count?: number
-}
-
 const ASNSchema = z
   .object({
     asn: z
@@ -1413,7 +48,11 @@ const ASNSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -1457,7 +96,11 @@ const AggregateSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     date_added: z.iso.date().nullable().exactOptional().openapi({ title: 'Date added' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -1479,6 +122,27 @@ const AggregateSchema = z
   })
   .openapi({ required: ['prefix', 'rir'] })
   .openapi('Aggregate')
+
+const NestedVRFSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    prefix_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Prefix count' }),
+    rd: z
+      .string()
+      .max(21)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Unique route distinguisher (as defined in RFC 4364)',
+        title: 'Route distinguisher',
+      }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name'] })
+  .openapi('NestedVRF')
 
 const AvailableIPSchema = z
   .object({
@@ -1525,7 +189,7 @@ const AvailableVLANSchema = z
 
 const GenericObjectSchema = z
   .object({
-    object: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Object' }),
+    object: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Object' }),
     object_id: z.int().openapi({ title: 'Object id' }),
     object_type: z.string().openapi({ title: 'Object type' }),
   })
@@ -1548,7 +212,11 @@ const CableSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -1614,7 +282,10 @@ const CableTerminationSchema = z
     cable_end: z.enum(['A', 'B']).openapi({ title: 'End' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    termination: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Termination' }),
+    termination: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Termination' }),
     termination_id: z.int().min(0).max(9223372036854776000).openapi({ title: 'Termination id' }),
     termination_type: z.string().openapi({ title: 'Termination type' }),
     url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
@@ -1649,6 +320,23 @@ const NestedProviderNetworkSchema = z
   .nullable()
   .openapi({ required: ['name'] })
   .openapi('NestedProviderNetwork')
+
+const NestedSiteSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedSite')
 
 const CircuitCircuitTerminationSchema = z
   .object({
@@ -1713,7 +401,11 @@ const CircuitSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -1756,6 +448,16 @@ const CircuitSchema = z
   .openapi({ required: ['cid', 'provider', 'type'] })
   .openapi('Circuit')
 
+const NestedCableSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    label: z.string().max(100).exactOptional().openapi({ title: 'Label' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NestedCable')
+
 const NestedCircuitSchema = z
   .object({
     cid: z.string().min(1).max(100).openapi({ title: 'Circuit ID' }),
@@ -1777,7 +479,11 @@ const CircuitTerminationSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -1837,7 +543,11 @@ const CircuitTypeSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -1901,7 +611,11 @@ const ClusterSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -1941,7 +655,11 @@ const ClusterGroupSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -1971,7 +689,11 @@ const ClusterTypeSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -1992,6 +714,199 @@ const ClusterTypeSchema = z
   })
   .openapi({ required: ['name', 'slug'] })
   .openapi('ClusterType')
+
+const ModuleNestedModuleBaySchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('ModuleNestedModuleBay')
+
+const ComponentNestedModuleSchema = z
+  .object({
+    device: z.int().openapi({ title: 'Device' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    module_bay: ModuleNestedModuleBaySchema.exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['device'] })
+  .openapi('ComponentNestedModule')
+
+const NestedClusterSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtualmachine_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
+  })
+  .nullable()
+  .openapi({ required: ['name'] })
+  .openapi('NestedCluster')
+
+const NestedManufacturerSchema = z
+  .object({
+    devicetype_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Devicetype count' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedManufacturer')
+
+const NestedDeviceTypeSchema = z
+  .object({
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    manufacturer: NestedManufacturerSchema.exactOptional(),
+    model: z.string().min(1).max(100).openapi({ title: 'Model' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['model', 'slug'] })
+  .openapi('NestedDeviceType')
+
+const NestedLocationSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    rack_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Rack count' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedLocation')
+
+const NestedPlatformSchema = z
+  .object({
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtualmachine_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedPlatform')
+
+const NestedRegionSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedRegion')
+
+const NestedDeviceRoleSchema = z
+  .object({
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtualmachine_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedDeviceRole')
+
+const NestedSiteGroupSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedSiteGroup')
+
+const NestedTenantGroupSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    tenant_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Tenant count' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedTenantGroup')
 
 const ConfigContextSchema = z
   .object({
@@ -2033,7 +948,7 @@ const ConfigContextSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    data: z.object({}).openapi({ title: 'Data' }),
+    data: z.looseObject({}).openapi({ title: 'Data' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_types: z
       .array(NestedDeviceTypeSchema)
@@ -2160,6 +1075,16 @@ const ConfigContextSchema = z
   .openapi({ required: ['name', 'data'] })
   .openapi('ConfigContext')
 
+const NestedDeviceSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().max(64).nullable().exactOptional().openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NestedDevice')
+
 const ConsolePortSchema = z
   .object({
     _occupied: z.boolean().exactOptional().openapi({ readOnly: true, title: 'occupied' }),
@@ -2185,7 +1110,11 @@ const ConsolePortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -2400,7 +1329,11 @@ const ConsoleServerPortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -2578,6 +1511,25 @@ const ConsoleServerPortTemplateSchema = z
   .openapi({ required: ['name'] })
   .openapi('ConsoleServerPortTemplate')
 
+const NestedContactGroupSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    contact_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Contact count' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedContactGroup')
+
 const ContactSchema = z
   .object({
     address: z.string().max(200).exactOptional().openapi({ title: 'Address' }),
@@ -2587,7 +1539,11 @@ const ContactSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     email: z.email().max(254).exactOptional().openapi({ title: 'Email' }),
@@ -2651,7 +1607,7 @@ const ContactAssignmentSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Last updated' }),
-    object: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Object' }),
+    object: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Object' }),
     object_id: z.int().min(0).max(9223372036854776000).openapi({ title: 'Object id' }),
     priority: z
       .object({
@@ -2666,39 +1622,40 @@ const ContactAssignmentSchema = z
   .openapi({ required: ['content_type', 'object_id', 'contact'] })
   .openapi('ContactAssignment')
 
-const ContactGroupSchema: z.ZodType<ContactGroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-        contact_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Contact count' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-        parent: NestedContactGroupSchema.exactOptional(),
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(100)
-          .openapi({ title: 'Slug' }),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-      })
-      .openapi({ required: ['name', 'slug'] }),
-  )
+const ContactGroupSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    contact_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Contact count' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    parent: NestedContactGroupSchema.exactOptional(),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
   .openapi('ContactGroup')
 
 const ContactRoleSchema = z
@@ -2708,7 +1665,11 @@ const ContactRoleSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -2763,7 +1724,7 @@ const CustomFieldSchema = z
       .openapi({ readOnly: true, title: 'Created' }),
     data_type: z.string().exactOptional().openapi({ readOnly: true, title: 'Data type' }),
     default: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -2983,124 +1944,160 @@ const CustomLinkSchema = z
   .openapi({ required: ['content_types', 'name', 'link_text', 'link_url'] })
   .openapi('CustomLink')
 
-const DeviceSchema: z.ZodType<DeviceType> = z
-  .lazy(() =>
-    z
+const NestedIPAddressSchema = z
+  .object({
+    address: z
+      .string()
+      .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    family: z.int().exactOptional().openapi({ readOnly: true, title: 'Family' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['address'] })
+  .openapi('NestedIPAddress')
+
+const NestedRackSchema = z
+  .object({
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name'] })
+  .openapi('NestedRack')
+
+const NestedVirtualChassisSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    master: NestedDeviceSchema,
+    member_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Member count' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'master'] })
+  .openapi('NestedVirtualChassis')
+
+const DeviceSchema = z
+  .object({
+    airflow: z
       .object({
-        airflow: z
-          .object({
-            label: z.enum([
-              'Front to rear',
-              'Rear to front',
-              'Left to right',
-              'Right to left',
-              'Side to rear',
-              'Passive',
-              'Mixed',
-            ]),
-            value: z.enum([
-              'front-to-rear',
-              'rear-to-front',
-              'left-to-right',
-              'right-to-left',
-              'side-to-rear',
-              'passive',
-              'mixed',
-            ]),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Airflow' }),
-        asset_tag: z
-          .string()
-          .max(50)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'A unique tag used to identify this device',
-            title: 'Asset tag',
-          }),
-        cluster: NestedClusterSchema.exactOptional(),
-        comments: z.string().exactOptional().openapi({ title: 'Comments' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        device_role: NestedDeviceRoleSchema,
-        device_type: NestedDeviceTypeSchema,
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        face: z
-          .object({ label: z.enum(['Front', 'Rear']), value: z.enum(['front', 'rear']) })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Face' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        local_context_data: z
-          .object({})
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Local context data' }),
-        location: NestedLocationSchema.exactOptional(),
-        name: z.string().max(64).nullable().exactOptional().openapi({ title: 'Name' }),
-        parent_device: NestedDeviceSchema.exactOptional(),
-        platform: NestedPlatformSchema.exactOptional(),
-        position: z.number().min(0.5).nullable().exactOptional().openapi({ title: 'Position (U)' }),
-        primary_ip: NestedIPAddressSchema.exactOptional(),
-        primary_ip4: NestedIPAddressSchema.exactOptional(),
-        primary_ip6: NestedIPAddressSchema.exactOptional(),
-        rack: NestedRackSchema.exactOptional(),
-        serial: z.string().max(50).exactOptional().openapi({ title: 'Serial number' }),
-        site: NestedSiteSchema,
-        status: z
-          .object({
-            label: z.enum([
-              'Offline',
-              'Active',
-              'Planned',
-              'Staged',
-              'Failed',
-              'Inventory',
-              'Decommissioning',
-            ]),
-            value: z.enum([
-              'offline',
-              'active',
-              'planned',
-              'staged',
-              'failed',
-              'inventory',
-              'decommissioning',
-            ]),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Status' }),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        tenant: NestedTenantSchema.exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-        vc_position: z
-          .int()
-          .min(0)
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Vc position' }),
-        vc_priority: z
-          .int()
-          .min(0)
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Vc priority' }),
-        virtual_chassis: NestedVirtualChassisSchema.exactOptional(),
+        label: z.enum([
+          'Front to rear',
+          'Rear to front',
+          'Left to right',
+          'Right to left',
+          'Side to rear',
+          'Passive',
+          'Mixed',
+        ]),
+        value: z.enum([
+          'front-to-rear',
+          'rear-to-front',
+          'left-to-right',
+          'right-to-left',
+          'side-to-rear',
+          'passive',
+          'mixed',
+        ]),
       })
-      .openapi({ required: ['device_type', 'device_role', 'site'] }),
-  )
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Airflow' }),
+    asset_tag: z
+      .string()
+      .max(50)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A unique tag used to identify this device', title: 'Asset tag' }),
+    cluster: NestedClusterSchema.exactOptional(),
+    comments: z.string().exactOptional().openapi({ title: 'Comments' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    device_role: NestedDeviceRoleSchema,
+    device_type: NestedDeviceTypeSchema,
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    face: z
+      .object({ label: z.enum(['Front', 'Rear']), value: z.enum(['front', 'rear']) })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Face' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    local_context_data: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Local context data' }),
+    location: NestedLocationSchema.exactOptional(),
+    name: z.string().max(64).nullable().exactOptional().openapi({ title: 'Name' }),
+    parent_device: NestedDeviceSchema.exactOptional(),
+    platform: NestedPlatformSchema.exactOptional(),
+    position: z.number().min(0.5).nullable().exactOptional().openapi({ title: 'Position (U)' }),
+    primary_ip: NestedIPAddressSchema.exactOptional(),
+    primary_ip4: NestedIPAddressSchema.exactOptional(),
+    primary_ip6: NestedIPAddressSchema.exactOptional(),
+    rack: NestedRackSchema.exactOptional(),
+    serial: z.string().max(50).exactOptional().openapi({ title: 'Serial number' }),
+    site: NestedSiteSchema,
+    status: z
+      .object({
+        label: z.enum([
+          'Offline',
+          'Active',
+          'Planned',
+          'Staged',
+          'Failed',
+          'Inventory',
+          'Decommissioning',
+        ]),
+        value: z.enum([
+          'offline',
+          'active',
+          'planned',
+          'staged',
+          'failed',
+          'inventory',
+          'decommissioning',
+        ]),
+      })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Status' }),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    tenant: NestedTenantSchema.exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    vc_position: z
+      .int()
+      .min(0)
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Vc position' }),
+    vc_priority: z
+      .int()
+      .min(0)
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Vc priority' }),
+    virtual_chassis: NestedVirtualChassisSchema.exactOptional(),
+  })
+  .openapi({ required: ['device_type', 'device_role', 'site'] })
   .openapi('Device')
 
 const DeviceBaySchema = z
@@ -3110,7 +2107,11 @@ const DeviceBaySchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -3169,7 +2170,7 @@ const DeviceBayTemplateSchema = z
   .openapi('DeviceBayTemplate')
 
 const DeviceNAPALMSchema = z
-  .object({ method: z.object({}).openapi({ title: 'Method' }) })
+  .object({ method: z.looseObject({}).openapi({ title: 'Method' }) })
   .openapi({ required: ['method'] })
   .openapi('DeviceNAPALM')
 
@@ -3187,7 +2188,11 @@ const DeviceRoleSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -3249,7 +2254,11 @@ const DeviceTypeSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -3334,7 +2343,7 @@ const DeviceWithConfigContextSchema = z
     cluster: NestedClusterSchema.exactOptional(),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     config_context: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Config context' }),
     created: z.iso
@@ -3342,7 +2351,11 @@ const DeviceWithConfigContextSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_role: NestedDeviceRoleSchema,
     device_type: NestedDeviceTypeSchema,
@@ -3358,7 +2371,7 @@ const DeviceWithConfigContextSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Last updated' }),
     local_context_data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ title: 'Local context data' }),
@@ -3485,7 +2498,11 @@ const FHRPGroupSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     group_id: z.int().min(0).max(32767).openapi({ title: 'Group ID' }),
@@ -3529,7 +2546,7 @@ const FHRPGroupAssignmentSchema = z
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     group: NestedFHRPGroupSchema,
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    interface: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Interface' }),
+    interface: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Interface' }),
     interface_id: z.int().min(0).max(9223372036854776000).openapi({ title: 'Interface id' }),
     interface_type: z.string().openapi({ title: 'Interface type' }),
     last_updated: z.iso
@@ -3575,7 +2592,11 @@ const FrontPortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -3886,98 +2907,81 @@ const GroupSchema = z
   .openapi({ required: ['name'] })
   .openapi('Group')
 
-const IPAddressSchema: z.ZodType<IPAddressType> = z
-  .lazy(() =>
-    z
+const IPAddressSchema = z
+  .object({
+    address: z
+      .string()
+      .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
+    assigned_object: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Assigned object' }),
+    assigned_object_id: z
+      .int()
+      .min(0)
+      .max(9223372036854776000)
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Assigned object id' }),
+    assigned_object_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Assigned object type' }),
+    comments: z.string().exactOptional().openapi({ title: 'Comments' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    dns_name: z
+      .string()
+      .regex(/^([0-9A-Za-z_-]+|\*)(\.[0-9A-Za-z_-]+)*\.?$/)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'Hostname or FQDN (not case-sensitive)', title: 'DNS Name' }),
+    family: z
+      .object({ label: z.enum(['IPv4', 'IPv6']), value: z.union([z.literal(4), z.literal(6)]) })
+      .exactOptional()
+      .openapi({ readOnly: true, required: ['label', 'value'], title: 'Family' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    nat_inside: NestedIPAddressSchema.exactOptional(),
+    nat_outside: z.array(NestedIPAddressSchema).exactOptional().openapi({ readOnly: true }),
+    role: z
       .object({
-        address: z
-          .string()
-          .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
-        assigned_object: z
-          .object({})
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Assigned object' }),
-        assigned_object_id: z
-          .int()
-          .min(0)
-          .max(9223372036854776000)
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Assigned object id' }),
-        assigned_object_type: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Assigned object type' }),
-        comments: z.string().exactOptional().openapi({ title: 'Comments' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        dns_name: z
-          .string()
-          .regex(/^([0-9A-Za-z_-]+|\*)(\.[0-9A-Za-z_-]+)*\.?$/)
-          .max(255)
-          .exactOptional()
-          .openapi({ description: 'Hostname or FQDN (not case-sensitive)', title: 'DNS Name' }),
-        family: z
-          .object({ label: z.enum(['IPv4', 'IPv6']), value: z.union([z.literal(4), z.literal(6)]) })
-          .exactOptional()
-          .openapi({ readOnly: true, required: ['label', 'value'], title: 'Family' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        nat_inside: NestedIPAddressSchema.exactOptional(),
-        nat_outside: z.array(NestedIPAddressSchema).exactOptional().openapi({ readOnly: true }),
-        role: z
-          .object({
-            label: z.enum([
-              'Loopback',
-              'Secondary',
-              'Anycast',
-              'VIP',
-              'VRRP',
-              'HSRP',
-              'GLBP',
-              'CARP',
-            ]),
-            value: z.enum([
-              'loopback',
-              'secondary',
-              'anycast',
-              'vip',
-              'vrrp',
-              'hsrp',
-              'glbp',
-              'carp',
-            ]),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Role' }),
-        status: z
-          .object({
-            label: z.enum(['Active', 'Reserved', 'Deprecated', 'DHCP', 'SLAAC']),
-            value: z.enum(['active', 'reserved', 'deprecated', 'dhcp', 'slaac']),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Status' }),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        tenant: NestedTenantSchema.exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-        vrf: NestedVRFSchema.exactOptional(),
+        label: z.enum(['Loopback', 'Secondary', 'Anycast', 'VIP', 'VRRP', 'HSRP', 'GLBP', 'CARP']),
+        value: z.enum(['loopback', 'secondary', 'anycast', 'vip', 'vrrp', 'hsrp', 'glbp', 'carp']),
       })
-      .openapi({ required: ['address'] }),
-  )
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Role' }),
+    status: z
+      .object({
+        label: z.enum(['Active', 'Reserved', 'Deprecated', 'DHCP', 'SLAAC']),
+        value: z.enum(['active', 'reserved', 'deprecated', 'dhcp', 'slaac']),
+      })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Status' }),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    tenant: NestedTenantSchema.exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    vrf: NestedVRFSchema.exactOptional(),
+  })
+  .openapi({ required: ['address'] })
   .openapi('IPAddress')
 
-const IPNetworkSchema = z.object({}).openapi('IPNetwork')
+const IPNetworkSchema = z.looseObject({}).openapi('IPNetwork')
 
 const NestedRoleSchema = z
   .object({
@@ -4007,7 +3011,11 @@ const IPRangeSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     end_address: z
@@ -4063,837 +3071,947 @@ const ImageAttachmentSchema = z
       .openapi({ readOnly: true, title: 'Last updated' }),
     name: z.string().max(50).exactOptional().openapi({ title: 'Name' }),
     object_id: z.int().min(0).max(9223372036854776000).openapi({ title: 'Object id' }),
-    parent: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Parent' }),
+    parent: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Parent' }),
     url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
   })
   .openapi({ required: ['content_type', 'object_id', 'image_height', 'image_width'] })
   .openapi('ImageAttachment')
 
-const InterfaceSchema: z.ZodType<InterfaceType> = z
-  .lazy(() =>
-    z
+const NestedInterfaceSchema = z
+  .object({
+    _occupied: z.boolean().exactOptional().openapi({ readOnly: true, title: 'occupied' }),
+    cable: z.int().nullable().exactOptional().openapi({ title: 'Cable' }),
+    device: NestedDeviceSchema.exactOptional(),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name'] })
+  .openapi('NestedInterface')
+
+const NestedL2VPNSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    identifier: z
+      .int()
+      .min(-9223372036854776000)
+      .max(9223372036854776000)
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Identifier' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    type: z
+      .enum([
+        'vpws',
+        'vpls',
+        'vxlan',
+        'vxlan-evpn',
+        'mpls-evpn',
+        'pbb-evpn',
+        'epl',
+        'evpl',
+        'ep-lan',
+        'evp-lan',
+        'ep-tree',
+        'evp-tree',
+      ])
+      .openapi({ title: 'Type' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug', 'type'] })
+  .openapi('NestedL2VPN')
+
+const NestedL2VPNTerminationSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    l2vpn: NestedL2VPNSchema,
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['l2vpn'] })
+  .openapi('NestedL2VPNTermination')
+
+const NestedVLANSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    vid: z.int().min(1).max(4094).openapi({ title: 'ID' }),
+  })
+  .nullable()
+  .openapi({ required: ['vid', 'name'] })
+  .openapi('NestedVLAN')
+
+const NestedVirtualDeviceContextSchema = z
+  .object({
+    device: NestedDeviceSchema,
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    identifier: z
+      .int()
+      .min(0)
+      .max(32767)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Numeric identifier unique to the parent device',
+        title: 'Identifier',
+      }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'device'] })
+  .openapi('NestedVirtualDeviceContext')
+
+const NestedWirelessLANSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    ssid: z.string().min(1).max(32).openapi({ title: 'SSID' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['ssid'] })
+  .openapi('NestedWirelessLAN')
+
+const NestedWirelessLinkSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    ssid: z.string().max(32).exactOptional().openapi({ title: 'SSID' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NestedWirelessLink')
+
+const InterfaceSchema = z
+  .object({
+    _occupied: z.boolean().exactOptional().openapi({ readOnly: true, title: 'occupied' }),
+    bridge: NestedInterfaceSchema.exactOptional(),
+    cable: NestedCableSchema.exactOptional(),
+    cable_end: z.string().min(1).exactOptional().openapi({ readOnly: true, title: 'Cable end' }),
+    connected_endpoints: z
+      .array(z.string().nullable())
+      .exactOptional()
+      .openapi({
+        description: '\nReturn the appropriate serializer for the type of connected object.\n',
+        readOnly: true,
+      }),
+    connected_endpoints_reachable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Connected endpoints reachable' }),
+    connected_endpoints_type: z
+      .string()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Connected endpoints type' }),
+    count_fhrp_groups: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Count fhrp groups' }),
+    count_ipaddresses: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Count ipaddresses' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    device: NestedDeviceSchema,
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    duplex: z
+      .object({ label: z.enum(['Half', 'Full', 'Auto']), value: z.enum(['half', 'full', 'auto']) })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Duplex' }),
+    enabled: z.boolean().exactOptional().openapi({ title: 'Enabled' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    l2vpn_termination: NestedL2VPNTerminationSchema.exactOptional(),
+    label: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({ description: 'Physical label', title: 'Label' }),
+    lag: NestedInterfaceSchema.exactOptional(),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    link_peers: z
+      .array(z.string().nullable())
+      .exactOptional()
+      .openapi({
+        description: '\nReturn the appropriate serializer for the link termination model.\n',
+        readOnly: true,
+      }),
+    link_peers_type: z
+      .string()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Link peers type' }),
+    mac_address: z.string().nullable().exactOptional().openapi({ title: 'MAC Address' }),
+    mark_connected: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Treat as if a cable is connected', title: 'Mark connected' }),
+    mgmt_only: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'This interface is used only for out-of-band management',
+        title: 'Management only',
+      }),
+    mode: z
       .object({
-        _occupied: z.boolean().exactOptional().openapi({ readOnly: true, title: 'occupied' }),
-        bridge: NestedInterfaceSchema.exactOptional(),
-        cable: NestedCableSchema.exactOptional(),
-        cable_end: z
-          .string()
-          .min(1)
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Cable end' }),
-        connected_endpoints: z
-          .array(z.string().nullable())
-          .exactOptional()
-          .openapi({
-            description: '\nReturn the appropriate serializer for the type of connected object.\n',
-            readOnly: true,
-          }),
-        connected_endpoints_reachable: z
-          .boolean()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Connected endpoints reachable' }),
-        connected_endpoints_type: z
-          .string()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Connected endpoints type' }),
-        count_fhrp_groups: z
-          .int()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Count fhrp groups' }),
-        count_ipaddresses: z
-          .int()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Count ipaddresses' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        device: NestedDeviceSchema,
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        duplex: z
-          .object({
-            label: z.enum(['Half', 'Full', 'Auto']),
-            value: z.enum(['half', 'full', 'auto']),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Duplex' }),
-        enabled: z.boolean().exactOptional().openapi({ title: 'Enabled' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        l2vpn_termination: NestedL2VPNTerminationSchema.exactOptional(),
-        label: z
-          .string()
-          .max(64)
-          .exactOptional()
-          .openapi({ description: 'Physical label', title: 'Label' }),
-        lag: NestedInterfaceSchema.exactOptional(),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        link_peers: z
-          .array(z.string().nullable())
-          .exactOptional()
-          .openapi({
-            description: '\nReturn the appropriate serializer for the link termination model.\n',
-            readOnly: true,
-          }),
-        link_peers_type: z
-          .string()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Link peers type' }),
-        mac_address: z.string().nullable().exactOptional().openapi({ title: 'MAC Address' }),
-        mark_connected: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Treat as if a cable is connected', title: 'Mark connected' }),
-        mgmt_only: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'This interface is used only for out-of-band management',
-            title: 'Management only',
-          }),
-        mode: z
-          .object({
-            label: z.enum(['Access', 'Tagged', 'Tagged (All)']),
-            value: z.enum(['access', 'tagged', 'tagged-all']),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Mode' }),
-        module: ComponentNestedModuleSchema.exactOptional(),
-        mtu: z.int().min(1).max(65536).nullable().exactOptional().openapi({ title: 'MTU' }),
-        name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-        parent: NestedInterfaceSchema.exactOptional(),
-        poe_mode: z
-          .object({ label: z.enum(['PD', 'PSE']), value: z.enum(['pd', 'pse']) })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Poe mode' }),
-        poe_type: z
-          .object({
-            label: z.enum([
-              '802.3af (Type 1)',
-              '802.3at (Type 2)',
-              '802.3az (Type 2)',
-              '802.3bt (Type 3)',
-              '802.3bt (Type 4)',
-              'Passive 24V (2-pair)',
-              'Passive 24V (4-pair)',
-              'Passive 48V (2-pair)',
-              'Passive 48V (4-pair)',
-            ]),
-            value: z.enum([
-              'type1-ieee802.3af',
-              'type2-ieee802.3at',
-              'type2-ieee802.3az',
-              'type3-ieee802.3bt',
-              'type4-ieee802.3bt',
-              'passive-24v-2pair',
-              'passive-24v-4pair',
-              'passive-48v-2pair',
-              'passive-48v-4pair',
-            ]),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Poe type' }),
-        rf_channel: z
-          .object({
-            label: z.enum([
-              '1 (2412 MHz)',
-              '2 (2417 MHz)',
-              '3 (2422 MHz)',
-              '4 (2427 MHz)',
-              '5 (2432 MHz)',
-              '6 (2437 MHz)',
-              '7 (2442 MHz)',
-              '8 (2447 MHz)',
-              '9 (2452 MHz)',
-              '10 (2457 MHz)',
-              '11 (2462 MHz)',
-              '12 (2467 MHz)',
-              '13 (2472 MHz)',
-              '32 (5160/20 MHz)',
-              '34 (5170/40 MHz)',
-              '36 (5180/20 MHz)',
-              '38 (5190/40 MHz)',
-              '40 (5200/20 MHz)',
-              '42 (5210/80 MHz)',
-              '44 (5220/20 MHz)',
-              '46 (5230/40 MHz)',
-              '48 (5240/20 MHz)',
-              '50 (5250/160 MHz)',
-              '52 (5260/20 MHz)',
-              '54 (5270/40 MHz)',
-              '56 (5280/20 MHz)',
-              '58 (5290/80 MHz)',
-              '60 (5300/20 MHz)',
-              '62 (5310/40 MHz)',
-              '64 (5320/20 MHz)',
-              '100 (5500/20 MHz)',
-              '102 (5510/40 MHz)',
-              '104 (5520/20 MHz)',
-              '106 (5530/80 MHz)',
-              '108 (5540/20 MHz)',
-              '110 (5550/40 MHz)',
-              '112 (5560/20 MHz)',
-              '114 (5570/160 MHz)',
-              '116 (5580/20 MHz)',
-              '118 (5590/40 MHz)',
-              '120 (5600/20 MHz)',
-              '122 (5610/80 MHz)',
-              '124 (5620/20 MHz)',
-              '126 (5630/40 MHz)',
-              '128 (5640/20 MHz)',
-              '132 (5660/20 MHz)',
-              '134 (5670/40 MHz)',
-              '136 (5680/20 MHz)',
-              '138 (5690/80 MHz)',
-              '140 (5700/20 MHz)',
-              '142 (5710/40 MHz)',
-              '144 (5720/20 MHz)',
-              '149 (5745/20 MHz)',
-              '151 (5755/40 MHz)',
-              '153 (5765/20 MHz)',
-              '155 (5775/80 MHz)',
-              '157 (5785/20 MHz)',
-              '159 (5795/40 MHz)',
-              '161 (5805/20 MHz)',
-              '163 (5815/160 MHz)',
-              '165 (5825/20 MHz)',
-              '167 (5835/40 MHz)',
-              '169 (5845/20 MHz)',
-              '171 (5855/80 MHz)',
-              '173 (5865/20 MHz)',
-              '175 (5875/40 MHz)',
-              '177 (5885/20 MHz)',
-              '1 (5955/20 MHz)',
-              '3 (5965/40 MHz)',
-              '5 (5975/20 MHz)',
-              '7 (5985/80 MHz)',
-              '9 (5995/20 MHz)',
-              '11 (6005/40 MHz)',
-              '13 (6015/20 MHz)',
-              '15 (6025/160 MHz)',
-              '17 (6035/20 MHz)',
-              '19 (6045/40 MHz)',
-              '21 (6055/20 MHz)',
-              '23 (6065/80 MHz)',
-              '25 (6075/20 MHz)',
-              '27 (6085/40 MHz)',
-              '29 (6095/20 MHz)',
-              '31 (6105/320 MHz)',
-              '33 (6115/20 MHz)',
-              '35 (6125/40 MHz)',
-              '37 (6135/20 MHz)',
-              '39 (6145/80 MHz)',
-              '41 (6155/20 MHz)',
-              '43 (6165/40 MHz)',
-              '45 (6175/20 MHz)',
-              '47 (6185/160 MHz)',
-              '49 (6195/20 MHz)',
-              '51 (6205/40 MHz)',
-              '53 (6215/20 MHz)',
-              '55 (6225/80 MHz)',
-              '57 (6235/20 MHz)',
-              '59 (6245/40 MHz)',
-              '61 (6255/20 MHz)',
-              '65 (6275/20 MHz)',
-              '67 (6285/40 MHz)',
-              '69 (6295/20 MHz)',
-              '71 (6305/80 MHz)',
-              '73 (6315/20 MHz)',
-              '75 (6325/40 MHz)',
-              '77 (6335/20 MHz)',
-              '79 (6345/160 MHz)',
-              '81 (6355/20 MHz)',
-              '83 (6365/40 MHz)',
-              '85 (6375/20 MHz)',
-              '87 (6385/80 MHz)',
-              '89 (6395/20 MHz)',
-              '91 (6405/40 MHz)',
-              '93 (6415/20 MHz)',
-              '95 (6425/320 MHz)',
-              '97 (6435/20 MHz)',
-              '99 (6445/40 MHz)',
-              '101 (6455/20 MHz)',
-              '103 (6465/80 MHz)',
-              '105 (6475/20 MHz)',
-              '107 (6485/40 MHz)',
-              '109 (6495/20 MHz)',
-              '111 (6505/160 MHz)',
-              '113 (6515/20 MHz)',
-              '115 (6525/40 MHz)',
-              '117 (6535/20 MHz)',
-              '119 (6545/80 MHz)',
-              '121 (6555/20 MHz)',
-              '123 (6565/40 MHz)',
-              '125 (6575/20 MHz)',
-              '129 (6595/20 MHz)',
-              '131 (6605/40 MHz)',
-              '133 (6615/20 MHz)',
-              '135 (6625/80 MHz)',
-              '137 (6635/20 MHz)',
-              '139 (6645/40 MHz)',
-              '141 (6655/20 MHz)',
-              '143 (6665/160 MHz)',
-              '145 (6675/20 MHz)',
-              '147 (6685/40 MHz)',
-              '149 (6695/20 MHz)',
-              '151 (6705/80 MHz)',
-              '153 (6715/20 MHz)',
-              '155 (6725/40 MHz)',
-              '157 (6735/20 MHz)',
-              '159 (6745/320 MHz)',
-              '161 (6755/20 MHz)',
-              '163 (6765/40 MHz)',
-              '165 (6775/20 MHz)',
-              '167 (6785/80 MHz)',
-              '169 (6795/20 MHz)',
-              '171 (6805/40 MHz)',
-              '173 (6815/20 MHz)',
-              '175 (6825/160 MHz)',
-              '177 (6835/20 MHz)',
-              '179 (6845/40 MHz)',
-              '181 (6855/20 MHz)',
-              '183 (6865/80 MHz)',
-              '185 (6875/20 MHz)',
-              '187 (6885/40 MHz)',
-              '189 (6895/20 MHz)',
-              '193 (6915/20 MHz)',
-              '195 (6925/40 MHz)',
-              '197 (6935/20 MHz)',
-              '199 (6945/80 MHz)',
-              '201 (6955/20 MHz)',
-              '203 (6965/40 MHz)',
-              '205 (6975/20 MHz)',
-              '207 (6985/160 MHz)',
-              '209 (6995/20 MHz)',
-              '211 (7005/40 MHz)',
-              '213 (7015/20 MHz)',
-              '215 (7025/80 MHz)',
-              '217 (7035/20 MHz)',
-              '219 (7045/40 MHz)',
-              '221 (7055/20 MHz)',
-              '225 (7075/20 MHz)',
-              '227 (7085/40 MHz)',
-              '229 (7095/20 MHz)',
-              '233 (7115/20 MHz)',
-              '1 (58.32/2.16 GHz)',
-              '2 (60.48/2.16 GHz)',
-              '3 (62.64/2.16 GHz)',
-              '4 (64.80/2.16 GHz)',
-              '5 (66.96/2.16 GHz)',
-              '6 (69.12/2.16 GHz)',
-              '9 (59.40/4.32 GHz)',
-              '10 (61.56/4.32 GHz)',
-              '11 (63.72/4.32 GHz)',
-              '12 (65.88/4.32 GHz)',
-              '13 (68.04/4.32 GHz)',
-              '17 (60.48/6.48 GHz)',
-              '18 (62.64/6.48 GHz)',
-              '19 (64.80/6.48 GHz)',
-              '20 (66.96/6.48 GHz)',
-              '25 (61.56/8.64 GHz)',
-              '26 (63.72/8.64 GHz)',
-              '27 (65.88/8.64 GHz)',
-            ]),
-            value: z.enum([
-              '2.4g-1-2412-22',
-              '2.4g-2-2417-22',
-              '2.4g-3-2422-22',
-              '2.4g-4-2427-22',
-              '2.4g-5-2432-22',
-              '2.4g-6-2437-22',
-              '2.4g-7-2442-22',
-              '2.4g-8-2447-22',
-              '2.4g-9-2452-22',
-              '2.4g-10-2457-22',
-              '2.4g-11-2462-22',
-              '2.4g-12-2467-22',
-              '2.4g-13-2472-22',
-              '5g-32-5160-20',
-              '5g-34-5170-40',
-              '5g-36-5180-20',
-              '5g-38-5190-40',
-              '5g-40-5200-20',
-              '5g-42-5210-80',
-              '5g-44-5220-20',
-              '5g-46-5230-40',
-              '5g-48-5240-20',
-              '5g-50-5250-160',
-              '5g-52-5260-20',
-              '5g-54-5270-40',
-              '5g-56-5280-20',
-              '5g-58-5290-80',
-              '5g-60-5300-20',
-              '5g-62-5310-40',
-              '5g-64-5320-20',
-              '5g-100-5500-20',
-              '5g-102-5510-40',
-              '5g-104-5520-20',
-              '5g-106-5530-80',
-              '5g-108-5540-20',
-              '5g-110-5550-40',
-              '5g-112-5560-20',
-              '5g-114-5570-160',
-              '5g-116-5580-20',
-              '5g-118-5590-40',
-              '5g-120-5600-20',
-              '5g-122-5610-80',
-              '5g-124-5620-20',
-              '5g-126-5630-40',
-              '5g-128-5640-20',
-              '5g-132-5660-20',
-              '5g-134-5670-40',
-              '5g-136-5680-20',
-              '5g-138-5690-80',
-              '5g-140-5700-20',
-              '5g-142-5710-40',
-              '5g-144-5720-20',
-              '5g-149-5745-20',
-              '5g-151-5755-40',
-              '5g-153-5765-20',
-              '5g-155-5775-80',
-              '5g-157-5785-20',
-              '5g-159-5795-40',
-              '5g-161-5805-20',
-              '5g-163-5815-160',
-              '5g-165-5825-20',
-              '5g-167-5835-40',
-              '5g-169-5845-20',
-              '5g-171-5855-80',
-              '5g-173-5865-20',
-              '5g-175-5875-40',
-              '5g-177-5885-20',
-              '6g-1-5955-20',
-              '6g-3-5965-40',
-              '6g-5-5975-20',
-              '6g-7-5985-80',
-              '6g-9-5995-20',
-              '6g-11-6005-40',
-              '6g-13-6015-20',
-              '6g-15-6025-160',
-              '6g-17-6035-20',
-              '6g-19-6045-40',
-              '6g-21-6055-20',
-              '6g-23-6065-80',
-              '6g-25-6075-20',
-              '6g-27-6085-40',
-              '6g-29-6095-20',
-              '6g-31-6105-320',
-              '6g-33-6115-20',
-              '6g-35-6125-40',
-              '6g-37-6135-20',
-              '6g-39-6145-80',
-              '6g-41-6155-20',
-              '6g-43-6165-40',
-              '6g-45-6175-20',
-              '6g-47-6185-160',
-              '6g-49-6195-20',
-              '6g-51-6205-40',
-              '6g-53-6215-20',
-              '6g-55-6225-80',
-              '6g-57-6235-20',
-              '6g-59-6245-40',
-              '6g-61-6255-20',
-              '6g-65-6275-20',
-              '6g-67-6285-40',
-              '6g-69-6295-20',
-              '6g-71-6305-80',
-              '6g-73-6315-20',
-              '6g-75-6325-40',
-              '6g-77-6335-20',
-              '6g-79-6345-160',
-              '6g-81-6355-20',
-              '6g-83-6365-40',
-              '6g-85-6375-20',
-              '6g-87-6385-80',
-              '6g-89-6395-20',
-              '6g-91-6405-40',
-              '6g-93-6415-20',
-              '6g-95-6425-320',
-              '6g-97-6435-20',
-              '6g-99-6445-40',
-              '6g-101-6455-20',
-              '6g-103-6465-80',
-              '6g-105-6475-20',
-              '6g-107-6485-40',
-              '6g-109-6495-20',
-              '6g-111-6505-160',
-              '6g-113-6515-20',
-              '6g-115-6525-40',
-              '6g-117-6535-20',
-              '6g-119-6545-80',
-              '6g-121-6555-20',
-              '6g-123-6565-40',
-              '6g-125-6575-20',
-              '6g-129-6595-20',
-              '6g-131-6605-40',
-              '6g-133-6615-20',
-              '6g-135-6625-80',
-              '6g-137-6635-20',
-              '6g-139-6645-40',
-              '6g-141-6655-20',
-              '6g-143-6665-160',
-              '6g-145-6675-20',
-              '6g-147-6685-40',
-              '6g-149-6695-20',
-              '6g-151-6705-80',
-              '6g-153-6715-20',
-              '6g-155-6725-40',
-              '6g-157-6735-20',
-              '6g-159-6745-320',
-              '6g-161-6755-20',
-              '6g-163-6765-40',
-              '6g-165-6775-20',
-              '6g-167-6785-80',
-              '6g-169-6795-20',
-              '6g-171-6805-40',
-              '6g-173-6815-20',
-              '6g-175-6825-160',
-              '6g-177-6835-20',
-              '6g-179-6845-40',
-              '6g-181-6855-20',
-              '6g-183-6865-80',
-              '6g-185-6875-20',
-              '6g-187-6885-40',
-              '6g-189-6895-20',
-              '6g-193-6915-20',
-              '6g-195-6925-40',
-              '6g-197-6935-20',
-              '6g-199-6945-80',
-              '6g-201-6955-20',
-              '6g-203-6965-40',
-              '6g-205-6975-20',
-              '6g-207-6985-160',
-              '6g-209-6995-20',
-              '6g-211-7005-40',
-              '6g-213-7015-20',
-              '6g-215-7025-80',
-              '6g-217-7035-20',
-              '6g-219-7045-40',
-              '6g-221-7055-20',
-              '6g-225-7075-20',
-              '6g-227-7085-40',
-              '6g-229-7095-20',
-              '6g-233-7115-20',
-              '60g-1-58320-2160',
-              '60g-2-60480-2160',
-              '60g-3-62640-2160',
-              '60g-4-64800-2160',
-              '60g-5-66960-2160',
-              '60g-6-69120-2160',
-              '60g-9-59400-4320',
-              '60g-10-61560-4320',
-              '60g-11-63720-4320',
-              '60g-12-65880-4320',
-              '60g-13-68040-4320',
-              '60g-17-60480-6480',
-              '60g-18-62640-6480',
-              '60g-19-64800-6480',
-              '60g-20-66960-6480',
-              '60g-25-61560-6480',
-              '60g-26-63720-6480',
-              '60g-27-65880-6480',
-            ]),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Rf channel' }),
-        rf_channel_frequency: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Channel frequency (MHz)' }),
-        rf_channel_width: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Channel width (MHz)' }),
-        rf_role: z
-          .object({ label: z.enum(['Access point', 'Station']), value: z.enum(['ap', 'station']) })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Rf role' }),
-        speed: z
-          .int()
-          .min(0)
-          .max(2147483647)
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Speed (Kbps)' }),
-        tagged_vlans: z
-          .array(NestedVLANSchema)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional(),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        tx_power: z
-          .int()
-          .min(0)
-          .max(127)
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Transmit power (dBm)' }),
-        type: z
-          .object({
-            label: z.enum([
-              'Virtual',
-              'Bridge',
-              'Link Aggregation Group (LAG)',
-              '100BASE-FX (10/100ME FIBER)',
-              '100BASE-LFX (10/100ME FIBER)',
-              '100BASE-TX (10/100ME)',
-              '100BASE-T1 (10/100ME Single Pair)',
-              '1000BASE-T (1GE)',
-              '2.5GBASE-T (2.5GE)',
-              '5GBASE-T (5GE)',
-              '10GBASE-T (10GE)',
-              '10GBASE-CX4 (10GE)',
-              'GBIC (1GE)',
-              'SFP (1GE)',
-              'SFP+ (10GE)',
-              'XFP (10GE)',
-              'XENPAK (10GE)',
-              'X2 (10GE)',
-              'SFP28 (25GE)',
-              'SFP56 (50GE)',
-              'QSFP+ (40GE)',
-              'QSFP28 (50GE)',
-              'CFP (100GE)',
-              'CFP2 (100GE)',
-              'CFP2 (200GE)',
-              'CFP4 (100GE)',
-              'Cisco CPAK (100GE)',
-              'QSFP28 (100GE)',
-              'QSFP56 (200GE)',
-              'QSFP-DD (400GE)',
-              'OSFP (400GE)',
-              'QSFP-DD (800GE)',
-              'OSFP (800GE)',
-              '1000BASE-KX (1GE)',
-              '10GBASE-KR (10GE)',
-              '10GBASE-KX4 (10GE)',
-              '25GBASE-KR (25GE)',
-              '40GBASE-KR4 (40GE)',
-              '50GBASE-KR (50GE)',
-              '100GBASE-KP4 (100GE)',
-              '100GBASE-KR2 (100GE)',
-              '100GBASE-KR4 (100GE)',
-              'IEEE 802.11a',
-              'IEEE 802.11b/g',
-              'IEEE 802.11n',
-              'IEEE 802.11ac',
-              'IEEE 802.11ad',
-              'IEEE 802.11ax',
-              'IEEE 802.11ay',
-              'IEEE 802.15.1 (Bluetooth)',
-              'Other (Wireless)',
-              'GSM',
-              'CDMA',
-              'LTE',
-              'OC-3/STM-1',
-              'OC-12/STM-4',
-              'OC-48/STM-16',
-              'OC-192/STM-64',
-              'OC-768/STM-256',
-              'OC-1920/STM-640',
-              'OC-3840/STM-1234',
-              'SFP (1GFC)',
-              'SFP (2GFC)',
-              'SFP (4GFC)',
-              'SFP+ (8GFC)',
-              'SFP+ (16GFC)',
-              'SFP28 (32GFC)',
-              'QSFP+ (64GFC)',
-              'QSFP28 (128GFC)',
-              'SDR (2 Gbps)',
-              'DDR (4 Gbps)',
-              'QDR (8 Gbps)',
-              'FDR10 (10 Gbps)',
-              'FDR (13.5 Gbps)',
-              'EDR (25 Gbps)',
-              'HDR (50 Gbps)',
-              'NDR (100 Gbps)',
-              'XDR (250 Gbps)',
-              'T1 (1.544 Mbps)',
-              'E1 (2.048 Mbps)',
-              'T3 (45 Mbps)',
-              'E3 (34 Mbps)',
-              'xDSL',
-              'DOCSIS',
-              'GPON (2.5 Gbps / 1.25 Gps)',
-              'XG-PON (10 Gbps / 2.5 Gbps)',
-              'XGS-PON (10 Gbps)',
-              'NG-PON2 (TWDM-PON) (4x10 Gbps)',
-              'EPON (1 Gbps)',
-              '10G-EPON (10 Gbps)',
-              'Cisco StackWise',
-              'Cisco StackWise Plus',
-              'Cisco FlexStack',
-              'Cisco FlexStack Plus',
-              'Cisco StackWise-80',
-              'Cisco StackWise-160',
-              'Cisco StackWise-320',
-              'Cisco StackWise-480',
-              'Cisco StackWise-1T',
-              'Juniper VCP',
-              'Extreme SummitStack',
-              'Extreme SummitStack-128',
-              'Extreme SummitStack-256',
-              'Extreme SummitStack-512',
-              'Other',
-            ]),
-            value: z.enum([
-              'virtual',
-              'bridge',
-              'lag',
-              '100base-fx',
-              '100base-lfx',
-              '100base-tx',
-              '100base-t1',
-              '1000base-t',
-              '2.5gbase-t',
-              '5gbase-t',
-              '10gbase-t',
-              '10gbase-cx4',
-              '1000base-x-gbic',
-              '1000base-x-sfp',
-              '10gbase-x-sfpp',
-              '10gbase-x-xfp',
-              '10gbase-x-xenpak',
-              '10gbase-x-x2',
-              '25gbase-x-sfp28',
-              '50gbase-x-sfp56',
-              '40gbase-x-qsfpp',
-              '50gbase-x-sfp28',
-              '100gbase-x-cfp',
-              '100gbase-x-cfp2',
-              '200gbase-x-cfp2',
-              '100gbase-x-cfp4',
-              '100gbase-x-cpak',
-              '100gbase-x-qsfp28',
-              '200gbase-x-qsfp56',
-              '400gbase-x-qsfpdd',
-              '400gbase-x-osfp',
-              '800gbase-x-qsfpdd',
-              '800gbase-x-osfp',
-              '1000base-kx',
-              '10gbase-kr',
-              '10gbase-kx4',
-              '25gbase-kr',
-              '40gbase-kr4',
-              '50gbase-kr',
-              '100gbase-kp4',
-              '100gbase-kr2',
-              '100gbase-kr4',
-              'ieee802.11a',
-              'ieee802.11g',
-              'ieee802.11n',
-              'ieee802.11ac',
-              'ieee802.11ad',
-              'ieee802.11ax',
-              'ieee802.11ay',
-              'ieee802.15.1',
-              'other-wireless',
-              'gsm',
-              'cdma',
-              'lte',
-              'sonet-oc3',
-              'sonet-oc12',
-              'sonet-oc48',
-              'sonet-oc192',
-              'sonet-oc768',
-              'sonet-oc1920',
-              'sonet-oc3840',
-              '1gfc-sfp',
-              '2gfc-sfp',
-              '4gfc-sfp',
-              '8gfc-sfpp',
-              '16gfc-sfpp',
-              '32gfc-sfp28',
-              '64gfc-qsfpp',
-              '128gfc-qsfp28',
-              'infiniband-sdr',
-              'infiniband-ddr',
-              'infiniband-qdr',
-              'infiniband-fdr10',
-              'infiniband-fdr',
-              'infiniband-edr',
-              'infiniband-hdr',
-              'infiniband-ndr',
-              'infiniband-xdr',
-              't1',
-              'e1',
-              't3',
-              'e3',
-              'xdsl',
-              'docsis',
-              'gpon',
-              'xg-pon',
-              'xgs-pon',
-              'ng-pon2',
-              'epon',
-              '10g-epon',
-              'cisco-stackwise',
-              'cisco-stackwise-plus',
-              'cisco-flexstack',
-              'cisco-flexstack-plus',
-              'cisco-stackwise-80',
-              'cisco-stackwise-160',
-              'cisco-stackwise-320',
-              'cisco-stackwise-480',
-              'cisco-stackwise-1t',
-              'juniper-vcp',
-              'extreme-summitstack',
-              'extreme-summitstack-128',
-              'extreme-summitstack-256',
-              'extreme-summitstack-512',
-              'other',
-            ]),
-          })
-          .openapi({ required: ['label', 'value'], title: 'Type' }),
-        untagged_vlan: NestedVLANSchema.exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-        vdcs: z
-          .array(NestedVirtualDeviceContextSchema)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional(),
-        vrf: NestedVRFSchema.exactOptional(),
-        wireless_lans: z
-          .array(NestedWirelessLANSchema)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional(),
-        wireless_link: NestedWirelessLinkSchema.exactOptional(),
-        wwn: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: '64-bit World Wide Name', title: 'WWN' }),
+        label: z.enum(['Access', 'Tagged', 'Tagged (All)']),
+        value: z.enum(['access', 'tagged', 'tagged-all']),
       })
-      .openapi({ required: ['device', 'name', 'type'] }),
-  )
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Mode' }),
+    module: ComponentNestedModuleSchema.exactOptional(),
+    mtu: z.int().min(1).max(65536).nullable().exactOptional().openapi({ title: 'MTU' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    parent: NestedInterfaceSchema.exactOptional(),
+    poe_mode: z
+      .object({ label: z.enum(['PD', 'PSE']), value: z.enum(['pd', 'pse']) })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Poe mode' }),
+    poe_type: z
+      .object({
+        label: z.enum([
+          '802.3af (Type 1)',
+          '802.3at (Type 2)',
+          '802.3az (Type 2)',
+          '802.3bt (Type 3)',
+          '802.3bt (Type 4)',
+          'Passive 24V (2-pair)',
+          'Passive 24V (4-pair)',
+          'Passive 48V (2-pair)',
+          'Passive 48V (4-pair)',
+        ]),
+        value: z.enum([
+          'type1-ieee802.3af',
+          'type2-ieee802.3at',
+          'type2-ieee802.3az',
+          'type3-ieee802.3bt',
+          'type4-ieee802.3bt',
+          'passive-24v-2pair',
+          'passive-24v-4pair',
+          'passive-48v-2pair',
+          'passive-48v-4pair',
+        ]),
+      })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Poe type' }),
+    rf_channel: z
+      .object({
+        label: z.enum([
+          '1 (2412 MHz)',
+          '2 (2417 MHz)',
+          '3 (2422 MHz)',
+          '4 (2427 MHz)',
+          '5 (2432 MHz)',
+          '6 (2437 MHz)',
+          '7 (2442 MHz)',
+          '8 (2447 MHz)',
+          '9 (2452 MHz)',
+          '10 (2457 MHz)',
+          '11 (2462 MHz)',
+          '12 (2467 MHz)',
+          '13 (2472 MHz)',
+          '32 (5160/20 MHz)',
+          '34 (5170/40 MHz)',
+          '36 (5180/20 MHz)',
+          '38 (5190/40 MHz)',
+          '40 (5200/20 MHz)',
+          '42 (5210/80 MHz)',
+          '44 (5220/20 MHz)',
+          '46 (5230/40 MHz)',
+          '48 (5240/20 MHz)',
+          '50 (5250/160 MHz)',
+          '52 (5260/20 MHz)',
+          '54 (5270/40 MHz)',
+          '56 (5280/20 MHz)',
+          '58 (5290/80 MHz)',
+          '60 (5300/20 MHz)',
+          '62 (5310/40 MHz)',
+          '64 (5320/20 MHz)',
+          '100 (5500/20 MHz)',
+          '102 (5510/40 MHz)',
+          '104 (5520/20 MHz)',
+          '106 (5530/80 MHz)',
+          '108 (5540/20 MHz)',
+          '110 (5550/40 MHz)',
+          '112 (5560/20 MHz)',
+          '114 (5570/160 MHz)',
+          '116 (5580/20 MHz)',
+          '118 (5590/40 MHz)',
+          '120 (5600/20 MHz)',
+          '122 (5610/80 MHz)',
+          '124 (5620/20 MHz)',
+          '126 (5630/40 MHz)',
+          '128 (5640/20 MHz)',
+          '132 (5660/20 MHz)',
+          '134 (5670/40 MHz)',
+          '136 (5680/20 MHz)',
+          '138 (5690/80 MHz)',
+          '140 (5700/20 MHz)',
+          '142 (5710/40 MHz)',
+          '144 (5720/20 MHz)',
+          '149 (5745/20 MHz)',
+          '151 (5755/40 MHz)',
+          '153 (5765/20 MHz)',
+          '155 (5775/80 MHz)',
+          '157 (5785/20 MHz)',
+          '159 (5795/40 MHz)',
+          '161 (5805/20 MHz)',
+          '163 (5815/160 MHz)',
+          '165 (5825/20 MHz)',
+          '167 (5835/40 MHz)',
+          '169 (5845/20 MHz)',
+          '171 (5855/80 MHz)',
+          '173 (5865/20 MHz)',
+          '175 (5875/40 MHz)',
+          '177 (5885/20 MHz)',
+          '1 (5955/20 MHz)',
+          '3 (5965/40 MHz)',
+          '5 (5975/20 MHz)',
+          '7 (5985/80 MHz)',
+          '9 (5995/20 MHz)',
+          '11 (6005/40 MHz)',
+          '13 (6015/20 MHz)',
+          '15 (6025/160 MHz)',
+          '17 (6035/20 MHz)',
+          '19 (6045/40 MHz)',
+          '21 (6055/20 MHz)',
+          '23 (6065/80 MHz)',
+          '25 (6075/20 MHz)',
+          '27 (6085/40 MHz)',
+          '29 (6095/20 MHz)',
+          '31 (6105/320 MHz)',
+          '33 (6115/20 MHz)',
+          '35 (6125/40 MHz)',
+          '37 (6135/20 MHz)',
+          '39 (6145/80 MHz)',
+          '41 (6155/20 MHz)',
+          '43 (6165/40 MHz)',
+          '45 (6175/20 MHz)',
+          '47 (6185/160 MHz)',
+          '49 (6195/20 MHz)',
+          '51 (6205/40 MHz)',
+          '53 (6215/20 MHz)',
+          '55 (6225/80 MHz)',
+          '57 (6235/20 MHz)',
+          '59 (6245/40 MHz)',
+          '61 (6255/20 MHz)',
+          '65 (6275/20 MHz)',
+          '67 (6285/40 MHz)',
+          '69 (6295/20 MHz)',
+          '71 (6305/80 MHz)',
+          '73 (6315/20 MHz)',
+          '75 (6325/40 MHz)',
+          '77 (6335/20 MHz)',
+          '79 (6345/160 MHz)',
+          '81 (6355/20 MHz)',
+          '83 (6365/40 MHz)',
+          '85 (6375/20 MHz)',
+          '87 (6385/80 MHz)',
+          '89 (6395/20 MHz)',
+          '91 (6405/40 MHz)',
+          '93 (6415/20 MHz)',
+          '95 (6425/320 MHz)',
+          '97 (6435/20 MHz)',
+          '99 (6445/40 MHz)',
+          '101 (6455/20 MHz)',
+          '103 (6465/80 MHz)',
+          '105 (6475/20 MHz)',
+          '107 (6485/40 MHz)',
+          '109 (6495/20 MHz)',
+          '111 (6505/160 MHz)',
+          '113 (6515/20 MHz)',
+          '115 (6525/40 MHz)',
+          '117 (6535/20 MHz)',
+          '119 (6545/80 MHz)',
+          '121 (6555/20 MHz)',
+          '123 (6565/40 MHz)',
+          '125 (6575/20 MHz)',
+          '129 (6595/20 MHz)',
+          '131 (6605/40 MHz)',
+          '133 (6615/20 MHz)',
+          '135 (6625/80 MHz)',
+          '137 (6635/20 MHz)',
+          '139 (6645/40 MHz)',
+          '141 (6655/20 MHz)',
+          '143 (6665/160 MHz)',
+          '145 (6675/20 MHz)',
+          '147 (6685/40 MHz)',
+          '149 (6695/20 MHz)',
+          '151 (6705/80 MHz)',
+          '153 (6715/20 MHz)',
+          '155 (6725/40 MHz)',
+          '157 (6735/20 MHz)',
+          '159 (6745/320 MHz)',
+          '161 (6755/20 MHz)',
+          '163 (6765/40 MHz)',
+          '165 (6775/20 MHz)',
+          '167 (6785/80 MHz)',
+          '169 (6795/20 MHz)',
+          '171 (6805/40 MHz)',
+          '173 (6815/20 MHz)',
+          '175 (6825/160 MHz)',
+          '177 (6835/20 MHz)',
+          '179 (6845/40 MHz)',
+          '181 (6855/20 MHz)',
+          '183 (6865/80 MHz)',
+          '185 (6875/20 MHz)',
+          '187 (6885/40 MHz)',
+          '189 (6895/20 MHz)',
+          '193 (6915/20 MHz)',
+          '195 (6925/40 MHz)',
+          '197 (6935/20 MHz)',
+          '199 (6945/80 MHz)',
+          '201 (6955/20 MHz)',
+          '203 (6965/40 MHz)',
+          '205 (6975/20 MHz)',
+          '207 (6985/160 MHz)',
+          '209 (6995/20 MHz)',
+          '211 (7005/40 MHz)',
+          '213 (7015/20 MHz)',
+          '215 (7025/80 MHz)',
+          '217 (7035/20 MHz)',
+          '219 (7045/40 MHz)',
+          '221 (7055/20 MHz)',
+          '225 (7075/20 MHz)',
+          '227 (7085/40 MHz)',
+          '229 (7095/20 MHz)',
+          '233 (7115/20 MHz)',
+          '1 (58.32/2.16 GHz)',
+          '2 (60.48/2.16 GHz)',
+          '3 (62.64/2.16 GHz)',
+          '4 (64.80/2.16 GHz)',
+          '5 (66.96/2.16 GHz)',
+          '6 (69.12/2.16 GHz)',
+          '9 (59.40/4.32 GHz)',
+          '10 (61.56/4.32 GHz)',
+          '11 (63.72/4.32 GHz)',
+          '12 (65.88/4.32 GHz)',
+          '13 (68.04/4.32 GHz)',
+          '17 (60.48/6.48 GHz)',
+          '18 (62.64/6.48 GHz)',
+          '19 (64.80/6.48 GHz)',
+          '20 (66.96/6.48 GHz)',
+          '25 (61.56/8.64 GHz)',
+          '26 (63.72/8.64 GHz)',
+          '27 (65.88/8.64 GHz)',
+        ]),
+        value: z.enum([
+          '2.4g-1-2412-22',
+          '2.4g-2-2417-22',
+          '2.4g-3-2422-22',
+          '2.4g-4-2427-22',
+          '2.4g-5-2432-22',
+          '2.4g-6-2437-22',
+          '2.4g-7-2442-22',
+          '2.4g-8-2447-22',
+          '2.4g-9-2452-22',
+          '2.4g-10-2457-22',
+          '2.4g-11-2462-22',
+          '2.4g-12-2467-22',
+          '2.4g-13-2472-22',
+          '5g-32-5160-20',
+          '5g-34-5170-40',
+          '5g-36-5180-20',
+          '5g-38-5190-40',
+          '5g-40-5200-20',
+          '5g-42-5210-80',
+          '5g-44-5220-20',
+          '5g-46-5230-40',
+          '5g-48-5240-20',
+          '5g-50-5250-160',
+          '5g-52-5260-20',
+          '5g-54-5270-40',
+          '5g-56-5280-20',
+          '5g-58-5290-80',
+          '5g-60-5300-20',
+          '5g-62-5310-40',
+          '5g-64-5320-20',
+          '5g-100-5500-20',
+          '5g-102-5510-40',
+          '5g-104-5520-20',
+          '5g-106-5530-80',
+          '5g-108-5540-20',
+          '5g-110-5550-40',
+          '5g-112-5560-20',
+          '5g-114-5570-160',
+          '5g-116-5580-20',
+          '5g-118-5590-40',
+          '5g-120-5600-20',
+          '5g-122-5610-80',
+          '5g-124-5620-20',
+          '5g-126-5630-40',
+          '5g-128-5640-20',
+          '5g-132-5660-20',
+          '5g-134-5670-40',
+          '5g-136-5680-20',
+          '5g-138-5690-80',
+          '5g-140-5700-20',
+          '5g-142-5710-40',
+          '5g-144-5720-20',
+          '5g-149-5745-20',
+          '5g-151-5755-40',
+          '5g-153-5765-20',
+          '5g-155-5775-80',
+          '5g-157-5785-20',
+          '5g-159-5795-40',
+          '5g-161-5805-20',
+          '5g-163-5815-160',
+          '5g-165-5825-20',
+          '5g-167-5835-40',
+          '5g-169-5845-20',
+          '5g-171-5855-80',
+          '5g-173-5865-20',
+          '5g-175-5875-40',
+          '5g-177-5885-20',
+          '6g-1-5955-20',
+          '6g-3-5965-40',
+          '6g-5-5975-20',
+          '6g-7-5985-80',
+          '6g-9-5995-20',
+          '6g-11-6005-40',
+          '6g-13-6015-20',
+          '6g-15-6025-160',
+          '6g-17-6035-20',
+          '6g-19-6045-40',
+          '6g-21-6055-20',
+          '6g-23-6065-80',
+          '6g-25-6075-20',
+          '6g-27-6085-40',
+          '6g-29-6095-20',
+          '6g-31-6105-320',
+          '6g-33-6115-20',
+          '6g-35-6125-40',
+          '6g-37-6135-20',
+          '6g-39-6145-80',
+          '6g-41-6155-20',
+          '6g-43-6165-40',
+          '6g-45-6175-20',
+          '6g-47-6185-160',
+          '6g-49-6195-20',
+          '6g-51-6205-40',
+          '6g-53-6215-20',
+          '6g-55-6225-80',
+          '6g-57-6235-20',
+          '6g-59-6245-40',
+          '6g-61-6255-20',
+          '6g-65-6275-20',
+          '6g-67-6285-40',
+          '6g-69-6295-20',
+          '6g-71-6305-80',
+          '6g-73-6315-20',
+          '6g-75-6325-40',
+          '6g-77-6335-20',
+          '6g-79-6345-160',
+          '6g-81-6355-20',
+          '6g-83-6365-40',
+          '6g-85-6375-20',
+          '6g-87-6385-80',
+          '6g-89-6395-20',
+          '6g-91-6405-40',
+          '6g-93-6415-20',
+          '6g-95-6425-320',
+          '6g-97-6435-20',
+          '6g-99-6445-40',
+          '6g-101-6455-20',
+          '6g-103-6465-80',
+          '6g-105-6475-20',
+          '6g-107-6485-40',
+          '6g-109-6495-20',
+          '6g-111-6505-160',
+          '6g-113-6515-20',
+          '6g-115-6525-40',
+          '6g-117-6535-20',
+          '6g-119-6545-80',
+          '6g-121-6555-20',
+          '6g-123-6565-40',
+          '6g-125-6575-20',
+          '6g-129-6595-20',
+          '6g-131-6605-40',
+          '6g-133-6615-20',
+          '6g-135-6625-80',
+          '6g-137-6635-20',
+          '6g-139-6645-40',
+          '6g-141-6655-20',
+          '6g-143-6665-160',
+          '6g-145-6675-20',
+          '6g-147-6685-40',
+          '6g-149-6695-20',
+          '6g-151-6705-80',
+          '6g-153-6715-20',
+          '6g-155-6725-40',
+          '6g-157-6735-20',
+          '6g-159-6745-320',
+          '6g-161-6755-20',
+          '6g-163-6765-40',
+          '6g-165-6775-20',
+          '6g-167-6785-80',
+          '6g-169-6795-20',
+          '6g-171-6805-40',
+          '6g-173-6815-20',
+          '6g-175-6825-160',
+          '6g-177-6835-20',
+          '6g-179-6845-40',
+          '6g-181-6855-20',
+          '6g-183-6865-80',
+          '6g-185-6875-20',
+          '6g-187-6885-40',
+          '6g-189-6895-20',
+          '6g-193-6915-20',
+          '6g-195-6925-40',
+          '6g-197-6935-20',
+          '6g-199-6945-80',
+          '6g-201-6955-20',
+          '6g-203-6965-40',
+          '6g-205-6975-20',
+          '6g-207-6985-160',
+          '6g-209-6995-20',
+          '6g-211-7005-40',
+          '6g-213-7015-20',
+          '6g-215-7025-80',
+          '6g-217-7035-20',
+          '6g-219-7045-40',
+          '6g-221-7055-20',
+          '6g-225-7075-20',
+          '6g-227-7085-40',
+          '6g-229-7095-20',
+          '6g-233-7115-20',
+          '60g-1-58320-2160',
+          '60g-2-60480-2160',
+          '60g-3-62640-2160',
+          '60g-4-64800-2160',
+          '60g-5-66960-2160',
+          '60g-6-69120-2160',
+          '60g-9-59400-4320',
+          '60g-10-61560-4320',
+          '60g-11-63720-4320',
+          '60g-12-65880-4320',
+          '60g-13-68040-4320',
+          '60g-17-60480-6480',
+          '60g-18-62640-6480',
+          '60g-19-64800-6480',
+          '60g-20-66960-6480',
+          '60g-25-61560-6480',
+          '60g-26-63720-6480',
+          '60g-27-65880-6480',
+        ]),
+      })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Rf channel' }),
+    rf_channel_frequency: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Channel frequency (MHz)' }),
+    rf_channel_width: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Channel width (MHz)' }),
+    rf_role: z
+      .object({ label: z.enum(['Access point', 'Station']), value: z.enum(['ap', 'station']) })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Rf role' }),
+    speed: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Speed (Kbps)' }),
+    tagged_vlans: z
+      .array(NestedVLANSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    tx_power: z
+      .int()
+      .min(0)
+      .max(127)
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Transmit power (dBm)' }),
+    type: z
+      .object({
+        label: z.enum([
+          'Virtual',
+          'Bridge',
+          'Link Aggregation Group (LAG)',
+          '100BASE-FX (10/100ME FIBER)',
+          '100BASE-LFX (10/100ME FIBER)',
+          '100BASE-TX (10/100ME)',
+          '100BASE-T1 (10/100ME Single Pair)',
+          '1000BASE-T (1GE)',
+          '2.5GBASE-T (2.5GE)',
+          '5GBASE-T (5GE)',
+          '10GBASE-T (10GE)',
+          '10GBASE-CX4 (10GE)',
+          'GBIC (1GE)',
+          'SFP (1GE)',
+          'SFP+ (10GE)',
+          'XFP (10GE)',
+          'XENPAK (10GE)',
+          'X2 (10GE)',
+          'SFP28 (25GE)',
+          'SFP56 (50GE)',
+          'QSFP+ (40GE)',
+          'QSFP28 (50GE)',
+          'CFP (100GE)',
+          'CFP2 (100GE)',
+          'CFP2 (200GE)',
+          'CFP4 (100GE)',
+          'Cisco CPAK (100GE)',
+          'QSFP28 (100GE)',
+          'QSFP56 (200GE)',
+          'QSFP-DD (400GE)',
+          'OSFP (400GE)',
+          'QSFP-DD (800GE)',
+          'OSFP (800GE)',
+          '1000BASE-KX (1GE)',
+          '10GBASE-KR (10GE)',
+          '10GBASE-KX4 (10GE)',
+          '25GBASE-KR (25GE)',
+          '40GBASE-KR4 (40GE)',
+          '50GBASE-KR (50GE)',
+          '100GBASE-KP4 (100GE)',
+          '100GBASE-KR2 (100GE)',
+          '100GBASE-KR4 (100GE)',
+          'IEEE 802.11a',
+          'IEEE 802.11b/g',
+          'IEEE 802.11n',
+          'IEEE 802.11ac',
+          'IEEE 802.11ad',
+          'IEEE 802.11ax',
+          'IEEE 802.11ay',
+          'IEEE 802.15.1 (Bluetooth)',
+          'Other (Wireless)',
+          'GSM',
+          'CDMA',
+          'LTE',
+          'OC-3/STM-1',
+          'OC-12/STM-4',
+          'OC-48/STM-16',
+          'OC-192/STM-64',
+          'OC-768/STM-256',
+          'OC-1920/STM-640',
+          'OC-3840/STM-1234',
+          'SFP (1GFC)',
+          'SFP (2GFC)',
+          'SFP (4GFC)',
+          'SFP+ (8GFC)',
+          'SFP+ (16GFC)',
+          'SFP28 (32GFC)',
+          'QSFP+ (64GFC)',
+          'QSFP28 (128GFC)',
+          'SDR (2 Gbps)',
+          'DDR (4 Gbps)',
+          'QDR (8 Gbps)',
+          'FDR10 (10 Gbps)',
+          'FDR (13.5 Gbps)',
+          'EDR (25 Gbps)',
+          'HDR (50 Gbps)',
+          'NDR (100 Gbps)',
+          'XDR (250 Gbps)',
+          'T1 (1.544 Mbps)',
+          'E1 (2.048 Mbps)',
+          'T3 (45 Mbps)',
+          'E3 (34 Mbps)',
+          'xDSL',
+          'DOCSIS',
+          'GPON (2.5 Gbps / 1.25 Gps)',
+          'XG-PON (10 Gbps / 2.5 Gbps)',
+          'XGS-PON (10 Gbps)',
+          'NG-PON2 (TWDM-PON) (4x10 Gbps)',
+          'EPON (1 Gbps)',
+          '10G-EPON (10 Gbps)',
+          'Cisco StackWise',
+          'Cisco StackWise Plus',
+          'Cisco FlexStack',
+          'Cisco FlexStack Plus',
+          'Cisco StackWise-80',
+          'Cisco StackWise-160',
+          'Cisco StackWise-320',
+          'Cisco StackWise-480',
+          'Cisco StackWise-1T',
+          'Juniper VCP',
+          'Extreme SummitStack',
+          'Extreme SummitStack-128',
+          'Extreme SummitStack-256',
+          'Extreme SummitStack-512',
+          'Other',
+        ]),
+        value: z.enum([
+          'virtual',
+          'bridge',
+          'lag',
+          '100base-fx',
+          '100base-lfx',
+          '100base-tx',
+          '100base-t1',
+          '1000base-t',
+          '2.5gbase-t',
+          '5gbase-t',
+          '10gbase-t',
+          '10gbase-cx4',
+          '1000base-x-gbic',
+          '1000base-x-sfp',
+          '10gbase-x-sfpp',
+          '10gbase-x-xfp',
+          '10gbase-x-xenpak',
+          '10gbase-x-x2',
+          '25gbase-x-sfp28',
+          '50gbase-x-sfp56',
+          '40gbase-x-qsfpp',
+          '50gbase-x-sfp28',
+          '100gbase-x-cfp',
+          '100gbase-x-cfp2',
+          '200gbase-x-cfp2',
+          '100gbase-x-cfp4',
+          '100gbase-x-cpak',
+          '100gbase-x-qsfp28',
+          '200gbase-x-qsfp56',
+          '400gbase-x-qsfpdd',
+          '400gbase-x-osfp',
+          '800gbase-x-qsfpdd',
+          '800gbase-x-osfp',
+          '1000base-kx',
+          '10gbase-kr',
+          '10gbase-kx4',
+          '25gbase-kr',
+          '40gbase-kr4',
+          '50gbase-kr',
+          '100gbase-kp4',
+          '100gbase-kr2',
+          '100gbase-kr4',
+          'ieee802.11a',
+          'ieee802.11g',
+          'ieee802.11n',
+          'ieee802.11ac',
+          'ieee802.11ad',
+          'ieee802.11ax',
+          'ieee802.11ay',
+          'ieee802.15.1',
+          'other-wireless',
+          'gsm',
+          'cdma',
+          'lte',
+          'sonet-oc3',
+          'sonet-oc12',
+          'sonet-oc48',
+          'sonet-oc192',
+          'sonet-oc768',
+          'sonet-oc1920',
+          'sonet-oc3840',
+          '1gfc-sfp',
+          '2gfc-sfp',
+          '4gfc-sfp',
+          '8gfc-sfpp',
+          '16gfc-sfpp',
+          '32gfc-sfp28',
+          '64gfc-qsfpp',
+          '128gfc-qsfp28',
+          'infiniband-sdr',
+          'infiniband-ddr',
+          'infiniband-qdr',
+          'infiniband-fdr10',
+          'infiniband-fdr',
+          'infiniband-edr',
+          'infiniband-hdr',
+          'infiniband-ndr',
+          'infiniband-xdr',
+          't1',
+          'e1',
+          't3',
+          'e3',
+          'xdsl',
+          'docsis',
+          'gpon',
+          'xg-pon',
+          'xgs-pon',
+          'ng-pon2',
+          'epon',
+          '10g-epon',
+          'cisco-stackwise',
+          'cisco-stackwise-plus',
+          'cisco-flexstack',
+          'cisco-flexstack-plus',
+          'cisco-stackwise-80',
+          'cisco-stackwise-160',
+          'cisco-stackwise-320',
+          'cisco-stackwise-480',
+          'cisco-stackwise-1t',
+          'juniper-vcp',
+          'extreme-summitstack',
+          'extreme-summitstack-128',
+          'extreme-summitstack-256',
+          'extreme-summitstack-512',
+          'other',
+        ]),
+      })
+      .openapi({ required: ['label', 'value'], title: 'Type' }),
+    untagged_vlan: NestedVLANSchema.exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    vdcs: z
+      .array(NestedVirtualDeviceContextSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    vrf: NestedVRFSchema.exactOptional(),
+    wireless_lans: z
+      .array(NestedWirelessLANSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    wireless_link: NestedWirelessLinkSchema.exactOptional(),
+    wwn: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '64-bit World Wide Name', title: 'WWN' }),
+  })
+  .openapi({ required: ['device', 'name', 'type'] })
   .openapi('Interface')
 
 const InterfaceTemplateSchema = z
@@ -5212,7 +4330,7 @@ const InventoryItemSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'A unique tag used to identify this item', title: 'Asset tag' }),
-    component: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Component' }),
+    component: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Component' }),
     component_id: z
       .int()
       .min(0)
@@ -5226,7 +4344,11 @@ const InventoryItemSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     discovered: z
@@ -5275,7 +4397,11 @@ const InventoryItemRoleSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -5304,7 +4430,7 @@ const InventoryItemRoleSchema = z
 const InventoryItemTemplateSchema = z
   .object({
     _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-    component: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Component' }),
+    component: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Component' }),
     component_id: z
       .int()
       .min(0)
@@ -5383,7 +4509,7 @@ const JobResultSchema = z
       .datetime({ offset: true })
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    data: z.object({}).nullable().exactOptional().openapi({ title: 'Data' }),
+    data: z.looseObject({}).nullable().exactOptional().openapi({ title: 'Data' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     interval: z
@@ -5422,7 +4548,7 @@ const JobResultSchema = z
 const JournalEntrySchema = z
   .object({
     assigned_object: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Assigned object' }),
     assigned_object_id: z
@@ -5438,7 +4564,11 @@ const JournalEntrySchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
     created_by: z.int().nullable().exactOptional().openapi({ title: 'Created by' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     kind: z
@@ -5484,7 +4614,11 @@ const L2VPNSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     export_targets: z
@@ -5572,7 +4706,7 @@ const L2VPNSchema = z
 const L2VPNTerminationSchema = z
   .object({
     assigned_object: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Assigned object' }),
     assigned_object_id: z
@@ -5586,7 +4720,11 @@ const L2VPNTerminationSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     l2vpn: NestedL2VPNSchema,
@@ -5601,49 +4739,50 @@ const L2VPNTerminationSchema = z
   .openapi({ required: ['l2vpn', 'assigned_object_type', 'assigned_object_id'] })
   .openapi('L2VPNTermination')
 
-const LocationSchema: z.ZodType<LocationType> = z
-  .lazy(() =>
-    z
+const LocationSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    parent: NestedLocationSchema.exactOptional(),
+    rack_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Rack count' }),
+    site: NestedSiteSchema,
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    status: z
       .object({
-        _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-        parent: NestedLocationSchema.exactOptional(),
-        rack_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Rack count' }),
-        site: NestedSiteSchema,
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(100)
-          .openapi({ title: 'Slug' }),
-        status: z
-          .object({
-            label: z.enum(['Planned', 'Staging', 'Active', 'Decommissioning', 'Retired']),
-            value: z.enum(['planned', 'staging', 'active', 'decommissioning', 'retired']),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Status' }),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        tenant: NestedTenantSchema.exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+        label: z.enum(['Planned', 'Staging', 'Active', 'Decommissioning', 'Retired']),
+        value: z.enum(['planned', 'staging', 'active', 'decommissioning', 'retired']),
       })
-      .openapi({ required: ['name', 'slug', 'site'] }),
-  )
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Status' }),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    tenant: NestedTenantSchema.exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug', 'site'] })
   .openapi('Location')
 
 const ManufacturerSchema = z
@@ -5653,7 +4792,11 @@ const ManufacturerSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     devicetype_count: z
       .int()
@@ -5721,7 +4864,11 @@ const ModuleSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -5765,7 +4912,11 @@ const ModuleBaySchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -5847,7 +4998,11 @@ const ModuleTypeSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -5963,6 +5118,51 @@ const NestedRackRoleSchema = z
   .openapi({ required: ['name', 'slug'] })
   .openapi('NestedRackRole')
 
+const NestedVirtualMachineSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .nullable()
+  .openapi({ required: ['name'] })
+  .openapi('NestedVirtualMachine')
+
+const NestedVMInterfaceSchema = z
+  .object({
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtual_machine: NestedVirtualMachineSchema.exactOptional(),
+  })
+  .nullable()
+  .openapi({ required: ['name'] })
+  .openapi('NestedVMInterface')
+
+const NestedWirelessLANGroupSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    wirelesslan_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Wirelesslan count' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedWirelessLANGroup')
+
 const ObjectChangeSchema = z
   .object({
     action: z
@@ -5973,7 +5173,7 @@ const ObjectChangeSchema = z
       .exactOptional()
       .openapi({ readOnly: true, required: ['label', 'value'], title: 'Action' }),
     changed_object: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: '\nSerialize a nested representation of the changed object.\n',
@@ -5992,12 +5192,12 @@ const ObjectChangeSchema = z
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     postchange_data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Postchange data' }),
     prechange_data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Prechange data' }),
@@ -6019,7 +5219,7 @@ const ObjectPermissionSchema = z
       .array(z.string().min(1).max(30).openapi({ title: 'Actions' }))
       .openapi({ description: 'The list of actions granted by this permission' }),
     constraints: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -6073,7 +5273,11 @@ const PlatformSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -6086,7 +5290,7 @@ const PlatformSchema = z
     manufacturer: NestedManufacturerSchema.exactOptional(),
     name: z.string().min(1).max(100).openapi({ title: 'Name' }),
     napalm_args: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -6144,7 +5348,11 @@ const PowerFeedSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -6235,7 +5443,11 @@ const PowerOutletSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -6705,7 +5917,11 @@ const PowerPanelSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -6756,7 +5972,11 @@ const PowerPortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -7267,7 +6487,11 @@ const PrefixSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     family: z
@@ -7336,7 +6560,11 @@ const ProviderSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -7366,7 +6594,11 @@ const ProviderNetworkSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -7392,7 +6624,11 @@ const RIRSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -7435,7 +6671,11 @@ const RackSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     desc_units: z
       .boolean()
       .exactOptional()
@@ -7558,7 +6798,11 @@ const RackReservationSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().min(1).max(200).openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -7591,7 +6835,11 @@ const RackRoleSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -7645,7 +6893,11 @@ const RearPortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -7915,39 +7167,40 @@ const RearPortTemplateSchema = z
   .openapi({ required: ['name', 'type'] })
   .openapi('RearPortTemplate')
 
-const RegionSchema: z.ZodType<RegionType> = z
-  .lazy(() =>
-    z
-      .object({
-        _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-        parent: NestedRegionSchema.exactOptional(),
-        site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(100)
-          .openapi({ title: 'Slug' }),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-      })
-      .openapi({ required: ['name', 'slug'] }),
-  )
+const RegionSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    parent: NestedRegionSchema.exactOptional(),
+    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
   .openapi('Region')
 
 const RoleSchema = z
@@ -7957,7 +7210,11 @@ const RoleSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -7990,7 +7247,11 @@ const RouteTargetSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -8039,7 +7300,7 @@ const SavedFilterSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Last updated' }),
     name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    parameters: z.object({}).openapi({ title: 'Parameters' }),
+    parameters: z.looseObject({}).openapi({ title: 'Parameters' }),
     shared: z.boolean().exactOptional().openapi({ title: 'Shared' }),
     slug: z
       .string()
@@ -8062,7 +7323,11 @@ const ServiceSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema.exactOptional(),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -8104,7 +7369,11 @@ const ServiceTemplateSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -8145,7 +7414,11 @@ const SiteSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -8203,39 +7476,40 @@ const SiteSchema = z
   .openapi({ required: ['name', 'slug'] })
   .openapi('Site')
 
-const SiteGroupSchema: z.ZodType<SiteGroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-        parent: NestedSiteGroupSchema.exactOptional(),
-        site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(100)
-          .openapi({ title: 'Slug' }),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-      })
-      .openapi({ required: ['name', 'slug'] }),
-  )
+const SiteGroupSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    parent: NestedSiteGroupSchema.exactOptional(),
+    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
   .openapi('SiteGroup')
 
 const TagSchema = z
@@ -8278,7 +7552,11 @@ const TenantSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -8312,39 +7590,40 @@ const TenantSchema = z
   .openapi({ required: ['name', 'slug'] })
   .openapi('Tenant')
 
-const TenantGroupSchema: z.ZodType<TenantGroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-        parent: NestedTenantGroupSchema.exactOptional(),
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(100)
-          .openapi({ title: 'Slug' }),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        tenant_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Tenant count' }),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-      })
-      .openapi({ required: ['name', 'slug'] }),
-  )
+const TenantGroupSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    parent: NestedTenantGroupSchema.exactOptional(),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    tenant_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Tenant count' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
   .openapi('TenantGroup')
 
 const TokenSchema = z
@@ -8438,7 +7717,11 @@ const VLANSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     group: NestedVLANGroupSchema.exactOptional(),
@@ -8475,7 +7758,11 @@ const VLANGroupSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -8497,7 +7784,7 @@ const VLANGroupSchema = z
       .exactOptional()
       .openapi({ description: 'Lowest permissible ID of a child VLAN', title: 'Minimum VLAN ID' }),
     name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    scope: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Scope' }),
+    scope: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Scope' }),
     scope_id: z.int().nullable().exactOptional().openapi({ title: 'Scope id' }),
     scope_type: z.string().nullable().exactOptional().openapi({ title: 'Scope type' }),
     slug: z
@@ -8513,65 +7800,66 @@ const VLANGroupSchema = z
   .openapi({ required: ['name', 'slug'] })
   .openapi('VLANGroup')
 
-const VMInterfaceSchema: z.ZodType<VMInterfaceType> = z
-  .lazy(() =>
-    z
+const VMInterfaceSchema = z
+  .object({
+    bridge: NestedVMInterfaceSchema.exactOptional(),
+    count_fhrp_groups: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Count fhrp groups' }),
+    count_ipaddresses: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Count ipaddresses' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    enabled: z.boolean().exactOptional().openapi({ title: 'Enabled' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    l2vpn_termination: NestedL2VPNTerminationSchema.exactOptional(),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    mac_address: z.string().nullable().exactOptional().openapi({ title: 'MAC Address' }),
+    mode: z
       .object({
-        bridge: NestedVMInterfaceSchema.exactOptional(),
-        count_fhrp_groups: z
-          .int()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Count fhrp groups' }),
-        count_ipaddresses: z
-          .int()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Count ipaddresses' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        enabled: z.boolean().exactOptional().openapi({ title: 'Enabled' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        l2vpn_termination: NestedL2VPNTerminationSchema.exactOptional(),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        mac_address: z.string().nullable().exactOptional().openapi({ title: 'MAC Address' }),
-        mode: z
-          .object({
-            label: z.enum(['Access', 'Tagged', 'Tagged (All)']),
-            value: z.enum(['access', 'tagged', 'tagged-all']),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Mode' }),
-        mtu: z.int().min(1).max(65536).nullable().exactOptional().openapi({ title: 'MTU' }),
-        name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-        parent: NestedVMInterfaceSchema.exactOptional(),
-        tagged_vlans: z
-          .array(NestedVLANSchema)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional(),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        untagged_vlan: NestedVLANSchema.exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-        virtual_machine: NestedVirtualMachineSchema,
-        vrf: NestedVRFSchema.exactOptional(),
+        label: z.enum(['Access', 'Tagged', 'Tagged (All)']),
+        value: z.enum(['access', 'tagged', 'tagged-all']),
       })
-      .openapi({ required: ['virtual_machine', 'name'] }),
-  )
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Mode' }),
+    mtu: z.int().min(1).max(65536).nullable().exactOptional().openapi({ title: 'MTU' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    parent: NestedVMInterfaceSchema.exactOptional(),
+    tagged_vlans: z
+      .array(NestedVLANSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    untagged_vlan: NestedVLANSchema.exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtual_machine: NestedVirtualMachineSchema,
+    vrf: NestedVRFSchema.exactOptional(),
+  })
+  .openapi({ required: ['virtual_machine', 'name'] })
   .openapi('VMInterface')
 
 const VRFSchema = z
@@ -8582,7 +7870,11 @@ const VRFSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     enforce_unique: z
@@ -8647,7 +7939,11 @@ const VirtualChassisSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     domain: z.string().max(30).exactOptional().openapi({ title: 'Domain' }),
@@ -8674,7 +7970,11 @@ const VirtualDeviceContextSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema,
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -8712,7 +8012,7 @@ const VirtualMachineWithConfigContextSchema = z
     cluster: NestedClusterSchema.exactOptional(),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     config_context: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Config context' }),
     created: z.iso
@@ -8720,7 +8020,11 @@ const VirtualMachineWithConfigContextSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema.exactOptional(),
     disk: z.int().min(0).max(2147483647).nullable().exactOptional().openapi({ title: 'Disk (GB)' }),
@@ -8732,7 +8036,7 @@ const VirtualMachineWithConfigContextSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Last updated' }),
     local_context_data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ title: 'Local context data' }),
@@ -8794,7 +8098,7 @@ const WebhookSchema = z
         title: 'CA File Path',
       }),
     conditions: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -8908,7 +8212,11 @@ const WirelessLANSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     group: NestedWirelessLANGroupSchema.exactOptional(),
@@ -8934,42 +8242,43 @@ const WirelessLANSchema = z
   .openapi({ required: ['ssid'] })
   .openapi('WirelessLAN')
 
-const WirelessLANGroupSchema: z.ZodType<WirelessLANGroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-        created: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-        parent: NestedWirelessLANGroupSchema.exactOptional(),
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(100)
-          .openapi({ title: 'Slug' }),
-        tags: z.array(NestedTagSchema).exactOptional(),
-        url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-        wirelesslan_count: z
-          .int()
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Wirelesslan count' }),
-      })
-      .openapi({ required: ['name', 'slug'] }),
-  )
+const WirelessLANGroupSchema = z
+  .object({
+    _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
+    created: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    parent: NestedWirelessLANGroupSchema.exactOptional(),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    tags: z.array(NestedTagSchema).exactOptional(),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    wirelesslan_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Wirelesslan count' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
   .openapi('WirelessLANGroup')
 
 const WirelessLinkSchema = z
@@ -8992,7 +8301,11 @@ const WirelessLinkSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -9031,7 +8344,11 @@ const WritableASNSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -9058,7 +8375,11 @@ const WritableAggregateSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     date_added: z.iso.date().nullable().exactOptional().openapi({ title: 'Date added' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -9102,7 +8423,11 @@ const WritableCableSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -9172,7 +8497,11 @@ const WritableCircuitSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -9217,7 +8546,11 @@ const WritableCircuitTerminationSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -9277,7 +8610,11 @@ const WritableClusterSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -9346,7 +8683,7 @@ const WritableConfigContextSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    data: z.object({}).openapi({ title: 'Data' }),
+    data: z.looseObject({}).openapi({ title: 'Data' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_types: z
       .array(z.int())
@@ -9498,7 +8835,11 @@ const WritableConsolePortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -9651,7 +8992,11 @@ const WritableConsoleServerPortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -9788,7 +9133,11 @@ const WritableContactSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     email: z.email().max(254).exactOptional().openapi({ title: 'Email' }),
@@ -9825,7 +9174,7 @@ const WritableContactAssignmentSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Last updated' }),
-    object: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Object' }),
+    object: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Object' }),
     object_id: z.int().min(0).max(9223372036854776000).openapi({ title: 'Object id' }),
     priority: z
       .enum(['primary', 'secondary', 'tertiary', 'inactive'])
@@ -9846,7 +9195,11 @@ const WritableContactGroupSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -9871,7 +9224,11 @@ const WritableContactGroupSchema = z
 
 const WritableCreateAvailableVLANSchema = z
   .object({
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     name: z.string().min(1).max(64).openapi({ title: 'Name' }),
     role: z.int().nullable().exactOptional().openapi({ title: 'Role' }),
@@ -9908,7 +9265,7 @@ const WritableCustomFieldSchema = z
       .openapi({ readOnly: true, title: 'Created' }),
     data_type: z.string().exactOptional().openapi({ readOnly: true, title: 'Data type' }),
     default: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -10048,7 +9405,11 @@ const WritableDeviceBaySchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -10126,7 +9487,11 @@ const WritableDeviceTypeSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -10198,7 +9563,7 @@ const WritableDeviceWithConfigContextSchema = z
     cluster: z.int().nullable().exactOptional().openapi({ title: 'Cluster' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     config_context: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Config context' }),
     created: z.iso
@@ -10206,7 +9571,11 @@ const WritableDeviceWithConfigContextSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_role: z.int().openapi({ title: 'Device role' }),
     device_type: z.int().openapi({ title: 'Device type' }),
@@ -10219,7 +9588,7 @@ const WritableDeviceWithConfigContextSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Last updated' }),
     local_context_data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ title: 'Local context data' }),
@@ -10270,7 +9639,7 @@ const WritableFHRPGroupAssignmentSchema = z
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     group: z.int().openapi({ title: 'Group' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    interface: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Interface' }),
+    interface: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Interface' }),
     interface_id: z.int().min(0).max(9223372036854776000).openapi({ title: 'Interface id' }),
     interface_type: z.string().openapi({ title: 'Interface type' }),
     last_updated: z.iso
@@ -10300,7 +9669,11 @@ const WritableFrontPortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -10494,7 +9867,7 @@ const WritableIPAddressSchema = z
       .string()
       .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
     assigned_object: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Assigned object' }),
     assigned_object_id: z
@@ -10515,7 +9888,11 @@ const WritableIPAddressSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     dns_name: z
@@ -10565,7 +9942,11 @@ const WritableIPRangeSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     end_address: z
@@ -10633,7 +10014,11 @@ const WritableInterfaceSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -11252,7 +10637,7 @@ const WritableInventoryItemSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'A unique tag used to identify this item', title: 'Asset tag' }),
-    component: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Component' }),
+    component: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Component' }),
     component_id: z
       .int()
       .min(0)
@@ -11266,7 +10651,11 @@ const WritableInventoryItemSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     discovered: z
@@ -11304,7 +10693,7 @@ const WritableInventoryItemSchema = z
 const WritableInventoryItemTemplateSchema = z
   .object({
     _depth: z.int().exactOptional().openapi({ readOnly: true, title: 'depth' }),
-    component: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Component' }),
+    component: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Component' }),
     component_id: z
       .int()
       .min(0)
@@ -11357,7 +10746,7 @@ const WritableInventoryItemTemplateSchema = z
 const WritableJournalEntrySchema = z
   .object({
     assigned_object: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Assigned object' }),
     assigned_object_id: z
@@ -11373,7 +10762,11 @@ const WritableJournalEntrySchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
     created_by: z.int().nullable().exactOptional().openapi({ title: 'Created by' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     kind: z
@@ -11399,7 +10792,11 @@ const WritableL2VPNSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     export_targets: z
@@ -11470,7 +10867,7 @@ const WritableL2VPNSchema = z
 const WritableL2VPNTerminationSchema = z
   .object({
     assigned_object: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Assigned object' }),
     assigned_object_id: z
@@ -11484,7 +10881,11 @@ const WritableL2VPNTerminationSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     l2vpn: z.int().openapi({ title: 'L2vpn' }),
@@ -11507,7 +10908,11 @@ const WritableLocationSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -11552,7 +10957,11 @@ const WritableModuleSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -11582,7 +10991,11 @@ const WritableModuleBaySchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -11664,7 +11077,11 @@ const WritableModuleTypeSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -11694,7 +11111,7 @@ const WritableObjectPermissionSchema = z
       .array(z.string().min(1).max(30).openapi({ title: 'Actions' }))
       .openapi({ description: 'The list of actions granted by this permission' }),
     constraints: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -11748,7 +11165,11 @@ const WritablePlatformSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -11768,7 +11189,7 @@ const WritablePlatformSchema = z
       }),
     name: z.string().min(1).max(100).openapi({ title: 'Name' }),
     napalm_args: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -11826,7 +11247,11 @@ const WritablePowerFeedSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -11898,7 +11323,11 @@ const WritablePowerOutletSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -12180,7 +11609,11 @@ const WritablePowerPanelSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -12231,7 +11664,11 @@ const WritablePowerPortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -12540,7 +11977,11 @@ const WritablePrefixSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     family: z.string().exactOptional().openapi({ readOnly: true, title: 'Family' }),
@@ -12602,7 +12043,11 @@ const WritableProviderSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -12632,7 +12077,11 @@ const WritableProviderNetworkSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -12664,7 +12113,11 @@ const WritableRackSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     desc_units: z
       .boolean()
       .exactOptional()
@@ -12765,7 +12218,11 @@ const WritableRackReservationSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().min(1).max(200).openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -12800,7 +12257,11 @@ const WritableRearPortSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -12984,7 +12445,11 @@ const WritableRegionSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -13016,7 +12481,11 @@ const WritableRouteTargetSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -13048,7 +12517,11 @@ const WritableServiceSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().nullable().exactOptional().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -13087,7 +12560,11 @@ const WritableServiceTemplateSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -13125,7 +12602,11 @@ const WritableSiteSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -13188,7 +12669,11 @@ const WritableSiteGroupSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -13222,7 +12707,11 @@ const WritableTenantSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -13264,7 +12753,11 @@ const WritableTenantGroupSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -13390,7 +12883,11 @@ const WritableVLANSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     group: z.int().nullable().exactOptional().openapi({ title: 'Group' }),
@@ -13436,7 +12933,11 @@ const WritableVMInterfaceSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     enabled: z.boolean().exactOptional().openapi({ title: 'Enabled' }),
@@ -13483,7 +12984,11 @@ const WritableVRFSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     enforce_unique: z
@@ -13548,7 +13053,11 @@ const WritableVirtualChassisSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     domain: z.string().max(30).exactOptional().openapi({ title: 'Domain' }),
@@ -13575,7 +13084,11 @@ const WritableVirtualDeviceContextSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().nullable().exactOptional().openapi({ title: 'Device' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
@@ -13613,7 +13126,7 @@ const WritableVirtualMachineWithConfigContextSchema = z
     cluster: z.int().nullable().exactOptional().openapi({ title: 'Cluster' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     config_context: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Config context' }),
     created: z.iso
@@ -13621,7 +13134,11 @@ const WritableVirtualMachineWithConfigContextSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().nullable().exactOptional().openapi({ title: 'Device' }),
     disk: z.int().min(0).max(2147483647).nullable().exactOptional().openapi({ title: 'Disk (GB)' }),
@@ -13633,7 +13150,7 @@ const WritableVirtualMachineWithConfigContextSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Last updated' }),
     local_context_data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ title: 'Local context data' }),
@@ -13677,7 +13194,11 @@ const WritableWirelessLANSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     group: z.int().nullable().exactOptional().openapi({ title: 'Group' }),
@@ -13708,7 +13229,11 @@ const WritableWirelessLANGroupSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -13749,7 +13274,11 @@ const WritableWirelessLinkSchema = z
       .nullable()
       .exactOptional()
       .openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display: z.string().exactOptional().openapi({ readOnly: true, title: 'Display' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),

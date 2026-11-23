@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AssociateDelegateToResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateDelegateToResourceResponse')
 
 const OrganizationIdSchema = z
@@ -20,19 +20,15 @@ const WorkMailIdentifierSchema = z.string().min(12).max(256).openapi('WorkMailId
 
 const AssociateDelegateToResourceRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization under which the resource exists.' }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource for which members (users or groups) are associated.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The member (user or group) to associate to the resource.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The organization under which the resource exists.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The resource for which members (users or groups) are associated.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description: 'The member (user or group) to associate to the resource.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'ResourceId', 'EntityId'],
@@ -50,21 +46,21 @@ const OrganizationNotFoundExceptionSchema = z.any().openapi('OrganizationNotFoun
 
 const OrganizationStateExceptionSchema = z.any().openapi('OrganizationStateException')
 
-const AssociateMemberToGroupResponseSchema = z.object({}).openapi('AssociateMemberToGroupResponse')
+const AssociateMemberToGroupResponseSchema = z
+  .looseObject({})
+  .openapi('AssociateMemberToGroupResponse')
 
 const AssociateMemberToGroupRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization under which the group exists.' }),
-    ),
-    GroupId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The group to which the member (user or group) is associated.' }),
-    ),
-    MemberId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The member (user or group) to associate to the group.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The organization under which the group exists.',
+    }),
+    GroupId: WorkMailIdentifierSchema.openapi({
+      description: 'The group to which the member (user or group) is associated.',
+    }),
+    MemberId: WorkMailIdentifierSchema.openapi({
+      description: 'The member (user or group) to associate to the group.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'GroupId', 'MemberId'],
@@ -91,12 +87,12 @@ const ExpiresInSchema = z.int().openapi('ExpiresIn')
 
 const AssumeImpersonationRoleResponseSchema = z
   .object({
-    Token: ImpersonationTokenSchema.and(
-      z.any().openapi({ description: 'The authentication token for the impersonation role.' }),
-    ).exactOptional(),
-    ExpiresIn: ExpiresInSchema.and(
-      z.any().openapi({ description: "The authentication token's validity, in seconds." }),
-    ).exactOptional(),
+    Token: ImpersonationTokenSchema.exactOptional().openapi({
+      description: 'The authentication token for the impersonation role.',
+    }),
+    ExpiresIn: ExpiresInSchema.exactOptional().openapi({
+      description: "The authentication token's validity, in seconds.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssumeImpersonationRoleResponse')
@@ -110,17 +106,12 @@ const ImpersonationRoleIdSchema = z
 
 const AssumeImpersonationRoleRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The WorkMail organization under which the impersonation role will be assumed.',
-        }),
-    ),
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The impersonation role ID to assume.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization under which the impersonation role will be assumed.',
+    }),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.openapi({
+      description: 'The impersonation role ID to assume.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'ImpersonationRoleId'],
@@ -130,7 +121,9 @@ const AssumeImpersonationRoleRequestSchema = z
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const CancelMailboxExportJobResponseSchema = z.object({}).openapi('CancelMailboxExportJobResponse')
+const CancelMailboxExportJobResponseSchema = z
+  .looseObject({})
+  .openapi('CancelMailboxExportJobResponse')
 
 const IdempotencyClientTokenSchema = z
   .string()
@@ -148,13 +141,11 @@ const MailboxExportJobIdSchema = z
 
 const CancelMailboxExportJobRequestSchema = z
   .object({
-    ClientToken: IdempotencyClientTokenSchema.and(
-      z.any().openapi({ description: 'The idempotency token for the client request.' }),
-    ),
-    JobId: MailboxExportJobIdSchema.and(z.any().openapi({ description: 'The job ID.' })),
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ),
+    ClientToken: IdempotencyClientTokenSchema.openapi({
+      description: 'The idempotency token for the client request.',
+    }),
+    JobId: MailboxExportJobIdSchema.openapi({ description: 'The job ID.' }),
+    OrganizationId: OrganizationIdSchema.openapi({ description: 'The organization ID.' }),
   })
   .openapi({
     required: ['ClientToken', 'JobId', 'OrganizationId'],
@@ -162,7 +153,7 @@ const CancelMailboxExportJobRequestSchema = z
   })
   .openapi('CancelMailboxExportJobRequest')
 
-const CreateAliasResponseSchema = z.object({}).openapi('CreateAliasResponse')
+const CreateAliasResponseSchema = z.looseObject({}).openapi('CreateAliasResponse')
 
 const EmailAddressSchema = z
   .string()
@@ -173,19 +164,13 @@ const EmailAddressSchema = z
 
 const CreateAliasRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The organization under which the member (user or group) exists.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The member (user or group) to which this alias is added.' }),
-    ),
-    Alias: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The alias to add to the member set.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The organization under which the member (user or group) exists.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description: 'The member (user or group) to which this alias is added.',
+    }),
+    Alias: EmailAddressSchema.openapi({ description: 'The alias to add to the member set.' }),
   })
   .openapi({ required: ['OrganizationId', 'EntityId', 'Alias'], title: 'CreateAliasRequest' })
   .openapi('CreateAliasRequest')
@@ -199,7 +184,7 @@ const MailDomainStateExceptionSchema = z.any().openapi('MailDomainStateException
 const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const CreateAvailabilityConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateAvailabilityConfigurationResponse')
 
 const DomainNameSchema = z
@@ -229,15 +214,13 @@ const PasswordSchema = z
 
 const EwsAvailabilityProviderSchema = z
   .object({
-    EwsEndpoint: UrlSchema.and(
-      z.any().openapi({ description: 'The endpoint of the remote EWS server.' }),
-    ),
-    EwsUsername: ExternalUserNameSchema.and(
-      z.any().openapi({ description: 'The username used to authenticate the remote EWS server.' }),
-    ),
-    EwsPassword: PasswordSchema.and(
-      z.any().openapi({ description: 'The password used to authenticate the remote EWS server.' }),
-    ),
+    EwsEndpoint: UrlSchema.openapi({ description: 'The endpoint of the remote EWS server.' }),
+    EwsUsername: ExternalUserNameSchema.openapi({
+      description: 'The username used to authenticate the remote EWS server.',
+    }),
+    EwsPassword: PasswordSchema.openapi({
+      description: 'The password used to authenticate the remote EWS server.',
+    }),
   })
   .openapi({
     required: ['EwsEndpoint', 'EwsUsername', 'EwsPassword'],
@@ -257,14 +240,10 @@ const LambdaArnSchema = z
 
 const LambdaAvailabilityProviderSchema = z
   .object({
-    LambdaArn: LambdaArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Lambda that acts as the availability provider.',
-        }),
-    ),
+    LambdaArn: LambdaArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Lambda that acts as the availability provider.',
+    }),
   })
   .openapi({
     required: ['LambdaArn'],
@@ -274,41 +253,24 @@ const LambdaAvailabilityProviderSchema = z
 
 const CreateAvailabilityConfigurationRequestSchema = z
   .object({
-    ClientToken: IdempotencyClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An idempotent token that ensures that an API request is executed only once.',
-        }),
-    ).exactOptional(),
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be created.',
-        }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The domain to which the provider applies.' }),
-    ),
-    EwsProvider: EwsAvailabilityProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Exchange Web Services (EWS) availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>.',
-        }),
-    ).exactOptional(),
-    LambdaProvider: LambdaAvailabilityProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lambda availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>.',
-        }),
-    ).exactOptional(),
+    ClientToken: IdempotencyClientTokenSchema.exactOptional().openapi({
+      description: 'An idempotent token that ensures that an API request is executed only once.',
+    }),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be created.',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The domain to which the provider applies.',
+    }),
+    EwsProvider: EwsAvailabilityProviderSchema.exactOptional().openapi({
+      description:
+        'Exchange Web Services (EWS) availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>.',
+    }),
+    LambdaProvider: LambdaAvailabilityProviderSchema.exactOptional().openapi({
+      description:
+        'Lambda availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'DomainName'],
@@ -320,9 +282,9 @@ const NameAvailabilityExceptionSchema = z.any().openapi('NameAvailabilityExcepti
 
 const CreateGroupResponseSchema = z
   .object({
-    GroupId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier of the group.' }),
-    ).exactOptional(),
+    GroupId: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier of the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGroupResponse')
@@ -336,10 +298,10 @@ const GroupNameSchema = z
 
 const CreateGroupRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization under which the group is to be created.' }),
-    ),
-    Name: GroupNameSchema.and(z.any().openapi({ description: 'The name of the group.' })),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The organization under which the group is to be created.',
+    }),
+    Name: GroupNameSchema.openapi({ description: 'The name of the group.' }),
   })
   .openapi({ required: ['OrganizationId', 'Name'], title: 'CreateGroupRequest' })
   .openapi('CreateGroupRequest')
@@ -348,9 +310,9 @@ const ReservedNameExceptionSchema = z.any().openapi('ReservedNameException')
 
 const CreateImpersonationRoleResponseSchema = z
   .object({
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The new impersonation role ID.' }),
-    ).exactOptional(),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.exactOptional().openapi({
+      description: 'The new impersonation role ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateImpersonationRoleResponse')
@@ -407,29 +369,23 @@ const TargetUsersSchema = z.array(EntityIdentifierSchema).min(1).max(10).openapi
 
 const ImpersonationRuleSchema = z
   .object({
-    ImpersonationRuleId: ImpersonationRuleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the rule.' }),
-    ),
-    Name: ImpersonationRuleNameSchema.and(
-      z.any().openapi({ description: 'The rule name.' }),
-    ).exactOptional(),
-    Description: ImpersonationRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The rule description.' }),
-    ).exactOptional(),
-    Effect: AccessEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The effect of the rule when it matches the input. Allowed effect values are <code>ALLOW</code> or <code>DENY</code>.',
-        }),
-    ),
-    TargetUsers: TargetUsersSchema.and(
-      z.any().openapi({ description: 'A list of user IDs that match the rule.' }),
-    ).exactOptional(),
-    NotTargetUsers: TargetUsersSchema.and(
-      z.any().openapi({ description: "A list of user IDs that don't match the rule." }),
-    ).exactOptional(),
+    ImpersonationRuleId: ImpersonationRuleIdSchema.openapi({
+      description: 'The identifier of the rule.',
+    }),
+    Name: ImpersonationRuleNameSchema.exactOptional().openapi({ description: 'The rule name.' }),
+    Description: ImpersonationRuleDescriptionSchema.exactOptional().openapi({
+      description: 'The rule description.',
+    }),
+    Effect: AccessEffectSchema.openapi({
+      description:
+        'The effect of the rule when it matches the input. Allowed effect values are <code>ALLOW</code> or <code>DENY</code>.',
+    }),
+    TargetUsers: TargetUsersSchema.exactOptional().openapi({
+      description: 'A list of user IDs that match the rule.',
+    }),
+    NotTargetUsers: TargetUsersSchema.exactOptional().openapi({
+      description: "A list of user IDs that don't match the rule.",
+    }),
   })
   .openapi({
     required: ['ImpersonationRuleId', 'Effect'],
@@ -445,33 +401,25 @@ const ImpersonationRuleListSchema = z
 
 const CreateImpersonationRoleRequestSchema = z
   .object({
-    ClientToken: IdempotencyClientTokenSchema.and(
-      z.any().openapi({ description: 'The idempotency token for the client request.' }),
-    ).exactOptional(),
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization to create the new impersonation role within.',
-        }),
-    ),
-    Name: ImpersonationRoleNameSchema.and(
-      z.any().openapi({ description: 'The name of the new impersonation role.' }),
-    ),
-    Type: ImpersonationRoleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The impersonation role's type. The available impersonation role types are <code>READ_ONLY</code> or <code>FULL_ACCESS</code>.",
-        }),
-    ),
-    Description: ImpersonationRoleDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the new impersonation role.' }),
-    ).exactOptional(),
-    Rules: ImpersonationRuleListSchema.and(
-      z.any().openapi({ description: 'The list of rules for the impersonation role.' }),
-    ),
+    ClientToken: IdempotencyClientTokenSchema.exactOptional().openapi({
+      description: 'The idempotency token for the client request.',
+    }),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization to create the new impersonation role within.',
+    }),
+    Name: ImpersonationRoleNameSchema.openapi({
+      description: 'The name of the new impersonation role.',
+    }),
+    Type: ImpersonationRoleTypeSchema.openapi({
+      description:
+        "The impersonation role's type. The available impersonation role types are <code>READ_ONLY</code> or <code>FULL_ACCESS</code>.",
+    }),
+    Description: ImpersonationRoleDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the new impersonation role.',
+    }),
+    Rules: ImpersonationRuleListSchema.openapi({
+      description: 'The list of rules for the impersonation role.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'Name', 'Type', 'Rules'],
@@ -488,13 +436,9 @@ const MobileDeviceAccessRuleIdSchema = z
 
 const CreateMobileDeviceAccessRuleResponseSchema = z
   .object({
-    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the newly created mobile device access rule.',
-        }),
-    ).exactOptional(),
+    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.exactOptional().openapi({
+      description: 'The identifier for the newly created mobile device access rule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMobileDeviceAccessRuleResponse')
@@ -563,72 +507,48 @@ const DeviceUserAgentListSchema = z
 
 const CreateMobileDeviceAccessRuleRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization under which the rule will be created.',
-        }),
-    ),
-    ClientToken: IdempotencyClientTokenSchema.and(
-      z.any().openapi({ description: 'The idempotency token for the client request.' }),
-    ).exactOptional(),
-    Name: MobileDeviceAccessRuleNameSchema.and(z.any().openapi({ description: 'The rule name.' })),
-    Description: MobileDeviceAccessRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The rule description.' }),
-    ).exactOptional(),
-    Effect: MobileDeviceAccessRuleEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The effect of the rule when it matches. Allowed values are <code>ALLOW</code> or <code>DENY</code>.',
-        }),
-    ),
-    DeviceTypes: DeviceTypeListSchema.and(
-      z.any().openapi({ description: 'Device types that the rule will match.' }),
-    ).exactOptional(),
-    NotDeviceTypes: DeviceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device types that the rule <b>will not</b> match. All other device types will match.',
-        }),
-    ).exactOptional(),
-    DeviceModels: DeviceModelListSchema.and(
-      z.any().openapi({ description: 'Device models that the rule will match.' }),
-    ).exactOptional(),
-    NotDeviceModels: DeviceModelListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device models that the rule <b>will not</b> match. All other device models will match.',
-        }),
-    ).exactOptional(),
-    DeviceOperatingSystems: DeviceOperatingSystemListSchema.and(
-      z.any().openapi({ description: 'Device operating systems that the rule will match.' }),
-    ).exactOptional(),
-    NotDeviceOperatingSystems: DeviceOperatingSystemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device operating systems that the rule <b>will not</b> match. All other device operating systems will match.',
-        }),
-    ).exactOptional(),
-    DeviceUserAgents: DeviceUserAgentListSchema.and(
-      z.any().openapi({ description: 'Device user agents that the rule will match.' }),
-    ).exactOptional(),
-    NotDeviceUserAgents: DeviceUserAgentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device user agents that the rule <b>will not</b> match. All other device user agents will match.',
-        }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization under which the rule will be created.',
+    }),
+    ClientToken: IdempotencyClientTokenSchema.exactOptional().openapi({
+      description: 'The idempotency token for the client request.',
+    }),
+    Name: MobileDeviceAccessRuleNameSchema.openapi({ description: 'The rule name.' }),
+    Description: MobileDeviceAccessRuleDescriptionSchema.exactOptional().openapi({
+      description: 'The rule description.',
+    }),
+    Effect: MobileDeviceAccessRuleEffectSchema.openapi({
+      description:
+        'The effect of the rule when it matches. Allowed values are <code>ALLOW</code> or <code>DENY</code>.',
+    }),
+    DeviceTypes: DeviceTypeListSchema.exactOptional().openapi({
+      description: 'Device types that the rule will match.',
+    }),
+    NotDeviceTypes: DeviceTypeListSchema.exactOptional().openapi({
+      description:
+        'Device types that the rule <b>will not</b> match. All other device types will match.',
+    }),
+    DeviceModels: DeviceModelListSchema.exactOptional().openapi({
+      description: 'Device models that the rule will match.',
+    }),
+    NotDeviceModels: DeviceModelListSchema.exactOptional().openapi({
+      description:
+        'Device models that the rule <b>will not</b> match. All other device models will match.',
+    }),
+    DeviceOperatingSystems: DeviceOperatingSystemListSchema.exactOptional().openapi({
+      description: 'Device operating systems that the rule will match.',
+    }),
+    NotDeviceOperatingSystems: DeviceOperatingSystemListSchema.exactOptional().openapi({
+      description:
+        'Device operating systems that the rule <b>will not</b> match. All other device operating systems will match.',
+    }),
+    DeviceUserAgents: DeviceUserAgentListSchema.exactOptional().openapi({
+      description: 'Device user agents that the rule will match.',
+    }),
+    NotDeviceUserAgents: DeviceUserAgentListSchema.exactOptional().openapi({
+      description:
+        'Device user agents that the rule <b>will not</b> match. All other device user agents will match.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'Name', 'Effect'],
@@ -638,9 +558,9 @@ const CreateMobileDeviceAccessRuleRequestSchema = z
 
 const CreateOrganizationResponseSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.exactOptional().openapi({
+      description: 'The organization ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateOrganizationResponse')
@@ -667,17 +587,13 @@ const HostedZoneIdSchema = z
 
 const DomainSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The fully qualified domain name.' }),
-    ).exactOptional(),
-    HostedZoneId: HostedZoneIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hosted zone ID for a domain hosted in Route 53. Required when configuring a domain hosted in Route 53.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The fully qualified domain name.',
+    }),
+    HostedZoneId: HostedZoneIdSchema.exactOptional().openapi({
+      description:
+        'The hosted zone ID for a domain hosted in Route 53. Required when configuring a domain hosted in Route 53.',
+    }),
   })
   .openapi({
     description:
@@ -699,31 +615,23 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const CreateOrganizationRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The AWS Directory Service directory ID.' }),
-    ).exactOptional(),
-    Alias: OrganizationNameSchema.and(z.any().openapi({ description: 'The organization alias.' })),
-    ClientToken: IdempotencyClientTokenSchema.and(
-      z.any().openapi({ description: 'The idempotency token associated with the request.' }),
-    ).exactOptional(),
-    Domains: DomainsSchema.and(
-      z.any().openapi({ description: 'The email domains to associate with the organization.' }),
-    ).exactOptional(),
-    KmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of a customer managed key from AWS KMS.',
-        }),
-    ).exactOptional(),
-    EnableInteroperability: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>true</code>, allows organization interoperability between WorkMail and Microsoft Exchange. If <code>true</code>, you must include a AD Connector directory ID in the request.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The AWS Directory Service directory ID.',
+    }),
+    Alias: OrganizationNameSchema.openapi({ description: 'The organization alias.' }),
+    ClientToken: IdempotencyClientTokenSchema.exactOptional().openapi({
+      description: 'The idempotency token associated with the request.',
+    }),
+    Domains: DomainsSchema.exactOptional().openapi({
+      description: 'The email domains to associate with the organization.',
+    }),
+    KmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of a customer managed key from AWS KMS.',
+    }),
+    EnableInteroperability: BooleanSchema.exactOptional().openapi({
+      description:
+        'When <code>true</code>, allows organization interoperability between WorkMail and Microsoft Exchange. If <code>true</code>, you must include a AD Connector directory ID in the request.',
+    }),
   })
   .openapi({ required: ['Alias'], title: 'CreateOrganizationRequest' })
   .openapi('CreateOrganizationRequest')
@@ -732,9 +640,9 @@ const DirectoryInUseExceptionSchema = z.any().openapi('DirectoryInUseException')
 
 const CreateResourceResponseSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the new resource.' }),
-    ).exactOptional(),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the new resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateResourceResponse')
@@ -750,32 +658,24 @@ const ResourceTypeSchema = z.enum(['ROOM', 'EQUIPMENT']).openapi('ResourceType')
 
 const CreateResourceRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the organization for which the resource is created.',
-        }),
-    ),
-    Name: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the new resource.' })),
-    Type: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the new resource. The available types are <code>equipment</code> and <code>room</code>.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier associated with the organization for which the resource is created.',
+    }),
+    Name: ResourceNameSchema.openapi({ description: 'The name of the new resource.' }),
+    Type: ResourceTypeSchema.openapi({
+      description:
+        'The type of the new resource. The available types are <code>equipment</code> and <code>room</code>.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'Name', 'Type'], title: 'CreateResourceRequest' })
   .openapi('CreateResourceRequest')
 
 const CreateUserResponseSchema = z
   .object({
-    UserId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier for the new user.' }),
-    ).exactOptional(),
+    UserId: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier for the new user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUserResponse')
@@ -791,27 +691,15 @@ const StringSchema = z.string().max(256).openapi('String')
 
 const CreateUserRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the organization for which the user is created.',
-        }),
-    ),
-    Name: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the new user. WorkMail directory user names have a maximum length of 64. All others have a maximum length of 20.',
-        }),
-    ),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The display name for the new user.' }),
-    ),
-    Password: PasswordSchema.and(
-      z.any().openapi({ description: 'The password for the new user.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier of the organization for which the user is created.',
+    }),
+    Name: UserNameSchema.openapi({
+      description:
+        'The name for the new user. WorkMail directory user names have a maximum length of 64. All others have a maximum length of 20.',
+    }),
+    DisplayName: StringSchema.openapi({ description: 'The display name for the new user.' }),
+    Password: PasswordSchema.openapi({ description: 'The password for the new user.' }),
   })
   .openapi({
     required: ['OrganizationId', 'Name', 'DisplayName', 'Password'],
@@ -822,7 +710,7 @@ const CreateUserRequestSchema = z
 const InvalidPasswordExceptionSchema = z.any().openapi('InvalidPasswordException')
 
 const DeleteAccessControlRuleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteAccessControlRuleResponse')
 
 const AccessControlRuleNameSchema = z
@@ -834,69 +722,49 @@ const AccessControlRuleNameSchema = z
 
 const DeleteAccessControlRuleRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the organization.' }),
-    ),
-    Name: AccessControlRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the access control rule.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization.',
+    }),
+    Name: AccessControlRuleNameSchema.openapi({
+      description: 'The name of the access control rule.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'Name'], title: 'DeleteAccessControlRuleRequest' })
   .openapi('DeleteAccessControlRuleRequest')
 
-const DeleteAliasResponseSchema = z.object({}).openapi('DeleteAliasResponse')
+const DeleteAliasResponseSchema = z.looseObject({}).openapi('DeleteAliasResponse')
 
 const DeleteAliasRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the user exists.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the member (user or group) from which to have the aliases removed.',
-        }),
-    ),
-    Alias: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The aliases to be removed from the user's set of aliases. Duplicate entries in the list are collapsed into single entries (the list is transformed into a set).",
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the user exists.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description:
+        'The identifier for the member (user or group) from which to have the aliases removed.',
+    }),
+    Alias: EmailAddressSchema.openapi({
+      description:
+        "The aliases to be removed from the user's set of aliases. Duplicate entries in the list are collapsed into single entries (the list is transformed into a set).",
+    }),
   })
   .openapi({ required: ['OrganizationId', 'EntityId', 'Alias'], title: 'DeleteAliasRequest' })
   .openapi('DeleteAliasRequest')
 
 const DeleteAvailabilityConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteAvailabilityConfigurationResponse')
 
 const DeleteAvailabilityConfigurationRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be deleted.',
-        }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain for which the <code>AvailabilityConfiguration</code> will be deleted.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be deleted.',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description:
+        'The domain for which the <code>AvailabilityConfiguration</code> will be deleted.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'DomainName'],
@@ -905,53 +773,45 @@ const DeleteAvailabilityConfigurationRequestSchema = z
   .openapi('DeleteAvailabilityConfigurationRequest')
 
 const DeleteEmailMonitoringConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteEmailMonitoringConfigurationResponse')
 
 const DeleteEmailMonitoringConfigurationRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the organization from which the email monitoring configuration is deleted.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The ID of the organization from which the email monitoring configuration is deleted.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'DeleteEmailMonitoringConfigurationRequest' })
   .openapi('DeleteEmailMonitoringConfigurationRequest')
 
-const DeleteGroupResponseSchema = z.object({}).openapi('DeleteGroupResponse')
+const DeleteGroupResponseSchema = z.looseObject({}).openapi('DeleteGroupResponse')
 
 const DeleteGroupRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization that contains the group.' }),
-    ),
-    GroupId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier of the group to be deleted.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The organization that contains the group.',
+    }),
+    GroupId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier of the group to be deleted.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'GroupId'], title: 'DeleteGroupRequest' })
   .openapi('DeleteGroupRequest')
 
 const DeleteImpersonationRoleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteImpersonationRoleResponse')
 
 const DeleteImpersonationRoleRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization from which to delete the impersonation role.',
-        }),
-    ),
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The ID of the impersonation role to delete.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization from which to delete the impersonation role.',
+    }),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.openapi({
+      description: 'The ID of the impersonation role to delete.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'ImpersonationRoleId'],
@@ -960,34 +820,22 @@ const DeleteImpersonationRoleRequestSchema = z
   .openapi('DeleteImpersonationRoleRequest')
 
 const DeleteMailboxPermissionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteMailboxPermissionsResponse')
 
 const DeleteMailboxPermissionsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the organization under which the member (user or group) exists.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the member (user or group) that owns the mailbox.',
-        }),
-    ),
-    GranteeId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the member (user or group) for which to delete granted permissions.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier of the organization under which the member (user or group) exists.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier of the member (user or group) that owns the mailbox.',
+    }),
+    GranteeId: WorkMailIdentifierSchema.openapi({
+      description:
+        'The identifier of the member (user or group) for which to delete granted permissions.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'EntityId', 'GranteeId'],
@@ -996,7 +844,7 @@ const DeleteMailboxPermissionsRequestSchema = z
   .openapi('DeleteMailboxPermissionsRequest')
 
 const DeleteMobileDeviceAccessOverrideResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteMobileDeviceAccessOverrideResponse')
 
 const DeviceIdSchema = z
@@ -1008,29 +856,17 @@ const DeviceIdSchema = z
 
 const DeleteMobileDeviceAccessOverrideRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization for which the access override will be deleted.',
-        }),
-    ),
-    UserId: EntityIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The WorkMail user for which you want to delete the override. Accepts the following types of user identities:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
-        }),
-    ),
-    DeviceId: DeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mobile device for which you delete the override. <code>DeviceId</code> is case insensitive.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization for which the access override will be deleted.',
+    }),
+    UserId: EntityIdentifierSchema.openapi({
+      description:
+        '<p>The WorkMail user for which you want to delete the override. Accepts the following types of user identities:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
+    }),
+    DeviceId: DeviceIdSchema.openapi({
+      description:
+        'The mobile device for which you delete the override. <code>DeviceId</code> is case insensitive.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'UserId', 'DeviceId'],
@@ -1039,21 +875,17 @@ const DeleteMobileDeviceAccessOverrideRequestSchema = z
   .openapi('DeleteMobileDeviceAccessOverrideRequest')
 
 const DeleteMobileDeviceAccessRuleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteMobileDeviceAccessRuleResponse')
 
 const DeleteMobileDeviceAccessRuleRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization under which the rule will be deleted.',
-        }),
-    ),
-    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the rule to be deleted.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization under which the rule will be deleted.',
+    }),
+    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.openapi({
+      description: 'The identifier of the rule to be deleted.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'MobileDeviceAccessRuleId'],
@@ -1063,56 +895,46 @@ const DeleteMobileDeviceAccessRuleRequestSchema = z
 
 const DeleteOrganizationResponseSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z.any().openapi({ description: 'The state of the organization.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.exactOptional().openapi({
+      description: 'The organization ID.',
+    }),
+    State: StringSchema.exactOptional().openapi({ description: 'The state of the organization.' }),
   })
   .openapi({ required: [] })
   .openapi('DeleteOrganizationResponse')
 
 const DeleteOrganizationRequestSchema = z
   .object({
-    ClientToken: IdempotencyClientTokenSchema.and(
-      z.any().openapi({ description: 'The idempotency token associated with the request.' }),
-    ).exactOptional(),
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ),
-    DeleteDirectory: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, deletes the AWS Directory Service directory associated with the organization.',
-        }),
-    ),
+    ClientToken: IdempotencyClientTokenSchema.exactOptional().openapi({
+      description: 'The idempotency token associated with the request.',
+    }),
+    OrganizationId: OrganizationIdSchema.openapi({ description: 'The organization ID.' }),
+    DeleteDirectory: BooleanSchema.openapi({
+      description:
+        'If true, deletes the AWS Directory Service directory associated with the organization.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'DeleteDirectory'], title: 'DeleteOrganizationRequest' })
   .openapi('DeleteOrganizationRequest')
 
-const DeleteResourceResponseSchema = z.object({}).openapi('DeleteResourceResponse')
+const DeleteResourceResponseSchema = z.looseObject({}).openapi('DeleteResourceResponse')
 
 const DeleteResourceRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the organization from which the resource is deleted.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the resource to be deleted.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier associated with the organization from which the resource is deleted.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The identifier of the resource to be deleted.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'ResourceId'], title: 'DeleteResourceRequest' })
   .openapi('DeleteResourceRequest')
 
-const DeleteRetentionPolicyResponseSchema = z.object({}).openapi('DeleteRetentionPolicyResponse')
+const DeleteRetentionPolicyResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteRetentionPolicyResponse')
 
 const ShortStringSchema = z
   .string()
@@ -1123,50 +945,43 @@ const ShortStringSchema = z
 
 const DeleteRetentionPolicyRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ),
-    Id: ShortStringSchema.and(z.any().openapi({ description: 'The retention policy ID.' })),
+    OrganizationId: OrganizationIdSchema.openapi({ description: 'The organization ID.' }),
+    Id: ShortStringSchema.openapi({ description: 'The retention policy ID.' }),
   })
   .openapi({ required: ['OrganizationId', 'Id'], title: 'DeleteRetentionPolicyRequest' })
   .openapi('DeleteRetentionPolicyRequest')
 
-const DeleteUserResponseSchema = z.object({}).openapi('DeleteUserResponse')
+const DeleteUserResponseSchema = z.looseObject({}).openapi('DeleteUserResponse')
 
 const DeleteUserRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization that contains the user to be deleted.' }),
-    ),
-    UserId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier of the user to be deleted.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The organization that contains the user to be deleted.',
+    }),
+    UserId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier of the user to be deleted.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'UserId'], title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
 
-const DeregisterFromWorkMailResponseSchema = z.object({}).openapi('DeregisterFromWorkMailResponse')
+const DeregisterFromWorkMailResponseSchema = z
+  .looseObject({})
+  .openapi('DeregisterFromWorkMailResponse')
 
 const DeregisterFromWorkMailRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the organization under which the WorkMail entity exists.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier for the member (user or group) to be updated.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the WorkMail entity exists.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the member (user or group) to be updated.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'EntityId'], title: 'DeregisterFromWorkMailRequest' })
   .openapi('DeregisterFromWorkMailRequest')
 
-const DeregisterMailDomainResponseSchema = z.object({}).openapi('DeregisterMailDomainResponse')
+const DeregisterMailDomainResponseSchema = z.looseObject({}).openapi('DeregisterMailDomainResponse')
 
 const WorkMailDomainNameSchema = z
   .string()
@@ -1177,16 +992,12 @@ const WorkMailDomainNameSchema = z
 
 const DeregisterMailDomainRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization for which the domain will be deregistered.',
-        }),
-    ),
-    DomainName: WorkMailDomainNameSchema.and(
-      z.any().openapi({ description: 'The domain to deregister in WorkMail and SES.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization for which the domain will be deregistered.',
+    }),
+    DomainName: WorkMailDomainNameSchema.openapi({
+      description: 'The domain to deregister in WorkMail and SES.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'DomainName'], title: 'DeregisterMailDomainRequest' })
   .openapi('DeregisterMailDomainRequest')
@@ -1208,36 +1019,24 @@ const LogGroupArnSchema = z
 
 const DescribeEmailMonitoringConfigurationResponseSchema = z
   .object({
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM Role associated with the email monitoring configuration.',
-        }),
-    ).exactOptional(),
-    LogGroupArn: LogGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the CloudWatch Log group associated with the email monitoring configuration.',
-        }),
-    ).exactOptional(),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM Role associated with the email monitoring configuration.',
+    }),
+    LogGroupArn: LogGroupArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the CloudWatch Log group associated with the email monitoring configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEmailMonitoringConfigurationResponse')
 
 const DescribeEmailMonitoringConfigurationRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the organization for which the email monitoring configuration is described.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The ID of the organization for which the email monitoring configuration is described.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'DescribeEmailMonitoringConfigurationRequest' })
   .openapi('DescribeEmailMonitoringConfigurationRequest')
@@ -1248,73 +1047,57 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const DescribeGroupResponseSchema = z
   .object({
-    GroupId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier of the described group.' }),
-    ).exactOptional(),
-    Name: GroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the described group.' }),
-    ).exactOptional(),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email of the described group.' }),
-    ).exactOptional(),
-    State: EntityStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the user: enabled (registered to WorkMail) or disabled (deregistered or never registered to WorkMail).',
-        }),
-    ).exactOptional(),
-    EnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when a user was registered to WorkMail, in UNIX epoch time format.',
-        }),
-    ).exactOptional(),
-    DisabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when a user was deregistered from WorkMail, in UNIX epoch time format.',
-        }),
-    ).exactOptional(),
+    GroupId: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier of the described group.',
+    }),
+    Name: GroupNameSchema.exactOptional().openapi({
+      description: 'The name of the described group.',
+    }),
+    Email: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email of the described group.',
+    }),
+    State: EntityStateSchema.exactOptional().openapi({
+      description:
+        'The state of the user: enabled (registered to WorkMail) or disabled (deregistered or never registered to WorkMail).',
+    }),
+    EnabledDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when a user was registered to WorkMail, in UNIX epoch time format.',
+    }),
+    DisabledDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when a user was deregistered from WorkMail, in UNIX epoch time format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGroupResponse')
 
 const DescribeGroupRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the group exists.',
-        }),
-    ),
-    GroupId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier for the group to be described.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the group exists.',
+    }),
+    GroupId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the group to be described.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'GroupId'], title: 'DescribeGroupRequest' })
   .openapi('DescribeGroupRequest')
 
 const DescribeInboundDmarcSettingsResponseSchema = z
   .object({
-    Enforced: BooleanSchema.and(
-      z.any().openapi({ description: 'Lists the enforcement setting of the applied policy.' }),
-    ).exactOptional(),
+    Enforced: BooleanSchema.exactOptional().openapi({
+      description: 'Lists the enforcement setting of the applied policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInboundDmarcSettingsResponse')
 
 const DescribeInboundDmarcSettingsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'Lists the ID of the given organization.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'Lists the ID of the given organization.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'DescribeInboundDmarcSettingsRequest' })
   .openapi('DescribeInboundDmarcSettingsRequest')
@@ -1355,77 +1138,51 @@ const MailboxExportErrorInfoSchema = z
 
 const DescribeMailboxExportJobResponseSchema = z
   .object({
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the user or resource associated with the mailbox.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The mailbox export job description.' }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the AWS Identity and Access Management (IAM) role that grants write permission to the Amazon Simple Storage Service (Amazon S3) bucket.',
-        }),
-    ).exactOptional(),
-    KmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the symmetric AWS Key Management Service (AWS KMS) key that encrypts the exported mailbox content.',
-        }),
-    ).exactOptional(),
-    S3BucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the S3 bucket.' }),
-    ).exactOptional(),
-    S3Prefix: S3ObjectKeySchema.and(
-      z.any().openapi({ description: 'The S3 bucket prefix.' }),
-    ).exactOptional(),
-    S3Path: S3ObjectKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the S3 bucket and file that the mailbox export job is exporting to.',
-        }),
-    ).exactOptional(),
-    EstimatedProgress: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The estimated progress of the mailbox export job, in percentage points.',
-        }),
-    ).exactOptional(),
-    State: MailboxExportJobStateSchema.and(
-      z.any().openapi({ description: 'The state of the mailbox export job.' }),
-    ).exactOptional(),
-    ErrorInfo: MailboxExportErrorInfoSchema.and(
-      z.any().openapi({ description: 'Error information for failed mailbox export jobs.' }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The mailbox export job start timestamp.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The mailbox export job end timestamp.' }),
-    ).exactOptional(),
+    EntityId: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier of the user or resource associated with the mailbox.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The mailbox export job description.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the AWS Identity and Access Management (IAM) role that grants write permission to the Amazon Simple Storage Service (Amazon S3) bucket.',
+    }),
+    KmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the symmetric AWS Key Management Service (AWS KMS) key that encrypts the exported mailbox content.',
+    }),
+    S3BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description: 'The name of the S3 bucket.',
+    }),
+    S3Prefix: S3ObjectKeySchema.exactOptional().openapi({ description: 'The S3 bucket prefix.' }),
+    S3Path: S3ObjectKeySchema.exactOptional().openapi({
+      description:
+        'The path to the S3 bucket and file that the mailbox export job is exporting to.',
+    }),
+    EstimatedProgress: PercentageSchema.exactOptional().openapi({
+      description: 'The estimated progress of the mailbox export job, in percentage points.',
+    }),
+    State: MailboxExportJobStateSchema.exactOptional().openapi({
+      description: 'The state of the mailbox export job.',
+    }),
+    ErrorInfo: MailboxExportErrorInfoSchema.exactOptional().openapi({
+      description: 'Error information for failed mailbox export jobs.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The mailbox export job start timestamp.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The mailbox export job end timestamp.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMailboxExportJobResponse')
 
 const DescribeMailboxExportJobRequestSchema = z
   .object({
-    JobId: MailboxExportJobIdSchema.and(
-      z.any().openapi({ description: 'The mailbox export job ID.' }),
-    ),
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ),
+    JobId: MailboxExportJobIdSchema.openapi({ description: 'The mailbox export job ID.' }),
+    OrganizationId: OrganizationIdSchema.openapi({ description: 'The organization ID.' }),
   })
   .openapi({ required: ['JobId', 'OrganizationId'], title: 'DescribeMailboxExportJobRequest' })
   .openapi('DescribeMailboxExportJobRequest')
@@ -1434,88 +1191,58 @@ const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonReso
 
 const DescribeOrganizationResponseSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The identifier of an organization.' }),
-    ).exactOptional(),
-    Alias: OrganizationNameSchema.and(
-      z.any().openapi({ description: 'The alias for an organization.' }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z.any().openapi({ description: 'The state of an organization.' }),
-    ).exactOptional(),
-    DirectoryId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the directory associated with an WorkMail organization.',
-        }),
-    ).exactOptional(),
-    DirectoryType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of directory associated with the WorkMail organization.',
-        }),
-    ).exactOptional(),
-    DefaultMailDomain: StringSchema.and(
-      z.any().openapi({ description: 'The default mail domain associated with the organization.' }),
-    ).exactOptional(),
-    CompletedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date at which the organization became usable in the WorkMail context, in UNIX epoch time format.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The error message indicating if unexpected behavior was encountered with regards to the organization.',
-        }),
-    ).exactOptional(),
-    ARN: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the organization.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.exactOptional().openapi({
+      description: 'The identifier of an organization.',
+    }),
+    Alias: OrganizationNameSchema.exactOptional().openapi({
+      description: 'The alias for an organization.',
+    }),
+    State: StringSchema.exactOptional().openapi({ description: 'The state of an organization.' }),
+    DirectoryId: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the directory associated with an WorkMail organization.',
+    }),
+    DirectoryType: StringSchema.exactOptional().openapi({
+      description: 'The type of directory associated with the WorkMail organization.',
+    }),
+    DefaultMailDomain: StringSchema.exactOptional().openapi({
+      description: 'The default mail domain associated with the organization.',
+    }),
+    CompletedDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date at which the organization became usable in the WorkMail context, in UNIX epoch time format.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        '(Optional) The error message indicating if unexpected behavior was encountered with regards to the organization.',
+    }),
+    ARN: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the organization.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOrganizationResponse')
 
 const DescribeOrganizationRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the organization to be described.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization to be described.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'DescribeOrganizationRequest' })
   .openapi('DescribeOrganizationRequest')
 
 const BookingOptionsSchema = z
   .object({
-    AutoAcceptRequests: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The resource's ability to automatically reply to requests. If disabled, delegates must be associated to the resource.",
-        }),
-    ).exactOptional(),
-    AutoDeclineRecurringRequests: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The resource's ability to automatically decline any recurring requests.",
-        }),
-    ).exactOptional(),
-    AutoDeclineConflictingRequests: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The resource's ability to automatically decline any conflicting requests.",
-        }),
-    ).exactOptional(),
+    AutoAcceptRequests: BooleanSchema.exactOptional().openapi({
+      description:
+        "The resource's ability to automatically reply to requests. If disabled, delegates must be associated to the resource.",
+    }),
+    AutoDeclineRecurringRequests: BooleanSchema.exactOptional().openapi({
+      description: "The resource's ability to automatically decline any recurring requests.",
+    }),
+    AutoDeclineConflictingRequests: BooleanSchema.exactOptional().openapi({
+      description: "The resource's ability to automatically decline any conflicting requests.",
+    }),
   })
   .openapi({
     description:
@@ -1526,62 +1253,46 @@ const BookingOptionsSchema = z
 
 const DescribeResourceResponseSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the described resource.' }),
-    ).exactOptional(),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email of the described resource.' }),
-    ).exactOptional(),
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the described resource.' }),
-    ).exactOptional(),
-    Type: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the described resource.' }),
-    ).exactOptional(),
-    BookingOptions: BookingOptionsSchema.and(
-      z.any().openapi({ description: 'The booking options for the described resource.' }),
-    ).exactOptional(),
-    State: EntityStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the resource: enabled (registered to WorkMail), disabled (deregistered or never registered to WorkMail), or deleted.',
-        }),
-    ).exactOptional(),
-    EnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when a resource was enabled for WorkMail, in UNIX epoch time format.',
-        }),
-    ).exactOptional(),
-    DisabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when a resource was disabled from WorkMail, in UNIX epoch time format.',
-        }),
-    ).exactOptional(),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the described resource.',
+    }),
+    Email: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email of the described resource.',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the described resource.',
+    }),
+    Type: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the described resource.',
+    }),
+    BookingOptions: BookingOptionsSchema.exactOptional().openapi({
+      description: 'The booking options for the described resource.',
+    }),
+    State: EntityStateSchema.exactOptional().openapi({
+      description:
+        'The state of the resource: enabled (registered to WorkMail), disabled (deregistered or never registered to WorkMail), or deleted.',
+    }),
+    EnabledDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when a resource was enabled for WorkMail, in UNIX epoch time format.',
+    }),
+    DisabledDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when a resource was disabled from WorkMail, in UNIX epoch time format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeResourceResponse')
 
 const DescribeResourceRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the organization for which the resource is described.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the resource to be described.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier associated with the organization for which the resource is described.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The identifier of the resource to be described.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'ResourceId'], title: 'DescribeResourceRequest' })
   .openapi('DescribeResourceRequest')
@@ -1590,99 +1301,62 @@ const UserRoleSchema = z.enum(['USER', 'RESOURCE', 'SYSTEM_USER']).openapi('User
 
 const DescribeUserResponseSchema = z
   .object({
-    UserId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier for the described user.' }),
-    ).exactOptional(),
-    Name: UserNameSchema.and(
-      z.any().openapi({ description: 'The name for the user.' }),
-    ).exactOptional(),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email of the user.' }),
-    ).exactOptional(),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The display name of the user.' }),
-    ).exactOptional(),
-    State: EntityStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of a user: enabled (registered to WorkMail) or disabled (deregistered or never registered to WorkMail).',
-        }),
-    ).exactOptional(),
-    UserRole: UserRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In certain cases, other entities are modeled as users. If interoperability is enabled, resources are imported into WorkMail as users. Because different WorkMail organizations rely on different directory types, administrators can distinguish between an unregistered user (account is disabled and has a user role) and the directory administrators. The values are USER, RESOURCE, and SYSTEM_USER.',
-        }),
-    ).exactOptional(),
-    EnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time at which the user was enabled for WorkMailusage, in UNIX epoch time format.',
-        }),
-    ).exactOptional(),
-    DisabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time at which the user was disabled for WorkMail usage, in UNIX epoch time format.',
-        }),
-    ).exactOptional(),
+    UserId: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier for the described user.',
+    }),
+    Name: UserNameSchema.exactOptional().openapi({ description: 'The name for the user.' }),
+    Email: EmailAddressSchema.exactOptional().openapi({ description: 'The email of the user.' }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'The display name of the user.',
+    }),
+    State: EntityStateSchema.exactOptional().openapi({
+      description:
+        'The state of a user: enabled (registered to WorkMail) or disabled (deregistered or never registered to WorkMail).',
+    }),
+    UserRole: UserRoleSchema.exactOptional().openapi({
+      description:
+        'In certain cases, other entities are modeled as users. If interoperability is enabled, resources are imported into WorkMail as users. Because different WorkMail organizations rely on different directory types, administrators can distinguish between an unregistered user (account is disabled and has a user role) and the directory administrators. The values are USER, RESOURCE, and SYSTEM_USER.',
+    }),
+    EnabledDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time at which the user was enabled for WorkMailusage, in UNIX epoch time format.',
+    }),
+    DisabledDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time at which the user was disabled for WorkMail usage, in UNIX epoch time format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUserResponse')
 
 const DescribeUserRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the user exists.',
-        }),
-    ),
-    UserId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier for the user to be described.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the user exists.',
+    }),
+    UserId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the user to be described.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'UserId'], title: 'DescribeUserRequest' })
   .openapi('DescribeUserRequest')
 
 const DisassociateDelegateFromResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateDelegateFromResourceResponse')
 
 const DisassociateDelegateFromResourceRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the resource exists.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The identifier of the resource from which delegates' set members are removed. ",
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The identifier for the member (user, group) to be removed from the resource's delegates.",
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the resource exists.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description: "The identifier of the resource from which delegates' set members are removed. ",
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description:
+        "The identifier for the member (user, group) to be removed from the resource's delegates.",
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'ResourceId', 'EntityId'],
@@ -1691,26 +1365,20 @@ const DisassociateDelegateFromResourceRequestSchema = z
   .openapi('DisassociateDelegateFromResourceRequest')
 
 const DisassociateMemberFromGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateMemberFromGroupResponse')
 
 const DisassociateMemberFromGroupRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the group exists.',
-        }),
-    ),
-    GroupId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier for the group from which members are removed.' }),
-    ),
-    MemberId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier for the member to be removed to the group.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the group exists.',
+    }),
+    GroupId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the group from which members are removed.',
+    }),
+    MemberId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the member to be removed to the group.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'GroupId', 'MemberId'],
@@ -1728,16 +1396,12 @@ const AccessControlRuleNameListSchema = z
 
 const GetAccessControlEffectResponseSchema = z
   .object({
-    Effect: AccessControlRuleEffectSchema.and(
-      z.any().openapi({ description: 'The rule effect.' }),
-    ).exactOptional(),
-    MatchedRules: AccessControlRuleNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The rules that match the given parameters, resulting in an effect.',
-        }),
-    ).exactOptional(),
+    Effect: AccessControlRuleEffectSchema.exactOptional().openapi({
+      description: 'The rule effect.',
+    }),
+    MatchedRules: AccessControlRuleNameListSchema.exactOptional().openapi({
+      description: 'The rules that match the given parameters, resulting in an effect.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccessControlEffectResponse')
@@ -1760,24 +1424,18 @@ const AccessControlRuleActionSchema = z
 
 const GetAccessControlEffectRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the organization.' }),
-    ),
-    IpAddress: IpAddressSchema.and(z.any().openapi({ description: 'The IPv4 address.' })),
-    Action: AccessControlRuleActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access protocol action. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
-        }),
-    ),
-    UserId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The user ID.' }),
-    ).exactOptional(),
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The impersonation role ID.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization.',
+    }),
+    IpAddress: IpAddressSchema.openapi({ description: 'The IPv4 address.' }),
+    Action: AccessControlRuleActionSchema.openapi({
+      description:
+        'The access protocol action. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
+    }),
+    UserId: WorkMailIdentifierSchema.exactOptional().openapi({ description: 'The user ID.' }),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.exactOptional().openapi({
+      description: 'The impersonation role ID.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'IpAddress', 'Action'],
@@ -1797,22 +1455,14 @@ const RetentionPeriodSchema = z.int().min(1).max(730).openapi('RetentionPeriod')
 
 const FolderConfigurationSchema = z
   .object({
-    Name: FolderNameSchema.and(z.any().openapi({ description: 'The folder name.' })),
-    Action: RetentionActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action to take on the folder contents at the end of the folder configuration period.',
-        }),
-    ),
-    Period: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of days for which the folder-configuration action applies.',
-        }),
-    ).exactOptional(),
+    Name: FolderNameSchema.openapi({ description: 'The folder name.' }),
+    Action: RetentionActionSchema.openapi({
+      description:
+        'The action to take on the folder contents at the end of the folder configuration period.',
+    }),
+    Period: RetentionPeriodSchema.exactOptional().openapi({
+      description: 'The number of days for which the folder-configuration action applies.',
+    }),
   })
   .openapi({
     required: ['Name', 'Action'],
@@ -1826,70 +1476,58 @@ const FolderConfigurationsSchema = z
 
 const GetDefaultRetentionPolicyResponseSchema = z
   .object({
-    Id: ShortStringSchema.and(
-      z.any().openapi({ description: 'The retention policy ID.' }),
-    ).exactOptional(),
-    Name: ShortStringSchema.and(
-      z.any().openapi({ description: 'The retention policy name.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The retention policy description.' }),
-    ).exactOptional(),
-    FolderConfigurations: FolderConfigurationsSchema.and(
-      z.any().openapi({ description: 'The retention policy folder configurations.' }),
-    ).exactOptional(),
+    Id: ShortStringSchema.exactOptional().openapi({ description: 'The retention policy ID.' }),
+    Name: ShortStringSchema.exactOptional().openapi({ description: 'The retention policy name.' }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The retention policy description.',
+    }),
+    FolderConfigurations: FolderConfigurationsSchema.exactOptional().openapi({
+      description: 'The retention policy folder configurations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDefaultRetentionPolicyResponse')
 
 const GetDefaultRetentionPolicyRequestSchema = z
-  .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ),
-  })
+  .object({ OrganizationId: OrganizationIdSchema.openapi({ description: 'The organization ID.' }) })
   .openapi({ required: ['OrganizationId'], title: 'GetDefaultRetentionPolicyRequest' })
   .openapi('GetDefaultRetentionPolicyRequest')
 
 const GetImpersonationRoleResponseSchema = z
   .object({
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The impersonation role ID.' }),
-    ).exactOptional(),
-    Name: ImpersonationRoleNameSchema.and(
-      z.any().openapi({ description: 'The impersonation role name.' }),
-    ).exactOptional(),
-    Type: ImpersonationRoleTypeSchema.and(
-      z.any().openapi({ description: 'The impersonation role type.' }),
-    ).exactOptional(),
-    Description: ImpersonationRoleDescriptionSchema.and(
-      z.any().openapi({ description: 'The impersonation role description.' }),
-    ).exactOptional(),
-    Rules: ImpersonationRuleListSchema.and(
-      z.any().openapi({ description: 'The list of rules for the given impersonation role.' }),
-    ).exactOptional(),
-    DateCreated: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the impersonation role was created.' }),
-    ).exactOptional(),
-    DateModified: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the impersonation role was last modified.' }),
-    ).exactOptional(),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.exactOptional().openapi({
+      description: 'The impersonation role ID.',
+    }),
+    Name: ImpersonationRoleNameSchema.exactOptional().openapi({
+      description: 'The impersonation role name.',
+    }),
+    Type: ImpersonationRoleTypeSchema.exactOptional().openapi({
+      description: 'The impersonation role type.',
+    }),
+    Description: ImpersonationRoleDescriptionSchema.exactOptional().openapi({
+      description: 'The impersonation role description.',
+    }),
+    Rules: ImpersonationRuleListSchema.exactOptional().openapi({
+      description: 'The list of rules for the given impersonation role.',
+    }),
+    DateCreated: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the impersonation role was created.',
+    }),
+    DateModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the impersonation role was last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetImpersonationRoleResponse')
 
 const GetImpersonationRoleRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization from which to retrieve the impersonation role.',
-        }),
-    ),
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The impersonation role ID to retrieve.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization from which to retrieve the impersonation role.',
+    }),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.openapi({
+      description: 'The impersonation role ID to retrieve.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'ImpersonationRoleId'],
@@ -1899,12 +1537,12 @@ const GetImpersonationRoleRequestSchema = z
 
 const ImpersonationMatchedRuleSchema = z
   .object({
-    ImpersonationRuleId: ImpersonationRuleIdSchema.and(
-      z.any().openapi({ description: 'The ID of the rule that matched the input' }),
-    ).exactOptional(),
-    Name: ImpersonationRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule that matched the input.' }),
-    ).exactOptional(),
+    ImpersonationRuleId: ImpersonationRuleIdSchema.exactOptional().openapi({
+      description: 'The ID of the rule that matched the input',
+    }),
+    Name: ImpersonationRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the rule that matched the input.',
+    }),
   })
   .openapi({ description: 'The impersonation rule that matched the input.', required: [] })
   .openapi('ImpersonationMatchedRule')
@@ -1917,49 +1555,32 @@ const ImpersonationMatchedRuleListSchema = z
 
 const GetImpersonationRoleEffectResponseSchema = z
   .object({
-    Type: ImpersonationRoleTypeSchema.and(
-      z.any().openapi({ description: 'The impersonation role type.' }),
-    ).exactOptional(),
-    Effect: AccessEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code/>Effect of the impersonation role on the target user based on its rules. Available effects are <code>ALLOW</code> or <code>DENY</code>.',
-        }),
-    ).exactOptional(),
-    MatchedRules: ImpersonationMatchedRuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the rules that match the input and produce the configured effect.',
-        }),
-    ).exactOptional(),
+    Type: ImpersonationRoleTypeSchema.exactOptional().openapi({
+      description: 'The impersonation role type.',
+    }),
+    Effect: AccessEffectSchema.exactOptional().openapi({
+      description:
+        ' <code/>Effect of the impersonation role on the target user based on its rules. Available effects are <code>ALLOW</code> or <code>DENY</code>.',
+    }),
+    MatchedRules: ImpersonationMatchedRuleListSchema.exactOptional().openapi({
+      description: 'A list of the rules that match the input and produce the configured effect.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetImpersonationRoleEffectResponse')
 
 const GetImpersonationRoleEffectRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization where the impersonation role is defined.',
-        }),
-    ),
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The impersonation role ID to test.' }),
-    ),
-    TargetUser: EntityIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The WorkMail organization user chosen to test the impersonation role. The following identity formats are available:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization where the impersonation role is defined.',
+    }),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.openapi({
+      description: 'The impersonation role ID to test.',
+    }),
+    TargetUser: EntityIdentifierSchema.openapi({
+      description:
+        '<p>The WorkMail organization user chosen to test the impersonation role. The following identity formats are available:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'ImpersonationRoleId', 'TargetUser'],
@@ -1969,29 +1590,16 @@ const GetImpersonationRoleEffectRequestSchema = z
 
 const DnsRecordSchema = z
   .object({
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The RFC 1035 record type. Possible values: <code>CNAME</code>, <code>A</code>, <code>MX</code>.',
-        }),
-    ).exactOptional(),
-    Hostname: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The DNS hostname.- For example, <code>domain.example.com</code>.',
-        }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value returned by the DNS for a query to that hostname and record type.',
-        }),
-    ).exactOptional(),
+    Type: StringSchema.exactOptional().openapi({
+      description:
+        'The RFC 1035 record type. Possible values: <code>CNAME</code>, <code>A</code>, <code>MX</code>.',
+    }),
+    Hostname: StringSchema.exactOptional().openapi({
+      description: 'The DNS hostname.- For example, <code>domain.example.com</code>.',
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      description: 'The value returned by the DNS for a query to that hostname and record type.',
+    }),
   })
   .openapi({ description: 'A DNS record uploaded to your DNS provider.', required: [] })
   .openapi('DnsRecord')
@@ -2004,51 +1612,35 @@ const DnsRecordVerificationStatusSchema = z
 
 const GetMailDomainResponseSchema = z
   .object({
-    Records: DnsRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the DNS records that WorkMail recommends adding in your DNS provider for the best user experience. The records configure your domain with DMARC, SPF, DKIM, and direct incoming email traffic to SES. See admin guide for more details.',
-        }),
-    ).exactOptional(),
-    IsTestDomain: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the domain is a test domain provided by WorkMail, or a custom domain.',
-        }),
-    ).exactOptional(),
-    IsDefault: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether the domain is the default domain for your organization.',
-        }),
-    ).exactOptional(),
-    OwnershipVerificationStatus: DnsRecordVerificationStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Indicates the status of the domain ownership verification.' }),
-    ).exactOptional(),
-    DkimVerificationStatus: DnsRecordVerificationStatusSchema.and(
-      z.any().openapi({ description: 'Indicates the status of a DKIM verification.' }),
-    ).exactOptional(),
+    Records: DnsRecordsSchema.exactOptional().openapi({
+      description:
+        'A list of the DNS records that WorkMail recommends adding in your DNS provider for the best user experience. The records configure your domain with DMARC, SPF, DKIM, and direct incoming email traffic to SES. See admin guide for more details.',
+    }),
+    IsTestDomain: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the domain is a test domain provided by WorkMail, or a custom domain.',
+    }),
+    IsDefault: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the domain is the default domain for your organization.',
+    }),
+    OwnershipVerificationStatus: DnsRecordVerificationStatusSchema.exactOptional().openapi({
+      description: ' Indicates the status of the domain ownership verification.',
+    }),
+    DkimVerificationStatus: DnsRecordVerificationStatusSchema.exactOptional().openapi({
+      description: 'Indicates the status of a DKIM verification.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMailDomainResponse')
 
 const GetMailDomainRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The WorkMail organization for which the domain is retrieved.' }),
-    ),
-    DomainName: WorkMailDomainNameSchema.and(
-      z.any().openapi({ description: 'The domain from which you want to retrieve details.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization for which the domain is retrieved.',
+    }),
+    DomainName: WorkMailDomainNameSchema.openapi({
+      description: 'The domain from which you want to retrieve details.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'DomainName'], title: 'GetMailDomainRequest' })
   .openapi('GetMailDomainRequest')
@@ -2059,49 +1651,37 @@ const MailboxSizeSchema = z.float64().min(0).openapi('MailboxSize')
 
 const GetMailboxDetailsResponseSchema = z
   .object({
-    MailboxQuota: MailboxQuotaSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum allowed mailbox size, in MB, for the specified user.',
-        }),
-    ).exactOptional(),
-    MailboxSize: MailboxSizeSchema.and(
-      z.any().openapi({ description: 'The current mailbox size, in MB, for the specified user.' }),
-    ).exactOptional(),
+    MailboxQuota: MailboxQuotaSchema.exactOptional().openapi({
+      description: 'The maximum allowed mailbox size, in MB, for the specified user.',
+    }),
+    MailboxSize: MailboxSizeSchema.exactOptional().openapi({
+      description: 'The current mailbox size, in MB, for the specified user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMailboxDetailsResponse')
 
 const GetMailboxDetailsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the organization that contains the user whose mailbox details are being requested.',
-        }),
-    ),
-    UserId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the user whose mailbox details are being requested.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier for the organization that contains the user whose mailbox details are being requested.',
+    }),
+    UserId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the user whose mailbox details are being requested.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'UserId'], title: 'GetMailboxDetailsRequest' })
   .openapi('GetMailboxDetailsRequest')
 
 const MobileDeviceAccessMatchedRuleSchema = z
   .object({
-    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.and(
-      z.any().openapi({ description: 'Identifier of the rule that a simulated user matches.' }),
-    ).exactOptional(),
-    Name: MobileDeviceAccessRuleNameSchema.and(
-      z.any().openapi({ description: 'Name of a rule that a simulated user matches.' }),
-    ).exactOptional(),
+    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.exactOptional().openapi({
+      description: 'Identifier of the rule that a simulated user matches.',
+    }),
+    Name: MobileDeviceAccessRuleNameSchema.exactOptional().openapi({
+      description: 'Name of a rule that a simulated user matches.',
+    }),
   })
   .openapi({ description: 'The rule that a simulated user matches.', required: [] })
   .openapi('MobileDeviceAccessMatchedRule')
@@ -2114,102 +1694,76 @@ const MobileDeviceAccessMatchedRuleListSchema = z
 
 const GetMobileDeviceAccessEffectResponseSchema = z
   .object({
-    Effect: MobileDeviceAccessRuleEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The effect of the simulated access, <code>ALLOW</code> or <code>DENY</code>, after evaluating mobile device access rules in the WorkMail organization for the simulated user parameters.',
-        }),
-    ).exactOptional(),
-    MatchedRules: MobileDeviceAccessMatchedRuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the rules which matched the simulated user input and produced the effect.',
-        }),
-    ).exactOptional(),
+    Effect: MobileDeviceAccessRuleEffectSchema.exactOptional().openapi({
+      description:
+        'The effect of the simulated access, <code>ALLOW</code> or <code>DENY</code>, after evaluating mobile device access rules in the WorkMail organization for the simulated user parameters.',
+    }),
+    MatchedRules: MobileDeviceAccessMatchedRuleListSchema.exactOptional().openapi({
+      description:
+        'A list of the rules which matched the simulated user input and produced the effect.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMobileDeviceAccessEffectResponse')
 
 const GetMobileDeviceAccessEffectRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The WorkMail organization to simulate the access effect for.' }),
-    ),
-    DeviceType: DeviceTypeSchema.and(
-      z.any().openapi({ description: 'Device type the simulated user will report.' }),
-    ).exactOptional(),
-    DeviceModel: DeviceModelSchema.and(
-      z.any().openapi({ description: 'Device model the simulated user will report.' }),
-    ).exactOptional(),
-    DeviceOperatingSystem: DeviceOperatingSystemSchema.and(
-      z.any().openapi({ description: 'Device operating system the simulated user will report.' }),
-    ).exactOptional(),
-    DeviceUserAgent: DeviceUserAgentSchema.and(
-      z.any().openapi({ description: 'Device user agent the simulated user will report.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization to simulate the access effect for.',
+    }),
+    DeviceType: DeviceTypeSchema.exactOptional().openapi({
+      description: 'Device type the simulated user will report.',
+    }),
+    DeviceModel: DeviceModelSchema.exactOptional().openapi({
+      description: 'Device model the simulated user will report.',
+    }),
+    DeviceOperatingSystem: DeviceOperatingSystemSchema.exactOptional().openapi({
+      description: 'Device operating system the simulated user will report.',
+    }),
+    DeviceUserAgent: DeviceUserAgentSchema.exactOptional().openapi({
+      description: 'Device user agent the simulated user will report.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'GetMobileDeviceAccessEffectRequest' })
   .openapi('GetMobileDeviceAccessEffectRequest')
 
 const GetMobileDeviceAccessOverrideResponseSchema = z
   .object({
-    UserId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The WorkMail user to which the access override applies.' }),
-    ).exactOptional(),
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The device to which the access override applies.' }),
-    ).exactOptional(),
-    Effect: MobileDeviceAccessRuleEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The effect of the override, <code>ALLOW</code> or <code>DENY</code>.',
-        }),
-    ).exactOptional(),
-    Description: MobileDeviceAccessRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the override.' }),
-    ).exactOptional(),
-    DateCreated: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the override was first created.' }),
-    ).exactOptional(),
-    DateModified: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the description was last modified.' }),
-    ).exactOptional(),
+    UserId: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The WorkMail user to which the access override applies.',
+    }),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The device to which the access override applies.',
+    }),
+    Effect: MobileDeviceAccessRuleEffectSchema.exactOptional().openapi({
+      description: 'The effect of the override, <code>ALLOW</code> or <code>DENY</code>.',
+    }),
+    Description: MobileDeviceAccessRuleDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the override.',
+    }),
+    DateCreated: TimestampSchema.exactOptional().openapi({
+      description: 'The date the override was first created.',
+    }),
+    DateModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date the description was last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMobileDeviceAccessOverrideResponse')
 
 const GetMobileDeviceAccessOverrideRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization to which you want to apply the override.',
-        }),
-    ),
-    UserId: EntityIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the WorkMail user for the override. Accepts the following types of user identities: </p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
-        }),
-    ),
-    DeviceId: DeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mobile device to which the override applies. <code>DeviceId</code> is case insensitive.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization to which you want to apply the override.',
+    }),
+    UserId: EntityIdentifierSchema.openapi({
+      description:
+        '<p>Identifies the WorkMail user for the override. Accepts the following types of user identities: </p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
+    }),
+    DeviceId: DeviceIdSchema.openapi({
+      description:
+        'The mobile device to which the override applies. <code>DeviceId</code> is case insensitive.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'UserId', 'DeviceId'],
@@ -2251,55 +1805,45 @@ const ImpersonationRoleIdListSchema = z
 
 const AccessControlRuleSchema = z
   .object({
-    Name: AccessControlRuleNameSchema.and(
-      z.any().openapi({ description: 'The rule name.' }),
-    ).exactOptional(),
-    Effect: AccessControlRuleEffectSchema.and(
-      z.any().openapi({ description: 'The rule effect.' }),
-    ).exactOptional(),
-    Description: AccessControlRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The rule description.' }),
-    ).exactOptional(),
-    IpRanges: IpRangeListSchema.and(
-      z.any().openapi({ description: 'IPv4 CIDR ranges to include in the rule.' }),
-    ).exactOptional(),
-    NotIpRanges: IpRangeListSchema.and(
-      z.any().openapi({ description: 'IPv4 CIDR ranges to exclude from the rule.' }),
-    ).exactOptional(),
-    Actions: ActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access protocol actions to include in the rule. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
-        }),
-    ).exactOptional(),
-    NotActions: ActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access protocol actions to exclude from the rule. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
-        }),
-    ).exactOptional(),
-    UserIds: UserIdListSchema.and(
-      z.any().openapi({ description: 'User IDs to include in the rule.' }),
-    ).exactOptional(),
-    NotUserIds: UserIdListSchema.and(
-      z.any().openapi({ description: 'User IDs to exclude from the rule.' }),
-    ).exactOptional(),
-    DateCreated: TimestampSchema.and(
-      z.any().openapi({ description: 'The date that the rule was created.' }),
-    ).exactOptional(),
-    DateModified: TimestampSchema.and(
-      z.any().openapi({ description: 'The date that the rule was modified.' }),
-    ).exactOptional(),
-    ImpersonationRoleIds: ImpersonationRoleIdListSchema.and(
-      z.any().openapi({ description: 'Impersonation role IDs to include in the rule.' }),
-    ).exactOptional(),
-    NotImpersonationRoleIds: ImpersonationRoleIdListSchema.and(
-      z.any().openapi({ description: 'Impersonation role IDs to exclude from the rule.' }),
-    ).exactOptional(),
+    Name: AccessControlRuleNameSchema.exactOptional().openapi({ description: 'The rule name.' }),
+    Effect: AccessControlRuleEffectSchema.exactOptional().openapi({
+      description: 'The rule effect.',
+    }),
+    Description: AccessControlRuleDescriptionSchema.exactOptional().openapi({
+      description: 'The rule description.',
+    }),
+    IpRanges: IpRangeListSchema.exactOptional().openapi({
+      description: 'IPv4 CIDR ranges to include in the rule.',
+    }),
+    NotIpRanges: IpRangeListSchema.exactOptional().openapi({
+      description: 'IPv4 CIDR ranges to exclude from the rule.',
+    }),
+    Actions: ActionsListSchema.exactOptional().openapi({
+      description:
+        'Access protocol actions to include in the rule. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
+    }),
+    NotActions: ActionsListSchema.exactOptional().openapi({
+      description:
+        'Access protocol actions to exclude from the rule. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
+    }),
+    UserIds: UserIdListSchema.exactOptional().openapi({
+      description: 'User IDs to include in the rule.',
+    }),
+    NotUserIds: UserIdListSchema.exactOptional().openapi({
+      description: 'User IDs to exclude from the rule.',
+    }),
+    DateCreated: TimestampSchema.exactOptional().openapi({
+      description: 'The date that the rule was created.',
+    }),
+    DateModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date that the rule was modified.',
+    }),
+    ImpersonationRoleIds: ImpersonationRoleIdListSchema.exactOptional().openapi({
+      description: 'Impersonation role IDs to include in the rule.',
+    }),
+    NotImpersonationRoleIds: ImpersonationRoleIdListSchema.exactOptional().openapi({
+      description: 'Impersonation role IDs to exclude from the rule.',
+    }),
   })
   .openapi({
     description: 'A rule that controls access to an WorkMail organization.',
@@ -2315,18 +1859,18 @@ const AccessControlRulesListSchema = z
 
 const ListAccessControlRulesResponseSchema = z
   .object({
-    Rules: AccessControlRulesListSchema.and(
-      z.any().openapi({ description: 'The access control rules.' }),
-    ).exactOptional(),
+    Rules: AccessControlRulesListSchema.exactOptional().openapi({
+      description: 'The access control rules.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccessControlRulesResponse')
 
 const ListAccessControlRulesRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the organization.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListAccessControlRulesRequest' })
   .openapi('ListAccessControlRulesRequest')
@@ -2342,17 +1886,13 @@ const NextTokenSchema = z
 
 const ListAliasesResponseSchema = z
   .object({
-    Aliases: AliasesSchema.and(
-      z.any().openapi({ description: "The entity's paginated aliases." }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    Aliases: AliasesSchema.exactOptional().openapi({
+      description: "The entity's paginated aliases.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAliasesResponse')
@@ -2361,29 +1901,19 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListAliasesRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the entity exists.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier for the entity for which to list the aliases.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the entity exists.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the entity for which to list the aliases.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'EntityId'], title: 'ListAliasesRequest' })
   .openapi('ListAliasesRequest')
@@ -2392,12 +1922,12 @@ const AvailabilityProviderTypeSchema = z.enum(['EWS', 'LAMBDA']).openapi('Availa
 
 const RedactedEwsAvailabilityProviderSchema = z
   .object({
-    EwsEndpoint: UrlSchema.and(
-      z.any().openapi({ description: 'The endpoint of the remote EWS server.' }),
-    ).exactOptional(),
-    EwsUsername: ExternalUserNameSchema.and(
-      z.any().openapi({ description: 'The username used to authenticate the remote EWS server.' }),
-    ).exactOptional(),
+    EwsEndpoint: UrlSchema.exactOptional().openapi({
+      description: 'The endpoint of the remote EWS server.',
+    }),
+    EwsUsername: ExternalUserNameSchema.exactOptional().openapi({
+      description: 'The username used to authenticate the remote EWS server.',
+    }),
   })
   .openapi({
     description:
@@ -2408,43 +1938,26 @@ const RedactedEwsAvailabilityProviderSchema = z
 
 const AvailabilityConfigurationSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'Displays the domain to which the provider applies.' }),
-    ).exactOptional(),
-    ProviderType: AvailabilityProviderTypeSchema.and(
-      z.any().openapi({ description: 'Displays the provider type that applies to this domain.' }),
-    ).exactOptional(),
-    EwsProvider: RedactedEwsAvailabilityProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>ProviderType</code> is <code>EWS</code>, then this field contains <code>RedactedEwsAvailabilityProvider</code>. Otherwise, it is not required.',
-        }),
-    ).exactOptional(),
-    LambdaProvider: LambdaAvailabilityProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If ProviderType is <code>LAMBDA</code> then this field contains <code>LambdaAvailabilityProvider</code>. Otherwise, it is not required.',
-        }),
-    ).exactOptional(),
-    DateCreated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time at which the availability configuration was created.',
-        }),
-    ).exactOptional(),
-    DateModified: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time at which the availability configuration was last modified.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description: 'Displays the domain to which the provider applies.',
+    }),
+    ProviderType: AvailabilityProviderTypeSchema.exactOptional().openapi({
+      description: 'Displays the provider type that applies to this domain.',
+    }),
+    EwsProvider: RedactedEwsAvailabilityProviderSchema.exactOptional().openapi({
+      description:
+        'If <code>ProviderType</code> is <code>EWS</code>, then this field contains <code>RedactedEwsAvailabilityProvider</code>. Otherwise, it is not required.',
+    }),
+    LambdaProvider: LambdaAvailabilityProviderSchema.exactOptional().openapi({
+      description:
+        'If ProviderType is <code>LAMBDA</code> then this field contains <code>LambdaAvailabilityProvider</code>. Otherwise, it is not required.',
+    }),
+    DateCreated: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time at which the availability configuration was created.',
+    }),
+    DateModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time at which the availability configuration was last modified.',
+    }),
   })
   .openapi({
     description:
@@ -2459,47 +1972,31 @@ const AvailabilityConfigurationListSchema = z
 
 const ListAvailabilityConfigurationsResponseSchema = z
   .object({
-    AvailabilityConfigurations: AvailabilityConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The list of <code>AvailabilityConfiguration</code>'s that exist for the specified WorkMail organization.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value is <code>null</code> when there are no further results to return.',
-        }),
-    ).exactOptional(),
+    AvailabilityConfigurations: AvailabilityConfigurationListSchema.exactOptional().openapi({
+      description:
+        "The list of <code>AvailabilityConfiguration</code>'s that exist for the specified WorkMail organization.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value is <code>null</code> when there are no further results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAvailabilityConfigurationsResponse')
 
 const ListAvailabilityConfigurationsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The WorkMail organization for which the <code>AvailabilityConfiguration</code>'s will be listed.",
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not require a token.',
-        }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        "The WorkMail organization for which the <code>AvailabilityConfiguration</code>'s will be listed.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not require a token.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListAvailabilityConfigurationsRequest' })
   .openapi('ListAvailabilityConfigurationsRequest')
@@ -2508,36 +2005,20 @@ const MemberTypeSchema = z.enum(['GROUP', 'USER']).openapi('MemberType')
 
 const MemberSchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the member.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the member.' }),
-    ).exactOptional(),
-    Type: MemberTypeSchema.and(
-      z.any().openapi({ description: 'A member can be a user or group.' }),
-    ).exactOptional(),
-    State: EntityStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state of the member, which can be ENABLED, DISABLED, or DELETED.',
-        }),
-    ).exactOptional(),
-    EnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date indicating when the member was enabled for WorkMail use.',
-        }),
-    ).exactOptional(),
-    DisabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date indicating when the member was disabled from WorkMail use.',
-        }),
-    ).exactOptional(),
+    Id: StringSchema.exactOptional().openapi({ description: 'The identifier of the member.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the member.' }),
+    Type: MemberTypeSchema.exactOptional().openapi({
+      description: 'A member can be a user or group.',
+    }),
+    State: EntityStateSchema.exactOptional().openapi({
+      description: 'The state of the member, which can be ENABLED, DISABLED, or DELETED.',
+    }),
+    EnabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date indicating when the member was enabled for WorkMail use.',
+    }),
+    DisabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date indicating when the member was disabled from WorkMail use.',
+    }),
   })
   .openapi({ description: 'The representation of a user or group.', required: [] })
   .openapi('Member')
@@ -2546,85 +2027,53 @@ const MembersSchema = z.array(MemberSchema).openapi('Members')
 
 const ListGroupMembersResponseSchema = z
   .object({
-    Members: MembersSchema.and(
-      z.any().openapi({ description: 'The members associated to the group.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
-        }),
-    ).exactOptional(),
+    Members: MembersSchema.exactOptional().openapi({
+      description: 'The members associated to the group.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupMembersResponse')
 
 const ListGroupMembersRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the group exists.',
-        }),
-    ),
-    GroupId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the group to which the members (users or groups) are associated.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token to use to retrieve the next page of results. The first call does not contain any tokens.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the group exists.',
+    }),
+    GroupId: WorkMailIdentifierSchema.openapi({
+      description:
+        'The identifier for the group to which the members (users or groups) are associated.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' The token to use to retrieve the next page of results. The first call does not contain any tokens.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'GroupId'], title: 'ListGroupMembersRequest' })
   .openapi('ListGroupMembersRequest')
 
 const GroupSchema = z
   .object({
-    Id: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier of the group.' }),
-    ).exactOptional(),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email of the group.' }),
-    ).exactOptional(),
-    Name: GroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the group.' }),
-    ).exactOptional(),
-    State: EntityStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state of the group, which can be ENABLED, DISABLED, or DELETED.',
-        }),
-    ).exactOptional(),
-    EnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date indicating when the group was enabled for WorkMail use.',
-        }),
-    ).exactOptional(),
-    DisabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date indicating when the group was disabled from WorkMail use.',
-        }),
-    ).exactOptional(),
+    Id: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier of the group.',
+    }),
+    Email: EmailAddressSchema.exactOptional().openapi({ description: 'The email of the group.' }),
+    Name: GroupNameSchema.exactOptional().openapi({ description: 'The name of the group.' }),
+    State: EntityStateSchema.exactOptional().openapi({
+      description: 'The state of the group, which can be ENABLED, DISABLED, or DELETED.',
+    }),
+    EnabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date indicating when the group was enabled for WorkMail use.',
+    }),
+    DisabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date indicating when the group was disabled from WorkMail use.',
+    }),
   })
   .openapi({ description: 'The representation of an WorkMail group.', required: [] })
   .openapi('Group')
@@ -2633,62 +2082,50 @@ const GroupsSchema = z.array(GroupSchema).openapi('Groups')
 
 const ListGroupsResponseSchema = z
   .object({
-    Groups: GroupsSchema.and(
-      z.any().openapi({ description: 'The overview of groups for an organization.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    Groups: GroupsSchema.exactOptional().openapi({
+      description: 'The overview of groups for an organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupsResponse')
 
 const ListGroupsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the groups exist.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the groups exist.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListGroupsRequest' })
   .openapi('ListGroupsRequest')
 
 const ImpersonationRoleSchema = z
   .object({
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the impersonation role.' }),
-    ).exactOptional(),
-    Name: ImpersonationRoleNameSchema.and(
-      z.any().openapi({ description: 'The impersonation role name.' }),
-    ).exactOptional(),
-    Type: ImpersonationRoleTypeSchema.and(
-      z.any().openapi({ description: 'The impersonation role type.' }),
-    ).exactOptional(),
-    DateCreated: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the impersonation role was created.' }),
-    ).exactOptional(),
-    DateModified: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the impersonation role was last modified.' }),
-    ).exactOptional(),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.exactOptional().openapi({
+      description: 'The identifier of the impersonation role.',
+    }),
+    Name: ImpersonationRoleNameSchema.exactOptional().openapi({
+      description: 'The impersonation role name.',
+    }),
+    Type: ImpersonationRoleTypeSchema.exactOptional().openapi({
+      description: 'The impersonation role type.',
+    }),
+    DateCreated: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the impersonation role was created.',
+    }),
+    DateModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the impersonation role was last modified.',
+    }),
   })
   .openapi({
     description: 'An impersonation role for the given WorkMail organization.',
@@ -2704,57 +2141,39 @@ const ImpersonationRoleListSchema = z
 
 const ListImpersonationRolesResponseSchema = z
   .object({
-    Roles: ImpersonationRoleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of impersonation roles under the given WorkMail organization.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to retrieve the next page of results. The value is <code>null</code> when there are no results to return.',
-        }),
-    ).exactOptional(),
+    Roles: ImpersonationRoleListSchema.exactOptional().openapi({
+      description: 'The list of impersonation roles under the given WorkMail organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to retrieve the next page of results. The value is <code>null</code> when there are no results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListImpersonationRolesResponse')
 
 const ListImpersonationRolesRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization to which the listed impersonation roles belong.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token used to retrieve the next page of results. The first call doesn't require a token.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results returned in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization to which the listed impersonation roles belong.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The token used to retrieve the next page of results. The first call doesn't require a token.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results returned in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListImpersonationRolesRequest' })
   .openapi('ListImpersonationRolesRequest')
 
 const MailDomainSummarySchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The domain name.' }),
-    ).exactOptional(),
-    DefaultDomain: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the domain is default or not.' }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.exactOptional().openapi({ description: 'The domain name.' }),
+    DefaultDomain: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the domain is default or not.',
+    }),
   })
   .openapi({ description: 'The data for a given domain.', required: [] })
   .openapi('MailDomainSummary')
@@ -2763,87 +2182,63 @@ const MailDomainsSchema = z.array(MailDomainSummarySchema).openapi('MailDomains'
 
 const ListMailDomainsResponseSchema = z
   .object({
-    MailDomains: MailDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The list of mail domain summaries, specifying domains that exist in the specified WorkMail organization, along with the information about whether the domain is or isn't the default.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value becomes <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    MailDomains: MailDomainsSchema.exactOptional().openapi({
+      description:
+        "The list of mail domain summaries, specifying domains that exist in the specified WorkMail organization, along with the information about whether the domain is or isn't the default.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value becomes <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMailDomainsResponse')
 
 const ListMailDomainsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The WorkMail organization for which to list domains.' }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not require a token.',
-        }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization for which to list domains.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not require a token.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListMailDomainsRequest' })
   .openapi('ListMailDomainsRequest')
 
 const MailboxExportJobSchema = z
   .object({
-    JobId: MailboxExportJobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the mailbox export job.' }),
-    ).exactOptional(),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the user or resource associated with the mailbox.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The mailbox export job description.' }),
-    ).exactOptional(),
-    S3BucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the S3 bucket.' }),
-    ).exactOptional(),
-    S3Path: S3ObjectKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The path to the S3 bucket and file that the mailbox export job exports to.',
-        }),
-    ).exactOptional(),
-    EstimatedProgress: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The estimated progress of the mailbox export job, in percentage points.',
-        }),
-    ).exactOptional(),
-    State: MailboxExportJobStateSchema.and(
-      z.any().openapi({ description: 'The state of the mailbox export job.' }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The mailbox export job start timestamp.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The mailbox export job end timestamp.' }),
-    ).exactOptional(),
+    JobId: MailboxExportJobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the mailbox export job.',
+    }),
+    EntityId: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier of the user or resource associated with the mailbox.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The mailbox export job description.',
+    }),
+    S3BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description: 'The name of the S3 bucket.',
+    }),
+    S3Path: S3ObjectKeySchema.exactOptional().openapi({
+      description: 'The path to the S3 bucket and file that the mailbox export job exports to.',
+    }),
+    EstimatedProgress: PercentageSchema.exactOptional().openapi({
+      description: 'The estimated progress of the mailbox export job, in percentage points.',
+    }),
+    State: MailboxExportJobStateSchema.exactOptional().openapi({
+      description: 'The state of the mailbox export job.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The mailbox export job start timestamp.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The mailbox export job end timestamp.',
+    }),
   })
   .openapi({
     description:
@@ -2856,27 +2251,23 @@ const JobsSchema = z.array(MailboxExportJobSchema).openapi('Jobs')
 
 const ListMailboxExportJobsResponseSchema = z
   .object({
-    Jobs: JobsSchema.and(
-      z.any().openapi({ description: 'The mailbox export job details.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    Jobs: JobsSchema.exactOptional().openapi({ description: 'The mailbox export job details.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMailboxExportJobsResponse')
 
 const ListMailboxExportJobsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({ description: 'The organization ID.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListMailboxExportJobsRequest' })
   .openapi('ListMailboxExportJobsRequest')
@@ -2889,27 +2280,17 @@ const PermissionValuesSchema = z.array(PermissionTypeSchema).openapi('Permission
 
 const PermissionSchema = z
   .object({
-    GranteeId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the user, group, or resource to which the permissions are granted.',
-        }),
-    ),
-    GranteeType: MemberTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of user, group, or resource referred to in GranteeId.' }),
-    ),
-    PermissionValues: PermissionValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions granted to the grantee. SEND_AS allows the grantee to send email as the owner of the mailbox (the grantee is not mentioned on these emails). SEND_ON_BEHALF allows the grantee to send email on behalf of the owner of the mailbox (the grantee is not mentioned as the physical sender of these emails). FULL_ACCESS allows the grantee full access to the mailbox, irrespective of other folder-level permissions set on the mailbox.',
-        }),
-    ),
+    GranteeId: WorkMailIdentifierSchema.openapi({
+      description:
+        'The identifier of the user, group, or resource to which the permissions are granted.',
+    }),
+    GranteeType: MemberTypeSchema.openapi({
+      description: 'The type of user, group, or resource referred to in GranteeId.',
+    }),
+    PermissionValues: PermissionValuesSchema.openapi({
+      description:
+        'The permissions granted to the grantee. SEND_AS allows the grantee to send email as the owner of the mailbox (the grantee is not mentioned on these emails). SEND_ON_BEHALF allows the grantee to send email on behalf of the owner of the mailbox (the grantee is not mentioned as the physical sender of these emails). FULL_ACCESS allows the grantee full access to the mailbox, irrespective of other folder-level permissions set on the mailbox.',
+    }),
   })
   .openapi({
     required: ['GranteeId', 'GranteeType', 'PermissionValues'],
@@ -2922,80 +2303,58 @@ const PermissionsSchema = z.array(PermissionSchema).openapi('Permissions')
 
 const ListMailboxPermissionsResponseSchema = z
   .object({
-    Permissions: PermissionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'One page of the user, group, or resource mailbox permissions.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    Permissions: PermissionsSchema.exactOptional().openapi({
+      description: 'One page of the user, group, or resource mailbox permissions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMailboxPermissionsResponse')
 
 const ListMailboxPermissionsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the organization under which the user, group, or resource exists.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the user, group, or resource for which to list mailbox permissions.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier of the organization under which the user, group, or resource exists.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description:
+        'The identifier of the user, group, or resource for which to list mailbox permissions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'EntityId'], title: 'ListMailboxPermissionsRequest' })
   .openapi('ListMailboxPermissionsRequest')
 
 const MobileDeviceAccessOverrideSchema = z
   .object({
-    UserId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The WorkMail user to which the access override applies.' }),
-    ).exactOptional(),
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The device to which the override applies.' }),
-    ).exactOptional(),
-    Effect: MobileDeviceAccessRuleEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The effect of the override, <code>ALLOW</code> or <code>DENY</code>.',
-        }),
-    ).exactOptional(),
-    Description: MobileDeviceAccessRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the override.' }),
-    ).exactOptional(),
-    DateCreated: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the override was first created.' }),
-    ).exactOptional(),
-    DateModified: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the override was last modified.' }),
-    ).exactOptional(),
+    UserId: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The WorkMail user to which the access override applies.',
+    }),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The device to which the override applies.',
+    }),
+    Effect: MobileDeviceAccessRuleEffectSchema.exactOptional().openapi({
+      description: 'The effect of the override, <code>ALLOW</code> or <code>DENY</code>.',
+    }),
+    Description: MobileDeviceAccessRuleDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the override.',
+    }),
+    DateCreated: TimestampSchema.exactOptional().openapi({
+      description: 'The date the override was first created.',
+    }),
+    DateModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date the override was last modified.',
+    }),
   })
   .openapi({ description: 'The override object.', required: [] })
   .openapi('MobileDeviceAccessOverride')
@@ -3006,131 +2365,90 @@ const MobileDeviceAccessOverridesListSchema = z
 
 const ListMobileDeviceAccessOverridesResponseSchema = z
   .object({
-    Overrides: MobileDeviceAccessOverridesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of mobile device access overrides that exist for the specified WorkMail organization and user.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value is “null” when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    Overrides: MobileDeviceAccessOverridesListSchema.exactOptional().openapi({
+      description:
+        'The list of mobile device access overrides that exist for the specified WorkMail organization and user.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value is “null” when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMobileDeviceAccessOverridesResponse')
 
 const ListMobileDeviceAccessOverridesRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The WorkMail organization under which to list mobile device access overrides.',
-        }),
-    ),
-    UserId: EntityIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The WorkMail user under which you list the mobile device access overrides. Accepts the following types of user identities:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The mobile device to which the access override applies.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not require a token.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization under which to list mobile device access overrides.',
+    }),
+    UserId: EntityIdentifierSchema.exactOptional().openapi({
+      description:
+        '<p>The WorkMail user under which you list the mobile device access overrides. Accepts the following types of user identities:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
+    }),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The mobile device to which the access override applies.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not require a token.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListMobileDeviceAccessOverridesRequest' })
   .openapi('ListMobileDeviceAccessOverridesRequest')
 
 const MobileDeviceAccessRuleSchema = z
   .object({
-    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to a mobile access rule.' }),
-    ).exactOptional(),
-    Name: MobileDeviceAccessRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of a mobile access rule.' }),
-    ).exactOptional(),
-    Description: MobileDeviceAccessRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of a mobile access rule.' }),
-    ).exactOptional(),
-    Effect: MobileDeviceAccessRuleEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The effect of the rule when it matches. Allowed values are <code>ALLOW</code> or <code>DENY</code>.',
-        }),
-    ).exactOptional(),
-    DeviceTypes: DeviceTypeListSchema.and(
-      z.any().openapi({ description: 'Device types that a rule will match.' }),
-    ).exactOptional(),
-    NotDeviceTypes: DeviceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device types that a rule <b>will not</b> match. All other device types will match.',
-        }),
-    ).exactOptional(),
-    DeviceModels: DeviceModelListSchema.and(
-      z.any().openapi({ description: 'Device models that a rule will match.' }),
-    ).exactOptional(),
-    NotDeviceModels: DeviceModelListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device models that a rule <b>will not</b> match. All other device models will match.',
-        }),
-    ).exactOptional(),
-    DeviceOperatingSystems: DeviceOperatingSystemListSchema.and(
-      z.any().openapi({ description: 'Device operating systems that a rule will match.' }),
-    ).exactOptional(),
-    NotDeviceOperatingSystems: DeviceOperatingSystemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device operating systems that a rule <b>will not</b> match. All other device types will match.',
-        }),
-    ).exactOptional(),
-    DeviceUserAgents: DeviceUserAgentListSchema.and(
-      z.any().openapi({ description: 'Device user agents that a rule will match.' }),
-    ).exactOptional(),
-    NotDeviceUserAgents: DeviceUserAgentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device user agents that a rule <b>will not</b> match. All other device user agents will match.',
-        }),
-    ).exactOptional(),
-    DateCreated: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time at which an access rule was created.' }),
-    ).exactOptional(),
-    DateModified: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time at which an access rule was modified.' }),
-    ).exactOptional(),
+    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.exactOptional().openapi({
+      description: 'The ID assigned to a mobile access rule.',
+    }),
+    Name: MobileDeviceAccessRuleNameSchema.exactOptional().openapi({
+      description: 'The name of a mobile access rule.',
+    }),
+    Description: MobileDeviceAccessRuleDescriptionSchema.exactOptional().openapi({
+      description: 'The description of a mobile access rule.',
+    }),
+    Effect: MobileDeviceAccessRuleEffectSchema.exactOptional().openapi({
+      description:
+        'The effect of the rule when it matches. Allowed values are <code>ALLOW</code> or <code>DENY</code>.',
+    }),
+    DeviceTypes: DeviceTypeListSchema.exactOptional().openapi({
+      description: 'Device types that a rule will match.',
+    }),
+    NotDeviceTypes: DeviceTypeListSchema.exactOptional().openapi({
+      description:
+        'Device types that a rule <b>will not</b> match. All other device types will match.',
+    }),
+    DeviceModels: DeviceModelListSchema.exactOptional().openapi({
+      description: 'Device models that a rule will match.',
+    }),
+    NotDeviceModels: DeviceModelListSchema.exactOptional().openapi({
+      description:
+        'Device models that a rule <b>will not</b> match. All other device models will match.',
+    }),
+    DeviceOperatingSystems: DeviceOperatingSystemListSchema.exactOptional().openapi({
+      description: 'Device operating systems that a rule will match.',
+    }),
+    NotDeviceOperatingSystems: DeviceOperatingSystemListSchema.exactOptional().openapi({
+      description:
+        'Device operating systems that a rule <b>will not</b> match. All other device types will match.',
+    }),
+    DeviceUserAgents: DeviceUserAgentListSchema.exactOptional().openapi({
+      description: 'Device user agents that a rule will match.',
+    }),
+    NotDeviceUserAgents: DeviceUserAgentListSchema.exactOptional().openapi({
+      description:
+        'Device user agents that a rule <b>will not</b> match. All other device user agents will match.',
+    }),
+    DateCreated: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time at which an access rule was created.',
+    }),
+    DateModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time at which an access rule was modified.',
+    }),
   })
   .openapi({
     description: 'A rule that controls access to mobile devices for an WorkMail group.',
@@ -3146,51 +2464,41 @@ const MobileDeviceAccessRulesListSchema = z
 
 const ListMobileDeviceAccessRulesResponseSchema = z
   .object({
-    Rules: MobileDeviceAccessRulesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of mobile device access rules that exist under the specified WorkMail organization.',
-        }),
-    ).exactOptional(),
+    Rules: MobileDeviceAccessRulesListSchema.exactOptional().openapi({
+      description:
+        'The list of mobile device access rules that exist under the specified WorkMail organization.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMobileDeviceAccessRulesResponse')
 
 const ListMobileDeviceAccessRulesRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The WorkMail organization for which to list the rules.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization for which to list the rules.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListMobileDeviceAccessRulesRequest' })
   .openapi('ListMobileDeviceAccessRulesRequest')
 
 const OrganizationSummarySchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The identifier associated with the organization.' }),
-    ).exactOptional(),
-    Alias: OrganizationNameSchema.and(
-      z.any().openapi({ description: 'The alias associated with the organization.' }),
-    ).exactOptional(),
-    DefaultMailDomain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The default email domain associated with the organization.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error message associated with the organization. It is only present if unexpected behavior has occurred with regards to the organization. It provides insight or solutions regarding unexpected behavior.',
-        }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z.any().openapi({ description: 'The state associated with the organization.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.exactOptional().openapi({
+      description: 'The identifier associated with the organization.',
+    }),
+    Alias: OrganizationNameSchema.exactOptional().openapi({
+      description: 'The alias associated with the organization.',
+    }),
+    DefaultMailDomain: DomainNameSchema.exactOptional().openapi({
+      description: 'The default email domain associated with the organization.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'The error message associated with the organization. It is only present if unexpected behavior has occurred with regards to the organization. It provides insight or solutions regarding unexpected behavior.',
+    }),
+    State: StringSchema.exactOptional().openapi({
+      description: 'The state associated with the organization.',
+    }),
   })
   .openapi({ description: 'The representation of an organization.', required: [] })
   .openapi('OrganizationSummary')
@@ -3201,56 +2509,37 @@ const OrganizationSummariesSchema = z
 
 const ListOrganizationsResponseSchema = z
   .object({
-    OrganizationSummaries: OrganizationSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The overview of owned organizations presented as a list of organization summaries.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    OrganizationSummaries: OrganizationSummariesSchema.exactOptional().openapi({
+      description:
+        'The overview of owned organizations presented as a list of organization summaries.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOrganizationsResponse')
 
 const ListOrganizationsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ title: 'ListOrganizationsRequest', required: [] })
   .openapi('ListOrganizationsRequest')
 
 const DelegateSchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The identifier for the user or group associated as the resource's delegate.",
-        }),
-    ),
-    Type: MemberTypeSchema.and(
-      z.any().openapi({ description: 'The type of the delegate: user or group.' }),
-    ),
+    Id: StringSchema.openapi({
+      description: "The identifier for the user or group associated as the resource's delegate.",
+    }),
+    Type: MemberTypeSchema.openapi({ description: 'The type of the delegate: user or group.' }),
   })
   .openapi({
     required: ['Id', 'Type'],
@@ -3263,86 +2552,57 @@ const ResourceDelegatesSchema = z.array(DelegateSchema).openapi('ResourceDelegat
 
 const ListResourceDelegatesResponseSchema = z
   .object({
-    Delegates: ResourceDelegatesSchema.and(
-      z.any().openapi({ description: "One page of the resource's delegates." }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to paginate through the delegates associated with a resource. While results are still available, it has an associated value. When the last page is reached, the token is empty.',
-        }),
-    ).exactOptional(),
+    Delegates: ResourceDelegatesSchema.exactOptional().openapi({
+      description: "One page of the resource's delegates.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to paginate through the delegates associated with a resource. While results are still available, it has an associated value. When the last page is reached, the token is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourceDelegatesResponse')
 
 const ListResourceDelegatesRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the organization that contains the resource for which delegates are listed.',
-        }),
-    ),
-    ResourceId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier for the resource whose delegates are listed.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to paginate through the delegates associated with a resource.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of maximum results in a page.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier for the organization that contains the resource for which delegates are listed.',
+    }),
+    ResourceId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the resource whose delegates are listed.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token used to paginate through the delegates associated with a resource.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of maximum results in a page.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'ResourceId'], title: 'ListResourceDelegatesRequest' })
   .openapi('ListResourceDelegatesRequest')
 
 const ResourceSchema = z
   .object({
-    Id: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier of the resource.' }),
-    ).exactOptional(),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email of the resource.' }),
-    ).exactOptional(),
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Type: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the resource: equipment or room.' }),
-    ).exactOptional(),
-    State: EntityStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state of the resource, which can be ENABLED, DISABLED, or DELETED.',
-        }),
-    ).exactOptional(),
-    EnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date indicating when the resource was enabled for WorkMail use.',
-        }),
-    ).exactOptional(),
-    DisabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date indicating when the resource was disabled from WorkMail use.',
-        }),
-    ).exactOptional(),
+    Id: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier of the resource.',
+    }),
+    Email: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email of the resource.',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({ description: 'The name of the resource.' }),
+    Type: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the resource: equipment or room.',
+    }),
+    State: EntityStateSchema.exactOptional().openapi({
+      description: 'The state of the resource, which can be ENABLED, DISABLED, or DELETED.',
+    }),
+    EnabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date indicating when the resource was enabled for WorkMail use.',
+    }),
+    DisabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date indicating when the resource was disabled from WorkMail use.',
+    }),
   })
   .openapi({ description: 'The representation of a resource.', required: [] })
   .openapi('Resource')
@@ -3351,41 +2611,29 @@ const ResourcesSchema = z.array(ResourceSchema).openapi('Resources')
 
 const ListResourcesResponseSchema = z
   .object({
-    Resources: ResourcesSchema.and(
-      z.any().openapi({ description: "One page of the organization's resource representation." }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The token used to paginate through all the organization's resources. While results are still available, it has an associated value. When the last page is reached, the token is empty.",
-        }),
-    ).exactOptional(),
+    Resources: ResourcesSchema.exactOptional().openapi({
+      description: "One page of the organization's resource representation.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        " The token used to paginate through all the organization's resources. While results are still available, it has an associated value. When the last page is reached, the token is empty.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourcesResponse')
 
 const ListResourcesRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the resources exist.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the resources exist.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListResourcesRequest' })
   .openapi('ListResourcesRequest')
@@ -3396,8 +2644,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'The value of the tag.' })),
+    Key: TagKeySchema.openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.openapi({ description: 'The value of the tag.' }),
   })
   .openapi({ required: ['Key', 'Value'], description: 'Describes a tag applied to a resource.' })
   .openapi('Tag')
@@ -3406,60 +2654,36 @@ const TagListSchema = z.array(TagSchema).min(0).max(50).openapi('TagList')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag key-value pairs.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag key-value pairs.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
-  .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The resource ARN.' }),
-    ),
-  })
+  .object({ ResourceARN: AmazonResourceNameSchema.openapi({ description: 'The resource ARN.' }) })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const UserSchema = z
   .object({
-    Id: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The identifier of the user.' }),
-    ).exactOptional(),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email of the user.' }),
-    ).exactOptional(),
-    Name: UserNameSchema.and(
-      z.any().openapi({ description: 'The name of the user.' }),
-    ).exactOptional(),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The display name of the user.' }),
-    ).exactOptional(),
-    State: EntityStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state of the user, which can be ENABLED, DISABLED, or DELETED.',
-        }),
-    ).exactOptional(),
-    UserRole: UserRoleSchema.and(
-      z.any().openapi({ description: 'The role of the user.' }),
-    ).exactOptional(),
-    EnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date indicating when the user was enabled for WorkMail use.',
-        }),
-    ).exactOptional(),
-    DisabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date indicating when the user was disabled from WorkMail use.',
-        }),
-    ).exactOptional(),
+    Id: WorkMailIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier of the user.',
+    }),
+    Email: EmailAddressSchema.exactOptional().openapi({ description: 'The email of the user.' }),
+    Name: UserNameSchema.exactOptional().openapi({ description: 'The name of the user.' }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'The display name of the user.',
+    }),
+    State: EntityStateSchema.exactOptional().openapi({
+      description: 'The state of the user, which can be ENABLED, DISABLED, or DELETED.',
+    }),
+    UserRole: UserRoleSchema.exactOptional().openapi({ description: 'The role of the user.' }),
+    EnabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date indicating when the user was enabled for WorkMail use.',
+    }),
+    DisabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date indicating when the user was disabled from WorkMail use.',
+    }),
   })
   .openapi({ description: 'The representation of an WorkMail user.', required: [] })
   .openapi('User')
@@ -3468,91 +2692,71 @@ const UsersSchema = z.array(UserSchema).openapi('Users')
 
 const ListUsersResponseSchema = z
   .object({
-    Users: UsersSchema.and(
-      z.any().openapi({ description: 'The overview of users for an organization.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token to use to retrieve the next page of results. This value is `null` when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    Users: UsersSchema.exactOptional().openapi({
+      description: 'The overview of users for an organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' The token to use to retrieve the next page of results. This value is `null` when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUsersResponse')
 
 const ListUsersRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the organization under which the users exist.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier for the organization under which the users exist.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The first call does not contain any tokens.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'ListUsersRequest' })
   .openapi('ListUsersRequest')
 
-const PutAccessControlRuleResponseSchema = z.object({}).openapi('PutAccessControlRuleResponse')
+const PutAccessControlRuleResponseSchema = z.looseObject({}).openapi('PutAccessControlRuleResponse')
 
 const PutAccessControlRuleRequestSchema = z
   .object({
-    Name: AccessControlRuleNameSchema.and(z.any().openapi({ description: 'The rule name.' })),
-    Effect: AccessControlRuleEffectSchema.and(z.any().openapi({ description: 'The rule effect.' })),
-    Description: AccessControlRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The rule description.' }),
-    ),
-    IpRanges: IpRangeListSchema.and(
-      z.any().openapi({ description: 'IPv4 CIDR ranges to include in the rule.' }),
-    ).exactOptional(),
-    NotIpRanges: IpRangeListSchema.and(
-      z.any().openapi({ description: 'IPv4 CIDR ranges to exclude from the rule.' }),
-    ).exactOptional(),
-    Actions: ActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access protocol actions to include in the rule. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
-        }),
-    ).exactOptional(),
-    NotActions: ActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access protocol actions to exclude from the rule. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
-        }),
-    ).exactOptional(),
-    UserIds: UserIdListSchema.and(
-      z.any().openapi({ description: 'User IDs to include in the rule.' }),
-    ).exactOptional(),
-    NotUserIds: UserIdListSchema.and(
-      z.any().openapi({ description: 'User IDs to exclude from the rule.' }),
-    ).exactOptional(),
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the organization.' }),
-    ),
-    ImpersonationRoleIds: ImpersonationRoleIdListSchema.and(
-      z.any().openapi({ description: 'Impersonation role IDs to include in the rule.' }),
-    ).exactOptional(),
-    NotImpersonationRoleIds: ImpersonationRoleIdListSchema.and(
-      z.any().openapi({ description: 'Impersonation role IDs to exclude from the rule.' }),
-    ).exactOptional(),
+    Name: AccessControlRuleNameSchema.openapi({ description: 'The rule name.' }),
+    Effect: AccessControlRuleEffectSchema.openapi({ description: 'The rule effect.' }),
+    Description: AccessControlRuleDescriptionSchema.openapi({
+      description: 'The rule description.',
+    }),
+    IpRanges: IpRangeListSchema.exactOptional().openapi({
+      description: 'IPv4 CIDR ranges to include in the rule.',
+    }),
+    NotIpRanges: IpRangeListSchema.exactOptional().openapi({
+      description: 'IPv4 CIDR ranges to exclude from the rule.',
+    }),
+    Actions: ActionsListSchema.exactOptional().openapi({
+      description:
+        'Access protocol actions to include in the rule. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
+    }),
+    NotActions: ActionsListSchema.exactOptional().openapi({
+      description:
+        'Access protocol actions to exclude from the rule. Valid values include <code>ActiveSync</code>, <code>AutoDiscover</code>, <code>EWS</code>, <code>IMAP</code>, <code>SMTP</code>, <code>WindowsOutlook</code>, and <code>WebMail</code>.',
+    }),
+    UserIds: UserIdListSchema.exactOptional().openapi({
+      description: 'User IDs to include in the rule.',
+    }),
+    NotUserIds: UserIdListSchema.exactOptional().openapi({
+      description: 'User IDs to exclude from the rule.',
+    }),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier of the organization.',
+    }),
+    ImpersonationRoleIds: ImpersonationRoleIdListSchema.exactOptional().openapi({
+      description: 'Impersonation role IDs to include in the rule.',
+    }),
+    NotImpersonationRoleIds: ImpersonationRoleIdListSchema.exactOptional().openapi({
+      description: 'Impersonation role IDs to exclude from the rule.',
+    }),
   })
   .openapi({
     required: ['Name', 'Effect', 'Description', 'OrganizationId'],
@@ -3561,35 +2765,23 @@ const PutAccessControlRuleRequestSchema = z
   .openapi('PutAccessControlRuleRequest')
 
 const PutEmailMonitoringConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutEmailMonitoringConfigurationResponse')
 
 const PutEmailMonitoringConfigurationRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the organization for which the email monitoring configuration is set.',
-        }),
-    ),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM Role associated with the email monitoring configuration.',
-        }),
-    ),
-    LogGroupArn: LogGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the CloudWatch Log group associated with the email monitoring configuration.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The ID of the organization for which the email monitoring configuration is set.',
+    }),
+    RoleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM Role associated with the email monitoring configuration.',
+    }),
+    LogGroupArn: LogGroupArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the CloudWatch Log group associated with the email monitoring configuration.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'RoleArn', 'LogGroupArn'],
@@ -3598,63 +2790,45 @@ const PutEmailMonitoringConfigurationRequestSchema = z
   .openapi('PutEmailMonitoringConfigurationRequest')
 
 const PutInboundDmarcSettingsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutInboundDmarcSettingsResponse')
 
 const BooleanObjectSchema = z.boolean().openapi('BooleanObject')
 
 const PutInboundDmarcSettingsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the organization that you are applying the DMARC policy to.',
-        }),
-    ),
-    Enforced: BooleanObjectSchema.and(
-      z.any().openapi({ description: "Enforces or suspends a policy after it's applied." }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The ID of the organization that you are applying the DMARC policy to.',
+    }),
+    Enforced: BooleanObjectSchema.openapi({
+      description: "Enforces or suspends a policy after it's applied.",
+    }),
   })
   .openapi({ required: ['OrganizationId', 'Enforced'], title: 'PutInboundDmarcSettingsRequest' })
   .openapi('PutInboundDmarcSettingsRequest')
 
-const PutMailboxPermissionsResponseSchema = z.object({}).openapi('PutMailboxPermissionsResponse')
+const PutMailboxPermissionsResponseSchema = z
+  .looseObject({})
+  .openapi('PutMailboxPermissionsResponse')
 
 const PutMailboxPermissionsRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the organization under which the user, group, or resource exists.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the user, group, or resource for which to update mailbox permissions.',
-        }),
-    ),
-    GranteeId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the user, group, or resource to which to grant the permissions.',
-        }),
-    ),
-    PermissionValues: PermissionValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions granted to the grantee. SEND_AS allows the grantee to send email as the owner of the mailbox (the grantee is not mentioned on these emails). SEND_ON_BEHALF allows the grantee to send email on behalf of the owner of the mailbox (the grantee is not mentioned as the physical sender of these emails). FULL_ACCESS allows the grantee full access to the mailbox, irrespective of other folder-level permissions set on the mailbox.',
-        }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier of the organization under which the user, group, or resource exists.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description:
+        'The identifier of the user, group, or resource for which to update mailbox permissions.',
+    }),
+    GranteeId: WorkMailIdentifierSchema.openapi({
+      description:
+        'The identifier of the user, group, or resource to which to grant the permissions.',
+    }),
+    PermissionValues: PermissionValuesSchema.openapi({
+      description:
+        'The permissions granted to the grantee. SEND_AS allows the grantee to send email as the owner of the mailbox (the grantee is not mentioned on these emails). SEND_ON_BEHALF allows the grantee to send email on behalf of the owner of the mailbox (the grantee is not mentioned as the physical sender of these emails). FULL_ACCESS allows the grantee full access to the mailbox, irrespective of other folder-level permissions set on the mailbox.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'EntityId', 'GranteeId', 'PermissionValues'],
@@ -3663,44 +2837,28 @@ const PutMailboxPermissionsRequestSchema = z
   .openapi('PutMailboxPermissionsRequest')
 
 const PutMobileDeviceAccessOverrideResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutMobileDeviceAccessOverrideResponse')
 
 const PutMobileDeviceAccessOverrideRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifies the WorkMail organization for which you create the override.',
-        }),
-    ),
-    UserId: EntityIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The WorkMail user for which you create the override. Accepts the following types of user identities:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
-        }),
-    ),
-    DeviceId: DeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mobile device for which you create the override. <code>DeviceId</code> is case insensitive.',
-        }),
-    ),
-    Effect: MobileDeviceAccessRuleEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The effect of the override, <code>ALLOW</code> or <code>DENY</code>.',
-        }),
-    ),
-    Description: MobileDeviceAccessRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the override.' }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'Identifies the WorkMail organization for which you create the override.',
+    }),
+    UserId: EntityIdentifierSchema.openapi({
+      description:
+        '<p>The WorkMail user for which you create the override. Accepts the following types of user identities:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>',
+    }),
+    DeviceId: DeviceIdSchema.openapi({
+      description:
+        'The mobile device for which you create the override. <code>DeviceId</code> is case insensitive.',
+    }),
+    Effect: MobileDeviceAccessRuleEffectSchema.openapi({
+      description: 'The effect of the override, <code>ALLOW</code> or <code>DENY</code>.',
+    }),
+    Description: MobileDeviceAccessRuleDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the override.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'UserId', 'DeviceId', 'Effect'],
@@ -3708,7 +2866,7 @@ const PutMobileDeviceAccessOverrideRequestSchema = z
   })
   .openapi('PutMobileDeviceAccessOverrideRequest')
 
-const PutRetentionPolicyResponseSchema = z.object({}).openapi('PutRetentionPolicyResponse')
+const PutRetentionPolicyResponseSchema = z.looseObject({}).openapi('PutRetentionPolicyResponse')
 
 const PolicyDescriptionSchema = z
   .string()
@@ -3718,19 +2876,15 @@ const PolicyDescriptionSchema = z
 
 const PutRetentionPolicyRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The organization ID.' }),
-    ),
-    Id: ShortStringSchema.and(
-      z.any().openapi({ description: 'The retention policy ID.' }),
-    ).exactOptional(),
-    Name: ShortStringSchema.and(z.any().openapi({ description: 'The retention policy name.' })),
-    Description: PolicyDescriptionSchema.and(
-      z.any().openapi({ description: 'The retention policy description.' }),
-    ).exactOptional(),
-    FolderConfigurations: FolderConfigurationsSchema.and(
-      z.any().openapi({ description: 'The retention policy folder configurations.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({ description: 'The organization ID.' }),
+    Id: ShortStringSchema.exactOptional().openapi({ description: 'The retention policy ID.' }),
+    Name: ShortStringSchema.openapi({ description: 'The retention policy name.' }),
+    Description: PolicyDescriptionSchema.exactOptional().openapi({
+      description: 'The retention policy description.',
+    }),
+    FolderConfigurations: FolderConfigurationsSchema.openapi({
+      description: 'The retention policy folder configurations.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'Name', 'FolderConfigurations'],
@@ -3738,49 +2892,37 @@ const PutRetentionPolicyRequestSchema = z
   })
   .openapi('PutRetentionPolicyRequest')
 
-const RegisterMailDomainResponseSchema = z.object({}).openapi('RegisterMailDomainResponse')
+const RegisterMailDomainResponseSchema = z.looseObject({}).openapi('RegisterMailDomainResponse')
 
 const RegisterMailDomainRequestSchema = z
   .object({
-    ClientToken: IdempotencyClientTokenSchema.and(
-      z.any().openapi({ description: 'Idempotency token used when retrying requests.' }),
-    ).exactOptional(),
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The WorkMail organization under which you're creating the domain.",
-        }),
-    ),
-    DomainName: WorkMailDomainNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the mail domain to create in WorkMail and SES.' }),
-    ),
+    ClientToken: IdempotencyClientTokenSchema.exactOptional().openapi({
+      description: 'Idempotency token used when retrying requests.',
+    }),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: "The WorkMail organization under which you're creating the domain.",
+    }),
+    DomainName: WorkMailDomainNameSchema.openapi({
+      description: 'The name of the mail domain to create in WorkMail and SES.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'DomainName'], title: 'RegisterMailDomainRequest' })
   .openapi('RegisterMailDomainRequest')
 
-const RegisterToWorkMailResponseSchema = z.object({}).openapi('RegisterToWorkMailResponse')
+const RegisterToWorkMailResponseSchema = z.looseObject({}).openapi('RegisterToWorkMailResponse')
 
 const RegisterToWorkMailRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the organization under which the user, group, or resource exists.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier for the user, group, or resource to be updated.' }),
-    ),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email for the user, group, or resource to be updated.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier for the organization under which the user, group, or resource exists.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier for the user, group, or resource to be updated.',
+    }),
+    Email: EmailAddressSchema.openapi({
+      description: 'The email for the user, group, or resource to be updated.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'EntityId', 'Email'],
@@ -3790,77 +2932,53 @@ const RegisterToWorkMailRequestSchema = z
 
 const EntityAlreadyRegisteredExceptionSchema = z.any().openapi('EntityAlreadyRegisteredException')
 
-const ResetPasswordResponseSchema = z.object({}).openapi('ResetPasswordResponse')
+const ResetPasswordResponseSchema = z.looseObject({}).openapi('ResetPasswordResponse')
 
 const ResetPasswordRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the organization that contains the user for which the password is reset.',
-        }),
-    ),
-    UserId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the user for whom the password is reset.' }),
-    ),
-    Password: PasswordSchema.and(
-      z.any().openapi({ description: 'The new password for the user.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier of the organization that contains the user for which the password is reset.',
+    }),
+    UserId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier of the user for whom the password is reset.',
+    }),
+    Password: PasswordSchema.openapi({ description: 'The new password for the user.' }),
   })
   .openapi({ required: ['OrganizationId', 'UserId', 'Password'], title: 'ResetPasswordRequest' })
   .openapi('ResetPasswordRequest')
 
 const StartMailboxExportJobResponseSchema = z
   .object({
-    JobId: MailboxExportJobIdSchema.and(
-      z.any().openapi({ description: 'The job ID.' }),
-    ).exactOptional(),
+    JobId: MailboxExportJobIdSchema.exactOptional().openapi({ description: 'The job ID.' }),
   })
   .openapi({ required: [] })
   .openapi('StartMailboxExportJobResponse')
 
 const StartMailboxExportJobRequestSchema = z
   .object({
-    ClientToken: IdempotencyClientTokenSchema.and(
-      z.any().openapi({ description: 'The idempotency token for the client request.' }),
-    ),
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The identifier associated with the organization.' }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the user or resource associated with the mailbox.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The mailbox export job description.' }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the AWS Identity and Access Management (IAM) role that grants write permission to the S3 bucket.',
-        }),
-    ),
-    KmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the symmetric AWS Key Management Service (AWS KMS) key that encrypts the exported mailbox content.',
-        }),
-    ),
-    S3BucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the S3 bucket.' }),
-    ),
-    S3Prefix: S3ObjectKeySchema.and(z.any().openapi({ description: 'The S3 bucket prefix.' })),
+    ClientToken: IdempotencyClientTokenSchema.openapi({
+      description: 'The idempotency token for the client request.',
+    }),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The identifier associated with the organization.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifier of the user or resource associated with the mailbox.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The mailbox export job description.',
+    }),
+    RoleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the AWS Identity and Access Management (IAM) role that grants write permission to the S3 bucket.',
+    }),
+    KmsKeyArn: KmsKeyArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the symmetric AWS Key Management Service (AWS KMS) key that encrypts the exported mailbox content.',
+    }),
+    S3BucketName: S3BucketNameSchema.openapi({ description: 'The name of the S3 bucket.' }),
+    S3Prefix: S3ObjectKeySchema.openapi({ description: 'The S3 bucket prefix.' }),
   })
   .openapi({
     required: [
@@ -3876,14 +2994,12 @@ const StartMailboxExportJobRequestSchema = z
   })
   .openapi('StartMailboxExportJobRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The resource ARN.' }),
-    ),
-    Tags: TagListSchema.and(z.any().openapi({ description: 'The tag key-value pairs.' })),
+    ResourceARN: AmazonResourceNameSchema.openapi({ description: 'The resource ARN.' }),
+    Tags: TagListSchema.openapi({ description: 'The tag key-value pairs.' }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
@@ -3892,95 +3008,65 @@ const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
 const TestAvailabilityConfigurationResponseSchema = z
   .object({
-    TestPassed: BooleanSchema.and(
-      z.any().openapi({ description: 'Boolean indicating whether the test passed or failed.' }),
-    ).exactOptional(),
-    FailureReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'String containing the reason for a failed test if <code>TestPassed</code> is false.',
-        }),
-    ).exactOptional(),
+    TestPassed: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean indicating whether the test passed or failed.',
+    }),
+    FailureReason: StringSchema.exactOptional().openapi({
+      description:
+        'String containing the reason for a failed test if <code>TestPassed</code> is false.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestAvailabilityConfigurationResponse')
 
 const TestAvailabilityConfigurationRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization where the availability provider will be tested.',
-        }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain to which the provider applies. If this field is provided, a stored availability provider associated to this domain name will be tested.',
-        }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization where the availability provider will be tested.',
+    }),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description:
+        'The domain to which the provider applies. If this field is provided, a stored availability provider associated to this domain name will be tested.',
+    }),
     EwsProvider: EwsAvailabilityProviderSchema.exactOptional(),
     LambdaProvider: LambdaAvailabilityProviderSchema.exactOptional(),
   })
   .openapi({ required: ['OrganizationId'], title: 'TestAvailabilityConfigurationRequest' })
   .openapi('TestAvailabilityConfigurationRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(50).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The resource ARN.' }),
-    ),
-    TagKeys: TagKeyListSchema.and(z.any().openapi({ description: 'The tag keys.' })),
+    ResourceARN: AmazonResourceNameSchema.openapi({ description: 'The resource ARN.' }),
+    TagKeys: TagKeyListSchema.openapi({ description: 'The tag keys.' }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAvailabilityConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateAvailabilityConfigurationResponse')
 
 const UpdateAvailabilityConfigurationRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be updated.',
-        }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain to which the provider applies the availability configuration.',
-        }),
-    ),
-    EwsProvider: EwsAvailabilityProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The EWS availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>. The previously stored provider will be overridden by the one provided.',
-        }),
-    ).exactOptional(),
-    LambdaProvider: LambdaAvailabilityProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Lambda availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>. The previously stored provider will be overridden by the one provided.',
-        }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be updated.',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The domain to which the provider applies the availability configuration.',
+    }),
+    EwsProvider: EwsAvailabilityProviderSchema.exactOptional().openapi({
+      description:
+        'The EWS availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>. The previously stored provider will be overridden by the one provided.',
+    }),
+    LambdaProvider: LambdaAvailabilityProviderSchema.exactOptional().openapi({
+      description:
+        'The Lambda availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>. The previously stored provider will be overridden by the one provided.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'DomainName'],
@@ -3989,49 +3075,43 @@ const UpdateAvailabilityConfigurationRequestSchema = z
   .openapi('UpdateAvailabilityConfigurationRequest')
 
 const UpdateDefaultMailDomainResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateDefaultMailDomainResponse')
 
 const UpdateDefaultMailDomainRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The WorkMail organization for which to list domains.' }),
-    ),
-    DomainName: WorkMailDomainNameSchema.and(
-      z.any().openapi({ description: 'The domain name that will become the default domain.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization for which to list domains.',
+    }),
+    DomainName: WorkMailDomainNameSchema.openapi({
+      description: 'The domain name that will become the default domain.',
+    }),
   })
   .openapi({ required: ['OrganizationId', 'DomainName'], title: 'UpdateDefaultMailDomainRequest' })
   .openapi('UpdateDefaultMailDomainRequest')
 
 const UpdateImpersonationRoleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateImpersonationRoleResponse')
 
 const UpdateImpersonationRoleRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization that contains the impersonation role to update.',
-        }),
-    ),
-    ImpersonationRoleId: ImpersonationRoleIdSchema.and(
-      z.any().openapi({ description: 'The ID of the impersonation role to update.' }),
-    ),
-    Name: ImpersonationRoleNameSchema.and(
-      z.any().openapi({ description: 'The updated impersonation role name.' }),
-    ),
-    Type: ImpersonationRoleTypeSchema.and(
-      z.any().openapi({ description: 'The updated impersonation role type.' }),
-    ),
-    Description: ImpersonationRoleDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated impersonation role description.' }),
-    ).exactOptional(),
-    Rules: ImpersonationRuleListSchema.and(
-      z.any().openapi({ description: 'The updated list of rules.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization that contains the impersonation role to update.',
+    }),
+    ImpersonationRoleId: ImpersonationRoleIdSchema.openapi({
+      description: 'The ID of the impersonation role to update.',
+    }),
+    Name: ImpersonationRoleNameSchema.openapi({
+      description: 'The updated impersonation role name.',
+    }),
+    Type: ImpersonationRoleTypeSchema.openapi({
+      description: 'The updated impersonation role type.',
+    }),
+    Description: ImpersonationRoleDescriptionSchema.exactOptional().openapi({
+      description: 'The updated impersonation role description.',
+    }),
+    Rules: ImpersonationRuleListSchema.openapi({ description: 'The updated list of rules.' }),
   })
   .openapi({
     required: ['OrganizationId', 'ImpersonationRoleId', 'Name', 'Type', 'Rules'],
@@ -4039,28 +3119,20 @@ const UpdateImpersonationRoleRequestSchema = z
   })
   .openapi('UpdateImpersonationRoleRequest')
 
-const UpdateMailboxQuotaResponseSchema = z.object({}).openapi('UpdateMailboxQuotaResponse')
+const UpdateMailboxQuotaResponseSchema = z.looseObject({}).openapi('UpdateMailboxQuotaResponse')
 
 const UpdateMailboxQuotaRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the organization that contains the user for whom to update the mailbox quota.',
-        }),
-    ),
-    UserId: WorkMailIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifer for the user for whom to update the mailbox quota.',
-        }),
-    ),
-    MailboxQuota: MailboxQuotaSchema.and(
-      z.any().openapi({ description: 'The updated mailbox quota, in MB, for the specified user.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier for the organization that contains the user for whom to update the mailbox quota.',
+    }),
+    UserId: WorkMailIdentifierSchema.openapi({
+      description: 'The identifer for the user for whom to update the mailbox quota.',
+    }),
+    MailboxQuota: MailboxQuotaSchema.openapi({
+      description: 'The updated mailbox quota, in MB, for the specified user.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'UserId', 'MailboxQuota'],
@@ -4069,81 +3141,53 @@ const UpdateMailboxQuotaRequestSchema = z
   .openapi('UpdateMailboxQuotaRequest')
 
 const UpdateMobileDeviceAccessRuleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateMobileDeviceAccessRuleResponse')
 
 const UpdateMobileDeviceAccessRuleRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkMail organization under which the rule will be updated.',
-        }),
-    ),
-    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the rule to be updated.' }),
-    ),
-    Name: MobileDeviceAccessRuleNameSchema.and(
-      z.any().openapi({ description: 'The updated rule name.' }),
-    ),
-    Description: MobileDeviceAccessRuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated rule description.' }),
-    ).exactOptional(),
-    Effect: MobileDeviceAccessRuleEffectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The effect of the rule when it matches. Allowed values are <code>ALLOW</code> or <code>DENY</code>.',
-        }),
-    ),
-    DeviceTypes: DeviceTypeListSchema.and(
-      z.any().openapi({ description: 'Device types that the updated rule will match.' }),
-    ).exactOptional(),
-    NotDeviceTypes: DeviceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device types that the updated rule <b>will not</b> match. All other device types will match.',
-        }),
-    ).exactOptional(),
-    DeviceModels: DeviceModelListSchema.and(
-      z.any().openapi({ description: 'Device models that the updated rule will match.' }),
-    ).exactOptional(),
-    NotDeviceModels: DeviceModelListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device models that the updated rule <b>will not</b> match. All other device models will match.',
-        }),
-    ).exactOptional(),
-    DeviceOperatingSystems: DeviceOperatingSystemListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Device operating systems that the updated rule will match.' }),
-    ).exactOptional(),
-    NotDeviceOperatingSystems: DeviceOperatingSystemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device operating systems that the updated rule <b>will not</b> match. All other device operating systems will match.',
-        }),
-    ).exactOptional(),
-    DeviceUserAgents: DeviceUserAgentListSchema.and(
-      z.any().openapi({ description: 'User agents that the updated rule will match.' }),
-    ).exactOptional(),
-    NotDeviceUserAgents: DeviceUserAgentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'User agents that the updated rule <b>will not</b> match. All other user agents will match.',
-        }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The WorkMail organization under which the rule will be updated.',
+    }),
+    MobileDeviceAccessRuleId: MobileDeviceAccessRuleIdSchema.openapi({
+      description: 'The identifier of the rule to be updated.',
+    }),
+    Name: MobileDeviceAccessRuleNameSchema.openapi({ description: 'The updated rule name.' }),
+    Description: MobileDeviceAccessRuleDescriptionSchema.exactOptional().openapi({
+      description: 'The updated rule description.',
+    }),
+    Effect: MobileDeviceAccessRuleEffectSchema.openapi({
+      description:
+        'The effect of the rule when it matches. Allowed values are <code>ALLOW</code> or <code>DENY</code>.',
+    }),
+    DeviceTypes: DeviceTypeListSchema.exactOptional().openapi({
+      description: 'Device types that the updated rule will match.',
+    }),
+    NotDeviceTypes: DeviceTypeListSchema.exactOptional().openapi({
+      description:
+        'Device types that the updated rule <b>will not</b> match. All other device types will match.',
+    }),
+    DeviceModels: DeviceModelListSchema.exactOptional().openapi({
+      description: 'Device models that the updated rule will match.',
+    }),
+    NotDeviceModels: DeviceModelListSchema.exactOptional().openapi({
+      description:
+        'Device models that the updated rule <b>will not</b> match. All other device models will match.',
+    }),
+    DeviceOperatingSystems: DeviceOperatingSystemListSchema.exactOptional().openapi({
+      description: 'Device operating systems that the updated rule will match.',
+    }),
+    NotDeviceOperatingSystems: DeviceOperatingSystemListSchema.exactOptional().openapi({
+      description:
+        'Device operating systems that the updated rule <b>will not</b> match. All other device operating systems will match.',
+    }),
+    DeviceUserAgents: DeviceUserAgentListSchema.exactOptional().openapi({
+      description: 'User agents that the updated rule will match.',
+    }),
+    NotDeviceUserAgents: DeviceUserAgentListSchema.exactOptional().openapi({
+      description:
+        'User agents that the updated rule <b>will not</b> match. All other user agents will match.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'MobileDeviceAccessRuleId', 'Name', 'Effect'],
@@ -4152,24 +3196,20 @@ const UpdateMobileDeviceAccessRuleRequestSchema = z
   .openapi('UpdateMobileDeviceAccessRuleRequest')
 
 const UpdatePrimaryEmailAddressResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdatePrimaryEmailAddressResponse')
 
 const UpdatePrimaryEmailAddressRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The organization that contains the user, group, or resource to update.',
-        }),
-    ),
-    EntityId: WorkMailIdentifierSchema.and(
-      z.any().openapi({ description: 'The user, group, or resource to update.' }),
-    ),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The value of the email to be updated as primary.' }),
-    ),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description: 'The organization that contains the user, group, or resource to update.',
+    }),
+    EntityId: WorkMailIdentifierSchema.openapi({
+      description: 'The user, group, or resource to update.',
+    }),
+    Email: EmailAddressSchema.openapi({
+      description: 'The value of the email to be updated as primary.',
+    }),
   })
   .openapi({
     required: ['OrganizationId', 'EntityId', 'Email'],
@@ -4177,27 +3217,23 @@ const UpdatePrimaryEmailAddressRequestSchema = z
   })
   .openapi('UpdatePrimaryEmailAddressRequest')
 
-const UpdateResourceResponseSchema = z.object({}).openapi('UpdateResourceResponse')
+const UpdateResourceResponseSchema = z.looseObject({}).openapi('UpdateResourceResponse')
 
 const UpdateResourceRequestSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the organization for which the resource is updated.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the resource to be updated.' }),
-    ),
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource to be updated.' }),
-    ).exactOptional(),
-    BookingOptions: BookingOptionsSchema.and(
-      z.any().openapi({ description: "The resource's booking options to be updated." }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.openapi({
+      description:
+        'The identifier associated with the organization for which the resource is updated.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The identifier of the resource to be updated.',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the resource to be updated.',
+    }),
+    BookingOptions: BookingOptionsSchema.exactOptional().openapi({
+      description: "The resource's booking options to be updated.",
+    }),
   })
   .openapi({ required: ['OrganizationId', 'ResourceId'], title: 'UpdateResourceRequest' })
   .openapi('UpdateResourceRequest')

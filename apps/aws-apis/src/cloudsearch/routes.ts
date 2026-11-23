@@ -110,74 +110,36 @@ const DomainStatusSchema = z
     DomainId: DomainIdSchema,
     DomainName: DomainNameSchema,
     ARN: ARNSchema.exactOptional(),
-    Created: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if the search domain is created. It can take several minutes to initialize a domain when <a>CreateDomain</a> is called. Newly created search domains are returned from <a>DescribeDomains</a> with a false value for Created until domain creation is complete.',
-        }),
-    ).exactOptional(),
-    Deleted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if the search domain has been deleted. The system must clean up resources dedicated to the search domain when <a>DeleteDomain</a> is called. Newly deleted search domains are returned from <a>DescribeDomains</a> with a true value for IsDeleted for several minutes until resource cleanup is complete.',
-        }),
-    ).exactOptional(),
-    DocService: ServiceEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service endpoint for updating documents in a search domain.',
-        }),
-    ).exactOptional(),
-    SearchService: ServiceEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service endpoint for requesting search results from a search domain.',
-        }),
-    ).exactOptional(),
-    RequiresIndexDocuments: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if <a>IndexDocuments</a> needs to be called to activate the current domain configuration.',
-        }),
-    ),
-    Processing: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if processing is being done to activate the current domain configuration.',
-        }),
-    ).exactOptional(),
-    SearchInstanceType: SearchInstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The instance type that is being used to process search requests.',
-        }),
-    ).exactOptional(),
-    SearchPartitionCount: PartitionCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of partitions across which the search index is spread.',
-        }),
-    ).exactOptional(),
-    SearchInstanceCount: InstanceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of search instances that are available to process search requests.',
-        }),
-    ).exactOptional(),
+    Created: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if the search domain is created. It can take several minutes to initialize a domain when <a>CreateDomain</a> is called. Newly created search domains are returned from <a>DescribeDomains</a> with a false value for Created until domain creation is complete.',
+    }),
+    Deleted: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if the search domain has been deleted. The system must clean up resources dedicated to the search domain when <a>DeleteDomain</a> is called. Newly deleted search domains are returned from <a>DescribeDomains</a> with a true value for IsDeleted for several minutes until resource cleanup is complete.',
+    }),
+    DocService: ServiceEndpointSchema.exactOptional().openapi({
+      description: 'The service endpoint for updating documents in a search domain.',
+    }),
+    SearchService: ServiceEndpointSchema.exactOptional().openapi({
+      description: 'The service endpoint for requesting search results from a search domain.',
+    }),
+    RequiresIndexDocuments: BooleanSchema.openapi({
+      description:
+        'True if <a>IndexDocuments</a> needs to be called to activate the current domain configuration.',
+    }),
+    Processing: BooleanSchema.exactOptional().openapi({
+      description: 'True if processing is being done to activate the current domain configuration.',
+    }),
+    SearchInstanceType: SearchInstanceTypeSchema.exactOptional().openapi({
+      description: 'The instance type that is being used to process search requests.',
+    }),
+    SearchPartitionCount: PartitionCountSchema.exactOptional().openapi({
+      description: 'The number of partitions across which the search index is spread.',
+    }),
+    SearchInstanceCount: InstanceCountSchema.exactOptional().openapi({
+      description: 'The number of search instances that are available to process search requests.',
+    }),
     Limits: LimitsSchema.exactOptional(),
   })
   .openapi({
@@ -262,46 +224,26 @@ const AlgorithmicStemmingSchema = z
 
 const AnalysisOptionsSchema = z
   .object({
-    Synonyms: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON object that defines synonym groups and aliases. A synonym group is an array of arrays, where each sub-array is a group of terms where each term in the group is considered a synonym of every other term in the group. The aliases value is an object that contains a collection of string:value pairs where the string specifies a term and the array of values specifies each of the aliases for that term. An alias is considered a synonym of the specified term, but the term is not considered a synonym of the alias. For more information about specifying synonyms, see <a href="http://docs.aws.amazon.com/cloudsearch/latest/developerguide/configuring-analysis-schemes.html#synonyms">Synonyms</a> in the <i>Amazon CloudSearch Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    Stopwords: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON array of terms to ignore during indexing and searching. For example, <code>["a", "an", "the", "of"]</code>. The stopwords dictionary must explicitly list each word you want to ignore. Wildcards and regular expressions are not supported. ',
-        }),
-    ).exactOptional(),
-    StemmingDictionary: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON object that contains a collection of string:value pairs that each map a term to its stem. For example, <code>{"term1": "stem1", "term2": "stem2", "term3": "stem3"}</code>. The stemming dictionary is applied in addition to any algorithmic stemming. This enables you to override the results of the algorithmic stemming to correct specific cases of overstemming or understemming. The maximum size of a stemming dictionary is 500 KB.',
-        }),
-    ).exactOptional(),
-    JapaneseTokenizationDictionary: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON array that contains a collection of terms, tokens, readings and part of speech for Japanese Tokenizaiton. The Japanese tokenization dictionary enables you to override the default tokenization for selected terms. This is only valid for Japanese language fields.',
-        }),
-    ).exactOptional(),
-    AlgorithmicStemming: AlgorithmicStemmingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of algorithmic stemming to perform: <code>none</code>, <code>minimal</code>, <code>light</code>, or <code>full</code>. The available levels vary depending on the language. For more information, see <a href="http://docs.aws.amazon.com/cloudsearch/latest/developerguide/text-processing.html#text-processing-settings" target="_blank">Language Specific Text Processing Settings</a> in the <i>Amazon CloudSearch Developer Guide</i> ',
-        }),
-    ).exactOptional(),
+    Synonyms: StringSchema.exactOptional().openapi({
+      description:
+        'A JSON object that defines synonym groups and aliases. A synonym group is an array of arrays, where each sub-array is a group of terms where each term in the group is considered a synonym of every other term in the group. The aliases value is an object that contains a collection of string:value pairs where the string specifies a term and the array of values specifies each of the aliases for that term. An alias is considered a synonym of the specified term, but the term is not considered a synonym of the alias. For more information about specifying synonyms, see <a href="http://docs.aws.amazon.com/cloudsearch/latest/developerguide/configuring-analysis-schemes.html#synonyms">Synonyms</a> in the <i>Amazon CloudSearch Developer Guide</i>.',
+    }),
+    Stopwords: StringSchema.exactOptional().openapi({
+      description:
+        'A JSON array of terms to ignore during indexing and searching. For example, <code>["a", "an", "the", "of"]</code>. The stopwords dictionary must explicitly list each word you want to ignore. Wildcards and regular expressions are not supported. ',
+    }),
+    StemmingDictionary: StringSchema.exactOptional().openapi({
+      description:
+        'A JSON object that contains a collection of string:value pairs that each map a term to its stem. For example, <code>{"term1": "stem1", "term2": "stem2", "term3": "stem3"}</code>. The stemming dictionary is applied in addition to any algorithmic stemming. This enables you to override the results of the algorithmic stemming to correct specific cases of overstemming or understemming. The maximum size of a stemming dictionary is 500 KB.',
+    }),
+    JapaneseTokenizationDictionary: StringSchema.exactOptional().openapi({
+      description:
+        'A JSON array that contains a collection of terms, tokens, readings and part of speech for Japanese Tokenizaiton. The Japanese tokenization dictionary enables you to override the default tokenization for selected terms. This is only valid for Japanese language fields.',
+    }),
+    AlgorithmicStemming: AlgorithmicStemmingSchema.exactOptional().openapi({
+      description:
+        'The level of algorithmic stemming to perform: <code>none</code>, <code>minimal</code>, <code>light</code>, or <code>full</code>. The available levels vary depending on the language. For more information, see <a href="http://docs.aws.amazon.com/cloudsearch/latest/developerguide/text-processing.html#text-processing-settings" target="_blank">Language Specific Text Processing Settings</a> in the <i>Amazon CloudSearch Developer Guide</i> ',
+    }),
   })
   .openapi({
     description:
@@ -337,34 +279,22 @@ const OptionStateSchema = z
 
 const OptionStatusSchema = z
   .object({
-    CreationDate: UpdateTimestampSchema.and(
-      z.any().openapi({ description: 'A timestamp for when this option was created.' }),
-    ),
-    UpdateDate: UpdateTimestampSchema.and(
-      z.any().openapi({ description: 'A timestamp for when this option was last updated.' }),
-    ),
-    UpdateVersion: UIntValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique integer that indicates when this option was last updated.',
-        }),
-    ).exactOptional(),
-    State: OptionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The state of processing a change to an option. Possible values:</p><ul> <li><code>RequiresIndexDocuments</code>: the option's latest value will not be deployed until <a>IndexDocuments</a> has been called and indexing is complete.</li> <li><code>Processing</code>: the option's latest value is in the process of being activated. </li> <li><code>Active</code>: the option's latest value is completely deployed.</li> <li><code>FailedToValidate</code>: the option value is not compatible with the domain's data and cannot be used to index the data. You must either modify the option value or update or remove the incompatible documents.</li> </ul>",
-        }),
-    ),
-    PendingDeletion: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates that the option will be deleted once processing is complete.',
-        }),
-    ).exactOptional(),
+    CreationDate: UpdateTimestampSchema.openapi({
+      description: 'A timestamp for when this option was created.',
+    }),
+    UpdateDate: UpdateTimestampSchema.openapi({
+      description: 'A timestamp for when this option was last updated.',
+    }),
+    UpdateVersion: UIntValueSchema.exactOptional().openapi({
+      description: 'A unique integer that indicates when this option was last updated.',
+    }),
+    State: OptionStateSchema.openapi({
+      description:
+        "<p>The state of processing a change to an option. Possible values:</p><ul> <li><code>RequiresIndexDocuments</code>: the option's latest value will not be deployed until <a>IndexDocuments</a> has been called and indexing is complete.</li> <li><code>Processing</code>: the option's latest value is in the process of being activated. </li> <li><code>Active</code>: the option's latest value is completely deployed.</li> <li><code>FailedToValidate</code>: the option value is not compatible with the domain's data and cannot be used to index the data. You must either modify the option value or update or remove the incompatible documents.</li> </ul>",
+    }),
+    PendingDeletion: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates that the option will be deleted once processing is complete.',
+    }),
   })
   .openapi({
     required: ['CreationDate', 'UpdateDate', 'State'],
@@ -412,14 +342,10 @@ const ExpressionSchema = z
 
 const ExpressionStatusSchema = z
   .object({
-    Options: ExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The expression that is evaluated for sorting while processing a search request.',
-        }),
-    ),
+    Options: ExpressionSchema.openapi({
+      description:
+        'The expression that is evaluated for sorting while processing a search request.',
+    }),
     Status: OptionStatusSchema,
   })
   .openapi({
@@ -468,33 +394,25 @@ const LongSchema = z.int().openapi('Long')
 
 const IntOptionsSchema = z
   .object({
-    DefaultValue: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value to use for the field if the field isn't specified for a document. This can be important if you are using the field in an expression and that field is not present in every document.",
-        }),
-    ).exactOptional(),
-    SourceField: FieldNameSchema.and(
-      z.any().openapi({ description: 'The name of the source field to map to the field. ' }),
-    ).exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
-    SortEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the field can be used to sort the search results.' }),
-    ).exactOptional(),
+    DefaultValue: LongSchema.exactOptional().openapi({
+      description:
+        "A value to use for the field if the field isn't specified for a document. This can be important if you are using the field in an expression and that field is not present in every document.",
+    }),
+    SourceField: FieldNameSchema.exactOptional().openapi({
+      description: 'The name of the source field to map to the field. ',
+    }),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
+    SortEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the field can be used to sort the search results.',
+    }),
   })
   .openapi({
     description:
@@ -507,33 +425,25 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const DoubleOptionsSchema = z
   .object({
-    DefaultValue: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value to use for the field if the field isn't specified for a document. This can be important if you are using the field in an expression and that field is not present in every document.",
-        }),
-    ).exactOptional(),
-    SourceField: FieldNameSchema.and(
-      z.any().openapi({ description: 'The name of the source field to map to the field. ' }),
-    ).exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
-    SortEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the field can be used to sort the search results.' }),
-    ).exactOptional(),
+    DefaultValue: DoubleSchema.exactOptional().openapi({
+      description:
+        "A value to use for the field if the field isn't specified for a document. This can be important if you are using the field in an expression and that field is not present in every document.",
+    }),
+    SourceField: FieldNameSchema.exactOptional().openapi({
+      description: 'The name of the source field to map to the field. ',
+    }),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
+    SortEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the field can be used to sort the search results.',
+    }),
   })
   .openapi({
     description:
@@ -551,30 +461,22 @@ const FieldValueSchema = z
 
 const LiteralOptionsSchema = z
   .object({
-    DefaultValue: FieldValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
+    DefaultValue: FieldValueSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
     SourceField: FieldNameSchema.exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
-    SortEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the field can be used to sort the search results.' }),
-    ).exactOptional(),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
+    SortEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the field can be used to sort the search results.',
+    }),
   })
   .openapi({
     description:
@@ -587,32 +489,22 @@ const WordSchema = z.string().regex(/[\S]+/).openapi('Word')
 
 const TextOptionsSchema = z
   .object({
-    DefaultValue: FieldValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
+    DefaultValue: FieldValueSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
     SourceField: FieldNameSchema.exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
-    SortEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the field can be used to sort the search results.' }),
-    ).exactOptional(),
-    HighlightEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether highlights can be returned for the field.' }),
-    ).exactOptional(),
-    AnalysisScheme: WordSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of an analysis scheme for a <code>text</code> field.' }),
-    ).exactOptional(),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
+    SortEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the field can be used to sort the search results.',
+    }),
+    HighlightEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether highlights can be returned for the field.',
+    }),
+    AnalysisScheme: WordSchema.exactOptional().openapi({
+      description: 'The name of an analysis scheme for a <code>text</code> field.',
+    }),
   })
   .openapi({
     description:
@@ -623,30 +515,22 @@ const TextOptionsSchema = z
 
 const DateOptionsSchema = z
   .object({
-    DefaultValue: FieldValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
+    DefaultValue: FieldValueSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
     SourceField: FieldNameSchema.exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
-    SortEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the field can be used to sort the search results.' }),
-    ).exactOptional(),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
+    SortEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the field can be used to sort the search results.',
+    }),
   })
   .openapi({
     description:
@@ -657,30 +541,22 @@ const DateOptionsSchema = z
 
 const LatLonOptionsSchema = z
   .object({
-    DefaultValue: FieldValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
+    DefaultValue: FieldValueSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
     SourceField: FieldNameSchema.exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
-    SortEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the field can be used to sort the search results.' }),
-    ).exactOptional(),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
+    SortEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the field can be used to sort the search results.',
+    }),
   })
   .openapi({
     description:
@@ -696,29 +572,21 @@ const FieldNameCommaListSchema = z
 
 const IntArrayOptionsSchema = z
   .object({
-    DefaultValue: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
-    SourceFields: FieldNameCommaListSchema.and(
-      z.any().openapi({ description: 'A list of source fields to map to the field. ' }),
-    ).exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
+    DefaultValue: LongSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
+    SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+      description: 'A list of source fields to map to the field. ',
+    }),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
   })
   .openapi({
     description:
@@ -729,29 +597,21 @@ const IntArrayOptionsSchema = z
 
 const DoubleArrayOptionsSchema = z
   .object({
-    DefaultValue: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
-    SourceFields: FieldNameCommaListSchema.and(
-      z.any().openapi({ description: 'A list of source fields to map to the field. ' }),
-    ).exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
+    DefaultValue: DoubleSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
+    SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+      description: 'A list of source fields to map to the field. ',
+    }),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
   })
   .openapi({
     description:
@@ -762,29 +622,21 @@ const DoubleArrayOptionsSchema = z
 
 const LiteralArrayOptionsSchema = z
   .object({
-    DefaultValue: FieldValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
-    SourceFields: FieldNameCommaListSchema.and(
-      z.any().openapi({ description: 'A list of source fields to map to the field. ' }),
-    ).exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
+    DefaultValue: FieldValueSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
+    SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+      description: 'A list of source fields to map to the field. ',
+    }),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
   })
   .openapi({
     description:
@@ -795,33 +647,21 @@ const LiteralArrayOptionsSchema = z
 
 const TextArrayOptionsSchema = z
   .object({
-    DefaultValue: FieldValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
-    SourceFields: FieldNameCommaListSchema.and(
-      z.any().openapi({ description: 'A list of source fields to map to the field. ' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
-    HighlightEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether highlights can be returned for the field.' }),
-    ).exactOptional(),
-    AnalysisScheme: WordSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of an analysis scheme for a <code>text-array</code> field.',
-        }),
-    ).exactOptional(),
+    DefaultValue: FieldValueSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
+    SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+      description: 'A list of source fields to map to the field. ',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
+    HighlightEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether highlights can be returned for the field.',
+    }),
+    AnalysisScheme: WordSchema.exactOptional().openapi({
+      description: 'The name of an analysis scheme for a <code>text-array</code> field.',
+    }),
   })
   .openapi({
     description:
@@ -832,29 +672,21 @@ const TextArrayOptionsSchema = z
 
 const DateArrayOptionsSchema = z
   .object({
-    DefaultValue: FieldValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A value to use for the field if the field isn't specified for a document.",
-        }),
-    ).exactOptional(),
-    SourceFields: FieldNameCommaListSchema.and(
-      z.any().openapi({ description: 'A list of source fields to map to the field. ' }),
-    ).exactOptional(),
-    FacetEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether facet information can be returned for the field.' }),
-    ).exactOptional(),
-    SearchEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the contents of the field are searchable.' }),
-    ).exactOptional(),
-    ReturnEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the contents of the field can be returned in the search results.',
-        }),
-    ).exactOptional(),
+    DefaultValue: FieldValueSchema.exactOptional().openapi({
+      description: "A value to use for the field if the field isn't specified for a document.",
+    }),
+    SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+      description: 'A list of source fields to map to the field. ',
+    }),
+    FacetEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether facet information can be returned for the field.',
+    }),
+    SearchEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field are searchable.',
+    }),
+    ReturnEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the contents of the field can be returned in the search results.',
+    }),
   })
   .openapi({
     description:
@@ -865,14 +697,10 @@ const DateArrayOptionsSchema = z
 
 const IndexFieldSchema = z
   .object({
-    IndexFieldName: DynamicFieldNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A string that represents the name of an index field. CloudSearch supports regular index fields as well as dynamic fields. A dynamic field's name defines a pattern that begins or ends with a wildcard. Any document fields that don't map to a regular index field but do match a dynamic field's pattern are configured with the dynamic field's indexing options. </p> <p>Regular field names begin with a letter and can contain the following characters: a-z (lowercase), 0-9, and _ (underscore). Dynamic field names must begin or end with a wildcard (*). The wildcard can also be the only character in a dynamic field name. Multiple wildcards, and wildcards embedded within a string are not supported. </p> <p>The name <code>score</code> is reserved and cannot be used as a field name. To reference a document's ID, you can use the name <code>_id</code>. </p>",
-        }),
-    ),
+    IndexFieldName: DynamicFieldNameSchema.openapi({
+      description:
+        "<p>A string that represents the name of an index field. CloudSearch supports regular index fields as well as dynamic fields. A dynamic field's name defines a pattern that begins or ends with a wildcard. Any document fields that don't map to a regular index field but do match a dynamic field's pattern are configured with the dynamic field's indexing options. </p> <p>Regular field names begin with a letter and can contain the following characters: a-z (lowercase), 0-9, and _ (underscore). Dynamic field names must begin or end with a wildcard (*). The wildcard can also be the only character in a dynamic field name. Multiple wildcards, and wildcards embedded within a string are not supported. </p> <p>The name <code>score</code> is reserved and cannot be used as a field name. To reference a document's ID, you can use the name <code>_id</code>. </p>",
+    }),
     IndexFieldType: IndexFieldTypeSchema,
     IntOptions: IntOptionsSchema.exactOptional(),
     DoubleOptions: DoubleOptionsSchema.exactOptional(),
@@ -916,27 +744,17 @@ const SuggesterFuzzyMatchingSchema = z
 
 const DocumentSuggesterOptionsSchema = z
   .object({
-    SourceField: FieldNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the index field you want to use for suggestions. ' }),
-    ),
-    FuzzyMatching: SuggesterFuzzyMatchingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of fuzziness allowed when suggesting matches for a string: <code>none</code>, <code>low</code>, or <code>high</code>. With none, the specified string is treated as an exact prefix. With low, suggestions must differ from the specified string by no more than one character. With high, suggestions can differ by up to two characters. The default is none. ',
-        }),
-    ).exactOptional(),
-    SortExpression: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An expression that computes a score for each suggestion to control how they are sorted. The scores are rounded to the nearest integer, with a floor of 0 and a ceiling of 2^31-1. A document's relevance score is not computed for suggestions, so sort expressions cannot reference the <code>_score</code> value. To sort suggestions using a numeric field or existing expression, simply specify the name of the field or expression. If no expression is configured for the suggester, the suggestions are sorted with the closest matches listed first.",
-        }),
-    ).exactOptional(),
+    SourceField: FieldNameSchema.openapi({
+      description: 'The name of the index field you want to use for suggestions. ',
+    }),
+    FuzzyMatching: SuggesterFuzzyMatchingSchema.exactOptional().openapi({
+      description:
+        'The level of fuzziness allowed when suggesting matches for a string: <code>none</code>, <code>low</code>, or <code>high</code>. With none, the specified string is treated as an exact prefix. With low, suggestions must differ from the specified string by no more than one character. With high, suggestions can differ by up to two characters. The default is none. ',
+    }),
+    SortExpression: StringSchema.exactOptional().openapi({
+      description:
+        "An expression that computes a score for each suggestion to control how they are sorted. The scores are rounded to the nearest integer, with a floor of 0 and a ceiling of 2^31-1. A document's relevance score is not computed for suggestions, so sort expressions cannot reference the <code>_score</code> value. To sort suggestions using a numeric field or existing expression, simply specify the name of the field or expression. If no expression is configured for the suggester, the suggestions are sorted with the closest matches listed first.",
+    }),
   })
   .openapi({ required: ['SourceField'], description: 'Options for a search suggester.' })
   .openapi('DocumentSuggesterOptions')
@@ -972,9 +790,9 @@ const DefineSuggesterResponseSchema = z
 
 const DeleteAnalysisSchemeResponseSchema = z
   .object({
-    AnalysisScheme: AnalysisSchemeStatusSchema.and(
-      z.any().openapi({ description: 'The status of the analysis scheme being deleted.' }),
-    ),
+    AnalysisScheme: AnalysisSchemeStatusSchema.openapi({
+      description: 'The status of the analysis scheme being deleted.',
+    }),
   })
   .openapi({
     required: ['AnalysisScheme'],
@@ -994,9 +812,9 @@ const DeleteDomainResponseSchema = z
 
 const DeleteExpressionResponseSchema = z
   .object({
-    Expression: ExpressionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the expression being deleted.' }),
-    ),
+    Expression: ExpressionStatusSchema.openapi({
+      description: 'The status of the expression being deleted.',
+    }),
   })
   .openapi({
     required: ['Expression'],
@@ -1007,9 +825,9 @@ const DeleteExpressionResponseSchema = z
 
 const DeleteIndexFieldResponseSchema = z
   .object({
-    IndexField: IndexFieldStatusSchema.and(
-      z.any().openapi({ description: 'The status of the index field being deleted.' }),
-    ),
+    IndexField: IndexFieldStatusSchema.openapi({
+      description: 'The status of the index field being deleted.',
+    }),
   })
   .openapi({
     required: ['IndexField'],
@@ -1019,9 +837,9 @@ const DeleteIndexFieldResponseSchema = z
 
 const DeleteSuggesterResponseSchema = z
   .object({
-    Suggester: SuggesterStatusSchema.and(
-      z.any().openapi({ description: 'The status of the suggester being deleted.' }),
-    ),
+    Suggester: SuggesterStatusSchema.openapi({
+      description: 'The status of the suggester being deleted.',
+    }),
   })
   .openapi({
     required: ['Suggester'],
@@ -1037,9 +855,9 @@ const AnalysisSchemeStatusListSchema = z
 
 const DescribeAnalysisSchemesResponseSchema = z
   .object({
-    AnalysisSchemes: AnalysisSchemeStatusListSchema.and(
-      z.any().openapi({ description: 'The analysis scheme descriptions.' }),
-    ),
+    AnalysisSchemes: AnalysisSchemeStatusListSchema.openapi({
+      description: 'The analysis scheme descriptions.',
+    }),
   })
   .openapi({
     required: ['AnalysisSchemes'],
@@ -1052,9 +870,9 @@ const MultiAZSchema = z.boolean().openapi('MultiAZ')
 
 const AvailabilityOptionsStatusSchema = z
   .object({
-    Options: MultiAZSchema.and(
-      z.any().openapi({ description: 'The availability options configured for the domain.' }),
-    ),
+    Options: MultiAZSchema.openapi({
+      description: 'The availability options configured for the domain.',
+    }),
     Status: OptionStatusSchema,
   })
   .openapi({
@@ -1065,14 +883,10 @@ const AvailabilityOptionsStatusSchema = z
 
 const DescribeAvailabilityOptionsResponseSchema = z
   .object({
-    AvailabilityOptions: AvailabilityOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The availability options configured for the domain. Indicates whether Multi-AZ is enabled for the domain. ',
-        }),
-    ).exactOptional(),
+    AvailabilityOptions: AvailabilityOptionsStatusSchema.exactOptional().openapi({
+      description:
+        'The availability options configured for the domain. Indicates whether Multi-AZ is enabled for the domain. ',
+    }),
   })
   .openapi({
     description:
@@ -1090,24 +904,24 @@ const TLSSecurityPolicySchema = z
 
 const DomainEndpointOptionsSchema = z
   .object({
-    EnforceHTTPS: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the domain is HTTPS only enabled.' }),
-    ).exactOptional(),
-    TLSSecurityPolicy: TLSSecurityPolicySchema.and(
-      z.any().openapi({ description: 'The minimum required TLS version' }),
-    ).exactOptional(),
+    EnforceHTTPS: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the domain is HTTPS only enabled.',
+    }),
+    TLSSecurityPolicy: TLSSecurityPolicySchema.exactOptional().openapi({
+      description: 'The minimum required TLS version',
+    }),
   })
   .openapi({ description: "The domain's endpoint options.", required: [] })
   .openapi('DomainEndpointOptions')
 
 const DomainEndpointOptionsStatusSchema = z
   .object({
-    Options: DomainEndpointOptionsSchema.and(
-      z.any().openapi({ description: 'The domain endpoint options configured for the domain.' }),
-    ),
-    Status: OptionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the configured domain endpoint options.' }),
-    ),
+    Options: DomainEndpointOptionsSchema.openapi({
+      description: 'The domain endpoint options configured for the domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description: 'The status of the configured domain endpoint options.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -1117,13 +931,9 @@ const DomainEndpointOptionsStatusSchema = z
 
 const DescribeDomainEndpointOptionsResponseSchema = z
   .object({
-    DomainEndpointOptions: DomainEndpointOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The status and configuration of a search domain's endpoint options.",
-        }),
-    ).exactOptional(),
+    DomainEndpointOptions: DomainEndpointOptionsStatusSchema.exactOptional().openapi({
+      description: "The status and configuration of a search domain's endpoint options.",
+    }),
   })
   .openapi({
     description:
@@ -1153,9 +963,9 @@ const ExpressionStatusListSchema = z
 
 const DescribeExpressionsResponseSchema = z
   .object({
-    Expressions: ExpressionStatusListSchema.and(
-      z.any().openapi({ description: 'The expressions configured for the domain.' }),
-    ),
+    Expressions: ExpressionStatusListSchema.openapi({
+      description: 'The expressions configured for the domain.',
+    }),
   })
   .openapi({
     required: ['Expressions'],
@@ -1171,9 +981,9 @@ const IndexFieldStatusListSchema = z
 
 const DescribeIndexFieldsResponseSchema = z
   .object({
-    IndexFields: IndexFieldStatusListSchema.and(
-      z.any().openapi({ description: 'The index fields configured for the domain.' }),
-    ),
+    IndexFields: IndexFieldStatusListSchema.openapi({
+      description: 'The index fields configured for the domain.',
+    }),
   })
   .openapi({
     required: ['IndexFields'],
@@ -1210,29 +1020,17 @@ const PartitionInstanceTypeSchema = z
 
 const ScalingParametersSchema = z
   .object({
-    DesiredInstanceType: PartitionInstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance type that you want to preconfigure for your domain. For example, <code>search.m1.small</code>.',
-        }),
-    ).exactOptional(),
-    DesiredReplicationCount: UIntValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of replicas you want to preconfigure for each index partition.',
-        }),
-    ).exactOptional(),
-    DesiredPartitionCount: UIntValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of partitions you want to preconfigure for your domain. Only valid when you select <code>m2.2xlarge</code> as the desired instance type.',
-        }),
-    ).exactOptional(),
+    DesiredInstanceType: PartitionInstanceTypeSchema.exactOptional().openapi({
+      description:
+        'The instance type that you want to preconfigure for your domain. For example, <code>search.m1.small</code>.',
+    }),
+    DesiredReplicationCount: UIntValueSchema.exactOptional().openapi({
+      description: 'The number of replicas you want to preconfigure for each index partition.',
+    }),
+    DesiredPartitionCount: UIntValueSchema.exactOptional().openapi({
+      description:
+        'The number of partitions you want to preconfigure for your domain. Only valid when you select <code>m2.2xlarge</code> as the desired instance type.',
+    }),
   })
   .openapi({
     description:
@@ -1277,13 +1075,9 @@ const AccessPoliciesStatusSchema = z
 
 const DescribeServiceAccessPoliciesResponseSchema = z
   .object({
-    AccessPolicies: AccessPoliciesStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The access rules configured for the domain specified in the request.',
-        }),
-    ),
+    AccessPolicies: AccessPoliciesStatusSchema.openapi({
+      description: 'The access rules configured for the domain specified in the request.',
+    }),
   })
   .openapi({
     required: ['AccessPolicies'],
@@ -1298,13 +1092,9 @@ const SuggesterStatusListSchema = z
 
 const DescribeSuggestersResponseSchema = z
   .object({
-    Suggesters: SuggesterStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The suggesters configured for the domain specified in the request.',
-        }),
-    ),
+    Suggesters: SuggesterStatusListSchema.openapi({
+      description: 'The suggesters configured for the domain specified in the request.',
+    }),
   })
   .openapi({
     required: ['Suggesters'],
@@ -1314,9 +1104,9 @@ const DescribeSuggestersResponseSchema = z
 
 const IndexDocumentsResponseSchema = z
   .object({
-    FieldNames: FieldNameListSchema.and(
-      z.any().openapi({ description: 'The names of the fields that are currently being indexed.' }),
-    ).exactOptional(),
+    FieldNames: FieldNameListSchema.exactOptional().openapi({
+      description: 'The names of the fields that are currently being indexed.',
+    }),
   })
   .openapi({
     description:
@@ -1339,9 +1129,9 @@ const DomainNameMapSchema = z
 
 const ListDomainNamesResponseSchema = z
   .object({
-    DomainNames: DomainNameMapSchema.and(
-      z.any().openapi({ description: 'The names of the search domains owned by an account.' }),
-    ).exactOptional(),
+    DomainNames: DomainNameMapSchema.exactOptional().openapi({
+      description: 'The names of the search domains owned by an account.',
+    }),
   })
   .openapi({
     description:
@@ -1352,14 +1142,10 @@ const ListDomainNamesResponseSchema = z
 
 const UpdateAvailabilityOptionsResponseSchema = z
   .object({
-    AvailabilityOptions: AvailabilityOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The newly-configured availability options. Indicates whether Multi-AZ is enabled for the domain. ',
-        }),
-    ).exactOptional(),
+    AvailabilityOptions: AvailabilityOptionsStatusSchema.exactOptional().openapi({
+      description:
+        'The newly-configured availability options. Indicates whether Multi-AZ is enabled for the domain. ',
+    }),
   })
   .openapi({
     description:
@@ -1370,9 +1156,9 @@ const UpdateAvailabilityOptionsResponseSchema = z
 
 const UpdateDomainEndpointOptionsResponseSchema = z
   .object({
-    DomainEndpointOptions: DomainEndpointOptionsStatusSchema.and(
-      z.any().openapi({ description: 'The newly-configured domain endpoint options.' }),
-    ).exactOptional(),
+    DomainEndpointOptions: DomainEndpointOptionsStatusSchema.exactOptional().openapi({
+      description: 'The newly-configured domain endpoint options.',
+    }),
   })
   .openapi({
     description:
@@ -1392,9 +1178,9 @@ const UpdateScalingParametersResponseSchema = z
 
 const UpdateServiceAccessPoliciesResponseSchema = z
   .object({
-    AccessPolicies: AccessPoliciesStatusSchema.and(
-      z.any().openapi({ description: 'The access rules configured for the domain.' }),
-    ),
+    AccessPolicies: AccessPoliciesStatusSchema.openapi({
+      description: 'The access rules configured for the domain.',
+    }),
   })
   .openapi({
     required: ['AccessPolicies'],
@@ -1415,14 +1201,10 @@ const BuildSuggestersRequestSchema = z
 
 const CreateDomainRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the domain you are creating. Allowed characters are a-z (lower-case letters), 0-9, and hyphen (-). Domain names must start with a letter or number and be at least 3 and no more than 28 characters long.',
-        }),
-    ),
+    DomainName: DomainNameSchema.openapi({
+      description:
+        'A name for the domain you are creating. Allowed characters are a-z (lower-case letters), 0-9, and hyphen (-). Domain names must start with a letter or number and be at least 3 and no more than 28 characters long.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1455,9 +1237,9 @@ const DefineExpressionRequestSchema = z
 const DefineIndexFieldRequestSchema = z
   .object({
     DomainName: DomainNameSchema,
-    IndexField: IndexFieldSchema.and(
-      z.any().openapi({ description: 'The index field and field options you want to configure. ' }),
-    ),
+    IndexField: IndexFieldSchema.openapi({
+      description: 'The index field and field options you want to configure. ',
+    }),
   })
   .openapi({
     required: ['DomainName', 'IndexField'],
@@ -1480,9 +1262,9 @@ const DefineSuggesterRequestSchema = z
 const DeleteAnalysisSchemeRequestSchema = z
   .object({
     DomainName: DomainNameSchema,
-    AnalysisSchemeName: StandardNameSchema.and(
-      z.any().openapi({ description: 'The name of the analysis scheme you want to delete.' }),
-    ),
+    AnalysisSchemeName: StandardNameSchema.openapi({
+      description: 'The name of the analysis scheme you want to delete.',
+    }),
   })
   .openapi({
     required: ['DomainName', 'AnalysisSchemeName'],
@@ -1494,9 +1276,9 @@ const DeleteAnalysisSchemeRequestSchema = z
 
 const DeleteDomainRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain you want to permanently delete.' }),
-    ),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain you want to permanently delete.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1509,9 +1291,9 @@ const DeleteDomainRequestSchema = z
 const DeleteExpressionRequestSchema = z
   .object({
     DomainName: DomainNameSchema,
-    ExpressionName: StandardNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code><a>Expression</a></code> to delete.' }),
-    ),
+    ExpressionName: StandardNameSchema.openapi({
+      description: 'The name of the <code><a>Expression</a></code> to delete.',
+    }),
   })
   .openapi({
     required: ['DomainName', 'ExpressionName'],
@@ -1524,14 +1306,10 @@ const DeleteExpressionRequestSchema = z
 const DeleteIndexFieldRequestSchema = z
   .object({
     DomainName: DomainNameSchema,
-    IndexFieldName: DynamicFieldNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the index field your want to remove from the domain's indexing options.",
-        }),
-    ),
+    IndexFieldName: DynamicFieldNameSchema.openapi({
+      description:
+        "The name of the index field your want to remove from the domain's indexing options.",
+    }),
   })
   .openapi({
     required: ['DomainName', 'IndexFieldName'],
@@ -1544,9 +1322,9 @@ const DeleteIndexFieldRequestSchema = z
 const DeleteSuggesterRequestSchema = z
   .object({
     DomainName: DomainNameSchema,
-    SuggesterName: StandardNameSchema.and(
-      z.any().openapi({ description: 'Specifies the name of the suggester you want to delete.' }),
-    ),
+    SuggesterName: StandardNameSchema.openapi({
+      description: 'Specifies the name of the suggester you want to delete.',
+    }),
   })
   .openapi({
     required: ['DomainName', 'SuggesterName'],
@@ -1560,20 +1338,16 @@ const StandardNameListSchema = z.array(StandardNameSchema).openapi('StandardName
 
 const DescribeAnalysisSchemesRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain you want to describe.' }),
-    ),
-    AnalysisSchemeNames: StandardNameListSchema.and(
-      z.any().openapi({ description: 'The analysis schemes you want to describe.' }),
-    ).exactOptional(),
-    Deployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain you want to describe.',
+    }),
+    AnalysisSchemeNames: StandardNameListSchema.exactOptional().openapi({
+      description: 'The analysis schemes you want to describe.',
+    }),
+    Deployed: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1585,17 +1359,13 @@ const DescribeAnalysisSchemesRequestSchema = z
 
 const DescribeAvailabilityOptionsRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain you want to describe.' }),
-    ),
-    Deployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain you want to describe.',
+    }),
+    Deployed: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1607,17 +1377,13 @@ const DescribeAvailabilityOptionsRequestSchema = z
 
 const DescribeDomainEndpointOptionsRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'A string that represents the name of a domain.' }),
-    ),
-    Deployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to retrieve the latest configuration (which might be in a Processing state) or the current, active configuration. Defaults to <code>false</code>.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.openapi({
+      description: 'A string that represents the name of a domain.',
+    }),
+    Deployed: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to retrieve the latest configuration (which might be in a Processing state) or the current, active configuration. Defaults to <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1634,11 +1400,9 @@ const DomainNameListSchema = z
 
 const DescribeDomainsRequestSchema = z
   .object({
-    DomainNames: DomainNameListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The names of the domains you want to include in the response.' }),
-    ).exactOptional(),
+    DomainNames: DomainNameListSchema.exactOptional().openapi({
+      description: 'The names of the domains you want to include in the response.',
+    }),
   })
   .openapi({
     title: 'DescribeDomainsRequest',
@@ -1650,25 +1414,17 @@ const DescribeDomainsRequestSchema = z
 
 const DescribeExpressionsRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain you want to describe.' }),
-    ),
-    ExpressionNames: StandardNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Limits the <code><a>DescribeExpressions</a></code> response to the specified expressions. If not specified, all expressions are shown.',
-        }),
-    ).exactOptional(),
-    Deployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain you want to describe.',
+    }),
+    ExpressionNames: StandardNameListSchema.exactOptional().openapi({
+      description:
+        'Limits the <code><a>DescribeExpressions</a></code> response to the specified expressions. If not specified, all expressions are shown.',
+    }),
+    Deployed: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1682,25 +1438,17 @@ const DynamicFieldNameListSchema = z.array(DynamicFieldNameSchema).openapi('Dyna
 
 const DescribeIndexFieldsRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain you want to describe.' }),
-    ),
-    FieldNames: DynamicFieldNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the index fields you want to describe. If not specified, information is returned for all configured index fields.',
-        }),
-    ).exactOptional(),
-    Deployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain you want to describe.',
+    }),
+    FieldNames: DynamicFieldNameListSchema.exactOptional().openapi({
+      description:
+        'A list of the index fields you want to describe. If not specified, information is returned for all configured index fields.',
+    }),
+    Deployed: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1722,17 +1470,13 @@ const DescribeScalingParametersRequestSchema = z
 
 const DescribeServiceAccessPoliciesRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain you want to describe.' }),
-    ),
-    Deployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain you want to describe.',
+    }),
+    Deployed: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1744,20 +1488,16 @@ const DescribeServiceAccessPoliciesRequestSchema = z
 
 const DescribeSuggestersRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain you want to describe.' }),
-    ),
-    SuggesterNames: StandardNameListSchema.and(
-      z.any().openapi({ description: 'The suggesters you want to describe.' }),
-    ).exactOptional(),
-    Deployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain you want to describe.',
+    }),
+    SuggesterNames: StandardNameListSchema.exactOptional().openapi({
+      description: 'The suggesters you want to describe.',
+    }),
+    Deployed: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to display the deployed configuration (<code>true</code>) or include any pending changes (<code>false</code>). Defaults to <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -1780,14 +1520,10 @@ const IndexDocumentsRequestSchema = z
 const UpdateAvailabilityOptionsRequestSchema = z
   .object({
     DomainName: DomainNameSchema,
-    MultiAZ: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You expand an existing search domain to a second Availability Zone by setting the Multi-AZ option to true. Similarly, you can turn off the Multi-AZ option to downgrade the domain to a single Availability Zone by setting the Multi-AZ option to <code>false</code>. ',
-        }),
-    ),
+    MultiAZ: BooleanSchema.openapi({
+      description:
+        'You expand an existing search domain to a second Availability Zone by setting the Multi-AZ option to true. Similarly, you can turn off the Multi-AZ option to downgrade the domain to a single Availability Zone by setting the Multi-AZ option to <code>false</code>. ',
+    }),
   })
   .openapi({
     required: ['DomainName', 'MultiAZ'],
@@ -1799,17 +1535,13 @@ const UpdateAvailabilityOptionsRequestSchema = z
 
 const UpdateDomainEndpointOptionsRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'A string that represents the name of a domain.' }),
-    ),
-    DomainEndpointOptions: DomainEndpointOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to require that all requests to the domain arrive over HTTPS. We recommend Policy-Min-TLS-1-2-2019-07 for TLSSecurityPolicy. For compatibility with older clients, the default is Policy-Min-TLS-1-0-2019-07. ',
-        }),
-    ),
+    DomainName: DomainNameSchema.openapi({
+      description: 'A string that represents the name of a domain.',
+    }),
+    DomainEndpointOptions: DomainEndpointOptionsSchema.openapi({
+      description:
+        'Whether to require that all requests to the domain arrive over HTTPS. We recommend Policy-Min-TLS-1-2-2019-07 for TLSSecurityPolicy. For compatibility with older clients, the default is Policy-Min-TLS-1-0-2019-07. ',
+    }),
   })
   .openapi({
     required: ['DomainName', 'DomainEndpointOptions'],
@@ -1832,14 +1564,10 @@ const UpdateScalingParametersRequestSchema = z
 const UpdateServiceAccessPoliciesRequestSchema = z
   .object({
     DomainName: DomainNameSchema,
-    AccessPolicies: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access rules you want to configure. These rules replace any existing rules. ',
-        }),
-    ),
+    AccessPolicies: PolicyDocumentSchema.openapi({
+      description:
+        'The access rules you want to configure. These rules replace any existing rules. ',
+    }),
   })
   .openapi({
     required: ['DomainName', 'AccessPolicies'],
@@ -2732,14 +2460,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
             }),
           IndexField: z
             .object({
-              IndexFieldName: DynamicFieldNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>A string that represents the name of an index field. CloudSearch supports regular index fields as well as dynamic fields. A dynamic field's name defines a pattern that begins or ends with a wildcard. Any document fields that don't map to a regular index field but do match a dynamic field's pattern are configured with the dynamic field's indexing options. </p> <p>Regular field names begin with a letter and can contain the following characters: a-z (lowercase), 0-9, and _ (underscore). Dynamic field names must begin or end with a wildcard (*). The wildcard can also be the only character in a dynamic field name. Multiple wildcards, and wildcards embedded within a string are not supported. </p> <p>The name <code>score</code> is reserved and cannot be used as a field name. To reference a document's ID, you can use the name <code>_id</code>. </p>",
-                  }),
-              ),
+              IndexFieldName: DynamicFieldNameSchema.openapi({
+                description:
+                  "<p>A string that represents the name of an index field. CloudSearch supports regular index fields as well as dynamic fields. A dynamic field's name defines a pattern that begins or ends with a wildcard. Any document fields that don't map to a regular index field but do match a dynamic field's pattern are configured with the dynamic field's indexing options. </p> <p>Regular field names begin with a letter and can contain the following characters: a-z (lowercase), 0-9, and _ (underscore). Dynamic field names must begin or end with a wildcard (*). The wildcard can also be the only character in a dynamic field name. Multiple wildcards, and wildcards embedded within a string are not supported. </p> <p>The name <code>score</code> is reserved and cannot be used as a field name. To reference a document's ID, you can use the name <code>_id</code>. </p>",
+              }),
               IndexFieldType: IndexFieldTypeSchema,
               IntOptions: z
                 .object({
@@ -2753,22 +2477,14 @@ export const getActionDefineIndexFieldRoute = createRoute({
                           : val,
                       LongSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "A value to use for the field if the field isn't specified for a document. This can be important if you are using the field in an expression and that field is not present in every document.",
-                        }),
-                    )
-                    .exactOptional(),
-                  SourceField: FieldNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The name of the source field to map to the field. ',
-                      }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "A value to use for the field if the field isn't specified for a document. This can be important if you are using the field in an expression and that field is not present in every document.",
+                    }),
+                  SourceField: FieldNameSchema.exactOptional().openapi({
+                    description: 'The name of the source field to map to the field. ',
+                  }),
                   FacetEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2777,14 +2493,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2793,14 +2505,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2809,15 +2515,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                   SortEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2826,14 +2528,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the field can be used to sort the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether the field can be used to sort the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2853,22 +2551,14 @@ export const getActionDefineIndexFieldRoute = createRoute({
                           : val,
                       DoubleSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "A value to use for the field if the field isn't specified for a document. This can be important if you are using the field in an expression and that field is not present in every document.",
-                        }),
-                    )
-                    .exactOptional(),
-                  SourceField: FieldNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The name of the source field to map to the field. ',
-                      }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "A value to use for the field if the field isn't specified for a document. This can be important if you are using the field in an expression and that field is not present in every document.",
+                    }),
+                  SourceField: FieldNameSchema.exactOptional().openapi({
+                    description: 'The name of the source field to map to the field. ',
+                  }),
                   FacetEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2877,14 +2567,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2893,14 +2579,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2909,15 +2589,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                   SortEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2926,14 +2602,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the field can be used to sort the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether the field can be used to sort the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2943,14 +2615,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                 }),
               LiteralOptions: z
                 .object({
-                  DefaultValue: FieldValueSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A value to use for the field if the field isn't specified for a document.",
-                      }),
-                  ).exactOptional(),
+                  DefaultValue: FieldValueSchema.exactOptional().openapi({
+                    description:
+                      "A value to use for the field if the field isn't specified for a document.",
+                  }),
                   SourceField: FieldNameSchema.exactOptional(),
                   FacetEnabled: z
                     .preprocess(
@@ -2960,14 +2628,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2976,14 +2640,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -2992,15 +2650,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                   SortEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3009,14 +2663,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the field can be used to sort the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether the field can be used to sort the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3026,14 +2676,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                 }),
               TextOptions: z
                 .object({
-                  DefaultValue: FieldValueSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A value to use for the field if the field isn't specified for a document.",
-                      }),
-                  ).exactOptional(),
+                  DefaultValue: FieldValueSchema.exactOptional().openapi({
+                    description:
+                      "A value to use for the field if the field isn't specified for a document.",
+                  }),
                   SourceField: FieldNameSchema.exactOptional(),
                   ReturnEnabled: z
                     .preprocess(
@@ -3043,15 +2689,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                   SortEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3060,14 +2702,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the field can be used to sort the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether the field can be used to sort the search results.',
+                    }),
                   HighlightEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3076,22 +2714,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether highlights can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
-                  AnalysisScheme: WordSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of an analysis scheme for a <code>text</code> field.',
-                      }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether highlights can be returned for the field.' }),
+                  AnalysisScheme: WordSchema.exactOptional().openapi({
+                    description: 'The name of an analysis scheme for a <code>text</code> field.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3101,14 +2728,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                 }),
               DateOptions: z
                 .object({
-                  DefaultValue: FieldValueSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A value to use for the field if the field isn't specified for a document.",
-                      }),
-                  ).exactOptional(),
+                  DefaultValue: FieldValueSchema.exactOptional().openapi({
+                    description:
+                      "A value to use for the field if the field isn't specified for a document.",
+                  }),
                   SourceField: FieldNameSchema.exactOptional(),
                   FacetEnabled: z
                     .preprocess(
@@ -3118,14 +2741,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3134,14 +2753,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3150,15 +2763,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                   SortEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3167,14 +2776,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the field can be used to sort the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether the field can be used to sort the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3184,14 +2789,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                 }),
               LatLonOptions: z
                 .object({
-                  DefaultValue: FieldValueSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A value to use for the field if the field isn't specified for a document.",
-                      }),
-                  ).exactOptional(),
+                  DefaultValue: FieldValueSchema.exactOptional().openapi({
+                    description:
+                      "A value to use for the field if the field isn't specified for a document.",
+                  }),
                   SourceField: FieldNameSchema.exactOptional(),
                   FacetEnabled: z
                     .preprocess(
@@ -3201,14 +2802,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3217,14 +2814,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3233,15 +2824,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                   SortEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3250,14 +2837,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the field can be used to sort the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether the field can be used to sort the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3277,20 +2860,14 @@ export const getActionDefineIndexFieldRoute = createRoute({
                           : val,
                       LongSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "A value to use for the field if the field isn't specified for a document.",
-                        }),
-                    )
-                    .exactOptional(),
-                  SourceFields: FieldNameCommaListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of source fields to map to the field. ' }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "A value to use for the field if the field isn't specified for a document.",
+                    }),
+                  SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+                    description: 'A list of source fields to map to the field. ',
+                  }),
                   FacetEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3299,14 +2876,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3315,14 +2888,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3331,15 +2898,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3359,20 +2922,14 @@ export const getActionDefineIndexFieldRoute = createRoute({
                           : val,
                       DoubleSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "A value to use for the field if the field isn't specified for a document.",
-                        }),
-                    )
-                    .exactOptional(),
-                  SourceFields: FieldNameCommaListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of source fields to map to the field. ' }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "A value to use for the field if the field isn't specified for a document.",
+                    }),
+                  SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+                    description: 'A list of source fields to map to the field. ',
+                  }),
                   FacetEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3381,14 +2938,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3397,14 +2950,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3413,15 +2960,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3431,19 +2974,13 @@ export const getActionDefineIndexFieldRoute = createRoute({
                 }),
               LiteralArrayOptions: z
                 .object({
-                  DefaultValue: FieldValueSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A value to use for the field if the field isn't specified for a document.",
-                      }),
-                  ).exactOptional(),
-                  SourceFields: FieldNameCommaListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of source fields to map to the field. ' }),
-                  ).exactOptional(),
+                  DefaultValue: FieldValueSchema.exactOptional().openapi({
+                    description:
+                      "A value to use for the field if the field isn't specified for a document.",
+                  }),
+                  SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+                    description: 'A list of source fields to map to the field. ',
+                  }),
                   FacetEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3452,14 +2989,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3468,14 +3001,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3484,15 +3011,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3502,19 +3025,13 @@ export const getActionDefineIndexFieldRoute = createRoute({
                 }),
               TextArrayOptions: z
                 .object({
-                  DefaultValue: FieldValueSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A value to use for the field if the field isn't specified for a document.",
-                      }),
-                  ).exactOptional(),
-                  SourceFields: FieldNameCommaListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of source fields to map to the field. ' }),
-                  ).exactOptional(),
+                  DefaultValue: FieldValueSchema.exactOptional().openapi({
+                    description:
+                      "A value to use for the field if the field isn't specified for a document.",
+                  }),
+                  SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+                    description: 'A list of source fields to map to the field. ',
+                  }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3523,15 +3040,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                   HighlightEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3540,22 +3053,12 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether highlights can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
-                  AnalysisScheme: WordSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of an analysis scheme for a <code>text-array</code> field.',
-                      }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether highlights can be returned for the field.' }),
+                  AnalysisScheme: WordSchema.exactOptional().openapi({
+                    description:
+                      'The name of an analysis scheme for a <code>text-array</code> field.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3565,19 +3068,13 @@ export const getActionDefineIndexFieldRoute = createRoute({
                 }),
               DateArrayOptions: z
                 .object({
-                  DefaultValue: FieldValueSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A value to use for the field if the field isn't specified for a document.",
-                      }),
-                  ).exactOptional(),
-                  SourceFields: FieldNameCommaListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of source fields to map to the field. ' }),
-                  ).exactOptional(),
+                  DefaultValue: FieldValueSchema.exactOptional().openapi({
+                    description:
+                      "A value to use for the field if the field isn't specified for a document.",
+                  }),
+                  SourceFields: FieldNameCommaListSchema.exactOptional().openapi({
+                    description: 'A list of source fields to map to the field. ',
+                  }),
                   FacetEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3586,14 +3083,10 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether facet information can be returned for the field.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether facet information can be returned for the field.',
+                    }),
                   SearchEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3602,14 +3095,8 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Whether the contents of the field are searchable.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Whether the contents of the field are searchable.' }),
                   ReturnEnabled: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -3618,15 +3105,11 @@ export const getActionDefineIndexFieldRoute = createRoute({
                       })(z.stringbool()),
                       BooleanSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Whether the contents of the field can be returned in the search results.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the contents of the field can be returned in the search results.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7271,11 +6754,11 @@ export const getActionUpdateDomainEndpointOptionsRoute = createRoute({
                   })(z.stringbool()),
                   BooleanSchema,
                 )
-                .and(z.any().openapi({ description: 'Whether the domain is HTTPS only enabled.' }))
-                .exactOptional(),
-              TLSSecurityPolicy: TLSSecurityPolicySchema.and(
-                z.any().openapi({ description: 'The minimum required TLS version' }),
-              ).exactOptional(),
+                .exactOptional()
+                .openapi({ description: 'Whether the domain is HTTPS only enabled.' }),
+              TLSSecurityPolicy: TLSSecurityPolicySchema.exactOptional().openapi({
+                description: 'The minimum required TLS version',
+              }),
             })
             .openapi({
               param: {
@@ -7507,14 +6990,10 @@ export const getActionUpdateScalingParametersRoute = createRoute({
             }),
           ScalingParameters: z
             .object({
-              DesiredInstanceType: PartitionInstanceTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The instance type that you want to preconfigure for your domain. For example, <code>search.m1.small</code>.',
-                  }),
-              ).exactOptional(),
+              DesiredInstanceType: PartitionInstanceTypeSchema.exactOptional().openapi({
+                description:
+                  'The instance type that you want to preconfigure for your domain. For example, <code>search.m1.small</code>.',
+              }),
               DesiredReplicationCount: z
                 .preprocess(
                   (val) =>
@@ -7525,15 +7004,11 @@ export const getActionUpdateScalingParametersRoute = createRoute({
                       : val,
                   UIntValueSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The number of replicas you want to preconfigure for each index partition.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The number of replicas you want to preconfigure for each index partition.',
+                }),
               DesiredPartitionCount: z
                 .preprocess(
                   (val) =>
@@ -7544,15 +7019,11 @@ export const getActionUpdateScalingParametersRoute = createRoute({
                       : val,
                   UIntValueSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The number of partitions you want to preconfigure for your domain. Only valid when you select <code>m2.2xlarge</code> as the desired instance type.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The number of partitions you want to preconfigure for your domain. Only valid when you select <code>m2.2xlarge</code> as the desired instance type.',
+                }),
             })
             .openapi({
               param: {

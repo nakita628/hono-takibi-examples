@@ -1,4 +1,4 @@
-<h1 id="lichessorg-api-reference">Lichess.org API reference v2.0.178</h1>
+<h1 id="lichessorg-api-reference">Lichess.org API reference v2.0.180</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -28,6 +28,12 @@ All requests go to `https://lichess.org` (unless otherwise specified).
 - [Rust general API](https://github.com/obazin/litchee)
 - [LichessNET - C# API Wrapper](https://github.com/Rabergsel/LichessNET)
 - [.NET general API](https://github.com/Dblike/LichessSharp)
+
+## User-Agent header
+All requests going to lichess.org MUST include a `User-Agent` header with your website URL, or the name of your application, or a contact email.
+For example: `User-Agent: https://mychessapp.example.com/`.
+We'll use it to contact you in case of a problem, and to let you know about breaking changes to the API.
+Requests missing an appropriate `User-Agent` header may be rejected or rate limited.
 
 ## Rate limiting
 All requests are rate limited using various strategies,
@@ -377,7 +383,7 @@ Read the preferences of the logged in user.
 ```json
 {
   "prefs": {
-    "bgImg": "https://lichess1.org/assets/lifat/background/gallery/bg27.webp",
+    "bgImg": "https://lichess.org/assets/lifat/background/gallery/bg27.webp",
     "is3d": false,
     "theme": "brown",
     "pieceSet": "cburnett",
@@ -7561,8 +7567,8 @@ Get information about a FIDE player.
   "blitz": 2766,
   "gender": "M",
   "photo": {
-    "small": "https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde",
-    "medium": "https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7",
+    "small": "https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde",
+    "medium": "https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7",
     "credit": "Brigham Aldrich"
   }
 }
@@ -7682,8 +7688,8 @@ List of FIDE players search results for a query.
     "blitz": 2766,
     "gender": "M",
     "photo": {
-      "small": "https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde",
-      "medium": "https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7",
+      "small": "https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde",
+      "medium": "https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7",
       "credit": "Brigham Aldrich"
     }
   },
@@ -9038,8 +9044,8 @@ Example: `curl https://explorer.lichess.org/masters?play=d2d4,d7d5,c2c4,c7c6,c4d
 |---|---|---|---|---|
 |fen|query|string|false|X-FEN of the root position|
 |play|query|string|false|Comma separated sequence of legal moves in UCI notation.<br>Play additional moves starting from `fen`.<br>Required to find an opening name, if `fen` is not an exact match<br>for a named position.<br>|
-|since|query|integer|false|Include only games from this year or later|
-|until|query|integer|false|Include only games from this year or earlier|
+|since|query|string|false|Include only games from this month or later: `YYYY-MM`, or `YYYY`<br>for January of that year<br>|
+|until|query|string|false|Include only games from this month or earlier: `YYYY-MM`, or `YYYY`<br>for December of that year<br>|
 |moves|query|integer|false|Number of most common moves to display|
 |topGames|query|integer|false|Number of top games to display|
 
@@ -9324,11 +9330,18 @@ Example: `curl https://explorer.lichess.org/masters?play=d2d4,d7d5,c2c4,c7c6,c4d
 }
 ```
 
+> 400 Response
+
+```text
+bad request: illegal move e2e5: illegal uci move
+```
+
 <h3 id="masters-database-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Opening statistics and game references for the position.|[OpeningExplorerMasters](#schemaopeningexplorermasters)|
+|400|Bad Request|Invalid parameters, position or moves.|Inline|
 
 ### Response Headers
 
@@ -9371,8 +9384,8 @@ Example: `curl https://explorer.lichess.org/lichess?variant=standard&speeds=blit
 |play|query|string|false|Comma separated sequence of legal moves in UCI notation.<br>Play additional moves starting from `fen`.<br>Required to find an opening name, if `fen` is not an exact match<br>for a named position.<br>|
 |speeds|query|[[Speed](#schemaspeed)]|false|Comma separated list of game speeds to filter by|
 |ratings|query|[integer]|false|Comma separated list of ratings groups to filter by.<br>Each group ranges from its value to the next higher<br>group in the enum (`0` from 0 to 999, `1000` from 1000 to 1199,<br>..., `2500` from 2500 to any rating above).<br>|
-|since|query|string|false|Include only games from this month or later|
-|until|query|string|false|Include only games from this month or earlier|
+|since|query|string|false|Include only games from this month or later: `YYYY-MM`, or `YYYY`<br>for January of that year<br>|
+|until|query|string|false|Include only games from this month or earlier: `YYYY-MM`, or `YYYY`<br>for December of that year<br>|
 |moves|query|integer|false|Number of most common moves to display|
 |topGames|query|integer|false|Maximum number of top games to display.<br><br>Due to the way banned users are handled internally, the response may<br>contain fewer games than expected.<br>|
 |recentGames|query|integer|false|Maximum number of recent games to display.<br><br>Due to the way banned users are handled internally, the response may<br>contain fewer games than expected.<br>|
@@ -9672,11 +9685,18 @@ Example: `curl https://explorer.lichess.org/lichess?variant=standard&speeds=blit
 }
 ```
 
+> 400 Response
+
+```text
+bad request: illegal move e2e5: illegal uci move
+```
+
 <h3 id="lichess-games-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Opening statistics and game references for the position.|[OpeningExplorerLichess](#schemaopeningexplorerlichess)|
+|400|Bad Request|Invalid parameters, position or moves.|Inline|
 
 ### Response Headers
 
@@ -9728,8 +9748,8 @@ Example: `curl https://explorer.lichess.org/player?player=revoof&color=white&pla
 |play|query|string|false|Comma separated sequence of legal moves in UCI notation.<br>Play additional moves starting from `fen`.<br>Required to find an opening name, if `fen` is not an exact match<br>for a named position.<br>|
 |speeds|query|[[Speed](#schemaspeed)]|false|Comma separated list of game speeds to look for|
 |modes|query|[string]|false|Comma separated list of modes|
-|since|query|string|false|Include only games from this month or later|
-|until|query|string|false|Include only games from this month or earlier|
+|since|query|string|false|Include only games from this month or later: `YYYY-MM`, or `YYYY`<br>for January of that year<br>|
+|until|query|string|false|Include only games from this month or earlier: `YYYY-MM`, or `YYYY`<br>for December of that year<br>|
 |moves|query|integer|false|Number of most common moves to display|
 |recentGames|query|integer|false|Number of recent games to display|
 
@@ -9901,11 +9921,19 @@ Example: `curl https://explorer.lichess.org/player?player=revoof&color=white&pla
 }
 ```
 
+> 400 Response
+
+```text
+bad request: illegal move e2e5: illegal uci move
+```
+
 <h3 id="player-games-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Opening statistics and game references for the position.|[OpeningExplorerPlayer](#schemaopeningexplorerplayer)|
+|400|Bad Request|Invalid parameters, position or moves.|Inline|
+|503|Service Unavailable|The indexing queue is full. Try again later.|Inline|
 
 ### Response Headers
 
@@ -9966,6 +9994,7 @@ Example: `curl https://explorer.lichess.org/masters/pgn/aAbqI4ey`
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|The PGN representation of the game.|Inline|
+|404|Not Found|There is no game with this id.|Inline|
 
 ### Response Headers
 
@@ -10261,6 +10290,8 @@ If authenticated, only returns puzzles that the user has never seen before.
       "deflection",
       "veryLong"
     ],
+    "fen": "r1bqr1k1/pp3ppp/2p2n2/3p2B1/8/2P1P3/PP1N1PPb/1BRQ1RK1 w - - 0 1",
+    "lastMove": "e5h2",
     "initialPly": 74
   }
 }
@@ -15282,7 +15313,7 @@ Paginator of the most popular teams.
     {
       "id": "satranc-dunyam-youtube",
       "name": "Satranç Dünyam Youtube",
-      "description": "![white_logo_color_background.jpg](https://image.lichess1.org/display?fmt=webp&h=0&op=resize&path=POtYP_HEYG5a.jpg&w=768&sig=5464e11dcabb5bfae558a535dbba798c7dd89f05)\r\n## **Türkiye'nin En Büyük Satranç Ailesine Hoş Geldiniz!**\r\n\r\n## **[Satranç Dünyam Youtube](https://www.youtube.com/c/satrancdunyam?sub_confirmation=1)**\r\n\r\n## **[satrancdunyam.com](https://satrancdunyam.com/)**",
+      "description": "![white_logo_color_background.jpg](https://image.lichess.org/display?fmt=webp&h=0&op=resize&path=POtYP_HEYG5a.jpg&w=768&sig=5464e11dcabb5bfae558a535dbba798c7dd89f05)\r\n## **Türkiye'nin En Büyük Satranç Ailesine Hoş Geldiniz!**\r\n\r\n## **[Satranç Dünyam Youtube](https://www.youtube.com/c/satrancdunyam?sub_confirmation=1)**\r\n\r\n## **[satrancdunyam.com](https://satrancdunyam.com/)**",
       "open": false,
       "leader": {
         "name": "YasinEmrah",
@@ -39448,6 +39479,7 @@ curl https://lichess.org/api/users \
   -X POST \
   -H 'Content-Type: text/plain' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'thibault,maia1,maia5'
 ```
 
@@ -39457,7 +39489,8 @@ Get up to 300 users by their IDs. Users are returned in the same order as the ID
 The method is `POST` to allow a longer list of IDs to be sent in the request body.
 Please do not try to download all the Lichess users with this endpoint, or any other endpoint.
 An API is not a way to fully export a website. We do not provide a full download of the Lichess users.
-This endpoint is limited to 8,000 users every 10 minutes, and 120,000 every day.
+This endpoint is limited to 10,000 users every 10 minutes, and 150,000 every day, when the request is authenticated.
+Fewer when the request is anonymous.
 
 
 > Body parameter
@@ -39739,8 +39772,9 @@ Status Code **200**
 |---|---|---|---|---|
 |200|Access-Control-Allow-Origin|string||none|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2
 </aside>
 
 ## Get live streamers
@@ -39780,7 +39814,7 @@ So you can call it quite often (like once every 5 seconds).
       "name": "Lefong Hua",
       "headline": "FM Lefong Hua. Professional chess coach from Montreal, Canada.",
       "twitch": "https://www.twitch.tv/lefonghua",
-      "image": "https://image.lichess1.org/display?fmt=webp&h=350&op=thumbnail&path=lefonghua:streamer:lefonghua:Vr5ViPnv.jpg&w=350&sig=4dec7bb87631c83eb93b427fc24e4726582e6af0"
+      "image": "https://image.lichess.org/display?fmt=webp&h=350&op=thumbnail&path=lefonghua:streamer:lefonghua:Vr5ViPnv.jpg&w=350&sig=4dec7bb87631c83eb93b427fc24e4726582e6af0"
     }
   },
   {
@@ -39798,7 +39832,7 @@ So you can call it quite often (like once every 5 seconds).
       "description": "My name is Sherif Khater a national master (self-taught) from USA. My experience relies on playing over the board tournaments since 1998 and going on over the course of 20 years. I have experience teaching in person among friends and others in the past 10 years. \r\n\r\n-USCF peak rating of 2304\r\n-USCF blitz peak rating of 2380\r\n-Beat IMs and FMs in USCF events\r\n-Drew IM Marc Esserman over the board\r\n\r\nI also have tremendous experience playing a lot of games online above 90k thousands (more in different sites in the past) and active chess streamer and gamer.",
       "twitch": "https://www.twitch.tv/stellarchess",
       "youtube": "https://www.youtube.com/channel/UChz11iN941Msw-txhbK28cQ/live",
-      "image": "https://image.lichess1.org/display?fmt=webp&h=350&op=thumbnail&path=streamer:stellarchesss:S2yg03mE.webp&w=350&sig=a4f2b5b43151627f1d4b51d6fee34f96e7872716"
+      "image": "https://image.lichess.org/display?fmt=webp&h=350&op=thumbnail&path=streamer:stellarchesss:S2yg03mE.webp&w=350&sig=a4f2b5b43151627f1d4b51d6fee34f96e7872716"
     }
   },
   {
@@ -39815,7 +39849,7 @@ So you can call it quite often (like once every 5 seconds).
       "description": "Ready? Let's go!\r\nJoin me with my journey to improve.",
       "twitch": "https://www.twitch.tv/tkbtsxu",
       "youtube": "https://www.youtube.com/channel/UCE7Epvr89s6NU17U9OeuVPA/live",
-      "image": "https://image.lichess1.org/display?fmt=webp&h=350&op=thumbnail&path=tkbtsxu:streamer:tkbtsxu:BGFreAgy.jpg&w=350&sig=8ec1b36898ce3ee0c978b3a74d6e4dd36268feb1"
+      "image": "https://image.lichess.org/display?fmt=webp&h=350&op=thumbnail&path=tkbtsxu:streamer:tkbtsxu:BGFreAgy.jpg&w=350&sig=8ec1b36898ce3ee0c978b3a74d6e4dd36268feb1"
     }
   },
   {
@@ -39830,7 +39864,7 @@ So you can call it quite often (like once every 5 seconds).
       "name": "avocado_violet",
       "headline": "watch me ragebait you",
       "twitch": "https://www.twitch.tv/avocado_violet",
-      "image": "https://image.lichess1.org/display?fmt=webp&h=350&op=thumbnail&path=fLtwU4bs-_cV.webp&w=350&sig=bf98fdf0cacd0fc5da93e05c253e6224210a2018"
+      "image": "https://image.lichess.org/display?fmt=webp&h=350&op=thumbnail&path=fLtwU4bs-_cV.webp&w=350&sig=bf98fdf0cacd0fc5da93e05c253e6224210a2018"
     }
   }
 ]
@@ -52158,6 +52192,7 @@ The current state of the arena tournament
 ```json
 {
   "name": "string",
+  "title": "string",
   "rating": 0
 }
 ```
@@ -52167,6 +52202,7 @@ The current state of the arena tournament
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|true|none|none|
+|title|string|false|none|Title of the player, if any|
 |rating|integer|true|none|none|
 
 <h2 id="tocS_OpeningExplorerMastersGame">OpeningExplorerMastersGame</h2>
@@ -52182,10 +52218,12 @@ The current state of the arena tournament
   "winner": "white",
   "white": {
     "name": "string",
+    "title": "string",
     "rating": 0
   },
   "black": {
     "name": "string",
+    "title": "string",
     "rating": 0
   },
   "year": 0,
@@ -52202,7 +52240,7 @@ The current state of the arena tournament
 |white|[OpeningExplorerGamePlayer](#schemaopeningexplorergameplayer)|true|none|none|
 |black|[OpeningExplorerGamePlayer](#schemaopeningexplorergameplayer)|true|none|none|
 |year|integer|true|none|none|
-|month|string|false|none|none|
+|month|string \| null|true|none|Month of the game, if known|
 
 <h2 id="tocS_OpeningExplorerMasters">OpeningExplorerMasters</h2>
 <!-- backwards compatibility -->
@@ -52233,10 +52271,12 @@ The current state of the arena tournament
         "winner": "white",
         "white": {
           "name": "string",
+          "title": "string",
           "rating": 0
         },
         "black": {
           "name": "string",
+          "title": "string",
           "rating": 0
         },
         "year": 0,
@@ -52255,10 +52295,12 @@ The current state of the arena tournament
       "winner": "white",
       "white": {
         "name": "string",
+        "title": "string",
         "rating": 0
       },
       "black": {
         "name": "string",
+        "title": "string",
         "rating": 0
       },
       "year": 0,
@@ -52291,12 +52333,15 @@ The current state of the arena tournament
   "id": "string",
   "winner": "white",
   "speed": "ultraBullet",
+  "mode": "rated",
   "white": {
     "name": "string",
+    "title": "string",
     "rating": 0
   },
   "black": {
     "name": "string",
+    "title": "string",
     "rating": 0
   },
   "year": 0,
@@ -52311,10 +52356,11 @@ The current state of the arena tournament
 |id|string|true|none|none|
 |winner|[GameColor](#schemagamecolor) \| null|true|none|none|
 |speed|[Speed](#schemaspeed)|false|none|none|
+|mode|string|true|none|none|
 |white|[OpeningExplorerGamePlayer](#schemaopeningexplorergameplayer)|true|none|none|
 |black|[OpeningExplorerGamePlayer](#schemaopeningexplorergameplayer)|true|none|none|
-|year|number|true|none|none|
-|month|string \| null|true|none|none|
+|year|integer|true|none|none|
+|month|string|true|none|none|
 
 #### Enumerated Values
 
@@ -52326,6 +52372,8 @@ The current state of the arena tournament
 |speed|rapid|
 |speed|classical|
 |speed|correspondence|
+|mode|rated|
+|mode|casual|
 
 <h2 id="tocS_OpeningExplorerLichess">OpeningExplorerLichess</h2>
 <!-- backwards compatibility -->
@@ -52355,12 +52403,15 @@ The current state of the arena tournament
         "id": "string",
         "winner": "white",
         "speed": "ultraBullet",
+        "mode": "rated",
         "white": {
           "name": "string",
+          "title": "string",
           "rating": 0
         },
         "black": {
           "name": "string",
+          "title": "string",
           "rating": 0
         },
         "year": 0,
@@ -52378,12 +52429,15 @@ The current state of the arena tournament
       "id": "string",
       "winner": "white",
       "speed": "ultraBullet",
+      "mode": "rated",
       "white": {
         "name": "string",
+        "title": "string",
         "rating": 0
       },
       "black": {
         "name": "string",
+        "title": "string",
         "rating": 0
       },
       "year": 0,
@@ -52396,12 +52450,15 @@ The current state of the arena tournament
       "id": "string",
       "winner": "white",
       "speed": "ultraBullet",
+      "mode": "rated",
       "white": {
         "name": "string",
+        "title": "string",
         "rating": 0
       },
       "black": {
         "name": "string",
+        "title": "string",
         "rating": 0
       },
       "year": 0,
@@ -52429,8 +52486,8 @@ The current state of the arena tournament
 |black|integer|true|none|none|
 |moves|[object]|true|none|none|
 |topGames|[object]|true|none|none|
-|recentGames|[object]|false|none|none|
-|history|[object]|false|none|none|
+|recentGames|[object]|true|none|none|
+|history|[object]|false|none|Only with `history=true`|
 
 <h2 id="tocS_OpeningExplorerPlayerGame">OpeningExplorerPlayerGame</h2>
 <!-- backwards compatibility -->
@@ -52447,10 +52504,12 @@ The current state of the arena tournament
   "mode": "rated",
   "white": {
     "name": "string",
+    "title": "string",
     "rating": 0
   },
   "black": {
     "name": "string",
+    "title": "string",
     "rating": 0
   },
   "year": 0,
@@ -52517,10 +52576,12 @@ The current state of the arena tournament
         "mode": "rated",
         "white": {
           "name": "string",
+          "title": "string",
           "rating": 0
         },
         "black": {
           "name": "string",
+          "title": "string",
           "rating": 0
         },
         "year": 0,
@@ -52541,10 +52602,12 @@ The current state of the arena tournament
       "mode": "rated",
       "white": {
         "name": "string",
+        "title": "string",
         "rating": 0
       },
       "black": {
         "name": "string",
+        "title": "string",
         "rating": 0
       },
       "year": 0,

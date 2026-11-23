@@ -6843,6 +6843,12 @@ type BankAccountType = {
   status: string
 }
 
+type BankConnectionsResourceAccountholderType = {
+  account?: string | z.infer<typeof AccountSchema>
+  customer?: string | z.infer<typeof CustomerSchema>
+  type: 'account' | 'customer'
+}
+
 type BillingDetailsType = {
   address?: z.infer<typeof AddressSchema> | null
   email?: string | null
@@ -6863,6 +6869,149 @@ type CancellationDetailsType = {
     | 'unused'
     | null
   reason?: 'cancellation_requested' | 'payment_disputed' | 'payment_failed' | null
+}
+
+const AccountCapabilityFutureRequirementsSchema = z
+  .object({
+    alternatives: z
+      .array(AccountRequirementsAlternativeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Fields that are due and can be satisfied by providing the corresponding alternative fields instead.',
+      }),
+    current_deadline: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Date on which `future_requirements` merges with the main `requirements` hash and `future_requirements` becomes empty. After the transition, `currently_due` requirements may immediately become `past_due`, but the account may also be given a grace period depending on the capability's enablement state prior to transitioning.",
+      }),
+    currently_due: z
+      .array(z.string().max(5000))
+      .openapi({
+        description:
+          'Fields that need to be collected to keep the capability enabled. If not collected by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.',
+      }),
+    disabled_reason: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is typed as a string for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is empty because fields in `future_requirements` will never disable the account.',
+      }),
+    errors: z
+      .array(AccountRequirementsErrorSchema)
+      .openapi({
+        description:
+          'Fields that are `currently_due` and need to be collected again because validation or verification failed.',
+      }),
+    eventually_due: z
+      .array(z.string().max(5000))
+      .openapi({
+        description:
+          'Fields that need to be collected assuming all volume thresholds are reached. As they become required, they appear in `currently_due` as well.',
+      }),
+    past_due: z
+      .array(z.string().max(5000))
+      .openapi({
+        description:
+          "Fields that weren't collected by `requirements.current_deadline`. These fields need to be collected to enable the capability on the account. New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.",
+      }),
+    pending_verification: z
+      .array(z.string().max(5000))
+      .openapi({
+        description:
+          'Fields that may become required depending on the results of verification or review. Will be an empty array unless an asynchronous verification is pending. If verification fails, these fields move to `eventually_due` or `currently_due`.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['currently_due', 'errors', 'eventually_due', 'past_due', 'pending_verification'],
+    title: 'AccountCapabilityFutureRequirements',
+    'x-expandableFields': ['alternatives', 'errors'],
+  })
+  .openapi('AccountCapabilityFutureRequirements')
+
+const AccountCapabilityRequirementsSchema = z
+  .object({
+    alternatives: z
+      .array(AccountRequirementsAlternativeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Fields that are due and can be satisfied by providing the corresponding alternative fields instead.',
+      }),
+    current_deadline: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date by which the fields in `currently_due` must be collected to keep the capability enabled for the account. These fields may disable the capability sooner if the next threshold is reached before they are collected.',
+      }),
+    currently_due: z
+      .array(z.string().max(5000))
+      .openapi({
+        description:
+          'Fields that need to be collected to keep the capability enabled. If not collected by `current_deadline`, these fields appear in `past_due` as well, and the capability is disabled.',
+      }),
+    disabled_reason: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "If the capability is disabled, this string describes why. Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.\n\n`rejected.unsupported_business` means that the account's business is not supported by the capability. For example, payment methods may restrict the businesses they support in their terms of service:\n\n- [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)\n\nIf you believe that the rejection is in error, please contact support at https://support.stripe.com/contact/ for assistance.",
+      }),
+    errors: z
+      .array(AccountRequirementsErrorSchema)
+      .openapi({
+        description:
+          'Fields that are `currently_due` and need to be collected again because validation or verification failed.',
+      }),
+    eventually_due: z
+      .array(z.string().max(5000))
+      .openapi({
+        description:
+          'Fields that need to be collected assuming all volume thresholds are reached. As they become required, they appear in `currently_due` as well, and `current_deadline` becomes set.',
+      }),
+    past_due: z
+      .array(z.string().max(5000))
+      .openapi({
+        description:
+          "Fields that weren't collected by `current_deadline`. These fields need to be collected to enable the capability on the account.",
+      }),
+    pending_verification: z
+      .array(z.string().max(5000))
+      .openapi({
+        description:
+          'Fields that may become required depending on the results of verification or review. Will be an empty array unless an asynchronous verification is pending. If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['currently_due', 'errors', 'eventually_due', 'past_due', 'pending_verification'],
+    title: 'AccountCapabilityRequirements',
+    'x-expandableFields': ['alternatives', 'errors'],
+  })
+  .openapi('AccountCapabilityRequirements')
+
+type CapabilityType = {
+  account: string | z.infer<typeof AccountSchema>
+  future_requirements?: z.infer<typeof AccountCapabilityFutureRequirementsSchema>
+  id: string
+  object: 'capability'
+  requested: boolean
+  requested_at?: number | null
+  requirements?: z.infer<typeof AccountCapabilityRequirementsSchema>
+  status: 'active' | 'disabled' | 'inactive' | 'pending' | 'unrequested'
 }
 
 type CardType = {
@@ -8305,262 +8454,651 @@ type ChargeTransferDataType = {
   destination: string | z.infer<typeof AccountSchema>
 }
 
-type ConnectCollectionTransferType = {
-  amount: number
-  currency: string
-  destination: string | z.infer<typeof AccountSchema>
-  id: string
-  livemode: boolean
-  object: 'connect_collection_transfer'
-}
-
-const CouponAppliesToSchema = z
+const PaymentPagesCheckoutSessionAfterExpirationRecoverySchema = z
   .object({
-    products: z
-      .array(z.string().max(5000))
-      .openapi({ description: 'A list of product IDs this coupon applies to' }),
-  })
-  .openapi({
-    description: '',
-    required: ['products'],
-    title: 'CouponAppliesTo',
-    'x-expandableFields': [],
-  })
-  .openapi('CouponAppliesTo')
-
-const CouponCurrencyOptionSchema = z
-  .object({
-    amount_off: z
-      .int()
-      .openapi({
-        description:
-          'Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['amount_off'],
-    title: 'CouponCurrencyOption',
-    'x-expandableFields': [],
-  })
-  .openapi('CouponCurrencyOption')
-
-type CouponType = {
-  amount_off?: number | null
-  applies_to?: z.infer<typeof CouponAppliesToSchema>
-  created: number
-  currency?: string | null
-  currency_options?: { [key: string]: z.infer<typeof CouponCurrencyOptionSchema> }
-  duration: 'forever' | 'once' | 'repeating'
-  duration_in_months?: number | null
-  id: string
-  livemode: boolean
-  max_redemptions?: number | null
-  metadata?: { [key: string]: string } | null
-  name?: string | null
-  object: 'coupon'
-  percent_off?: number | null
-  redeem_by?: number | null
-  times_redeemed: number
-  valid: boolean
-}
-
-const CustomerBalanceTransactionSchema: z.ZodType<CustomerBalanceTransactionType> = z
-  .lazy(() =>
-    z
-      .object({
-        amount: z
-          .int()
-          .openapi({
-            description:
-              "The amount of the transaction. A negative value is a credit for the customer's balance, and a positive value is a debit to the customer's `balance`.",
-          }),
-        created: z
-          .int()
-          .openapi({
-            description:
-              'Time at which the object was created. Measured in seconds since the Unix epoch.',
-          }),
-        credit_note: z
-          .union([z.string().max(5000), CreditNoteSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The ID of the credit note (if any) related to the transaction.',
-            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/credit_note' }] },
-          }),
-        currency: z
-          .string()
-          .openapi({
-            description:
-              'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
-          }),
-        customer: z
-          .union([z.string().max(5000), CustomerSchema])
-          .openapi({
-            description: 'The ID of the customer the transaction belongs to.',
-            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/customer' }] },
-          }),
-        description: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'An arbitrary string attached to the object. Often useful for displaying to users.',
-          }),
-        ending_balance: z
-          .int()
-          .openapi({
-            description:
-              "The customer's `balance` after the transaction was applied. A negative value decreases the amount due on the customer's next invoice. A positive value increases the amount due on the customer's next invoice.",
-          }),
-        id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-        invoice: z
-          .union([z.string().max(5000), InvoiceSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The ID of the invoice (if any) related to the transaction.',
-            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/invoice' }] },
-          }),
-        livemode: z
-          .boolean()
-          .openapi({
-            description:
-              'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-          }),
-        metadata: z
-          .record(z.string(), z.string().max(500))
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
-          }),
-        object: z
-          .literal('customer_balance_transaction')
-          .openapi({
-            description:
-              "String representing the object's type. Objects of the same type share the same value.",
-          }),
-        type: z
-          .enum([
-            'adjustment',
-            'applied_to_invoice',
-            'credit_note',
-            'initial',
-            'invoice_overpaid',
-            'invoice_too_large',
-            'invoice_too_small',
-            'migration',
-            'unapplied_from_invoice',
-            'unspent_receiver_credit',
-          ])
-          .openapi({
-            description:
-              'Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`. See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.',
-          }),
-      })
-      .openapi({
-        description:
-          "Each customer has a [`balance`](https://stripe.com/docs/api/customers/object#customer_object-balance) value,\nwhich denotes a debit or credit that's automatically applied to their next invoice upon finalization.\nYou may modify the value directly by using the [update customer API](https://stripe.com/docs/api/customers/update),\nor by creating a Customer Balance Transaction, which increments or decrements the customer's `balance` by the specified `amount`.\n\nRelated guide: [Customer Balance](https://stripe.com/docs/billing/customer/balance) to learn more.",
-        required: [
-          'amount',
-          'created',
-          'currency',
-          'customer',
-          'ending_balance',
-          'id',
-          'livemode',
-          'object',
-          'type',
-        ],
-        title: 'CustomerBalanceTransaction',
-        'x-expandableFields': ['credit_note', 'customer', 'invoice'],
-        'x-resourceId': 'customer_balance_transaction',
-      }),
-  )
-  .openapi('CustomerBalanceTransaction')
-
-const DiscountsResourceDiscountAmountSchema: z.ZodType<DiscountsResourceDiscountAmountType> = z
-  .lazy(() =>
-    z
-      .object({
-        amount: z.int().openapi({ description: 'The amount, in %s, of the discount.' }),
-        discount: z
-          .union([z.string().max(5000), DiscountSchema, DeletedDiscountSchema])
-          .openapi({
-            description: 'The discount that was applied to get this discount amount.',
-            'x-expansionResources': {
-              oneOf: [
-                { $ref: '#/components/schemas/discount' },
-                { $ref: '#/components/schemas/deleted_discount' },
-              ],
-            },
-          }),
-      })
-      .openapi({
-        description: '',
-        required: ['amount', 'discount'],
-        title: 'DiscountsResourceDiscountAmount',
-        'x-expandableFields': ['discount'],
-      }),
-  )
-  .openapi('DiscountsResourceDiscountAmount')
-
-type TaxRateType = {
-  active: boolean
-  country?: string | null
-  created: number
-  description?: string | null
-  display_name: string
-  id: string
-  inclusive: boolean
-  jurisdiction?: string | null
-  livemode: boolean
-  metadata?: { [key: string]: string } | null
-  object: 'tax_rate'
-  percentage: number
-  state?: string | null
-  tax_type?:
-    | 'gst'
-    | 'hst'
-    | 'igst'
-    | 'jct'
-    | 'lease_tax'
-    | 'pst'
-    | 'qst'
-    | 'rst'
-    | 'sales_tax'
-    | 'vat'
-    | null
-}
-
-const TaxRateSchema: z.ZodType<TaxRateType> = z
-  .object({
-    active: z
+    allow_promotion_codes: z
       .boolean()
       .openapi({
         description:
-          'Defaults to `true`. When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.',
+          'Enables user redeemable promotion codes on the recovered Checkout Sessions. Defaults to `false`',
       }),
-    country: z
+    enabled: z
+      .boolean()
+      .openapi({
+        description:
+          'If `true`, a recovery url will be generated to recover this Checkout Session if it\nexpires before a transaction is completed. It will be attached to the\nCheckout Session object upon expiration.',
+      }),
+    expires_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The timestamp at which the recovery URL will expire.' }),
+    url: z
       .string()
       .max(5000)
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).',
+          'URL that creates a new Checkout Session when clicked that is a copy of this expired Checkout Session',
       }),
-    created: z
-      .int()
+  })
+  .openapi({
+    description: '',
+    required: ['allow_promotion_codes', 'enabled'],
+    title: 'PaymentPagesCheckoutSessionAfterExpirationRecovery',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionAfterExpirationRecovery')
+
+const PaymentPagesCheckoutSessionAfterExpirationSchema = z
+  .object({
+    recovery: z
+      .union([PaymentPagesCheckoutSessionAfterExpirationRecoverySchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'When set, configuration used to recover the Checkout Session on expiry.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentPagesCheckoutSessionAfterExpiration',
+    'x-expandableFields': ['recovery'],
+    required: [],
+  })
+  .openapi('PaymentPagesCheckoutSessionAfterExpiration')
+
+const PaymentPagesCheckoutSessionAutomaticTaxSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Indicates whether automatic tax is enabled for the session' }),
+    status: z
+      .enum(['complete', 'failed', 'requires_location_inputs'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the most recent automated tax calculation for this session.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['enabled'],
+    title: 'PaymentPagesCheckoutSessionAutomaticTax',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionAutomaticTax')
+
+const PaymentPagesCheckoutSessionConsentSchema = z
+  .object({
+    promotions: z
+      .enum(['opt_in', 'opt_out'])
+      .nullable()
+      .exactOptional()
       .openapi({
         description:
-          'Time at which the object was created. Measured in seconds since the Unix epoch.',
+          'If `opt_in`, the customer consents to receiving promotional communications\nfrom the merchant about this Checkout Session.',
       }),
+    terms_of_service: z
+      .literal('accepted')
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.",
+        'x-stripeBypassValidation': true,
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentPagesCheckoutSessionConsent',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('PaymentPagesCheckoutSessionConsent')
+
+const PaymentPagesCheckoutSessionConsentCollectionSchema = z
+  .object({
+    promotions: z
+      .enum(['auto', 'none'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "If set to `auto`, enables the collection of customer consent for promotional communications. The Checkout\nSession will determine whether to display an option to opt into promotional communication\nfrom the merchant depending on the customer's locale. Only available to US merchants.",
+      }),
+    terms_of_service: z
+      .enum(['none', 'required'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to `required`, it requires customers to accept the terms of service before being able to pay.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentPagesCheckoutSessionConsentCollection',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('PaymentPagesCheckoutSessionConsentCollection')
+
+const PaymentPagesCheckoutSessionCustomFieldsOptionSchema = z
+  .object({
+    label: z
+      .string()
+      .max(5000)
+      .openapi({
+        description: 'The label for the option, displayed to the customer. Up to 100 characters.',
+      }),
+    value: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer. Must be unique to this option, alphanumeric, and up to 100 characters.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['label', 'value'],
+    title: 'PaymentPagesCheckoutSessionCustomFieldsOption',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomFieldsOption')
+
+const PaymentPagesCheckoutSessionCustomFieldsDropdownSchema = z
+  .object({
+    options: z
+      .array(PaymentPagesCheckoutSessionCustomFieldsOptionSchema)
+      .openapi({
+        description: 'The options available for the customer to select. Up to 200 options allowed.',
+      }),
+    value: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The option selected by the customer. This will be the `value` for the option.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['options'],
+    title: 'PaymentPagesCheckoutSessionCustomFieldsDropdown',
+    'x-expandableFields': ['options'],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomFieldsDropdown')
+
+const PaymentPagesCheckoutSessionCustomFieldsLabelSchema = z
+  .object({
+    custom: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Custom text for the label, displayed to the customer. Up to 50 characters.',
+      }),
+    type: z.literal('custom').openapi({ description: 'The type of the label.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['type'],
+    title: 'PaymentPagesCheckoutSessionCustomFieldsLabel',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomFieldsLabel')
+
+const PaymentPagesCheckoutSessionCustomFieldsNumericSchema = z
+  .object({
+    value: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The value entered by the customer, containing only digits.' }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentPagesCheckoutSessionCustomFieldsNumeric',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomFieldsNumeric')
+
+const PaymentPagesCheckoutSessionCustomFieldsTextSchema = z
+  .object({
+    value: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The value entered by the customer.' }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentPagesCheckoutSessionCustomFieldsText',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomFieldsText')
+
+const PaymentPagesCheckoutSessionCustomFieldsSchema = z
+  .object({
+    dropdown: z
+      .union([PaymentPagesCheckoutSessionCustomFieldsDropdownSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Configuration for `type=dropdown` fields.' }),
+    key: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'String of your choice that your integration can use to reconcile this field. Must be unique to this field, alphanumeric, and up to 200 characters.',
+      }),
+    label: PaymentPagesCheckoutSessionCustomFieldsLabelSchema,
+    numeric: z
+      .union([PaymentPagesCheckoutSessionCustomFieldsNumericSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Configuration for `type=numeric` fields.' }),
+    optional: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the customer is required to complete the field before completing the Checkout Session. Defaults to `false`.',
+      }),
+    text: z
+      .union([PaymentPagesCheckoutSessionCustomFieldsTextSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Configuration for `type=text` fields.' }),
+    type: z
+      .enum(['dropdown', 'numeric', 'text'])
+      .openapi({ description: 'The type of the field.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['key', 'label', 'optional', 'type'],
+    title: 'PaymentPagesCheckoutSessionCustomFields',
+    'x-expandableFields': ['dropdown', 'label', 'numeric', 'text'],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomFields')
+
+const PaymentPagesCheckoutSessionCustomTextPositionSchema = z
+  .object({
+    message: z
+      .string()
+      .max(500)
+      .openapi({ description: 'Text may be up to 1000 characters in length.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['message'],
+    title: 'PaymentPagesCheckoutSessionCustomTextPosition',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomTextPosition')
+
+const PaymentPagesCheckoutSessionCustomTextSchema = z
+  .object({
+    shipping_address: z
+      .union([PaymentPagesCheckoutSessionCustomTextPositionSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Custom text that should be displayed alongside shipping address collection.',
+      }),
+    submit: z
+      .union([PaymentPagesCheckoutSessionCustomTextPositionSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom text that should be displayed alongside the payment confirmation button.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentPagesCheckoutSessionCustomText',
+    'x-expandableFields': ['shipping_address', 'submit'],
+    required: [],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomText')
+
+const PaymentPagesCheckoutSessionTaxIdSchema = z
+  .object({
+    type: z
+      .enum([
+        'ae_trn',
+        'au_abn',
+        'au_arn',
+        'bg_uic',
+        'br_cnpj',
+        'br_cpf',
+        'ca_bn',
+        'ca_gst_hst',
+        'ca_pst_bc',
+        'ca_pst_mb',
+        'ca_pst_sk',
+        'ca_qst',
+        'ch_vat',
+        'cl_tin',
+        'eg_tin',
+        'es_cif',
+        'eu_oss_vat',
+        'eu_vat',
+        'gb_vat',
+        'ge_vat',
+        'hk_br',
+        'hu_tin',
+        'id_npwp',
+        'il_vat',
+        'in_gst',
+        'is_vat',
+        'jp_cn',
+        'jp_rn',
+        'jp_trn',
+        'ke_pin',
+        'kr_brn',
+        'li_uid',
+        'mx_rfc',
+        'my_frp',
+        'my_itn',
+        'my_sst',
+        'no_vat',
+        'nz_gst',
+        'ph_tin',
+        'ru_inn',
+        'ru_kpp',
+        'sa_vat',
+        'sg_gst',
+        'sg_uen',
+        'si_tin',
+        'th_vat',
+        'tr_tin',
+        'tw_vat',
+        'ua_vat',
+        'unknown',
+        'us_ein',
+        'za_vat',
+      ])
+      .openapi({
+        description:
+          'The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`',
+      }),
+    value: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The value of the tax ID.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['type'],
+    title: 'PaymentPagesCheckoutSessionTaxID',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionTaxId')
+
+const PaymentPagesCheckoutSessionCustomerDetailsSchema = z
+  .object({
+    address: z
+      .union([AddressSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The customer's address after a completed Checkout Session. Note: This property is populated only for sessions on or after March 30, 2022.",
+      }),
+    email: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email associated with the Customer, if one exists, on the Checkout Session after a completed Checkout Session or at time of session expiry.\nOtherwise, if the customer has consented to promotional content, this value is the most recent valid email provided by the customer on the Checkout form.',
+      }),
+    name: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The customer's name after a completed Checkout Session. Note: This property is populated only for sessions on or after March 30, 2022.",
+      }),
+    phone: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The customer's phone number after a completed Checkout Session." }),
+    tax_exempt: z
+      .enum(['exempt', 'none', 'reverse'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The customer’s tax exempt status after a completed Checkout Session.',
+      }),
+    tax_ids: z
+      .array(PaymentPagesCheckoutSessionTaxIdSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The customer’s tax IDs after a completed Checkout Session.' }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentPagesCheckoutSessionCustomerDetails',
+    'x-expandableFields': ['address', 'tax_ids'],
+    required: [],
+  })
+  .openapi('PaymentPagesCheckoutSessionCustomerDetails')
+
+const TaxIdSchema: z.ZodType<TaxIdType> = z
+  .lazy(() =>
+    z
+      .object({
+        country: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Two-letter ISO code representing the country of the tax ID.' }),
+        created: z
+          .int()
+          .openapi({
+            description:
+              'Time at which the object was created. Measured in seconds since the Unix epoch.',
+          }),
+        customer: z
+          .union([z.string().max(5000), CustomerSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'ID of the customer.',
+            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/customer' }] },
+          }),
+        id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+        livemode: z
+          .boolean()
+          .openapi({
+            description:
+              'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+          }),
+        object: z
+          .literal('tax_id')
+          .openapi({
+            description:
+              "String representing the object's type. Objects of the same type share the same value.",
+          }),
+        type: z
+          .enum([
+            'ae_trn',
+            'au_abn',
+            'au_arn',
+            'bg_uic',
+            'br_cnpj',
+            'br_cpf',
+            'ca_bn',
+            'ca_gst_hst',
+            'ca_pst_bc',
+            'ca_pst_mb',
+            'ca_pst_sk',
+            'ca_qst',
+            'ch_vat',
+            'cl_tin',
+            'eg_tin',
+            'es_cif',
+            'eu_oss_vat',
+            'eu_vat',
+            'gb_vat',
+            'ge_vat',
+            'hk_br',
+            'hu_tin',
+            'id_npwp',
+            'il_vat',
+            'in_gst',
+            'is_vat',
+            'jp_cn',
+            'jp_rn',
+            'jp_trn',
+            'ke_pin',
+            'kr_brn',
+            'li_uid',
+            'mx_rfc',
+            'my_frp',
+            'my_itn',
+            'my_sst',
+            'no_vat',
+            'nz_gst',
+            'ph_tin',
+            'ru_inn',
+            'ru_kpp',
+            'sa_vat',
+            'sg_gst',
+            'sg_uen',
+            'si_tin',
+            'th_vat',
+            'tr_tin',
+            'tw_vat',
+            'ua_vat',
+            'unknown',
+            'us_ein',
+            'za_vat',
+          ])
+          .openapi({
+            description:
+              'Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`. Note that some legacy tax IDs have type `unknown`',
+          }),
+        value: z.string().max(5000).openapi({ description: 'Value of the tax ID.' }),
+        verification: z
+          .union([TaxIdVerificationSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Tax ID verification information.' }),
+      })
+      .openapi({
+        description:
+          "You can add one or multiple tax IDs to a [customer](https://stripe.com/docs/api/customers).\nA customer's tax IDs are displayed on invoices and credit notes issued for the customer.\n\nRelated guide: [Customer Tax Identification Numbers](https://stripe.com/docs/billing/taxes/tax-ids).",
+        required: ['created', 'id', 'livemode', 'object', 'type', 'value'],
+        title: 'tax_id',
+        'x-expandableFields': ['customer', 'verification'],
+        'x-resourceId': 'tax_id',
+      }),
+  )
+  .openapi('TaxId')
+
+type DeletedTaxIdType = { deleted: true; id: string; object: 'tax_id' }
+
+const DeletedTaxIdSchema: z.ZodType<DeletedTaxIdType> = z
+  .object({
+    deleted: z.literal(true).openapi({ description: 'Always true for a deleted object' }),
+    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+    object: z
+      .literal('tax_id')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['deleted', 'id', 'object'],
+    title: 'deleted_tax_id',
+    'x-expandableFields': [],
+    'x-resourceId': 'deleted_tax_id',
+  })
+  .openapi('DeletedTaxId')
+
+type InvoiceSettingCustomFieldType = { name: string; value: string }
+
+const InvoiceSettingCustomFieldSchema: z.ZodType<InvoiceSettingCustomFieldType> = z
+  .object({
+    name: z.string().max(5000).openapi({ description: 'The name of the custom field.' }),
+    value: z.string().max(5000).openapi({ description: 'The value of the custom field.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['name', 'value'],
+    title: 'InvoiceSettingCustomField',
+    'x-expandableFields': [],
+  })
+  .openapi('InvoiceSettingCustomField')
+
+type InvoiceSettingRenderingOptionsType = { amount_tax_display?: string | null }
+
+const InvoiceSettingRenderingOptionsSchema: z.ZodType<InvoiceSettingRenderingOptionsType> = z
+  .object({
+    amount_tax_display: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'InvoiceSettingRenderingOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('InvoiceSettingRenderingOptions')
+
+const PaymentPagesCheckoutSessionInvoiceSettingsSchema = z
+  .object({
+    account_tax_ids: z
+      .array(
+        z
+          .union([z.string().max(5000), TaxIdSchema, DeletedTaxIdSchema])
+          .openapi({
+            'x-expansionResources': {
+              oneOf: [
+                { $ref: '#/components/schemas/tax_id' },
+                { $ref: '#/components/schemas/deleted_tax_id' },
+              ],
+            },
+          }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The account tax IDs associated with the invoice.' }),
+    custom_fields: z
+      .array(InvoiceSettingCustomFieldSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Custom fields displayed on the invoice.' }),
     description: z
       .string()
       .max(5000)
@@ -8568,34 +9106,14 @@ const TaxRateSchema: z.ZodType<TaxRateType> = z
       .exactOptional()
       .openapi({
         description:
-          'An arbitrary string attached to the tax rate for your internal use only. It will not be visible to your customers.',
+          'An arbitrary string attached to the object. Often useful for displaying to users.',
       }),
-    display_name: z
-      .string()
-      .max(5000)
-      .openapi({
-        description:
-          'The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.',
-      }),
-    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-    inclusive: z
-      .boolean()
-      .openapi({ description: 'This specifies if the tax rate is inclusive or exclusive.' }),
-    jurisdiction: z
+    footer: z
       .string()
       .max(5000)
       .nullable()
       .exactOptional()
-      .openapi({
-        description:
-          'The jurisdiction for the tax rate. You can use this label field for tax reporting purposes. It also appears on your customer’s invoice.',
-      }),
-    livemode: z
-      .boolean()
-      .openapi({
-        description:
-          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-      }),
+      .openapi({ description: 'Footer displayed on the invoice.' }),
     metadata: z
       .record(z.string(), z.string().max(500))
       .nullable()
@@ -8604,203 +9122,725 @@ const TaxRateSchema: z.ZodType<TaxRateType> = z
         description:
           'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
       }),
-    object: z
-      .literal('tax_rate')
+    rendering_options: z
+      .union([InvoiceSettingRenderingOptionsSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Options for invoice PDF rendering.' }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentPagesCheckoutSessionInvoiceSettings',
+    'x-expandableFields': ['account_tax_ids', 'custom_fields', 'rendering_options'],
+    required: [],
+  })
+  .openapi('PaymentPagesCheckoutSessionInvoiceSettings')
+
+const PaymentPagesCheckoutSessionInvoiceCreationSchema = z
+  .object({
+    enabled: z
+      .boolean()
       .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
+        description: 'Indicates whether invoice creation is enabled for the Checkout Session.',
       }),
-    percentage: z
-      .number()
-      .openapi({ description: 'This represents the tax rate percent out of 100.' }),
-    state: z
+    invoice_data: PaymentPagesCheckoutSessionInvoiceSettingsSchema,
+  })
+  .openapi({
+    description: '',
+    required: ['enabled', 'invoice_data'],
+    title: 'PaymentPagesCheckoutSessionInvoiceCreation',
+    'x-expandableFields': ['invoice_data'],
+  })
+  .openapi('PaymentPagesCheckoutSessionInvoiceCreation')
+
+const ItemSchema: z.ZodType<ItemType> = z
+  .lazy(() =>
+    z
+      .object({
+        amount_discount: z
+          .int()
+          .openapi({
+            description:
+              'Total discount amount applied. If no discounts were applied, defaults to 0.',
+          }),
+        amount_subtotal: z
+          .int()
+          .openapi({ description: 'Total before any discounts or taxes are applied.' }),
+        amount_tax: z
+          .int()
+          .openapi({
+            description: 'Total tax amount applied. If no tax was applied, defaults to 0.',
+          }),
+        amount_total: z.int().openapi({ description: 'Total after discounts and taxes.' }),
+        currency: z
+          .string()
+          .openapi({
+            description:
+              'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
+          }),
+        description: z
+          .string()
+          .max(5000)
+          .openapi({
+            description:
+              'An arbitrary string attached to the object. Often useful for displaying to users. Defaults to product name.',
+          }),
+        discounts: z
+          .array(LineItemsDiscountAmountSchema)
+          .exactOptional()
+          .openapi({ description: 'The discounts applied to the line item.' }),
+        id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+        object: z
+          .literal('item')
+          .openapi({
+            description:
+              "String representing the object's type. Objects of the same type share the same value.",
+          }),
+        price: z
+          .union([PriceSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The price used to generate the line item.' }),
+        quantity: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The quantity of products being purchased.' }),
+        taxes: z
+          .array(LineItemsTaxAmountSchema)
+          .exactOptional()
+          .openapi({ description: 'The taxes applied to the line item.' }),
+      })
+      .openapi({
+        description: 'A line item.',
+        required: [
+          'amount_discount',
+          'amount_subtotal',
+          'amount_tax',
+          'amount_total',
+          'currency',
+          'description',
+          'id',
+          'object',
+        ],
+        title: 'LineItem',
+        'x-expandableFields': ['discounts', 'price', 'taxes'],
+        'x-resourceId': 'item',
+      }),
+  )
+  .openapi('Item')
+
+const PaymentLinksResourceCompletionBehaviorConfirmationPageSchema = z
+  .object({
+    custom_message: z
       .string()
       .max(5000)
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          '[ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix. For example, "NY" for New York, United States.',
-      }),
-    tax_type: z
-      .enum(['gst', 'hst', 'igst', 'jct', 'lease_tax', 'pst', 'qst', 'rst', 'sales_tax', 'vat'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The high-level tax type, such as `vat` or `sales_tax`.' }),
-  })
-  .openapi({
-    description:
-      'Tax rates can be applied to [invoices](https://stripe.com/docs/billing/invoices/tax-rates), [subscriptions](https://stripe.com/docs/billing/subscriptions/taxes) and [Checkout Sessions](https://stripe.com/docs/payments/checkout/set-up-a-subscription#tax-rates) to collect tax.\n\nRelated guide: [Tax Rates](https://stripe.com/docs/billing/taxes/tax-rates).',
-    required: [
-      'active',
-      'created',
-      'display_name',
-      'id',
-      'inclusive',
-      'livemode',
-      'object',
-      'percentage',
-    ],
-    title: 'TaxRate',
-    'x-expandableFields': [],
-    'x-resourceId': 'tax_rate',
-  })
-  .openapi('TaxRate')
-
-type CreditNoteTaxAmountType = {
-  amount: number
-  inclusive: boolean
-  tax_rate: string | z.infer<typeof TaxRateSchema>
-}
-
-const CreditNoteTaxAmountSchema: z.ZodType<CreditNoteTaxAmountType> = z
-  .object({
-    amount: z.int().openapi({ description: 'The amount, in %s, of the tax.' }),
-    inclusive: z
-      .boolean()
-      .openapi({ description: 'Whether this tax amount is inclusive or exclusive.' }),
-    tax_rate: z
-      .union([z.string().max(5000), TaxRateSchema])
-      .openapi({
-        description: 'The tax rate that was applied to get this tax amount.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/tax_rate' }] },
+          'The custom message that is displayed to the customer after the purchase is complete.',
       }),
   })
   .openapi({
     description: '',
-    required: ['amount', 'inclusive', 'tax_rate'],
-    title: 'CreditNoteTaxAmount',
-    'x-expandableFields': ['tax_rate'],
+    title: 'PaymentLinksResourceCompletionBehaviorConfirmationPage',
+    'x-expandableFields': [],
+    required: [],
   })
-  .openapi('CreditNoteTaxAmount')
+  .openapi('PaymentLinksResourceCompletionBehaviorConfirmationPage')
 
-type CreditNoteLineItemType = {
-  amount: number
-  amount_excluding_tax?: number | null
-  description?: string | null
-  discount_amount: number
-  discount_amounts: z.infer<typeof DiscountsResourceDiscountAmountSchema>[]
-  id: string
-  invoice_line_item?: string
-  livemode: boolean
-  object: 'credit_note_line_item'
-  quantity?: number | null
-  tax_amounts: z.infer<typeof CreditNoteTaxAmountSchema>[]
-  tax_rates: z.infer<typeof TaxRateSchema>[]
-  type: 'custom_line_item' | 'invoice_line_item'
-  unit_amount?: number | null
-  unit_amount_decimal?: string | null
-  unit_amount_excluding_tax?: string | null
-}
-
-const CreditNoteLineItemSchema: z.ZodType<CreditNoteLineItemType> = z
+const PaymentLinksResourceCompletionBehaviorRedirectSchema = z
   .object({
-    amount: z
-      .int()
+    url: z
+      .string()
+      .max(5000)
+      .openapi({
+        description: 'The URL the customer will be redirected to after the purchase is complete.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['url'],
+    title: 'PaymentLinksResourceCompletionBehaviorRedirect',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentLinksResourceCompletionBehaviorRedirect')
+
+const PaymentLinksResourceAfterCompletionSchema = z
+  .object({
+    hosted_confirmation:
+      PaymentLinksResourceCompletionBehaviorConfirmationPageSchema.exactOptional(),
+    redirect: PaymentLinksResourceCompletionBehaviorRedirectSchema.exactOptional(),
+    type: z
+      .enum(['hosted_confirmation', 'redirect'])
+      .openapi({ description: 'The specified behavior after the purchase is complete.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['type'],
+    title: 'PaymentLinksResourceAfterCompletion',
+    'x-expandableFields': ['hosted_confirmation', 'redirect'],
+  })
+  .openapi('PaymentLinksResourceAfterCompletion')
+
+const PaymentLinksResourceAutomaticTaxSchema = z
+  .object({
+    enabled: z
+      .boolean()
       .openapi({
         description:
-          'The integer amount in %s representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.',
+          "If `true`, tax will be calculated automatically using the customer's location.",
       }),
-    amount_excluding_tax: z
-      .int()
+  })
+  .openapi({
+    description: '',
+    required: ['enabled'],
+    title: 'PaymentLinksResourceAutomaticTax',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentLinksResourceAutomaticTax')
+
+const PaymentLinksResourceConsentCollectionSchema = z
+  .object({
+    promotions: z
+      .enum(['auto', 'none'])
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'The integer amount in %s representing the amount being credited for this line item, excluding all tax and discounts.',
+          'If set to `auto`, enables the collection of customer consent for promotional communications.',
       }),
+    terms_of_service: z
+      .enum(['none', 'required'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "If set to `required`, it requires cutomers to accept the terms of service before being able to pay. If set to `none`, customers won't be shown a checkbox to accept the terms of service.",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentLinksResourceConsentCollection',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('PaymentLinksResourceConsentCollection')
+
+const PaymentLinksResourceCustomFieldsDropdownOptionSchema = z
+  .object({
+    label: z
+      .string()
+      .max(5000)
+      .openapi({
+        description: 'The label for the option, displayed to the customer. Up to 100 characters.',
+      }),
+    value: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer. Must be unique to this option, alphanumeric, and up to 100 characters.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['label', 'value'],
+    title: 'PaymentLinksResourceCustomFieldsDropdownOption',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentLinksResourceCustomFieldsDropdownOption')
+
+const PaymentLinksResourceCustomFieldsDropdownSchema = z
+  .object({
+    options: z
+      .array(PaymentLinksResourceCustomFieldsDropdownOptionSchema)
+      .openapi({
+        description: 'The options available for the customer to select. Up to 200 options allowed.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['options'],
+    title: 'PaymentLinksResourceCustomFieldsDropdown',
+    'x-expandableFields': ['options'],
+  })
+  .openapi('PaymentLinksResourceCustomFieldsDropdown')
+
+const PaymentLinksResourceCustomFieldsLabelSchema = z
+  .object({
+    custom: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Custom text for the label, displayed to the customer. Up to 50 characters.',
+      }),
+    type: z.literal('custom').openapi({ description: 'The type of the label.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['type'],
+    title: 'PaymentLinksResourceCustomFieldsLabel',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentLinksResourceCustomFieldsLabel')
+
+const PaymentLinksResourceCustomFieldsSchema = z
+  .object({
+    dropdown: z
+      .union([PaymentLinksResourceCustomFieldsDropdownSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Configuration for `type=dropdown` fields.' }),
+    key: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'String of your choice that your integration can use to reconcile this field. Must be unique to this field, alphanumeric, and up to 200 characters.',
+      }),
+    label: PaymentLinksResourceCustomFieldsLabelSchema,
+    optional: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the customer is required to complete the field before completing the Checkout Session. Defaults to `false`.',
+      }),
+    type: z
+      .enum(['dropdown', 'numeric', 'text'])
+      .openapi({ description: 'The type of the field.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['key', 'label', 'optional', 'type'],
+    title: 'PaymentLinksResourceCustomFields',
+    'x-expandableFields': ['dropdown', 'label'],
+  })
+  .openapi('PaymentLinksResourceCustomFields')
+
+const PaymentLinksResourceCustomTextPositionSchema = z
+  .object({
+    message: z
+      .string()
+      .max(500)
+      .openapi({ description: 'Text may be up to 1000 characters in length.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['message'],
+    title: 'PaymentLinksResourceCustomTextPosition',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentLinksResourceCustomTextPosition')
+
+const PaymentLinksResourceCustomTextSchema = z
+  .object({
+    shipping_address: z
+      .union([PaymentLinksResourceCustomTextPositionSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Custom text that should be displayed alongside shipping address collection.',
+      }),
+    submit: z
+      .union([PaymentLinksResourceCustomTextPositionSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom text that should be displayed alongside the payment confirmation button.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentLinksResourceCustomText',
+    'x-expandableFields': ['shipping_address', 'submit'],
+    required: [],
+  })
+  .openapi('PaymentLinksResourceCustomText')
+
+const PaymentLinksResourceInvoiceSettingsSchema = z
+  .object({
+    account_tax_ids: z
+      .array(
+        z
+          .union([z.string().max(5000), TaxIdSchema, DeletedTaxIdSchema])
+          .openapi({
+            'x-expansionResources': {
+              oneOf: [
+                { $ref: '#/components/schemas/tax_id' },
+                { $ref: '#/components/schemas/deleted_tax_id' },
+              ],
+            },
+          }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The account tax IDs associated with the invoice.' }),
+    custom_fields: z
+      .array(InvoiceSettingCustomFieldSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A list of up to 4 custom fields to be displayed on the invoice.' }),
     description: z
       .string()
       .max(5000)
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Description of the item being credited.' }),
-    discount_amount: z
-      .int()
       .openapi({
         description:
-          'The integer amount in %s representing the discount being credited for this line item.',
+          'An arbitrary string attached to the object. Often useful for displaying to users.',
       }),
-    discount_amounts: z
-      .array(DiscountsResourceDiscountAmountSchema)
-      .openapi({
-        description: 'The amount of discount calculated per discount for this line item',
-      }),
-    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-    invoice_line_item: z
+    footer: z
       .string()
       .max(5000)
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'ID of the invoice line item being credited' }),
-    livemode: z
+      .openapi({ description: 'Footer to be displayed on the invoice.' }),
+    metadata: z
+      .record(z.string(), z.string().max(500))
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
+      }),
+    rendering_options: z
+      .union([InvoiceSettingRenderingOptionsSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Options for invoice PDF rendering.' }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentLinksResourceInvoiceSettings',
+    'x-expandableFields': ['account_tax_ids', 'custom_fields', 'rendering_options'],
+    required: [],
+  })
+  .openapi('PaymentLinksResourceInvoiceSettings')
+
+const PaymentLinksResourceInvoiceCreationSchema = z
+  .object({
+    enabled: z
       .boolean()
-      .openapi({
-        description:
-          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-      }),
-    object: z
-      .literal('credit_note_line_item')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    quantity: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The number of units of product being credited.' }),
-    tax_amounts: z
-      .array(CreditNoteTaxAmountSchema)
-      .openapi({ description: 'The amount of tax calculated per tax rate for this line item' }),
-    tax_rates: z
-      .array(TaxRateSchema)
-      .openapi({ description: 'The tax rates which apply to the line item.' }),
-    type: z
-      .enum(['custom_line_item', 'invoice_line_item'])
-      .openapi({
-        description:
-          'The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`. When the type is `invoice_line_item` there is an additional `invoice_line_item` property on the resource the value of which is the id of the credited line item on the invoice.',
-      }),
-    unit_amount: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The cost of each unit of product being credited.' }),
-    unit_amount_decimal: z
-      .string()
+      .openapi({ description: 'Enable creating an invoice on successful payment.' }),
+    invoice_data: z
+      .union([PaymentLinksResourceInvoiceSettingsSchema])
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.',
-      }),
-    unit_amount_excluding_tax: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount in %s representing the unit amount being credited for this line item, excluding all tax and discounts.',
+          'Configuration for the invoice. Default invoice values will be used if unspecified.',
       }),
   })
   .openapi({
     description: '',
-    required: [
-      'amount',
-      'discount_amount',
-      'discount_amounts',
-      'id',
-      'livemode',
-      'object',
-      'tax_amounts',
-      'tax_rates',
-      'type',
-    ],
-    title: 'CreditNoteLineItem',
-    'x-expandableFields': ['discount_amounts', 'tax_amounts', 'tax_rates'],
-    'x-resourceId': 'credit_note_line_item',
+    required: ['enabled'],
+    title: 'PaymentLinksResourceInvoiceCreation',
+    'x-expandableFields': ['invoice_data'],
   })
-  .openapi('CreditNoteLineItem')
+  .openapi('PaymentLinksResourceInvoiceCreation')
+
+const PaymentLinksResourcePaymentIntentDataSchema = z
+  .object({
+    capture_method: z
+      .enum(['automatic', 'manual'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "Indicates when the funds will be captured from the customer's account.",
+        'x-stripeBypassValidation': true,
+      }),
+    setup_future_usage: z
+      .enum(['off_session', 'on_session'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that you intend to make future payments with the payment method collected during checkout.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentLinksResourcePaymentIntentData',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('PaymentLinksResourcePaymentIntentData')
+
+const PaymentLinksResourcePhoneNumberCollectionSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({ description: 'If `true`, a phone number will be collected during checkout.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['enabled'],
+    title: 'PaymentLinksResourcePhoneNumberCollection',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentLinksResourcePhoneNumberCollection')
+
+const PaymentLinksResourceShippingAddressCollectionSchema = z
+  .object({
+    allowed_countries: z
+      .array(
+        z.enum([
+          'AC',
+          'AD',
+          'AE',
+          'AF',
+          'AG',
+          'AI',
+          'AL',
+          'AM',
+          'AO',
+          'AQ',
+          'AR',
+          'AT',
+          'AU',
+          'AW',
+          'AX',
+          'AZ',
+          'BA',
+          'BB',
+          'BD',
+          'BE',
+          'BF',
+          'BG',
+          'BH',
+          'BI',
+          'BJ',
+          'BL',
+          'BM',
+          'BN',
+          'BO',
+          'BQ',
+          'BR',
+          'BS',
+          'BT',
+          'BV',
+          'BW',
+          'BY',
+          'BZ',
+          'CA',
+          'CD',
+          'CF',
+          'CG',
+          'CH',
+          'CI',
+          'CK',
+          'CL',
+          'CM',
+          'CN',
+          'CO',
+          'CR',
+          'CV',
+          'CW',
+          'CY',
+          'CZ',
+          'DE',
+          'DJ',
+          'DK',
+          'DM',
+          'DO',
+          'DZ',
+          'EC',
+          'EE',
+          'EG',
+          'EH',
+          'ER',
+          'ES',
+          'ET',
+          'FI',
+          'FJ',
+          'FK',
+          'FO',
+          'FR',
+          'GA',
+          'GB',
+          'GD',
+          'GE',
+          'GF',
+          'GG',
+          'GH',
+          'GI',
+          'GL',
+          'GM',
+          'GN',
+          'GP',
+          'GQ',
+          'GR',
+          'GS',
+          'GT',
+          'GU',
+          'GW',
+          'GY',
+          'HK',
+          'HN',
+          'HR',
+          'HT',
+          'HU',
+          'ID',
+          'IE',
+          'IL',
+          'IM',
+          'IN',
+          'IO',
+          'IQ',
+          'IS',
+          'IT',
+          'JE',
+          'JM',
+          'JO',
+          'JP',
+          'KE',
+          'KG',
+          'KH',
+          'KI',
+          'KM',
+          'KN',
+          'KR',
+          'KW',
+          'KY',
+          'KZ',
+          'LA',
+          'LB',
+          'LC',
+          'LI',
+          'LK',
+          'LR',
+          'LS',
+          'LT',
+          'LU',
+          'LV',
+          'LY',
+          'MA',
+          'MC',
+          'MD',
+          'ME',
+          'MF',
+          'MG',
+          'MK',
+          'ML',
+          'MM',
+          'MN',
+          'MO',
+          'MQ',
+          'MR',
+          'MS',
+          'MT',
+          'MU',
+          'MV',
+          'MW',
+          'MX',
+          'MY',
+          'MZ',
+          'NA',
+          'NC',
+          'NE',
+          'NG',
+          'NI',
+          'NL',
+          'NO',
+          'NP',
+          'NR',
+          'NU',
+          'NZ',
+          'OM',
+          'PA',
+          'PE',
+          'PF',
+          'PG',
+          'PH',
+          'PK',
+          'PL',
+          'PM',
+          'PN',
+          'PR',
+          'PS',
+          'PT',
+          'PY',
+          'QA',
+          'RE',
+          'RO',
+          'RS',
+          'RU',
+          'RW',
+          'SA',
+          'SB',
+          'SC',
+          'SE',
+          'SG',
+          'SH',
+          'SI',
+          'SJ',
+          'SK',
+          'SL',
+          'SM',
+          'SN',
+          'SO',
+          'SR',
+          'SS',
+          'ST',
+          'SV',
+          'SX',
+          'SZ',
+          'TA',
+          'TC',
+          'TD',
+          'TF',
+          'TG',
+          'TH',
+          'TJ',
+          'TK',
+          'TL',
+          'TM',
+          'TN',
+          'TO',
+          'TR',
+          'TT',
+          'TV',
+          'TW',
+          'TZ',
+          'UA',
+          'UG',
+          'US',
+          'UY',
+          'UZ',
+          'VA',
+          'VC',
+          'VE',
+          'VG',
+          'VN',
+          'VU',
+          'WF',
+          'WS',
+          'XK',
+          'YE',
+          'YT',
+          'ZA',
+          'ZM',
+          'ZW',
+          'ZZ',
+        ]),
+      )
+      .openapi({
+        description:
+          'An array of two-letter ISO country codes representing which countries Checkout should provide as options for shipping locations. Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['allowed_countries'],
+    title: 'PaymentLinksResourceShippingAddressCollection',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentLinksResourceShippingAddressCollection')
 
 const ShippingRateDeliveryEstimateBoundSchema = z
   .object({
@@ -9003,6 +10043,1516 @@ const ShippingRateSchema = z
   })
   .openapi('ShippingRate')
 
+const PaymentLinksResourceShippingOptionSchema = z
+  .object({
+    shipping_amount: z
+      .int()
+      .openapi({ description: 'A non-negative integer in cents representing how much to charge.' }),
+    shipping_rate: z
+      .union([z.string().max(5000), ShippingRateSchema])
+      .openapi({
+        description: 'The ID of the Shipping Rate to use for this shipping option.',
+        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/shipping_rate' }] },
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['shipping_amount', 'shipping_rate'],
+    title: 'PaymentLinksResourceShippingOption',
+    'x-expandableFields': ['shipping_rate'],
+  })
+  .openapi('PaymentLinksResourceShippingOption')
+
+const PaymentLinksResourceSubscriptionDataSchema = z
+  .object({
+    description: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The subscription's description, meant to be displayable to the customer. Use this field to optionally store an explanation of the subscription.",
+      }),
+    trial_period_days: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Integer representing the number of trial period days before the customer is charged for the first time.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'PaymentLinksResourceSubscriptionData',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('PaymentLinksResourceSubscriptionData')
+
+const PaymentLinksResourceTaxIdCollectionSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Indicates whether tax ID collection is enabled for the session.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['enabled'],
+    title: 'PaymentLinksResourceTaxIdCollection',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentLinksResourceTaxIdCollection')
+
+type PaymentLinksResourceTransferDataType = {
+  amount?: number | null
+  destination: string | z.infer<typeof AccountSchema>
+}
+
+const PaymentLinksResourceTransferDataSchema: z.ZodType<PaymentLinksResourceTransferDataType> = z
+  .object({
+    amount: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount in %s that will be transferred to the destination account. By default, the entire amount is transferred to the destination.',
+      }),
+    destination: z
+      .union([z.string().max(5000), AccountSchema])
+      .openapi({
+        description: 'The connected account receiving the transfer.',
+        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/account' }] },
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['destination'],
+    title: 'PaymentLinksResourceTransferData',
+    'x-expandableFields': ['destination'],
+  })
+  .openapi('PaymentLinksResourceTransferData')
+
+type PaymentLinkType = {
+  active: boolean
+  after_completion: z.infer<typeof PaymentLinksResourceAfterCompletionSchema>
+  allow_promotion_codes: boolean
+  application_fee_amount?: number | null
+  application_fee_percent?: number | null
+  automatic_tax: z.infer<typeof PaymentLinksResourceAutomaticTaxSchema>
+  billing_address_collection: 'auto' | 'required'
+  consent_collection?: z.infer<typeof PaymentLinksResourceConsentCollectionSchema> | null
+  currency: string
+  custom_fields: z.infer<typeof PaymentLinksResourceCustomFieldsSchema>[]
+  custom_text: z.infer<typeof PaymentLinksResourceCustomTextSchema>
+  customer_creation: 'always' | 'if_required'
+  id: string
+  invoice_creation?: z.infer<typeof PaymentLinksResourceInvoiceCreationSchema> | null
+  line_items?: {
+    data: z.infer<typeof ItemSchema>[]
+    has_more: boolean
+    object: 'list'
+    url: string
+  }
+  livemode: boolean
+  metadata: { [key: string]: string }
+  object: 'payment_link'
+  on_behalf_of?: (string | z.infer<typeof AccountSchema>) | null
+  payment_intent_data?: z.infer<typeof PaymentLinksResourcePaymentIntentDataSchema> | null
+  payment_method_collection: 'always' | 'if_required'
+  payment_method_types?:
+    | (
+        | 'affirm'
+        | 'afterpay_clearpay'
+        | 'alipay'
+        | 'au_becs_debit'
+        | 'bacs_debit'
+        | 'bancontact'
+        | 'blik'
+        | 'boleto'
+        | 'card'
+        | 'eps'
+        | 'fpx'
+        | 'giropay'
+        | 'grabpay'
+        | 'ideal'
+        | 'klarna'
+        | 'konbini'
+        | 'oxxo'
+        | 'p24'
+        | 'paynow'
+        | 'pix'
+        | 'promptpay'
+        | 'sepa_debit'
+        | 'sofort'
+        | 'us_bank_account'
+        | 'wechat_pay'
+      )[]
+    | null
+  phone_number_collection: z.infer<typeof PaymentLinksResourcePhoneNumberCollectionSchema>
+  shipping_address_collection?: z.infer<
+    typeof PaymentLinksResourceShippingAddressCollectionSchema
+  > | null
+  shipping_options: z.infer<typeof PaymentLinksResourceShippingOptionSchema>[]
+  submit_type: 'auto' | 'book' | 'donate' | 'pay'
+  subscription_data?: z.infer<typeof PaymentLinksResourceSubscriptionDataSchema> | null
+  tax_id_collection: z.infer<typeof PaymentLinksResourceTaxIdCollectionSchema>
+  transfer_data?: z.infer<typeof PaymentLinksResourceTransferDataSchema> | null
+  url: string
+}
+
+const PaymentLinkSchema: z.ZodType<PaymentLinkType> = z
+  .object({
+    active: z
+      .boolean()
+      .openapi({
+        description:
+          "Whether the payment link's `url` is active. If `false`, customers visiting the URL will be shown a page saying that the link has been deactivated.",
+      }),
+    after_completion: PaymentLinksResourceAfterCompletionSchema,
+    allow_promotion_codes: z
+      .boolean()
+      .openapi({ description: 'Whether user redeemable promotion codes are enabled.' }),
+    application_fee_amount: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.",
+      }),
+    application_fee_percent: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.",
+      }),
+    automatic_tax: PaymentLinksResourceAutomaticTaxSchema,
+    billing_address_collection: z
+      .enum(['auto', 'required'])
+      .openapi({ description: "Configuration for collecting the customer's billing address." }),
+    consent_collection: z
+      .union([PaymentLinksResourceConsentCollectionSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'When set, provides configuration to gather active consent from customers.',
+      }),
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
+      }),
+    custom_fields: z
+      .array(PaymentLinksResourceCustomFieldsSchema)
+      .openapi({
+        description:
+          'Collect additional information from your customer using custom fields. Up to 2 fields are supported.',
+      }),
+    custom_text: PaymentLinksResourceCustomTextSchema,
+    customer_creation: z
+      .enum(['always', 'if_required'])
+      .openapi({ description: 'Configuration for Customer creation during checkout.' }),
+    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+    invoice_creation: z
+      .union([PaymentLinksResourceInvoiceCreationSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Configuration for creating invoice for payment mode payment links.',
+      }),
+    line_items: z
+      .object({
+        data: z.array(ItemSchema).openapi({ description: 'Details about each object.' }),
+        has_more: z
+          .boolean()
+          .openapi({
+            description:
+              'True if this list has another page of items after this one that can be fetched.',
+          }),
+        object: z
+          .literal('list')
+          .openapi({
+            description:
+              "String representing the object's type. Objects of the same type share the same value. Always has the value `list`.",
+          }),
+        url: z
+          .string()
+          .max(5000)
+          .openapi({ description: 'The URL where this list can be accessed.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The line items representing what is being sold.',
+        required: ['data', 'has_more', 'object', 'url'],
+        title: 'PaymentLinksResourceListLineItems',
+        'x-expandableFields': ['data'],
+      }),
+    livemode: z
+      .boolean()
+      .openapi({
+        description:
+          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+      }),
+    metadata: z
+      .record(z.string(), z.string().max(500))
+      .openapi({
+        description:
+          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
+      }),
+    object: z
+      .literal('payment_link')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    on_behalf_of: z
+      .union([z.string().max(5000), AccountSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The account on behalf of which to charge. See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.',
+        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/account' }] },
+      }),
+    payment_intent_data: z
+      .union([PaymentLinksResourcePaymentIntentDataSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the parameters to be passed to PaymentIntent creation during checkout.',
+      }),
+    payment_method_collection: z
+      .enum(['always', 'if_required'])
+      .openapi({ description: 'Configuration for collecting a payment method during checkout.' }),
+    payment_method_types: z
+      .array(
+        z
+          .enum([
+            'affirm',
+            'afterpay_clearpay',
+            'alipay',
+            'au_becs_debit',
+            'bacs_debit',
+            'bancontact',
+            'blik',
+            'boleto',
+            'card',
+            'eps',
+            'fpx',
+            'giropay',
+            'grabpay',
+            'ideal',
+            'klarna',
+            'konbini',
+            'oxxo',
+            'p24',
+            'paynow',
+            'pix',
+            'promptpay',
+            'sepa_debit',
+            'sofort',
+            'us_bank_account',
+            'wechat_pay',
+          ])
+          .openapi({ 'x-stripeBypassValidation': true }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The list of payment method types that customers can use. When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).",
+      }),
+    phone_number_collection: PaymentLinksResourcePhoneNumberCollectionSchema,
+    shipping_address_collection: z
+      .union([PaymentLinksResourceShippingAddressCollectionSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "Configuration for collecting the customer's shipping address." }),
+    shipping_options: z
+      .array(PaymentLinksResourceShippingOptionSchema)
+      .openapi({ description: 'The shipping rate options applied to the session.' }),
+    submit_type: z
+      .enum(['auto', 'book', 'donate', 'pay'])
+      .openapi({
+        description:
+          'Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.',
+      }),
+    subscription_data: z
+      .union([PaymentLinksResourceSubscriptionDataSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When creating a subscription, the specified configuration data will be used. There must be at least one line item with a recurring price to use `subscription_data`.',
+      }),
+    tax_id_collection: PaymentLinksResourceTaxIdCollectionSchema,
+    transfer_data: z
+      .union([PaymentLinksResourceTransferDataSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.',
+      }),
+    url: z
+      .string()
+      .max(5000)
+      .openapi({ description: 'The public URL that can be shared with customers.' }),
+  })
+  .openapi({
+    description:
+      'A payment link is a shareable URL that will take your customers to a hosted payment page. A payment link can be shared and used multiple times.\n\nWhen a customer opens a payment link it will open a new [checkout session](https://stripe.com/docs/api/checkout/sessions) to render the payment page. You can use [checkout session events](https://stripe.com/docs/api/events/types#event_types-checkout.session.completed) to track payments through payment links.\n\nRelated guide: [Payment Links API](https://stripe.com/docs/payments/payment-links/api)',
+    required: [
+      'active',
+      'after_completion',
+      'allow_promotion_codes',
+      'automatic_tax',
+      'billing_address_collection',
+      'currency',
+      'custom_fields',
+      'custom_text',
+      'customer_creation',
+      'id',
+      'livemode',
+      'metadata',
+      'object',
+      'payment_method_collection',
+      'phone_number_collection',
+      'shipping_options',
+      'submit_type',
+      'tax_id_collection',
+      'url',
+    ],
+    title: 'PaymentLink',
+    'x-expandableFields': [
+      'after_completion',
+      'automatic_tax',
+      'consent_collection',
+      'custom_fields',
+      'custom_text',
+      'invoice_creation',
+      'line_items',
+      'on_behalf_of',
+      'payment_intent_data',
+      'phone_number_collection',
+      'shipping_address_collection',
+      'shipping_options',
+      'subscription_data',
+      'tax_id_collection',
+      'transfer_data',
+    ],
+    'x-resourceId': 'payment_link',
+  })
+  .openapi('PaymentLink')
+
+const CheckoutAcssDebitMandateOptionsSchema = z
+  .object({
+    custom_mandate_url: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({ description: 'A URL for custom mandate text' }),
+    default_for: z
+      .array(z.enum(['invoice', 'subscription']))
+      .exactOptional()
+      .openapi({
+        description:
+          'List of Stripe products where this mandate can be selected automatically. Returned when the Session is in `setup` mode.',
+      }),
+    interval_description: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Description of the interval. Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.",
+      }),
+    payment_schedule: z
+      .enum(['combined', 'interval', 'sporadic'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Payment schedule for the mandate.' }),
+    transaction_type: z
+      .enum(['business', 'personal'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Transaction type of the mandate.' }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutAcssDebitMandateOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutAcssDebitMandateOptions')
+
+const CheckoutAcssDebitPaymentMethodOptionsSchema = z
+  .object({
+    currency: z
+      .enum(['cad', 'usd'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Currency supported by the bank account. Returned when the Session is in `setup` mode.',
+      }),
+    mandate_options: CheckoutAcssDebitMandateOptionsSchema.exactOptional(),
+    setup_future_usage: z
+      .enum(['none', 'off_session', 'on_session'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+    verification_method: z
+      .enum(['automatic', 'instant', 'microdeposits'])
+      .exactOptional()
+      .openapi({
+        description: 'Bank account verification method.',
+        'x-stripeBypassValidation': true,
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutAcssDebitPaymentMethodOptions',
+    'x-expandableFields': ['mandate_options'],
+    required: [],
+  })
+  .openapi('CheckoutAcssDebitPaymentMethodOptions')
+
+const CheckoutAffirmPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutAffirmPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutAffirmPaymentMethodOptions')
+
+const CheckoutAfterpayClearpayPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutAfterpayClearpayPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutAfterpayClearpayPaymentMethodOptions')
+
+const CheckoutAlipayPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutAlipayPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutAlipayPaymentMethodOptions')
+
+const CheckoutAuBecsDebitPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutAuBecsDebitPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutAuBecsDebitPaymentMethodOptions')
+
+const CheckoutBacsDebitPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .enum(['none', 'off_session', 'on_session'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutBacsDebitPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutBacsDebitPaymentMethodOptions')
+
+const CheckoutBancontactPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutBancontactPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutBancontactPaymentMethodOptions')
+
+const CheckoutBoletoPaymentMethodOptionsSchema = z
+  .object({
+    expires_after_days: z
+      .int()
+      .openapi({
+        description:
+          'The number of calendar days before a Boleto voucher expires. For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto voucher will expire on Wednesday at 23:59 America/Sao_Paulo time.',
+      }),
+    setup_future_usage: z
+      .enum(['none', 'off_session', 'on_session'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['expires_after_days'],
+    title: 'CheckoutBoletoPaymentMethodOptions',
+    'x-expandableFields': [],
+  })
+  .openapi('CheckoutBoletoPaymentMethodOptions')
+
+const CheckoutCardInstallmentsOptionsSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if installments are enabled' }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutCardInstallmentsOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutCardInstallmentsOptions')
+
+const CheckoutCardPaymentMethodOptionsSchema = z
+  .object({
+    installments: CheckoutCardInstallmentsOptionsSchema.exactOptional(),
+    setup_future_usage: z
+      .enum(['none', 'off_session', 'on_session'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+    statement_descriptor_suffix_kana: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Provides information about a card payment that customers see on their statements. Concatenated with the Kana prefix (shortened Kana descriptor) or Kana statement descriptor that’s set on the account to form the complete statement descriptor. Maximum 22 characters. On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 22 characters.',
+      }),
+    statement_descriptor_suffix_kanji: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Provides information about a card payment that customers see on their statements. Concatenated with the Kanji prefix (shortened Kanji descriptor) or Kanji statement descriptor that’s set on the account to form the complete statement descriptor. Maximum 17 characters. On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutCardPaymentMethodOptions',
+    'x-expandableFields': ['installments'],
+    required: [],
+  })
+  .openapi('CheckoutCardPaymentMethodOptions')
+
+const PaymentMethodOptionsCustomerBalanceEuBankAccountSchema = z
+  .object({
+    country: z
+      .enum(['BE', 'DE', 'ES', 'FR', 'IE', 'NL'])
+      .openapi({
+        description:
+          'The desired country code of the bank account information. Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['country'],
+    title: 'payment_method_options_customer_balance_eu_bank_account',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentMethodOptionsCustomerBalanceEuBankAccount')
+
+const CheckoutCustomerBalanceBankTransferPaymentMethodOptionsSchema = z
+  .object({
+    eu_bank_transfer: PaymentMethodOptionsCustomerBalanceEuBankAccountSchema.exactOptional(),
+    requested_address_types: z
+      .array(
+        z
+          .enum(['iban', 'sepa', 'sort_code', 'spei', 'zengin'])
+          .openapi({ 'x-stripeBypassValidation': true }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'List of address types that should be returned in the financial_addresses response. If not specified, all valid types will be returned.\n\nPermitted values include: `sort_code`, `zengin`, `iban`, or `spei`.',
+      }),
+    type: z
+      .enum(['eu_bank_transfer', 'gb_bank_transfer', 'jp_bank_transfer', 'mx_bank_transfer'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.',
+        'x-stripeBypassValidation': true,
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutCustomerBalanceBankTransferPaymentMethodOptions',
+    'x-expandableFields': ['eu_bank_transfer'],
+    required: [],
+  })
+  .openapi('CheckoutCustomerBalanceBankTransferPaymentMethodOptions')
+
+const CheckoutCustomerBalancePaymentMethodOptionsSchema = z
+  .object({
+    bank_transfer: CheckoutCustomerBalanceBankTransferPaymentMethodOptionsSchema.exactOptional(),
+    funding_type: z
+      .literal('bank_transfer')
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding method type to be used when there are not enough funds in the customer balance. Permitted values include: `bank_transfer`.',
+      }),
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutCustomerBalancePaymentMethodOptions',
+    'x-expandableFields': ['bank_transfer'],
+    required: [],
+  })
+  .openapi('CheckoutCustomerBalancePaymentMethodOptions')
+
+const CheckoutEpsPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutEpsPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutEpsPaymentMethodOptions')
+
+const CheckoutFpxPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutFpxPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutFpxPaymentMethodOptions')
+
+const CheckoutGiropayPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutGiropayPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutGiropayPaymentMethodOptions')
+
+const CheckoutGrabPayPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutGrabPayPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutGrabPayPaymentMethodOptions')
+
+const CheckoutIdealPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutIdealPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutIdealPaymentMethodOptions')
+
+const CheckoutKlarnaPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .enum(['none', 'off_session', 'on_session'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutKlarnaPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutKlarnaPaymentMethodOptions')
+
+const CheckoutKonbiniPaymentMethodOptionsSchema = z
+  .object({
+    expires_after_days: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of calendar days (between 1 and 60) after which Konbini payment instructions will expire. For example, if a PaymentIntent is confirmed with Konbini and `expires_after_days` set to 2 on Monday JST, the instructions will expire on Wednesday 23:59:59 JST.',
+      }),
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutKonbiniPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutKonbiniPaymentMethodOptions')
+
+const CheckoutOxxoPaymentMethodOptionsSchema = z
+  .object({
+    expires_after_days: z
+      .int()
+      .openapi({
+        description:
+          'The number of calendar days before an OXXO invoice expires. For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.',
+      }),
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['expires_after_days'],
+    title: 'CheckoutOxxoPaymentMethodOptions',
+    'x-expandableFields': [],
+  })
+  .openapi('CheckoutOxxoPaymentMethodOptions')
+
+const CheckoutP24PaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutP24PaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutP24PaymentMethodOptions')
+
+const CheckoutPaynowPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutPaynowPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutPaynowPaymentMethodOptions')
+
+const CheckoutPixPaymentMethodOptionsSchema = z
+  .object({
+    expires_after_seconds: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The number of seconds after which Pix payment will expire.' }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutPixPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutPixPaymentMethodOptions')
+
+const CheckoutSepaDebitPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .enum(['none', 'off_session', 'on_session'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutSepaDebitPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutSepaDebitPaymentMethodOptions')
+
+const CheckoutSofortPaymentMethodOptionsSchema = z
+  .object({
+    setup_future_usage: z
+      .literal('none')
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutSofortPaymentMethodOptions',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('CheckoutSofortPaymentMethodOptions')
+
+const LinkedAccountOptionsUsBankAccountSchema = z
+  .object({
+    permissions: z
+      .array(z.enum(['balances', 'ownership', 'payment_method', 'transactions']))
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of permissions to request. The `payment_method` permission must be included.',
+      }),
+    return_url: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          'For webview integrations only. Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'linked_account_options_us_bank_account',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('LinkedAccountOptionsUsBankAccount')
+
+const CheckoutUsBankAccountPaymentMethodOptionsSchema = z
+  .object({
+    financial_connections: LinkedAccountOptionsUsBankAccountSchema.exactOptional(),
+    setup_future_usage: z
+      .enum(['none', 'off_session', 'on_session'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
+      }),
+    verification_method: z
+      .enum(['automatic', 'instant'])
+      .exactOptional()
+      .openapi({
+        description: 'Bank account verification method.',
+        'x-stripeBypassValidation': true,
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutUsBankAccountPaymentMethodOptions',
+    'x-expandableFields': ['financial_connections'],
+    required: [],
+  })
+  .openapi('CheckoutUsBankAccountPaymentMethodOptions')
+
+const CheckoutSessionPaymentMethodOptionsSchema = z
+  .object({
+    acss_debit: CheckoutAcssDebitPaymentMethodOptionsSchema.exactOptional(),
+    affirm: CheckoutAffirmPaymentMethodOptionsSchema.exactOptional(),
+    afterpay_clearpay: CheckoutAfterpayClearpayPaymentMethodOptionsSchema.exactOptional(),
+    alipay: CheckoutAlipayPaymentMethodOptionsSchema.exactOptional(),
+    au_becs_debit: CheckoutAuBecsDebitPaymentMethodOptionsSchema.exactOptional(),
+    bacs_debit: CheckoutBacsDebitPaymentMethodOptionsSchema.exactOptional(),
+    bancontact: CheckoutBancontactPaymentMethodOptionsSchema.exactOptional(),
+    boleto: CheckoutBoletoPaymentMethodOptionsSchema.exactOptional(),
+    card: CheckoutCardPaymentMethodOptionsSchema.exactOptional(),
+    customer_balance: CheckoutCustomerBalancePaymentMethodOptionsSchema.exactOptional(),
+    eps: CheckoutEpsPaymentMethodOptionsSchema.exactOptional(),
+    fpx: CheckoutFpxPaymentMethodOptionsSchema.exactOptional(),
+    giropay: CheckoutGiropayPaymentMethodOptionsSchema.exactOptional(),
+    grabpay: CheckoutGrabPayPaymentMethodOptionsSchema.exactOptional(),
+    ideal: CheckoutIdealPaymentMethodOptionsSchema.exactOptional(),
+    klarna: CheckoutKlarnaPaymentMethodOptionsSchema.exactOptional(),
+    konbini: CheckoutKonbiniPaymentMethodOptionsSchema.exactOptional(),
+    oxxo: CheckoutOxxoPaymentMethodOptionsSchema.exactOptional(),
+    p24: CheckoutP24PaymentMethodOptionsSchema.exactOptional(),
+    paynow: CheckoutPaynowPaymentMethodOptionsSchema.exactOptional(),
+    pix: CheckoutPixPaymentMethodOptionsSchema.exactOptional(),
+    sepa_debit: CheckoutSepaDebitPaymentMethodOptionsSchema.exactOptional(),
+    sofort: CheckoutSofortPaymentMethodOptionsSchema.exactOptional(),
+    us_bank_account: CheckoutUsBankAccountPaymentMethodOptionsSchema.exactOptional(),
+  })
+  .openapi({
+    description: '',
+    title: 'CheckoutSessionPaymentMethodOptions',
+    'x-expandableFields': [
+      'acss_debit',
+      'affirm',
+      'afterpay_clearpay',
+      'alipay',
+      'au_becs_debit',
+      'bacs_debit',
+      'bancontact',
+      'boleto',
+      'card',
+      'customer_balance',
+      'eps',
+      'fpx',
+      'giropay',
+      'grabpay',
+      'ideal',
+      'klarna',
+      'konbini',
+      'oxxo',
+      'p24',
+      'paynow',
+      'pix',
+      'sepa_debit',
+      'sofort',
+      'us_bank_account',
+    ],
+    required: [],
+  })
+  .openapi('CheckoutSessionPaymentMethodOptions')
+
+const PaymentPagesCheckoutSessionPhoneNumberCollectionSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({
+        description: 'Indicates whether phone number collection is enabled for the session',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['enabled'],
+    title: 'PaymentPagesCheckoutSessionPhoneNumberCollection',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionPhoneNumberCollection')
+
+const PaymentPagesCheckoutSessionShippingAddressCollectionSchema = z
+  .object({
+    allowed_countries: z
+      .array(
+        z.enum([
+          'AC',
+          'AD',
+          'AE',
+          'AF',
+          'AG',
+          'AI',
+          'AL',
+          'AM',
+          'AO',
+          'AQ',
+          'AR',
+          'AT',
+          'AU',
+          'AW',
+          'AX',
+          'AZ',
+          'BA',
+          'BB',
+          'BD',
+          'BE',
+          'BF',
+          'BG',
+          'BH',
+          'BI',
+          'BJ',
+          'BL',
+          'BM',
+          'BN',
+          'BO',
+          'BQ',
+          'BR',
+          'BS',
+          'BT',
+          'BV',
+          'BW',
+          'BY',
+          'BZ',
+          'CA',
+          'CD',
+          'CF',
+          'CG',
+          'CH',
+          'CI',
+          'CK',
+          'CL',
+          'CM',
+          'CN',
+          'CO',
+          'CR',
+          'CV',
+          'CW',
+          'CY',
+          'CZ',
+          'DE',
+          'DJ',
+          'DK',
+          'DM',
+          'DO',
+          'DZ',
+          'EC',
+          'EE',
+          'EG',
+          'EH',
+          'ER',
+          'ES',
+          'ET',
+          'FI',
+          'FJ',
+          'FK',
+          'FO',
+          'FR',
+          'GA',
+          'GB',
+          'GD',
+          'GE',
+          'GF',
+          'GG',
+          'GH',
+          'GI',
+          'GL',
+          'GM',
+          'GN',
+          'GP',
+          'GQ',
+          'GR',
+          'GS',
+          'GT',
+          'GU',
+          'GW',
+          'GY',
+          'HK',
+          'HN',
+          'HR',
+          'HT',
+          'HU',
+          'ID',
+          'IE',
+          'IL',
+          'IM',
+          'IN',
+          'IO',
+          'IQ',
+          'IS',
+          'IT',
+          'JE',
+          'JM',
+          'JO',
+          'JP',
+          'KE',
+          'KG',
+          'KH',
+          'KI',
+          'KM',
+          'KN',
+          'KR',
+          'KW',
+          'KY',
+          'KZ',
+          'LA',
+          'LB',
+          'LC',
+          'LI',
+          'LK',
+          'LR',
+          'LS',
+          'LT',
+          'LU',
+          'LV',
+          'LY',
+          'MA',
+          'MC',
+          'MD',
+          'ME',
+          'MF',
+          'MG',
+          'MK',
+          'ML',
+          'MM',
+          'MN',
+          'MO',
+          'MQ',
+          'MR',
+          'MS',
+          'MT',
+          'MU',
+          'MV',
+          'MW',
+          'MX',
+          'MY',
+          'MZ',
+          'NA',
+          'NC',
+          'NE',
+          'NG',
+          'NI',
+          'NL',
+          'NO',
+          'NP',
+          'NR',
+          'NU',
+          'NZ',
+          'OM',
+          'PA',
+          'PE',
+          'PF',
+          'PG',
+          'PH',
+          'PK',
+          'PL',
+          'PM',
+          'PN',
+          'PR',
+          'PS',
+          'PT',
+          'PY',
+          'QA',
+          'RE',
+          'RO',
+          'RS',
+          'RU',
+          'RW',
+          'SA',
+          'SB',
+          'SC',
+          'SE',
+          'SG',
+          'SH',
+          'SI',
+          'SJ',
+          'SK',
+          'SL',
+          'SM',
+          'SN',
+          'SO',
+          'SR',
+          'SS',
+          'ST',
+          'SV',
+          'SX',
+          'SZ',
+          'TA',
+          'TC',
+          'TD',
+          'TF',
+          'TG',
+          'TH',
+          'TJ',
+          'TK',
+          'TL',
+          'TM',
+          'TN',
+          'TO',
+          'TR',
+          'TT',
+          'TV',
+          'TW',
+          'TZ',
+          'UA',
+          'UG',
+          'US',
+          'UY',
+          'UZ',
+          'VA',
+          'VC',
+          'VE',
+          'VG',
+          'VN',
+          'VU',
+          'WF',
+          'WS',
+          'XK',
+          'YE',
+          'YT',
+          'ZA',
+          'ZM',
+          'ZW',
+          'ZZ',
+        ]),
+      )
+      .openapi({
+        description:
+          'An array of two-letter ISO country codes representing which countries Checkout should provide as options for\nshipping locations. Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['allowed_countries'],
+    title: 'PaymentPagesCheckoutSessionShippingAddressCollection',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionShippingAddressCollection')
+
+type TaxRateType = {
+  active: boolean
+  country?: string | null
+  created: number
+  description?: string | null
+  display_name: string
+  id: string
+  inclusive: boolean
+  jurisdiction?: string | null
+  livemode: boolean
+  metadata?: { [key: string]: string } | null
+  object: 'tax_rate'
+  percentage: number
+  state?: string | null
+  tax_type?:
+    | 'gst'
+    | 'hst'
+    | 'igst'
+    | 'jct'
+    | 'lease_tax'
+    | 'pst'
+    | 'qst'
+    | 'rst'
+    | 'sales_tax'
+    | 'vat'
+    | null
+}
+
+const TaxRateSchema: z.ZodType<TaxRateType> = z
+  .object({
+    active: z
+      .boolean()
+      .openapi({
+        description:
+          'Defaults to `true`. When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.',
+      }),
+    country: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).',
+      }),
+    created: z
+      .int()
+      .openapi({
+        description:
+          'Time at which the object was created. Measured in seconds since the Unix epoch.',
+      }),
+    description: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'An arbitrary string attached to the tax rate for your internal use only. It will not be visible to your customers.',
+      }),
+    display_name: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.',
+      }),
+    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+    inclusive: z
+      .boolean()
+      .openapi({ description: 'This specifies if the tax rate is inclusive or exclusive.' }),
+    jurisdiction: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The jurisdiction for the tax rate. You can use this label field for tax reporting purposes. It also appears on your customer’s invoice.',
+      }),
+    livemode: z
+      .boolean()
+      .openapi({
+        description:
+          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+      }),
+    metadata: z
+      .record(z.string(), z.string().max(500))
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
+      }),
+    object: z
+      .literal('tax_rate')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    percentage: z
+      .number()
+      .openapi({ description: 'This represents the tax rate percent out of 100.' }),
+    state: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix. For example, "NY" for New York, United States.',
+      }),
+    tax_type: z
+      .enum(['gst', 'hst', 'igst', 'jct', 'lease_tax', 'pst', 'qst', 'rst', 'sales_tax', 'vat'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The high-level tax type, such as `vat` or `sales_tax`.' }),
+  })
+  .openapi({
+    description:
+      'Tax rates can be applied to [invoices](https://stripe.com/docs/billing/invoices/tax-rates), [subscriptions](https://stripe.com/docs/billing/subscriptions/taxes) and [Checkout Sessions](https://stripe.com/docs/payments/checkout/set-up-a-subscription#tax-rates) to collect tax.\n\nRelated guide: [Tax Rates](https://stripe.com/docs/billing/taxes/tax-rates).',
+    required: [
+      'active',
+      'created',
+      'display_name',
+      'id',
+      'inclusive',
+      'livemode',
+      'object',
+      'percentage',
+    ],
+    title: 'TaxRate',
+    'x-expandableFields': [],
+    'x-resourceId': 'tax_rate',
+  })
+  .openapi('TaxRate')
+
 type LineItemsTaxAmountType = { amount: number; rate: z.infer<typeof TaxRateSchema> }
 
 const LineItemsTaxAmountSchema: z.ZodType<LineItemsTaxAmountType> = z
@@ -9018,32 +11568,26 @@ const LineItemsTaxAmountSchema: z.ZodType<LineItemsTaxAmountType> = z
   })
   .openapi('LineItemsTaxAmount')
 
-type InvoicesShippingCostType = {
-  amount_subtotal: number
-  amount_tax: number
-  amount_total: number
-  shipping_rate?: (string | z.infer<typeof ShippingRateSchema>) | null
-  taxes?: z.infer<typeof LineItemsTaxAmountSchema>[]
-}
-
-const InvoicesShippingCostSchema: z.ZodType<InvoicesShippingCostType> = z
+const PaymentPagesCheckoutSessionShippingCostSchema = z
   .object({
     amount_subtotal: z
       .int()
-      .openapi({ description: 'Total shipping cost before any taxes are applied.' }),
+      .openapi({ description: 'Total shipping cost before any discounts or taxes are applied.' }),
     amount_tax: z
       .int()
       .openapi({
         description:
           'Total tax amount applied due to shipping costs. If no tax was applied, defaults to 0.',
       }),
-    amount_total: z.int().openapi({ description: 'Total shipping cost after taxes are applied.' }),
+    amount_total: z
+      .int()
+      .openapi({ description: 'Total shipping cost after discounts and taxes are applied.' }),
     shipping_rate: z
       .union([z.string().max(5000), ShippingRateSchema])
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'The ID of the ShippingRate for this invoice.',
+        description: 'The ID of the ShippingRate for this order.',
         'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/shipping_rate' }] },
       }),
     taxes: z
@@ -9054,311 +11598,30 @@ const InvoicesShippingCostSchema: z.ZodType<InvoicesShippingCostType> = z
   .openapi({
     description: '',
     required: ['amount_subtotal', 'amount_tax', 'amount_total'],
-    title: 'InvoicesShippingCost',
+    title: 'PaymentPagesCheckoutSessionShippingCost',
     'x-expandableFields': ['shipping_rate', 'taxes'],
   })
-  .openapi('InvoicesShippingCost')
+  .openapi('PaymentPagesCheckoutSessionShippingCost')
 
-type CreditNoteType = {
-  amount: number
-  amount_shipping: number
-  created: number
-  currency: string
-  customer: string | z.infer<typeof CustomerSchema> | z.infer<typeof DeletedCustomerSchema>
-  customer_balance_transaction?: (string | z.infer<typeof CustomerBalanceTransactionSchema>) | null
-  discount_amount: number
-  discount_amounts: z.infer<typeof DiscountsResourceDiscountAmountSchema>[]
-  id: string
-  invoice: string | z.infer<typeof InvoiceSchema>
-  lines: {
-    data: z.infer<typeof CreditNoteLineItemSchema>[]
-    has_more: boolean
-    object: 'list'
-    url: string
-  }
-  livemode: boolean
-  memo?: string | null
-  metadata?: { [key: string]: string } | null
-  number: string
-  object: 'credit_note'
-  out_of_band_amount?: number | null
-  pdf: string
-  reason?: 'duplicate' | 'fraudulent' | 'order_change' | 'product_unsatisfactory' | null
-  refund?: (string | z.infer<typeof RefundSchema>) | null
-  shipping_cost?: z.infer<typeof InvoicesShippingCostSchema> | null
-  status: 'issued' | 'void'
-  subtotal: number
-  subtotal_excluding_tax?: number | null
-  tax_amounts: z.infer<typeof CreditNoteTaxAmountSchema>[]
-  total: number
-  total_excluding_tax?: number | null
-  type: 'post_payment' | 'pre_payment'
-  voided_at?: number | null
-}
-
-type CustomUnitAmountType = {
-  maximum?: number | null
-  minimum?: number | null
-  preset?: number | null
-}
-
-const CustomUnitAmountSchema: z.ZodType<CustomUnitAmountType> = z
+const PaymentPagesCheckoutSessionShippingOptionSchema = z
   .object({
-    maximum: z
+    shipping_amount: z
       .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The maximum unit amount the customer can specify for this item.' }),
-    minimum: z
-      .int()
-      .nullable()
-      .exactOptional()
+      .openapi({ description: 'A non-negative integer in cents representing how much to charge.' }),
+    shipping_rate: z
+      .union([z.string().max(5000), ShippingRateSchema])
       .openapi({
-        description:
-          'The minimum unit amount the customer can specify for this item. Must be at least the minimum charge amount.',
+        description: 'The shipping rate.',
+        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/shipping_rate' }] },
       }),
-    preset: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The starting unit amount which can be updated by the customer.' }),
-  })
-  .openapi({ description: '', title: 'CustomUnitAmount', 'x-expandableFields': [], required: [] })
-  .openapi('CustomUnitAmount')
-
-type PriceTierType = {
-  flat_amount?: number | null
-  flat_amount_decimal?: string | null
-  unit_amount?: number | null
-  unit_amount_decimal?: string | null
-  up_to?: number | null
-}
-
-const PriceTierSchema: z.ZodType<PriceTierType> = z
-  .object({
-    flat_amount: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Price for the entire tier.' }),
-    flat_amount_decimal: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.',
-      }),
-    unit_amount: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Per unit price for units relevant to the tier.' }),
-    unit_amount_decimal: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.',
-      }),
-    up_to: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Up to and including to this quantity will be contained in the tier.',
-      }),
-  })
-  .openapi({ description: '', title: 'PriceTier', 'x-expandableFields': [], required: [] })
-  .openapi('PriceTier')
-
-type CurrencyOptionType = {
-  custom_unit_amount?: z.infer<typeof CustomUnitAmountSchema> | null
-  tax_behavior?: 'exclusive' | 'inclusive' | 'unspecified' | null
-  tiers?: z.infer<typeof PriceTierSchema>[]
-  unit_amount?: number | null
-  unit_amount_decimal?: string | null
-}
-
-const CashBalanceSchema: z.ZodType<CashBalanceType> = z
-  .object({
-    available: z
-      .record(z.string(), z.int())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A hash of all cash balances available to this customer. You cannot delete a customer with any cash balances, even if the balance is 0. Amounts are represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).',
-      }),
-    customer: z
-      .string()
-      .max(5000)
-      .openapi({
-        description: 'The ID of the customer whose cash balance this object represents.',
-      }),
-    livemode: z
-      .boolean()
-      .openapi({
-        description:
-          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-      }),
-    object: z
-      .literal('cash_balance')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    settings: CustomerBalanceCustomerBalanceSettingsSchema,
   })
   .openapi({
-    description:
-      "A customer's `Cash balance` represents real funds. Customers can add funds to their cash balance by sending a bank transfer. These funds can be used for payment and can eventually be paid out to your bank account.",
-    required: ['customer', 'livemode', 'object', 'settings'],
-    title: 'cash_balance',
-    'x-expandableFields': ['settings'],
-    'x-resourceId': 'cash_balance',
+    description: '',
+    required: ['shipping_amount', 'shipping_rate'],
+    title: 'PaymentPagesCheckoutSessionShippingOption',
+    'x-expandableFields': ['shipping_rate'],
   })
-  .openapi('CashBalance')
-
-const DiscountSchema: z.ZodType<DiscountType> = z
-  .lazy(() =>
-    z
-      .object({
-        checkout_session: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode. Will not be present for subscription mode.',
-          }),
-        coupon: CouponSchema,
-        customer: z
-          .union([z.string().max(5000), CustomerSchema, DeletedCustomerSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The ID of the customer associated with this discount.',
-            'x-expansionResources': {
-              oneOf: [
-                { $ref: '#/components/schemas/customer' },
-                { $ref: '#/components/schemas/deleted_customer' },
-              ],
-            },
-          }),
-        end: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'If the coupon has a duration of `repeating`, the date that this discount will end. If the coupon has a duration of `once` or `forever`, this attribute will be null.',
-          }),
-        id: z
-          .string()
-          .max(5000)
-          .openapi({
-            description:
-              'The ID of the discount object. Discounts cannot be fetched by ID. Use `expand[]=discounts` in API calls to expand discount IDs in an array.',
-          }),
-        invoice: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.",
-          }),
-        invoice_item: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The invoice item `id` (or invoice line item `id` for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.",
-          }),
-        object: z
-          .literal('discount')
-          .openapi({
-            description:
-              "String representing the object's type. Objects of the same type share the same value.",
-          }),
-        promotion_code: z
-          .union([z.string().max(5000), PromotionCodeSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The promotion code applied to create this discount.',
-            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/promotion_code' }] },
-          }),
-        start: z.int().openapi({ description: 'Date that the coupon was applied.' }),
-        subscription: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The subscription that this coupon is applied to, if it is applied to a particular subscription.',
-          }),
-      })
-      .openapi({
-        description:
-          'A discount represents the actual application of a [coupon](https://stripe.com/docs/api#coupons) or [promotion code](https://stripe.com/docs/api#promotion_codes).\nIt contains information about when the discount began, when it will end, and what it is applied to.\n\nRelated guide: [Applying Discounts to Subscriptions](https://stripe.com/docs/billing/subscriptions/discounts).',
-        required: ['coupon', 'id', 'object', 'start'],
-        title: 'Discount',
-        'x-expandableFields': ['coupon', 'customer', 'promotion_code'],
-        'x-resourceId': 'discount',
-      }),
-  )
-  .openapi('Discount')
-
-const InvoiceSettingCustomerSettingSchema: z.ZodType<InvoiceSettingCustomerSettingType> = z
-  .lazy(() =>
-    z
-      .object({
-        custom_fields: z
-          .array(InvoiceSettingCustomFieldSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Default custom fields to be displayed on invoices for this customer.',
-          }),
-        default_payment_method: z
-          .union([z.string().max(5000), PaymentMethodSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.",
-            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_method' }] },
-          }),
-        footer: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Default footer to be displayed on invoices for this customer.',
-          }),
-        rendering_options: z
-          .union([InvoiceSettingRenderingOptionsSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Default options for invoice PDF rendering for this customer.' }),
-      })
-      .openapi({
-        description: '',
-        title: 'InvoiceSettingCustomerSetting',
-        'x-expandableFields': ['custom_fields', 'default_payment_method', 'rendering_options'],
-        required: [],
-      }),
-  )
-  .openapi('InvoiceSettingCustomerSetting')
+  .openapi('PaymentPagesCheckoutSessionShippingOption')
 
 const SubscriptionSchema: z.ZodType<SubscriptionType> = z
   .lazy(() =>
@@ -9760,6 +12023,890 @@ const SubscriptionSchema: z.ZodType<SubscriptionType> = z
   )
   .openapi('Subscription')
 
+const PaymentPagesCheckoutSessionTaxIdCollectionSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Indicates whether tax ID collection is enabled for the session' }),
+  })
+  .openapi({
+    description: '',
+    required: ['enabled'],
+    title: 'PaymentPagesCheckoutSessionTaxIDCollection',
+    'x-expandableFields': [],
+  })
+  .openapi('PaymentPagesCheckoutSessionTaxIdCollection')
+
+const LineItemsDiscountAmountSchema: z.ZodType<LineItemsDiscountAmountType> = z
+  .lazy(() =>
+    z
+      .object({
+        amount: z.int().openapi({ description: 'The amount discounted.' }),
+        discount: DiscountSchema,
+      })
+      .openapi({
+        description: '',
+        required: ['amount', 'discount'],
+        title: 'LineItemsDiscountAmount',
+        'x-expandableFields': ['discount'],
+      }),
+  )
+  .openapi('LineItemsDiscountAmount')
+
+type PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownType = {
+  discounts: z.infer<typeof LineItemsDiscountAmountSchema>[]
+  taxes: z.infer<typeof LineItemsTaxAmountSchema>[]
+}
+
+const PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownSchema: z.ZodType<PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownType> =
+  z
+    .object({
+      discounts: z
+        .array(LineItemsDiscountAmountSchema)
+        .openapi({ description: 'The aggregated discounts.' }),
+      taxes: z
+        .array(LineItemsTaxAmountSchema)
+        .openapi({ description: 'The aggregated tax amounts by rate.' }),
+    })
+    .openapi({
+      description: '',
+      required: ['discounts', 'taxes'],
+      title: 'PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown',
+      'x-expandableFields': ['discounts', 'taxes'],
+    })
+    .openapi('PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown')
+
+type PaymentPagesCheckoutSessionTotalDetailsType = {
+  amount_discount: number
+  amount_shipping?: number | null
+  amount_tax: number
+  breakdown?: z.infer<typeof PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownSchema>
+}
+
+const PaymentPagesCheckoutSessionTotalDetailsSchema: z.ZodType<PaymentPagesCheckoutSessionTotalDetailsType> =
+  z
+    .object({
+      amount_discount: z.int().openapi({ description: 'This is the sum of all the discounts.' }),
+      amount_shipping: z
+        .int()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'This is the sum of all the shipping amounts.' }),
+      amount_tax: z.int().openapi({ description: 'This is the sum of all the tax amounts.' }),
+      breakdown: PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownSchema.exactOptional(),
+    })
+    .openapi({
+      description: '',
+      required: ['amount_discount', 'amount_tax'],
+      title: 'PaymentPagesCheckoutSessionTotalDetails',
+      'x-expandableFields': ['breakdown'],
+    })
+    .openapi('PaymentPagesCheckoutSessionTotalDetails')
+
+type CheckoutSessionType = {
+  after_expiration?: z.infer<typeof PaymentPagesCheckoutSessionAfterExpirationSchema> | null
+  allow_promotion_codes?: boolean | null
+  amount_subtotal?: number | null
+  amount_total?: number | null
+  automatic_tax: z.infer<typeof PaymentPagesCheckoutSessionAutomaticTaxSchema>
+  billing_address_collection?: 'auto' | 'required' | null
+  cancel_url?: string | null
+  client_reference_id?: string | null
+  consent?: z.infer<typeof PaymentPagesCheckoutSessionConsentSchema> | null
+  consent_collection?: z.infer<typeof PaymentPagesCheckoutSessionConsentCollectionSchema> | null
+  created: number
+  currency?: string | null
+  custom_fields: z.infer<typeof PaymentPagesCheckoutSessionCustomFieldsSchema>[]
+  custom_text: z.infer<typeof PaymentPagesCheckoutSessionCustomTextSchema>
+  customer?:
+    | (string | z.infer<typeof CustomerSchema> | z.infer<typeof DeletedCustomerSchema>)
+    | null
+  customer_creation?: 'always' | 'if_required' | null
+  customer_details?: z.infer<typeof PaymentPagesCheckoutSessionCustomerDetailsSchema> | null
+  customer_email?: string | null
+  expires_at: number
+  id: string
+  invoice?: (string | z.infer<typeof InvoiceSchema>) | null
+  invoice_creation?: z.infer<typeof PaymentPagesCheckoutSessionInvoiceCreationSchema> | null
+  line_items?: {
+    data: z.infer<typeof ItemSchema>[]
+    has_more: boolean
+    object: 'list'
+    url: string
+  }
+  livemode: boolean
+  locale?:
+    | 'auto'
+    | 'bg'
+    | 'cs'
+    | 'da'
+    | 'de'
+    | 'el'
+    | 'en'
+    | 'en-GB'
+    | 'es'
+    | 'es-419'
+    | 'et'
+    | 'fi'
+    | 'fil'
+    | 'fr'
+    | 'fr-CA'
+    | 'hr'
+    | 'hu'
+    | 'id'
+    | 'it'
+    | 'ja'
+    | 'ko'
+    | 'lt'
+    | 'lv'
+    | 'ms'
+    | 'mt'
+    | 'nb'
+    | 'nl'
+    | 'pl'
+    | 'pt'
+    | 'pt-BR'
+    | 'ro'
+    | 'ru'
+    | 'sk'
+    | 'sl'
+    | 'sv'
+    | 'th'
+    | 'tr'
+    | 'vi'
+    | 'zh'
+    | 'zh-HK'
+    | 'zh-TW'
+    | null
+  metadata?: { [key: string]: string } | null
+  mode: 'payment' | 'setup' | 'subscription'
+  object: 'checkout.session'
+  payment_intent?: (string | z.infer<typeof PaymentIntentSchema>) | null
+  payment_link?: (string | z.infer<typeof PaymentLinkSchema>) | null
+  payment_method_collection?: 'always' | 'if_required' | null
+  payment_method_options?: z.infer<typeof CheckoutSessionPaymentMethodOptionsSchema> | null
+  payment_method_types: string[]
+  payment_status: 'no_payment_required' | 'paid' | 'unpaid'
+  phone_number_collection?: z.infer<typeof PaymentPagesCheckoutSessionPhoneNumberCollectionSchema>
+  recovered_from?: string | null
+  setup_intent?: (string | z.infer<typeof SetupIntentSchema>) | null
+  shipping_address_collection?: z.infer<
+    typeof PaymentPagesCheckoutSessionShippingAddressCollectionSchema
+  > | null
+  shipping_cost?: z.infer<typeof PaymentPagesCheckoutSessionShippingCostSchema> | null
+  shipping_details?: z.infer<typeof ShippingSchema> | null
+  shipping_options: z.infer<typeof PaymentPagesCheckoutSessionShippingOptionSchema>[]
+  status?: 'complete' | 'expired' | 'open' | null
+  submit_type?: 'auto' | 'book' | 'donate' | 'pay' | null
+  subscription?: (string | z.infer<typeof SubscriptionSchema>) | null
+  success_url: string
+  tax_id_collection?: z.infer<typeof PaymentPagesCheckoutSessionTaxIdCollectionSchema>
+  total_details?: z.infer<typeof PaymentPagesCheckoutSessionTotalDetailsSchema> | null
+  url?: string | null
+}
+
+type ConnectCollectionTransferType = {
+  amount: number
+  currency: string
+  destination: string | z.infer<typeof AccountSchema>
+  id: string
+  livemode: boolean
+  object: 'connect_collection_transfer'
+}
+
+const CouponAppliesToSchema = z
+  .object({
+    products: z
+      .array(z.string().max(5000))
+      .openapi({ description: 'A list of product IDs this coupon applies to' }),
+  })
+  .openapi({
+    description: '',
+    required: ['products'],
+    title: 'CouponAppliesTo',
+    'x-expandableFields': [],
+  })
+  .openapi('CouponAppliesTo')
+
+const CouponCurrencyOptionSchema = z
+  .object({
+    amount_off: z
+      .int()
+      .openapi({
+        description:
+          'Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['amount_off'],
+    title: 'CouponCurrencyOption',
+    'x-expandableFields': [],
+  })
+  .openapi('CouponCurrencyOption')
+
+type CouponType = {
+  amount_off?: number | null
+  applies_to?: z.infer<typeof CouponAppliesToSchema>
+  created: number
+  currency?: string | null
+  currency_options?: { [key: string]: z.infer<typeof CouponCurrencyOptionSchema> }
+  duration: 'forever' | 'once' | 'repeating'
+  duration_in_months?: number | null
+  id: string
+  livemode: boolean
+  max_redemptions?: number | null
+  metadata?: { [key: string]: string } | null
+  name?: string | null
+  object: 'coupon'
+  percent_off?: number | null
+  redeem_by?: number | null
+  times_redeemed: number
+  valid: boolean
+}
+
+const CustomerBalanceTransactionSchema: z.ZodType<CustomerBalanceTransactionType> = z
+  .lazy(() =>
+    z
+      .object({
+        amount: z
+          .int()
+          .openapi({
+            description:
+              "The amount of the transaction. A negative value is a credit for the customer's balance, and a positive value is a debit to the customer's `balance`.",
+          }),
+        created: z
+          .int()
+          .openapi({
+            description:
+              'Time at which the object was created. Measured in seconds since the Unix epoch.',
+          }),
+        credit_note: z
+          .union([z.string().max(5000), CreditNoteSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The ID of the credit note (if any) related to the transaction.',
+            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/credit_note' }] },
+          }),
+        currency: z
+          .string()
+          .openapi({
+            description:
+              'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
+          }),
+        customer: z
+          .union([z.string().max(5000), CustomerSchema])
+          .openapi({
+            description: 'The ID of the customer the transaction belongs to.',
+            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/customer' }] },
+          }),
+        description: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'An arbitrary string attached to the object. Often useful for displaying to users.',
+          }),
+        ending_balance: z
+          .int()
+          .openapi({
+            description:
+              "The customer's `balance` after the transaction was applied. A negative value decreases the amount due on the customer's next invoice. A positive value increases the amount due on the customer's next invoice.",
+          }),
+        id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+        invoice: z
+          .union([z.string().max(5000), InvoiceSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The ID of the invoice (if any) related to the transaction.',
+            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/invoice' }] },
+          }),
+        livemode: z
+          .boolean()
+          .openapi({
+            description:
+              'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+          }),
+        metadata: z
+          .record(z.string(), z.string().max(500))
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
+          }),
+        object: z
+          .literal('customer_balance_transaction')
+          .openapi({
+            description:
+              "String representing the object's type. Objects of the same type share the same value.",
+          }),
+        type: z
+          .enum([
+            'adjustment',
+            'applied_to_invoice',
+            'credit_note',
+            'initial',
+            'invoice_overpaid',
+            'invoice_too_large',
+            'invoice_too_small',
+            'migration',
+            'unapplied_from_invoice',
+            'unspent_receiver_credit',
+          ])
+          .openapi({
+            description:
+              'Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`. See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.',
+          }),
+      })
+      .openapi({
+        description:
+          "Each customer has a [`balance`](https://stripe.com/docs/api/customers/object#customer_object-balance) value,\nwhich denotes a debit or credit that's automatically applied to their next invoice upon finalization.\nYou may modify the value directly by using the [update customer API](https://stripe.com/docs/api/customers/update),\nor by creating a Customer Balance Transaction, which increments or decrements the customer's `balance` by the specified `amount`.\n\nRelated guide: [Customer Balance](https://stripe.com/docs/billing/customer/balance) to learn more.",
+        required: [
+          'amount',
+          'created',
+          'currency',
+          'customer',
+          'ending_balance',
+          'id',
+          'livemode',
+          'object',
+          'type',
+        ],
+        title: 'CustomerBalanceTransaction',
+        'x-expandableFields': ['credit_note', 'customer', 'invoice'],
+        'x-resourceId': 'customer_balance_transaction',
+      }),
+  )
+  .openapi('CustomerBalanceTransaction')
+
+const DiscountsResourceDiscountAmountSchema: z.ZodType<DiscountsResourceDiscountAmountType> = z
+  .lazy(() =>
+    z
+      .object({
+        amount: z.int().openapi({ description: 'The amount, in %s, of the discount.' }),
+        discount: z
+          .union([z.string().max(5000), DiscountSchema, DeletedDiscountSchema])
+          .openapi({
+            description: 'The discount that was applied to get this discount amount.',
+            'x-expansionResources': {
+              oneOf: [
+                { $ref: '#/components/schemas/discount' },
+                { $ref: '#/components/schemas/deleted_discount' },
+              ],
+            },
+          }),
+      })
+      .openapi({
+        description: '',
+        required: ['amount', 'discount'],
+        title: 'DiscountsResourceDiscountAmount',
+        'x-expandableFields': ['discount'],
+      }),
+  )
+  .openapi('DiscountsResourceDiscountAmount')
+
+type CreditNoteTaxAmountType = {
+  amount: number
+  inclusive: boolean
+  tax_rate: string | z.infer<typeof TaxRateSchema>
+}
+
+const CreditNoteTaxAmountSchema: z.ZodType<CreditNoteTaxAmountType> = z
+  .object({
+    amount: z.int().openapi({ description: 'The amount, in %s, of the tax.' }),
+    inclusive: z
+      .boolean()
+      .openapi({ description: 'Whether this tax amount is inclusive or exclusive.' }),
+    tax_rate: z
+      .union([z.string().max(5000), TaxRateSchema])
+      .openapi({
+        description: 'The tax rate that was applied to get this tax amount.',
+        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/tax_rate' }] },
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['amount', 'inclusive', 'tax_rate'],
+    title: 'CreditNoteTaxAmount',
+    'x-expandableFields': ['tax_rate'],
+  })
+  .openapi('CreditNoteTaxAmount')
+
+type CreditNoteLineItemType = {
+  amount: number
+  amount_excluding_tax?: number | null
+  description?: string | null
+  discount_amount: number
+  discount_amounts: z.infer<typeof DiscountsResourceDiscountAmountSchema>[]
+  id: string
+  invoice_line_item?: string
+  livemode: boolean
+  object: 'credit_note_line_item'
+  quantity?: number | null
+  tax_amounts: z.infer<typeof CreditNoteTaxAmountSchema>[]
+  tax_rates: z.infer<typeof TaxRateSchema>[]
+  type: 'custom_line_item' | 'invoice_line_item'
+  unit_amount?: number | null
+  unit_amount_decimal?: string | null
+  unit_amount_excluding_tax?: string | null
+}
+
+const CreditNoteLineItemSchema: z.ZodType<CreditNoteLineItemType> = z
+  .object({
+    amount: z
+      .int()
+      .openapi({
+        description:
+          'The integer amount in %s representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.',
+      }),
+    amount_excluding_tax: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The integer amount in %s representing the amount being credited for this line item, excluding all tax and discounts.',
+      }),
+    description: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the item being credited.' }),
+    discount_amount: z
+      .int()
+      .openapi({
+        description:
+          'The integer amount in %s representing the discount being credited for this line item.',
+      }),
+    discount_amounts: z
+      .array(DiscountsResourceDiscountAmountSchema)
+      .openapi({
+        description: 'The amount of discount calculated per discount for this line item',
+      }),
+    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+    invoice_line_item: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({ description: 'ID of the invoice line item being credited' }),
+    livemode: z
+      .boolean()
+      .openapi({
+        description:
+          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+      }),
+    object: z
+      .literal('credit_note_line_item')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    quantity: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The number of units of product being credited.' }),
+    tax_amounts: z
+      .array(CreditNoteTaxAmountSchema)
+      .openapi({ description: 'The amount of tax calculated per tax rate for this line item' }),
+    tax_rates: z
+      .array(TaxRateSchema)
+      .openapi({ description: 'The tax rates which apply to the line item.' }),
+    type: z
+      .enum(['custom_line_item', 'invoice_line_item'])
+      .openapi({
+        description:
+          'The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`. When the type is `invoice_line_item` there is an additional `invoice_line_item` property on the resource the value of which is the id of the credited line item on the invoice.',
+      }),
+    unit_amount: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The cost of each unit of product being credited.' }),
+    unit_amount_decimal: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.',
+      }),
+    unit_amount_excluding_tax: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount in %s representing the unit amount being credited for this line item, excluding all tax and discounts.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: [
+      'amount',
+      'discount_amount',
+      'discount_amounts',
+      'id',
+      'livemode',
+      'object',
+      'tax_amounts',
+      'tax_rates',
+      'type',
+    ],
+    title: 'CreditNoteLineItem',
+    'x-expandableFields': ['discount_amounts', 'tax_amounts', 'tax_rates'],
+    'x-resourceId': 'credit_note_line_item',
+  })
+  .openapi('CreditNoteLineItem')
+
+type InvoicesShippingCostType = {
+  amount_subtotal: number
+  amount_tax: number
+  amount_total: number
+  shipping_rate?: (string | z.infer<typeof ShippingRateSchema>) | null
+  taxes?: z.infer<typeof LineItemsTaxAmountSchema>[]
+}
+
+const InvoicesShippingCostSchema: z.ZodType<InvoicesShippingCostType> = z
+  .object({
+    amount_subtotal: z
+      .int()
+      .openapi({ description: 'Total shipping cost before any taxes are applied.' }),
+    amount_tax: z
+      .int()
+      .openapi({
+        description:
+          'Total tax amount applied due to shipping costs. If no tax was applied, defaults to 0.',
+      }),
+    amount_total: z.int().openapi({ description: 'Total shipping cost after taxes are applied.' }),
+    shipping_rate: z
+      .union([z.string().max(5000), ShippingRateSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the ShippingRate for this invoice.',
+        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/shipping_rate' }] },
+      }),
+    taxes: z
+      .array(LineItemsTaxAmountSchema)
+      .exactOptional()
+      .openapi({ description: 'The taxes applied to the shipping rate.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['amount_subtotal', 'amount_tax', 'amount_total'],
+    title: 'InvoicesShippingCost',
+    'x-expandableFields': ['shipping_rate', 'taxes'],
+  })
+  .openapi('InvoicesShippingCost')
+
+type CreditNoteType = {
+  amount: number
+  amount_shipping: number
+  created: number
+  currency: string
+  customer: string | z.infer<typeof CustomerSchema> | z.infer<typeof DeletedCustomerSchema>
+  customer_balance_transaction?: (string | z.infer<typeof CustomerBalanceTransactionSchema>) | null
+  discount_amount: number
+  discount_amounts: z.infer<typeof DiscountsResourceDiscountAmountSchema>[]
+  id: string
+  invoice: string | z.infer<typeof InvoiceSchema>
+  lines: {
+    data: z.infer<typeof CreditNoteLineItemSchema>[]
+    has_more: boolean
+    object: 'list'
+    url: string
+  }
+  livemode: boolean
+  memo?: string | null
+  metadata?: { [key: string]: string } | null
+  number: string
+  object: 'credit_note'
+  out_of_band_amount?: number | null
+  pdf: string
+  reason?: 'duplicate' | 'fraudulent' | 'order_change' | 'product_unsatisfactory' | null
+  refund?: (string | z.infer<typeof RefundSchema>) | null
+  shipping_cost?: z.infer<typeof InvoicesShippingCostSchema> | null
+  status: 'issued' | 'void'
+  subtotal: number
+  subtotal_excluding_tax?: number | null
+  tax_amounts: z.infer<typeof CreditNoteTaxAmountSchema>[]
+  total: number
+  total_excluding_tax?: number | null
+  type: 'post_payment' | 'pre_payment'
+  voided_at?: number | null
+}
+
+type CustomUnitAmountType = {
+  maximum?: number | null
+  minimum?: number | null
+  preset?: number | null
+}
+
+const CustomUnitAmountSchema: z.ZodType<CustomUnitAmountType> = z
+  .object({
+    maximum: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The maximum unit amount the customer can specify for this item.' }),
+    minimum: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum unit amount the customer can specify for this item. Must be at least the minimum charge amount.',
+      }),
+    preset: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The starting unit amount which can be updated by the customer.' }),
+  })
+  .openapi({ description: '', title: 'CustomUnitAmount', 'x-expandableFields': [], required: [] })
+  .openapi('CustomUnitAmount')
+
+type PriceTierType = {
+  flat_amount?: number | null
+  flat_amount_decimal?: string | null
+  unit_amount?: number | null
+  unit_amount_decimal?: string | null
+  up_to?: number | null
+}
+
+const PriceTierSchema: z.ZodType<PriceTierType> = z
+  .object({
+    flat_amount: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Price for the entire tier.' }),
+    flat_amount_decimal: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.',
+      }),
+    unit_amount: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Per unit price for units relevant to the tier.' }),
+    unit_amount_decimal: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.',
+      }),
+    up_to: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Up to and including to this quantity will be contained in the tier.',
+      }),
+  })
+  .openapi({ description: '', title: 'PriceTier', 'x-expandableFields': [], required: [] })
+  .openapi('PriceTier')
+
+type CurrencyOptionType = {
+  custom_unit_amount?: z.infer<typeof CustomUnitAmountSchema> | null
+  tax_behavior?: 'exclusive' | 'inclusive' | 'unspecified' | null
+  tiers?: z.infer<typeof PriceTierSchema>[]
+  unit_amount?: number | null
+  unit_amount_decimal?: string | null
+}
+
+const CashBalanceSchema: z.ZodType<CashBalanceType> = z
+  .object({
+    available: z
+      .record(z.string(), z.int())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A hash of all cash balances available to this customer. You cannot delete a customer with any cash balances, even if the balance is 0. Amounts are represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).',
+      }),
+    customer: z
+      .string()
+      .max(5000)
+      .openapi({
+        description: 'The ID of the customer whose cash balance this object represents.',
+      }),
+    livemode: z
+      .boolean()
+      .openapi({
+        description:
+          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+      }),
+    object: z
+      .literal('cash_balance')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    settings: CustomerBalanceCustomerBalanceSettingsSchema,
+  })
+  .openapi({
+    description:
+      "A customer's `Cash balance` represents real funds. Customers can add funds to their cash balance by sending a bank transfer. These funds can be used for payment and can eventually be paid out to your bank account.",
+    required: ['customer', 'livemode', 'object', 'settings'],
+    title: 'cash_balance',
+    'x-expandableFields': ['settings'],
+    'x-resourceId': 'cash_balance',
+  })
+  .openapi('CashBalance')
+
+const DiscountSchema: z.ZodType<DiscountType> = z
+  .lazy(() =>
+    z
+      .object({
+        checkout_session: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode. Will not be present for subscription mode.',
+          }),
+        coupon: CouponSchema,
+        customer: z
+          .union([z.string().max(5000), CustomerSchema, DeletedCustomerSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The ID of the customer associated with this discount.',
+            'x-expansionResources': {
+              oneOf: [
+                { $ref: '#/components/schemas/customer' },
+                { $ref: '#/components/schemas/deleted_customer' },
+              ],
+            },
+          }),
+        end: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'If the coupon has a duration of `repeating`, the date that this discount will end. If the coupon has a duration of `once` or `forever`, this attribute will be null.',
+          }),
+        id: z
+          .string()
+          .max(5000)
+          .openapi({
+            description:
+              'The ID of the discount object. Discounts cannot be fetched by ID. Use `expand[]=discounts` in API calls to expand discount IDs in an array.',
+          }),
+        invoice: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.",
+          }),
+        invoice_item: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The invoice item `id` (or invoice line item `id` for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.",
+          }),
+        object: z
+          .literal('discount')
+          .openapi({
+            description:
+              "String representing the object's type. Objects of the same type share the same value.",
+          }),
+        promotion_code: z
+          .union([z.string().max(5000), PromotionCodeSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The promotion code applied to create this discount.',
+            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/promotion_code' }] },
+          }),
+        start: z.int().openapi({ description: 'Date that the coupon was applied.' }),
+        subscription: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The subscription that this coupon is applied to, if it is applied to a particular subscription.',
+          }),
+      })
+      .openapi({
+        description:
+          'A discount represents the actual application of a [coupon](https://stripe.com/docs/api#coupons) or [promotion code](https://stripe.com/docs/api#promotion_codes).\nIt contains information about when the discount began, when it will end, and what it is applied to.\n\nRelated guide: [Applying Discounts to Subscriptions](https://stripe.com/docs/billing/subscriptions/discounts).',
+        required: ['coupon', 'id', 'object', 'start'],
+        title: 'Discount',
+        'x-expandableFields': ['coupon', 'customer', 'promotion_code'],
+        'x-resourceId': 'discount',
+      }),
+  )
+  .openapi('Discount')
+
+const InvoiceSettingCustomerSettingSchema: z.ZodType<InvoiceSettingCustomerSettingType> = z
+  .lazy(() =>
+    z
+      .object({
+        custom_fields: z
+          .array(InvoiceSettingCustomFieldSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Default custom fields to be displayed on invoices for this customer.',
+          }),
+        default_payment_method: z
+          .union([z.string().max(5000), PaymentMethodSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.",
+            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_method' }] },
+          }),
+        footer: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Default footer to be displayed on invoices for this customer.',
+          }),
+        rendering_options: z
+          .union([InvoiceSettingRenderingOptionsSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Default options for invoice PDF rendering for this customer.' }),
+      })
+      .openapi({
+        description: '',
+        title: 'InvoiceSettingCustomerSetting',
+        'x-expandableFields': ['custom_fields', 'default_payment_method', 'rendering_options'],
+        required: [],
+      }),
+  )
+  .openapi('InvoiceSettingCustomerSetting')
+
 const CustomerTaxLocationSchema = z
   .object({
     country: z
@@ -9823,120 +12970,6 @@ const CustomerTaxSchema: z.ZodType<CustomerTaxType> = z
     'x-expandableFields': ['location'],
   })
   .openapi('CustomerTax')
-
-const TaxIdSchema: z.ZodType<TaxIdType> = z
-  .lazy(() =>
-    z
-      .object({
-        country: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Two-letter ISO code representing the country of the tax ID.' }),
-        created: z
-          .int()
-          .openapi({
-            description:
-              'Time at which the object was created. Measured in seconds since the Unix epoch.',
-          }),
-        customer: z
-          .union([z.string().max(5000), CustomerSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'ID of the customer.',
-            'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/customer' }] },
-          }),
-        id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-        livemode: z
-          .boolean()
-          .openapi({
-            description:
-              'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-          }),
-        object: z
-          .literal('tax_id')
-          .openapi({
-            description:
-              "String representing the object's type. Objects of the same type share the same value.",
-          }),
-        type: z
-          .enum([
-            'ae_trn',
-            'au_abn',
-            'au_arn',
-            'bg_uic',
-            'br_cnpj',
-            'br_cpf',
-            'ca_bn',
-            'ca_gst_hst',
-            'ca_pst_bc',
-            'ca_pst_mb',
-            'ca_pst_sk',
-            'ca_qst',
-            'ch_vat',
-            'cl_tin',
-            'eg_tin',
-            'es_cif',
-            'eu_oss_vat',
-            'eu_vat',
-            'gb_vat',
-            'ge_vat',
-            'hk_br',
-            'hu_tin',
-            'id_npwp',
-            'il_vat',
-            'in_gst',
-            'is_vat',
-            'jp_cn',
-            'jp_rn',
-            'jp_trn',
-            'ke_pin',
-            'kr_brn',
-            'li_uid',
-            'mx_rfc',
-            'my_frp',
-            'my_itn',
-            'my_sst',
-            'no_vat',
-            'nz_gst',
-            'ph_tin',
-            'ru_inn',
-            'ru_kpp',
-            'sa_vat',
-            'sg_gst',
-            'sg_uen',
-            'si_tin',
-            'th_vat',
-            'tr_tin',
-            'tw_vat',
-            'ua_vat',
-            'unknown',
-            'us_ein',
-            'za_vat',
-          ])
-          .openapi({
-            description:
-              'Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`. Note that some legacy tax IDs have type `unknown`',
-          }),
-        value: z.string().max(5000).openapi({ description: 'Value of the tax ID.' }),
-        verification: z
-          .union([TaxIdVerificationSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Tax ID verification information.' }),
-      })
-      .openapi({
-        description:
-          "You can add one or multiple tax IDs to a [customer](https://stripe.com/docs/api/customers).\nA customer's tax IDs are displayed on invoices and credit notes issued for the customer.\n\nRelated guide: [Customer Tax Identification Numbers](https://stripe.com/docs/billing/taxes/tax-ids).",
-        required: ['created', 'id', 'livemode', 'object', 'type', 'value'],
-        title: 'tax_id',
-        'x-expandableFields': ['customer', 'verification'],
-        'x-resourceId': 'tax_id',
-      }),
-  )
-  .openapi('TaxId')
 
 type TestHelpersTestClockType = {
   created: number
@@ -10049,7 +13082,7 @@ type CustomerType = {
 }
 
 const OfflineAcceptanceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'offline_acceptance', 'x-expandableFields': [] })
   .openapi('OfflineAcceptance')
 
@@ -10081,6 +13114,14 @@ type CustomerAcceptanceType = {
   offline?: z.infer<typeof OfflineAcceptanceSchema>
   online?: z.infer<typeof OnlineAcceptanceSchema>
   type: 'offline' | 'online'
+}
+
+type CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransactionType = {
+  payment_intent: string | z.infer<typeof PaymentIntentSchema>
+}
+
+type CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransactionType = {
+  payment_intent: string | z.infer<typeof PaymentIntentSchema>
 }
 
 const CreditNoteSchema: z.ZodType<CreditNoteType> = z
@@ -10358,6 +13399,169 @@ type CustomerBalanceTransactionType = {
     | 'unspent_receiver_credit'
 }
 
+const CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransactionSchema: z.ZodType<CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransactionType> =
+  z
+    .object({
+      payment_intent: z
+        .union([z.string().max(5000), PaymentIntentSchema])
+        .openapi({
+          description:
+            'The [Payment Intent](https://stripe.com/docs/api/payment_intents/object) that funds were applied to.',
+          'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_intent' }] },
+        }),
+    })
+    .openapi({
+      description: '',
+      required: ['payment_intent'],
+      title: 'CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction',
+      'x-expandableFields': ['payment_intent'],
+    })
+    .openapi('CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction')
+
+const CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransferSchema =
+  z
+    .object({
+      bic: z
+        .string()
+        .max(5000)
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The BIC of the bank of the sender of the funding.' }),
+      iban_last4: z
+        .string()
+        .max(5000)
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The last 4 digits of the IBAN of the sender of the funding.' }),
+      sender_name: z
+        .string()
+        .max(5000)
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The full name of the sender, as supplied by the sending bank.' }),
+    })
+    .openapi({
+      description: '',
+      title:
+        'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransfer',
+      'x-expandableFields': [],
+      required: [],
+    })
+    .openapi(
+      'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransfer',
+    )
+
+const CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferSchema =
+  z
+    .object({
+      eu_bank_transfer:
+        CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransferSchema.exactOptional(),
+      reference: z
+        .string()
+        .max(5000)
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The user-supplied reference field on the bank transfer.' }),
+      type: z
+        .enum(['eu_bank_transfer', 'gb_bank_transfer', 'jp_bank_transfer', 'mx_bank_transfer'])
+        .openapi({
+          description:
+            'The funding method type used to fund the customer balance. Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.',
+          'x-stripeBypassValidation': true,
+        }),
+    })
+    .openapi({
+      description: '',
+      required: ['type'],
+      title:
+        'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer',
+      'x-expandableFields': ['eu_bank_transfer'],
+    })
+    .openapi(
+      'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer',
+    )
+
+const CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionSchema = z
+  .object({
+    bank_transfer:
+      CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferSchema,
+  })
+  .openapi({
+    description: '',
+    required: ['bank_transfer'],
+    title: 'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction',
+    'x-expandableFields': ['bank_transfer'],
+  })
+  .openapi('CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction')
+
+const CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransactionSchema = z
+  .object({
+    refund: z
+      .union([z.string().max(5000), RefundSchema])
+      .openapi({
+        description:
+          "The [Refund](https://stripe.com/docs/api/refunds/object) that moved these funds into the customer's cash balance.",
+        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/refund' }] },
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['refund'],
+    title: 'CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction',
+    'x-expandableFields': ['refund'],
+  })
+  .openapi('CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction')
+
+const CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransactionSchema: z.ZodType<CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransactionType> =
+  z
+    .object({
+      payment_intent: z
+        .union([z.string().max(5000), PaymentIntentSchema])
+        .openapi({
+          description:
+            'The [Payment Intent](https://stripe.com/docs/api/payment_intents/object) that funds were unapplied from.',
+          'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_intent' }] },
+        }),
+    })
+    .openapi({
+      description: '',
+      required: ['payment_intent'],
+      title: 'CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction',
+      'x-expandableFields': ['payment_intent'],
+    })
+    .openapi('CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction')
+
+type CustomerCashBalanceTransactionType = {
+  applied_to_payment?: z.infer<
+    typeof CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransactionSchema
+  >
+  created: number
+  currency: string
+  customer: string | z.infer<typeof CustomerSchema>
+  ending_balance: number
+  funded?: z.infer<
+    typeof CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionSchema
+  >
+  id: string
+  livemode: boolean
+  net_amount: number
+  object: 'customer_cash_balance_transaction'
+  refunded_from_payment?: z.infer<
+    typeof CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransactionSchema
+  >
+  type:
+    | 'applied_to_payment'
+    | 'funded'
+    | 'funding_reversed'
+    | 'refunded_from_payment'
+    | 'return_canceled'
+    | 'return_initiated'
+    | 'unapplied_from_payment'
+  unapplied_from_payment?: z.infer<
+    typeof CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransactionSchema
+  >
+}
+
 type DeletedApplicationType = {
   deleted: true
   id: string
@@ -10607,8 +13811,6 @@ type DeletedDiscountType = {
 type DeletedInvoiceType = { deleted: true; id: string; object: 'invoice' }
 
 type DeletedProductType = { deleted: true; id: string; object: 'product' }
-
-type DeletedTaxIdType = { deleted: true; id: string; object: 'tax_id' }
 
 type DiscountType = {
   checkout_session?: string | null
@@ -11060,6 +14262,97 @@ type DisputeType = {
     | 'won'
 }
 
+const ApiErrorsSchema: z.ZodType<ApiErrorsType> = z
+  .lazy(() =>
+    z
+      .object({
+        charge: z
+          .string()
+          .max(5000)
+          .exactOptional()
+          .openapi({ description: 'For card errors, the ID of the failed charge.' }),
+        code: z
+          .string()
+          .max(5000)
+          .exactOptional()
+          .openapi({
+            description:
+              'For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.',
+          }),
+        decline_code: z
+          .string()
+          .max(5000)
+          .exactOptional()
+          .openapi({
+            description:
+              "For card errors resulting from a card issuer decline, a short string indicating the [card issuer's reason for the decline](https://stripe.com/docs/declines#issuer-declines) if they provide one.",
+          }),
+        doc_url: z
+          .string()
+          .max(5000)
+          .exactOptional()
+          .openapi({
+            description:
+              'A URL to more information about the [error code](https://stripe.com/docs/error-codes) reported.',
+          }),
+        message: z
+          .string()
+          .max(40000)
+          .exactOptional()
+          .openapi({
+            description:
+              'A human-readable message providing more details about the error. For card errors, these messages can be shown to your users.',
+          }),
+        param: z
+          .string()
+          .max(5000)
+          .exactOptional()
+          .openapi({
+            description:
+              'If the error is parameter-specific, the parameter related to the error. For example, you can use this to display a message near the correct form field.',
+          }),
+        payment_intent: PaymentIntentSchema.exactOptional(),
+        payment_method: PaymentMethodSchema.exactOptional(),
+        payment_method_type: z
+          .string()
+          .max(5000)
+          .exactOptional()
+          .openapi({
+            description:
+              'If the error is specific to the type of payment method, the payment method type that had a problem. This field is only populated for invoice-related errors.',
+          }),
+        request_log_url: z
+          .string()
+          .max(5000)
+          .exactOptional()
+          .openapi({ description: 'A URL to the request log entry in your dashboard.' }),
+        setup_intent: SetupIntentSchema.exactOptional(),
+        source: z
+          .union([BankAccountSchema, CardSchema, SourceSchema])
+          .exactOptional()
+          .openapi({
+            description: 'The source object for errors returned on a request involving a source.',
+          }),
+        type: z
+          .enum(['api_error', 'card_error', 'idempotency_error', 'invalid_request_error'])
+          .openapi({
+            description:
+              'The type of error returned. One of `api_error`, `card_error`, `idempotency_error`, or `invalid_request_error`',
+          }),
+      })
+      .openapi({
+        description: '',
+        required: ['type'],
+        title: 'APIErrors',
+        'x-expandableFields': ['payment_intent', 'payment_method', 'setup_intent', 'source'],
+      }),
+  )
+  .openapi('ApiErrors')
+
+type ErrorType = { error: z.infer<typeof ApiErrorsSchema> }
+
+type ExternalAccountType = z.infer<typeof BankAccountSchema> | z.infer<typeof CardSchema>
+
 type FeeRefundType = {
   amount: number
   balance_transaction?: (string | z.infer<typeof BalanceTransactionSchema>) | null
@@ -11176,6 +14469,428 @@ type FileLinkType = {
   url?: string | null
 }
 
+const BankConnectionsResourceAccountholderSchema: z.ZodType<BankConnectionsResourceAccountholderType> =
+  z
+    .object({
+      account: z
+        .union([z.string().max(5000), AccountSchema])
+        .exactOptional()
+        .openapi({
+          description:
+            'The ID of the Stripe account this account belongs to. Should only be present if `account_holder.type` is `account`.',
+          'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/account' }] },
+        }),
+      customer: z
+        .union([z.string().max(5000), CustomerSchema])
+        .exactOptional()
+        .openapi({
+          description:
+            'ID of the Stripe customer this account belongs to. Present if and only if `account_holder.type` is `customer`.',
+          'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/customer' }] },
+        }),
+      type: z
+        .enum(['account', 'customer'])
+        .openapi({ description: 'Type of account holder that this account belongs to.' }),
+    })
+    .openapi({
+      description: '',
+      required: ['type'],
+      title: 'BankConnectionsResourceAccountholder',
+      'x-expandableFields': ['account', 'customer'],
+    })
+    .openapi('BankConnectionsResourceAccountholder')
+
+const BankConnectionsResourceBalanceApiResourceCashBalanceSchema = z
+  .object({
+    available: z
+      .record(z.string(), z.int())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The funds available to the account holder. Typically this is the current balance less any holds.\n\nEach key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.\n\nEach value is a integer amount. A positive amount indicates money owed to the account holder. A negative amount indicates money owed by the account holder.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'BankConnectionsResourceBalanceAPIResourceCashBalance',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('BankConnectionsResourceBalanceApiResourceCashBalance')
+
+const BankConnectionsResourceBalanceApiResourceCreditBalanceSchema = z
+  .object({
+    used: z
+      .record(z.string(), z.int())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The credit that has been used by the account holder.\n\nEach key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.\n\nEach value is a integer amount. A positive amount indicates money owed to the account holder. A negative amount indicates money owed by the account holder.',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'BankConnectionsResourceBalanceAPIResourceCreditBalance',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('BankConnectionsResourceBalanceApiResourceCreditBalance')
+
+const BankConnectionsResourceBalanceSchema = z
+  .object({
+    as_of: z
+      .int()
+      .openapi({
+        description:
+          'The time that the external institution calculated this balance. Measured in seconds since the Unix epoch.',
+      }),
+    cash: BankConnectionsResourceBalanceApiResourceCashBalanceSchema.exactOptional(),
+    credit: BankConnectionsResourceBalanceApiResourceCreditBalanceSchema.exactOptional(),
+    current: z
+      .record(z.string(), z.int())
+      .openapi({
+        description:
+          'The balances owed to (or by) the account holder.\n\nEach key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.\n\nEach value is a integer amount. A positive amount indicates money owed to the account holder. A negative amount indicates money owed by the account holder.',
+      }),
+    type: z
+      .enum(['cash', 'credit'])
+      .openapi({
+        description:
+          'The `type` of the balance. An additional hash is included on the balance with a name matching this value.',
+      }),
+  })
+  .openapi({
+    description: '',
+    required: ['as_of', 'current', 'type'],
+    title: 'BankConnectionsResourceBalance',
+    'x-expandableFields': ['cash', 'credit'],
+  })
+  .openapi('BankConnectionsResourceBalance')
+
+const BankConnectionsResourceBalanceRefreshSchema = z
+  .object({
+    last_attempted_at: z
+      .int()
+      .openapi({
+        description:
+          'The time at which the last refresh attempt was initiated. Measured in seconds since the Unix epoch.',
+      }),
+    status: z
+      .enum(['failed', 'pending', 'succeeded'])
+      .openapi({ description: 'The status of the last refresh attempt.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['last_attempted_at', 'status'],
+    title: 'BankConnectionsResourceBalanceRefresh',
+    'x-expandableFields': [],
+  })
+  .openapi('BankConnectionsResourceBalanceRefresh')
+
+const FinancialConnectionsAccountOwnerSchema = z
+  .object({
+    email: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The email address of the owner.' }),
+    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+    name: z.string().max(5000).openapi({ description: 'The full name of the owner.' }),
+    object: z
+      .literal('financial_connections.account_owner')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    ownership: z
+      .string()
+      .max(5000)
+      .openapi({ description: 'The ownership object that this owner belongs to.' }),
+    phone: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The raw phone number of the owner.' }),
+    raw_address: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The raw physical address of the owner.' }),
+    refreshed_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The timestamp of the refresh that updated this owner.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['id', 'name', 'object', 'ownership'],
+    title: 'BankConnectionsResourceOwner',
+    'x-expandableFields': [],
+    'x-resourceId': 'financial_connections.account_owner',
+  })
+  .openapi('FinancialConnectionsAccountOwner')
+
+const FinancialConnectionsAccountOwnershipSchema = z
+  .object({
+    created: z
+      .int()
+      .openapi({
+        description:
+          'Time at which the object was created. Measured in seconds since the Unix epoch.',
+      }),
+    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+    object: z
+      .literal('financial_connections.account_ownership')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    owners: z
+      .object({
+        data: z
+          .array(FinancialConnectionsAccountOwnerSchema)
+          .openapi({ description: 'Details about each object.' }),
+        has_more: z
+          .boolean()
+          .openapi({
+            description:
+              'True if this list has another page of items after this one that can be fetched.',
+          }),
+        object: z
+          .literal('list')
+          .openapi({
+            description:
+              "String representing the object's type. Objects of the same type share the same value. Always has the value `list`.",
+          }),
+        url: z
+          .string()
+          .max(5000)
+          .openapi({ description: 'The URL where this list can be accessed.' }),
+      })
+      .openapi({
+        description: 'A paginated list of owners for this account.',
+        required: ['data', 'has_more', 'object', 'url'],
+        title: 'BankConnectionsResourceOwnerList',
+        'x-expandableFields': ['data'],
+      }),
+  })
+  .openapi({
+    description: 'Describes a snapshot of the owners of an account at a particular point in time.',
+    required: ['created', 'id', 'object', 'owners'],
+    title: 'BankConnectionsResourceOwnership',
+    'x-expandableFields': ['owners'],
+  })
+  .openapi('FinancialConnectionsAccountOwnership')
+
+const BankConnectionsResourceOwnershipRefreshSchema = z
+  .object({
+    last_attempted_at: z
+      .int()
+      .openapi({
+        description:
+          'The time at which the last refresh attempt was initiated. Measured in seconds since the Unix epoch.',
+      }),
+    status: z
+      .enum(['failed', 'pending', 'succeeded'])
+      .openapi({ description: 'The status of the last refresh attempt.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['last_attempted_at', 'status'],
+    title: 'BankConnectionsResourceOwnershipRefresh',
+    'x-expandableFields': [],
+  })
+  .openapi('BankConnectionsResourceOwnershipRefresh')
+
+type FinancialConnectionsAccountType = {
+  account_holder?: z.infer<typeof BankConnectionsResourceAccountholderSchema> | null
+  balance?: z.infer<typeof BankConnectionsResourceBalanceSchema> | null
+  balance_refresh?: z.infer<typeof BankConnectionsResourceBalanceRefreshSchema> | null
+  category: 'cash' | 'credit' | 'investment' | 'other'
+  created: number
+  display_name?: string | null
+  id: string
+  institution_name: string
+  last4?: string | null
+  livemode: boolean
+  object: 'financial_connections.account'
+  ownership?: (string | z.infer<typeof FinancialConnectionsAccountOwnershipSchema>) | null
+  ownership_refresh?: z.infer<typeof BankConnectionsResourceOwnershipRefreshSchema> | null
+  permissions?: ('balances' | 'ownership' | 'payment_method' | 'transactions')[] | null
+  status: 'active' | 'disconnected' | 'inactive'
+  subcategory: 'checking' | 'credit_card' | 'line_of_credit' | 'mortgage' | 'other' | 'savings'
+  supported_payment_method_types: ('link' | 'us_bank_account')[]
+}
+
+const FinancialConnectionsAccountSchema: z.ZodType<FinancialConnectionsAccountType> = z
+  .object({
+    account_holder: z
+      .union([BankConnectionsResourceAccountholderSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The account holder that this account belongs to.' }),
+    balance: z
+      .union([BankConnectionsResourceBalanceSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The most recent information about the account's balance." }),
+    balance_refresh: z
+      .union([BankConnectionsResourceBalanceRefreshSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The state of the most recent attempt to refresh the account balance.',
+      }),
+    category: z
+      .enum(['cash', 'credit', 'investment', 'other'])
+      .openapi({
+        description:
+          'The type of the account. Account category is further divided in `subcategory`.',
+      }),
+    created: z
+      .int()
+      .openapi({
+        description:
+          'Time at which the object was created. Measured in seconds since the Unix epoch.',
+      }),
+    display_name: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A human-readable name that has been assigned to this account, either by the account holder or by the institution.',
+      }),
+    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+    institution_name: z
+      .string()
+      .max(5000)
+      .openapi({ description: 'The name of the institution that holds this account.' }),
+    last4: z
+      .string()
+      .max(5000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last 4 digits of the account number. If present, this will be 4 numeric characters.',
+      }),
+    livemode: z
+      .boolean()
+      .openapi({
+        description:
+          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+      }),
+    object: z
+      .literal('financial_connections.account')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    ownership: z
+      .union([z.string().max(5000), FinancialConnectionsAccountOwnershipSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "The most recent information about the account's owners.",
+        'x-expansionResources': {
+          oneOf: [{ $ref: '#/components/schemas/financial_connections.account_ownership' }],
+        },
+      }),
+    ownership_refresh: z
+      .union([BankConnectionsResourceOwnershipRefreshSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The state of the most recent attempt to refresh the account owners.',
+      }),
+    permissions: z
+      .array(z.enum(['balances', 'ownership', 'payment_method', 'transactions']))
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The list of permissions granted by this account.' }),
+    status: z
+      .enum(['active', 'disconnected', 'inactive'])
+      .openapi({ description: 'The status of the link to the account.' }),
+    subcategory: z
+      .enum(['checking', 'credit_card', 'line_of_credit', 'mortgage', 'other', 'savings'])
+      .openapi({
+        description:
+          'If `category` is `cash`, one of:\n\n - `checking`\n - `savings`\n - `other`\n\nIf `category` is `credit`, one of:\n\n - `mortgage`\n - `line_of_credit`\n - `credit_card`\n - `other`\n\nIf `category` is `investment` or `other`, this will be `other`.',
+      }),
+    supported_payment_method_types: z
+      .array(z.enum(['link', 'us_bank_account']))
+      .openapi({
+        description:
+          'The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.',
+      }),
+  })
+  .openapi({
+    description:
+      'A Financial Connections Account represents an account that exists outside of Stripe, to which you have been granted some degree of access.',
+    required: [
+      'category',
+      'created',
+      'id',
+      'institution_name',
+      'livemode',
+      'object',
+      'status',
+      'subcategory',
+      'supported_payment_method_types',
+    ],
+    title: 'BankConnectionsResourceLinkedAccount',
+    'x-expandableFields': [
+      'account_holder',
+      'balance',
+      'balance_refresh',
+      'ownership',
+      'ownership_refresh',
+    ],
+    'x-resourceId': 'financial_connections.account',
+  })
+  .openapi('FinancialConnectionsAccount')
+
+const BankConnectionsResourceLinkAccountSessionFiltersSchema = z
+  .object({
+    countries: z
+      .array(z.string().max(5000))
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'List of countries from which to filter accounts.' }),
+  })
+  .openapi({
+    description: '',
+    title: 'BankConnectionsResourceLinkAccountSessionFilters',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('BankConnectionsResourceLinkAccountSessionFilters')
+
+type FinancialConnectionsSessionType = {
+  account_holder?: z.infer<typeof BankConnectionsResourceAccountholderSchema> | null
+  accounts: {
+    data: z.infer<typeof FinancialConnectionsAccountSchema>[]
+    has_more: boolean
+    object: 'list'
+    url: string
+  }
+  client_secret: string
+  filters?: z.infer<typeof BankConnectionsResourceLinkAccountSessionFiltersSchema>
+  id: string
+  livemode: boolean
+  object: 'financial_connections.session'
+  permissions: ('balances' | 'ownership' | 'payment_method' | 'transactions')[]
+  return_url?: string
+}
+
 const TreasurySharedResourceBillingDetailsSchema = z
   .object({
     address: AddressSchema,
@@ -11254,26 +14969,6 @@ type InboundTransfersType = {
   us_bank_account?: z.infer<typeof InboundTransfersPaymentMethodDetailsUsBankAccountSchema>
 }
 
-const DeletedTaxIdSchema: z.ZodType<DeletedTaxIdType> = z
-  .object({
-    deleted: z.literal(true).openapi({ description: 'Always true for a deleted object' }),
-    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-    object: z
-      .literal('tax_id')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['deleted', 'id', 'object'],
-    title: 'deleted_tax_id',
-    'x-expandableFields': [],
-    'x-resourceId': 'deleted_tax_id',
-  })
-  .openapi('DeletedTaxId')
-
 const DeletedApplicationSchema: z.ZodType<DeletedApplicationType> = z
   .object({
     deleted: z.literal(true).openapi({ description: 'Always true for a deleted object' }),
@@ -11322,21 +15017,6 @@ const AutomaticTaxSchema: z.ZodType<AutomaticTaxType> = z
     'x-expandableFields': [],
   })
   .openapi('AutomaticTax')
-
-type InvoiceSettingCustomFieldType = { name: string; value: string }
-
-const InvoiceSettingCustomFieldSchema: z.ZodType<InvoiceSettingCustomFieldType> = z
-  .object({
-    name: z.string().max(5000).openapi({ description: 'The name of the custom field.' }),
-    value: z.string().max(5000).openapi({ description: 'The value of the custom field.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['name', 'value'],
-    title: 'InvoiceSettingCustomField',
-    'x-expandableFields': [],
-  })
-  .openapi('InvoiceSettingCustomField')
 
 type InvoicesResourceInvoiceTaxIdType = {
   type:
@@ -11494,93 +15174,6 @@ const InvoicesFromInvoiceSchema: z.ZodType<InvoicesFromInvoiceType> = z
       }),
   )
   .openapi('InvoicesFromInvoice')
-
-const ApiErrorsSchema: z.ZodType<ApiErrorsType> = z
-  .lazy(() =>
-    z
-      .object({
-        charge: z
-          .string()
-          .max(5000)
-          .exactOptional()
-          .openapi({ description: 'For card errors, the ID of the failed charge.' }),
-        code: z
-          .string()
-          .max(5000)
-          .exactOptional()
-          .openapi({
-            description:
-              'For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.',
-          }),
-        decline_code: z
-          .string()
-          .max(5000)
-          .exactOptional()
-          .openapi({
-            description:
-              "For card errors resulting from a card issuer decline, a short string indicating the [card issuer's reason for the decline](https://stripe.com/docs/declines#issuer-declines) if they provide one.",
-          }),
-        doc_url: z
-          .string()
-          .max(5000)
-          .exactOptional()
-          .openapi({
-            description:
-              'A URL to more information about the [error code](https://stripe.com/docs/error-codes) reported.',
-          }),
-        message: z
-          .string()
-          .max(40000)
-          .exactOptional()
-          .openapi({
-            description:
-              'A human-readable message providing more details about the error. For card errors, these messages can be shown to your users.',
-          }),
-        param: z
-          .string()
-          .max(5000)
-          .exactOptional()
-          .openapi({
-            description:
-              'If the error is parameter-specific, the parameter related to the error. For example, you can use this to display a message near the correct form field.',
-          }),
-        payment_intent: PaymentIntentSchema.exactOptional(),
-        payment_method: PaymentMethodSchema.exactOptional(),
-        payment_method_type: z
-          .string()
-          .max(5000)
-          .exactOptional()
-          .openapi({
-            description:
-              'If the error is specific to the type of payment method, the payment method type that had a problem. This field is only populated for invoice-related errors.',
-          }),
-        request_log_url: z
-          .string()
-          .max(5000)
-          .exactOptional()
-          .openapi({ description: 'A URL to the request log entry in your dashboard.' }),
-        setup_intent: SetupIntentSchema.exactOptional(),
-        source: z
-          .union([BankAccountSchema, CardSchema, SourceSchema])
-          .exactOptional()
-          .openapi({
-            description: 'The source object for errors returned on a request involving a source.',
-          }),
-        type: z
-          .enum(['api_error', 'card_error', 'idempotency_error', 'invalid_request_error'])
-          .openapi({
-            description:
-              'The type of error returned. One of `api_error`, `card_error`, `idempotency_error`, or `invalid_request_error`',
-          }),
-      })
-      .openapi({
-        description: '',
-        required: ['type'],
-        title: 'APIErrors',
-        'x-expandableFields': ['payment_intent', 'payment_method', 'setup_intent', 'source'],
-      }),
-  )
-  .openapi('ApiErrors')
 
 const LineItemSchema: z.ZodType<LineItemType> = z
   .lazy(() =>
@@ -11897,7 +15490,7 @@ const InvoicePaymentMethodOptionsCustomerBalanceSchema = z
   .openapi('InvoicePaymentMethodOptionsCustomerBalance')
 
 const InvoicePaymentMethodOptionsKonbiniSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'invoice_payment_method_options_konbini',
@@ -12404,28 +15997,6 @@ const QuoteSchema: z.ZodType<QuoteType> = z
   )
   .openapi('Quote')
 
-type InvoiceSettingRenderingOptionsType = { amount_tax_display?: string | null }
-
-const InvoiceSettingRenderingOptionsSchema: z.ZodType<InvoiceSettingRenderingOptionsType> = z
-  .object({
-    amount_tax_display: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'InvoiceSettingRenderingOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('InvoiceSettingRenderingOptions')
-
 type InvoicesStatusTransitionsType = {
   finalized_at?: number | null
   marked_uncollectible_at?: number | null
@@ -12689,6 +16260,224 @@ type InvoiceSettingSubscriptionScheduleSettingType = { days_until_due?: number |
 type InvoiceTransferDataType = {
   amount?: number | null
   destination: string | z.infer<typeof AccountSchema>
+}
+
+const InvoiceLineItemPeriodSchema: z.ZodType<InvoiceLineItemPeriodType> = z
+  .object({
+    end: z
+      .int()
+      .openapi({
+        description:
+          'The end of the period, which must be greater than or equal to the start. This value is inclusive.',
+      }),
+    start: z.int().openapi({ description: 'The start of the period. This value is inclusive.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['end', 'start'],
+    title: 'InvoiceLineItemPeriod',
+    'x-expandableFields': [],
+  })
+  .openapi('InvoiceLineItemPeriod')
+
+const PriceSchema: z.ZodType<PriceType> = z
+  .lazy(() =>
+    z
+      .object({
+        active: z
+          .boolean()
+          .openapi({ description: 'Whether the price can be used for new purchases.' }),
+        billing_scheme: z
+          .enum(['per_unit', 'tiered'])
+          .openapi({
+            description:
+              'Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.',
+          }),
+        created: z
+          .int()
+          .openapi({
+            description:
+              'Time at which the object was created. Measured in seconds since the Unix epoch.',
+          }),
+        currency: z
+          .string()
+          .openapi({
+            description:
+              'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
+          }),
+        currency_options: z
+          .record(z.string(), CurrencyOptionSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Prices defined in each available currency option. Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).',
+          }),
+        custom_unit_amount: z
+          .union([CustomUnitAmountSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.',
+          }),
+        id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+        livemode: z
+          .boolean()
+          .openapi({
+            description:
+              'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+          }),
+        lookup_key: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'A lookup key used to retrieve prices dynamically from a static string. This may be up to 200 characters.',
+          }),
+        metadata: z
+          .record(z.string(), z.string().max(500))
+          .openapi({
+            description:
+              'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
+          }),
+        nickname: z
+          .string()
+          .max(5000)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'A brief description of the price, hidden from customers.' }),
+        object: z
+          .literal('price')
+          .openapi({
+            description:
+              "String representing the object's type. Objects of the same type share the same value.",
+          }),
+        product: z
+          .union([z.string().max(5000), ProductSchema, DeletedProductSchema])
+          .openapi({
+            description: 'The ID of the product this price is associated with.',
+            'x-expansionResources': {
+              oneOf: [
+                { $ref: '#/components/schemas/product' },
+                { $ref: '#/components/schemas/deleted_product' },
+              ],
+            },
+          }),
+        recurring: z
+          .union([RecurringSchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The recurring components of a price such as `interval` and `usage_type`.',
+          }),
+        tax_behavior: z
+          .enum(['exclusive', 'inclusive', 'unspecified'])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies whether the price is considered inclusive of taxes or exclusive of taxes. One of `inclusive`, `exclusive`, or `unspecified`. Once specified as either `inclusive` or `exclusive`, it cannot be changed.',
+          }),
+        tiers: z
+          .array(PriceTierSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. See also the documentation for `billing_scheme`.',
+          }),
+        tiers_mode: z
+          .enum(['graduated', 'volume'])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price. In `graduated` tiering, pricing can change as the quantity grows.',
+          }),
+        transform_quantity: z
+          .union([TransformQuantitySchema])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Apply a transformation to the reported usage or set quantity before computing the amount billed. Cannot be combined with `tiers`.',
+          }),
+        type: z
+          .enum(['one_time', 'recurring'])
+          .openapi({
+            description:
+              'One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.',
+          }),
+        unit_amount: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The unit amount in %s to be charged, represented as a whole integer if possible. Only set if `billing_scheme=per_unit`.',
+          }),
+        unit_amount_decimal: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places. Only set if `billing_scheme=per_unit`.',
+          }),
+      })
+      .openapi({
+        description:
+          'Prices define the unit cost, currency, and (optional) billing cycle for both recurring and one-time purchases of products.\n[Products](https://stripe.com/docs/api#products) help you track inventory or provisioning, and prices help you track payment terms. Different physical goods or levels of service should be represented by products, and pricing options should be represented by prices. This approach lets you change prices without having to change your provisioning scheme.\n\nFor example, you might have a single "gold" product that has prices for $10/month, $100/year, and €9 once.\n\nRelated guides: [Set up a subscription](https://stripe.com/docs/billing/subscriptions/set-up-subscription), [create an invoice](https://stripe.com/docs/billing/invoices/create), and more about [products and prices](https://stripe.com/docs/products-prices/overview).',
+        required: [
+          'active',
+          'billing_scheme',
+          'created',
+          'currency',
+          'id',
+          'livemode',
+          'metadata',
+          'object',
+          'product',
+          'type',
+        ],
+        title: 'Price',
+        'x-expandableFields': [
+          'currency_options',
+          'custom_unit_amount',
+          'product',
+          'recurring',
+          'tiers',
+          'transform_quantity',
+        ],
+        'x-resourceId': 'price',
+      }),
+  )
+  .openapi('Price')
+
+type InvoiceitemType = {
+  amount: number
+  currency: string
+  customer: string | z.infer<typeof CustomerSchema> | z.infer<typeof DeletedCustomerSchema>
+  date: number
+  description?: string | null
+  discountable: boolean
+  discounts?: (string | z.infer<typeof DiscountSchema>)[] | null
+  id: string
+  invoice?: (string | z.infer<typeof InvoiceSchema>) | null
+  livemode: boolean
+  metadata?: { [key: string]: string } | null
+  object: 'invoiceitem'
+  period: z.infer<typeof InvoiceLineItemPeriodSchema>
+  price?: z.infer<typeof PriceSchema> | null
+  proration: boolean
+  quantity: number
+  subscription?: (string | z.infer<typeof SubscriptionSchema>) | null
+  subscription_item?: string
+  tax_rates?: z.infer<typeof TaxRateSchema>[] | null
+  test_clock?: (string | z.infer<typeof TestHelpersTestClockSchema>) | null
+  unit_amount?: number | null
+  unit_amount_decimal?: string | null
 }
 
 type InvoicesFromInvoiceType = { action: string; invoice: string | z.infer<typeof InvoiceSchema> }
@@ -13036,7 +16825,15 @@ const IssuingCardholderVerificationSchema = z
   })
   .openapi('IssuingCardholderVerification')
 
-const IssuingCardholderIndividualSchema = z
+type IssuingCardholderIndividualType = {
+  card_issuing?: z.infer<typeof IssuingCardholderCardIssuingSchema> | null
+  dob?: z.infer<typeof IssuingCardholderIndividualDobSchema> | null
+  first_name?: string | null
+  last_name?: string | null
+  verification?: z.infer<typeof IssuingCardholderVerificationSchema> | null
+}
+
+const IssuingCardholderIndividualSchema: z.ZodType<IssuingCardholderIndividualType> = z
   .object({
     card_issuing: z
       .union([IssuingCardholderCardIssuingSchema])
@@ -16459,197 +20256,6 @@ type IssuingTransactionType = {
   wallet?: 'apple_pay' | 'google_pay' | 'samsung_pay' | null
 }
 
-const LineItemsDiscountAmountSchema: z.ZodType<LineItemsDiscountAmountType> = z
-  .lazy(() =>
-    z
-      .object({
-        amount: z.int().openapi({ description: 'The amount discounted.' }),
-        discount: DiscountSchema,
-      })
-      .openapi({
-        description: '',
-        required: ['amount', 'discount'],
-        title: 'LineItemsDiscountAmount',
-        'x-expandableFields': ['discount'],
-      }),
-  )
-  .openapi('LineItemsDiscountAmount')
-
-const PriceSchema: z.ZodType<PriceType> = z
-  .lazy(() =>
-    z
-      .object({
-        active: z
-          .boolean()
-          .openapi({ description: 'Whether the price can be used for new purchases.' }),
-        billing_scheme: z
-          .enum(['per_unit', 'tiered'])
-          .openapi({
-            description:
-              'Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.',
-          }),
-        created: z
-          .int()
-          .openapi({
-            description:
-              'Time at which the object was created. Measured in seconds since the Unix epoch.',
-          }),
-        currency: z
-          .string()
-          .openapi({
-            description:
-              'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
-          }),
-        currency_options: z
-          .record(z.string(), CurrencyOptionSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Prices defined in each available currency option. Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).',
-          }),
-        custom_unit_amount: z
-          .union([CustomUnitAmountSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.',
-          }),
-        id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-        livemode: z
-          .boolean()
-          .openapi({
-            description:
-              'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-          }),
-        lookup_key: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'A lookup key used to retrieve prices dynamically from a static string. This may be up to 200 characters.',
-          }),
-        metadata: z
-          .record(z.string(), z.string().max(500))
-          .openapi({
-            description:
-              'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
-          }),
-        nickname: z
-          .string()
-          .max(5000)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'A brief description of the price, hidden from customers.' }),
-        object: z
-          .literal('price')
-          .openapi({
-            description:
-              "String representing the object's type. Objects of the same type share the same value.",
-          }),
-        product: z
-          .union([z.string().max(5000), ProductSchema, DeletedProductSchema])
-          .openapi({
-            description: 'The ID of the product this price is associated with.',
-            'x-expansionResources': {
-              oneOf: [
-                { $ref: '#/components/schemas/product' },
-                { $ref: '#/components/schemas/deleted_product' },
-              ],
-            },
-          }),
-        recurring: z
-          .union([RecurringSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The recurring components of a price such as `interval` and `usage_type`.',
-          }),
-        tax_behavior: z
-          .enum(['exclusive', 'inclusive', 'unspecified'])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Specifies whether the price is considered inclusive of taxes or exclusive of taxes. One of `inclusive`, `exclusive`, or `unspecified`. Once specified as either `inclusive` or `exclusive`, it cannot be changed.',
-          }),
-        tiers: z
-          .array(PriceTierSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. See also the documentation for `billing_scheme`.',
-          }),
-        tiers_mode: z
-          .enum(['graduated', 'volume'])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price. In `graduated` tiering, pricing can change as the quantity grows.',
-          }),
-        transform_quantity: z
-          .union([TransformQuantitySchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Apply a transformation to the reported usage or set quantity before computing the amount billed. Cannot be combined with `tiers`.',
-          }),
-        type: z
-          .enum(['one_time', 'recurring'])
-          .openapi({
-            description:
-              'One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.',
-          }),
-        unit_amount: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The unit amount in %s to be charged, represented as a whole integer if possible. Only set if `billing_scheme=per_unit`.',
-          }),
-        unit_amount_decimal: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places. Only set if `billing_scheme=per_unit`.',
-          }),
-      })
-      .openapi({
-        description:
-          'Prices define the unit cost, currency, and (optional) billing cycle for both recurring and one-time purchases of products.\n[Products](https://stripe.com/docs/api#products) help you track inventory or provisioning, and prices help you track payment terms. Different physical goods or levels of service should be represented by products, and pricing options should be represented by prices. This approach lets you change prices without having to change your provisioning scheme.\n\nFor example, you might have a single "gold" product that has prices for $10/month, $100/year, and €9 once.\n\nRelated guides: [Set up a subscription](https://stripe.com/docs/billing/subscriptions/set-up-subscription), [create an invoice](https://stripe.com/docs/billing/invoices/create), and more about [products and prices](https://stripe.com/docs/products-prices/overview).',
-        required: [
-          'active',
-          'billing_scheme',
-          'created',
-          'currency',
-          'id',
-          'livemode',
-          'metadata',
-          'object',
-          'product',
-          'type',
-        ],
-        title: 'Price',
-        'x-expandableFields': [
-          'currency_options',
-          'custom_unit_amount',
-          'product',
-          'recurring',
-          'tiers',
-          'transform_quantity',
-        ],
-        'x-resourceId': 'price',
-      }),
-  )
-  .openapi('Price')
-
 type ItemType = {
   amount_discount: number
   amount_subtotal: number
@@ -16664,24 +20270,6 @@ type ItemType = {
   quantity?: number | null
   taxes?: z.infer<typeof LineItemsTaxAmountSchema>[]
 }
-
-const InvoiceLineItemPeriodSchema: z.ZodType<InvoiceLineItemPeriodType> = z
-  .object({
-    end: z
-      .int()
-      .openapi({
-        description:
-          'The end of the period, which must be greater than or equal to the start. This value is inclusive.',
-      }),
-    start: z.int().openapi({ description: 'The start of the period. This value is inclusive.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['end', 'start'],
-    title: 'InvoiceLineItemPeriod',
-    'x-expandableFields': [],
-  })
-  .openapi('InvoiceLineItemPeriod')
 
 const InvoicesLineItemsProrationDetailsSchema: z.ZodType<InvoicesLineItemsProrationDetailsType> = z
   .object({
@@ -16757,77 +20345,9 @@ const CustomerAcceptanceSchema: z.ZodType<CustomerAcceptanceType> = z
 type MandateMultiUseType = { [key: string]: unknown }
 
 const MandateMultiUseSchema: z.ZodType<MandateMultiUseType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'mandate_multi_use', 'x-expandableFields': [] })
   .openapi('MandateMultiUse')
-
-const MandatePaymentMethodDetailsSchema: z.ZodType<MandatePaymentMethodDetailsType> = z
-  .lazy(() =>
-    z
-      .object({
-        acss_debit: MandateAcssDebitSchema.exactOptional(),
-        au_becs_debit: MandateAuBecsDebitSchema.exactOptional(),
-        bacs_debit: MandateBacsDebitSchema.exactOptional(),
-        blik: MandateBlikSchema.exactOptional(),
-        card: CardMandatePaymentMethodDetailsSchema.exactOptional(),
-        link: MandateLinkSchema.exactOptional(),
-        sepa_debit: MandateSepaDebitSchema.exactOptional(),
-        type: z
-          .string()
-          .max(5000)
-          .openapi({
-            description:
-              'The type of the payment method associated with this mandate. An additional hash is included on `payment_method_details` with a name matching this value. It contains mandate information specific to the payment method.',
-          }),
-        us_bank_account: MandateUsBankAccountSchema.exactOptional(),
-      })
-      .openapi({
-        description: '',
-        required: ['type'],
-        title: 'mandate_payment_method_details',
-        'x-expandableFields': [
-          'acss_debit',
-          'au_becs_debit',
-          'bacs_debit',
-          'blik',
-          'card',
-          'link',
-          'sepa_debit',
-          'us_bank_account',
-        ],
-      }),
-  )
-  .openapi('MandatePaymentMethodDetails')
-
-type MandateSingleUseType = { amount: number; currency: string }
-
-const MandateSingleUseSchema: z.ZodType<MandateSingleUseType> = z
-  .object({
-    amount: z.int().openapi({ description: 'On a single use mandate, the amount of the payment.' }),
-    currency: z
-      .string()
-      .openapi({ description: 'On a single use mandate, the currency of the payment.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['amount', 'currency'],
-    title: 'mandate_single_use',
-    'x-expandableFields': [],
-  })
-  .openapi('MandateSingleUse')
-
-type MandateType = {
-  customer_acceptance: z.infer<typeof CustomerAcceptanceSchema>
-  id: string
-  livemode: boolean
-  multi_use?: z.infer<typeof MandateMultiUseSchema>
-  object: 'mandate'
-  payment_method: string | z.infer<typeof PaymentMethodSchema>
-  payment_method_details: z.infer<typeof MandatePaymentMethodDetailsSchema>
-  single_use?: z.infer<typeof MandateSingleUseSchema>
-  status: 'active' | 'inactive' | 'pending'
-  type: 'multi_use' | 'single_use'
-}
 
 const MandateAcssDebitSchema = z
   .object({
@@ -16963,7 +20483,7 @@ const MandateBlikSchema = z
   .openapi('MandateBlik')
 
 const CardMandatePaymentMethodDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'card_mandate_payment_method_details',
@@ -16972,7 +20492,7 @@ const CardMandatePaymentMethodDetailsSchema = z
   .openapi('CardMandatePaymentMethodDetails')
 
 const MandateLinkSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'mandate_link', 'x-expandableFields': [] })
   .openapi('MandateLink')
 
@@ -16999,7 +20519,7 @@ const MandateSepaDebitSchema = z
   .openapi('MandateSepaDebit')
 
 const MandateUsBankAccountSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'mandate_us_bank_account', 'x-expandableFields': [] })
   .openapi('MandateUsBankAccount')
 
@@ -17013,6 +20533,71 @@ type MandatePaymentMethodDetailsType = {
   sepa_debit?: z.infer<typeof MandateSepaDebitSchema>
   type: string
   us_bank_account?: z.infer<typeof MandateUsBankAccountSchema>
+}
+
+const MandatePaymentMethodDetailsSchema: z.ZodType<MandatePaymentMethodDetailsType> = z
+  .object({
+    acss_debit: MandateAcssDebitSchema.exactOptional(),
+    au_becs_debit: MandateAuBecsDebitSchema.exactOptional(),
+    bacs_debit: MandateBacsDebitSchema.exactOptional(),
+    blik: MandateBlikSchema.exactOptional(),
+    card: CardMandatePaymentMethodDetailsSchema.exactOptional(),
+    link: MandateLinkSchema.exactOptional(),
+    sepa_debit: MandateSepaDebitSchema.exactOptional(),
+    type: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'The type of the payment method associated with this mandate. An additional hash is included on `payment_method_details` with a name matching this value. It contains mandate information specific to the payment method.',
+      }),
+    us_bank_account: MandateUsBankAccountSchema.exactOptional(),
+  })
+  .openapi({
+    description: '',
+    required: ['type'],
+    title: 'mandate_payment_method_details',
+    'x-expandableFields': [
+      'acss_debit',
+      'au_becs_debit',
+      'bacs_debit',
+      'blik',
+      'card',
+      'link',
+      'sepa_debit',
+      'us_bank_account',
+    ],
+  })
+  .openapi('MandatePaymentMethodDetails')
+
+type MandateSingleUseType = { amount: number; currency: string }
+
+const MandateSingleUseSchema: z.ZodType<MandateSingleUseType> = z
+  .object({
+    amount: z.int().openapi({ description: 'On a single use mandate, the amount of the payment.' }),
+    currency: z
+      .string()
+      .openapi({ description: 'On a single use mandate, the currency of the payment.' }),
+  })
+  .openapi({
+    description: '',
+    required: ['amount', 'currency'],
+    title: 'mandate_single_use',
+    'x-expandableFields': [],
+  })
+  .openapi('MandateSingleUse')
+
+type MandateType = {
+  customer_acceptance: z.infer<typeof CustomerAcceptanceSchema>
+  id: string
+  livemode: boolean
+  multi_use?: z.infer<typeof MandateMultiUseSchema>
+  object: 'mandate'
+  payment_method: string | z.infer<typeof PaymentMethodSchema>
+  payment_method_details: z.infer<typeof MandatePaymentMethodDetailsSchema>
+  single_use?: z.infer<typeof MandateSingleUseSchema>
+  status: 'active' | 'inactive' | 'pending'
+  type: 'multi_use' | 'single_use'
 }
 
 type NetworksType = { available: string[]; preferred?: string | null }
@@ -17961,7 +21546,7 @@ const PaymentIntentNextActionSchema: z.ZodType<PaymentIntentNextActionType> = z
           'Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.',
       }),
     use_stripe_sdk: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -18270,7 +21855,7 @@ const PaymentMethodOptionsBancontactSchema = z
   .openapi('PaymentMethodOptionsBancontact')
 
 const PaymentIntentPaymentMethodOptionsBlikSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_intent_payment_method_options_blik',
@@ -18501,23 +22086,6 @@ const PaymentMethodOptionsCardPresentSchema = z
   })
   .openapi('PaymentMethodOptionsCardPresent')
 
-const PaymentMethodOptionsCustomerBalanceEuBankAccountSchema = z
-  .object({
-    country: z
-      .enum(['BE', 'DE', 'ES', 'FR', 'IE', 'NL'])
-      .openapi({
-        description:
-          'The desired country code of the bank account information. Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['country'],
-    title: 'payment_method_options_customer_balance_eu_bank_account',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentMethodOptionsCustomerBalanceEuBankAccount')
-
 const PaymentMethodOptionsCustomerBalanceBankTransferSchema = z
   .object({
     eu_bank_transfer: PaymentMethodOptionsCustomerBalanceEuBankAccountSchema.exactOptional(),
@@ -18668,7 +22236,7 @@ const PaymentMethodOptionsIdealSchema = z
   .openapi('PaymentMethodOptionsIdeal')
 
 const PaymentMethodOptionsInteracPresentSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_options_interac_present',
@@ -18901,7 +22469,7 @@ const PaymentMethodOptionsPromptpaySchema = z
   .openapi('PaymentMethodOptionsPromptpay')
 
 const PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebitSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_intent_payment_method_options_mandate_options_sepa_debit',
@@ -18953,32 +22521,6 @@ const PaymentMethodOptionsSofortSchema = z
     required: [],
   })
   .openapi('PaymentMethodOptionsSofort')
-
-const LinkedAccountOptionsUsBankAccountSchema = z
-  .object({
-    permissions: z
-      .array(z.enum(['balances', 'ownership', 'payment_method', 'transactions']))
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of permissions to request. The `payment_method` permission must be included.',
-      }),
-    return_url: z
-      .string()
-      .max(5000)
-      .exactOptional()
-      .openapi({
-        description:
-          'For webview integrations only. Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'linked_account_options_us_bank_account',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('LinkedAccountOptionsUsBankAccount')
 
 const PaymentIntentPaymentMethodOptionsUsBankAccountSchema = z
   .object({
@@ -19561,20 +23103,20 @@ const PaymentMethodAcssDebitSchema: z.ZodType<PaymentMethodAcssDebitType> = z
 type PaymentMethodAffirmType = { [key: string]: unknown }
 
 const PaymentMethodAffirmSchema: z.ZodType<PaymentMethodAffirmType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_affirm', 'x-expandableFields': [] })
   .openapi('PaymentMethodAffirm')
 
 type PaymentMethodAfterpayClearpayType = { [key: string]: unknown }
 
 const PaymentMethodAfterpayClearpaySchema: z.ZodType<PaymentMethodAfterpayClearpayType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_afterpay_clearpay', 'x-expandableFields': [] })
   .openapi('PaymentMethodAfterpayClearpay')
 
 const PaymentFlowsPrivatePaymentMethodsAlipaySchema: z.ZodType<PaymentFlowsPrivatePaymentMethodsAlipayType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'PaymentFlowsPrivatePaymentMethodsAlipay',
@@ -19664,14 +23206,14 @@ const PaymentMethodBacsDebitSchema: z.ZodType<PaymentMethodBacsDebitType> = z
 type PaymentMethodBancontactType = { [key: string]: unknown }
 
 const PaymentMethodBancontactSchema: z.ZodType<PaymentMethodBancontactType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_bancontact', 'x-expandableFields': [] })
   .openapi('PaymentMethodBancontact')
 
 type PaymentMethodBlikType = { [key: string]: unknown }
 
 const PaymentMethodBlikSchema: z.ZodType<PaymentMethodBlikType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_blik', 'x-expandableFields': [] })
   .openapi('PaymentMethodBlik')
 
@@ -19789,14 +23331,14 @@ const PaymentMethodCardSchema: z.ZodType<PaymentMethodCardType> = z
 type PaymentMethodCardPresentType = { [key: string]: unknown }
 
 const PaymentMethodCardPresentSchema: z.ZodType<PaymentMethodCardPresentType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_card_present', 'x-expandableFields': [] })
   .openapi('PaymentMethodCardPresent')
 
 type PaymentMethodCustomerBalanceType = { [key: string]: unknown }
 
 const PaymentMethodCustomerBalanceSchema: z.ZodType<PaymentMethodCustomerBalanceType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_customer_balance', 'x-expandableFields': [] })
   .openapi('PaymentMethodCustomerBalance')
 
@@ -19945,14 +23487,14 @@ const PaymentMethodFpxSchema: z.ZodType<PaymentMethodFpxType> = z
 type PaymentMethodGiropayType = { [key: string]: unknown }
 
 const PaymentMethodGiropaySchema: z.ZodType<PaymentMethodGiropayType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_giropay', 'x-expandableFields': [] })
   .openapi('PaymentMethodGiropay')
 
 type PaymentMethodGrabpayType = { [key: string]: unknown }
 
 const PaymentMethodGrabpaySchema: z.ZodType<PaymentMethodGrabpayType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_grabpay', 'x-expandableFields': [] })
   .openapi('PaymentMethodGrabpay')
 
@@ -20050,7 +23592,7 @@ const PaymentMethodIdealSchema: z.ZodType<PaymentMethodIdealType> = z
 type PaymentMethodInteracPresentType = { [key: string]: unknown }
 
 const PaymentMethodInteracPresentSchema: z.ZodType<PaymentMethodInteracPresentType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_interac_present', 'x-expandableFields': [] })
   .openapi('PaymentMethodInteracPresent')
 
@@ -20103,7 +23645,7 @@ const PaymentMethodKlarnaSchema: z.ZodType<PaymentMethodKlarnaType> = z
 type PaymentMethodKonbiniType = { [key: string]: unknown }
 
 const PaymentMethodKonbiniSchema: z.ZodType<PaymentMethodKonbiniType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_konbini', 'x-expandableFields': [] })
   .openapi('PaymentMethodKonbini')
 
@@ -20134,7 +23676,7 @@ const PaymentMethodLinkSchema: z.ZodType<PaymentMethodLinkType> = z
 type PaymentMethodOxxoType = { [key: string]: unknown }
 
 const PaymentMethodOxxoSchema: z.ZodType<PaymentMethodOxxoType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_oxxo', 'x-expandableFields': [] })
   .openapi('PaymentMethodOxxo')
 
@@ -20211,21 +23753,21 @@ const PaymentMethodP24Schema: z.ZodType<PaymentMethodP24Type> = z
 type PaymentMethodPaynowType = { [key: string]: unknown }
 
 const PaymentMethodPaynowSchema: z.ZodType<PaymentMethodPaynowType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_paynow', 'x-expandableFields': [] })
   .openapi('PaymentMethodPaynow')
 
 type PaymentMethodPixType = { [key: string]: unknown }
 
 const PaymentMethodPixSchema: z.ZodType<PaymentMethodPixType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_pix', 'x-expandableFields': [] })
   .openapi('PaymentMethodPix')
 
 type PaymentMethodPromptpayType = { [key: string]: unknown }
 
 const PaymentMethodPromptpaySchema: z.ZodType<PaymentMethodPromptpayType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_promptpay', 'x-expandableFields': [] })
   .openapi('PaymentMethodPromptpay')
 
@@ -20407,7 +23949,7 @@ const PaymentMethodUsBankAccountSchema: z.ZodType<PaymentMethodUsBankAccountType
 type PaymentMethodWechatPayType = { [key: string]: unknown }
 
 const PaymentMethodWechatPaySchema: z.ZodType<PaymentMethodWechatPayType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_wechat_pay', 'x-expandableFields': [] })
   .openapi('PaymentMethodWechatPay')
 
@@ -20597,7 +24139,7 @@ const ThreeDSecureUsageSchema: z.ZodType<ThreeDSecureUsageType> = z
   .openapi('ThreeDSecureUsage')
 
 const PaymentMethodCardWalletAmexExpressCheckoutSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_card_wallet_amex_express_checkout',
@@ -20606,7 +24148,7 @@ const PaymentMethodCardWalletAmexExpressCheckoutSchema = z
   .openapi('PaymentMethodCardWalletAmexExpressCheckout')
 
 const PaymentMethodCardWalletApplePaySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_card_wallet_apple_pay',
@@ -20615,7 +24157,7 @@ const PaymentMethodCardWalletApplePaySchema = z
   .openapi('PaymentMethodCardWalletApplePay')
 
 const PaymentMethodCardWalletGooglePaySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_card_wallet_google_pay',
@@ -20669,7 +24211,7 @@ const PaymentMethodCardWalletMasterpassSchema = z
   .openapi('PaymentMethodCardWalletMasterpass')
 
 const PaymentMethodCardWalletSamsungPaySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_card_wallet_samsung_pay',
@@ -21130,7 +24672,7 @@ const PaymentMethodDetailsAcssDebitSchema: z.ZodType<PaymentMethodDetailsAcssDeb
 type PaymentMethodDetailsAffirmType = { [key: string]: unknown }
 
 const PaymentMethodDetailsAffirmSchema: z.ZodType<PaymentMethodDetailsAffirmType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_details_affirm', 'x-expandableFields': [] })
   .openapi('PaymentMethodDetailsAffirm')
 
@@ -21358,7 +24900,7 @@ const PaymentMethodDetailsBancontactSchema: z.ZodType<PaymentMethodDetailsBancon
 type PaymentMethodDetailsBlikType = { [key: string]: unknown }
 
 const PaymentMethodDetailsBlikSchema: z.ZodType<PaymentMethodDetailsBlikType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_details_blik', 'x-expandableFields': [] })
   .openapi('PaymentMethodDetailsBlik')
 
@@ -21492,7 +25034,7 @@ const ThreeDSecureDetailsSchema = z
   .openapi('ThreeDSecureDetails')
 
 const PaymentMethodDetailsCardWalletAmexExpressCheckoutSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_details_card_wallet_amex_express_checkout',
@@ -21501,7 +25043,7 @@ const PaymentMethodDetailsCardWalletAmexExpressCheckoutSchema = z
   .openapi('PaymentMethodDetailsCardWalletAmexExpressCheckout')
 
 const PaymentMethodDetailsCardWalletApplePaySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_details_card_wallet_apple_pay',
@@ -21510,7 +25052,7 @@ const PaymentMethodDetailsCardWalletApplePaySchema = z
   .openapi('PaymentMethodDetailsCardWalletApplePay')
 
 const PaymentMethodDetailsCardWalletGooglePaySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_details_card_wallet_google_pay',
@@ -21564,7 +25106,7 @@ const PaymentMethodDetailsCardWalletMasterpassSchema = z
   .openapi('PaymentMethodDetailsCardWalletMasterpass')
 
 const PaymentMethodDetailsCardWalletSamsungPaySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_details_card_wallet_samsung_pay',
@@ -21784,7 +25326,7 @@ type PaymentMethodDetailsCustomerBalanceType = { [key: string]: unknown }
 
 const PaymentMethodDetailsCustomerBalanceSchema: z.ZodType<PaymentMethodDetailsCustomerBalanceType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'payment_method_details_customer_balance',
@@ -22406,7 +25948,7 @@ const PaymentMethodDetailsKonbiniSchema: z.ZodType<PaymentMethodDetailsKonbiniTy
 type PaymentMethodDetailsLinkType = { [key: string]: unknown }
 
 const PaymentMethodDetailsLinkSchema: z.ZodType<PaymentMethodDetailsLinkType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_details_link', 'x-expandableFields': [] })
   .openapi('PaymentMethodDetailsLink')
 
@@ -22751,7 +26293,7 @@ const PaymentMethodDetailsSofortSchema: z.ZodType<PaymentMethodDetailsSofortType
 type PaymentMethodDetailsStripeAccountType = { [key: string]: unknown }
 
 const PaymentMethodDetailsStripeAccountSchema: z.ZodType<PaymentMethodDetailsStripeAccountType> = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'payment_method_details_stripe_account',
@@ -22821,7 +26363,7 @@ const PaymentMethodDetailsUsBankAccountSchema: z.ZodType<PaymentMethodDetailsUsB
 type PaymentMethodDetailsWechatType = { [key: string]: unknown }
 
 const PaymentMethodDetailsWechatSchema: z.ZodType<PaymentMethodDetailsWechatType> = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'payment_method_details_wechat', 'x-expandableFields': [] })
   .openapi('PaymentMethodDetailsWechat')
 
@@ -23058,6 +26600,12 @@ type PaymentMethodSepaDebitType = {
   generated_from?: z.infer<typeof SepaDebitGeneratedFromSchema> | null
   last4?: string | null
 }
+
+type PaymentSourceType =
+  | z.infer<typeof AccountSchema>
+  | z.infer<typeof BankAccountSchema>
+  | z.infer<typeof CardSchema>
+  | z.infer<typeof SourceSchema>
 
 const DeletedBankAccountSchema: z.ZodType<DeletedBankAccountType> = z
   .object({
@@ -23662,83 +27210,6 @@ const InvoiceSettingQuoteSettingSchema: z.ZodType<InvoiceSettingQuoteSettingType
   })
   .openapi('InvoiceSettingQuoteSetting')
 
-const ItemSchema: z.ZodType<ItemType> = z
-  .lazy(() =>
-    z
-      .object({
-        amount_discount: z
-          .int()
-          .openapi({
-            description:
-              'Total discount amount applied. If no discounts were applied, defaults to 0.',
-          }),
-        amount_subtotal: z
-          .int()
-          .openapi({ description: 'Total before any discounts or taxes are applied.' }),
-        amount_tax: z
-          .int()
-          .openapi({
-            description: 'Total tax amount applied. If no tax was applied, defaults to 0.',
-          }),
-        amount_total: z.int().openapi({ description: 'Total after discounts and taxes.' }),
-        currency: z
-          .string()
-          .openapi({
-            description:
-              'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
-          }),
-        description: z
-          .string()
-          .max(5000)
-          .openapi({
-            description:
-              'An arbitrary string attached to the object. Often useful for displaying to users. Defaults to product name.',
-          }),
-        discounts: z
-          .array(LineItemsDiscountAmountSchema)
-          .exactOptional()
-          .openapi({ description: 'The discounts applied to the line item.' }),
-        id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-        object: z
-          .literal('item')
-          .openapi({
-            description:
-              "String representing the object's type. Objects of the same type share the same value.",
-          }),
-        price: z
-          .union([PriceSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The price used to generate the line item.' }),
-        quantity: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The quantity of products being purchased.' }),
-        taxes: z
-          .array(LineItemsTaxAmountSchema)
-          .exactOptional()
-          .openapi({ description: 'The taxes applied to the line item.' }),
-      })
-      .openapi({
-        description: 'A line item.',
-        required: [
-          'amount_discount',
-          'amount_subtotal',
-          'amount_tax',
-          'amount_total',
-          'currency',
-          'description',
-          'id',
-          'object',
-        ],
-        title: 'LineItem',
-        'x-expandableFields': ['discounts', 'price', 'taxes'],
-        'x-resourceId': 'item',
-      }),
-  )
-  .openapi('Item')
-
 type QuotesResourceStatusTransitionsType = {
   accepted_at?: number | null
   canceled_at?: number | null
@@ -24243,6 +27714,17 @@ type QuotesResourceUpfrontType = {
   total_details: z.infer<typeof QuotesResourceTotalDetailsSchema>
 }
 
+type RadarEarlyFraudWarningType = {
+  actionable: boolean
+  charge: string | z.infer<typeof ChargeSchema>
+  created: number
+  fraud_type: string
+  id: string
+  livemode: boolean
+  object: 'radar.early_fraud_warning'
+  payment_intent?: string | z.infer<typeof PaymentIntentSchema>
+}
+
 type RadarReviewResourceLocationType = {
   city?: string | null
   country?: string | null
@@ -24505,7 +27987,7 @@ type SetupAttemptPaymentMethodDetailsAcssDebitType = { [key: string]: unknown }
 
 const SetupAttemptPaymentMethodDetailsAcssDebitSchema: z.ZodType<SetupAttemptPaymentMethodDetailsAcssDebitType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_acss_debit',
@@ -24517,7 +27999,7 @@ type SetupAttemptPaymentMethodDetailsAuBecsDebitType = { [key: string]: unknown 
 
 const SetupAttemptPaymentMethodDetailsAuBecsDebitSchema: z.ZodType<SetupAttemptPaymentMethodDetailsAuBecsDebitType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_au_becs_debit',
@@ -24529,7 +28011,7 @@ type SetupAttemptPaymentMethodDetailsBacsDebitType = { [key: string]: unknown }
 
 const SetupAttemptPaymentMethodDetailsBacsDebitSchema: z.ZodType<SetupAttemptPaymentMethodDetailsBacsDebitType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_bacs_debit',
@@ -24617,7 +28099,7 @@ type SetupAttemptPaymentMethodDetailsBlikType = { [key: string]: unknown }
 
 const SetupAttemptPaymentMethodDetailsBlikSchema: z.ZodType<SetupAttemptPaymentMethodDetailsBlikType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_blik',
@@ -24629,7 +28111,7 @@ type SetupAttemptPaymentMethodDetailsBoletoType = { [key: string]: unknown }
 
 const SetupAttemptPaymentMethodDetailsBoletoSchema: z.ZodType<SetupAttemptPaymentMethodDetailsBoletoType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_boleto',
@@ -24777,7 +28259,7 @@ type SetupAttemptPaymentMethodDetailsKlarnaType = { [key: string]: unknown }
 
 const SetupAttemptPaymentMethodDetailsKlarnaSchema: z.ZodType<SetupAttemptPaymentMethodDetailsKlarnaType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_klarna',
@@ -24789,7 +28271,7 @@ type SetupAttemptPaymentMethodDetailsLinkType = { [key: string]: unknown }
 
 const SetupAttemptPaymentMethodDetailsLinkSchema: z.ZodType<SetupAttemptPaymentMethodDetailsLinkType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_link',
@@ -24801,7 +28283,7 @@ type SetupAttemptPaymentMethodDetailsSepaDebitType = { [key: string]: unknown }
 
 const SetupAttemptPaymentMethodDetailsSepaDebitSchema: z.ZodType<SetupAttemptPaymentMethodDetailsSepaDebitType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_sepa_debit',
@@ -24889,7 +28371,7 @@ type SetupAttemptPaymentMethodDetailsUsBankAccountType = { [key: string]: unknow
 
 const SetupAttemptPaymentMethodDetailsUsBankAccountSchema: z.ZodType<SetupAttemptPaymentMethodDetailsUsBankAccountType> =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: '',
       title: 'setup_attempt_payment_method_details_us_bank_account',
@@ -25055,7 +28537,7 @@ const SetupIntentNextActionSchema: z.ZodType<SetupIntentNextActionType> = z
           'Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.',
       }),
     use_stripe_sdk: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -25323,7 +28805,7 @@ const SetupIntentPaymentMethodOptionsLinkSchema = z
   .openapi('SetupIntentPaymentMethodOptionsLink')
 
 const SetupIntentPaymentMethodOptionsMandateOptionsSepaDebitSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     title: 'setup_intent_payment_method_options_mandate_options_sepa_debit',
@@ -26761,6 +30243,371 @@ type TaxIdType = {
     | 'za_vat'
   value: string
   verification?: z.infer<typeof TaxIdVerificationSchema> | null
+}
+
+const TerminalReaderReaderResourceTippingConfigSchema = z
+  .object({
+    amount_eligible: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount used to calculate tip suggestions on tipping selection screen for this transaction. Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).',
+      }),
+  })
+  .openapi({
+    description: 'Represents a per-transaction tipping configuration',
+    title: 'TerminalReaderReaderResourceTippingConfig',
+    'x-expandableFields': [],
+    required: [],
+  })
+  .openapi('TerminalReaderReaderResourceTippingConfig')
+
+const TerminalReaderReaderResourceProcessConfigSchema = z
+  .object({
+    skip_tipping: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Override showing a tipping selection screen on this transaction.' }),
+    tipping: TerminalReaderReaderResourceTippingConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Represents a per-transaction override of a reader configuration',
+    title: 'TerminalReaderReaderResourceProcessConfig',
+    'x-expandableFields': ['tipping'],
+    required: [],
+  })
+  .openapi('TerminalReaderReaderResourceProcessConfig')
+
+type TerminalReaderReaderResourceProcessPaymentIntentActionType = {
+  payment_intent: string | z.infer<typeof PaymentIntentSchema>
+  process_config?: z.infer<typeof TerminalReaderReaderResourceProcessConfigSchema>
+}
+
+const TerminalReaderReaderResourceProcessPaymentIntentActionSchema: z.ZodType<TerminalReaderReaderResourceProcessPaymentIntentActionType> =
+  z
+    .object({
+      payment_intent: z
+        .union([z.string().max(5000), PaymentIntentSchema])
+        .openapi({
+          description: 'Most recent PaymentIntent processed by the reader.',
+          'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_intent' }] },
+        }),
+      process_config: TerminalReaderReaderResourceProcessConfigSchema.exactOptional(),
+    })
+    .openapi({
+      description: 'Represents a reader action to process a payment intent',
+      required: ['payment_intent'],
+      title: 'TerminalReaderReaderResourceProcessPaymentIntentAction',
+      'x-expandableFields': ['payment_intent', 'process_config'],
+    })
+    .openapi('TerminalReaderReaderResourceProcessPaymentIntentAction')
+
+const TerminalReaderReaderResourceProcessSetupIntentActionSchema = z
+  .object({
+    generated_card: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of a card PaymentMethod generated from the card_present PaymentMethod that may be attached to a Customer for future transactions. Only present if it was possible to generate a card PaymentMethod.',
+      }),
+    setup_intent: z
+      .union([z.string().max(5000), SetupIntentSchema])
+      .openapi({
+        description: 'Most recent SetupIntent processed by the reader.',
+        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/setup_intent' }] },
+      }),
+  })
+  .openapi({
+    description: 'Represents a reader action to process a setup intent',
+    required: ['setup_intent'],
+    title: 'TerminalReaderReaderResourceProcessSetupIntentAction',
+    'x-expandableFields': ['setup_intent'],
+  })
+  .openapi('TerminalReaderReaderResourceProcessSetupIntentAction')
+
+type TerminalReaderReaderResourceRefundPaymentActionType = {
+  amount?: number
+  charge?: string | z.infer<typeof ChargeSchema>
+  metadata?: { [key: string]: string }
+  payment_intent?: string | z.infer<typeof PaymentIntentSchema>
+  reason?: 'duplicate' | 'fraudulent' | 'requested_by_customer'
+  refund?: string | z.infer<typeof RefundSchema>
+  refund_application_fee?: boolean
+  reverse_transfer?: boolean
+}
+
+const TerminalReaderReaderResourceRefundPaymentActionSchema: z.ZodType<TerminalReaderReaderResourceRefundPaymentActionType> =
+  z
+    .object({
+      amount: z.int().exactOptional().openapi({ description: 'The amount being refunded.' }),
+      charge: z
+        .union([z.string().max(5000), ChargeSchema])
+        .exactOptional()
+        .openapi({
+          description: 'Charge that is being refunded.',
+          'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/charge' }] },
+        }),
+      metadata: z
+        .record(z.string(), z.string().max(500))
+        .exactOptional()
+        .openapi({
+          description:
+            'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
+        }),
+      payment_intent: z
+        .union([z.string().max(5000), PaymentIntentSchema])
+        .exactOptional()
+        .openapi({
+          description: 'Payment intent that is being refunded.',
+          'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_intent' }] },
+        }),
+      reason: z
+        .enum(['duplicate', 'fraudulent', 'requested_by_customer'])
+        .exactOptional()
+        .openapi({ description: 'The reason for the refund.' }),
+      refund: z
+        .union([z.string().max(5000), RefundSchema])
+        .exactOptional()
+        .openapi({
+          description: 'Unique identifier for the refund object.',
+          'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/refund' }] },
+        }),
+      refund_application_fee: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Boolean indicating whether the application fee should be refunded when refunding this charge. If a full charge refund is given, the full application fee will be refunded. Otherwise, the application fee will be refunded in an amount proportional to the amount of the charge refunded. An application fee can be refunded only by the application that created the charge.',
+        }),
+      reverse_transfer: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Boolean indicating whether the transfer should be reversed when refunding this charge. The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount). A transfer can be reversed only by the application that created the charge.',
+        }),
+    })
+    .openapi({
+      description: 'Represents a reader action to refund a payment',
+      title: 'TerminalReaderReaderResourceRefundPaymentAction',
+      'x-expandableFields': ['charge', 'payment_intent', 'refund'],
+      required: [],
+    })
+    .openapi('TerminalReaderReaderResourceRefundPaymentAction')
+
+const TerminalReaderReaderResourceLineItemSchema = z
+  .object({
+    amount: z
+      .int()
+      .openapi({
+        description:
+          'The amount of the line item. A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).',
+      }),
+    description: z.string().max(5000).openapi({ description: 'Description of the line item.' }),
+    quantity: z.int().openapi({ description: 'The quantity of the line item.' }),
+  })
+  .openapi({
+    description: 'Represents a line item to be displayed on the reader',
+    required: ['amount', 'description', 'quantity'],
+    title: 'TerminalReaderReaderResourceLineItem',
+    'x-expandableFields': [],
+  })
+  .openapi('TerminalReaderReaderResourceLineItem')
+
+const TerminalReaderReaderResourceCartSchema = z
+  .object({
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
+      }),
+    line_items: z
+      .array(TerminalReaderReaderResourceLineItemSchema)
+      .openapi({ description: 'List of line items in the cart.' }),
+    tax: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Tax amount for the entire cart. A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).',
+      }),
+    total: z
+      .int()
+      .openapi({
+        description:
+          'Total amount for the entire cart, including tax. A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).',
+      }),
+  })
+  .openapi({
+    description: 'Represents a cart to be displayed on the reader',
+    required: ['currency', 'line_items', 'total'],
+    title: 'TerminalReaderReaderResourceCart',
+    'x-expandableFields': ['line_items'],
+  })
+  .openapi('TerminalReaderReaderResourceCart')
+
+const TerminalReaderReaderResourceSetReaderDisplayActionSchema = z
+  .object({
+    cart: z
+      .union([TerminalReaderReaderResourceCartSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Cart object to be displayed by the reader.' }),
+    type: z
+      .literal('cart')
+      .openapi({ description: 'Type of information to be displayed by the reader.' }),
+  })
+  .openapi({
+    description: 'Represents a reader action to set the reader display',
+    required: ['type'],
+    title: 'TerminalReaderReaderResourceSetReaderDisplayAction',
+    'x-expandableFields': ['cart'],
+  })
+  .openapi('TerminalReaderReaderResourceSetReaderDisplayAction')
+
+type TerminalReaderReaderResourceReaderActionType = {
+  failure_code?: string | null
+  failure_message?: string | null
+  process_payment_intent?: z.infer<
+    typeof TerminalReaderReaderResourceProcessPaymentIntentActionSchema
+  >
+  process_setup_intent?: z.infer<typeof TerminalReaderReaderResourceProcessSetupIntentActionSchema>
+  refund_payment?: z.infer<typeof TerminalReaderReaderResourceRefundPaymentActionSchema>
+  set_reader_display?: z.infer<typeof TerminalReaderReaderResourceSetReaderDisplayActionSchema>
+  status: 'failed' | 'in_progress' | 'succeeded'
+  type: 'process_payment_intent' | 'process_setup_intent' | 'refund_payment' | 'set_reader_display'
+}
+
+const TerminalReaderReaderResourceReaderActionSchema: z.ZodType<TerminalReaderReaderResourceReaderActionType> =
+  z
+    .object({
+      failure_code: z
+        .string()
+        .max(5000)
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'Failure code, only set if status is `failed`.' }),
+      failure_message: z
+        .string()
+        .max(5000)
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'Detailed failure message, only set if status is `failed`.' }),
+      process_payment_intent:
+        TerminalReaderReaderResourceProcessPaymentIntentActionSchema.exactOptional(),
+      process_setup_intent:
+        TerminalReaderReaderResourceProcessSetupIntentActionSchema.exactOptional(),
+      refund_payment: TerminalReaderReaderResourceRefundPaymentActionSchema.exactOptional(),
+      set_reader_display: TerminalReaderReaderResourceSetReaderDisplayActionSchema.exactOptional(),
+      status: z
+        .enum(['failed', 'in_progress', 'succeeded'])
+        .openapi({ description: 'Status of the action performed by the reader.' }),
+      type: z
+        .enum([
+          'process_payment_intent',
+          'process_setup_intent',
+          'refund_payment',
+          'set_reader_display',
+        ])
+        .openapi({
+          description: 'Type of action performed by the reader.',
+          'x-stripeBypassValidation': true,
+        }),
+    })
+    .openapi({
+      description: 'Represents an action performed by the reader',
+      required: ['status', 'type'],
+      title: 'TerminalReaderReaderResourceReaderAction',
+      'x-expandableFields': [
+        'process_payment_intent',
+        'process_setup_intent',
+        'refund_payment',
+        'set_reader_display',
+      ],
+    })
+    .openapi('TerminalReaderReaderResourceReaderAction')
+
+const TerminalLocationSchema = z
+  .object({
+    address: AddressSchema,
+    configuration_overrides: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of a configuration that will be used to customize all readers in this location.',
+      }),
+    display_name: z
+      .string()
+      .max(5000)
+      .openapi({ description: 'The display name of the location.' }),
+    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
+    livemode: z
+      .boolean()
+      .openapi({
+        description:
+          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
+      }),
+    metadata: z
+      .record(z.string(), z.string().max(500))
+      .openapi({
+        description:
+          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
+      }),
+    object: z
+      .literal('terminal.location')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+  })
+  .openapi({
+    description:
+      'A Location represents a grouping of readers.\n\nRelated guide: [Fleet Management](https://stripe.com/docs/terminal/fleet/locations).',
+    required: ['address', 'display_name', 'id', 'livemode', 'metadata', 'object'],
+    title: 'TerminalLocationLocation',
+    'x-expandableFields': ['address'],
+    'x-resourceId': 'terminal.location',
+  })
+  .openapi('TerminalLocation')
+
+type TerminalReaderType = {
+  action?: z.infer<typeof TerminalReaderReaderResourceReaderActionSchema> | null
+  device_sw_version?: string | null
+  device_type:
+    | 'bbpos_chipper2x'
+    | 'bbpos_wisepad3'
+    | 'bbpos_wisepos_e'
+    | 'simulated_wisepos_e'
+    | 'stripe_m2'
+    | 'verifone_P400'
+  id: string
+  ip_address?: string | null
+  label: string
+  livemode: boolean
+  location?: (string | z.infer<typeof TerminalLocationSchema>) | null
+  metadata: { [key: string]: string }
+  object: 'terminal.reader'
+  serial_number: string
+  status?: string | null
+}
+
+type TokenType = {
+  bank_account?: z.infer<typeof BankAccountSchema>
+  card?: z.infer<typeof CardSchema>
+  client_ip?: string | null
+  created: number
+  id: string
+  livemode: boolean
+  object: 'token'
+  type: string
+  used: boolean
 }
 
 type TopupType = {
@@ -29122,138 +32969,6 @@ type TreasuryTransactionsResourceFlowDetailsType = {
     | 'received_debit'
 }
 
-const AccountCapabilityFutureRequirementsSchema = z
-  .object({
-    alternatives: z
-      .array(AccountRequirementsAlternativeSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fields that are due and can be satisfied by providing the corresponding alternative fields instead.',
-      }),
-    current_deadline: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Date on which `future_requirements` merges with the main `requirements` hash and `future_requirements` becomes empty. After the transition, `currently_due` requirements may immediately become `past_due`, but the account may also be given a grace period depending on the capability's enablement state prior to transitioning.",
-      }),
-    currently_due: z
-      .array(z.string().max(5000))
-      .openapi({
-        description:
-          'Fields that need to be collected to keep the capability enabled. If not collected by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.',
-      }),
-    disabled_reason: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is typed as a string for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is empty because fields in `future_requirements` will never disable the account.',
-      }),
-    errors: z
-      .array(AccountRequirementsErrorSchema)
-      .openapi({
-        description:
-          'Fields that are `currently_due` and need to be collected again because validation or verification failed.',
-      }),
-    eventually_due: z
-      .array(z.string().max(5000))
-      .openapi({
-        description:
-          'Fields that need to be collected assuming all volume thresholds are reached. As they become required, they appear in `currently_due` as well.',
-      }),
-    past_due: z
-      .array(z.string().max(5000))
-      .openapi({
-        description:
-          "Fields that weren't collected by `requirements.current_deadline`. These fields need to be collected to enable the capability on the account. New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.",
-      }),
-    pending_verification: z
-      .array(z.string().max(5000))
-      .openapi({
-        description:
-          'Fields that may become required depending on the results of verification or review. Will be an empty array unless an asynchronous verification is pending. If verification fails, these fields move to `eventually_due` or `currently_due`.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['currently_due', 'errors', 'eventually_due', 'past_due', 'pending_verification'],
-    title: 'AccountCapabilityFutureRequirements',
-    'x-expandableFields': ['alternatives', 'errors'],
-  })
-  .openapi('AccountCapabilityFutureRequirements')
-
-const AccountCapabilityRequirementsSchema = z
-  .object({
-    alternatives: z
-      .array(AccountRequirementsAlternativeSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fields that are due and can be satisfied by providing the corresponding alternative fields instead.',
-      }),
-    current_deadline: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Date by which the fields in `currently_due` must be collected to keep the capability enabled for the account. These fields may disable the capability sooner if the next threshold is reached before they are collected.',
-      }),
-    currently_due: z
-      .array(z.string().max(5000))
-      .openapi({
-        description:
-          'Fields that need to be collected to keep the capability enabled. If not collected by `current_deadline`, these fields appear in `past_due` as well, and the capability is disabled.',
-      }),
-    disabled_reason: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "If the capability is disabled, this string describes why. Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.\n\n`rejected.unsupported_business` means that the account's business is not supported by the capability. For example, payment methods may restrict the businesses they support in their terms of service:\n\n- [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)\n\nIf you believe that the rejection is in error, please contact support at https://support.stripe.com/contact/ for assistance.",
-      }),
-    errors: z
-      .array(AccountRequirementsErrorSchema)
-      .openapi({
-        description:
-          'Fields that are `currently_due` and need to be collected again because validation or verification failed.',
-      }),
-    eventually_due: z
-      .array(z.string().max(5000))
-      .openapi({
-        description:
-          'Fields that need to be collected assuming all volume thresholds are reached. As they become required, they appear in `currently_due` as well, and `current_deadline` becomes set.',
-      }),
-    past_due: z
-      .array(z.string().max(5000))
-      .openapi({
-        description:
-          "Fields that weren't collected by `current_deadline`. These fields need to be collected to enable the capability on the account.",
-      }),
-    pending_verification: z
-      .array(z.string().max(5000))
-      .openapi({
-        description:
-          'Fields that may become required depending on the results of verification or review. Will be an empty array unless an asynchronous verification is pending. If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['currently_due', 'errors', 'eventually_due', 'past_due', 'pending_verification'],
-    title: 'AccountCapabilityRequirements',
-    'x-expandableFields': ['alternatives', 'errors'],
-  })
-  .openapi('AccountCapabilityRequirements')
-
 const AccountLinkSchema = z
   .object({
     created: z
@@ -29488,161 +33203,6 @@ const BalanceSchema = z
     'x-resourceId': 'balance',
   })
   .openapi('Balance')
-
-const BankConnectionsResourceAccountholderSchema = z
-  .object({
-    account: z
-      .union([z.string().max(5000), AccountSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Stripe account this account belongs to. Should only be present if `account_holder.type` is `account`.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/account' }] },
-      }),
-    customer: z
-      .union([z.string().max(5000), CustomerSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the Stripe customer this account belongs to. Present if and only if `account_holder.type` is `customer`.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/customer' }] },
-      }),
-    type: z
-      .enum(['account', 'customer'])
-      .openapi({ description: 'Type of account holder that this account belongs to.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['type'],
-    title: 'BankConnectionsResourceAccountholder',
-    'x-expandableFields': ['account', 'customer'],
-  })
-  .openapi('BankConnectionsResourceAccountholder')
-
-const BankConnectionsResourceBalanceApiResourceCashBalanceSchema = z
-  .object({
-    available: z
-      .record(z.string(), z.int())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The funds available to the account holder. Typically this is the current balance less any holds.\n\nEach key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.\n\nEach value is a integer amount. A positive amount indicates money owed to the account holder. A negative amount indicates money owed by the account holder.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'BankConnectionsResourceBalanceAPIResourceCashBalance',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('BankConnectionsResourceBalanceApiResourceCashBalance')
-
-const BankConnectionsResourceBalanceApiResourceCreditBalanceSchema = z
-  .object({
-    used: z
-      .record(z.string(), z.int())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The credit that has been used by the account holder.\n\nEach key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.\n\nEach value is a integer amount. A positive amount indicates money owed to the account holder. A negative amount indicates money owed by the account holder.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'BankConnectionsResourceBalanceAPIResourceCreditBalance',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('BankConnectionsResourceBalanceApiResourceCreditBalance')
-
-const BankConnectionsResourceBalanceSchema = z
-  .object({
-    as_of: z
-      .int()
-      .openapi({
-        description:
-          'The time that the external institution calculated this balance. Measured in seconds since the Unix epoch.',
-      }),
-    cash: BankConnectionsResourceBalanceApiResourceCashBalanceSchema.exactOptional(),
-    credit: BankConnectionsResourceBalanceApiResourceCreditBalanceSchema.exactOptional(),
-    current: z
-      .record(z.string(), z.int())
-      .openapi({
-        description:
-          'The balances owed to (or by) the account holder.\n\nEach key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.\n\nEach value is a integer amount. A positive amount indicates money owed to the account holder. A negative amount indicates money owed by the account holder.',
-      }),
-    type: z
-      .enum(['cash', 'credit'])
-      .openapi({
-        description:
-          'The `type` of the balance. An additional hash is included on the balance with a name matching this value.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['as_of', 'current', 'type'],
-    title: 'BankConnectionsResourceBalance',
-    'x-expandableFields': ['cash', 'credit'],
-  })
-  .openapi('BankConnectionsResourceBalance')
-
-const BankConnectionsResourceBalanceRefreshSchema = z
-  .object({
-    last_attempted_at: z
-      .int()
-      .openapi({
-        description:
-          'The time at which the last refresh attempt was initiated. Measured in seconds since the Unix epoch.',
-      }),
-    status: z
-      .enum(['failed', 'pending', 'succeeded'])
-      .openapi({ description: 'The status of the last refresh attempt.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['last_attempted_at', 'status'],
-    title: 'BankConnectionsResourceBalanceRefresh',
-    'x-expandableFields': [],
-  })
-  .openapi('BankConnectionsResourceBalanceRefresh')
-
-const BankConnectionsResourceLinkAccountSessionFiltersSchema = z
-  .object({
-    countries: z
-      .array(z.string().max(5000))
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'List of countries from which to filter accounts.' }),
-  })
-  .openapi({
-    description: '',
-    title: 'BankConnectionsResourceLinkAccountSessionFilters',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('BankConnectionsResourceLinkAccountSessionFilters')
-
-const BankConnectionsResourceOwnershipRefreshSchema = z
-  .object({
-    last_attempted_at: z
-      .int()
-      .openapi({
-        description:
-          'The time at which the last refresh attempt was initiated. Measured in seconds since the Unix epoch.',
-      }),
-    status: z
-      .enum(['failed', 'pending', 'succeeded'])
-      .openapi({ description: 'The status of the last refresh attempt.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['last_attempted_at', 'status'],
-    title: 'BankConnectionsResourceOwnershipRefresh',
-    'x-expandableFields': [],
-  })
-  .openapi('BankConnectionsResourceOwnershipRefresh')
 
 const PortalBusinessProfileSchema = z
   .object({
@@ -30203,7 +33763,7 @@ const BillingPortalSessionSchema = z
   })
   .openapi('BillingPortalSession')
 
-const CapabilitySchema = z
+const CapabilitySchema: z.ZodType<CapabilityType> = z
   .object({
     account: z
       .union([z.string().max(5000), AccountSchema])
@@ -30246,2507 +33806,7 @@ const CapabilitySchema = z
   })
   .openapi('Capability')
 
-const PaymentPagesCheckoutSessionAfterExpirationRecoverySchema = z
-  .object({
-    allow_promotion_codes: z
-      .boolean()
-      .openapi({
-        description:
-          'Enables user redeemable promotion codes on the recovered Checkout Sessions. Defaults to `false`',
-      }),
-    enabled: z
-      .boolean()
-      .openapi({
-        description:
-          'If `true`, a recovery url will be generated to recover this Checkout Session if it\nexpires before a transaction is completed. It will be attached to the\nCheckout Session object upon expiration.',
-      }),
-    expires_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The timestamp at which the recovery URL will expire.' }),
-    url: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'URL that creates a new Checkout Session when clicked that is a copy of this expired Checkout Session',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['allow_promotion_codes', 'enabled'],
-    title: 'PaymentPagesCheckoutSessionAfterExpirationRecovery',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionAfterExpirationRecovery')
-
-const PaymentPagesCheckoutSessionAfterExpirationSchema = z
-  .object({
-    recovery: z
-      .union([PaymentPagesCheckoutSessionAfterExpirationRecoverySchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'When set, configuration used to recover the Checkout Session on expiry.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentPagesCheckoutSessionAfterExpiration',
-    'x-expandableFields': ['recovery'],
-    required: [],
-  })
-  .openapi('PaymentPagesCheckoutSessionAfterExpiration')
-
-const PaymentPagesCheckoutSessionAutomaticTaxSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({ description: 'Indicates whether automatic tax is enabled for the session' }),
-    status: z
-      .enum(['complete', 'failed', 'requires_location_inputs'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the most recent automated tax calculation for this session.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['enabled'],
-    title: 'PaymentPagesCheckoutSessionAutomaticTax',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionAutomaticTax')
-
-const PaymentPagesCheckoutSessionConsentSchema = z
-  .object({
-    promotions: z
-      .enum(['opt_in', 'opt_out'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `opt_in`, the customer consents to receiving promotional communications\nfrom the merchant about this Checkout Session.',
-      }),
-    terms_of_service: z
-      .literal('accepted')
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.",
-        'x-stripeBypassValidation': true,
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentPagesCheckoutSessionConsent',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('PaymentPagesCheckoutSessionConsent')
-
-const PaymentPagesCheckoutSessionConsentCollectionSchema = z
-  .object({
-    promotions: z
-      .enum(['auto', 'none'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "If set to `auto`, enables the collection of customer consent for promotional communications. The Checkout\nSession will determine whether to display an option to opt into promotional communication\nfrom the merchant depending on the customer's locale. Only available to US merchants.",
-      }),
-    terms_of_service: z
-      .enum(['none', 'required'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to `required`, it requires customers to accept the terms of service before being able to pay.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentPagesCheckoutSessionConsentCollection',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('PaymentPagesCheckoutSessionConsentCollection')
-
-const PaymentPagesCheckoutSessionCustomFieldsOptionSchema = z
-  .object({
-    label: z
-      .string()
-      .max(5000)
-      .openapi({
-        description: 'The label for the option, displayed to the customer. Up to 100 characters.',
-      }),
-    value: z
-      .string()
-      .max(5000)
-      .openapi({
-        description:
-          'The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer. Must be unique to this option, alphanumeric, and up to 100 characters.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['label', 'value'],
-    title: 'PaymentPagesCheckoutSessionCustomFieldsOption',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomFieldsOption')
-
-const PaymentPagesCheckoutSessionCustomFieldsDropdownSchema = z
-  .object({
-    options: z
-      .array(PaymentPagesCheckoutSessionCustomFieldsOptionSchema)
-      .openapi({
-        description: 'The options available for the customer to select. Up to 200 options allowed.',
-      }),
-    value: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The option selected by the customer. This will be the `value` for the option.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['options'],
-    title: 'PaymentPagesCheckoutSessionCustomFieldsDropdown',
-    'x-expandableFields': ['options'],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomFieldsDropdown')
-
-const PaymentPagesCheckoutSessionCustomFieldsLabelSchema = z
-  .object({
-    custom: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Custom text for the label, displayed to the customer. Up to 50 characters.',
-      }),
-    type: z.literal('custom').openapi({ description: 'The type of the label.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['type'],
-    title: 'PaymentPagesCheckoutSessionCustomFieldsLabel',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomFieldsLabel')
-
-const PaymentPagesCheckoutSessionCustomFieldsNumericSchema = z
-  .object({
-    value: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The value entered by the customer, containing only digits.' }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentPagesCheckoutSessionCustomFieldsNumeric',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomFieldsNumeric')
-
-const PaymentPagesCheckoutSessionCustomFieldsTextSchema = z
-  .object({
-    value: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The value entered by the customer.' }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentPagesCheckoutSessionCustomFieldsText',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomFieldsText')
-
-const PaymentPagesCheckoutSessionCustomFieldsSchema = z
-  .object({
-    dropdown: z
-      .union([PaymentPagesCheckoutSessionCustomFieldsDropdownSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Configuration for `type=dropdown` fields.' }),
-    key: z
-      .string()
-      .max(5000)
-      .openapi({
-        description:
-          'String of your choice that your integration can use to reconcile this field. Must be unique to this field, alphanumeric, and up to 200 characters.',
-      }),
-    label: PaymentPagesCheckoutSessionCustomFieldsLabelSchema,
-    numeric: z
-      .union([PaymentPagesCheckoutSessionCustomFieldsNumericSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Configuration for `type=numeric` fields.' }),
-    optional: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether the customer is required to complete the field before completing the Checkout Session. Defaults to `false`.',
-      }),
-    text: z
-      .union([PaymentPagesCheckoutSessionCustomFieldsTextSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Configuration for `type=text` fields.' }),
-    type: z
-      .enum(['dropdown', 'numeric', 'text'])
-      .openapi({ description: 'The type of the field.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['key', 'label', 'optional', 'type'],
-    title: 'PaymentPagesCheckoutSessionCustomFields',
-    'x-expandableFields': ['dropdown', 'label', 'numeric', 'text'],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomFields')
-
-const PaymentPagesCheckoutSessionCustomTextPositionSchema = z
-  .object({
-    message: z
-      .string()
-      .max(500)
-      .openapi({ description: 'Text may be up to 1000 characters in length.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['message'],
-    title: 'PaymentPagesCheckoutSessionCustomTextPosition',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomTextPosition')
-
-const PaymentPagesCheckoutSessionCustomTextSchema = z
-  .object({
-    shipping_address: z
-      .union([PaymentPagesCheckoutSessionCustomTextPositionSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Custom text that should be displayed alongside shipping address collection.',
-      }),
-    submit: z
-      .union([PaymentPagesCheckoutSessionCustomTextPositionSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom text that should be displayed alongside the payment confirmation button.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentPagesCheckoutSessionCustomText',
-    'x-expandableFields': ['shipping_address', 'submit'],
-    required: [],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomText')
-
-const PaymentPagesCheckoutSessionTaxIdSchema = z
-  .object({
-    type: z
-      .enum([
-        'ae_trn',
-        'au_abn',
-        'au_arn',
-        'bg_uic',
-        'br_cnpj',
-        'br_cpf',
-        'ca_bn',
-        'ca_gst_hst',
-        'ca_pst_bc',
-        'ca_pst_mb',
-        'ca_pst_sk',
-        'ca_qst',
-        'ch_vat',
-        'cl_tin',
-        'eg_tin',
-        'es_cif',
-        'eu_oss_vat',
-        'eu_vat',
-        'gb_vat',
-        'ge_vat',
-        'hk_br',
-        'hu_tin',
-        'id_npwp',
-        'il_vat',
-        'in_gst',
-        'is_vat',
-        'jp_cn',
-        'jp_rn',
-        'jp_trn',
-        'ke_pin',
-        'kr_brn',
-        'li_uid',
-        'mx_rfc',
-        'my_frp',
-        'my_itn',
-        'my_sst',
-        'no_vat',
-        'nz_gst',
-        'ph_tin',
-        'ru_inn',
-        'ru_kpp',
-        'sa_vat',
-        'sg_gst',
-        'sg_uen',
-        'si_tin',
-        'th_vat',
-        'tr_tin',
-        'tw_vat',
-        'ua_vat',
-        'unknown',
-        'us_ein',
-        'za_vat',
-      ])
-      .openapi({
-        description:
-          'The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`',
-      }),
-    value: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The value of the tax ID.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['type'],
-    title: 'PaymentPagesCheckoutSessionTaxID',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionTaxId')
-
-const PaymentPagesCheckoutSessionCustomerDetailsSchema = z
-  .object({
-    address: z
-      .union([AddressSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The customer's address after a completed Checkout Session. Note: This property is populated only for sessions on or after March 30, 2022.",
-      }),
-    email: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The email associated with the Customer, if one exists, on the Checkout Session after a completed Checkout Session or at time of session expiry.\nOtherwise, if the customer has consented to promotional content, this value is the most recent valid email provided by the customer on the Checkout form.',
-      }),
-    name: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The customer's name after a completed Checkout Session. Note: This property is populated only for sessions on or after March 30, 2022.",
-      }),
-    phone: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: "The customer's phone number after a completed Checkout Session." }),
-    tax_exempt: z
-      .enum(['exempt', 'none', 'reverse'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The customer’s tax exempt status after a completed Checkout Session.',
-      }),
-    tax_ids: z
-      .array(PaymentPagesCheckoutSessionTaxIdSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The customer’s tax IDs after a completed Checkout Session.' }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentPagesCheckoutSessionCustomerDetails',
-    'x-expandableFields': ['address', 'tax_ids'],
-    required: [],
-  })
-  .openapi('PaymentPagesCheckoutSessionCustomerDetails')
-
-const PaymentPagesCheckoutSessionInvoiceSettingsSchema = z
-  .object({
-    account_tax_ids: z
-      .array(
-        z
-          .union([z.string().max(5000), TaxIdSchema, DeletedTaxIdSchema])
-          .openapi({
-            'x-expansionResources': {
-              oneOf: [
-                { $ref: '#/components/schemas/tax_id' },
-                { $ref: '#/components/schemas/deleted_tax_id' },
-              ],
-            },
-          }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The account tax IDs associated with the invoice.' }),
-    custom_fields: z
-      .array(InvoiceSettingCustomFieldSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Custom fields displayed on the invoice.' }),
-    description: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'An arbitrary string attached to the object. Often useful for displaying to users.',
-      }),
-    footer: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Footer displayed on the invoice.' }),
-    metadata: z
-      .record(z.string(), z.string().max(500))
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
-      }),
-    rendering_options: z
-      .union([InvoiceSettingRenderingOptionsSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Options for invoice PDF rendering.' }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentPagesCheckoutSessionInvoiceSettings',
-    'x-expandableFields': ['account_tax_ids', 'custom_fields', 'rendering_options'],
-    required: [],
-  })
-  .openapi('PaymentPagesCheckoutSessionInvoiceSettings')
-
-const PaymentPagesCheckoutSessionInvoiceCreationSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({
-        description: 'Indicates whether invoice creation is enabled for the Checkout Session.',
-      }),
-    invoice_data: PaymentPagesCheckoutSessionInvoiceSettingsSchema,
-  })
-  .openapi({
-    description: '',
-    required: ['enabled', 'invoice_data'],
-    title: 'PaymentPagesCheckoutSessionInvoiceCreation',
-    'x-expandableFields': ['invoice_data'],
-  })
-  .openapi('PaymentPagesCheckoutSessionInvoiceCreation')
-
-const PaymentLinksResourceCompletionBehaviorConfirmationPageSchema = z
-  .object({
-    custom_message: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The custom message that is displayed to the customer after the purchase is complete.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentLinksResourceCompletionBehaviorConfirmationPage',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('PaymentLinksResourceCompletionBehaviorConfirmationPage')
-
-const PaymentLinksResourceCompletionBehaviorRedirectSchema = z
-  .object({
-    url: z
-      .string()
-      .max(5000)
-      .openapi({
-        description: 'The URL the customer will be redirected to after the purchase is complete.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['url'],
-    title: 'PaymentLinksResourceCompletionBehaviorRedirect',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentLinksResourceCompletionBehaviorRedirect')
-
-const PaymentLinksResourceAfterCompletionSchema = z
-  .object({
-    hosted_confirmation:
-      PaymentLinksResourceCompletionBehaviorConfirmationPageSchema.exactOptional(),
-    redirect: PaymentLinksResourceCompletionBehaviorRedirectSchema.exactOptional(),
-    type: z
-      .enum(['hosted_confirmation', 'redirect'])
-      .openapi({ description: 'The specified behavior after the purchase is complete.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['type'],
-    title: 'PaymentLinksResourceAfterCompletion',
-    'x-expandableFields': ['hosted_confirmation', 'redirect'],
-  })
-  .openapi('PaymentLinksResourceAfterCompletion')
-
-const PaymentLinksResourceAutomaticTaxSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({
-        description:
-          "If `true`, tax will be calculated automatically using the customer's location.",
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['enabled'],
-    title: 'PaymentLinksResourceAutomaticTax',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentLinksResourceAutomaticTax')
-
-const PaymentLinksResourceConsentCollectionSchema = z
-  .object({
-    promotions: z
-      .enum(['auto', 'none'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to `auto`, enables the collection of customer consent for promotional communications.',
-      }),
-    terms_of_service: z
-      .enum(['none', 'required'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "If set to `required`, it requires cutomers to accept the terms of service before being able to pay. If set to `none`, customers won't be shown a checkbox to accept the terms of service.",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentLinksResourceConsentCollection',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('PaymentLinksResourceConsentCollection')
-
-const PaymentLinksResourceCustomFieldsDropdownOptionSchema = z
-  .object({
-    label: z
-      .string()
-      .max(5000)
-      .openapi({
-        description: 'The label for the option, displayed to the customer. Up to 100 characters.',
-      }),
-    value: z
-      .string()
-      .max(5000)
-      .openapi({
-        description:
-          'The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer. Must be unique to this option, alphanumeric, and up to 100 characters.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['label', 'value'],
-    title: 'PaymentLinksResourceCustomFieldsDropdownOption',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentLinksResourceCustomFieldsDropdownOption')
-
-const PaymentLinksResourceCustomFieldsDropdownSchema = z
-  .object({
-    options: z
-      .array(PaymentLinksResourceCustomFieldsDropdownOptionSchema)
-      .openapi({
-        description: 'The options available for the customer to select. Up to 200 options allowed.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['options'],
-    title: 'PaymentLinksResourceCustomFieldsDropdown',
-    'x-expandableFields': ['options'],
-  })
-  .openapi('PaymentLinksResourceCustomFieldsDropdown')
-
-const PaymentLinksResourceCustomFieldsLabelSchema = z
-  .object({
-    custom: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Custom text for the label, displayed to the customer. Up to 50 characters.',
-      }),
-    type: z.literal('custom').openapi({ description: 'The type of the label.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['type'],
-    title: 'PaymentLinksResourceCustomFieldsLabel',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentLinksResourceCustomFieldsLabel')
-
-const PaymentLinksResourceCustomFieldsSchema = z
-  .object({
-    dropdown: z
-      .union([PaymentLinksResourceCustomFieldsDropdownSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Configuration for `type=dropdown` fields.' }),
-    key: z
-      .string()
-      .max(5000)
-      .openapi({
-        description:
-          'String of your choice that your integration can use to reconcile this field. Must be unique to this field, alphanumeric, and up to 200 characters.',
-      }),
-    label: PaymentLinksResourceCustomFieldsLabelSchema,
-    optional: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether the customer is required to complete the field before completing the Checkout Session. Defaults to `false`.',
-      }),
-    type: z
-      .enum(['dropdown', 'numeric', 'text'])
-      .openapi({ description: 'The type of the field.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['key', 'label', 'optional', 'type'],
-    title: 'PaymentLinksResourceCustomFields',
-    'x-expandableFields': ['dropdown', 'label'],
-  })
-  .openapi('PaymentLinksResourceCustomFields')
-
-const PaymentLinksResourceCustomTextPositionSchema = z
-  .object({
-    message: z
-      .string()
-      .max(500)
-      .openapi({ description: 'Text may be up to 1000 characters in length.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['message'],
-    title: 'PaymentLinksResourceCustomTextPosition',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentLinksResourceCustomTextPosition')
-
-const PaymentLinksResourceCustomTextSchema = z
-  .object({
-    shipping_address: z
-      .union([PaymentLinksResourceCustomTextPositionSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Custom text that should be displayed alongside shipping address collection.',
-      }),
-    submit: z
-      .union([PaymentLinksResourceCustomTextPositionSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom text that should be displayed alongside the payment confirmation button.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentLinksResourceCustomText',
-    'x-expandableFields': ['shipping_address', 'submit'],
-    required: [],
-  })
-  .openapi('PaymentLinksResourceCustomText')
-
-const PaymentLinksResourceInvoiceSettingsSchema = z
-  .object({
-    account_tax_ids: z
-      .array(
-        z
-          .union([z.string().max(5000), TaxIdSchema, DeletedTaxIdSchema])
-          .openapi({
-            'x-expansionResources': {
-              oneOf: [
-                { $ref: '#/components/schemas/tax_id' },
-                { $ref: '#/components/schemas/deleted_tax_id' },
-              ],
-            },
-          }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The account tax IDs associated with the invoice.' }),
-    custom_fields: z
-      .array(InvoiceSettingCustomFieldSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'A list of up to 4 custom fields to be displayed on the invoice.' }),
-    description: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'An arbitrary string attached to the object. Often useful for displaying to users.',
-      }),
-    footer: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Footer to be displayed on the invoice.' }),
-    metadata: z
-      .record(z.string(), z.string().max(500))
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
-      }),
-    rendering_options: z
-      .union([InvoiceSettingRenderingOptionsSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Options for invoice PDF rendering.' }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentLinksResourceInvoiceSettings',
-    'x-expandableFields': ['account_tax_ids', 'custom_fields', 'rendering_options'],
-    required: [],
-  })
-  .openapi('PaymentLinksResourceInvoiceSettings')
-
-const PaymentLinksResourceInvoiceCreationSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({ description: 'Enable creating an invoice on successful payment.' }),
-    invoice_data: z
-      .union([PaymentLinksResourceInvoiceSettingsSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Configuration for the invoice. Default invoice values will be used if unspecified.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['enabled'],
-    title: 'PaymentLinksResourceInvoiceCreation',
-    'x-expandableFields': ['invoice_data'],
-  })
-  .openapi('PaymentLinksResourceInvoiceCreation')
-
-const PaymentLinksResourcePaymentIntentDataSchema = z
-  .object({
-    capture_method: z
-      .enum(['automatic', 'manual'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "Indicates when the funds will be captured from the customer's account.",
-        'x-stripeBypassValidation': true,
-      }),
-    setup_future_usage: z
-      .enum(['off_session', 'on_session'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that you intend to make future payments with the payment method collected during checkout.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentLinksResourcePaymentIntentData',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('PaymentLinksResourcePaymentIntentData')
-
-const PaymentLinksResourcePhoneNumberCollectionSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({ description: 'If `true`, a phone number will be collected during checkout.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['enabled'],
-    title: 'PaymentLinksResourcePhoneNumberCollection',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentLinksResourcePhoneNumberCollection')
-
-const PaymentLinksResourceShippingAddressCollectionSchema = z
-  .object({
-    allowed_countries: z
-      .array(
-        z.enum([
-          'AC',
-          'AD',
-          'AE',
-          'AF',
-          'AG',
-          'AI',
-          'AL',
-          'AM',
-          'AO',
-          'AQ',
-          'AR',
-          'AT',
-          'AU',
-          'AW',
-          'AX',
-          'AZ',
-          'BA',
-          'BB',
-          'BD',
-          'BE',
-          'BF',
-          'BG',
-          'BH',
-          'BI',
-          'BJ',
-          'BL',
-          'BM',
-          'BN',
-          'BO',
-          'BQ',
-          'BR',
-          'BS',
-          'BT',
-          'BV',
-          'BW',
-          'BY',
-          'BZ',
-          'CA',
-          'CD',
-          'CF',
-          'CG',
-          'CH',
-          'CI',
-          'CK',
-          'CL',
-          'CM',
-          'CN',
-          'CO',
-          'CR',
-          'CV',
-          'CW',
-          'CY',
-          'CZ',
-          'DE',
-          'DJ',
-          'DK',
-          'DM',
-          'DO',
-          'DZ',
-          'EC',
-          'EE',
-          'EG',
-          'EH',
-          'ER',
-          'ES',
-          'ET',
-          'FI',
-          'FJ',
-          'FK',
-          'FO',
-          'FR',
-          'GA',
-          'GB',
-          'GD',
-          'GE',
-          'GF',
-          'GG',
-          'GH',
-          'GI',
-          'GL',
-          'GM',
-          'GN',
-          'GP',
-          'GQ',
-          'GR',
-          'GS',
-          'GT',
-          'GU',
-          'GW',
-          'GY',
-          'HK',
-          'HN',
-          'HR',
-          'HT',
-          'HU',
-          'ID',
-          'IE',
-          'IL',
-          'IM',
-          'IN',
-          'IO',
-          'IQ',
-          'IS',
-          'IT',
-          'JE',
-          'JM',
-          'JO',
-          'JP',
-          'KE',
-          'KG',
-          'KH',
-          'KI',
-          'KM',
-          'KN',
-          'KR',
-          'KW',
-          'KY',
-          'KZ',
-          'LA',
-          'LB',
-          'LC',
-          'LI',
-          'LK',
-          'LR',
-          'LS',
-          'LT',
-          'LU',
-          'LV',
-          'LY',
-          'MA',
-          'MC',
-          'MD',
-          'ME',
-          'MF',
-          'MG',
-          'MK',
-          'ML',
-          'MM',
-          'MN',
-          'MO',
-          'MQ',
-          'MR',
-          'MS',
-          'MT',
-          'MU',
-          'MV',
-          'MW',
-          'MX',
-          'MY',
-          'MZ',
-          'NA',
-          'NC',
-          'NE',
-          'NG',
-          'NI',
-          'NL',
-          'NO',
-          'NP',
-          'NR',
-          'NU',
-          'NZ',
-          'OM',
-          'PA',
-          'PE',
-          'PF',
-          'PG',
-          'PH',
-          'PK',
-          'PL',
-          'PM',
-          'PN',
-          'PR',
-          'PS',
-          'PT',
-          'PY',
-          'QA',
-          'RE',
-          'RO',
-          'RS',
-          'RU',
-          'RW',
-          'SA',
-          'SB',
-          'SC',
-          'SE',
-          'SG',
-          'SH',
-          'SI',
-          'SJ',
-          'SK',
-          'SL',
-          'SM',
-          'SN',
-          'SO',
-          'SR',
-          'SS',
-          'ST',
-          'SV',
-          'SX',
-          'SZ',
-          'TA',
-          'TC',
-          'TD',
-          'TF',
-          'TG',
-          'TH',
-          'TJ',
-          'TK',
-          'TL',
-          'TM',
-          'TN',
-          'TO',
-          'TR',
-          'TT',
-          'TV',
-          'TW',
-          'TZ',
-          'UA',
-          'UG',
-          'US',
-          'UY',
-          'UZ',
-          'VA',
-          'VC',
-          'VE',
-          'VG',
-          'VN',
-          'VU',
-          'WF',
-          'WS',
-          'XK',
-          'YE',
-          'YT',
-          'ZA',
-          'ZM',
-          'ZW',
-          'ZZ',
-        ]),
-      )
-      .openapi({
-        description:
-          'An array of two-letter ISO country codes representing which countries Checkout should provide as options for shipping locations. Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['allowed_countries'],
-    title: 'PaymentLinksResourceShippingAddressCollection',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentLinksResourceShippingAddressCollection')
-
-const PaymentLinksResourceShippingOptionSchema = z
-  .object({
-    shipping_amount: z
-      .int()
-      .openapi({ description: 'A non-negative integer in cents representing how much to charge.' }),
-    shipping_rate: z
-      .union([z.string().max(5000), ShippingRateSchema])
-      .openapi({
-        description: 'The ID of the Shipping Rate to use for this shipping option.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/shipping_rate' }] },
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['shipping_amount', 'shipping_rate'],
-    title: 'PaymentLinksResourceShippingOption',
-    'x-expandableFields': ['shipping_rate'],
-  })
-  .openapi('PaymentLinksResourceShippingOption')
-
-const PaymentLinksResourceSubscriptionDataSchema = z
-  .object({
-    description: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The subscription's description, meant to be displayable to the customer. Use this field to optionally store an explanation of the subscription.",
-      }),
-    trial_period_days: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Integer representing the number of trial period days before the customer is charged for the first time.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'PaymentLinksResourceSubscriptionData',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('PaymentLinksResourceSubscriptionData')
-
-const PaymentLinksResourceTaxIdCollectionSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({ description: 'Indicates whether tax ID collection is enabled for the session.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['enabled'],
-    title: 'PaymentLinksResourceTaxIdCollection',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentLinksResourceTaxIdCollection')
-
-const PaymentLinksResourceTransferDataSchema = z
-  .object({
-    amount: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount in %s that will be transferred to the destination account. By default, the entire amount is transferred to the destination.',
-      }),
-    destination: z
-      .union([z.string().max(5000), AccountSchema])
-      .openapi({
-        description: 'The connected account receiving the transfer.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/account' }] },
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['destination'],
-    title: 'PaymentLinksResourceTransferData',
-    'x-expandableFields': ['destination'],
-  })
-  .openapi('PaymentLinksResourceTransferData')
-
-const PaymentLinkSchema = z
-  .object({
-    active: z
-      .boolean()
-      .openapi({
-        description:
-          "Whether the payment link's `url` is active. If `false`, customers visiting the URL will be shown a page saying that the link has been deactivated.",
-      }),
-    after_completion: PaymentLinksResourceAfterCompletionSchema,
-    allow_promotion_codes: z
-      .boolean()
-      .openapi({ description: 'Whether user redeemable promotion codes are enabled.' }),
-    application_fee_amount: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.",
-      }),
-    application_fee_percent: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.",
-      }),
-    automatic_tax: PaymentLinksResourceAutomaticTaxSchema,
-    billing_address_collection: z
-      .enum(['auto', 'required'])
-      .openapi({ description: "Configuration for collecting the customer's billing address." }),
-    consent_collection: z
-      .union([PaymentLinksResourceConsentCollectionSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'When set, provides configuration to gather active consent from customers.',
-      }),
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
-      }),
-    custom_fields: z
-      .array(PaymentLinksResourceCustomFieldsSchema)
-      .openapi({
-        description:
-          'Collect additional information from your customer using custom fields. Up to 2 fields are supported.',
-      }),
-    custom_text: PaymentLinksResourceCustomTextSchema,
-    customer_creation: z
-      .enum(['always', 'if_required'])
-      .openapi({ description: 'Configuration for Customer creation during checkout.' }),
-    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-    invoice_creation: z
-      .union([PaymentLinksResourceInvoiceCreationSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Configuration for creating invoice for payment mode payment links.',
-      }),
-    line_items: z
-      .object({
-        data: z.array(ItemSchema).openapi({ description: 'Details about each object.' }),
-        has_more: z
-          .boolean()
-          .openapi({
-            description:
-              'True if this list has another page of items after this one that can be fetched.',
-          }),
-        object: z
-          .literal('list')
-          .openapi({
-            description:
-              "String representing the object's type. Objects of the same type share the same value. Always has the value `list`.",
-          }),
-        url: z
-          .string()
-          .max(5000)
-          .openapi({ description: 'The URL where this list can be accessed.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The line items representing what is being sold.',
-        required: ['data', 'has_more', 'object', 'url'],
-        title: 'PaymentLinksResourceListLineItems',
-        'x-expandableFields': ['data'],
-      }),
-    livemode: z
-      .boolean()
-      .openapi({
-        description:
-          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-      }),
-    metadata: z
-      .record(z.string(), z.string().max(500))
-      .openapi({
-        description:
-          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
-      }),
-    object: z
-      .literal('payment_link')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    on_behalf_of: z
-      .union([z.string().max(5000), AccountSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The account on behalf of which to charge. See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/account' }] },
-      }),
-    payment_intent_data: z
-      .union([PaymentLinksResourcePaymentIntentDataSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the parameters to be passed to PaymentIntent creation during checkout.',
-      }),
-    payment_method_collection: z
-      .enum(['always', 'if_required'])
-      .openapi({ description: 'Configuration for collecting a payment method during checkout.' }),
-    payment_method_types: z
-      .array(
-        z
-          .enum([
-            'affirm',
-            'afterpay_clearpay',
-            'alipay',
-            'au_becs_debit',
-            'bacs_debit',
-            'bancontact',
-            'blik',
-            'boleto',
-            'card',
-            'eps',
-            'fpx',
-            'giropay',
-            'grabpay',
-            'ideal',
-            'klarna',
-            'konbini',
-            'oxxo',
-            'p24',
-            'paynow',
-            'pix',
-            'promptpay',
-            'sepa_debit',
-            'sofort',
-            'us_bank_account',
-            'wechat_pay',
-          ])
-          .openapi({ 'x-stripeBypassValidation': true }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of payment method types that customers can use. When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).",
-      }),
-    phone_number_collection: PaymentLinksResourcePhoneNumberCollectionSchema,
-    shipping_address_collection: z
-      .union([PaymentLinksResourceShippingAddressCollectionSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: "Configuration for collecting the customer's shipping address." }),
-    shipping_options: z
-      .array(PaymentLinksResourceShippingOptionSchema)
-      .openapi({ description: 'The shipping rate options applied to the session.' }),
-    submit_type: z
-      .enum(['auto', 'book', 'donate', 'pay'])
-      .openapi({
-        description:
-          'Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.',
-      }),
-    subscription_data: z
-      .union([PaymentLinksResourceSubscriptionDataSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When creating a subscription, the specified configuration data will be used. There must be at least one line item with a recurring price to use `subscription_data`.',
-      }),
-    tax_id_collection: PaymentLinksResourceTaxIdCollectionSchema,
-    transfer_data: z
-      .union([PaymentLinksResourceTransferDataSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.',
-      }),
-    url: z
-      .string()
-      .max(5000)
-      .openapi({ description: 'The public URL that can be shared with customers.' }),
-  })
-  .openapi({
-    description:
-      'A payment link is a shareable URL that will take your customers to a hosted payment page. A payment link can be shared and used multiple times.\n\nWhen a customer opens a payment link it will open a new [checkout session](https://stripe.com/docs/api/checkout/sessions) to render the payment page. You can use [checkout session events](https://stripe.com/docs/api/events/types#event_types-checkout.session.completed) to track payments through payment links.\n\nRelated guide: [Payment Links API](https://stripe.com/docs/payments/payment-links/api)',
-    required: [
-      'active',
-      'after_completion',
-      'allow_promotion_codes',
-      'automatic_tax',
-      'billing_address_collection',
-      'currency',
-      'custom_fields',
-      'custom_text',
-      'customer_creation',
-      'id',
-      'livemode',
-      'metadata',
-      'object',
-      'payment_method_collection',
-      'phone_number_collection',
-      'shipping_options',
-      'submit_type',
-      'tax_id_collection',
-      'url',
-    ],
-    title: 'PaymentLink',
-    'x-expandableFields': [
-      'after_completion',
-      'automatic_tax',
-      'consent_collection',
-      'custom_fields',
-      'custom_text',
-      'invoice_creation',
-      'line_items',
-      'on_behalf_of',
-      'payment_intent_data',
-      'phone_number_collection',
-      'shipping_address_collection',
-      'shipping_options',
-      'subscription_data',
-      'tax_id_collection',
-      'transfer_data',
-    ],
-    'x-resourceId': 'payment_link',
-  })
-  .openapi('PaymentLink')
-
-const CheckoutAcssDebitMandateOptionsSchema = z
-  .object({
-    custom_mandate_url: z
-      .string()
-      .max(5000)
-      .exactOptional()
-      .openapi({ description: 'A URL for custom mandate text' }),
-    default_for: z
-      .array(z.enum(['invoice', 'subscription']))
-      .exactOptional()
-      .openapi({
-        description:
-          'List of Stripe products where this mandate can be selected automatically. Returned when the Session is in `setup` mode.',
-      }),
-    interval_description: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Description of the interval. Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.",
-      }),
-    payment_schedule: z
-      .enum(['combined', 'interval', 'sporadic'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Payment schedule for the mandate.' }),
-    transaction_type: z
-      .enum(['business', 'personal'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Transaction type of the mandate.' }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutAcssDebitMandateOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutAcssDebitMandateOptions')
-
-const CheckoutAcssDebitPaymentMethodOptionsSchema = z
-  .object({
-    currency: z
-      .enum(['cad', 'usd'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Currency supported by the bank account. Returned when the Session is in `setup` mode.',
-      }),
-    mandate_options: CheckoutAcssDebitMandateOptionsSchema.exactOptional(),
-    setup_future_usage: z
-      .enum(['none', 'off_session', 'on_session'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-    verification_method: z
-      .enum(['automatic', 'instant', 'microdeposits'])
-      .exactOptional()
-      .openapi({
-        description: 'Bank account verification method.',
-        'x-stripeBypassValidation': true,
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutAcssDebitPaymentMethodOptions',
-    'x-expandableFields': ['mandate_options'],
-    required: [],
-  })
-  .openapi('CheckoutAcssDebitPaymentMethodOptions')
-
-const CheckoutAffirmPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutAffirmPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutAffirmPaymentMethodOptions')
-
-const CheckoutAfterpayClearpayPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutAfterpayClearpayPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutAfterpayClearpayPaymentMethodOptions')
-
-const CheckoutAlipayPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutAlipayPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutAlipayPaymentMethodOptions')
-
-const CheckoutAuBecsDebitPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutAuBecsDebitPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutAuBecsDebitPaymentMethodOptions')
-
-const CheckoutBacsDebitPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .enum(['none', 'off_session', 'on_session'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutBacsDebitPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutBacsDebitPaymentMethodOptions')
-
-const CheckoutBancontactPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutBancontactPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutBancontactPaymentMethodOptions')
-
-const CheckoutBoletoPaymentMethodOptionsSchema = z
-  .object({
-    expires_after_days: z
-      .int()
-      .openapi({
-        description:
-          'The number of calendar days before a Boleto voucher expires. For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto voucher will expire on Wednesday at 23:59 America/Sao_Paulo time.',
-      }),
-    setup_future_usage: z
-      .enum(['none', 'off_session', 'on_session'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['expires_after_days'],
-    title: 'CheckoutBoletoPaymentMethodOptions',
-    'x-expandableFields': [],
-  })
-  .openapi('CheckoutBoletoPaymentMethodOptions')
-
-const CheckoutCardInstallmentsOptionsSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if installments are enabled' }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutCardInstallmentsOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutCardInstallmentsOptions')
-
-const CheckoutCardPaymentMethodOptionsSchema = z
-  .object({
-    installments: CheckoutCardInstallmentsOptionsSchema.exactOptional(),
-    setup_future_usage: z
-      .enum(['none', 'off_session', 'on_session'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-    statement_descriptor_suffix_kana: z
-      .string()
-      .max(5000)
-      .exactOptional()
-      .openapi({
-        description:
-          'Provides information about a card payment that customers see on their statements. Concatenated with the Kana prefix (shortened Kana descriptor) or Kana statement descriptor that’s set on the account to form the complete statement descriptor. Maximum 22 characters. On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 22 characters.',
-      }),
-    statement_descriptor_suffix_kanji: z
-      .string()
-      .max(5000)
-      .exactOptional()
-      .openapi({
-        description:
-          'Provides information about a card payment that customers see on their statements. Concatenated with the Kanji prefix (shortened Kanji descriptor) or Kanji statement descriptor that’s set on the account to form the complete statement descriptor. Maximum 17 characters. On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutCardPaymentMethodOptions',
-    'x-expandableFields': ['installments'],
-    required: [],
-  })
-  .openapi('CheckoutCardPaymentMethodOptions')
-
-const CheckoutCustomerBalanceBankTransferPaymentMethodOptionsSchema = z
-  .object({
-    eu_bank_transfer: PaymentMethodOptionsCustomerBalanceEuBankAccountSchema.exactOptional(),
-    requested_address_types: z
-      .array(
-        z
-          .enum(['iban', 'sepa', 'sort_code', 'spei', 'zengin'])
-          .openapi({ 'x-stripeBypassValidation': true }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'List of address types that should be returned in the financial_addresses response. If not specified, all valid types will be returned.\n\nPermitted values include: `sort_code`, `zengin`, `iban`, or `spei`.',
-      }),
-    type: z
-      .enum(['eu_bank_transfer', 'gb_bank_transfer', 'jp_bank_transfer', 'mx_bank_transfer'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.',
-        'x-stripeBypassValidation': true,
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutCustomerBalanceBankTransferPaymentMethodOptions',
-    'x-expandableFields': ['eu_bank_transfer'],
-    required: [],
-  })
-  .openapi('CheckoutCustomerBalanceBankTransferPaymentMethodOptions')
-
-const CheckoutCustomerBalancePaymentMethodOptionsSchema = z
-  .object({
-    bank_transfer: CheckoutCustomerBalanceBankTransferPaymentMethodOptionsSchema.exactOptional(),
-    funding_type: z
-      .literal('bank_transfer')
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The funding method type to be used when there are not enough funds in the customer balance. Permitted values include: `bank_transfer`.',
-      }),
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutCustomerBalancePaymentMethodOptions',
-    'x-expandableFields': ['bank_transfer'],
-    required: [],
-  })
-  .openapi('CheckoutCustomerBalancePaymentMethodOptions')
-
-const CheckoutEpsPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutEpsPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutEpsPaymentMethodOptions')
-
-const CheckoutFpxPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutFpxPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutFpxPaymentMethodOptions')
-
-const CheckoutGiropayPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutGiropayPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutGiropayPaymentMethodOptions')
-
-const CheckoutGrabPayPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutGrabPayPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutGrabPayPaymentMethodOptions')
-
-const CheckoutIdealPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutIdealPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutIdealPaymentMethodOptions')
-
-const CheckoutKlarnaPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .enum(['none', 'off_session', 'on_session'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutKlarnaPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutKlarnaPaymentMethodOptions')
-
-const CheckoutKonbiniPaymentMethodOptionsSchema = z
-  .object({
-    expires_after_days: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of calendar days (between 1 and 60) after which Konbini payment instructions will expire. For example, if a PaymentIntent is confirmed with Konbini and `expires_after_days` set to 2 on Monday JST, the instructions will expire on Wednesday 23:59:59 JST.',
-      }),
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutKonbiniPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutKonbiniPaymentMethodOptions')
-
-const CheckoutOxxoPaymentMethodOptionsSchema = z
-  .object({
-    expires_after_days: z
-      .int()
-      .openapi({
-        description:
-          'The number of calendar days before an OXXO invoice expires. For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.',
-      }),
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['expires_after_days'],
-    title: 'CheckoutOxxoPaymentMethodOptions',
-    'x-expandableFields': [],
-  })
-  .openapi('CheckoutOxxoPaymentMethodOptions')
-
-const CheckoutP24PaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutP24PaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutP24PaymentMethodOptions')
-
-const CheckoutPaynowPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutPaynowPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutPaynowPaymentMethodOptions')
-
-const CheckoutPixPaymentMethodOptionsSchema = z
-  .object({
-    expires_after_seconds: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The number of seconds after which Pix payment will expire.' }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutPixPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutPixPaymentMethodOptions')
-
-const CheckoutSepaDebitPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .enum(['none', 'off_session', 'on_session'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutSepaDebitPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutSepaDebitPaymentMethodOptions')
-
-const CheckoutSofortPaymentMethodOptionsSchema = z
-  .object({
-    setup_future_usage: z
-      .literal('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutSofortPaymentMethodOptions',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('CheckoutSofortPaymentMethodOptions')
-
-const CheckoutUsBankAccountPaymentMethodOptionsSchema = z
-  .object({
-    financial_connections: LinkedAccountOptionsUsBankAccountSchema.exactOptional(),
-    setup_future_usage: z
-      .enum(['none', 'off_session', 'on_session'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates that you intend to make future payments with this PaymentIntent's payment method.\n\nProviding this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete. If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.\n\nWhen processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).",
-      }),
-    verification_method: z
-      .enum(['automatic', 'instant'])
-      .exactOptional()
-      .openapi({
-        description: 'Bank account verification method.',
-        'x-stripeBypassValidation': true,
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutUsBankAccountPaymentMethodOptions',
-    'x-expandableFields': ['financial_connections'],
-    required: [],
-  })
-  .openapi('CheckoutUsBankAccountPaymentMethodOptions')
-
-const CheckoutSessionPaymentMethodOptionsSchema = z
-  .object({
-    acss_debit: CheckoutAcssDebitPaymentMethodOptionsSchema.exactOptional(),
-    affirm: CheckoutAffirmPaymentMethodOptionsSchema.exactOptional(),
-    afterpay_clearpay: CheckoutAfterpayClearpayPaymentMethodOptionsSchema.exactOptional(),
-    alipay: CheckoutAlipayPaymentMethodOptionsSchema.exactOptional(),
-    au_becs_debit: CheckoutAuBecsDebitPaymentMethodOptionsSchema.exactOptional(),
-    bacs_debit: CheckoutBacsDebitPaymentMethodOptionsSchema.exactOptional(),
-    bancontact: CheckoutBancontactPaymentMethodOptionsSchema.exactOptional(),
-    boleto: CheckoutBoletoPaymentMethodOptionsSchema.exactOptional(),
-    card: CheckoutCardPaymentMethodOptionsSchema.exactOptional(),
-    customer_balance: CheckoutCustomerBalancePaymentMethodOptionsSchema.exactOptional(),
-    eps: CheckoutEpsPaymentMethodOptionsSchema.exactOptional(),
-    fpx: CheckoutFpxPaymentMethodOptionsSchema.exactOptional(),
-    giropay: CheckoutGiropayPaymentMethodOptionsSchema.exactOptional(),
-    grabpay: CheckoutGrabPayPaymentMethodOptionsSchema.exactOptional(),
-    ideal: CheckoutIdealPaymentMethodOptionsSchema.exactOptional(),
-    klarna: CheckoutKlarnaPaymentMethodOptionsSchema.exactOptional(),
-    konbini: CheckoutKonbiniPaymentMethodOptionsSchema.exactOptional(),
-    oxxo: CheckoutOxxoPaymentMethodOptionsSchema.exactOptional(),
-    p24: CheckoutP24PaymentMethodOptionsSchema.exactOptional(),
-    paynow: CheckoutPaynowPaymentMethodOptionsSchema.exactOptional(),
-    pix: CheckoutPixPaymentMethodOptionsSchema.exactOptional(),
-    sepa_debit: CheckoutSepaDebitPaymentMethodOptionsSchema.exactOptional(),
-    sofort: CheckoutSofortPaymentMethodOptionsSchema.exactOptional(),
-    us_bank_account: CheckoutUsBankAccountPaymentMethodOptionsSchema.exactOptional(),
-  })
-  .openapi({
-    description: '',
-    title: 'CheckoutSessionPaymentMethodOptions',
-    'x-expandableFields': [
-      'acss_debit',
-      'affirm',
-      'afterpay_clearpay',
-      'alipay',
-      'au_becs_debit',
-      'bacs_debit',
-      'bancontact',
-      'boleto',
-      'card',
-      'customer_balance',
-      'eps',
-      'fpx',
-      'giropay',
-      'grabpay',
-      'ideal',
-      'klarna',
-      'konbini',
-      'oxxo',
-      'p24',
-      'paynow',
-      'pix',
-      'sepa_debit',
-      'sofort',
-      'us_bank_account',
-    ],
-    required: [],
-  })
-  .openapi('CheckoutSessionPaymentMethodOptions')
-
-const PaymentPagesCheckoutSessionPhoneNumberCollectionSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({
-        description: 'Indicates whether phone number collection is enabled for the session',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['enabled'],
-    title: 'PaymentPagesCheckoutSessionPhoneNumberCollection',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionPhoneNumberCollection')
-
-const PaymentPagesCheckoutSessionShippingAddressCollectionSchema = z
-  .object({
-    allowed_countries: z
-      .array(
-        z.enum([
-          'AC',
-          'AD',
-          'AE',
-          'AF',
-          'AG',
-          'AI',
-          'AL',
-          'AM',
-          'AO',
-          'AQ',
-          'AR',
-          'AT',
-          'AU',
-          'AW',
-          'AX',
-          'AZ',
-          'BA',
-          'BB',
-          'BD',
-          'BE',
-          'BF',
-          'BG',
-          'BH',
-          'BI',
-          'BJ',
-          'BL',
-          'BM',
-          'BN',
-          'BO',
-          'BQ',
-          'BR',
-          'BS',
-          'BT',
-          'BV',
-          'BW',
-          'BY',
-          'BZ',
-          'CA',
-          'CD',
-          'CF',
-          'CG',
-          'CH',
-          'CI',
-          'CK',
-          'CL',
-          'CM',
-          'CN',
-          'CO',
-          'CR',
-          'CV',
-          'CW',
-          'CY',
-          'CZ',
-          'DE',
-          'DJ',
-          'DK',
-          'DM',
-          'DO',
-          'DZ',
-          'EC',
-          'EE',
-          'EG',
-          'EH',
-          'ER',
-          'ES',
-          'ET',
-          'FI',
-          'FJ',
-          'FK',
-          'FO',
-          'FR',
-          'GA',
-          'GB',
-          'GD',
-          'GE',
-          'GF',
-          'GG',
-          'GH',
-          'GI',
-          'GL',
-          'GM',
-          'GN',
-          'GP',
-          'GQ',
-          'GR',
-          'GS',
-          'GT',
-          'GU',
-          'GW',
-          'GY',
-          'HK',
-          'HN',
-          'HR',
-          'HT',
-          'HU',
-          'ID',
-          'IE',
-          'IL',
-          'IM',
-          'IN',
-          'IO',
-          'IQ',
-          'IS',
-          'IT',
-          'JE',
-          'JM',
-          'JO',
-          'JP',
-          'KE',
-          'KG',
-          'KH',
-          'KI',
-          'KM',
-          'KN',
-          'KR',
-          'KW',
-          'KY',
-          'KZ',
-          'LA',
-          'LB',
-          'LC',
-          'LI',
-          'LK',
-          'LR',
-          'LS',
-          'LT',
-          'LU',
-          'LV',
-          'LY',
-          'MA',
-          'MC',
-          'MD',
-          'ME',
-          'MF',
-          'MG',
-          'MK',
-          'ML',
-          'MM',
-          'MN',
-          'MO',
-          'MQ',
-          'MR',
-          'MS',
-          'MT',
-          'MU',
-          'MV',
-          'MW',
-          'MX',
-          'MY',
-          'MZ',
-          'NA',
-          'NC',
-          'NE',
-          'NG',
-          'NI',
-          'NL',
-          'NO',
-          'NP',
-          'NR',
-          'NU',
-          'NZ',
-          'OM',
-          'PA',
-          'PE',
-          'PF',
-          'PG',
-          'PH',
-          'PK',
-          'PL',
-          'PM',
-          'PN',
-          'PR',
-          'PS',
-          'PT',
-          'PY',
-          'QA',
-          'RE',
-          'RO',
-          'RS',
-          'RU',
-          'RW',
-          'SA',
-          'SB',
-          'SC',
-          'SE',
-          'SG',
-          'SH',
-          'SI',
-          'SJ',
-          'SK',
-          'SL',
-          'SM',
-          'SN',
-          'SO',
-          'SR',
-          'SS',
-          'ST',
-          'SV',
-          'SX',
-          'SZ',
-          'TA',
-          'TC',
-          'TD',
-          'TF',
-          'TG',
-          'TH',
-          'TJ',
-          'TK',
-          'TL',
-          'TM',
-          'TN',
-          'TO',
-          'TR',
-          'TT',
-          'TV',
-          'TW',
-          'TZ',
-          'UA',
-          'UG',
-          'US',
-          'UY',
-          'UZ',
-          'VA',
-          'VC',
-          'VE',
-          'VG',
-          'VN',
-          'VU',
-          'WF',
-          'WS',
-          'XK',
-          'YE',
-          'YT',
-          'ZA',
-          'ZM',
-          'ZW',
-          'ZZ',
-        ]),
-      )
-      .openapi({
-        description:
-          'An array of two-letter ISO country codes representing which countries Checkout should provide as options for\nshipping locations. Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.',
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['allowed_countries'],
-    title: 'PaymentPagesCheckoutSessionShippingAddressCollection',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionShippingAddressCollection')
-
-const PaymentPagesCheckoutSessionShippingCostSchema = z
-  .object({
-    amount_subtotal: z
-      .int()
-      .openapi({ description: 'Total shipping cost before any discounts or taxes are applied.' }),
-    amount_tax: z
-      .int()
-      .openapi({
-        description:
-          'Total tax amount applied due to shipping costs. If no tax was applied, defaults to 0.',
-      }),
-    amount_total: z
-      .int()
-      .openapi({ description: 'Total shipping cost after discounts and taxes are applied.' }),
-    shipping_rate: z
-      .union([z.string().max(5000), ShippingRateSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the ShippingRate for this order.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/shipping_rate' }] },
-      }),
-    taxes: z
-      .array(LineItemsTaxAmountSchema)
-      .exactOptional()
-      .openapi({ description: 'The taxes applied to the shipping rate.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['amount_subtotal', 'amount_tax', 'amount_total'],
-    title: 'PaymentPagesCheckoutSessionShippingCost',
-    'x-expandableFields': ['shipping_rate', 'taxes'],
-  })
-  .openapi('PaymentPagesCheckoutSessionShippingCost')
-
-const PaymentPagesCheckoutSessionShippingOptionSchema = z
-  .object({
-    shipping_amount: z
-      .int()
-      .openapi({ description: 'A non-negative integer in cents representing how much to charge.' }),
-    shipping_rate: z
-      .union([z.string().max(5000), ShippingRateSchema])
-      .openapi({
-        description: 'The shipping rate.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/shipping_rate' }] },
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['shipping_amount', 'shipping_rate'],
-    title: 'PaymentPagesCheckoutSessionShippingOption',
-    'x-expandableFields': ['shipping_rate'],
-  })
-  .openapi('PaymentPagesCheckoutSessionShippingOption')
-
-const PaymentPagesCheckoutSessionTaxIdCollectionSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({ description: 'Indicates whether tax ID collection is enabled for the session' }),
-  })
-  .openapi({
-    description: '',
-    required: ['enabled'],
-    title: 'PaymentPagesCheckoutSessionTaxIDCollection',
-    'x-expandableFields': [],
-  })
-  .openapi('PaymentPagesCheckoutSessionTaxIdCollection')
-
-const PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownSchema = z
-  .object({
-    discounts: z
-      .array(LineItemsDiscountAmountSchema)
-      .openapi({ description: 'The aggregated discounts.' }),
-    taxes: z
-      .array(LineItemsTaxAmountSchema)
-      .openapi({ description: 'The aggregated tax amounts by rate.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['discounts', 'taxes'],
-    title: 'PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown',
-    'x-expandableFields': ['discounts', 'taxes'],
-  })
-  .openapi('PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown')
-
-const PaymentPagesCheckoutSessionTotalDetailsSchema = z
-  .object({
-    amount_discount: z.int().openapi({ description: 'This is the sum of all the discounts.' }),
-    amount_shipping: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'This is the sum of all the shipping amounts.' }),
-    amount_tax: z.int().openapi({ description: 'This is the sum of all the tax amounts.' }),
-    breakdown: PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownSchema.exactOptional(),
-  })
-  .openapi({
-    description: '',
-    required: ['amount_discount', 'amount_tax'],
-    title: 'PaymentPagesCheckoutSessionTotalDetails',
-    'x-expandableFields': ['breakdown'],
-  })
-  .openapi('PaymentPagesCheckoutSessionTotalDetails')
-
-const CheckoutSessionSchema = z
+const CheckoutSessionSchema: z.ZodType<CheckoutSessionType> = z
   .object({
     after_expiration: z
       .union([PaymentPagesCheckoutSessionAfterExpirationSchema])
@@ -33261,137 +34321,7 @@ const CountrySpecSchema = z
   })
   .openapi('CountrySpec')
 
-const CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransactionSchema = z
-  .object({
-    payment_intent: z
-      .union([z.string().max(5000), PaymentIntentSchema])
-      .openapi({
-        description:
-          'The [Payment Intent](https://stripe.com/docs/api/payment_intents/object) that funds were applied to.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_intent' }] },
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['payment_intent'],
-    title: 'CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction',
-    'x-expandableFields': ['payment_intent'],
-  })
-  .openapi('CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction')
-
-const CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransferSchema =
-  z
-    .object({
-      bic: z
-        .string()
-        .max(5000)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'The BIC of the bank of the sender of the funding.' }),
-      iban_last4: z
-        .string()
-        .max(5000)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'The last 4 digits of the IBAN of the sender of the funding.' }),
-      sender_name: z
-        .string()
-        .max(5000)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'The full name of the sender, as supplied by the sending bank.' }),
-    })
-    .openapi({
-      description: '',
-      title:
-        'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransfer',
-      'x-expandableFields': [],
-      required: [],
-    })
-    .openapi(
-      'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransfer',
-    )
-
-const CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferSchema =
-  z
-    .object({
-      eu_bank_transfer:
-        CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransferSchema.exactOptional(),
-      reference: z
-        .string()
-        .max(5000)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'The user-supplied reference field on the bank transfer.' }),
-      type: z
-        .enum(['eu_bank_transfer', 'gb_bank_transfer', 'jp_bank_transfer', 'mx_bank_transfer'])
-        .openapi({
-          description:
-            'The funding method type used to fund the customer balance. Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.',
-          'x-stripeBypassValidation': true,
-        }),
-    })
-    .openapi({
-      description: '',
-      required: ['type'],
-      title:
-        'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer',
-      'x-expandableFields': ['eu_bank_transfer'],
-    })
-    .openapi(
-      'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer',
-    )
-
-const CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionSchema = z
-  .object({
-    bank_transfer:
-      CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferSchema,
-  })
-  .openapi({
-    description: '',
-    required: ['bank_transfer'],
-    title: 'CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction',
-    'x-expandableFields': ['bank_transfer'],
-  })
-  .openapi('CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction')
-
-const CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransactionSchema = z
-  .object({
-    refund: z
-      .union([z.string().max(5000), RefundSchema])
-      .openapi({
-        description:
-          "The [Refund](https://stripe.com/docs/api/refunds/object) that moved these funds into the customer's cash balance.",
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/refund' }] },
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['refund'],
-    title: 'CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction',
-    'x-expandableFields': ['refund'],
-  })
-  .openapi('CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction')
-
-const CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransactionSchema = z
-  .object({
-    payment_intent: z
-      .union([z.string().max(5000), PaymentIntentSchema])
-      .openapi({
-        description:
-          'The [Payment Intent](https://stripe.com/docs/api/payment_intents/object) that funds were unapplied from.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_intent' }] },
-      }),
-  })
-  .openapi({
-    description: '',
-    required: ['payment_intent'],
-    title: 'CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction',
-    'x-expandableFields': ['payment_intent'],
-  })
-  .openapi('CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction')
-
-const CustomerCashBalanceTransactionSchema = z
+const CustomerCashBalanceTransactionSchema: z.ZodType<CustomerCashBalanceTransactionType> = z
   .object({
     applied_to_payment:
       CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransactionSchema.exactOptional(),
@@ -33809,7 +34739,7 @@ const EphemeralKeySchema = z
   })
   .openapi('EphemeralKey')
 
-const ErrorSchema = z
+const ErrorSchema: z.ZodType<ErrorType> = z
   .object({ error: ApiErrorsSchema })
   .openapi({ description: 'An error response from the Stripe API', required: ['error'] })
   .openapi('Error')
@@ -33817,13 +34747,13 @@ const ErrorSchema = z
 const NotificationEventDataSchema = z
   .object({
     object: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Object containing the API resource relevant to the event. For example, an `invoice.created` event will have a full [invoice object](https://stripe.com/docs/api#invoice_object) as the value of the object key.',
       }),
     previous_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -33963,7 +34893,7 @@ const ExchangeRateSchema = z
   })
   .openapi('ExchangeRate')
 
-const ExternalAccountSchema = z
+const ExternalAccountSchema: z.ZodType<ExternalAccountType> = z
   .union([BankAccountSchema, CardSchema])
   .openapi({
     title: 'Polymorphic',
@@ -33972,236 +34902,7 @@ const ExternalAccountSchema = z
   })
   .openapi('ExternalAccount')
 
-const FinancialConnectionsAccountOwnerSchema = z
-  .object({
-    email: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The email address of the owner.' }),
-    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-    name: z.string().max(5000).openapi({ description: 'The full name of the owner.' }),
-    object: z
-      .literal('financial_connections.account_owner')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    ownership: z
-      .string()
-      .max(5000)
-      .openapi({ description: 'The ownership object that this owner belongs to.' }),
-    phone: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The raw phone number of the owner.' }),
-    raw_address: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The raw physical address of the owner.' }),
-    refreshed_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The timestamp of the refresh that updated this owner.' }),
-  })
-  .openapi({
-    description: '',
-    required: ['id', 'name', 'object', 'ownership'],
-    title: 'BankConnectionsResourceOwner',
-    'x-expandableFields': [],
-    'x-resourceId': 'financial_connections.account_owner',
-  })
-  .openapi('FinancialConnectionsAccountOwner')
-
-const FinancialConnectionsAccountOwnershipSchema = z
-  .object({
-    created: z
-      .int()
-      .openapi({
-        description:
-          'Time at which the object was created. Measured in seconds since the Unix epoch.',
-      }),
-    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-    object: z
-      .literal('financial_connections.account_ownership')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    owners: z
-      .object({
-        data: z
-          .array(FinancialConnectionsAccountOwnerSchema)
-          .openapi({ description: 'Details about each object.' }),
-        has_more: z
-          .boolean()
-          .openapi({
-            description:
-              'True if this list has another page of items after this one that can be fetched.',
-          }),
-        object: z
-          .literal('list')
-          .openapi({
-            description:
-              "String representing the object's type. Objects of the same type share the same value. Always has the value `list`.",
-          }),
-        url: z
-          .string()
-          .max(5000)
-          .openapi({ description: 'The URL where this list can be accessed.' }),
-      })
-      .openapi({
-        description: 'A paginated list of owners for this account.',
-        required: ['data', 'has_more', 'object', 'url'],
-        title: 'BankConnectionsResourceOwnerList',
-        'x-expandableFields': ['data'],
-      }),
-  })
-  .openapi({
-    description: 'Describes a snapshot of the owners of an account at a particular point in time.',
-    required: ['created', 'id', 'object', 'owners'],
-    title: 'BankConnectionsResourceOwnership',
-    'x-expandableFields': ['owners'],
-  })
-  .openapi('FinancialConnectionsAccountOwnership')
-
-const FinancialConnectionsAccountSchema = z
-  .object({
-    account_holder: z
-      .union([BankConnectionsResourceAccountholderSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The account holder that this account belongs to.' }),
-    balance: z
-      .union([BankConnectionsResourceBalanceSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: "The most recent information about the account's balance." }),
-    balance_refresh: z
-      .union([BankConnectionsResourceBalanceRefreshSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The state of the most recent attempt to refresh the account balance.',
-      }),
-    category: z
-      .enum(['cash', 'credit', 'investment', 'other'])
-      .openapi({
-        description:
-          'The type of the account. Account category is further divided in `subcategory`.',
-      }),
-    created: z
-      .int()
-      .openapi({
-        description:
-          'Time at which the object was created. Measured in seconds since the Unix epoch.',
-      }),
-    display_name: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A human-readable name that has been assigned to this account, either by the account holder or by the institution.',
-      }),
-    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-    institution_name: z
-      .string()
-      .max(5000)
-      .openapi({ description: 'The name of the institution that holds this account.' }),
-    last4: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The last 4 digits of the account number. If present, this will be 4 numeric characters.',
-      }),
-    livemode: z
-      .boolean()
-      .openapi({
-        description:
-          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-      }),
-    object: z
-      .literal('financial_connections.account')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    ownership: z
-      .union([z.string().max(5000), FinancialConnectionsAccountOwnershipSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "The most recent information about the account's owners.",
-        'x-expansionResources': {
-          oneOf: [{ $ref: '#/components/schemas/financial_connections.account_ownership' }],
-        },
-      }),
-    ownership_refresh: z
-      .union([BankConnectionsResourceOwnershipRefreshSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The state of the most recent attempt to refresh the account owners.',
-      }),
-    permissions: z
-      .array(z.enum(['balances', 'ownership', 'payment_method', 'transactions']))
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The list of permissions granted by this account.' }),
-    status: z
-      .enum(['active', 'disconnected', 'inactive'])
-      .openapi({ description: 'The status of the link to the account.' }),
-    subcategory: z
-      .enum(['checking', 'credit_card', 'line_of_credit', 'mortgage', 'other', 'savings'])
-      .openapi({
-        description:
-          'If `category` is `cash`, one of:\n\n - `checking`\n - `savings`\n - `other`\n\nIf `category` is `credit`, one of:\n\n - `mortgage`\n - `line_of_credit`\n - `credit_card`\n - `other`\n\nIf `category` is `investment` or `other`, this will be `other`.',
-      }),
-    supported_payment_method_types: z
-      .array(z.enum(['link', 'us_bank_account']))
-      .openapi({
-        description:
-          'The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.',
-      }),
-  })
-  .openapi({
-    description:
-      'A Financial Connections Account represents an account that exists outside of Stripe, to which you have been granted some degree of access.',
-    required: [
-      'category',
-      'created',
-      'id',
-      'institution_name',
-      'livemode',
-      'object',
-      'status',
-      'subcategory',
-      'supported_payment_method_types',
-    ],
-    title: 'BankConnectionsResourceLinkedAccount',
-    'x-expandableFields': [
-      'account_holder',
-      'balance',
-      'balance_refresh',
-      'ownership',
-      'ownership_refresh',
-    ],
-    'x-resourceId': 'financial_connections.account',
-  })
-  .openapi('FinancialConnectionsAccount')
-
-const FinancialConnectionsSessionSchema = z
+const FinancialConnectionsSessionSchema: z.ZodType<FinancialConnectionsSessionType> = z
   .object({
     account_holder: z
       .union([BankConnectionsResourceAccountholderSchema])
@@ -34750,7 +35451,7 @@ const GelatoReportDocumentOptionsSchema = z
   .openapi('GelatoReportDocumentOptions')
 
 const GelatoReportIdNumberOptionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'GelatoReportIdNumberOptions', 'x-expandableFields': [] })
   .openapi('GelatoReportIdNumberOptions')
 
@@ -34866,7 +35567,7 @@ const GelatoSessionDocumentOptionsSchema = z
   .openapi('GelatoSessionDocumentOptions')
 
 const GelatoSessionIdNumberOptionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', title: 'GelatoSessionIdNumberOptions', 'x-expandableFields': [] })
   .openapi('GelatoSessionIdNumberOptions')
 
@@ -35154,7 +35855,7 @@ const IdentityVerificationSessionSchema = z
   })
   .openapi('IdentityVerificationSession')
 
-const InvoiceitemSchema = z
+const InvoiceitemSchema: z.ZodType<InvoiceitemType> = z
   .object({
     amount: z
       .int()
@@ -35462,7 +36163,7 @@ const LoginLinkSchema = z
   })
   .openapi('LoginLink')
 
-const PaymentSourceSchema = z
+const PaymentSourceSchema: z.ZodType<PaymentSourceType> = z
   .union([AccountSchema, BankAccountSchema, CardSchema, SourceSchema])
   .openapi({
     title: 'Polymorphic',
@@ -35703,7 +36404,7 @@ const PlanSchema = z
   })
   .openapi('Plan')
 
-const RadarEarlyFraudWarningSchema = z
+const RadarEarlyFraudWarningSchema: z.ZodType<RadarEarlyFraudWarningType> = z
   .object({
     actionable: z
       .boolean()
@@ -36674,307 +37375,7 @@ const TerminalConnectionTokenSchema = z
   })
   .openapi('TerminalConnectionToken')
 
-const TerminalLocationSchema = z
-  .object({
-    address: AddressSchema,
-    configuration_overrides: z
-      .string()
-      .max(5000)
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of a configuration that will be used to customize all readers in this location.',
-      }),
-    display_name: z
-      .string()
-      .max(5000)
-      .openapi({ description: 'The display name of the location.' }),
-    id: z.string().max(5000).openapi({ description: 'Unique identifier for the object.' }),
-    livemode: z
-      .boolean()
-      .openapi({
-        description:
-          'Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.',
-      }),
-    metadata: z
-      .record(z.string(), z.string().max(500))
-      .openapi({
-        description:
-          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
-      }),
-    object: z
-      .literal('terminal.location')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-  })
-  .openapi({
-    description:
-      'A Location represents a grouping of readers.\n\nRelated guide: [Fleet Management](https://stripe.com/docs/terminal/fleet/locations).',
-    required: ['address', 'display_name', 'id', 'livemode', 'metadata', 'object'],
-    title: 'TerminalLocationLocation',
-    'x-expandableFields': ['address'],
-    'x-resourceId': 'terminal.location',
-  })
-  .openapi('TerminalLocation')
-
-const TerminalReaderReaderResourceTippingConfigSchema = z
-  .object({
-    amount_eligible: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Amount used to calculate tip suggestions on tipping selection screen for this transaction. Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).',
-      }),
-  })
-  .openapi({
-    description: 'Represents a per-transaction tipping configuration',
-    title: 'TerminalReaderReaderResourceTippingConfig',
-    'x-expandableFields': [],
-    required: [],
-  })
-  .openapi('TerminalReaderReaderResourceTippingConfig')
-
-const TerminalReaderReaderResourceProcessConfigSchema = z
-  .object({
-    skip_tipping: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Override showing a tipping selection screen on this transaction.' }),
-    tipping: TerminalReaderReaderResourceTippingConfigSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Represents a per-transaction override of a reader configuration',
-    title: 'TerminalReaderReaderResourceProcessConfig',
-    'x-expandableFields': ['tipping'],
-    required: [],
-  })
-  .openapi('TerminalReaderReaderResourceProcessConfig')
-
-const TerminalReaderReaderResourceProcessPaymentIntentActionSchema = z
-  .object({
-    payment_intent: z
-      .union([z.string().max(5000), PaymentIntentSchema])
-      .openapi({
-        description: 'Most recent PaymentIntent processed by the reader.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_intent' }] },
-      }),
-    process_config: TerminalReaderReaderResourceProcessConfigSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Represents a reader action to process a payment intent',
-    required: ['payment_intent'],
-    title: 'TerminalReaderReaderResourceProcessPaymentIntentAction',
-    'x-expandableFields': ['payment_intent', 'process_config'],
-  })
-  .openapi('TerminalReaderReaderResourceProcessPaymentIntentAction')
-
-const TerminalReaderReaderResourceProcessSetupIntentActionSchema = z
-  .object({
-    generated_card: z
-      .string()
-      .max(5000)
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of a card PaymentMethod generated from the card_present PaymentMethod that may be attached to a Customer for future transactions. Only present if it was possible to generate a card PaymentMethod.',
-      }),
-    setup_intent: z
-      .union([z.string().max(5000), SetupIntentSchema])
-      .openapi({
-        description: 'Most recent SetupIntent processed by the reader.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/setup_intent' }] },
-      }),
-  })
-  .openapi({
-    description: 'Represents a reader action to process a setup intent',
-    required: ['setup_intent'],
-    title: 'TerminalReaderReaderResourceProcessSetupIntentAction',
-    'x-expandableFields': ['setup_intent'],
-  })
-  .openapi('TerminalReaderReaderResourceProcessSetupIntentAction')
-
-const TerminalReaderReaderResourceRefundPaymentActionSchema = z
-  .object({
-    amount: z.int().exactOptional().openapi({ description: 'The amount being refunded.' }),
-    charge: z
-      .union([z.string().max(5000), ChargeSchema])
-      .exactOptional()
-      .openapi({
-        description: 'Charge that is being refunded.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/charge' }] },
-      }),
-    metadata: z
-      .record(z.string(), z.string().max(500))
-      .exactOptional()
-      .openapi({
-        description:
-          'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format.',
-      }),
-    payment_intent: z
-      .union([z.string().max(5000), PaymentIntentSchema])
-      .exactOptional()
-      .openapi({
-        description: 'Payment intent that is being refunded.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/payment_intent' }] },
-      }),
-    reason: z
-      .enum(['duplicate', 'fraudulent', 'requested_by_customer'])
-      .exactOptional()
-      .openapi({ description: 'The reason for the refund.' }),
-    refund: z
-      .union([z.string().max(5000), RefundSchema])
-      .exactOptional()
-      .openapi({
-        description: 'Unique identifier for the refund object.',
-        'x-expansionResources': { oneOf: [{ $ref: '#/components/schemas/refund' }] },
-      }),
-    refund_application_fee: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Boolean indicating whether the application fee should be refunded when refunding this charge. If a full charge refund is given, the full application fee will be refunded. Otherwise, the application fee will be refunded in an amount proportional to the amount of the charge refunded. An application fee can be refunded only by the application that created the charge.',
-      }),
-    reverse_transfer: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Boolean indicating whether the transfer should be reversed when refunding this charge. The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount). A transfer can be reversed only by the application that created the charge.',
-      }),
-  })
-  .openapi({
-    description: 'Represents a reader action to refund a payment',
-    title: 'TerminalReaderReaderResourceRefundPaymentAction',
-    'x-expandableFields': ['charge', 'payment_intent', 'refund'],
-    required: [],
-  })
-  .openapi('TerminalReaderReaderResourceRefundPaymentAction')
-
-const TerminalReaderReaderResourceLineItemSchema = z
-  .object({
-    amount: z
-      .int()
-      .openapi({
-        description:
-          'The amount of the line item. A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).',
-      }),
-    description: z.string().max(5000).openapi({ description: 'Description of the line item.' }),
-    quantity: z.int().openapi({ description: 'The quantity of the line item.' }),
-  })
-  .openapi({
-    description: 'Represents a line item to be displayed on the reader',
-    required: ['amount', 'description', 'quantity'],
-    title: 'TerminalReaderReaderResourceLineItem',
-    'x-expandableFields': [],
-  })
-  .openapi('TerminalReaderReaderResourceLineItem')
-
-const TerminalReaderReaderResourceCartSchema = z
-  .object({
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).',
-      }),
-    line_items: z
-      .array(TerminalReaderReaderResourceLineItemSchema)
-      .openapi({ description: 'List of line items in the cart.' }),
-    tax: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Tax amount for the entire cart. A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).',
-      }),
-    total: z
-      .int()
-      .openapi({
-        description:
-          'Total amount for the entire cart, including tax. A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).',
-      }),
-  })
-  .openapi({
-    description: 'Represents a cart to be displayed on the reader',
-    required: ['currency', 'line_items', 'total'],
-    title: 'TerminalReaderReaderResourceCart',
-    'x-expandableFields': ['line_items'],
-  })
-  .openapi('TerminalReaderReaderResourceCart')
-
-const TerminalReaderReaderResourceSetReaderDisplayActionSchema = z
-  .object({
-    cart: z
-      .union([TerminalReaderReaderResourceCartSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Cart object to be displayed by the reader.' }),
-    type: z
-      .literal('cart')
-      .openapi({ description: 'Type of information to be displayed by the reader.' }),
-  })
-  .openapi({
-    description: 'Represents a reader action to set the reader display',
-    required: ['type'],
-    title: 'TerminalReaderReaderResourceSetReaderDisplayAction',
-    'x-expandableFields': ['cart'],
-  })
-  .openapi('TerminalReaderReaderResourceSetReaderDisplayAction')
-
-const TerminalReaderReaderResourceReaderActionSchema = z
-  .object({
-    failure_code: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Failure code, only set if status is `failed`.' }),
-    failure_message: z
-      .string()
-      .max(5000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Detailed failure message, only set if status is `failed`.' }),
-    process_payment_intent:
-      TerminalReaderReaderResourceProcessPaymentIntentActionSchema.exactOptional(),
-    process_setup_intent:
-      TerminalReaderReaderResourceProcessSetupIntentActionSchema.exactOptional(),
-    refund_payment: TerminalReaderReaderResourceRefundPaymentActionSchema.exactOptional(),
-    set_reader_display: TerminalReaderReaderResourceSetReaderDisplayActionSchema.exactOptional(),
-    status: z
-      .enum(['failed', 'in_progress', 'succeeded'])
-      .openapi({ description: 'Status of the action performed by the reader.' }),
-    type: z
-      .enum([
-        'process_payment_intent',
-        'process_setup_intent',
-        'refund_payment',
-        'set_reader_display',
-      ])
-      .openapi({
-        description: 'Type of action performed by the reader.',
-        'x-stripeBypassValidation': true,
-      }),
-  })
-  .openapi({
-    description: 'Represents an action performed by the reader',
-    required: ['status', 'type'],
-    title: 'TerminalReaderReaderResourceReaderAction',
-    'x-expandableFields': [
-      'process_payment_intent',
-      'process_setup_intent',
-      'refund_payment',
-      'set_reader_display',
-    ],
-  })
-  .openapi('TerminalReaderReaderResourceReaderAction')
-
-const TerminalReaderSchema = z
+const TerminalReaderSchema: z.ZodType<TerminalReaderType> = z
   .object({
     action: z
       .union([TerminalReaderReaderResourceReaderActionSchema])
@@ -37055,7 +37456,7 @@ const TerminalReaderSchema = z
   })
   .openapi('TerminalReader')
 
-const TokenSchema = z
+const TokenSchema: z.ZodType<TokenType> = z
   .object({
     bank_account: BankAccountSchema.exactOptional(),
     card: CardSchema.exactOptional(),
@@ -58214,7 +58615,9 @@ export const postV1CustomersCustomerSubscriptionsRoute = createRoute({
                         .exactOptional(),
                       konbini: z
                         .union([
-                          z.object({}).openapi({ title: 'invoice_payment_method_options_param' }),
+                          z
+                            .looseObject({})
+                            .openapi({ title: 'invoice_payment_method_options_param' }),
                           z.literal(''),
                         ])
                         .exactOptional(),
@@ -59112,7 +59515,9 @@ export const postV1CustomersCustomerSubscriptionsSubscriptionExposedIdRoute = cr
                         .exactOptional(),
                       konbini: z
                         .union([
-                          z.object({}).openapi({ title: 'invoice_payment_method_options_param' }),
+                          z
+                            .looseObject({})
+                            .openapi({ title: 'invoice_payment_method_options_param' }),
                           z.literal(''),
                         ])
                         .exactOptional(),
@@ -65006,7 +65411,9 @@ export const postV1InvoicesRoute = createRoute({
                         .exactOptional(),
                       konbini: z
                         .union([
-                          z.object({}).openapi({ title: 'invoice_payment_method_options_param' }),
+                          z
+                            .looseObject({})
+                            .openapi({ title: 'invoice_payment_method_options_param' }),
                           z.literal(''),
                         ])
                         .exactOptional(),
@@ -68177,7 +68584,9 @@ export const postV1InvoicesInvoiceRoute = createRoute({
                         .exactOptional(),
                       konbini: z
                         .union([
-                          z.object({}).openapi({ title: 'invoice_payment_method_options_param' }),
+                          z
+                            .looseObject({})
+                            .openapi({ title: 'invoice_payment_method_options_param' }),
                           z.literal(''),
                         ])
                         .exactOptional(),
@@ -77387,7 +77796,10 @@ export const postV1PaymentIntentsRoute = createRoute({
                           z.int(),
                         )
                         .exactOptional(),
-                      offline: z.object({}).exactOptional().openapi({ title: 'offline_param' }),
+                      offline: z
+                        .looseObject({})
+                        .exactOptional()
+                        .openapi({ title: 'offline_param' }),
                       online: z
                         .object({ ip_address: z.string(), user_agent: z.string().max(5000) })
                         .exactOptional()
@@ -77454,9 +77866,9 @@ export const postV1PaymentIntentsRoute = createRoute({
                       required: ['account_number', 'institution_number', 'transit_number'],
                       title: 'payment_method_param',
                     }),
-                  affirm: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  afterpay_clearpay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  alipay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  affirm: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  afterpay_clearpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  alipay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   au_becs_debit: z
                     .object({
                       account_number: z.string().max(5000),
@@ -77471,7 +77883,7 @@ export const postV1PaymentIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  bancontact: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  bancontact: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   billing_details: z
                     .object({
                       address: z
@@ -77495,12 +77907,12 @@ export const postV1PaymentIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'billing_details_inner_params', required: [] }),
-                  blik: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  blik: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   boleto: z
                     .object({ tax_id: z.string().max(5000) })
                     .exactOptional()
                     .openapi({ required: ['tax_id'], title: 'param' }),
-                  customer_balance: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  customer_balance: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   eps: z
                     .object({
                       bank: z
@@ -77569,8 +77981,8 @@ export const postV1PaymentIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: ['bank'], title: 'param' }),
-                  giropay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  grabpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  giropay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  grabpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   ideal: z
                     .object({
                       bank: z
@@ -77594,7 +78006,7 @@ export const postV1PaymentIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  interac_present: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  interac_present: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   klarna: z
                     .object({
                       dob: z
@@ -77632,10 +78044,10 @@ export const postV1PaymentIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  konbini: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  link: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  konbini: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  link: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   metadata: z.record(z.string(), z.string()).exactOptional(),
-                  oxxo: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  oxxo: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   p24: z
                     .object({
                       bank: z
@@ -77671,9 +78083,9 @@ export const postV1PaymentIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  paynow: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  pix: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  promptpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  paynow: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  pix: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  promptpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   radar_options: z
                     .object({ session: z.string().max(5000).exactOptional() })
                     .exactOptional()
@@ -77727,7 +78139,7 @@ export const postV1PaymentIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'payment_method_param', required: [] }),
-                  wechat_pay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  wechat_pay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                 })
                 .exactOptional()
                 .openapi({
@@ -78140,7 +78552,7 @@ export const postV1PaymentIntentsRoute = createRoute({
                     .exactOptional(),
                   interac_present: z
                     .union([
-                      z.object({}).openapi({ title: 'payment_method_options_param' }),
+                      z.looseObject({}).openapi({ title: 'payment_method_options_param' }),
                       z.literal(''),
                     ])
                     .exactOptional(),
@@ -78350,7 +78762,7 @@ export const postV1PaymentIntentsRoute = createRoute({
                       z
                         .object({
                           mandate_options: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ title: 'payment_method_options_mandate_options_param' }),
                           setup_future_usage: z
@@ -78918,9 +79330,9 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                       required: ['account_number', 'institution_number', 'transit_number'],
                       title: 'payment_method_param',
                     }),
-                  affirm: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  afterpay_clearpay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  alipay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  affirm: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  afterpay_clearpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  alipay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   au_becs_debit: z
                     .object({
                       account_number: z.string().max(5000),
@@ -78935,7 +79347,7 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  bancontact: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  bancontact: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   billing_details: z
                     .object({
                       address: z
@@ -78959,12 +79371,12 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'billing_details_inner_params', required: [] }),
-                  blik: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  blik: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   boleto: z
                     .object({ tax_id: z.string().max(5000) })
                     .exactOptional()
                     .openapi({ required: ['tax_id'], title: 'param' }),
-                  customer_balance: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  customer_balance: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   eps: z
                     .object({
                       bank: z
@@ -79033,8 +79445,8 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: ['bank'], title: 'param' }),
-                  giropay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  grabpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  giropay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  grabpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   ideal: z
                     .object({
                       bank: z
@@ -79058,7 +79470,7 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  interac_present: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  interac_present: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   klarna: z
                     .object({
                       dob: z
@@ -79096,10 +79508,10 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  konbini: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  link: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  konbini: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  link: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   metadata: z.record(z.string(), z.string()).exactOptional(),
-                  oxxo: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  oxxo: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   p24: z
                     .object({
                       bank: z
@@ -79135,9 +79547,9 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  paynow: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  pix: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  promptpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  paynow: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  pix: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  promptpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   radar_options: z
                     .object({ session: z.string().max(5000).exactOptional() })
                     .exactOptional()
@@ -79191,7 +79603,7 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'payment_method_param', required: [] }),
-                  wechat_pay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  wechat_pay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                 })
                 .exactOptional()
                 .openapi({
@@ -79604,7 +80016,7 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                     .exactOptional(),
                   interac_present: z
                     .union([
-                      z.object({}).openapi({ title: 'payment_method_options_param' }),
+                      z.looseObject({}).openapi({ title: 'payment_method_options_param' }),
                       z.literal(''),
                     ])
                     .exactOptional(),
@@ -79814,7 +80226,7 @@ export const postV1PaymentIntentsIntentRoute = createRoute({
                       z
                         .object({
                           mandate_options: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ title: 'payment_method_options_mandate_options_param' }),
                           setup_future_usage: z
@@ -80376,7 +80788,10 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                               z.int(),
                             )
                             .exactOptional(),
-                          offline: z.object({}).exactOptional().openapi({ title: 'offline_param' }),
+                          offline: z
+                            .looseObject({})
+                            .exactOptional()
+                            .openapi({ title: 'offline_param' }),
                           online: z
                             .object({ ip_address: z.string(), user_agent: z.string().max(5000) })
                             .exactOptional()
@@ -80447,9 +80862,9 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                       required: ['account_number', 'institution_number', 'transit_number'],
                       title: 'payment_method_param',
                     }),
-                  affirm: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  afterpay_clearpay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  alipay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  affirm: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  afterpay_clearpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  alipay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   au_becs_debit: z
                     .object({
                       account_number: z.string().max(5000),
@@ -80464,7 +80879,7 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  bancontact: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  bancontact: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   billing_details: z
                     .object({
                       address: z
@@ -80488,12 +80903,12 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'billing_details_inner_params', required: [] }),
-                  blik: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  blik: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   boleto: z
                     .object({ tax_id: z.string().max(5000) })
                     .exactOptional()
                     .openapi({ required: ['tax_id'], title: 'param' }),
-                  customer_balance: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  customer_balance: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   eps: z
                     .object({
                       bank: z
@@ -80562,8 +80977,8 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: ['bank'], title: 'param' }),
-                  giropay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  grabpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  giropay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  grabpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   ideal: z
                     .object({
                       bank: z
@@ -80587,7 +81002,7 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  interac_present: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  interac_present: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   klarna: z
                     .object({
                       dob: z
@@ -80625,10 +81040,10 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  konbini: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  link: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  konbini: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  link: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   metadata: z.record(z.string(), z.string()).exactOptional(),
-                  oxxo: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  oxxo: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   p24: z
                     .object({
                       bank: z
@@ -80664,9 +81079,9 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  paynow: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  pix: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  promptpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  paynow: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  pix: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  promptpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   radar_options: z
                     .object({ session: z.string().max(5000).exactOptional() })
                     .exactOptional()
@@ -80720,7 +81135,7 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'payment_method_param', required: [] }),
-                  wechat_pay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  wechat_pay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                 })
                 .exactOptional()
                 .openapi({
@@ -81133,7 +81548,7 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                     .exactOptional(),
                   interac_present: z
                     .union([
-                      z.object({}).openapi({ title: 'payment_method_options_param' }),
+                      z.looseObject({}).openapi({ title: 'payment_method_options_param' }),
                       z.literal(''),
                     ])
                     .exactOptional(),
@@ -81343,7 +81758,7 @@ export const postV1PaymentIntentsIntentConfirmRoute = createRoute({
                       z
                         .object({
                           mandate_options: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ title: 'payment_method_options_mandate_options_param' }),
                           setup_future_usage: z
@@ -83768,7 +84183,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   title: 'payment_method_param',
                 }),
               affirm: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -83776,7 +84191,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   title: 'param',
                 }),
               afterpay_clearpay: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -83784,7 +84199,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   title: 'param',
                 }),
               alipay: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -83813,7 +84228,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   required: [],
                 }),
               bancontact: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -83849,7 +84264,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   required: [],
                 }),
               blik: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -83912,7 +84327,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   description: 'The `Customer` to whom the original PaymentMethod is attached.',
                 }),
               customer_balance: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84007,7 +84422,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   title: 'param',
                 }),
               giropay: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84015,7 +84430,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   title: 'param',
                 }),
               grabpay: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84051,7 +84466,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   required: [],
                 }),
               interac_present: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84101,7 +84516,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   required: [],
                 }),
               konbini: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84109,7 +84524,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   title: 'param',
                 }),
               link: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84124,7 +84539,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                     'Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format. Individual keys can be unset by posting an empty value to them. All keys can be unset by posting an empty value to `metadata`.',
                 }),
               oxxo: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84177,7 +84592,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The PaymentMethod to share.' }),
               paynow: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84185,7 +84600,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   title: 'param',
                 }),
               pix: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84193,7 +84608,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   title: 'param',
                 }),
               promptpay: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84280,7 +84695,7 @@ export const postV1PaymentMethodsRoute = createRoute({
                   required: [],
                 }),
               wechat_pay: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -84490,7 +84905,7 @@ export const postV1PaymentMethodsPaymentMethodRoute = createRoute({
                   description: 'Specifies which fields in the response should be expanded.',
                 }),
               link: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -93912,7 +94327,10 @@ export const postV1SetupIntentsRoute = createRoute({
                           z.int(),
                         )
                         .exactOptional(),
-                      offline: z.object({}).exactOptional().openapi({ title: 'offline_param' }),
+                      offline: z
+                        .looseObject({})
+                        .exactOptional()
+                        .openapi({ title: 'offline_param' }),
                       online: z
                         .object({ ip_address: z.string(), user_agent: z.string().max(5000) })
                         .exactOptional()
@@ -93962,9 +94380,9 @@ export const postV1SetupIntentsRoute = createRoute({
                       required: ['account_number', 'institution_number', 'transit_number'],
                       title: 'payment_method_param',
                     }),
-                  affirm: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  afterpay_clearpay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  alipay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  affirm: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  afterpay_clearpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  alipay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   au_becs_debit: z
                     .object({
                       account_number: z.string().max(5000),
@@ -93979,7 +94397,7 @@ export const postV1SetupIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  bancontact: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  bancontact: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   billing_details: z
                     .object({
                       address: z
@@ -94003,12 +94421,12 @@ export const postV1SetupIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'billing_details_inner_params', required: [] }),
-                  blik: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  blik: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   boleto: z
                     .object({ tax_id: z.string().max(5000) })
                     .exactOptional()
                     .openapi({ required: ['tax_id'], title: 'param' }),
-                  customer_balance: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  customer_balance: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   eps: z
                     .object({
                       bank: z
@@ -94077,8 +94495,8 @@ export const postV1SetupIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: ['bank'], title: 'param' }),
-                  giropay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  grabpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  giropay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  grabpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   ideal: z
                     .object({
                       bank: z
@@ -94102,7 +94520,7 @@ export const postV1SetupIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  interac_present: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  interac_present: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   klarna: z
                     .object({
                       dob: z
@@ -94140,10 +94558,10 @@ export const postV1SetupIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  konbini: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  link: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  konbini: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  link: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   metadata: z.record(z.string(), z.string()).exactOptional(),
-                  oxxo: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  oxxo: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   p24: z
                     .object({
                       bank: z
@@ -94179,9 +94597,9 @@ export const postV1SetupIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  paynow: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  pix: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  promptpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  paynow: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  pix: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  promptpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   radar_options: z
                     .object({ session: z.string().max(5000).exactOptional() })
                     .exactOptional()
@@ -94235,7 +94653,7 @@ export const postV1SetupIntentsRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'payment_method_param', required: [] }),
-                  wechat_pay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  wechat_pay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                 })
                 .exactOptional()
                 .openapi({
@@ -94377,7 +94795,7 @@ export const postV1SetupIntentsRoute = createRoute({
                   sepa_debit: z
                     .object({
                       mandate_options: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({ title: 'payment_method_options_mandate_options_param' }),
                     })
@@ -94668,9 +95086,9 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                       required: ['account_number', 'institution_number', 'transit_number'],
                       title: 'payment_method_param',
                     }),
-                  affirm: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  afterpay_clearpay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  alipay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  affirm: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  afterpay_clearpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  alipay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   au_becs_debit: z
                     .object({
                       account_number: z.string().max(5000),
@@ -94685,7 +95103,7 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  bancontact: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  bancontact: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   billing_details: z
                     .object({
                       address: z
@@ -94709,12 +95127,12 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'billing_details_inner_params', required: [] }),
-                  blik: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  blik: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   boleto: z
                     .object({ tax_id: z.string().max(5000) })
                     .exactOptional()
                     .openapi({ required: ['tax_id'], title: 'param' }),
-                  customer_balance: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  customer_balance: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   eps: z
                     .object({
                       bank: z
@@ -94783,8 +95201,8 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: ['bank'], title: 'param' }),
-                  giropay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  grabpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  giropay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  grabpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   ideal: z
                     .object({
                       bank: z
@@ -94808,7 +95226,7 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  interac_present: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  interac_present: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   klarna: z
                     .object({
                       dob: z
@@ -94846,10 +95264,10 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  konbini: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  link: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  konbini: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  link: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   metadata: z.record(z.string(), z.string()).exactOptional(),
-                  oxxo: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  oxxo: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   p24: z
                     .object({
                       bank: z
@@ -94885,9 +95303,9 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  paynow: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  pix: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  promptpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  paynow: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  pix: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  promptpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   radar_options: z
                     .object({ session: z.string().max(5000).exactOptional() })
                     .exactOptional()
@@ -94941,7 +95359,7 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'payment_method_param', required: [] }),
-                  wechat_pay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  wechat_pay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                 })
                 .exactOptional()
                 .openapi({
@@ -95083,7 +95501,7 @@ export const postV1SetupIntentsIntentRoute = createRoute({
                   sepa_debit: z
                     .object({
                       mandate_options: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({ title: 'payment_method_options_mandate_options_param' }),
                     })
@@ -95286,7 +95704,10 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                               z.int(),
                             )
                             .exactOptional(),
-                          offline: z.object({}).exactOptional().openapi({ title: 'offline_param' }),
+                          offline: z
+                            .looseObject({})
+                            .exactOptional()
+                            .openapi({ title: 'offline_param' }),
                           online: z
                             .object({ ip_address: z.string(), user_agent: z.string().max(5000) })
                             .exactOptional()
@@ -95341,9 +95762,9 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                       required: ['account_number', 'institution_number', 'transit_number'],
                       title: 'payment_method_param',
                     }),
-                  affirm: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  afterpay_clearpay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  alipay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  affirm: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  afterpay_clearpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  alipay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   au_becs_debit: z
                     .object({
                       account_number: z.string().max(5000),
@@ -95358,7 +95779,7 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  bancontact: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  bancontact: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   billing_details: z
                     .object({
                       address: z
@@ -95382,12 +95803,12 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'billing_details_inner_params', required: [] }),
-                  blik: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  blik: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   boleto: z
                     .object({ tax_id: z.string().max(5000) })
                     .exactOptional()
                     .openapi({ required: ['tax_id'], title: 'param' }),
-                  customer_balance: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  customer_balance: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   eps: z
                     .object({
                       bank: z
@@ -95456,8 +95877,8 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: ['bank'], title: 'param' }),
-                  giropay: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  grabpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  giropay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  grabpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   ideal: z
                     .object({
                       bank: z
@@ -95481,7 +95902,7 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  interac_present: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  interac_present: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   klarna: z
                     .object({
                       dob: z
@@ -95519,10 +95940,10 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  konbini: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  link: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  konbini: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  link: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   metadata: z.record(z.string(), z.string()).exactOptional(),
-                  oxxo: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  oxxo: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   p24: z
                     .object({
                       bank: z
@@ -95558,9 +95979,9 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'param', required: [] }),
-                  paynow: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  pix: z.object({}).exactOptional().openapi({ title: 'param' }),
-                  promptpay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  paynow: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  pix: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
+                  promptpay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                   radar_options: z
                     .object({ session: z.string().max(5000).exactOptional() })
                     .exactOptional()
@@ -95614,7 +96035,7 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ title: 'payment_method_param', required: [] }),
-                  wechat_pay: z.object({}).exactOptional().openapi({ title: 'param' }),
+                  wechat_pay: z.looseObject({}).exactOptional().openapi({ title: 'param' }),
                 })
                 .exactOptional()
                 .openapi({
@@ -95756,7 +96177,7 @@ export const postV1SetupIntentsIntentConfirmRoute = createRoute({
                   sepa_debit: z
                     .object({
                       mandate_options: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({ title: 'payment_method_options_mandate_options_param' }),
                     })
@@ -101209,7 +101630,9 @@ export const postV1SubscriptionsRoute = createRoute({
                         .exactOptional(),
                       konbini: z
                         .union([
-                          z.object({}).openapi({ title: 'invoice_payment_method_options_param' }),
+                          z
+                            .looseObject({})
+                            .openapi({ title: 'invoice_payment_method_options_param' }),
                           z.literal(''),
                         ])
                         .exactOptional(),
@@ -102220,7 +102643,9 @@ export const postV1SubscriptionsSubscriptionExposedIdRoute = createRoute({
                         .exactOptional(),
                       konbini: z
                         .union([
-                          z.object({}).openapi({ title: 'invoice_payment_method_options_param' }),
+                          z
+                            .looseObject({})
+                            .openapi({ title: 'invoice_payment_method_options_param' }),
                           z.literal(''),
                         ])
                         .exactOptional(),

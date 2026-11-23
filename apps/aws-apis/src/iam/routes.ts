@@ -1,99 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const InvalidInputExceptionSchema = z.any().openapi('InvalidInputException')
-
-const NoSuchEntityExceptionSchema = z.any().openapi('NoSuchEntityException')
-
-const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
-
-const ServiceFailureExceptionSchema = z.any().openapi('ServiceFailureException')
-
-const EntityAlreadyExistsExceptionSchema = z.any().openapi('EntityAlreadyExistsException')
-
-const UnmodifiableEntityExceptionSchema = z.any().openapi('UnmodifiableEntityException')
-
-const PolicyNotAttachableExceptionSchema = z.any().openapi('PolicyNotAttachableException')
-
-const InvalidUserTypeExceptionSchema = z.any().openapi('InvalidUserTypeException')
-
-const EntityTemporarilyUnmodifiableExceptionSchema = z
-  .any()
-  .openapi('EntityTemporarilyUnmodifiableException')
-
-const PasswordPolicyViolationExceptionSchema = z.any().openapi('PasswordPolicyViolationException')
-
-const UserNameTypeSchema = z
-  .string()
-  .regex(/[\w+=,.@-]+/)
-  .min(1)
-  .max(64)
-  .openapi('UserNameType')
-
-const AccessKeyIdTypeSchema = z.string().regex(/[\w]+/).min(16).max(128).openapi('AccessKeyIdType')
-
-const StatusTypeSchema = z.enum(['Active', 'Inactive']).openapi('StatusType')
-
-const AccessKeySecretTypeSchema = z.string().openapi('AccessKeySecretType')
-
-const DateTypeSchema = z.iso.datetime({ offset: true }).openapi('DateType')
-
-const AccessKeySchema = z
-  .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IAM user that the access key is associated with.',
-        }),
-    ),
-    AccessKeyId: AccessKeyIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID for this access key.' }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the access key. <code>Active</code> means that the key is valid for API calls, while <code>Inactive</code> means it is not. ',
-        }),
-    ),
-    SecretAccessKey: AccessKeySecretTypeSchema.and(
-      z.any().openapi({ description: 'The secret key used to sign requests.' }),
-    ),
-    CreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the access key was created.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['UserName', 'AccessKeyId', 'Status', 'SecretAccessKey'],
-    description:
-      '<p>Contains information about an Amazon Web Services access key.</p> <p> This data type is used as a response element in the <a>CreateAccessKey</a> and <a>ListAccessKeys</a> operations. </p> <note> <p>The <code>SecretAccessKey</code> value is returned only in response to <a>CreateAccessKey</a>. You can get a secret access key only when you first create an access key; you cannot recover the secret access key later. If you lose a secret access key, you must create a new access key.</p> </note>',
-  })
-  .openapi('AccessKey')
-
-const CreateAccessKeyResponseSchema = z
-  .object({
-    AccessKey: AccessKeySchema.and(
-      z.any().openapi({ description: 'A structure with details about the access key.' }),
-    ),
-  })
-  .openapi({
-    required: ['AccessKey'],
-    example: {
-      AccessKey: {
-        AccessKeyId: 'AKIAIOSFODNN7EXAMPLE',
-        CreateDate: '2015-03-09T18:39:23.411Z',
-        SecretAccessKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY',
-        Status: 'Active',
-        UserName: 'Bob',
-      },
-    },
-    description: 'Contains the response to a successful <a>CreateAccessKey</a> request. ',
-  })
-  .openapi('CreateAccessKeyResponse')
-
-const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModificationException')
-
 const PathTypeSchema = z
   .string()
   .regex(/(\u002F)|(\u002F[\u0021-\u007E]+\u002F)/)
@@ -101,12 +7,12 @@ const PathTypeSchema = z
   .max(512)
   .openapi('PathType')
 
-const GroupNameTypeSchema = z
+const UserNameTypeSchema = z
   .string()
   .regex(/[\w+=,.@-]+/)
   .min(1)
-  .max(128)
-  .openapi('GroupNameType')
+  .max(64)
+  .openapi('UserNameType')
 
 const IdTypeSchema = z.string().regex(/[\w]+/).min(16).max(128).openapi('IdType')
 
@@ -120,85 +26,14 @@ const ArnTypeSchema = z
   })
   .openapi('ArnType')
 
-const GroupSchema = z
-  .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the group. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    GroupName: GroupNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name that identifies the group.' }),
-    ),
-    GroupId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The stable and unique string identifying the group. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    Arn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) specifying the group. For more information about ARNs and how to use them in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the group was created.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Path', 'GroupName', 'GroupId', 'Arn', 'CreateDate'],
-    description:
-      '<p>Contains information about an IAM group entity.</p> <p>This data type is used as a response element in the following operations:</p> <ul> <li> <p> <a>CreateGroup</a> </p> </li> <li> <p> <a>GetGroup</a> </p> </li> <li> <p> <a>ListGroups</a> </p> </li> </ul>',
-  })
-  .openapi('Group')
+const DateTypeSchema = z.iso.datetime({ offset: true }).openapi('DateType')
 
-const CreateGroupResponseSchema = z
-  .object({
-    Group: GroupSchema.and(
-      z.any().openapi({ description: 'A structure containing details about the new group.' }),
-    ),
-  })
-  .openapi({
-    required: ['Group'],
-    example: {
-      Group: {
-        Arn: 'arn:aws:iam::123456789012:group/Admins',
-        CreateDate: '2015-03-09T20:30:24.940Z',
-        GroupId: 'AIDGPMS9RO4H3FEXAMPLE',
-        GroupName: 'Admins',
-        Path: '/',
-      },
-    },
-    description: 'Contains the response to a successful <a>CreateGroup</a> request. ',
-  })
-  .openapi('CreateGroupResponse')
-
-const InstanceProfileNameTypeSchema = z
+const PolicyNameTypeSchema = z
   .string()
   .regex(/[\w+=,.@-]+/)
   .min(1)
   .max(128)
-  .openapi('InstanceProfileNameType')
-
-const RoleNameTypeSchema = z
-  .string()
-  .regex(/[\w+=,.@-]+/)
-  .min(1)
-  .max(64)
-  .openapi('RoleNameType')
+  .openapi('PolicyNameType')
 
 const PolicyDocumentTypeSchema = z
   .string()
@@ -207,17 +42,50 @@ const PolicyDocumentTypeSchema = z
   .max(131072)
   .openapi('PolicyDocumentType')
 
-const RoleDescriptionTypeSchema = z
-  .string()
-  .regex(/[\u0009\u000A\u000D\u0020-\u007E\u00A1-\u00FF]*/)
-  .max(1000)
-  .openapi('RoleDescriptionType')
+const PolicyDetailSchema = z
+  .object({
+    PolicyName: PolicyNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the policy.',
+    }),
+    PolicyDocument: PolicyDocumentTypeSchema.exactOptional().openapi({
+      description: 'The policy document.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains information about an IAM policy, including the policy document.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p>',
+    required: [],
+  })
+  .openapi('PolicyDetail')
 
-const RoleMaxSessionDurationTypeSchema = z
-  .int()
-  .min(3600)
-  .max(43200)
-  .openapi('RoleMaxSessionDurationType')
+const PolicyDetailListTypeSchema = z.array(PolicyDetailSchema).openapi('PolicyDetailListType')
+
+const GroupNameTypeSchema = z
+  .string()
+  .regex(/[\w+=,.@-]+/)
+  .min(1)
+  .max(128)
+  .openapi('GroupNameType')
+
+const GroupNameListTypeSchema = z.array(GroupNameTypeSchema).openapi('GroupNameListType')
+
+const AttachedPolicySchema = z
+  .object({
+    PolicyName: PolicyNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name of the attached policy.',
+    }),
+    PolicyArn: ArnTypeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      '<p>Contains information about an attached policy.</p> <p>An attached policy is a managed policy that has been attached to a user, group, or role. This data type is used as a response element in the <a>ListAttachedGroupPolicies</a>, <a>ListAttachedRolePolicies</a>, <a>ListAttachedUserPolicies</a>, and <a>GetAccountAuthorizationDetails</a> operations. </p> <p>For more information about managed policies, refer to <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>. </p>',
+    required: [],
+  })
+  .openapi('AttachedPolicy')
+
+const AttachedPoliciesListTypeSchema = z
+  .array(AttachedPolicySchema)
+  .openapi('AttachedPoliciesListType')
 
 const PermissionsBoundaryAttachmentTypeSchema = z
   .literal('PermissionsBoundaryPolicy')
@@ -225,22 +93,14 @@ const PermissionsBoundaryAttachmentTypeSchema = z
 
 const AttachedPermissionsBoundarySchema = z
   .object({
-    PermissionsBoundaryType: PermissionsBoundaryAttachmentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The permissions boundary usage type that indicates what type of IAM resource is used as the permissions boundary for an entity. This data type can only have a value of <code>Policy</code>.',
-        }),
-    ).exactOptional(),
-    PermissionsBoundaryArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of the policy used to set the permissions boundary for the user or role.',
-        }),
-    ).exactOptional(),
+    PermissionsBoundaryType: PermissionsBoundaryAttachmentTypeSchema.exactOptional().openapi({
+      description:
+        ' The permissions boundary usage type that indicates what type of IAM resource is used as the permissions boundary for an entity. This data type can only have a value of <code>Policy</code>.',
+    }),
+    PermissionsBoundaryArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        ' The ARN of the policy used to set the permissions boundary for the user or role.',
+    }),
   })
   .openapi({
     description:
@@ -265,22 +125,14 @@ const TagValueTypeSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key name that can be used to look up or retrieve the associated value. For example, <code>Department</code> or <code>Cost Center</code> are common choices.',
-        }),
-    ),
-    Value: TagValueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value associated with this tag. For example, tags with a key name of <code>Department</code> could have values such as <code>Human Resources</code>, <code>Accounting</code>, and <code>Support</code>. Tags with a key name of <code>Cost Center</code> might have values that consist of the number associated with the different cost centers in your company. Typically, many resources have tags with the same key name but with different values.</p> <note> <p>Amazon Web Services always interprets the tag <code>Value</code> as a single string. If you need to store an array, you can store comma-separated values in the string. However, you must interpret the value in your code.</p> </note>',
-        }),
-    ),
+    Key: TagKeyTypeSchema.openapi({
+      description:
+        'The key name that can be used to look up or retrieve the associated value. For example, <code>Department</code> or <code>Cost Center</code> are common choices.',
+    }),
+    Value: TagValueTypeSchema.openapi({
+      description:
+        '<p>The value associated with this tag. For example, tags with a key name of <code>Department</code> could have values such as <code>Human Resources</code>, <code>Accounting</code>, and <code>Support</code>. Tags with a key name of <code>Cost Center</code> might have values that consist of the number associated with the different cost centers in your company. Typically, many resources have tags with the same key name but with different values.</p> <note> <p>Amazon Web Services always interprets the tag <code>Value</code> as a single string. If you need to store an array, you can store comma-separated values in the string. However, you must interpret the value in your code.</p> </note>',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -291,26 +143,122 @@ const TagSchema = z
 
 const TagListTypeSchema = z.array(TagSchema).max(50).openapi('TagListType')
 
+const UserDetailSchema = z
+  .object({
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        'The path to the user. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name identifying the user.',
+    }),
+    UserId: IdTypeSchema.exactOptional().openapi({
+      description:
+        'The stable and unique string identifying the user. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
+    Arn: ArnTypeSchema.exactOptional(),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the user was created.',
+    }),
+    UserPolicyList: PolicyDetailListTypeSchema.exactOptional().openapi({
+      description: 'A list of the inline policies embedded in the user.',
+    }),
+    GroupList: GroupNameListTypeSchema.exactOptional().openapi({
+      description: 'A list of IAM groups that the user is in.',
+    }),
+    AttachedManagedPolicies: AttachedPoliciesListTypeSchema.exactOptional().openapi({
+      description: 'A list of the managed policies attached to the user.',
+    }),
+    PermissionsBoundary: AttachedPermissionsBoundarySchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the policy used to set the permissions boundary for the user.</p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are associated with the user. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
+  })
+  .openapi({
+    description:
+      "<p>Contains information about an IAM user, including all the user's policies and all the IAM groups the user is in.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p>",
+    required: [],
+  })
+  .openapi('UserDetail')
+
+const UserDetailListTypeSchema = z.array(UserDetailSchema).openapi('UserDetailListType')
+
+const GroupDetailSchema = z
+  .object({
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        'The path to the group. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
+    GroupName: GroupNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name that identifies the group.',
+    }),
+    GroupId: IdTypeSchema.exactOptional().openapi({
+      description:
+        'The stable and unique string identifying the group. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
+    Arn: ArnTypeSchema.exactOptional(),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the group was created.',
+    }),
+    GroupPolicyList: PolicyDetailListTypeSchema.exactOptional().openapi({
+      description: 'A list of the inline policies embedded in the group.',
+    }),
+    AttachedManagedPolicies: AttachedPoliciesListTypeSchema.exactOptional().openapi({
+      description: 'A list of the managed policies attached to the group.',
+    }),
+  })
+  .openapi({
+    description:
+      "<p>Contains information about an IAM group, including all of the group's policies.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p>",
+    required: [],
+  })
+  .openapi('GroupDetail')
+
+const GroupDetailListTypeSchema = z.array(GroupDetailSchema).openapi('GroupDetailListType')
+
+const RoleNameTypeSchema = z
+  .string()
+  .regex(/[\w+=,.@-]+/)
+  .min(1)
+  .max(64)
+  .openapi('RoleNameType')
+
+const InstanceProfileNameTypeSchema = z
+  .string()
+  .regex(/[\w+=,.@-]+/)
+  .min(1)
+  .max(128)
+  .openapi('InstanceProfileNameType')
+
+const RoleDescriptionTypeSchema = z
+  .string()
+  .regex(/[\u0009\u000A\u000D\u0020-\u007E\u00A1-\u00FF]*/)
+  .max(1000)
+  .openapi('RoleDescriptionType')
+
+const RoleMaxSessionDurationTypeSchema = z
+  .int()
+  .min(3600)
+  .max(43200)
+  .openapi('RoleMaxSessionDurationType')
+
 const StringTypeSchema = z.string().openapi('StringType')
 
 const RoleLastUsedSchema = z
   .object({
-    LastUsedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a> that the role was last used.</p> <p>This field is null if the role has not been used within the IAM tracking period. For more information about the tracking period, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period">Regions where data is tracked</a> in the <i>IAM User Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    Region: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services Region in which the role was last used.',
-        }),
-    ).exactOptional(),
+    LastUsedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a> that the role was last used.</p> <p>This field is null if the role has not been used within the IAM tracking period. For more information about the tracking period, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period">Regions where data is tracked</a> in the <i>IAM User Guide</i>. </p>',
+    }),
+    Region: StringTypeSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Web Services Region in which the role was last used.',
+    }),
   })
   .openapi({
     description:
@@ -321,83 +269,47 @@ const RoleLastUsedSchema = z
 
 const RoleSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The path to the role. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    RoleName: RoleNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name that identifies the role.' }),
-    ),
-    RoleId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The stable and unique string identifying the role. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    Arn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) specifying the role. For more information about ARNs and how to use them in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i> guide. ',
-        }),
-    ),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the role was created.',
-        }),
-    ),
-    AssumeRolePolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The policy that grants an entity permission to assume the role.',
-        }),
-    ).exactOptional(),
-    Description: RoleDescriptionTypeSchema.and(
-      z.any().openapi({ description: 'A description of the role that you provide.' }),
-    ).exactOptional(),
-    MaxSessionDuration: RoleMaxSessionDurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum session duration (in seconds) for the specified role. Anyone who uses the CLI, or API to assume the role can specify the duration using the optional <code>DurationSeconds</code> API parameter or <code>duration-seconds</code> CLI parameter.',
-        }),
-    ).exactOptional(),
-    PermissionsBoundary: AttachedPermissionsBoundarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the policy used to set the permissions boundary for the role.</p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the role. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    RoleLastUsed: RoleLastUsedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the last time that an IAM role was used. This includes the date and time and the Region in which the role was last used. Activity is only reported for the trailing 400 days. This period can be shorter if your Region began supporting these features within the last year. The role might have been used more than 400 days ago. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period">Regions where data is tracked</a> in the <i>IAM user Guide</i>.',
-        }),
-    ).exactOptional(),
+    Path: PathTypeSchema.openapi({
+      description:
+        ' The path to the role. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    RoleName: RoleNameTypeSchema.openapi({
+      description: 'The friendly name that identifies the role.',
+    }),
+    RoleId: IdTypeSchema.openapi({
+      description:
+        ' The stable and unique string identifying the role. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    Arn: ArnTypeSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) specifying the role. For more information about ARNs and how to use them in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i> guide. ',
+    }),
+    CreateDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the role was created.',
+    }),
+    AssumeRolePolicyDocument: PolicyDocumentTypeSchema.exactOptional().openapi({
+      description: 'The policy that grants an entity permission to assume the role.',
+    }),
+    Description: RoleDescriptionTypeSchema.exactOptional().openapi({
+      description: 'A description of the role that you provide.',
+    }),
+    MaxSessionDuration: RoleMaxSessionDurationTypeSchema.exactOptional().openapi({
+      description:
+        'The maximum session duration (in seconds) for the specified role. Anyone who uses the CLI, or API to assume the role can specify the duration using the optional <code>DurationSeconds</code> API parameter or <code>duration-seconds</code> CLI parameter.',
+    }),
+    PermissionsBoundary: AttachedPermissionsBoundarySchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the policy used to set the permissions boundary for the role.</p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the role. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
+    RoleLastUsed: RoleLastUsedSchema.exactOptional().openapi({
+      description:
+        'Contains information about the last time that an IAM role was used. This includes the date and time and the Region in which the role was last used. Activity is only reported for the trailing 400 days. This period can be shorter if your Region began supporting these features within the last year. The role might have been used more than 400 days ago. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period">Regions where data is tracked</a> in the <i>IAM user Guide</i>.',
+    }),
   })
   .openapi({
     required: ['Path', 'RoleName', 'RoleId', 'Arn', 'CreateDate'],
@@ -416,47 +328,31 @@ const RoleListTypeSchema = z
 
 const InstanceProfileSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The path to the instance profile. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z.any().openapi({ description: 'The name identifying the instance profile.' }),
-    ),
-    InstanceProfileId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The stable and unique string identifying the instance profile. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    Arn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) specifying the instance profile. For more information about ARNs and how to use them in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    CreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the instance profile was created.' }),
-    ),
-    Roles: RoleListTypeSchema.and(
-      z.any().openapi({ description: 'The role associated with the instance profile.' }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the instance profile. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Path: PathTypeSchema.openapi({
+      description:
+        ' The path to the instance profile. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description: 'The name identifying the instance profile.',
+    }),
+    InstanceProfileId: IdTypeSchema.openapi({
+      description:
+        ' The stable and unique string identifying the instance profile. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    Arn: ArnTypeSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) specifying the instance profile. For more information about ARNs and how to use them in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    CreateDate: DateTypeSchema.openapi({
+      description: 'The date when the instance profile was created.',
+    }),
+    Roles: RoleListTypeSchema.openapi({
+      description: 'The role associated with the instance profile.',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the instance profile. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['Path', 'InstanceProfileName', 'InstanceProfileId', 'Arn', 'CreateDate', 'Roles'],
@@ -465,13 +361,501 @@ const InstanceProfileSchema = z
   })
   .openapi('InstanceProfile')
 
+const InstanceProfileListTypeSchema = z
+  .array(InstanceProfileSchema)
+  .openapi({ description: 'Contains a list of instance profiles.' })
+  .openapi('InstanceProfileListType')
+
+const RoleDetailSchema = z
+  .object({
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        'The path to the role. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
+    RoleName: RoleNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name that identifies the role.',
+    }),
+    RoleId: IdTypeSchema.exactOptional().openapi({
+      description:
+        'The stable and unique string identifying the role. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
+    Arn: ArnTypeSchema.exactOptional(),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the role was created.',
+    }),
+    AssumeRolePolicyDocument: PolicyDocumentTypeSchema.exactOptional().openapi({
+      description: 'The trust policy that grants permission to assume the role.',
+    }),
+    InstanceProfileList: InstanceProfileListTypeSchema.exactOptional().openapi({
+      description: 'A list of instance profiles that contain this role.',
+    }),
+    RolePolicyList: PolicyDetailListTypeSchema.exactOptional().openapi({
+      description:
+        "A list of inline policies embedded in the role. These policies are the role's access (permissions) policies.",
+    }),
+    AttachedManagedPolicies: AttachedPoliciesListTypeSchema.exactOptional().openapi({
+      description:
+        "A list of managed policies attached to the role. These policies are the role's access (permissions) policies.",
+    }),
+    PermissionsBoundary: AttachedPermissionsBoundarySchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the policy used to set the permissions boundary for the role.</p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the role. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
+    RoleLastUsed: RoleLastUsedSchema.exactOptional().openapi({
+      description:
+        'Contains information about the last time that an IAM role was used. This includes the date and time and the Region in which the role was last used. Activity is only reported for the trailing 400 days. This period can be shorter if your Region began supporting these features within the last year. The role might have been used more than 400 days ago. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period">Regions where data is tracked</a> in the <i>IAM User Guide</i>.',
+    }),
+  })
+  .openapi({
+    description:
+      "<p>Contains information about an IAM role, including all of the role's policies.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p>",
+    required: [],
+  })
+  .openapi('RoleDetail')
+
+type RoleDetailListTypeType = z.infer<typeof RoleDetailSchema>[]
+
+const RoleDetailListTypeSchema: z.ZodType<RoleDetailListTypeType> = z
+  .array(RoleDetailSchema)
+  .openapi('RoleDetailListType')
+
+const PolicyPathTypeSchema = z
+  .string()
+  .regex(/((\/[A-Za-z0-9\.,\+@=_-]+)*)\//)
+  .min(1)
+  .max(512)
+  .openapi('PolicyPathType')
+
+const PolicyVersionIdTypeSchema = z
+  .string()
+  .regex(/v[1-9][0-9]*(\.[A-Za-z0-9-]*)?/)
+  .openapi('PolicyVersionIdType')
+
+const AttachmentCountTypeSchema = z.int().openapi('AttachmentCountType')
+
+const BooleanTypeSchema = z.boolean().openapi('BooleanType')
+
+const PolicyDescriptionTypeSchema = z.string().max(1000).openapi('PolicyDescriptionType')
+
+const PolicyVersionSchema = z
+  .object({
+    Document: PolicyDocumentTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The policy document.</p> <p>The policy document is returned in the response to the <a>GetPolicyVersion</a> and <a>GetAccountAuthorizationDetails</a> operations. It is not returned in the response to the <a>CreatePolicyVersion</a> or <a>ListPolicyVersions</a> operations. </p> <p>The policy document returned in this structure is URL-encoded compliant with <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>. You can use a URL decoding method to convert the policy back to plain JSON text. For example, if you use Java, you can use the <code>decode</code> method of the <code>java.net.URLDecoder</code> utility class in the Java SDK. Other languages and SDKs provide similar functionality.</p>',
+    }),
+    VersionId: PolicyVersionIdTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier for the policy version.</p> <p>Policy version identifiers always begin with <code>v</code> (always lowercase). When a policy is created, the first policy version is <code>v1</code>. </p>',
+    }),
+    IsDefaultVersion: BooleanTypeSchema.exactOptional().openapi({
+      description: "Specifies whether the policy version is set as the policy's default version.",
+    }),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy version was created.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains information about a version of a managed policy.</p> <p>This data type is used as a response element in the <a>CreatePolicyVersion</a>, <a>GetPolicyVersion</a>, <a>ListPolicyVersions</a>, and <a>GetAccountAuthorizationDetails</a> operations. </p> <p>For more information about managed policies, refer to <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>. </p>',
+    required: [],
+  })
+  .openapi('PolicyVersion')
+
+const PolicyDocumentVersionListTypeSchema = z
+  .array(PolicyVersionSchema)
+  .openapi('PolicyDocumentVersionListType')
+
+const ManagedPolicyDetailSchema = z
+  .object({
+    PolicyName: PolicyNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name (not ARN) identifying the policy.',
+    }),
+    PolicyId: IdTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The stable and unique string identifying the policy.</p> <p>For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    Arn: ArnTypeSchema.exactOptional(),
+    Path: PolicyPathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path to the policy.</p> <p>For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    DefaultVersionId: PolicyVersionIdTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier for the version of the policy that is set as the default (operative) version.</p> <p>For more information about policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>. </p>',
+    }),
+    AttachmentCount: AttachmentCountTypeSchema.exactOptional().openapi({
+      description:
+        'The number of principal entities (users, groups, and roles) that the policy is attached to.',
+    }),
+    PermissionsBoundaryUsageCount: AttachmentCountTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The number of entities (users and roles) for which the policy is used as the permissions boundary. </p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    IsAttachable: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether the policy can be attached to an IAM user, group, or role.',
+    }),
+    Description: PolicyDescriptionTypeSchema.exactOptional().openapi({
+      description: 'A friendly description of the policy.',
+    }),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy was created.',
+    }),
+    UpdateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy was last updated.</p> <p>When a policy has only one version, this field contains the date and time when the policy was created. When a policy has more than one version, this field contains the date and time when the most recent policy version was created.</p>',
+    }),
+    PolicyVersionList: PolicyDocumentVersionListTypeSchema.exactOptional().openapi({
+      description: 'A list containing information about the versions of the policy.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains information about a managed policy, including the policy\'s ARN, versions, and the number of principal entities (users, groups, and roles) that the policy is attached to.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p> <p>For more information about managed policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>. </p>',
+    required: [],
+  })
+  .openapi('ManagedPolicyDetail')
+
+const ManagedPolicyDetailListTypeSchema = z
+  .array(ManagedPolicyDetailSchema)
+  .openapi('ManagedPolicyDetailListType')
+
+const ResponseMarkerTypeSchema = z.string().openapi('ResponseMarkerType')
+
+type GetAccountAuthorizationDetailsResponseType = {
+  UserDetailList?: z.infer<typeof UserDetailListTypeSchema> & unknown
+  GroupDetailList?: z.infer<typeof GroupDetailListTypeSchema> & unknown
+  RoleDetailList?: z.infer<typeof RoleDetailListTypeSchema> & unknown
+  Policies?: z.infer<typeof ManagedPolicyDetailListTypeSchema> & unknown
+  IsTruncated?: z.infer<typeof BooleanTypeSchema> & unknown
+  Marker?: z.infer<typeof ResponseMarkerTypeSchema> & unknown
+}
+
+const ActionNameTypeSchema = z.string().min(3).max(128).openapi('ActionNameType')
+
+const ResourceNameTypeSchema = z.string().min(1).max(2048).openapi('ResourceNameType')
+
+const PolicyEvaluationDecisionTypeSchema = z
+  .enum(['allowed', 'explicitDeny', 'implicitDeny'])
+  .openapi('PolicyEvaluationDecisionType')
+
+const PolicyIdentifierTypeSchema = z.string().openapi('PolicyIdentifierType')
+
+const PolicySourceTypeSchema = z
+  .enum(['user', 'group', 'role', 'aws-managed', 'user-managed', 'resource', 'none'])
+  .openapi('PolicySourceType')
+
+const LineNumberSchema = z.int().openapi('LineNumber')
+
+const ColumnNumberSchema = z.int().openapi('ColumnNumber')
+
+const PositionSchema = z
+  .object({
+    Line: LineNumberSchema.exactOptional().openapi({
+      description: 'The line containing the specified position in the document.',
+    }),
+    Column: ColumnNumberSchema.exactOptional().openapi({
+      description: 'The column in the line containing the specified position in the document.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains the row and column of a location of a <code>Statement</code> element in a policy document.</p> <p>This data type is used as a member of the <code> <a>Statement</a> </code> type.</p>',
+    required: [],
+  })
+  .openapi('Position')
+
+const StatementSchema = z
+  .object({
+    SourcePolicyId: PolicyIdentifierTypeSchema.exactOptional().openapi({
+      description: 'The identifier of the policy that was provided as an input.',
+    }),
+    SourcePolicyType: PolicySourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the policy.',
+    }),
+    StartPosition: PositionSchema.exactOptional().openapi({
+      description:
+        'The row and column of the beginning of the <code>Statement</code> in an IAM policy.',
+    }),
+    EndPosition: PositionSchema.exactOptional().openapi({
+      description: 'The row and column of the end of a <code>Statement</code> in an IAM policy.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains a reference to a <code>Statement</code> element in a policy document that determines the result of the simulation.</p> <p>This data type is used by the <code>MatchedStatements</code> member of the <code> <a>EvaluationResult</a> </code> type.</p>',
+    required: [],
+  })
+  .openapi('Statement')
+
+const StatementListTypeSchema = z.array(StatementSchema).openapi('StatementListType')
+
+const ContextKeyNameTypeSchema = z.string().min(5).max(256).openapi('ContextKeyNameType')
+
+const ContextKeyNamesResultListTypeSchema = z
+  .array(ContextKeyNameTypeSchema)
+  .openapi('ContextKeyNamesResultListType')
+
+const OrganizationsDecisionDetailSchema = z
+  .object({
+    AllowedByOrganizations: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        "Specifies whether the simulated operation is allowed by the Organizations service control policies that impact the simulated user's account.",
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information about the effect that Organizations has on a policy simulation.',
+    required: [],
+  })
+  .openapi('OrganizationsDecisionDetail')
+
+const PermissionsBoundaryDecisionDetailSchema = z
+  .object({
+    AllowedByPermissionsBoundary: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether an action is allowed by a permissions boundary that is applied to an IAM entity (user or role). A value of <code>true</code> means that the permissions boundary does not deny the action. This means that the policy includes an <code>Allow</code> statement that matches the request. In this case, if an identity-based policy also allows the action, the request is allowed. A value of <code>false</code> means that either the requested action is not allowed (implicitly denied) or that the action is explicitly denied by the permissions boundary. In both of these cases, the action is not allowed, regardless of the identity-based policy.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information about the effect that a permissions boundary has on a policy simulation when the boundary is applied to an IAM entity.',
+    required: [],
+  })
+  .openapi('PermissionsBoundaryDecisionDetail')
+
+const EvalDecisionDetailsTypeSchema = z
+  .record(z.string(), PolicyEvaluationDecisionTypeSchema)
+  .openapi('EvalDecisionDetailsType')
+
+const ResourceSpecificResultSchema = z
+  .object({
+    EvalResourceName: ResourceNameTypeSchema.openapi({
+      description: 'The name of the simulated resource, in Amazon Resource Name (ARN) format.',
+    }),
+    EvalResourceDecision: PolicyEvaluationDecisionTypeSchema.openapi({
+      description:
+        'The result of the simulation of the simulated API operation on the resource specified in <code>EvalResourceName</code>.',
+    }),
+    MatchedStatements: StatementListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of the statements in the input policies that determine the result for this part of the simulation. Remember that even if multiple statements allow the operation on the resource, if <i>any</i> statement denies that operation, then the explicit deny overrides any allow. In addition, the deny statement is the only entry included in the result.',
+    }),
+    MissingContextValues: ContextKeyNamesResultListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of context keys that are required by the included input policies but that were not provided by one of the input parameters. This list is used when a list of ARNs is included in the <code>ResourceArns</code> parameter instead of "*". If you do not specify individual resources, by setting <code>ResourceArns</code> to "*" or by not including the <code>ResourceArns</code> parameter, then any missing context values are instead included under the <code>EvaluationResults</code> section. To discover the context keys used by a set of policies, you can call <a>GetContextKeysForCustomPolicy</a> or <a>GetContextKeysForPrincipalPolicy</a>.',
+    }),
+    EvalDecisionDetails: EvalDecisionDetailsTypeSchema.exactOptional().openapi({
+      description:
+        'Additional details about the results of the evaluation decision on a single resource. This parameter is returned only for cross-account simulations. This parameter explains how each policy type contributes to the resource-specific evaluation decision.',
+    }),
+    PermissionsBoundaryDecisionDetail:
+      PermissionsBoundaryDecisionDetailSchema.exactOptional().openapi({
+        description:
+          'Contains information about the effect that a permissions boundary has on a policy simulation when that boundary is applied to an IAM entity.',
+      }),
+  })
+  .openapi({
+    required: ['EvalResourceName', 'EvalResourceDecision'],
+    description:
+      '<p>Contains the result of the simulation of a single API operation call on a single resource.</p> <p>This data type is used by a member of the <a>EvaluationResult</a> data type.</p>',
+  })
+  .openapi('ResourceSpecificResult')
+
+const ResourceSpecificResultListTypeSchema = z
+  .array(ResourceSpecificResultSchema)
+  .openapi('ResourceSpecificResultListType')
+
+const EvaluationResultSchema = z
+  .object({
+    EvalActionName: ActionNameTypeSchema.openapi({
+      description: 'The name of the API operation tested on the indicated resource.',
+    }),
+    EvalResourceName: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The ARN of the resource that the indicated API operation was tested on.',
+    }),
+    EvalDecision: PolicyEvaluationDecisionTypeSchema.openapi({
+      description: 'The result of the simulation.',
+    }),
+    MatchedStatements: StatementListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of the statements in the input policies that determine the result for this scenario. Remember that even if multiple statements allow the operation on the resource, if only one statement denies that operation, then the explicit deny overrides any allow. In addition, the deny statement is the only entry included in the result.',
+    }),
+    MissingContextValues: ContextKeyNamesResultListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of context keys that are required by the included input policies but that were not provided by one of the input parameters. This list is used when the resource in a simulation is "*", either explicitly, or when the <code>ResourceArns</code> parameter blank. If you include a list of resources, then any missing context values are instead included under the <code>ResourceSpecificResults</code> section. To discover the context keys used by a set of policies, you can call <a>GetContextKeysForCustomPolicy</a> or <a>GetContextKeysForPrincipalPolicy</a>.',
+    }),
+    OrganizationsDecisionDetail: OrganizationsDecisionDetailSchema.exactOptional().openapi({
+      description:
+        "A structure that details how Organizations and its service control policies affect the results of the simulation. Only applies if the simulated user's account is part of an organization.",
+    }),
+    PermissionsBoundaryDecisionDetail:
+      PermissionsBoundaryDecisionDetailSchema.exactOptional().openapi({
+        description:
+          'Contains information about the effect that a permissions boundary has on a policy simulation when the boundary is applied to an IAM entity.',
+      }),
+    EvalDecisionDetails: EvalDecisionDetailsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Additional details about the results of the cross-account evaluation decision. This parameter is populated for only cross-account simulations. It contains a brief summary of how each policy type contributes to the final evaluation decision.</p> <p>If the simulation evaluates policies within the same account and includes a resource ARN, then the parameter is present but the response is empty. If the simulation evaluates policies within the same account and specifies all resources (<code>*</code>), then the parameter is not returned.</p> <p>When you make a cross-account request, Amazon Web Services evaluates the request in the trusting account and the trusted account. The request is allowed only if both evaluations return <code>true</code>. For more information about how policies are evaluated, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html#policy-eval-basics">Evaluating policies within a single account</a>.</p> <p>If an Organizations SCP included in the evaluation denies access, the simulation ends. In this case, policy evaluation does not proceed any further and this parameter is not returned.</p>',
+    }),
+    ResourceSpecificResults: ResourceSpecificResultListTypeSchema.exactOptional().openapi({
+      description:
+        'The individual results of the simulation of the API operation specified in EvalActionName on each resource.',
+    }),
+  })
+  .openapi({
+    required: ['EvalActionName', 'EvalDecision'],
+    description:
+      '<p>Contains the results of a simulation.</p> <p>This data type is used by the return parameter of <code> <a>SimulateCustomPolicy</a> </code> and <code> <a>SimulatePrincipalPolicy</a> </code>.</p>',
+  })
+  .openapi('EvaluationResult')
+
+const EvaluationResultsListTypeSchema = z
+  .array(EvaluationResultSchema)
+  .openapi('EvaluationResultsListType')
+
+type SimulatePolicyResponseType = {
+  EvaluationResults?: z.infer<typeof EvaluationResultsListTypeSchema> & unknown
+  IsTruncated?: z.infer<typeof BooleanTypeSchema> & unknown
+  Marker?: z.infer<typeof ResponseMarkerTypeSchema> & unknown
+}
+
+const InvalidInputExceptionSchema = z.any().openapi('InvalidInputException')
+
+const NoSuchEntityExceptionSchema = z.any().openapi('NoSuchEntityException')
+
+const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
+
+const ServiceFailureExceptionSchema = z.any().openapi('ServiceFailureException')
+
+const EntityAlreadyExistsExceptionSchema = z.any().openapi('EntityAlreadyExistsException')
+
+const UnmodifiableEntityExceptionSchema = z.any().openapi('UnmodifiableEntityException')
+
+const PolicyNotAttachableExceptionSchema = z.any().openapi('PolicyNotAttachableException')
+
+const InvalidUserTypeExceptionSchema = z.any().openapi('InvalidUserTypeException')
+
+const EntityTemporarilyUnmodifiableExceptionSchema = z
+  .any()
+  .openapi('EntityTemporarilyUnmodifiableException')
+
+const PasswordPolicyViolationExceptionSchema = z.any().openapi('PasswordPolicyViolationException')
+
+const AccessKeyIdTypeSchema = z.string().regex(/[\w]+/).min(16).max(128).openapi('AccessKeyIdType')
+
+const StatusTypeSchema = z.enum(['Active', 'Inactive']).openapi('StatusType')
+
+const AccessKeySecretTypeSchema = z.string().openapi('AccessKeySecretType')
+
+const AccessKeySchema = z
+  .object({
+    UserName: UserNameTypeSchema.openapi({
+      description: 'The name of the IAM user that the access key is associated with.',
+    }),
+    AccessKeyId: AccessKeyIdTypeSchema.openapi({ description: 'The ID for this access key.' }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        'The status of the access key. <code>Active</code> means that the key is valid for API calls, while <code>Inactive</code> means it is not. ',
+    }),
+    SecretAccessKey: AccessKeySecretTypeSchema.openapi({
+      description: 'The secret key used to sign requests.',
+    }),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the access key was created.',
+    }),
+  })
+  .openapi({
+    required: ['UserName', 'AccessKeyId', 'Status', 'SecretAccessKey'],
+    description:
+      '<p>Contains information about an Amazon Web Services access key.</p> <p> This data type is used as a response element in the <a>CreateAccessKey</a> and <a>ListAccessKeys</a> operations. </p> <note> <p>The <code>SecretAccessKey</code> value is returned only in response to <a>CreateAccessKey</a>. You can get a secret access key only when you first create an access key; you cannot recover the secret access key later. If you lose a secret access key, you must create a new access key.</p> </note>',
+  })
+  .openapi('AccessKey')
+
+const CreateAccessKeyResponseSchema = z
+  .object({
+    AccessKey: AccessKeySchema.openapi({
+      description: 'A structure with details about the access key.',
+    }),
+  })
+  .openapi({
+    required: ['AccessKey'],
+    example: {
+      AccessKey: {
+        AccessKeyId: 'AKIAIOSFODNN7EXAMPLE',
+        CreateDate: '2015-03-09T18:39:23.411Z',
+        SecretAccessKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY',
+        Status: 'Active',
+        UserName: 'Bob',
+      },
+    },
+    description: 'Contains the response to a successful <a>CreateAccessKey</a> request. ',
+  })
+  .openapi('CreateAccessKeyResponse')
+
+const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModificationException')
+
+const GroupSchema = z
+  .object({
+    Path: PathTypeSchema.openapi({
+      description:
+        'The path to the group. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    GroupName: GroupNameTypeSchema.openapi({
+      description: 'The friendly name that identifies the group.',
+    }),
+    GroupId: IdTypeSchema.openapi({
+      description:
+        ' The stable and unique string identifying the group. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    Arn: ArnTypeSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) specifying the group. For more information about ARNs and how to use them in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    CreateDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the group was created.',
+    }),
+  })
+  .openapi({
+    required: ['Path', 'GroupName', 'GroupId', 'Arn', 'CreateDate'],
+    description:
+      '<p>Contains information about an IAM group entity.</p> <p>This data type is used as a response element in the following operations:</p> <ul> <li> <p> <a>CreateGroup</a> </p> </li> <li> <p> <a>GetGroup</a> </p> </li> <li> <p> <a>ListGroups</a> </p> </li> </ul>',
+  })
+  .openapi('Group')
+
+const CreateGroupResponseSchema = z
+  .object({
+    Group: GroupSchema.openapi({
+      description: 'A structure containing details about the new group.',
+    }),
+  })
+  .openapi({
+    required: ['Group'],
+    example: {
+      Group: {
+        Arn: 'arn:aws:iam::123456789012:group/Admins',
+        CreateDate: '2015-03-09T20:30:24.940Z',
+        GroupId: 'AIDGPMS9RO4H3FEXAMPLE',
+        GroupName: 'Admins',
+        Path: '/',
+      },
+    },
+    description: 'Contains the response to a successful <a>CreateGroup</a> request. ',
+  })
+  .openapi('CreateGroupResponse')
+
 const CreateInstanceProfileResponseSchema = z
   .object({
-    InstanceProfile: InstanceProfileSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure containing details about the new instance profile.' }),
-    ),
+    InstanceProfile: InstanceProfileSchema.openapi({
+      description: 'A structure containing details about the new instance profile.',
+    }),
   })
   .openapi({
     required: ['InstanceProfile'],
@@ -489,29 +873,18 @@ const CreateInstanceProfileResponseSchema = z
   })
   .openapi('CreateInstanceProfileResponse')
 
-const BooleanTypeSchema = z.boolean().openapi('BooleanType')
-
 const LoginProfileSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the user, which can be used for signing in to the Amazon Web Services Management Console.',
-        }),
-    ),
-    CreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the password for the user was created.' }),
-    ),
-    PasswordResetRequired: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the user is required to set a new password on next sign-in.',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        'The name of the user, which can be used for signing in to the Amazon Web Services Management Console.',
+    }),
+    CreateDate: DateTypeSchema.openapi({
+      description: 'The date when the password for the user was created.',
+    }),
+    PasswordResetRequired: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether the user is required to set a new password on next sign-in.',
+    }),
   })
   .openapi({
     required: ['UserName', 'CreateDate'],
@@ -522,11 +895,9 @@ const LoginProfileSchema = z
 
 const CreateLoginProfileResponseSchema = z
   .object({
-    LoginProfile: LoginProfileSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure containing the user name and password create date.' }),
-    ),
+    LoginProfile: LoginProfileSchema.openapi({
+      description: 'A structure containing the user name and password create date.',
+    }),
   })
   .openapi({
     required: ['LoginProfile'],
@@ -543,22 +914,14 @@ const CreateLoginProfileResponseSchema = z
 
 const CreateOpenIDConnectProviderResponseSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the new IAM OpenID Connect provider that is created. For more information, see <a>OpenIDConnectProviderListEntry</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the new IAM OIDC provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    OpenIDConnectProviderArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the new IAM OpenID Connect provider that is created. For more information, see <a>OpenIDConnectProviderListEntry</a>. ',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the new IAM OIDC provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     example: {
@@ -581,115 +944,51 @@ const ThumbprintTypeSchema = z
   })
   .openapi('ThumbprintType')
 
-const PolicyNameTypeSchema = z
-  .string()
-  .regex(/[\w+=,.@-]+/)
-  .min(1)
-  .max(128)
-  .openapi('PolicyNameType')
-
-const PolicyPathTypeSchema = z
-  .string()
-  .regex(/((\/[A-Za-z0-9\.,\+@=_-]+)*)\//)
-  .min(1)
-  .max(512)
-  .openapi('PolicyPathType')
-
-const PolicyVersionIdTypeSchema = z
-  .string()
-  .regex(/v[1-9][0-9]*(\.[A-Za-z0-9-]*)?/)
-  .openapi('PolicyVersionIdType')
-
-const AttachmentCountTypeSchema = z.int().openapi('AttachmentCountType')
-
-const PolicyDescriptionTypeSchema = z.string().max(1000).openapi('PolicyDescriptionType')
-
 const PolicySchema = z
   .object({
-    PolicyName: PolicyNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name (not ARN) identifying the policy.' }),
-    ).exactOptional(),
-    PolicyId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stable and unique string identifying the policy.</p> <p>For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    PolicyName: PolicyNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name (not ARN) identifying the policy.',
+    }),
+    PolicyId: IdTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The stable and unique string identifying the policy.</p> <p>For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p>',
+    }),
     Arn: ArnTypeSchema.exactOptional(),
-    Path: PolicyPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path to the policy.</p> <p>For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    DefaultVersionId: PolicyVersionIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the version of the policy that is set as the default version.',
-        }),
-    ).exactOptional(),
-    AttachmentCount: AttachmentCountTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of entities (users, groups, and roles) that the policy is attached to.',
-        }),
-    ).exactOptional(),
-    PermissionsBoundaryUsageCount: AttachmentCountTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of entities (users and roles) for which the policy is used to set the permissions boundary. </p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    IsAttachable: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the policy can be attached to an IAM user, group, or role.',
-        }),
-    ).exactOptional(),
-    Description: PolicyDescriptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A friendly description of the policy.</p> <p>This element is included in the response to the <a>GetPolicy</a> operation. It is not included in the response to the <a>ListPolicies</a> operation. </p>',
-        }),
-    ).exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy was created.',
-        }),
-    ).exactOptional(),
-    UpdateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy was last updated.</p> <p>When a policy has only one version, this field contains the date and time when the policy was created. When a policy has more than one version, this field contains the date and time when the most recent policy version was created.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the instance profile. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Path: PolicyPathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path to the policy.</p> <p>For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    DefaultVersionId: PolicyVersionIdTypeSchema.exactOptional().openapi({
+      description:
+        'The identifier for the version of the policy that is set as the default version.',
+    }),
+    AttachmentCount: AttachmentCountTypeSchema.exactOptional().openapi({
+      description:
+        'The number of entities (users, groups, and roles) that the policy is attached to.',
+    }),
+    PermissionsBoundaryUsageCount: AttachmentCountTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The number of entities (users and roles) for which the policy is used to set the permissions boundary. </p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    IsAttachable: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether the policy can be attached to an IAM user, group, or role.',
+    }),
+    Description: PolicyDescriptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A friendly description of the policy.</p> <p>This element is included in the response to the <a>GetPolicy</a> operation. It is not included in the response to the <a>ListPolicies</a> operation. </p>',
+    }),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy was created.',
+    }),
+    UpdateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy was last updated.</p> <p>When a policy has only one version, this field contains the date and time when the policy was created. When a policy has more than one version, this field contains the date and time when the most recent policy version was created.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the instance profile. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     description:
@@ -700,9 +999,9 @@ const PolicySchema = z
 
 const CreatePolicyResponseSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z.any().openapi({ description: 'A structure containing details about the new policy.' }),
-    ).exactOptional(),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'A structure containing details about the new policy.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>CreatePolicy</a> request. ',
@@ -712,55 +1011,11 @@ const CreatePolicyResponseSchema = z
 
 const MalformedPolicyDocumentExceptionSchema = z.any().openapi('MalformedPolicyDocumentException')
 
-const PolicyVersionSchema = z
-  .object({
-    Document: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy document.</p> <p>The policy document is returned in the response to the <a>GetPolicyVersion</a> and <a>GetAccountAuthorizationDetails</a> operations. It is not returned in the response to the <a>CreatePolicyVersion</a> or <a>ListPolicyVersions</a> operations. </p> <p>The policy document returned in this structure is URL-encoded compliant with <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>. You can use a URL decoding method to convert the policy back to plain JSON text. For example, if you use Java, you can use the <code>decode</code> method of the <code>java.net.URLDecoder</code> utility class in the Java SDK. Other languages and SDKs provide similar functionality.</p>',
-        }),
-    ).exactOptional(),
-    VersionId: PolicyVersionIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the policy version.</p> <p>Policy version identifiers always begin with <code>v</code> (always lowercase). When a policy is created, the first policy version is <code>v1</code>. </p>',
-        }),
-    ).exactOptional(),
-    IsDefaultVersion: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether the policy version is set as the policy's default version.",
-        }),
-    ).exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy version was created.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains information about a version of a managed policy.</p> <p>This data type is used as a response element in the <a>CreatePolicyVersion</a>, <a>GetPolicyVersion</a>, <a>ListPolicyVersions</a>, and <a>GetAccountAuthorizationDetails</a> operations. </p> <p>For more information about managed policies, refer to <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>. </p>',
-    required: [],
-  })
-  .openapi('PolicyVersion')
-
 const CreatePolicyVersionResponseSchema = z
   .object({
-    PolicyVersion: PolicyVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure containing details about the new policy version.' }),
-    ).exactOptional(),
+    PolicyVersion: PolicyVersionSchema.exactOptional().openapi({
+      description: 'A structure containing details about the new policy version.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>CreatePolicyVersion</a> request. ',
@@ -770,9 +1025,7 @@ const CreatePolicyVersionResponseSchema = z
 
 const CreateRoleResponseSchema = z
   .object({
-    Role: RoleSchema.and(
-      z.any().openapi({ description: 'A structure containing details about the new role.' }),
-    ),
+    Role: RoleSchema.openapi({ description: 'A structure containing details about the new role.' }),
   })
   .openapi({
     required: ['Role'],
@@ -792,21 +1045,13 @@ const CreateRoleResponseSchema = z
 
 const CreateSAMLProviderResponseSchema = z
   .object({
-    SAMLProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the new SAML provider resource in IAM.',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the new IAM SAML provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    SAMLProviderArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the new SAML provider resource in IAM.',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the new IAM SAML provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>CreateSAMLProvider</a> request. ',
@@ -816,13 +1061,9 @@ const CreateSAMLProviderResponseSchema = z
 
 const CreateServiceLinkedRoleResponseSchema = z
   .object({
-    Role: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <a>Role</a> object that contains details about the newly created role.',
-        }),
-    ).exactOptional(),
+    Role: RoleSchema.exactOptional().openapi({
+      description: 'A <a>Role</a> object that contains details about the newly created role.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateServiceLinkedRoleResponse')
@@ -847,54 +1088,30 @@ const ServiceSpecificCredentialIdSchema = z
 
 const ServiceSpecificCredentialSchema = z
   .object({
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the service-specific credential were created.',
-        }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service associated with the service-specific credential.',
-        }),
-    ),
-    ServiceUserName: ServiceUserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The generated user name for the service-specific credential. This value is generated by combining the IAM user's name combined with the ID number of the Amazon Web Services account, as in <code>jane-at-123456789012</code>, for example. This value cannot be configured by the user.",
-        }),
-    ),
-    ServicePassword: ServicePasswordSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The generated password for the service-specific credential.' }),
-    ),
-    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier for the service-specific credential.' }),
-    ),
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IAM user associated with the service-specific credential.',
-        }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the service-specific credential. <code>Active</code> means that the key is valid for API calls, while <code>Inactive</code> means it is not.',
-        }),
-    ),
+    CreateDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the service-specific credential were created.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      description: 'The name of the service associated with the service-specific credential.',
+    }),
+    ServiceUserName: ServiceUserNameSchema.openapi({
+      description:
+        "The generated user name for the service-specific credential. This value is generated by combining the IAM user's name combined with the ID number of the Amazon Web Services account, as in <code>jane-at-123456789012</code>, for example. This value cannot be configured by the user.",
+    }),
+    ServicePassword: ServicePasswordSchema.openapi({
+      description: 'The generated password for the service-specific credential.',
+    }),
+    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.openapi({
+      description: 'The unique identifier for the service-specific credential.',
+    }),
+    UserName: UserNameTypeSchema.openapi({
+      description: 'The name of the IAM user associated with the service-specific credential.',
+    }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        'The status of the service-specific credential. <code>Active</code> means that the key is valid for API calls, while <code>Inactive</code> means it is not.',
+    }),
   })
   .openapi({
     required: [
@@ -912,14 +1129,10 @@ const ServiceSpecificCredentialSchema = z
 
 const CreateServiceSpecificCredentialResponseSchema = z
   .object({
-    ServiceSpecificCredential: ServiceSpecificCredentialSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A structure that contains information about the newly created service-specific credential.</p> <important> <p>This is the only time that the password for this credential set is available. It cannot be recovered later. Instead, you must reset the password with <a>ResetServiceSpecificCredential</a>.</p> </important>',
-        }),
-    ).exactOptional(),
+    ServiceSpecificCredential: ServiceSpecificCredentialSchema.exactOptional().openapi({
+      description:
+        '<p>A structure that contains information about the newly created service-specific credential.</p> <important> <p>This is the only time that the password for this credential set is available. It cannot be recovered later. Instead, you must reset the password with <a>ResetServiceSpecificCredential</a>.</p> </important>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateServiceSpecificCredentialResponse')
@@ -928,65 +1141,37 @@ const ServiceNotSupportedExceptionSchema = z.any().openapi('ServiceNotSupportedE
 
 const UserSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path to the user. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>The ARN of the policy used to set the permissions boundary for the user.</p>',
-        }),
-    ),
-    UserName: UserNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name identifying the user.' }),
-    ),
-    UserId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stable and unique string identifying the user. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ),
-    Arn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the user. For more information about ARNs and how to use ARNs in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the user was created.',
-        }),
-    ),
-    PasswordLastUsed: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the user\'s password was last used to sign in to an Amazon Web Services website. For a list of Amazon Web Services websites that capture a user\'s last sign-in time, see the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/credential-reports.html">Credential reports</a> topic in the <i>IAM User Guide</i>. If a password is used more than once in a five-minute span, only the first use is returned in this field. If the field is null (no value), then it indicates that they never signed in with a password. This can be because:</p> <ul> <li> <p>The user never had a password.</p> </li> <li> <p>A password exists but has not been used since IAM started tracking this information on October 20, 2014.</p> </li> </ul> <p>A null value does not mean that the user <i>never</i> had a password. Also, if the user does not currently have a password but had one in the past, then this field contains the date and time the most recent password was used.</p> <p>This value is returned only in the <a>GetUser</a> and <a>ListUsers</a> operations. </p>',
-        }),
-    ).exactOptional(),
-    PermissionsBoundary: AttachedPermissionsBoundarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are associated with the user. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Path: PathTypeSchema.openapi({
+      description:
+        '<p>The path to the user. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>The ARN of the policy used to set the permissions boundary for the user.</p>',
+    }),
+    UserName: UserNameTypeSchema.openapi({
+      description: 'The friendly name identifying the user.',
+    }),
+    UserId: IdTypeSchema.openapi({
+      description:
+        'The stable and unique string identifying the user. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
+    Arn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the user. For more information about ARNs and how to use ARNs in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    CreateDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the user was created.',
+    }),
+    PasswordLastUsed: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the user\'s password was last used to sign in to an Amazon Web Services website. For a list of Amazon Web Services websites that capture a user\'s last sign-in time, see the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/credential-reports.html">Credential reports</a> topic in the <i>IAM User Guide</i>. If a password is used more than once in a five-minute span, only the first use is returned in this field. If the field is null (no value), then it indicates that they never signed in with a password. This can be because:</p> <ul> <li> <p>The user never had a password.</p> </li> <li> <p>A password exists but has not been used since IAM started tracking this information on October 20, 2014.</p> </li> </ul> <p>A null value does not mean that the user <i>never</i> had a password. Also, if the user does not currently have a password but had one in the past, then this field contains the date and time the most recent password was used.</p> <p>This value is returned only in the <a>GetUser</a> and <a>ListUsers</a> operations. </p>',
+    }),
+    PermissionsBoundary: AttachedPermissionsBoundarySchema.exactOptional().openapi({
+      description:
+        'For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are associated with the user. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['Path', 'UserName', 'UserId', 'Arn', 'CreateDate'],
@@ -997,9 +1182,9 @@ const UserSchema = z
 
 const CreateUserResponseSchema = z
   .object({
-    User: UserSchema.and(
-      z.any().openapi({ description: 'A structure with details about the new IAM user.' }),
-    ).exactOptional(),
+    User: UserSchema.exactOptional().openapi({
+      description: 'A structure with details about the new IAM user.',
+    }),
   })
   .openapi({
     example: {
@@ -1027,45 +1212,27 @@ const BootstrapDatumSchema = z.string().openapi('BootstrapDatum')
 
 const VirtualMFADeviceSchema = z
   .object({
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The serial number associated with <code>VirtualMFADevice</code>.',
-        }),
-    ),
-    Base32StringSeed: BootstrapDatumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The base32 seed defined as specified in <a href="https://tools.ietf.org/html/rfc3548.txt">RFC3548</a>. The <code>Base32StringSeed</code> is base32-encoded. ',
-        }),
-    ).exactOptional(),
-    QRCodePNG: BootstrapDatumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A QR code PNG image that encodes <code>otpauth://totp/$virtualMFADeviceName@$AccountName?secret=$Base32String</code> where <code>$virtualMFADeviceName</code> is one of the create call arguments. <code>AccountName</code> is the user name if set (otherwise, the account ID otherwise), and <code>Base32String</code> is the seed in base32 format. The <code>Base32String</code> value is base64-encoded. ',
-        }),
-    ).exactOptional(),
-    User: UserSchema.and(
-      z.any().openapi({ description: 'The IAM user associated with this virtual MFA device.' }),
-    ).exactOptional(),
-    EnableDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time on which the virtual MFA device was enabled.' }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the virtual MFA device. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description: 'The serial number associated with <code>VirtualMFADevice</code>.',
+    }),
+    Base32StringSeed: BootstrapDatumSchema.exactOptional().openapi({
+      description:
+        ' The base32 seed defined as specified in <a href="https://tools.ietf.org/html/rfc3548.txt">RFC3548</a>. The <code>Base32StringSeed</code> is base32-encoded. ',
+    }),
+    QRCodePNG: BootstrapDatumSchema.exactOptional().openapi({
+      description:
+        ' A QR code PNG image that encodes <code>otpauth://totp/$virtualMFADeviceName@$AccountName?secret=$Base32String</code> where <code>$virtualMFADeviceName</code> is one of the create call arguments. <code>AccountName</code> is the user name if set (otherwise, the account ID otherwise), and <code>Base32String</code> is the seed in base32 format. The <code>Base32String</code> value is base64-encoded. ',
+    }),
+    User: UserSchema.exactOptional().openapi({
+      description: 'The IAM user associated with this virtual MFA device.',
+    }),
+    EnableDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date and time on which the virtual MFA device was enabled.',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the virtual MFA device. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['SerialNumber'],
@@ -1075,13 +1242,9 @@ const VirtualMFADeviceSchema = z
 
 const CreateVirtualMFADeviceResponseSchema = z
   .object({
-    VirtualMFADevice: VirtualMFADeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure containing details about the new virtual MFA device.',
-        }),
-    ),
+    VirtualMFADevice: VirtualMFADeviceSchema.openapi({
+      description: 'A structure containing details about the new virtual MFA device.',
+    }),
   })
   .openapi({
     required: ['VirtualMFADevice'],
@@ -1095,14 +1258,10 @@ const DeletionTaskIdTypeSchema = z.string().min(1).max(1000).openapi('DeletionTa
 
 const DeleteServiceLinkedRoleResponseSchema = z
   .object({
-    DeletionTaskId: DeletionTaskIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deletion task identifier that you can use to check the status of the deletion. This identifier is returned in the format <code>task/aws-service-role/&lt;service-principal-name&gt;/&lt;role-name&gt;/&lt;task-uuid&gt;</code>.',
-        }),
-    ),
+    DeletionTaskId: DeletionTaskIdTypeSchema.openapi({
+      description:
+        'The deletion task identifier that you can use to check the status of the deletion. This identifier is returned in the format <code>task/aws-service-role/&lt;service-principal-name&gt;/&lt;role-name&gt;/&lt;task-uuid&gt;</code>.',
+    }),
   })
   .openapi({ required: ['DeletionTaskId'] })
   .openapi('DeleteServiceLinkedRoleResponse')
@@ -1119,12 +1278,12 @@ const ReportStateDescriptionTypeSchema = z.string().openapi('ReportStateDescript
 
 const GenerateCredentialReportResponseSchema = z
   .object({
-    State: ReportStateTypeSchema.and(
-      z.any().openapi({ description: 'Information about the state of the credential report.' }),
-    ).exactOptional(),
-    Description: ReportStateDescriptionTypeSchema.and(
-      z.any().openapi({ description: 'Information about the credential report.' }),
-    ).exactOptional(),
+    State: ReportStateTypeSchema.exactOptional().openapi({
+      description: 'Information about the state of the credential report.',
+    }),
+    Description: ReportStateDescriptionTypeSchema.exactOptional().openapi({
+      description: 'Information about the credential report.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>GenerateCredentialReport</a> request. ',
@@ -1136,14 +1295,10 @@ const JobIDTypeSchema = z.string().length(36).openapi('JobIDType')
 
 const GenerateOrganizationsAccessReportResponseSchema = z
   .object({
-    JobId: JobIDTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job identifier that you can use in the <a>GetOrganizationsAccessReport</a> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIDTypeSchema.exactOptional().openapi({
+      description:
+        'The job identifier that you can use in the <a>GetOrganizationsAccessReport</a> operation.',
+    }),
   })
   .openapi({ example: { JobId: 'examplea-1234-b567-cde8-90fg123abcd4' }, required: [] })
   .openapi('GenerateOrganizationsAccessReportResponse')
@@ -1154,14 +1309,10 @@ const ReportGenerationLimitExceededExceptionSchema = z
 
 const GenerateServiceLastAccessedDetailsResponseSchema = z
   .object({
-    JobId: JobIDTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>JobId</code> that you can use in the <a>GetServiceLastAccessedDetails</a> or <a>GetServiceLastAccessedDetailsWithEntities</a> operations. The <code>JobId</code> returned by <code>GenerateServiceLastAccessedDetail</code> must be used by the same role within a session, or by the same user when used to call <code>GetServiceLastAccessedDetail</code>.',
-        }),
-    ).exactOptional(),
+    JobId: JobIDTypeSchema.exactOptional().openapi({
+      description:
+        'The <code>JobId</code> that you can use in the <a>GetServiceLastAccessedDetails</a> or <a>GetServiceLastAccessedDetailsWithEntities</a> operations. The <code>JobId</code> returned by <code>GenerateServiceLastAccessedDetail</code> must be used by the same role within a session, or by the same user when used to call <code>GetServiceLastAccessedDetail</code>.',
+    }),
   })
   .openapi({ example: { JobId: 'examplef-1305-c245-eba4-71fe298bcda7' }, required: [] })
   .openapi('GenerateServiceLastAccessedDetailsResponse')
@@ -1175,30 +1326,18 @@ const ExistingUserNameTypeSchema = z
 
 const AccessKeyLastUsedSchema = z
   .object({
-    LastUsedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the access key was most recently used. This field is null in the following situations:</p> <ul> <li> <p>The user does not have an access key.</p> </li> <li> <p>An access key exists but has not been used since IAM began tracking this information.</p> </li> <li> <p>There is no sign-in data associated with the user.</p> </li> </ul>',
-        }),
-    ),
-    ServiceName: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon Web Services service with which this access key was most recently used. The value of this field is "N/A" in the following situations:</p> <ul> <li> <p>The user does not have an access key.</p> </li> <li> <p>An access key exists but has not been used since IAM started tracking this information.</p> </li> <li> <p>There is no sign-in data associated with the user.</p> </li> </ul>',
-        }),
-    ),
-    Region: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services Region where this access key was most recently used. The value for this field is "N/A" in the following situations:</p> <ul> <li> <p>The user does not have an access key.</p> </li> <li> <p>An access key exists but has not been used since IAM began tracking this information.</p> </li> <li> <p>There is no sign-in data associated with the user.</p> </li> </ul> <p>For more information about Amazon Web Services Regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and endpoints</a> in the Amazon Web Services General Reference.</p>',
-        }),
-    ),
+    LastUsedDate: DateTypeSchema.openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the access key was most recently used. This field is null in the following situations:</p> <ul> <li> <p>The user does not have an access key.</p> </li> <li> <p>An access key exists but has not been used since IAM began tracking this information.</p> </li> <li> <p>There is no sign-in data associated with the user.</p> </li> </ul>',
+    }),
+    ServiceName: StringTypeSchema.openapi({
+      description:
+        '<p>The name of the Amazon Web Services service with which this access key was most recently used. The value of this field is "N/A" in the following situations:</p> <ul> <li> <p>The user does not have an access key.</p> </li> <li> <p>An access key exists but has not been used since IAM started tracking this information.</p> </li> <li> <p>There is no sign-in data associated with the user.</p> </li> </ul>',
+    }),
+    Region: StringTypeSchema.openapi({
+      description:
+        '<p>The Amazon Web Services Region where this access key was most recently used. The value for this field is "N/A" in the following situations:</p> <ul> <li> <p>The user does not have an access key.</p> </li> <li> <p>An access key exists but has not been used since IAM began tracking this information.</p> </li> <li> <p>There is no sign-in data associated with the user.</p> </li> </ul> <p>For more information about Amazon Web Services Regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and endpoints</a> in the Amazon Web Services General Reference.</p>',
+    }),
   })
   .openapi({
     required: ['LastUsedDate', 'ServiceName', 'Region'],
@@ -1209,20 +1348,12 @@ const AccessKeyLastUsedSchema = z
 
 const GetAccessKeyLastUsedResponseSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: '<p>The name of the IAM user that owns this access key.</p> <p/>',
-        }),
-    ).exactOptional(),
-    AccessKeyLastUsed: AccessKeyLastUsedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains information about the last time the access key was used.',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description: '<p>The name of the IAM user that owns this access key.</p> <p/>',
+    }),
+    AccessKeyLastUsed: AccessKeyLastUsedSchema.exactOptional().openapi({
+      description: 'Contains information about the last time the access key was used.',
+    }),
   })
   .openapi({
     description:
@@ -1231,383 +1362,36 @@ const GetAccessKeyLastUsedResponseSchema = z
   })
   .openapi('GetAccessKeyLastUsedResponse')
 
-const PolicyDetailSchema = z
-  .object({
-    PolicyName: PolicyNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the policy.' }),
-    ).exactOptional(),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z.any().openapi({ description: 'The policy document.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains information about an IAM policy, including the policy document.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p>',
-    required: [],
-  })
-  .openapi('PolicyDetail')
-
-const PolicyDetailListTypeSchema = z.array(PolicyDetailSchema).openapi('PolicyDetailListType')
-
-const GroupNameListTypeSchema = z.array(GroupNameTypeSchema).openapi('GroupNameListType')
-
-const AttachedPolicySchema = z
-  .object({
-    PolicyName: PolicyNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name of the attached policy.' }),
-    ).exactOptional(),
-    PolicyArn: ArnTypeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains information about an attached policy.</p> <p>An attached policy is a managed policy that has been attached to a user, group, or role. This data type is used as a response element in the <a>ListAttachedGroupPolicies</a>, <a>ListAttachedRolePolicies</a>, <a>ListAttachedUserPolicies</a>, and <a>GetAccountAuthorizationDetails</a> operations. </p> <p>For more information about managed policies, refer to <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>. </p>',
-    required: [],
-  })
-  .openapi('AttachedPolicy')
-
-const AttachedPoliciesListTypeSchema = z
-  .array(AttachedPolicySchema)
-  .openapi('AttachedPoliciesListType')
-
-const UserDetailSchema = z
-  .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the user. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    UserName: UserNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name identifying the user.' }),
-    ).exactOptional(),
-    UserId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stable and unique string identifying the user. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Arn: ArnTypeSchema.exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the user was created.',
-        }),
-    ).exactOptional(),
-    UserPolicyList: PolicyDetailListTypeSchema.and(
-      z.any().openapi({ description: 'A list of the inline policies embedded in the user.' }),
-    ).exactOptional(),
-    GroupList: GroupNameListTypeSchema.and(
-      z.any().openapi({ description: 'A list of IAM groups that the user is in.' }),
-    ).exactOptional(),
-    AttachedManagedPolicies: AttachedPoliciesListTypeSchema.and(
-      z.any().openapi({ description: 'A list of the managed policies attached to the user.' }),
-    ).exactOptional(),
-    PermissionsBoundary: AttachedPermissionsBoundarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the policy used to set the permissions boundary for the user.</p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are associated with the user. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "<p>Contains information about an IAM user, including all the user's policies and all the IAM groups the user is in.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p>",
-    required: [],
-  })
-  .openapi('UserDetail')
-
-const UserDetailListTypeSchema = z.array(UserDetailSchema).openapi('UserDetailListType')
-
-const GroupDetailSchema = z
-  .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the group. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    GroupName: GroupNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name that identifies the group.' }),
-    ).exactOptional(),
-    GroupId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stable and unique string identifying the group. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Arn: ArnTypeSchema.exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the group was created.',
-        }),
-    ).exactOptional(),
-    GroupPolicyList: PolicyDetailListTypeSchema.and(
-      z.any().openapi({ description: 'A list of the inline policies embedded in the group.' }),
-    ).exactOptional(),
-    AttachedManagedPolicies: AttachedPoliciesListTypeSchema.and(
-      z.any().openapi({ description: 'A list of the managed policies attached to the group.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "<p>Contains information about an IAM group, including all of the group's policies.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p>",
-    required: [],
-  })
-  .openapi('GroupDetail')
-
-const GroupDetailListTypeSchema = z.array(GroupDetailSchema).openapi('GroupDetailListType')
-
-const InstanceProfileListTypeSchema = z
-  .array(InstanceProfileSchema)
-  .openapi({ description: 'Contains a list of instance profiles.' })
-  .openapi('InstanceProfileListType')
-
-const RoleDetailSchema = z
-  .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the role. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    RoleName: RoleNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name that identifies the role.' }),
-    ).exactOptional(),
-    RoleId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stable and unique string identifying the role. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Arn: ArnTypeSchema.exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the role was created.',
-        }),
-    ).exactOptional(),
-    AssumeRolePolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The trust policy that grants permission to assume the role.' }),
-    ).exactOptional(),
-    InstanceProfileList: InstanceProfileListTypeSchema.and(
-      z.any().openapi({ description: 'A list of instance profiles that contain this role.' }),
-    ).exactOptional(),
-    RolePolicyList: PolicyDetailListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of inline policies embedded in the role. These policies are the role's access (permissions) policies.",
-        }),
-    ).exactOptional(),
-    AttachedManagedPolicies: AttachedPoliciesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of managed policies attached to the role. These policies are the role's access (permissions) policies.",
-        }),
-    ).exactOptional(),
-    PermissionsBoundary: AttachedPermissionsBoundarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the policy used to set the permissions boundary for the role.</p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the role. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    RoleLastUsed: RoleLastUsedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the last time that an IAM role was used. This includes the date and time and the Region in which the role was last used. Activity is only reported for the trailing 400 days. This period can be shorter if your Region began supporting these features within the last year. The role might have been used more than 400 days ago. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period">Regions where data is tracked</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "<p>Contains information about an IAM role, including all of the role's policies.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p>",
-    required: [],
-  })
-  .openapi('RoleDetail')
-
-const RoleDetailListTypeSchema = z.array(RoleDetailSchema).openapi('RoleDetailListType')
-
-const PolicyDocumentVersionListTypeSchema = z
-  .array(PolicyVersionSchema)
-  .openapi('PolicyDocumentVersionListType')
-
-const ManagedPolicyDetailSchema = z
-  .object({
-    PolicyName: PolicyNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name (not ARN) identifying the policy.' }),
-    ).exactOptional(),
-    PolicyId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stable and unique string identifying the policy.</p> <p>For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Arn: ArnTypeSchema.exactOptional(),
-    Path: PolicyPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path to the policy.</p> <p>For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    DefaultVersionId: PolicyVersionIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the version of the policy that is set as the default (operative) version.</p> <p>For more information about policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    AttachmentCount: AttachmentCountTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of principal entities (users, groups, and roles) that the policy is attached to.',
-        }),
-    ).exactOptional(),
-    PermissionsBoundaryUsageCount: AttachmentCountTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of entities (users and roles) for which the policy is used as the permissions boundary. </p> <p>For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM identities </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    IsAttachable: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the policy can be attached to an IAM user, group, or role.',
-        }),
-    ).exactOptional(),
-    Description: PolicyDescriptionTypeSchema.and(
-      z.any().openapi({ description: 'A friendly description of the policy.' }),
-    ).exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy was created.',
-        }),
-    ).exactOptional(),
-    UpdateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the policy was last updated.</p> <p>When a policy has only one version, this field contains the date and time when the policy was created. When a policy has more than one version, this field contains the date and time when the most recent policy version was created.</p>',
-        }),
-    ).exactOptional(),
-    PolicyVersionList: PolicyDocumentVersionListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list containing information about the versions of the policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains information about a managed policy, including the policy\'s ARN, versions, and the number of principal entities (users, groups, and roles) that the policy is attached to.</p> <p>This data type is used as a response element in the <a>GetAccountAuthorizationDetails</a> operation.</p> <p>For more information about managed policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>. </p>',
-    required: [],
-  })
-  .openapi('ManagedPolicyDetail')
-
-const ManagedPolicyDetailListTypeSchema = z
-  .array(ManagedPolicyDetailSchema)
-  .openapi('ManagedPolicyDetailListType')
-
-const ResponseMarkerTypeSchema = z.string().openapi('ResponseMarkerType')
-
-const GetAccountAuthorizationDetailsResponseSchema = z
-  .object({
-    UserDetailList: UserDetailListTypeSchema.and(
-      z.any().openapi({ description: 'A list containing information about IAM users.' }),
-    ).exactOptional(),
-    GroupDetailList: GroupDetailListTypeSchema.and(
-      z.any().openapi({ description: 'A list containing information about IAM groups.' }),
-    ).exactOptional(),
-    RoleDetailList: RoleDetailListTypeSchema.and(
-      z.any().openapi({ description: 'A list containing information about IAM roles.' }),
-    ).exactOptional(),
-    Policies: ManagedPolicyDetailListTypeSchema.and(
-      z.any().openapi({ description: 'A list containing information about managed policies.' }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains the response to a successful <a>GetAccountAuthorizationDetails</a> request. ',
-    required: [],
-  })
-  .openapi('GetAccountAuthorizationDetailsResponse')
+const GetAccountAuthorizationDetailsResponseSchema: z.ZodType<GetAccountAuthorizationDetailsResponseType> =
+  z
+    .object({
+      UserDetailList: UserDetailListTypeSchema.exactOptional().openapi({
+        description: 'A list containing information about IAM users.',
+      }),
+      GroupDetailList: GroupDetailListTypeSchema.exactOptional().openapi({
+        description: 'A list containing information about IAM groups.',
+      }),
+      RoleDetailList: RoleDetailListTypeSchema.exactOptional().openapi({
+        description: 'A list containing information about IAM roles.',
+      }),
+      Policies: ManagedPolicyDetailListTypeSchema.exactOptional().openapi({
+        description: 'A list containing information about managed policies.',
+      }),
+      IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+        description:
+          'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+      }),
+      Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+        description:
+          'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+      }),
+    })
+    .openapi({
+      description:
+        'Contains the response to a successful <a>GetAccountAuthorizationDetails</a> request. ',
+      required: [],
+    })
+    .openapi('GetAccountAuthorizationDetailsResponse')
 
 const EntityTypeSchema = z
   .enum(['User', 'Role', 'Group', 'LocalManagedPolicy', 'AWSManagedPolicy'])
@@ -1627,76 +1411,44 @@ const BooleanObjectTypeSchema = z.boolean().openapi('BooleanObjectType')
 
 const PasswordPolicySchema = z
   .object({
-    MinimumPasswordLength: MinimumPasswordLengthTypeSchema.and(
-      z.any().openapi({ description: 'Minimum length to require for IAM user passwords.' }),
-    ).exactOptional(),
-    RequireSymbols: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies whether IAM user passwords must contain at least one of the following symbols:</p> <p>! @ # $ % ^ &amp; * ( ) _ + - = [ ] { } | '</p>",
-        }),
-    ).exactOptional(),
-    RequireNumbers: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether IAM user passwords must contain at least one numeric character (0 to 9).',
-        }),
-    ).exactOptional(),
-    RequireUppercaseCharacters: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether IAM user passwords must contain at least one uppercase character (A to Z).',
-        }),
-    ).exactOptional(),
-    RequireLowercaseCharacters: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether IAM user passwords must contain at least one lowercase character (a to z).',
-        }),
-    ).exactOptional(),
-    AllowUsersToChangePassword: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether IAM users are allowed to change their own password. Gives IAM users permissions to <code>iam:ChangePassword</code> for only their user and to the <code>iam:GetAccountPasswordPolicy</code> action. This option does not attach a permissions policy to each user, rather the permissions are applied at the account-level for all users by IAM.',
-        }),
-    ).exactOptional(),
-    ExpirePasswords: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether passwords in the account expire. Returns true if <code>MaxPasswordAge</code> contains a value greater than 0. Returns false if MaxPasswordAge is 0 or not present.',
-        }),
-    ).exactOptional(),
-    MaxPasswordAge: MaxPasswordAgeTypeSchema.and(
-      z.any().openapi({ description: 'The number of days that an IAM user password is valid.' }),
-    ).exactOptional(),
-    PasswordReusePrevention: PasswordReusePreventionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of previous passwords that IAM users are prevented from reusing.',
-        }),
-    ).exactOptional(),
-    HardExpiry: BooleanObjectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether IAM users are prevented from setting a new password via the Amazon Web Services Management Console after their password has expired. The IAM user cannot access the console until an administrator resets the password. IAM users with <code>iam:ChangePassword</code> permission and active access keys can reset their own expired console password using the CLI or API.',
-        }),
-    ).exactOptional(),
+    MinimumPasswordLength: MinimumPasswordLengthTypeSchema.exactOptional().openapi({
+      description: 'Minimum length to require for IAM user passwords.',
+    }),
+    RequireSymbols: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies whether IAM user passwords must contain at least one of the following symbols:</p> <p>! @ # $ % ^ &amp; * ( ) _ + - = [ ] { } | '</p>",
+    }),
+    RequireNumbers: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether IAM user passwords must contain at least one numeric character (0 to 9).',
+    }),
+    RequireUppercaseCharacters: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether IAM user passwords must contain at least one uppercase character (A to Z).',
+    }),
+    RequireLowercaseCharacters: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether IAM user passwords must contain at least one lowercase character (a to z).',
+    }),
+    AllowUsersToChangePassword: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether IAM users are allowed to change their own password. Gives IAM users permissions to <code>iam:ChangePassword</code> for only their user and to the <code>iam:GetAccountPasswordPolicy</code> action. This option does not attach a permissions policy to each user, rather the permissions are applied at the account-level for all users by IAM.',
+    }),
+    ExpirePasswords: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether passwords in the account expire. Returns true if <code>MaxPasswordAge</code> contains a value greater than 0. Returns false if MaxPasswordAge is 0 or not present.',
+    }),
+    MaxPasswordAge: MaxPasswordAgeTypeSchema.exactOptional().openapi({
+      description: 'The number of days that an IAM user password is valid.',
+    }),
+    PasswordReusePrevention: PasswordReusePreventionTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of previous passwords that IAM users are prevented from reusing.',
+    }),
+    HardExpiry: BooleanObjectTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether IAM users are prevented from setting a new password via the Amazon Web Services Management Console after their password has expired. The IAM user cannot access the console until an administrator resets the password. IAM users with <code>iam:ChangePassword</code> permission and active access keys can reset their own expired console password using the CLI or API.',
+    }),
   })
   .openapi({
     description:
@@ -1707,13 +1459,9 @@ const PasswordPolicySchema = z
 
 const GetAccountPasswordPolicyResponseSchema = z
   .object({
-    PasswordPolicy: PasswordPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A structure that contains details about the account's password policy.",
-        }),
-    ),
+    PasswordPolicy: PasswordPolicySchema.openapi({
+      description: "A structure that contains details about the account's password policy.",
+    }),
   })
   .openapi({
     required: ['PasswordPolicy'],
@@ -1741,14 +1489,10 @@ const SummaryMapTypeSchema = z.record(z.string(), SummaryValueTypeSchema).openap
 
 const GetAccountSummaryResponseSchema = z
   .object({
-    SummaryMap: SummaryMapTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of key–value pairs containing information about IAM entity usage and IAM quotas.',
-        }),
-    ).exactOptional(),
+    SummaryMap: SummaryMapTypeSchema.exactOptional().openapi({
+      description:
+        'A set of key–value pairs containing information about IAM entity usage and IAM quotas.',
+    }),
   })
   .openapi({
     example: {
@@ -1786,21 +1530,11 @@ const GetAccountSummaryResponseSchema = z
   })
   .openapi('GetAccountSummaryResponse')
 
-const ContextKeyNameTypeSchema = z.string().min(5).max(256).openapi('ContextKeyNameType')
-
-const ContextKeyNamesResultListTypeSchema = z
-  .array(ContextKeyNameTypeSchema)
-  .openapi('ContextKeyNamesResultListType')
-
 const GetContextKeysForPolicyResponseSchema = z
   .object({
-    ContextKeyNames: ContextKeyNamesResultListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of context keys that are referenced in the input policies.',
-        }),
-    ).exactOptional(),
+    ContextKeyNames: ContextKeyNamesResultListTypeSchema.exactOptional().openapi({
+      description: 'The list of context keys that are referenced in the input policies.',
+    }),
   })
   .openapi({
     description:
@@ -1815,22 +1549,16 @@ const ReportFormatTypeSchema = z.literal('text/csv').openapi('ReportFormatType')
 
 const GetCredentialReportResponseSchema = z
   .object({
-    Content: ReportContentTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the credential report. The report is Base64-encoded.' }),
-    ).exactOptional(),
-    ReportFormat: ReportFormatTypeSchema.and(
-      z.any().openapi({ description: 'The format (MIME type) of the credential report.' }),
-    ).exactOptional(),
-    GeneratedTime: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The date and time when the credential report was created, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>.',
-        }),
-    ).exactOptional(),
+    Content: ReportContentTypeSchema.exactOptional().openapi({
+      description: 'Contains the credential report. The report is Base64-encoded.',
+    }),
+    ReportFormat: ReportFormatTypeSchema.exactOptional().openapi({
+      description: 'The format (MIME type) of the credential report.',
+    }),
+    GeneratedTime: DateTypeSchema.exactOptional().openapi({
+      description:
+        ' The date and time when the credential report was created, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>GetCredentialReport</a> request. ',
@@ -1856,28 +1584,18 @@ const UserListTypeSchema = z
 
 const GetGroupResponseSchema = z
   .object({
-    Group: GroupSchema.and(
-      z.any().openapi({ description: 'A structure that contains details about the group.' }),
-    ),
-    Users: UserListTypeSchema.and(
-      z.any().openapi({ description: 'A list of users in the group.' }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Group: GroupSchema.openapi({
+      description: 'A structure that contains details about the group.',
+    }),
+    Users: UserListTypeSchema.openapi({ description: 'A list of users in the group.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['Group', 'Users'],
@@ -1887,20 +1605,14 @@ const GetGroupResponseSchema = z
 
 const GetGroupPolicyResponseSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z.any().openapi({ description: 'The group the policy is associated with.' }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the policy.' }),
-    ),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy document.</p> <p>IAM stores policies in JSON format. However, resources that were created using CloudFormation templates can be formatted in YAML. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description: 'The group the policy is associated with.',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({ description: 'The name of the policy.' }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The policy document.</p> <p>IAM stores policies in JSON format. However, resources that were created using CloudFormation templates can be formatted in YAML. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p>',
+    }),
   })
   .openapi({
     required: ['GroupName', 'PolicyName', 'PolicyDocument'],
@@ -1910,11 +1622,9 @@ const GetGroupPolicyResponseSchema = z
 
 const GetInstanceProfileResponseSchema = z
   .object({
-    InstanceProfile: InstanceProfileSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure containing details about the instance profile.' }),
-    ),
+    InstanceProfile: InstanceProfileSchema.openapi({
+      description: 'A structure containing details about the instance profile.',
+    }),
   })
   .openapi({
     required: ['InstanceProfile'],
@@ -1943,14 +1653,10 @@ const GetInstanceProfileResponseSchema = z
 
 const GetLoginProfileResponseSchema = z
   .object({
-    LoginProfile: LoginProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure containing the user name and the profile creation date for the user.',
-        }),
-    ),
+    LoginProfile: LoginProfileSchema.openapi({
+      description:
+        'A structure containing the user name and the profile creation date for the user.',
+    }),
   })
   .openapi({
     required: ['LoginProfile'],
@@ -1972,30 +1678,20 @@ const CertificationMapTypeSchema = z
 
 const GetMFADeviceResponseSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name identifying the user.' }),
-    ).exactOptional(),
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Serial number that uniquely identifies the MFA device. For this API, we only accept FIDO security key <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html">ARNs</a>.',
-        }),
-    ),
-    EnableDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: "The date that a specified user's MFA device was first enabled." }),
-    ).exactOptional(),
-    Certifications: CertificationMapTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certifications of a specified user\'s MFA device. We currently provide FIPS-140-2, FIPS-140-3, and FIDO certification levels obtained from <a href="https://fidoalliance.org/metadata/"> FIDO Alliance Metadata Service (MDS)</a>.',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name identifying the user.',
+    }),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        'Serial number that uniquely identifies the MFA device. For this API, we only accept FIDO security key <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html">ARNs</a>.',
+    }),
+    EnableDate: DateTypeSchema.exactOptional().openapi({
+      description: "The date that a specified user's MFA device was first enabled.",
+    }),
+    Certifications: CertificationMapTypeSchema.exactOptional().openapi({
+      description:
+        'The certifications of a specified user\'s MFA device. We currently provide FIPS-140-2, FIPS-140-3, and FIDO certification levels obtained from <a href="https://fidoalliance.org/metadata/"> FIDO Alliance Metadata Service (MDS)</a>.',
+    }),
   })
   .openapi({ required: ['SerialNumber'] })
   .openapi('GetMFADeviceResponse')
@@ -2020,46 +1716,26 @@ const ThumbprintListTypeSchema = z
 
 const GetOpenIDConnectProviderResponseSchema = z
   .object({
-    Url: OpenIDConnectProviderUrlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the IAM OIDC provider resource object is associated with. For more information, see <a>CreateOpenIDConnectProvider</a>.',
-        }),
-    ).exactOptional(),
-    ClientIDList: ClientIDListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of client IDs (also known as audiences) that are associated with the specified IAM OIDC provider resource object. For more information, see <a>CreateOpenIDConnectProvider</a>.',
-        }),
-    ).exactOptional(),
-    ThumbprintList: ThumbprintListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of certificate thumbprints that are associated with the specified IAM OIDC provider resource object. For more information, see <a>CreateOpenIDConnectProvider</a>. ',
-        }),
-    ).exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the IAM OIDC provider resource object was created in the Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the specified IAM OIDC provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Url: OpenIDConnectProviderUrlTypeSchema.exactOptional().openapi({
+      description:
+        'The URL that the IAM OIDC provider resource object is associated with. For more information, see <a>CreateOpenIDConnectProvider</a>.',
+    }),
+    ClientIDList: ClientIDListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of client IDs (also known as audiences) that are associated with the specified IAM OIDC provider resource object. For more information, see <a>CreateOpenIDConnectProvider</a>.',
+    }),
+    ThumbprintList: ThumbprintListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of certificate thumbprints that are associated with the specified IAM OIDC provider resource object. For more information, see <a>CreateOpenIDConnectProvider</a>. ',
+    }),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the IAM OIDC provider resource object was created in the Amazon Web Services account.',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the specified IAM OIDC provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>GetOpenIDConnectProvider</a> request. ',
@@ -2089,49 +1765,29 @@ const OrganizationsEntityPathTypeSchema = z
 
 const AccessDetailSchema = z
   .object({
-    ServiceName: ServiceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the service in which access was attempted.' }),
-    ),
-    ServiceNamespace: ServiceNamespaceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the service in which access was attempted.</p> <p>To learn the service namespace of a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>Service Authorization Reference</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    Region: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Region where the last service access attempt occurred.</p> <p>This field is null if no principals in the reported Organizations entity attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
-    EntityPath: OrganizationsEntityPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path of the Organizations entity (root, organizational unit, or account) from which an authenticated principal last attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no principals (IAM users, IAM roles, or root user) in the reported Organizations entity attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
-    LastAuthenticatedTime: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when an authenticated principal most recently attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no principals in the reported Organizations entity attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
-    TotalAuthenticatedEntities: IntegerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of accounts with authenticated principals (root user, IAM users, and IAM roles) that attempted to access the service in the tracking period.',
-        }),
-    ).exactOptional(),
+    ServiceName: ServiceNameTypeSchema.openapi({
+      description: 'The name of the service in which access was attempted.',
+    }),
+    ServiceNamespace: ServiceNamespaceTypeSchema.openapi({
+      description:
+        '<p>The namespace of the service in which access was attempted.</p> <p>To learn the service namespace of a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>Service Authorization Reference</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    Region: StringTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Region where the last service access attempt occurred.</p> <p>This field is null if no principals in the reported Organizations entity attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
+    EntityPath: OrganizationsEntityPathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path of the Organizations entity (root, organizational unit, or account) from which an authenticated principal last attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no principals (IAM users, IAM roles, or root user) in the reported Organizations entity attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
+    LastAuthenticatedTime: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when an authenticated principal most recently attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no principals in the reported Organizations entity attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
+    TotalAuthenticatedEntities: IntegerTypeSchema.exactOptional().openapi({
+      description:
+        'The number of accounts with authenticated principals (root user, IAM users, and IAM roles) that attempted to access the service in the tracking period.',
+    }),
   })
   .openapi({
     required: ['ServiceName', 'ServiceNamespace'],
@@ -2151,16 +1807,12 @@ const MarkerTypeSchema = z
 
 const ErrorDetailsSchema = z
   .object({
-    Message: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Detailed information about the reason that the operation failed.',
-        }),
-    ),
-    Code: StringTypeSchema.and(
-      z.any().openapi({ description: 'The error code associated with the operation failure.' }),
-    ),
+    Message: StringTypeSchema.openapi({
+      description: 'Detailed information about the reason that the operation failed.',
+    }),
+    Code: StringTypeSchema.openapi({
+      description: 'The error code associated with the operation failure.',
+    }),
   })
   .openapi({
     required: ['Message', 'Code'],
@@ -2171,63 +1823,35 @@ const ErrorDetailsSchema = z
 
 const GetOrganizationsAccessReportResponseSchema = z
   .object({
-    JobStatus: JobStatusTypeSchema.and(z.any().openapi({ description: 'The status of the job.' })),
-    JobCreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the report job was created.',
-        }),
-    ),
-    JobCompletionDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>',
-        }),
-    ).exactOptional(),
-    NumberOfServicesAccessible: IntegerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of services that the applicable SCPs allow account principals to access.',
-        }),
-    ).exactOptional(),
-    NumberOfServicesNotAccessed: IntegerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of services that account principals are allowed but did not attempt to access.',
-        }),
-    ).exactOptional(),
-    AccessDetails: AccessDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains details about the most recent attempt to access the service.',
-        }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    JobStatus: JobStatusTypeSchema.openapi({ description: 'The status of the job.' }),
+    JobCreationDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the report job was created.',
+    }),
+    JobCompletionDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>',
+    }),
+    NumberOfServicesAccessible: IntegerTypeSchema.exactOptional().openapi({
+      description:
+        'The number of services that the applicable SCPs allow account principals to access.',
+    }),
+    NumberOfServicesNotAccessed: IntegerTypeSchema.exactOptional().openapi({
+      description:
+        'The number of services that account principals are allowed but did not attempt to access.',
+    }),
+    AccessDetails: AccessDetailsSchema.exactOptional().openapi({
+      description:
+        'An object that contains details about the most recent attempt to access the service.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
     ErrorDetails: ErrorDetailsSchema.exactOptional(),
   })
   .openapi({
@@ -2268,9 +1892,9 @@ const GetOrganizationsAccessReportResponseSchema = z
 
 const GetPolicyResponseSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z.any().openapi({ description: 'A structure containing details about the policy.' }),
-    ).exactOptional(),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'A structure containing details about the policy.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>GetPolicy</a> request. ',
@@ -2280,9 +1904,9 @@ const GetPolicyResponseSchema = z
 
 const GetPolicyVersionResponseSchema = z
   .object({
-    PolicyVersion: PolicyVersionSchema.and(
-      z.any().openapi({ description: 'A structure containing details about the policy version.' }),
-    ).exactOptional(),
+    PolicyVersion: PolicyVersionSchema.exactOptional().openapi({
+      description: 'A structure containing details about the policy version.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>GetPolicyVersion</a> request. ',
@@ -2292,9 +1916,7 @@ const GetPolicyVersionResponseSchema = z
 
 const GetRoleResponseSchema = z
   .object({
-    Role: RoleSchema.and(
-      z.any().openapi({ description: 'A structure containing details about the IAM role.' }),
-    ),
+    Role: RoleSchema.openapi({ description: 'A structure containing details about the IAM role.' }),
   })
   .openapi({
     required: ['Role'],
@@ -2316,20 +1938,14 @@ const GetRoleResponseSchema = z
 
 const GetRolePolicyResponseSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z.any().openapi({ description: 'The role the policy is associated with.' }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the policy.' }),
-    ),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy document.</p> <p>IAM stores policies in JSON format. However, resources that were created using CloudFormation templates can be formatted in YAML. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description: 'The role the policy is associated with.',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({ description: 'The name of the policy.' }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The policy document.</p> <p>IAM stores policies in JSON format. However, resources that were created using CloudFormation templates can be formatted in YAML. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p>',
+    }),
   })
   .openapi({
     required: ['RoleName', 'PolicyName', 'PolicyDocument'],
@@ -2345,28 +1961,20 @@ const SAMLMetadataDocumentTypeSchema = z
 
 const GetSAMLProviderResponseSchema = z
   .object({
-    SAMLMetadataDocument: SAMLMetadataDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The XML metadata document that includes information about an identity provider.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date and time when the SAML provider was created.' }),
-    ).exactOptional(),
-    ValidUntil: DateTypeSchema.and(
-      z.any().openapi({ description: 'The expiration date and time for the SAML provider.' }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the specified IAM SAML provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    SAMLMetadataDocument: SAMLMetadataDocumentTypeSchema.exactOptional().openapi({
+      description:
+        'The XML metadata document that includes information about an identity provider.',
+    }),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date and time when the SAML provider was created.',
+    }),
+    ValidUntil: DateTypeSchema.exactOptional().openapi({
+      description: 'The expiration date and time for the SAML provider.',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the specified IAM SAML provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>GetSAMLProvider</a> request. ',
@@ -2391,36 +1999,24 @@ const PublicKeyMaterialTypeSchema = z
 
 const SSHPublicKeySchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the IAM user associated with the SSH public key.' }),
-    ),
-    SSHPublicKeyId: PublicKeyIdTypeSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the SSH public key.' }),
-    ),
-    Fingerprint: PublicKeyFingerprintTypeSchema.and(
-      z.any().openapi({ description: 'The MD5 message digest of the SSH public key.' }),
-    ),
-    SSHPublicKeyBody: PublicKeyMaterialTypeSchema.and(
-      z.any().openapi({ description: 'The SSH public key.' }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the SSH public key. <code>Active</code> means that the key can be used for authentication with an CodeCommit repository. <code>Inactive</code> means that the key cannot be used.',
-        }),
-    ),
-    UploadDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the SSH public key was uploaded.',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.openapi({
+      description: 'The name of the IAM user associated with the SSH public key.',
+    }),
+    SSHPublicKeyId: PublicKeyIdTypeSchema.openapi({
+      description: 'The unique identifier for the SSH public key.',
+    }),
+    Fingerprint: PublicKeyFingerprintTypeSchema.openapi({
+      description: 'The MD5 message digest of the SSH public key.',
+    }),
+    SSHPublicKeyBody: PublicKeyMaterialTypeSchema.openapi({ description: 'The SSH public key.' }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        'The status of the SSH public key. <code>Active</code> means that the key can be used for authentication with an CodeCommit repository. <code>Inactive</code> means that the key cannot be used.',
+    }),
+    UploadDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the SSH public key was uploaded.',
+    }),
   })
   .openapi({
     required: ['UserName', 'SSHPublicKeyId', 'Fingerprint', 'SSHPublicKeyBody', 'Status'],
@@ -2431,9 +2027,9 @@ const SSHPublicKeySchema = z
 
 const GetSSHPublicKeyResponseSchema = z
   .object({
-    SSHPublicKey: SSHPublicKeySchema.and(
-      z.any().openapi({ description: 'A structure containing details about the SSH public key.' }),
-    ).exactOptional(),
+    SSHPublicKey: SSHPublicKeySchema.exactOptional().openapi({
+      description: 'A structure containing details about the SSH public key.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>GetSSHPublicKey</a> request.',
@@ -2454,39 +2050,27 @@ const ServerCertificateNameTypeSchema = z
 
 const ServerCertificateMetadataSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The path to the server certificate. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    ServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z.any().openapi({ description: 'The name that identifies the server certificate.' }),
-    ),
-    ServerCertificateId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The stable and unique string identifying the server certificate. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    Arn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) specifying the server certificate. For more information about ARNs and how to use them in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ),
-    UploadDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the server certificate was uploaded.' }),
-    ).exactOptional(),
-    Expiration: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date on which the certificate is set to expire.' }),
-    ).exactOptional(),
+    Path: PathTypeSchema.openapi({
+      description:
+        ' The path to the server certificate. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    ServerCertificateName: ServerCertificateNameTypeSchema.openapi({
+      description: 'The name that identifies the server certificate.',
+    }),
+    ServerCertificateId: IdTypeSchema.openapi({
+      description:
+        ' The stable and unique string identifying the server certificate. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    Arn: ArnTypeSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) specifying the server certificate. For more information about ARNs and how to use them in policies, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
+    UploadDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the server certificate was uploaded.',
+    }),
+    Expiration: DateTypeSchema.exactOptional().openapi({
+      description: 'The date on which the certificate is set to expire.',
+    }),
   })
   .openapi({
     required: ['Path', 'ServerCertificateName', 'ServerCertificateId', 'Arn'],
@@ -2511,28 +2095,20 @@ const CertificateChainTypeSchema = z
 
 const ServerCertificateSchema = z
   .object({
-    ServerCertificateMetadata: ServerCertificateMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The meta information of the server certificate, such as its name, path, ID, and ARN.',
-        }),
-    ),
-    CertificateBody: CertificateBodyTypeSchema.and(
-      z.any().openapi({ description: 'The contents of the public key certificate.' }),
-    ),
-    CertificateChain: CertificateChainTypeSchema.and(
-      z.any().openapi({ description: 'The contents of the public key certificate chain.' }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the server certificate. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    ServerCertificateMetadata: ServerCertificateMetadataSchema.openapi({
+      description:
+        'The meta information of the server certificate, such as its name, path, ID, and ARN.',
+    }),
+    CertificateBody: CertificateBodyTypeSchema.openapi({
+      description: 'The contents of the public key certificate.',
+    }),
+    CertificateChain: CertificateChainTypeSchema.exactOptional().openapi({
+      description: 'The contents of the public key certificate chain.',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the server certificate. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['ServerCertificateMetadata', 'CertificateBody'],
@@ -2543,11 +2119,9 @@ const ServerCertificateSchema = z
 
 const GetServerCertificateResponseSchema = z
   .object({
-    ServerCertificate: ServerCertificateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure containing details about the server certificate.' }),
-    ),
+    ServerCertificate: ServerCertificateSchema.openapi({
+      description: 'A structure containing details about the server certificate.',
+    }),
   })
   .openapi({
     required: ['ServerCertificate'],
@@ -2561,31 +2135,19 @@ const AccessAdvisorUsageGranularityTypeSchema = z
 
 const TrackedActionLastAccessedSchema = z
   .object({
-    ActionName: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the tracked action to which access was attempted. Tracked actions are actions that report activity to IAM.',
-        }),
-    ).exactOptional(),
+    ActionName: StringTypeSchema.exactOptional().openapi({
+      description:
+        'The name of the tracked action to which access was attempted. Tracked actions are actions that report activity to IAM.',
+    }),
     LastAccessedEntity: ArnTypeSchema.exactOptional(),
-    LastAccessedTime: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when an authenticated entity most recently attempted to access the tracked service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
-    LastAccessedRegion: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Region from which the authenticated entity (user or role) last attempted to access the tracked action. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
+    LastAccessedTime: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when an authenticated entity most recently attempted to access the tracked service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
+    LastAccessedRegion: StringTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Region from which the authenticated entity (user or role) last attempted to access the tracked action. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2600,57 +2162,33 @@ const TrackedActionsLastAccessedSchema = z
 
 const ServiceLastAccessedSchema = z
   .object({
-    ServiceName: ServiceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the service in which access was attempted.' }),
-    ),
-    LastAuthenticated: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when an authenticated entity most recently attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
-    ServiceNamespace: ServiceNamespaceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the service in which access was attempted.</p> <p>To learn the service namespace of a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>Service Authorization Reference</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    LastAuthenticatedEntity: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the authenticated entity (user or role) that last attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
-    LastAuthenticatedRegion: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Region from which the authenticated entity (user or role) last attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
-    TotalAuthenticatedEntities: IntegerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total number of authenticated principals (root user, IAM users, or IAM roles) that have attempted to access the service.</p> <p>This field is null if no principals attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
-    TrackedActionsLastAccessed: TrackedActionsLastAccessedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that contains details about the most recent attempt to access a tracked action within the service.</p> <p>This field is null if there no tracked actions or if the principal did not use the tracked actions within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>. This field is also null if the report was generated at the service level and not the action level. For more information, see the <code>Granularity</code> field in <a>GenerateServiceLastAccessedDetails</a>.</p>',
-        }),
-    ).exactOptional(),
+    ServiceName: ServiceNameTypeSchema.openapi({
+      description: 'The name of the service in which access was attempted.',
+    }),
+    LastAuthenticated: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when an authenticated entity most recently attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
+    ServiceNamespace: ServiceNamespaceTypeSchema.openapi({
+      description:
+        '<p>The namespace of the service in which access was attempted.</p> <p>To learn the service namespace of a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>Service Authorization Reference</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    LastAuthenticatedEntity: ArnTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the authenticated entity (user or role) that last attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
+    LastAuthenticatedRegion: StringTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Region from which the authenticated entity (user or role) last attempted to access the service. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
+    TotalAuthenticatedEntities: IntegerTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The total number of authenticated principals (root user, IAM users, or IAM roles) that have attempted to access the service.</p> <p>This field is null if no principals attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
+    TrackedActionsLastAccessed: TrackedActionsLastAccessedSchema.exactOptional().openapi({
+      description:
+        '<p>An object that contains details about the most recent attempt to access a tracked action within the service.</p> <p>This field is null if there no tracked actions or if the principal did not use the tracked actions within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>. This field is also null if the report was generated at the service level and not the action level. For more information, see the <code>Granularity</code> field in <a>GenerateServiceLastAccessedDetails</a>.</p>',
+    }),
   })
   .openapi({
     required: ['ServiceName', 'ServiceNamespace'],
@@ -2665,62 +2203,34 @@ const ServicesLastAccessedSchema = z
 
 const GetServiceLastAccessedDetailsResponseSchema = z
   .object({
-    JobStatus: JobStatusTypeSchema.and(z.any().openapi({ description: 'The status of the job.' })),
-    JobType: AccessAdvisorUsageGranularityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of job. Service jobs return information about when each service was last accessed. Action jobs also include information about when tracked actions within the service were last accessed.',
-        }),
-    ).exactOptional(),
-    JobCreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the report job was created.',
-        }),
-    ),
-    ServicesLastAccessed: ServicesLastAccessedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ServiceLastAccessed</code> object that contains details about the most recent attempt to access the service.',
-        }),
-    ),
-    JobCompletionDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
-    Error: ErrorDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains details about the reason the operation failed.',
-        }),
-    ).exactOptional(),
+    JobStatus: JobStatusTypeSchema.openapi({ description: 'The status of the job.' }),
+    JobType: AccessAdvisorUsageGranularityTypeSchema.exactOptional().openapi({
+      description:
+        'The type of job. Service jobs return information about when each service was last accessed. Action jobs also include information about when tracked actions within the service were last accessed.',
+    }),
+    JobCreationDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the report job was created.',
+    }),
+    ServicesLastAccessed: ServicesLastAccessedSchema.openapi({
+      description:
+        ' A <code>ServiceLastAccessed</code> object that contains details about the most recent attempt to access the service.',
+    }),
+    JobCompletionDate: DateTypeSchema.openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
+    Error: ErrorDetailsSchema.exactOptional().openapi({
+      description: 'An object that contains details about the reason the operation failed.',
+    }),
   })
   .openapi({
     required: ['JobStatus', 'JobCreationDate', 'ServicesLastAccessed', 'JobCompletionDate'],
@@ -2754,23 +2264,15 @@ const PolicyOwnerEntityTypeSchema = z
 const EntityInfoSchema = z
   .object({
     Arn: ArnTypeSchema,
-    Name: UserNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the entity (user or role).' }),
-    ),
-    Type: PolicyOwnerEntityTypeSchema.and(
-      z.any().openapi({ description: 'The type of entity (user or role).' }),
-    ),
-    Id: IdTypeSchema.and(
-      z.any().openapi({ description: 'The identifier of the entity (user or role).' }),
-    ),
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the entity (user or role). For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
-        }),
-    ).exactOptional(),
+    Name: UserNameTypeSchema.openapi({ description: 'The name of the entity (user or role).' }),
+    Type: PolicyOwnerEntityTypeSchema.openapi({
+      description: 'The type of entity (user or role).',
+    }),
+    Id: IdTypeSchema.openapi({ description: 'The identifier of the entity (user or role).' }),
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        'The path to the entity (user or role). For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>. ',
+    }),
   })
   .openapi({
     required: ['Arn', 'Name', 'Type', 'Id'],
@@ -2781,22 +2283,14 @@ const EntityInfoSchema = z
 
 const EntityDetailsSchema = z
   .object({
-    EntityInfo: EntityInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>EntityInfo</code> object that contains details about the entity (user or role).',
-        }),
-    ),
-    LastAuthenticated: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the authenticated entity last attempted to access Amazon Web Services. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
-        }),
-    ).exactOptional(),
+    EntityInfo: EntityInfoSchema.openapi({
+      description:
+        'The <code>EntityInfo</code> object that contains details about the entity (user or role).',
+    }),
+    LastAuthenticated: DateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the authenticated entity last attempted to access Amazon Web Services. Amazon Web Services does not report unauthenticated requests.</p> <p>This field is null if no IAM entities attempted to access the service within the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period">tracking period</a>.</p>',
+    }),
   })
   .openapi({
     required: ['EntityInfo'],
@@ -2809,54 +2303,30 @@ const EntityDetailsListTypeSchema = z.array(EntityDetailsSchema).openapi('Entity
 
 const GetServiceLastAccessedDetailsWithEntitiesResponseSchema = z
   .object({
-    JobStatus: JobStatusTypeSchema.and(z.any().openapi({ description: 'The status of the job.' })),
-    JobCreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the report job was created.',
-        }),
-    ),
-    JobCompletionDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>',
-        }),
-    ),
-    EntityDetailsList: EntityDetailsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>EntityDetailsList</code> object that contains details about when an IAM entity (user or role) used group or policy permissions in an attempt to access the specified Amazon Web Services service.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
-    Error: ErrorDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains details about the reason the operation failed.',
-        }),
-    ).exactOptional(),
+    JobStatus: JobStatusTypeSchema.openapi({ description: 'The status of the job.' }),
+    JobCreationDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the report job was created.',
+    }),
+    JobCompletionDate: DateTypeSchema.openapi({
+      description:
+        '<p>The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>',
+    }),
+    EntityDetailsList: EntityDetailsListTypeSchema.openapi({
+      description:
+        'An <code>EntityDetailsList</code> object that contains details about when an IAM entity (user or role) used group or policy permissions in an attempt to access the specified Amazon Web Services service.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
+    Error: ErrorDetailsSchema.exactOptional().openapi({
+      description: 'An object that contains details about the reason the operation failed.',
+    }),
   })
   .openapi({
     required: ['JobStatus', 'JobCreationDate', 'JobCompletionDate', 'EntityDetailsList'],
@@ -2902,20 +2372,12 @@ const ArnListTypeSchema = z.array(ArnTypeSchema).openapi('ArnListType')
 
 const RoleUsageTypeSchema = z
   .object({
-    Region: RegionNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Region where the service-linked role is being used.',
-        }),
-    ).exactOptional(),
-    Resources: ArnListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the resource that is using the service-linked role.',
-        }),
-    ).exactOptional(),
+    Region: RegionNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the Region where the service-linked role is being used.',
+    }),
+    Resources: ArnListTypeSchema.exactOptional().openapi({
+      description: 'The name of the resource that is using the service-linked role.',
+    }),
   })
   .openapi({
     description:
@@ -2928,22 +2390,14 @@ const RoleUsageListTypeSchema = z.array(RoleUsageTypeSchema).openapi('RoleUsageL
 
 const DeletionTaskFailureReasonTypeSchema = z
   .object({
-    Reason: ReasonTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A short description of the reason that the service-linked role deletion failed.',
-        }),
-    ).exactOptional(),
-    RoleUsageList: RoleUsageListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of objects that contains details about the service-linked role deletion failure, if that information is returned by the service. If the service-linked role has active sessions or if any resources that were used by the role have not been deleted from the linked service, the role can't be deleted. This parameter includes a list of the resources that are associated with the role and the Region in which the resources are being used.",
-        }),
-    ).exactOptional(),
+    Reason: ReasonTypeSchema.exactOptional().openapi({
+      description:
+        'A short description of the reason that the service-linked role deletion failed.',
+    }),
+    RoleUsageList: RoleUsageListTypeSchema.exactOptional().openapi({
+      description:
+        "A list of objects that contains details about the service-linked role deletion failure, if that information is returned by the service. If the service-linked role has active sessions or if any resources that were used by the role have not been deleted from the linked service, the role can't be deleted. This parameter includes a list of the resources that are associated with the role and the Region in which the resources are being used.",
+    }),
   })
   .openapi({
     description:
@@ -2954,30 +2408,20 @@ const DeletionTaskFailureReasonTypeSchema = z
 
 const GetServiceLinkedRoleDeletionStatusResponseSchema = z
   .object({
-    Status: DeletionTaskStatusTypeSchema.and(
-      z.any().openapi({ description: 'The status of the deletion.' }),
-    ),
-    Reason: DeletionTaskFailureReasonTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains details about the reason the deletion failed.',
-        }),
-    ).exactOptional(),
+    Status: DeletionTaskStatusTypeSchema.openapi({ description: 'The status of the deletion.' }),
+    Reason: DeletionTaskFailureReasonTypeSchema.exactOptional().openapi({
+      description: 'An object that contains details about the reason the deletion failed.',
+    }),
   })
   .openapi({ required: ['Status'] })
   .openapi('GetServiceLinkedRoleDeletionStatusResponse')
 
 const GetUserResponseSchema = z
   .object({
-    User: UserSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A structure containing details about the IAM user.</p> <important> <p>Due to a service issue, password last used data does not include password use from May 3, 2018 22:50 PDT to May 23, 2018 14:08 PDT. This affects <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_finding-unused.html">last sign-in</a> dates shown in the IAM console and password last used dates in the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_getting-report.html">IAM credential report</a>, and returned by this operation. If users signed in during the affected time, the password last used date that is returned is the date the user last signed in before May 3, 2018. For users that signed in after May 23, 2018 14:08 PDT, the returned password last used date is accurate.</p> <p>You can use password last used information to identify unused credentials for deletion. For example, you might delete users who did not sign in to Amazon Web Services in the last 90 days. In cases like this, we recommend that you adjust your evaluation window to include dates after May 23, 2018. Alternatively, if your users use access keys to access Amazon Web Services programmatically you can refer to access key last used information because it is accurate for all dates. </p> </important>',
-        }),
-    ),
+    User: UserSchema.openapi({
+      description:
+        '<p>A structure containing details about the IAM user.</p> <important> <p>Due to a service issue, password last used data does not include password use from May 3, 2018 22:50 PDT to May 23, 2018 14:08 PDT. This affects <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_finding-unused.html">last sign-in</a> dates shown in the IAM console and password last used dates in the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_getting-report.html">IAM credential report</a>, and returned by this operation. If users signed in during the affected time, the password last used date that is returned is the date the user last signed in before May 3, 2018. For users that signed in after May 23, 2018 14:08 PDT, the returned password last used date is accurate.</p> <p>You can use password last used information to identify unused credentials for deletion. For example, you might delete users who did not sign in to Amazon Web Services in the last 90 days. In cases like this, we recommend that you adjust your evaluation window to include dates after May 23, 2018. Alternatively, if your users use access keys to access Amazon Web Services programmatically you can refer to access key last used information because it is accurate for all dates. </p> </important>',
+    }),
   })
   .openapi({
     required: ['User'],
@@ -2996,20 +2440,14 @@ const GetUserResponseSchema = z
 
 const GetUserPolicyResponseSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z.any().openapi({ description: 'The user the policy is associated with.' }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the policy.' }),
-    ),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy document.</p> <p>IAM stores policies in JSON format. However, resources that were created using CloudFormation templates can be formatted in YAML. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description: 'The user the policy is associated with.',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({ description: 'The name of the policy.' }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The policy document.</p> <p>IAM stores policies in JSON format. However, resources that were created using CloudFormation templates can be formatted in YAML. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p>',
+    }),
   })
   .openapi({
     required: ['UserName', 'PolicyName', 'PolicyDocument'],
@@ -3019,23 +2457,19 @@ const GetUserPolicyResponseSchema = z
 
 const AccessKeyMetadataSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the IAM user that the key is associated with.' }),
-    ).exactOptional(),
-    AccessKeyId: AccessKeyIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID for this access key.' }),
-    ).exactOptional(),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the access key. <code>Active</code> means that the key is valid for API calls; <code>Inactive</code> means it is not.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the access key was created.' }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the IAM user that the key is associated with.',
+    }),
+    AccessKeyId: AccessKeyIdTypeSchema.exactOptional().openapi({
+      description: 'The ID for this access key.',
+    }),
+    Status: StatusTypeSchema.exactOptional().openapi({
+      description:
+        'The status of the access key. <code>Active</code> means that the key is valid for API calls; <code>Inactive</code> means it is not.',
+    }),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the access key was created.',
+    }),
   })
   .openapi({
     description:
@@ -3054,27 +2488,17 @@ const AccessKeyMetadataListTypeSchema = z
 
 const ListAccessKeysResponseSchema = z
   .object({
-    AccessKeyMetadata: AccessKeyMetadataListTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of objects containing metadata about the access keys.' }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    AccessKeyMetadata: AccessKeyMetadataListTypeSchema.openapi({
+      description: 'A list of objects containing metadata about the access keys.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['AccessKeyMetadata'],
@@ -3109,30 +2533,18 @@ const AccountAliasListTypeSchema = z.array(AccountAliasTypeSchema).openapi('Acco
 
 const ListAccountAliasesResponseSchema = z
   .object({
-    AccountAliases: AccountAliasListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of aliases associated with the account. Amazon Web Services supports only one alias per account.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    AccountAliases: AccountAliasListTypeSchema.openapi({
+      description:
+        'A list of aliases associated with the account. Amazon Web Services supports only one alias per account.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['AccountAliases'],
@@ -3143,25 +2555,17 @@ const ListAccountAliasesResponseSchema = z
 
 const ListAttachedGroupPoliciesResponseSchema = z
   .object({
-    AttachedPolicies: AttachedPoliciesListTypeSchema.and(
-      z.any().openapi({ description: 'A list of the attached policies.' }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    AttachedPolicies: AttachedPoliciesListTypeSchema.exactOptional().openapi({
+      description: 'A list of the attached policies.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>ListAttachedGroupPolicies</a> request. ',
@@ -3171,25 +2575,17 @@ const ListAttachedGroupPoliciesResponseSchema = z
 
 const ListAttachedRolePoliciesResponseSchema = z
   .object({
-    AttachedPolicies: AttachedPoliciesListTypeSchema.and(
-      z.any().openapi({ description: 'A list of the attached policies.' }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    AttachedPolicies: AttachedPoliciesListTypeSchema.exactOptional().openapi({
+      description: 'A list of the attached policies.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>ListAttachedRolePolicies</a> request. ',
@@ -3199,25 +2595,17 @@ const ListAttachedRolePoliciesResponseSchema = z
 
 const ListAttachedUserPoliciesResponseSchema = z
   .object({
-    AttachedPolicies: AttachedPoliciesListTypeSchema.and(
-      z.any().openapi({ description: 'A list of the attached policies.' }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    AttachedPolicies: AttachedPoliciesListTypeSchema.exactOptional().openapi({
+      description: 'A list of the attached policies.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>ListAttachedUserPolicies</a> request. ',
@@ -3227,17 +2615,13 @@ const ListAttachedUserPoliciesResponseSchema = z
 
 const PolicyGroupSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z.any().openapi({ description: 'The name (friendly name, not ARN) identifying the group.' }),
-    ).exactOptional(),
-    GroupId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stable and unique string identifying the group. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameTypeSchema.exactOptional().openapi({
+      description: 'The name (friendly name, not ARN) identifying the group.',
+    }),
+    GroupId: IdTypeSchema.exactOptional().openapi({
+      description:
+        'The stable and unique string identifying the group. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     description:
@@ -3250,17 +2634,13 @@ const PolicyGroupListTypeSchema = z.array(PolicyGroupSchema).openapi('PolicyGrou
 
 const PolicyUserSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z.any().openapi({ description: 'The name (friendly name, not ARN) identifying the user.' }),
-    ).exactOptional(),
-    UserId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stable and unique string identifying the user. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description: 'The name (friendly name, not ARN) identifying the user.',
+    }),
+    UserId: IdTypeSchema.exactOptional().openapi({
+      description:
+        'The stable and unique string identifying the user. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     description:
@@ -3273,17 +2653,13 @@ const PolicyUserListTypeSchema = z.array(PolicyUserSchema).openapi('PolicyUserLi
 
 const PolicyRoleSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z.any().openapi({ description: 'The name (friendly name, not ARN) identifying the role.' }),
-    ).exactOptional(),
-    RoleId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stable and unique string identifying the role. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    RoleName: RoleNameTypeSchema.exactOptional().openapi({
+      description: 'The name (friendly name, not ARN) identifying the role.',
+    }),
+    RoleId: IdTypeSchema.exactOptional().openapi({
+      description:
+        'The stable and unique string identifying the role. For more information about IDs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     description:
@@ -3296,31 +2672,23 @@ const PolicyRoleListTypeSchema = z.array(PolicyRoleSchema).openapi('PolicyRoleLi
 
 const ListEntitiesForPolicyResponseSchema = z
   .object({
-    PolicyGroups: PolicyGroupListTypeSchema.and(
-      z.any().openapi({ description: 'A list of IAM groups that the policy is attached to.' }),
-    ).exactOptional(),
-    PolicyUsers: PolicyUserListTypeSchema.and(
-      z.any().openapi({ description: 'A list of IAM users that the policy is attached to.' }),
-    ).exactOptional(),
-    PolicyRoles: PolicyRoleListTypeSchema.and(
-      z.any().openapi({ description: 'A list of IAM roles that the policy is attached to.' }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    PolicyGroups: PolicyGroupListTypeSchema.exactOptional().openapi({
+      description: 'A list of IAM groups that the policy is attached to.',
+    }),
+    PolicyUsers: PolicyUserListTypeSchema.exactOptional().openapi({
+      description: 'A list of IAM users that the policy is attached to.',
+    }),
+    PolicyRoles: PolicyRoleListTypeSchema.exactOptional().openapi({
+      description: 'A list of IAM roles that the policy is attached to.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>ListEntitiesForPolicy</a> request. ',
@@ -3338,30 +2706,18 @@ const PolicyNameListTypeSchema = z
 
 const ListGroupPoliciesResponseSchema = z
   .object({
-    PolicyNames: PolicyNameListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of policy names.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    PolicyNames: PolicyNameListTypeSchema.openapi({
+      description:
+        '<p>A list of policy names.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['PolicyNames'],
@@ -3380,23 +2736,15 @@ const GroupListTypeSchema = z
 
 const ListGroupsResponseSchema = z
   .object({
-    Groups: GroupListTypeSchema.and(z.any().openapi({ description: 'A list of groups.' })),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Groups: GroupListTypeSchema.openapi({ description: 'A list of groups.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['Groups'],
@@ -3431,23 +2779,15 @@ const ListGroupsResponseSchema = z
 
 const ListGroupsForUserResponseSchema = z
   .object({
-    Groups: GroupListTypeSchema.and(z.any().openapi({ description: 'A list of groups.' })),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Groups: GroupListTypeSchema.openapi({ description: 'A list of groups.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['Groups'],
@@ -3475,55 +2815,35 @@ const ListGroupsForUserResponseSchema = z
 
 const ListInstanceProfileTagsResponseSchema = z
   .object({
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that are currently attached to the IAM instance profile. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that are currently attached to the IAM instance profile. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({ required: ['Tags'] })
   .openapi('ListInstanceProfileTagsResponse')
 
 const ListInstanceProfilesResponseSchema = z
   .object({
-    InstanceProfiles: InstanceProfileListTypeSchema.and(
-      z.any().openapi({ description: 'A list of instance profiles.' }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    InstanceProfiles: InstanceProfileListTypeSchema.openapi({
+      description: 'A list of instance profiles.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['InstanceProfiles'],
@@ -3533,25 +2853,17 @@ const ListInstanceProfilesResponseSchema = z
 
 const ListInstanceProfilesForRoleResponseSchema = z
   .object({
-    InstanceProfiles: InstanceProfileListTypeSchema.and(
-      z.any().openapi({ description: 'A list of instance profiles.' }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    InstanceProfiles: InstanceProfileListTypeSchema.openapi({
+      description: 'A list of instance profiles.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['InstanceProfiles'],
@@ -3562,50 +2874,34 @@ const ListInstanceProfilesForRoleResponseSchema = z
 
 const ListMFADeviceTagsResponseSchema = z
   .object({
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that are currently attached to the virtual MFA device. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that are currently attached to the virtual MFA device. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({ required: ['Tags'] })
   .openapi('ListMFADeviceTagsResponse')
 
 const MFADeviceSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z.any().openapi({ description: 'The user with whom the MFA device is associated.' }),
-    ),
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN.',
-        }),
-    ),
-    EnableDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the MFA device was enabled for the user.' }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description: 'The user with whom the MFA device is associated.',
+    }),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        'The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN.',
+    }),
+    EnableDate: DateTypeSchema.openapi({
+      description: 'The date when the MFA device was enabled for the user.',
+    }),
   })
   .openapi({
     required: ['UserName', 'SerialNumber', 'EnableDate'],
@@ -3624,25 +2920,15 @@ const MfaDeviceListTypeSchema = z
 
 const ListMFADevicesResponseSchema = z
   .object({
-    MFADevices: MfaDeviceListTypeSchema.and(
-      z.any().openapi({ description: 'A list of MFA devices.' }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    MFADevices: MfaDeviceListTypeSchema.openapi({ description: 'A list of MFA devices.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['MFADevices'],
@@ -3652,30 +2938,18 @@ const ListMFADevicesResponseSchema = z
 
 const ListOpenIDConnectProviderTagsResponseSchema = z
   .object({
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that are currently attached to the OpenID Connect (OIDC) identity provider. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that are currently attached to the OpenID Connect (OIDC) identity provider. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({ required: ['Tags'] })
   .openapi('ListOpenIDConnectProviderTagsResponse')
@@ -3695,14 +2969,10 @@ const OpenIDConnectProviderListTypeSchema = z
 
 const ListOpenIDConnectProvidersResponseSchema = z
   .object({
-    OpenIDConnectProviderList: OpenIDConnectProviderListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of IAM OIDC provider resource objects defined in the Amazon Web Services account.',
-        }),
-    ).exactOptional(),
+    OpenIDConnectProviderList: OpenIDConnectProviderListTypeSchema.exactOptional().openapi({
+      description:
+        'The list of IAM OIDC provider resource objects defined in the Amazon Web Services account.',
+    }),
   })
   .openapi({
     description:
@@ -3715,25 +2985,15 @@ const PolicyListTypeSchema = z.array(PolicySchema).openapi('PolicyListType')
 
 const ListPoliciesResponseSchema = z
   .object({
-    Policies: PolicyListTypeSchema.and(
-      z.any().openapi({ description: 'A list of policies.' }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Policies: PolicyListTypeSchema.exactOptional().openapi({ description: 'A list of policies.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>ListPolicies</a> request. ',
@@ -3752,32 +3012,20 @@ const EntityNameTypeSchema = z
 
 const PolicyGrantingServiceAccessSchema = z
   .object({
-    PolicyName: PolicyNameTypeSchema.and(z.any().openapi({ description: 'The policy name.' })),
-    PolicyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy type. For more information about these policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.',
-        }),
-    ),
+    PolicyName: PolicyNameTypeSchema.openapi({ description: 'The policy name.' }),
+    PolicyType: PolicyTypeSchema.openapi({
+      description:
+        'The policy type. For more information about these policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.',
+    }),
     PolicyArn: ArnTypeSchema.exactOptional(),
-    EntityType: PolicyOwnerEntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of entity (user or role) that used the policy to access the service to which the inline policy is attached.</p> <p>This field is null for managed policies. For more information about these policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    EntityName: EntityNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the entity (user or role) to which the inline policy is attached.</p> <p>This field is null for managed policies. For more information about these policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    EntityType: PolicyOwnerEntityTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of entity (user or role) that used the policy to access the service to which the inline policy is attached.</p> <p>This field is null for managed policies. For more information about these policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    EntityName: EntityNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the entity (user or role) to which the inline policy is attached.</p> <p>This field is null for managed policies. For more information about these policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['PolicyName', 'PolicyType'],
@@ -3792,22 +3040,14 @@ const PolicyGrantingServiceAccessListTypeSchema = z
 
 const ListPoliciesGrantingServiceAccessEntrySchema = z
   .object({
-    ServiceNamespace: ServiceNamespaceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the service that was accessed.</p> <p>To learn the service namespace of a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>Service Authorization Reference</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    Policies: PolicyGrantingServiceAccessListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>PoliciesGrantingServiceAccess</code> object that contains details about the policy.',
-        }),
-    ).exactOptional(),
+    ServiceNamespace: ServiceNamespaceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the service that was accessed.</p> <p>To learn the service namespace of a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>Service Authorization Reference</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    Policies: PolicyGrantingServiceAccessListTypeSchema.exactOptional().openapi({
+      description:
+        'The <code>PoliciesGrantingServiceAccess</code> object that contains details about the policy.',
+    }),
   })
   .openapi({
     description:
@@ -3822,30 +3062,18 @@ const ListPolicyGrantingServiceAccessResponseListTypeSchema = z
 
 const ListPoliciesGrantingServiceAccessResponseSchema = z
   .object({
-    PoliciesGrantingServiceAccess: ListPolicyGrantingServiceAccessResponseListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ListPoliciesGrantingServiceAccess</code> object that contains details about the permissions policies attached to the specified identity (user, group, or role).',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    PoliciesGrantingServiceAccess: ListPolicyGrantingServiceAccessResponseListTypeSchema.openapi({
+      description:
+        'A <code>ListPoliciesGrantingServiceAccess</code> object that contains details about the permissions policies attached to the specified identity (user, group, or role).',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['PoliciesGrantingServiceAccess'],
@@ -3885,60 +3113,36 @@ const ListPoliciesGrantingServiceAccessResponseSchema = z
 
 const ListPolicyTagsResponseSchema = z
   .object({
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that are currently attached to the IAM customer managed policy. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that are currently attached to the IAM customer managed policy. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({ required: ['Tags'] })
   .openapi('ListPolicyTagsResponse')
 
 const ListPolicyVersionsResponseSchema = z
   .object({
-    Versions: PolicyDocumentVersionListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of policy versions.</p> <p>For more information about managed policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Versions: PolicyDocumentVersionListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of policy versions.</p> <p>For more information about managed policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>ListPolicyVersions</a> request. ',
@@ -3948,25 +3152,15 @@ const ListPolicyVersionsResponseSchema = z
 
 const ListRolePoliciesResponseSchema = z
   .object({
-    PolicyNames: PolicyNameListTypeSchema.and(
-      z.any().openapi({ description: 'A list of policy names.' }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    PolicyNames: PolicyNameListTypeSchema.openapi({ description: 'A list of policy names.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['PolicyNames'],
@@ -3976,30 +3170,18 @@ const ListRolePoliciesResponseSchema = z
 
 const ListRoleTagsResponseSchema = z
   .object({
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that are currently attached to the role. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that are currently attached to the role. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['Tags'],
@@ -4015,23 +3197,15 @@ const ListRoleTagsResponseSchema = z
 
 const ListRolesResponseSchema = z
   .object({
-    Roles: RoleListTypeSchema.and(z.any().openapi({ description: 'A list of roles.' })),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Roles: RoleListTypeSchema.openapi({ description: 'A list of roles.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['Roles'],
@@ -4041,45 +3215,33 @@ const ListRolesResponseSchema = z
 
 const ListSAMLProviderTagsResponseSchema = z
   .object({
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that are currently attached to the Security Assertion Markup Language (SAML) identity provider. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that are currently attached to the Security Assertion Markup Language (SAML) identity provider. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({ required: ['Tags'] })
   .openapi('ListSAMLProviderTagsResponse')
 
 const SAMLProviderListEntrySchema = z
   .object({
-    Arn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the SAML provider.' }),
-    ).exactOptional(),
-    ValidUntil: DateTypeSchema.and(
-      z.any().openapi({ description: 'The expiration date and time for the SAML provider.' }),
-    ).exactOptional(),
-    CreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date and time when the SAML provider was created.' }),
-    ).exactOptional(),
+    Arn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the SAML provider.',
+    }),
+    ValidUntil: DateTypeSchema.exactOptional().openapi({
+      description: 'The expiration date and time for the SAML provider.',
+    }),
+    CreateDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date and time when the SAML provider was created.',
+    }),
   })
   .openapi({ description: 'Contains the list of SAML providers for this account.', required: [] })
   .openapi('SAMLProviderListEntry')
@@ -4090,14 +3252,10 @@ const SAMLProviderListTypeSchema = z
 
 const ListSAMLProvidersResponseSchema = z
   .object({
-    SAMLProviderList: SAMLProviderListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of SAML provider resource objects defined in IAM for this Amazon Web Services account.',
-        }),
-    ).exactOptional(),
+    SAMLProviderList: SAMLProviderListTypeSchema.exactOptional().openapi({
+      description:
+        'The list of SAML provider resource objects defined in IAM for this Amazon Web Services account.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>ListSAMLProviders</a> request. ',
@@ -4107,30 +3265,20 @@ const ListSAMLProvidersResponseSchema = z
 
 const SSHPublicKeyMetadataSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the IAM user associated with the SSH public key.' }),
-    ),
-    SSHPublicKeyId: PublicKeyIdTypeSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the SSH public key.' }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the SSH public key. <code>Active</code> means that the key can be used for authentication with an CodeCommit repository. <code>Inactive</code> means that the key cannot be used.',
-        }),
-    ),
-    UploadDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the SSH public key was uploaded.',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description: 'The name of the IAM user associated with the SSH public key.',
+    }),
+    SSHPublicKeyId: PublicKeyIdTypeSchema.openapi({
+      description: 'The unique identifier for the SSH public key.',
+    }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        'The status of the SSH public key. <code>Active</code> means that the key can be used for authentication with an CodeCommit repository. <code>Inactive</code> means that the key cannot be used.',
+    }),
+    UploadDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the SSH public key was uploaded.',
+    }),
   })
   .openapi({
     required: ['UserName', 'SSHPublicKeyId', 'Status', 'UploadDate'],
@@ -4145,25 +3293,17 @@ const SSHPublicKeyListTypeSchema = z
 
 const ListSSHPublicKeysResponseSchema = z
   .object({
-    SSHPublicKeys: SSHPublicKeyListTypeSchema.and(
-      z.any().openapi({ description: 'A list of the SSH public keys assigned to IAM user.' }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    SSHPublicKeys: SSHPublicKeyListTypeSchema.exactOptional().openapi({
+      description: 'A list of the SSH public keys assigned to IAM user.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>ListSSHPublicKeys</a> request.',
@@ -4173,30 +3313,18 @@ const ListSSHPublicKeysResponseSchema = z
 
 const ListServerCertificateTagsResponseSchema = z
   .object({
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that are currently attached to the IAM server certificate. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that are currently attached to the IAM server certificate. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({ required: ['Tags'] })
   .openapi('ListServerCertificateTagsResponse')
@@ -4207,25 +3335,17 @@ const ServerCertificateMetadataListTypeSchema = z
 
 const ListServerCertificatesResponseSchema = z
   .object({
-    ServerCertificateMetadataList: ServerCertificateMetadataListTypeSchema.and(
-      z.any().openapi({ description: 'A list of server certificates.' }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    ServerCertificateMetadataList: ServerCertificateMetadataListTypeSchema.openapi({
+      description: 'A list of server certificates.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['ServerCertificateMetadataList'],
@@ -4235,46 +3355,26 @@ const ListServerCertificatesResponseSchema = z
 
 const ServiceSpecificCredentialMetadataSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IAM user associated with the service-specific credential.',
-        }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the service-specific credential. <code>Active</code> means that the key is valid for API calls, while <code>Inactive</code> means it is not.',
-        }),
-    ),
-    ServiceUserName: ServiceUserNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The generated user name for the service-specific credential.' }),
-    ),
-    CreateDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the service-specific credential were created.',
-        }),
-    ),
-    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier for the service-specific credential.' }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service associated with the service-specific credential.',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description: 'The name of the IAM user associated with the service-specific credential.',
+    }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        'The status of the service-specific credential. <code>Active</code> means that the key is valid for API calls, while <code>Inactive</code> means it is not.',
+    }),
+    ServiceUserName: ServiceUserNameSchema.openapi({
+      description: 'The generated user name for the service-specific credential.',
+    }),
+    CreateDate: DateTypeSchema.openapi({
+      description:
+        'The date and time, in <a href="http://www.iso.org/iso/iso8601">ISO 8601 date-time format</a>, when the service-specific credential were created.',
+    }),
+    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.openapi({
+      description: 'The unique identifier for the service-specific credential.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      description: 'The name of the service associated with the service-specific credential.',
+    }),
   })
   .openapi({
     required: [
@@ -4295,14 +3395,10 @@ const ServiceSpecificCredentialsListTypeSchema = z
 
 const ListServiceSpecificCredentialsResponseSchema = z
   .object({
-    ServiceSpecificCredentials: ServiceSpecificCredentialsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of structures that each contain details about a service-specific credential.',
-        }),
-    ).exactOptional(),
+    ServiceSpecificCredentials: ServiceSpecificCredentialsListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of structures that each contain details about a service-specific credential.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListServiceSpecificCredentialsResponse')
@@ -4316,30 +3412,22 @@ const CertificateIdTypeSchema = z
 
 const SigningCertificateSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the user the signing certificate is associated with.',
-        }),
-    ),
-    CertificateId: CertificateIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID for the signing certificate.' }),
-    ),
-    CertificateBody: CertificateBodyTypeSchema.and(
-      z.any().openapi({ description: 'The contents of the signing certificate.' }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the signing certificate. <code>Active</code> means that the key is valid for API calls, while <code>Inactive</code> means it is not.',
-        }),
-    ),
-    UploadDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the signing certificate was uploaded.' }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.openapi({
+      description: 'The name of the user the signing certificate is associated with.',
+    }),
+    CertificateId: CertificateIdTypeSchema.openapi({
+      description: 'The ID for the signing certificate.',
+    }),
+    CertificateBody: CertificateBodyTypeSchema.openapi({
+      description: 'The contents of the signing certificate.',
+    }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        'The status of the signing certificate. <code>Active</code> means that the key is valid for API calls, while <code>Inactive</code> means it is not.',
+    }),
+    UploadDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the signing certificate was uploaded.',
+    }),
   })
   .openapi({
     required: ['UserName', 'CertificateId', 'CertificateBody', 'Status'],
@@ -4358,25 +3446,17 @@ const CertificateListTypeSchema = z
 
 const ListSigningCertificatesResponseSchema = z
   .object({
-    Certificates: CertificateListTypeSchema.and(
-      z.any().openapi({ description: "A list of the user's signing certificate information." }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Certificates: CertificateListTypeSchema.openapi({
+      description: "A list of the user's signing certificate information.",
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['Certificates'],
@@ -4397,25 +3477,15 @@ const ListSigningCertificatesResponseSchema = z
 
 const ListUserPoliciesResponseSchema = z
   .object({
-    PolicyNames: PolicyNameListTypeSchema.and(
-      z.any().openapi({ description: 'A list of policy names.' }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    PolicyNames: PolicyNameListTypeSchema.openapi({ description: 'A list of policy names.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['PolicyNames'],
@@ -4425,30 +3495,18 @@ const ListUserPoliciesResponseSchema = z
 
 const ListUserTagsResponseSchema = z
   .object({
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that are currently attached to the user. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that are currently attached to the user. Each tag consists of a key name and an associated value. If no tags are attached to the specified resource, the response contains an empty list.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['Tags'],
@@ -4464,23 +3522,15 @@ const ListUserTagsResponseSchema = z
 
 const ListUsersResponseSchema = z
   .object({
-    Users: UserListTypeSchema.and(z.any().openapi({ description: 'A list of users.' })),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    Users: UserListTypeSchema.openapi({ description: 'A list of users.' }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['Users'],
@@ -4514,30 +3564,18 @@ const VirtualMFADeviceListTypeSchema = z
 
 const ListVirtualMFADevicesResponseSchema = z
   .object({
-    VirtualMFADevices: VirtualMFADeviceListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of virtual MFA devices in the current account that match the <code>AssignmentStatus</code> value that was passed in the request.',
-        }),
-    ),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    VirtualMFADevices: VirtualMFADeviceListTypeSchema.openapi({
+      description:
+        ' The list of virtual MFA devices in the current account that match the <code>AssignmentStatus</code> value that was passed in the request.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     required: ['VirtualMFADevices'],
@@ -4553,295 +3591,27 @@ const ListVirtualMFADevicesResponseSchema = z
 
 const ResetServiceSpecificCredentialResponseSchema = z
   .object({
-    ServiceSpecificCredential: ServiceSpecificCredentialSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A structure with details about the updated service-specific credential, including the new password.</p> <important> <p>This is the <b>only</b> time that you can access the password. You cannot recover the password later, but you can reset it again.</p> </important>',
-        }),
-    ).exactOptional(),
+    ServiceSpecificCredential: ServiceSpecificCredentialSchema.exactOptional().openapi({
+      description:
+        '<p>A structure with details about the updated service-specific credential, including the new password.</p> <important> <p>This is the <b>only</b> time that you can access the password. You cannot recover the password later, but you can reset it again.</p> </important>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResetServiceSpecificCredentialResponse')
 
-const ActionNameTypeSchema = z.string().min(3).max(128).openapi('ActionNameType')
-
-const ResourceNameTypeSchema = z.string().min(1).max(2048).openapi('ResourceNameType')
-
-const PolicyEvaluationDecisionTypeSchema = z
-  .enum(['allowed', 'explicitDeny', 'implicitDeny'])
-  .openapi('PolicyEvaluationDecisionType')
-
-const PolicyIdentifierTypeSchema = z.string().openapi('PolicyIdentifierType')
-
-const PolicySourceTypeSchema = z
-  .enum(['user', 'group', 'role', 'aws-managed', 'user-managed', 'resource', 'none'])
-  .openapi('PolicySourceType')
-
-const LineNumberSchema = z.int().openapi('LineNumber')
-
-const ColumnNumberSchema = z.int().openapi('ColumnNumber')
-
-const PositionSchema = z
+const SimulatePolicyResponseSchema: z.ZodType<SimulatePolicyResponseType> = z
   .object({
-    Line: LineNumberSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The line containing the specified position in the document.' }),
-    ).exactOptional(),
-    Column: ColumnNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The column in the line containing the specified position in the document.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains the row and column of a location of a <code>Statement</code> element in a policy document.</p> <p>This data type is used as a member of the <code> <a>Statement</a> </code> type.</p>',
-    required: [],
-  })
-  .openapi('Position')
-
-const StatementSchema = z
-  .object({
-    SourcePolicyId: PolicyIdentifierTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the policy that was provided as an input.' }),
-    ).exactOptional(),
-    SourcePolicyType: PolicySourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the policy.' }),
-    ).exactOptional(),
-    StartPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The row and column of the beginning of the <code>Statement</code> in an IAM policy.',
-        }),
-    ).exactOptional(),
-    EndPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The row and column of the end of a <code>Statement</code> in an IAM policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains a reference to a <code>Statement</code> element in a policy document that determines the result of the simulation.</p> <p>This data type is used by the <code>MatchedStatements</code> member of the <code> <a>EvaluationResult</a> </code> type.</p>',
-    required: [],
-  })
-  .openapi('Statement')
-
-const StatementListTypeSchema = z.array(StatementSchema).openapi('StatementListType')
-
-const OrganizationsDecisionDetailSchema = z
-  .object({
-    AllowedByOrganizations: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether the simulated operation is allowed by the Organizations service control policies that impact the simulated user's account.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information about the effect that Organizations has on a policy simulation.',
-    required: [],
-  })
-  .openapi('OrganizationsDecisionDetail')
-
-const PermissionsBoundaryDecisionDetailSchema = z
-  .object({
-    AllowedByPermissionsBoundary: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether an action is allowed by a permissions boundary that is applied to an IAM entity (user or role). A value of <code>true</code> means that the permissions boundary does not deny the action. This means that the policy includes an <code>Allow</code> statement that matches the request. In this case, if an identity-based policy also allows the action, the request is allowed. A value of <code>false</code> means that either the requested action is not allowed (implicitly denied) or that the action is explicitly denied by the permissions boundary. In both of these cases, the action is not allowed, regardless of the identity-based policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information about the effect that a permissions boundary has on a policy simulation when the boundary is applied to an IAM entity.',
-    required: [],
-  })
-  .openapi('PermissionsBoundaryDecisionDetail')
-
-const EvalDecisionDetailsTypeSchema = z
-  .record(z.string(), PolicyEvaluationDecisionTypeSchema)
-  .openapi('EvalDecisionDetailsType')
-
-const ResourceSpecificResultSchema = z
-  .object({
-    EvalResourceName: ResourceNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the simulated resource, in Amazon Resource Name (ARN) format.',
-        }),
-    ),
-    EvalResourceDecision: PolicyEvaluationDecisionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result of the simulation of the simulated API operation on the resource specified in <code>EvalResourceName</code>.',
-        }),
-    ),
-    MatchedStatements: StatementListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the statements in the input policies that determine the result for this part of the simulation. Remember that even if multiple statements allow the operation on the resource, if <i>any</i> statement denies that operation, then the explicit deny overrides any allow. In addition, the deny statement is the only entry included in the result.',
-        }),
-    ).exactOptional(),
-    MissingContextValues: ContextKeyNamesResultListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of context keys that are required by the included input policies but that were not provided by one of the input parameters. This list is used when a list of ARNs is included in the <code>ResourceArns</code> parameter instead of "*". If you do not specify individual resources, by setting <code>ResourceArns</code> to "*" or by not including the <code>ResourceArns</code> parameter, then any missing context values are instead included under the <code>EvaluationResults</code> section. To discover the context keys used by a set of policies, you can call <a>GetContextKeysForCustomPolicy</a> or <a>GetContextKeysForPrincipalPolicy</a>.',
-        }),
-    ).exactOptional(),
-    EvalDecisionDetails: EvalDecisionDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional details about the results of the evaluation decision on a single resource. This parameter is returned only for cross-account simulations. This parameter explains how each policy type contributes to the resource-specific evaluation decision.',
-        }),
-    ).exactOptional(),
-    PermissionsBoundaryDecisionDetail: PermissionsBoundaryDecisionDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the effect that a permissions boundary has on a policy simulation when that boundary is applied to an IAM entity.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['EvalResourceName', 'EvalResourceDecision'],
-    description:
-      '<p>Contains the result of the simulation of a single API operation call on a single resource.</p> <p>This data type is used by a member of the <a>EvaluationResult</a> data type.</p>',
-  })
-  .openapi('ResourceSpecificResult')
-
-const ResourceSpecificResultListTypeSchema = z
-  .array(ResourceSpecificResultSchema)
-  .openapi('ResourceSpecificResultListType')
-
-const EvaluationResultSchema = z
-  .object({
-    EvalActionName: ActionNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the API operation tested on the indicated resource.',
-        }),
-    ),
-    EvalResourceName: ResourceNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the resource that the indicated API operation was tested on.',
-        }),
-    ).exactOptional(),
-    EvalDecision: PolicyEvaluationDecisionTypeSchema.and(
-      z.any().openapi({ description: 'The result of the simulation.' }),
-    ),
-    MatchedStatements: StatementListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the statements in the input policies that determine the result for this scenario. Remember that even if multiple statements allow the operation on the resource, if only one statement denies that operation, then the explicit deny overrides any allow. In addition, the deny statement is the only entry included in the result.',
-        }),
-    ).exactOptional(),
-    MissingContextValues: ContextKeyNamesResultListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of context keys that are required by the included input policies but that were not provided by one of the input parameters. This list is used when the resource in a simulation is "*", either explicitly, or when the <code>ResourceArns</code> parameter blank. If you include a list of resources, then any missing context values are instead included under the <code>ResourceSpecificResults</code> section. To discover the context keys used by a set of policies, you can call <a>GetContextKeysForCustomPolicy</a> or <a>GetContextKeysForPrincipalPolicy</a>.',
-        }),
-    ).exactOptional(),
-    OrganizationsDecisionDetail: OrganizationsDecisionDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A structure that details how Organizations and its service control policies affect the results of the simulation. Only applies if the simulated user's account is part of an organization.",
-        }),
-    ).exactOptional(),
-    PermissionsBoundaryDecisionDetail: PermissionsBoundaryDecisionDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the effect that a permissions boundary has on a policy simulation when the boundary is applied to an IAM entity.',
-        }),
-    ).exactOptional(),
-    EvalDecisionDetails: EvalDecisionDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Additional details about the results of the cross-account evaluation decision. This parameter is populated for only cross-account simulations. It contains a brief summary of how each policy type contributes to the final evaluation decision.</p> <p>If the simulation evaluates policies within the same account and includes a resource ARN, then the parameter is present but the response is empty. If the simulation evaluates policies within the same account and specifies all resources (<code>*</code>), then the parameter is not returned.</p> <p>When you make a cross-account request, Amazon Web Services evaluates the request in the trusting account and the trusted account. The request is allowed only if both evaluations return <code>true</code>. For more information about how policies are evaluated, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html#policy-eval-basics">Evaluating policies within a single account</a>.</p> <p>If an Organizations SCP included in the evaluation denies access, the simulation ends. In this case, policy evaluation does not proceed any further and this parameter is not returned.</p>',
-        }),
-    ).exactOptional(),
-    ResourceSpecificResults: ResourceSpecificResultListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The individual results of the simulation of the API operation specified in EvalActionName on each resource.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['EvalActionName', 'EvalDecision'],
-    description:
-      '<p>Contains the results of a simulation.</p> <p>This data type is used by the return parameter of <code> <a>SimulateCustomPolicy</a> </code> and <code> <a>SimulatePrincipalPolicy</a> </code>.</p>',
-  })
-  .openapi('EvaluationResult')
-
-const EvaluationResultsListTypeSchema = z
-  .array(EvaluationResultSchema)
-  .openapi('EvaluationResultsListType')
-
-const SimulatePolicyResponseSchema = z
-  .object({
-    EvaluationResults: EvaluationResultsListTypeSchema.and(
-      z.any().openapi({ description: 'The results of the simulation.' }),
-    ).exactOptional(),
-    IsTruncated: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
-        }),
-    ).exactOptional(),
-    Marker: ResponseMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
-        }),
-    ).exactOptional(),
+    EvaluationResults: EvaluationResultsListTypeSchema.exactOptional().openapi({
+      description: 'The results of the simulation.',
+    }),
+    IsTruncated: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items. Note that IAM might return fewer than the <code>MaxItems</code> number of results even when there are more results available. We recommend that you check <code>IsTruncated</code> after every call to ensure that you receive all your results.',
+    }),
+    Marker: ResponseMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.',
+    }),
   })
   .openapi({
     description:
@@ -4875,30 +3645,18 @@ const ContextKeyTypeEnumSchema = z
 
 const ContextEntrySchema = z
   .object({
-    ContextKeyName: ContextKeyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full name of a condition context key, including the service prefix. For example, <code>aws:SourceIp</code> or <code>s3:VersionId</code>.',
-        }),
-    ).exactOptional(),
-    ContextKeyValues: ContextKeyValueListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value (or values, if the condition context key supports multiple values) to provide to the simulation when the key is referenced by a <code>Condition</code> element in an input policy.',
-        }),
-    ).exactOptional(),
-    ContextKeyType: ContextKeyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data type of the value (or values) specified in the <code>ContextKeyValues</code> parameter.',
-        }),
-    ).exactOptional(),
+    ContextKeyName: ContextKeyNameTypeSchema.exactOptional().openapi({
+      description:
+        'The full name of a condition context key, including the service prefix. For example, <code>aws:SourceIp</code> or <code>s3:VersionId</code>.',
+    }),
+    ContextKeyValues: ContextKeyValueListTypeSchema.exactOptional().openapi({
+      description:
+        'The value (or values, if the condition context key supports multiple values) to provide to the simulation when the key is referenced by a <code>Condition</code> element in an input policy.',
+    }),
+    ContextKeyType: ContextKeyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The data type of the value (or values) specified in the <code>ContextKeyValues</code> parameter.',
+    }),
   })
   .openapi({
     description:
@@ -4909,28 +3667,22 @@ const ContextEntrySchema = z
 
 const PolicyEvaluationExceptionSchema = z.any().openapi('PolicyEvaluationException')
 
-const UpdateRoleResponseSchema = z.object({}).openapi('UpdateRoleResponse')
+const UpdateRoleResponseSchema = z.looseObject({}).openapi('UpdateRoleResponse')
 
 const UpdateRoleDescriptionResponseSchema = z
   .object({
-    Role: RoleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that contains details about the modified role.' }),
-    ).exactOptional(),
+    Role: RoleSchema.exactOptional().openapi({
+      description: 'A structure that contains details about the modified role.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRoleDescriptionResponse')
 
 const UpdateSAMLProviderResponseSchema = z
   .object({
-    SAMLProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the SAML provider that was updated.',
-        }),
-    ).exactOptional(),
+    SAMLProviderArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the SAML provider that was updated.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>UpdateSAMLProvider</a> request. ',
@@ -4940,9 +3692,9 @@ const UpdateSAMLProviderResponseSchema = z
 
 const UploadSSHPublicKeyResponseSchema = z
   .object({
-    SSHPublicKey: SSHPublicKeySchema.and(
-      z.any().openapi({ description: 'Contains information about the SSH public key.' }),
-    ).exactOptional(),
+    SSHPublicKey: SSHPublicKeySchema.exactOptional().openapi({
+      description: 'Contains information about the SSH public key.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a successful <a>UploadSSHPublicKey</a> request.',
@@ -4956,22 +3708,14 @@ const DuplicateSSHPublicKeyExceptionSchema = z.any().openapi('DuplicateSSHPublic
 
 const UploadServerCertificateResponseSchema = z
   .object({
-    ServerCertificateMetadata: ServerCertificateMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The meta information of the uploaded server certificate without its certificate body, certificate chain, and private key.',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that are attached to the new IAM server certificate. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    ServerCertificateMetadata: ServerCertificateMetadataSchema.exactOptional().openapi({
+      description:
+        'The meta information of the uploaded server certificate without its certificate body, certificate chain, and private key.',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of tags that are attached to the new IAM server certificate. The returned list of tags is sorted by tag key. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     example: {
@@ -4995,9 +3739,9 @@ const KeyPairMismatchExceptionSchema = z.any().openapi('KeyPairMismatchException
 
 const UploadSigningCertificateResponseSchema = z
   .object({
-    Certificate: SigningCertificateSchema.and(
-      z.any().openapi({ description: 'Information about the certificate.' }),
-    ),
+    Certificate: SigningCertificateSchema.openapi({
+      description: 'Information about the certificate.',
+    }),
   })
   .openapi({
     required: ['Certificate'],
@@ -5022,22 +3766,14 @@ const ActionNameListTypeSchema = z.array(ActionNameTypeSchema).openapi('ActionNa
 
 const AddClientIDToOpenIDConnectProviderRequestSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM OpenID Connect (OIDC) provider resource to add the client ID to. You can get a list of OIDC provider ARNs by using the <a>ListOpenIDConnectProviders</a> operation.',
-        }),
-    ),
-    ClientID: ClientIDTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The client ID (also known as audience) to add to the IAM OpenID Connect provider resource.',
-        }),
-    ),
+    OpenIDConnectProviderArn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM OpenID Connect (OIDC) provider resource to add the client ID to. You can get a list of OIDC provider ARNs by using the <a>ListOpenIDConnectProviders</a> operation.',
+    }),
+    ClientID: ClientIDTypeSchema.openapi({
+      description:
+        'The client ID (also known as audience) to add to the IAM OpenID Connect provider resource.',
+    }),
   })
   .openapi({
     required: ['OpenIDConnectProviderArn', 'ClientID'],
@@ -5047,22 +3783,14 @@ const AddClientIDToOpenIDConnectProviderRequestSchema = z
 
 const AddRoleToInstanceProfileRequestSchema = z
   .object({
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the instance profile to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role to add.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description:
+        '<p>The name of the instance profile to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role to add.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({
     required: ['InstanceProfileName', 'RoleName'],
@@ -5072,88 +3800,56 @@ const AddRoleToInstanceProfileRequestSchema = z
 
 const AddUserToGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the group to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user to add.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name of the group to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user to add.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['GroupName', 'UserName'], title: 'AddUserToGroupRequest' })
   .openapi('AddUserToGroupRequest')
 
 const AttachGroupPolicyRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the group to attach the policy to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy you want to attach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the group to attach the policy to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy you want to attach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['GroupName', 'PolicyArn'], title: 'AttachGroupPolicyRequest' })
   .openapi('AttachGroupPolicyRequest')
 
 const AttachRolePolicyRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the role to attach the policy to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy you want to attach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the role to attach the policy to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy you want to attach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['RoleName', 'PolicyArn'], title: 'AttachRolePolicyRequest' })
   .openapi('AttachRolePolicyRequest')
 
 const AttachUserPolicyRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the IAM user to attach the policy to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy you want to attach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the IAM user to attach the policy to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy you want to attach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['UserName', 'PolicyArn'], title: 'AttachUserPolicyRequest' })
   .openapi('AttachUserPolicyRequest')
@@ -5174,17 +3870,11 @@ const PasswordTypeSchema = z
 
 const ChangePasswordRequestSchema = z
   .object({
-    OldPassword: PasswordTypeSchema.and(
-      z.any().openapi({ description: "The IAM user's current password." }),
-    ),
-    NewPassword: PasswordTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new password. The new password must conform to the Amazon Web Services account\'s password policy, if one exists.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of characters. That string can include almost any printable ASCII character from the space (<code>\\u0020</code>) through the end of the ASCII character range (<code>\\u00FF</code>). You can also include the tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>) characters. Any of these characters are valid in a password. However, many tools, such as the Amazon Web Services Management Console, might restrict the ability to type certain characters because they have special meaning within that tool.</p>',
-        }),
-    ),
+    OldPassword: PasswordTypeSchema.openapi({ description: "The IAM user's current password." }),
+    NewPassword: PasswordTypeSchema.openapi({
+      description:
+        '<p>The new password. The new password must conform to the Amazon Web Services account\'s password policy, if one exists.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of characters. That string can include almost any printable ASCII character from the space (<code>\\u0020</code>) through the end of the ASCII character range (<code>\\u00FF</code>). You can also include the tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>) characters. Any of these characters are valid in a password. However, many tools, such as the Amazon Web Services Management Console, might restrict the ability to type certain characters because they have special meaning within that tool.</p>',
+    }),
   })
   .openapi({ required: ['OldPassword', 'NewPassword'], title: 'ChangePasswordRequest' })
   .openapi('ChangePasswordRequest')
@@ -5193,281 +3883,168 @@ const ContextEntryListTypeSchema = z.array(ContextEntrySchema).openapi('ContextE
 
 const CreateAccessKeyRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user that the new key will belong to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM user that the new key will belong to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ title: 'CreateAccessKeyRequest', required: [] })
   .openapi('CreateAccessKeyRequest')
 
 const CreateAccountAliasRequestSchema = z
   .object({
-    AccountAlias: AccountAliasTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The account alias to create.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of lowercase letters, digits, and dashes. You cannot start or finish with a dash, nor can you have two dashes in a row.</p>',
-        }),
-    ),
+    AccountAlias: AccountAliasTypeSchema.openapi({
+      description:
+        '<p>The account alias to create.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of lowercase letters, digits, and dashes. You cannot start or finish with a dash, nor can you have two dashes in a row.</p>',
+    }),
   })
   .openapi({ required: ['AccountAlias'], title: 'CreateAccountAliasRequest' })
   .openapi('CreateAccountAliasRequest')
 
 const CreateGroupRequestSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path to the group. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the group to create. Do not include the path in this value.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
-        }),
-    ),
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path to the group. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name of the group to create. Do not include the path in this value.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
+    }),
   })
   .openapi({ required: ['GroupName'], title: 'CreateGroupRequest' })
   .openapi('CreateGroupRequest')
 
 const CreateInstanceProfileRequestSchema = z
   .object({
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the instance profile to create.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path to the instance profile. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the newly created IAM instance profile. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description:
+        '<p>The name of the instance profile to create.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path to the instance profile. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the newly created IAM instance profile. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['InstanceProfileName'], title: 'CreateInstanceProfileRequest' })
   .openapi('CreateInstanceProfileRequest')
 
 const CreateLoginProfileRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user to create a password for. The user must already exist.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Password: PasswordTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new password for the user.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of characters. That string can include almost any printable ASCII character from the space (<code>\\u0020</code>) through the end of the ASCII character range (<code>\\u00FF</code>). You can also include the tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>) characters. Any of these characters are valid in a password. However, many tools, such as the Amazon Web Services Management Console, might restrict the ability to type certain characters because they have special meaning within that tool.</p>',
-        }),
-    ),
-    PasswordResetRequired: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the user is required to set a new password on next sign-in.',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user to create a password for. The user must already exist.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Password: PasswordTypeSchema.openapi({
+      description:
+        '<p>The new password for the user.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of characters. That string can include almost any printable ASCII character from the space (<code>\\u0020</code>) through the end of the ASCII character range (<code>\\u00FF</code>). You can also include the tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>) characters. Any of these characters are valid in a password. However, many tools, such as the Amazon Web Services Management Console, might restrict the ability to type certain characters because they have special meaning within that tool.</p>',
+    }),
+    PasswordResetRequired: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether the user is required to set a new password on next sign-in.',
+    }),
   })
   .openapi({ required: ['UserName', 'Password'], title: 'CreateLoginProfileRequest' })
   .openapi('CreateLoginProfileRequest')
 
 const CreateOpenIDConnectProviderRequestSchema = z
   .object({
-    Url: OpenIDConnectProviderUrlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The URL of the identity provider. The URL must begin with <code>https://</code> and should correspond to the <code>iss</code> claim in the provider's OpenID Connect ID tokens. Per the OIDC standard, path components are allowed but query parameters are not. Typically the URL consists of only a hostname, like <code>https://server.example.org</code> or <code>https://example.com</code>. The URL should not contain a port number. </p> <p>You cannot register the same provider multiple times in a single Amazon Web Services account. If you try to submit a URL that has already been used for an OpenID Connect provider in the Amazon Web Services account, you will get an error.</p>",
-        }),
-    ),
-    ClientIDList: ClientIDListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Provides a list of client IDs, also known as audiences. When a mobile or web app registers with an OpenID Connect provider, they establish a value that identifies the application. This is the value that's sent as the <code>client_id</code> parameter on OAuth requests.</p> <p>You can register multiple client IDs with the same provider. For example, you might have multiple applications that use the same OIDC provider. You cannot register more than 100 client IDs with a single IAM OIDC provider.</p> <p>There is no defined format for a client ID. The <code>CreateOpenIDConnectProviderRequest</code> operation accepts client IDs up to 255 characters long.</p>",
-        }),
-    ).exactOptional(),
-    ThumbprintList: ThumbprintListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of server certificate thumbprints for the OpenID Connect (OIDC) identity provider\'s server certificates. Typically this list includes only one entry. However, IAM lets you have up to five thumbprints for an OIDC provider. This lets you maintain multiple thumbprints if the identity provider is rotating certificates.</p> <p>The server certificate thumbprint is the hex-encoded SHA-1 hash value of the X.509 certificate used by the domain where the OpenID Connect provider makes its keys available. It is always a 40-character string.</p> <p>You must provide at least one thumbprint when creating an IAM OIDC provider. For example, assume that the OIDC provider is <code>server.example.com</code> and the provider stores its keys at https://keys.server.example.com/openid-connect. In that case, the thumbprint string would be the hex-encoded SHA-1 hash value of the certificate used by <code>https://keys.server.example.com.</code> </p> <p>For more information about obtaining the OIDC provider thumbprint, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/identity-providers-oidc-obtain-thumbprint.html">Obtaining the thumbprint for an OpenID Connect provider</a> in the <i>IAM user Guide</i>.</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the new IAM OpenID Connect (OIDC) provider. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    Url: OpenIDConnectProviderUrlTypeSchema.openapi({
+      description:
+        "<p>The URL of the identity provider. The URL must begin with <code>https://</code> and should correspond to the <code>iss</code> claim in the provider's OpenID Connect ID tokens. Per the OIDC standard, path components are allowed but query parameters are not. Typically the URL consists of only a hostname, like <code>https://server.example.org</code> or <code>https://example.com</code>. The URL should not contain a port number. </p> <p>You cannot register the same provider multiple times in a single Amazon Web Services account. If you try to submit a URL that has already been used for an OpenID Connect provider in the Amazon Web Services account, you will get an error.</p>",
+    }),
+    ClientIDList: ClientIDListTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Provides a list of client IDs, also known as audiences. When a mobile or web app registers with an OpenID Connect provider, they establish a value that identifies the application. This is the value that's sent as the <code>client_id</code> parameter on OAuth requests.</p> <p>You can register multiple client IDs with the same provider. For example, you might have multiple applications that use the same OIDC provider. You cannot register more than 100 client IDs with a single IAM OIDC provider.</p> <p>There is no defined format for a client ID. The <code>CreateOpenIDConnectProviderRequest</code> operation accepts client IDs up to 255 characters long.</p>",
+    }),
+    ThumbprintList: ThumbprintListTypeSchema.openapi({
+      description:
+        '<p>A list of server certificate thumbprints for the OpenID Connect (OIDC) identity provider\'s server certificates. Typically this list includes only one entry. However, IAM lets you have up to five thumbprints for an OIDC provider. This lets you maintain multiple thumbprints if the identity provider is rotating certificates.</p> <p>The server certificate thumbprint is the hex-encoded SHA-1 hash value of the X.509 certificate used by the domain where the OpenID Connect provider makes its keys available. It is always a 40-character string.</p> <p>You must provide at least one thumbprint when creating an IAM OIDC provider. For example, assume that the OIDC provider is <code>server.example.com</code> and the provider stores its keys at https://keys.server.example.com/openid-connect. In that case, the thumbprint string would be the hex-encoded SHA-1 hash value of the certificate used by <code>https://keys.server.example.com.</code> </p> <p>For more information about obtaining the OIDC provider thumbprint, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/identity-providers-oidc-obtain-thumbprint.html">Obtaining the thumbprint for an OpenID Connect provider</a> in the <i>IAM user Guide</i>.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the new IAM OpenID Connect (OIDC) provider. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['Url', 'ThumbprintList'], title: 'CreateOpenIDConnectProviderRequest' })
   .openapi('CreateOpenIDConnectProviderRequest')
 
 const CreatePolicyRequestSchema = z
   .object({
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The friendly name of the policy.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
-        }),
-    ),
-    Path: PolicyPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path for the policy.</p> <p>For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p> <note> <p>You cannot use an asterisk (*) in the path name.</p> </note>',
-        }),
-    ).exactOptional(),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON policy document that you want to use as the content for the new policy.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>To learn more about JSON policy grammar, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_grammar.html">Grammar of the IAM JSON policy language</a> in the <i>IAM User Guide</i>. </p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
-    Description: PolicyDescriptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A friendly description of the policy.</p> <p>Typically used to store information about the permissions defined in the policy. For example, "Grants access to production DynamoDB tables."</p> <p>The policy description is immutable. After a value is assigned, it cannot be changed.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the new IAM customer managed policy. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The friendly name of the policy.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
+    }),
+    Path: PolicyPathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path for the policy.</p> <p>For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p> <note> <p>You cannot use an asterisk (*) in the path name.</p> </note>',
+    }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The JSON policy document that you want to use as the content for the new policy.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>To learn more about JSON policy grammar, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_grammar.html">Grammar of the IAM JSON policy language</a> in the <i>IAM User Guide</i>. </p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    Description: PolicyDescriptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A friendly description of the policy.</p> <p>Typically used to store information about the permissions defined in the policy. For example, "Grants access to production DynamoDB tables."</p> <p>The policy description is immutable. After a value is assigned, it cannot be changed.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the new IAM customer managed policy. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['PolicyName', 'PolicyDocument'], title: 'CreatePolicyRequest' })
   .openapi('CreatePolicyRequest')
 
 const CreatePolicyVersionRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy to which you want to add a new version.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON policy document that you want to use as the content for this new version of the policy.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
-    SetAsDefault: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether to set this version as the policy\'s default version.</p> <p>When this parameter is <code>true</code>, the new policy version becomes the operative version. That is, it becomes the version that is in effect for the IAM users, groups, and roles that the policy is attached to.</p> <p>For more information about managed policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy to which you want to add a new version.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The JSON policy document that you want to use as the content for this new version of the policy.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    SetAsDefault: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether to set this version as the policy\'s default version.</p> <p>When this parameter is <code>true</code>, the new policy version becomes the operative version. That is, it becomes the version that is in effect for the IAM users, groups, and roles that the policy is attached to.</p> <p>For more information about managed policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['PolicyArn', 'PolicyDocument'], title: 'CreatePolicyVersionRequest' })
   .openapi('CreatePolicyVersionRequest')
 
 const CreateRoleRequestSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path to the role. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role to create.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    AssumeRolePolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The trust relationship policy document that grants an entity permission to assume the role.</p> <p>In IAM, you must provide a JSON policy that has been converted to a string. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul> <p> Upon success, the response includes the same trust policy in JSON format.</p>',
-        }),
-    ),
-    Description: RoleDescriptionTypeSchema.and(
-      z.any().openapi({ description: 'A description of the role.' }),
-    ).exactOptional(),
-    MaxSessionDuration: RoleMaxSessionDurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum session duration (in seconds) that you want to set for the specified role. If you do not specify a value for this setting, the default value of one hour is applied. This setting can have a value from 1 hour to 12 hours.</p> <p>Anyone who assumes the role from the CLI or API can use the <code>DurationSeconds</code> API parameter or the <code>duration-seconds</code> CLI parameter to request a longer session. The <code>MaxSessionDuration</code> setting determines the maximum duration that can be requested using the <code>DurationSeconds</code> parameter. If users don\'t specify a value for the <code>DurationSeconds</code> parameter, their security credentials are valid for one hour by default. This applies when you use the <code>AssumeRole*</code> API operations or the <code>assume-role*</code> CLI operations but does not apply when you use those operations to create a console URL. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html">Using IAM roles</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    PermissionsBoundary: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the managed policy that is used to set the permissions boundary for the role.</p> <p>A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>.</p> <p>For more information about policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">Policy types </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the new role. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path to the role. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role to create.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    AssumeRolePolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The trust relationship policy document that grants an entity permission to assume the role.</p> <p>In IAM, you must provide a JSON policy that has been converted to a string. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul> <p> Upon success, the response includes the same trust policy in JSON format.</p>',
+    }),
+    Description: RoleDescriptionTypeSchema.exactOptional().openapi({
+      description: 'A description of the role.',
+    }),
+    MaxSessionDuration: RoleMaxSessionDurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum session duration (in seconds) that you want to set for the specified role. If you do not specify a value for this setting, the default value of one hour is applied. This setting can have a value from 1 hour to 12 hours.</p> <p>Anyone who assumes the role from the CLI or API can use the <code>DurationSeconds</code> API parameter or the <code>duration-seconds</code> CLI parameter to request a longer session. The <code>MaxSessionDuration</code> setting determines the maximum duration that can be requested using the <code>DurationSeconds</code> parameter. If users don\'t specify a value for the <code>DurationSeconds</code> parameter, their security credentials are valid for one hour by default. This applies when you use the <code>AssumeRole*</code> API operations or the <code>assume-role*</code> CLI operations but does not apply when you use those operations to create a console URL. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html">Using IAM roles</a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    PermissionsBoundary: ArnTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the managed policy that is used to set the permissions boundary for the role.</p> <p>A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>.</p> <p>For more information about policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">Policy types </a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the new role. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['RoleName', 'AssumeRolePolicyDocument'], title: 'CreateRoleRequest' })
   .openapi('CreateRoleRequest')
@@ -5481,30 +4058,18 @@ const SAMLProviderNameTypeSchema = z
 
 const CreateSAMLProviderRequestSchema = z
   .object({
-    SAMLMetadataDocument: SAMLMetadataDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An XML document generated by an identity provider (IdP) that supports SAML 2.0. The document includes the issuer\'s name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that are received from the IdP. You must generate the metadata document using the identity management software that is used as your organization\'s IdP.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_saml.html">About SAML 2.0-based federation</a> in the <i>IAM User Guide</i> </p>',
-        }),
-    ),
-    Name: SAMLProviderNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the provider to create.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the new IAM SAML provider. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    SAMLMetadataDocument: SAMLMetadataDocumentTypeSchema.openapi({
+      description:
+        '<p>An XML document generated by an identity provider (IdP) that supports SAML 2.0. The document includes the issuer\'s name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that are received from the IdP. You must generate the metadata document using the identity management software that is used as your organization\'s IdP.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_saml.html">About SAML 2.0-based federation</a> in the <i>IAM User Guide</i> </p>',
+    }),
+    Name: SAMLProviderNameTypeSchema.openapi({
+      description:
+        '<p>The name of the provider to create.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the new IAM SAML provider. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['SAMLMetadataDocument', 'Name'], title: 'CreateSAMLProviderRequest' })
   .openapi('CreateSAMLProviderRequest')
@@ -5518,47 +4083,31 @@ const CustomSuffixTypeSchema = z
 
 const CreateServiceLinkedRoleRequestSchema = z
   .object({
-    AWSServiceName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The service principal for the Amazon Web Services service to which this role is attached. You use a string similar to a URL but without the http:// in front. For example: <code>elasticbeanstalk.amazonaws.com</code>. </p> <p>Service principals are unique and case-sensitive. To find the exact service principal for your service-linked role, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-services-that-work-with-iam.html">Amazon Web Services services that work with IAM</a> in the <i>IAM User Guide</i>. Look for the services that have <b>Yes </b>in the <b>Service-Linked Role</b> column. Choose the <b>Yes</b> link to view the service-linked role documentation for that service.</p>',
-        }),
-    ),
-    Description: RoleDescriptionTypeSchema.and(
-      z.any().openapi({ description: 'The description of the role.' }),
-    ).exactOptional(),
-    CustomSuffix: CustomSuffixTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p/> <p>A string that you provide, which is combined with the service-provided prefix to form the complete role name. If you make multiple requests for the same service, then you must supply a different <code>CustomSuffix</code> for each request. Otherwise the request fails with a duplicate role name error. For example, you could add <code>-1</code> or <code>-debug</code> to the suffix.</p> <p>Some services do not support the <code>CustomSuffix</code> parameter. If you provide an optional suffix and the operation fails, try the operation again without the suffix.</p>',
-        }),
-    ).exactOptional(),
+    AWSServiceName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The service principal for the Amazon Web Services service to which this role is attached. You use a string similar to a URL but without the http:// in front. For example: <code>elasticbeanstalk.amazonaws.com</code>. </p> <p>Service principals are unique and case-sensitive. To find the exact service principal for your service-linked role, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-services-that-work-with-iam.html">Amazon Web Services services that work with IAM</a> in the <i>IAM User Guide</i>. Look for the services that have <b>Yes </b>in the <b>Service-Linked Role</b> column. Choose the <b>Yes</b> link to view the service-linked role documentation for that service.</p>',
+    }),
+    Description: RoleDescriptionTypeSchema.exactOptional().openapi({
+      description: 'The description of the role.',
+    }),
+    CustomSuffix: CustomSuffixTypeSchema.exactOptional().openapi({
+      description:
+        '<p/> <p>A string that you provide, which is combined with the service-provided prefix to form the complete role name. If you make multiple requests for the same service, then you must supply a different <code>CustomSuffix</code> for each request. Otherwise the request fails with a duplicate role name error. For example, you could add <code>-1</code> or <code>-debug</code> to the suffix.</p> <p>Some services do not support the <code>CustomSuffix</code> parameter. If you provide an optional suffix and the operation fails, try the operation again without the suffix.</p>',
+    }),
   })
   .openapi({ required: ['AWSServiceName'], title: 'CreateServiceLinkedRoleRequest' })
   .openapi('CreateServiceLinkedRoleRequest')
 
 const CreateServiceSpecificCredentialRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user that is to be associated with the credentials. The new service-specific credentials have the same permissions as the associated user except that they can be used only to access the specified service.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services service that is to be associated with the credentials. The service you specify here is the only service that can be accessed using these credentials.',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user that is to be associated with the credentials. The new service-specific credentials have the same permissions as the associated user except that they can be used only to access the specified service.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      description:
+        'The name of the Amazon Web Services service that is to be associated with the credentials. The service you specify here is the only service that can be accessed using these credentials.',
+    }),
   })
   .openapi({
     required: ['UserName', 'ServiceName'],
@@ -5568,38 +4117,22 @@ const CreateServiceSpecificCredentialRequestSchema = z
 
 const CreateUserRequestSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path for the user name. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user to create.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
-        }),
-    ),
-    PermissionsBoundary: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the managed policy that is used to set the permissions boundary for the user.</p> <p>A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>.</p> <p>For more information about policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">Policy types </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the new user. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path for the user name. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user to create.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
+    }),
+    PermissionsBoundary: ArnTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the managed policy that is used to set the permissions boundary for the user.</p> <p>A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>.</p> <p>For more information about policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">Policy types </a> in the <i>IAM User Guide</i>.</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the new user. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'CreateUserRequest' })
   .openapi('CreateUserRequest')
@@ -5612,330 +4145,224 @@ const VirtualMFADeviceNameSchema = z
 
 const CreateVirtualMFADeviceRequestSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path for the virtual MFA device. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    VirtualMFADeviceName: VirtualMFADeviceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the virtual MFA device, which must be unique. Use with path to uniquely identify a virtual MFA device.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the new IAM virtual MFA device. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path for the virtual MFA device. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/).</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    VirtualMFADeviceName: VirtualMFADeviceNameSchema.openapi({
+      description:
+        '<p>The name of the virtual MFA device, which must be unique. Use with path to uniquely identify a virtual MFA device.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the new IAM virtual MFA device. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['VirtualMFADeviceName'], title: 'CreateVirtualMFADeviceRequest' })
   .openapi('CreateVirtualMFADeviceRequest')
 
 const DeactivateMFADeviceRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose MFA device you want to deactivate.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-</p>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user whose MFA device you want to deactivate.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        '<p>The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-</p>',
+    }),
   })
   .openapi({ required: ['UserName', 'SerialNumber'], title: 'DeactivateMFADeviceRequest' })
   .openapi('DeactivateMFADeviceRequest')
 
 const DeleteAccessKeyRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose access key pair you want to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    AccessKeyId: AccessKeyIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The access key ID for the access key ID and secret access key you want to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the user whose access key pair you want to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    AccessKeyId: AccessKeyIdTypeSchema.openapi({
+      description:
+        '<p>The access key ID for the access key ID and secret access key you want to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
   })
   .openapi({ required: ['AccessKeyId'], title: 'DeleteAccessKeyRequest' })
   .openapi('DeleteAccessKeyRequest')
 
 const DeleteAccountAliasRequestSchema = z
   .object({
-    AccountAlias: AccountAliasTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the account alias to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of lowercase letters, digits, and dashes. You cannot start or finish with a dash, nor can you have two dashes in a row.</p>',
-        }),
-    ),
+    AccountAlias: AccountAliasTypeSchema.openapi({
+      description:
+        '<p>The name of the account alias to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of lowercase letters, digits, and dashes. You cannot start or finish with a dash, nor can you have two dashes in a row.</p>',
+    }),
   })
   .openapi({ required: ['AccountAlias'], title: 'DeleteAccountAliasRequest' })
   .openapi('DeleteAccountAliasRequest')
 
 const DeleteGroupPolicyRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) identifying the group that the policy is embedded in.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name identifying the policy document to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) identifying the group that the policy is embedded in.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name identifying the policy document to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['GroupName', 'PolicyName'], title: 'DeleteGroupPolicyRequest' })
   .openapi('DeleteGroupPolicyRequest')
 
 const DeleteGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM group to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM group to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['GroupName'], title: 'DeleteGroupRequest' })
   .openapi('DeleteGroupRequest')
 
 const DeleteInstanceProfileRequestSchema = z
   .object({
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the instance profile to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description:
+        '<p>The name of the instance profile to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['InstanceProfileName'], title: 'DeleteInstanceProfileRequest' })
   .openapi('DeleteInstanceProfileRequest')
 
 const DeleteLoginProfileRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose password you want to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user whose password you want to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'DeleteLoginProfileRequest' })
   .openapi('DeleteLoginProfileRequest')
 
 const DeleteOpenIDConnectProviderRequestSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM OpenID Connect provider resource object to delete. You can get a list of OpenID Connect provider resource ARNs by using the <a>ListOpenIDConnectProviders</a> operation.',
-        }),
-    ),
+    OpenIDConnectProviderArn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM OpenID Connect provider resource object to delete. You can get a list of OpenID Connect provider resource ARNs by using the <a>ListOpenIDConnectProviders</a> operation.',
+    }),
   })
   .openapi({ required: ['OpenIDConnectProviderArn'], title: 'DeleteOpenIDConnectProviderRequest' })
   .openapi('DeleteOpenIDConnectProviderRequest')
 
 const DeletePolicyRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy you want to delete.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy you want to delete.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['PolicyArn'], title: 'DeletePolicyRequest' })
   .openapi('DeletePolicyRequest')
 
 const DeletePolicyVersionRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy from which you want to delete a version.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    VersionId: PolicyVersionIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy version to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that consists of the lowercase letter \'v\' followed by one or two digits, and optionally followed by a period \'.\' and a string of letters and digits.</p> <p>For more information about managed policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy from which you want to delete a version.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    VersionId: PolicyVersionIdTypeSchema.openapi({
+      description:
+        '<p>The policy version to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that consists of the lowercase letter \'v\' followed by one or two digits, and optionally followed by a period \'.\' and a string of letters and digits.</p> <p>For more information about managed policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['PolicyArn', 'VersionId'], title: 'DeletePolicyVersionRequest' })
   .openapi('DeletePolicyVersionRequest')
 
 const DeleteRolePermissionsBoundaryRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name (friendly name, not ARN) of the IAM role from which you want to remove the permissions boundary.',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        'The name (friendly name, not ARN) of the IAM role from which you want to remove the permissions boundary.',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'DeleteRolePermissionsBoundaryRequest' })
   .openapi('DeleteRolePermissionsBoundaryRequest')
 
 const DeleteRolePolicyRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) identifying the role that the policy is embedded in.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the inline policy to delete from the specified IAM role.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) identifying the role that the policy is embedded in.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name of the inline policy to delete from the specified IAM role.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['RoleName', 'PolicyName'], title: 'DeleteRolePolicyRequest' })
   .openapi('DeleteRolePolicyRequest')
 
 const DeleteRoleRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'DeleteRoleRequest' })
   .openapi('DeleteRoleRequest')
 
 const DeleteSAMLProviderRequestSchema = z
   .object({
-    SAMLProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the SAML provider to delete.' }),
-    ),
+    SAMLProviderArn: ArnTypeSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the SAML provider to delete.',
+    }),
   })
   .openapi({ required: ['SAMLProviderArn'], title: 'DeleteSAMLProviderRequest' })
   .openapi('DeleteSAMLProviderRequest')
 
 const DeleteSSHPublicKeyRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user associated with the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    SSHPublicKeyId: PublicKeyIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user associated with the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    SSHPublicKeyId: PublicKeyIdTypeSchema.openapi({
+      description:
+        '<p>The unique identifier for the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
   })
   .openapi({ required: ['UserName', 'SSHPublicKeyId'], title: 'DeleteSSHPublicKeyRequest' })
   .openapi('DeleteSSHPublicKeyRequest')
 
 const DeleteServerCertificateRequestSchema = z
   .object({
-    ServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the server certificate you want to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    ServerCertificateName: ServerCertificateNameTypeSchema.openapi({
+      description:
+        '<p>The name of the server certificate you want to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['ServerCertificateName'], title: 'DeleteServerCertificateRequest' })
   .openapi('DeleteServerCertificateRequest')
 
 const DeleteServiceLinkedRoleRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the service-linked role to be deleted.' }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description: 'The name of the service-linked role to be deleted.',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'DeleteServiceLinkedRoleRequest' })
   .openapi('DeleteServiceLinkedRoleRequest')
 
 const DeleteServiceSpecificCredentialRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user associated with the service-specific credential. If this value is not specified, then the operation assumes the user whose credentials are used to call the operation.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the service-specific credential. You can get this value by calling <a>ListServiceSpecificCredentials</a>.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM user associated with the service-specific credential. If this value is not specified, then the operation assumes the user whose credentials are used to call the operation.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.openapi({
+      description:
+        '<p>The unique identifier of the service-specific credential. You can get this value by calling <a>ListServiceSpecificCredentials</a>.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
   })
   .openapi({
     required: ['ServiceSpecificCredentialId'],
@@ -5945,152 +4372,100 @@ const DeleteServiceSpecificCredentialRequestSchema = z
 
 const DeleteSigningCertificateRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user the signing certificate belongs to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    CertificateId: CertificateIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the signing certificate to delete.</p> <p>The format of this parameter, as described by its <a href="http://wikipedia.org/wiki/regex">regex</a> pattern, is a string of characters that can be upper- or lower-cased letters or digits.</p>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the user the signing certificate belongs to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    CertificateId: CertificateIdTypeSchema.openapi({
+      description:
+        '<p>The ID of the signing certificate to delete.</p> <p>The format of this parameter, as described by its <a href="http://wikipedia.org/wiki/regex">regex</a> pattern, is a string of characters that can be upper- or lower-cased letters or digits.</p>',
+    }),
   })
   .openapi({ required: ['CertificateId'], title: 'DeleteSigningCertificateRequest' })
   .openapi('DeleteSigningCertificateRequest')
 
 const DeleteUserPermissionsBoundaryRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name (friendly name, not ARN) of the IAM user from which you want to remove the permissions boundary.',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        'The name (friendly name, not ARN) of the IAM user from which you want to remove the permissions boundary.',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'DeleteUserPermissionsBoundaryRequest' })
   .openapi('DeleteUserPermissionsBoundaryRequest')
 
 const DeleteUserPolicyRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) identifying the user that the policy is embedded in.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name identifying the policy document to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) identifying the user that the policy is embedded in.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name identifying the policy document to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['UserName', 'PolicyName'], title: 'DeleteUserPolicyRequest' })
   .openapi('DeleteUserPolicyRequest')
 
 const DeleteUserRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user to delete.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
 
 const DeleteVirtualMFADeviceRequestSchema = z
   .object({
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the same as the ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-</p>',
-        }),
-    ),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        '<p>The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the same as the ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-</p>',
+    }),
   })
   .openapi({ required: ['SerialNumber'], title: 'DeleteVirtualMFADeviceRequest' })
   .openapi('DeleteVirtualMFADeviceRequest')
 
 const DetachGroupPolicyRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the IAM group to detach the policy from.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy you want to detach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the IAM group to detach the policy from.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy you want to detach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['GroupName', 'PolicyArn'], title: 'DetachGroupPolicyRequest' })
   .openapi('DetachGroupPolicyRequest')
 
 const DetachRolePolicyRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the IAM role to detach the policy from.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy you want to detach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the IAM role to detach the policy from.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy you want to detach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['RoleName', 'PolicyArn'], title: 'DetachRolePolicyRequest' })
   .openapi('DetachRolePolicyRequest')
 
 const DetachUserPolicyRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the IAM user to detach the policy from.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy you want to detach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the IAM user to detach the policy from.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy you want to detach.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['UserName', 'PolicyArn'], title: 'DetachUserPolicyRequest' })
   .openapi('DetachUserPolicyRequest')
@@ -6103,38 +4478,22 @@ const AuthenticationCodeTypeSchema = z
 
 const EnableMFADeviceRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user for whom you want to enable the MFA device.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-</p>',
-        }),
-    ),
-    AuthenticationCode1: AuthenticationCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An authentication code emitted by the device. </p> <p>The format for this parameter is a string of six digits.</p> <important> <p>Submit your request immediately after generating the authentication codes. If you generate the codes and then wait too long to submit the request, the MFA device successfully associates with the user but the MFA device becomes out of sync. This happens because time-based one-time passwords (TOTP) expire after a short period of time. If this happens, you can <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_sync.html">resync the device</a>.</p> </important>',
-        }),
-    ),
-    AuthenticationCode2: AuthenticationCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A subsequent authentication code emitted by the device.</p> <p>The format for this parameter is a string of six digits.</p> <important> <p>Submit your request immediately after generating the authentication codes. If you generate the codes and then wait too long to submit the request, the MFA device successfully associates with the user but the MFA device becomes out of sync. This happens because time-based one-time passwords (TOTP) expire after a short period of time. If this happens, you can <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_sync.html">resync the device</a>.</p> </important>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user for whom you want to enable the MFA device.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        '<p>The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-</p>',
+    }),
+    AuthenticationCode1: AuthenticationCodeTypeSchema.openapi({
+      description:
+        '<p>An authentication code emitted by the device. </p> <p>The format for this parameter is a string of six digits.</p> <important> <p>Submit your request immediately after generating the authentication codes. If you generate the codes and then wait too long to submit the request, the MFA device successfully associates with the user but the MFA device becomes out of sync. This happens because time-based one-time passwords (TOTP) expire after a short period of time. If this happens, you can <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_sync.html">resync the device</a>.</p> </important>',
+    }),
+    AuthenticationCode2: AuthenticationCodeTypeSchema.openapi({
+      description:
+        '<p>A subsequent authentication code emitted by the device.</p> <p>The format for this parameter is a string of six digits.</p> <important> <p>Submit your request immediately after generating the authentication codes. If you generate the codes and then wait too long to submit the request, the MFA device successfully associates with the user but the MFA device becomes out of sync. This happens because time-based one-time passwords (TOTP) expire after a short period of time. If this happens, you can <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_sync.html">resync the device</a>.</p> </important>',
+    }),
   })
   .openapi({
     required: ['UserName', 'SerialNumber', 'AuthenticationCode1', 'AuthenticationCode2'],
@@ -6151,58 +4510,38 @@ const OrganizationsPolicyIdTypeSchema = z
 
 const GenerateOrganizationsAccessReportRequestSchema = z
   .object({
-    EntityPath: OrganizationsEntityPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path of the Organizations entity (root, OU, or account). You can build an entity path using the known structure of your organization. For example, assume that your account ID is <code>123456789012</code> and its parent OU ID is <code>ou-rge0-awsabcde</code>. The organization root ID is <code>r-f6g7h8i9j0example</code> and your organization ID is <code>o-a1b2c3d4e5</code>. Your entity path is <code>o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-rge0-awsabcde/123456789012</code>.',
-        }),
-    ),
-    OrganizationsPolicyId: OrganizationsPolicyIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the Organizations service control policy (SCP). This parameter is optional.</p> <p>This ID is used to generate information about when an account principal that is limited by the SCP attempted to access an Amazon Web Services service.</p>',
-        }),
-    ).exactOptional(),
+    EntityPath: OrganizationsEntityPathTypeSchema.openapi({
+      description:
+        'The path of the Organizations entity (root, OU, or account). You can build an entity path using the known structure of your organization. For example, assume that your account ID is <code>123456789012</code> and its parent OU ID is <code>ou-rge0-awsabcde</code>. The organization root ID is <code>r-f6g7h8i9j0example</code> and your organization ID is <code>o-a1b2c3d4e5</code>. Your entity path is <code>o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-rge0-awsabcde/123456789012</code>.',
+    }),
+    OrganizationsPolicyId: OrganizationsPolicyIdTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the Organizations service control policy (SCP). This parameter is optional.</p> <p>This ID is used to generate information about when an account principal that is limited by the SCP attempted to access an Amazon Web Services service.</p>',
+    }),
   })
   .openapi({ required: ['EntityPath'], title: 'GenerateOrganizationsAccessReportRequest' })
   .openapi('GenerateOrganizationsAccessReportRequest')
 
 const GenerateServiceLastAccessedDetailsRequestSchema = z
   .object({
-    Arn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM resource (user, group, role, or managed policy) used to generate information about when the resource was last used in an attempt to access an Amazon Web Services service.',
-        }),
-    ),
-    Granularity: AccessAdvisorUsageGranularityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The level of detail that you want to generate. You can specify whether you want to generate information about the last attempt to access services or actions. If you specify service-level granularity, this operation generates only service data. If you specify action-level granularity, it generates service and action data. If you don't include this optional parameter, the operation generates service data.",
-        }),
-    ).exactOptional(),
+    Arn: ArnTypeSchema.openapi({
+      description:
+        'The ARN of the IAM resource (user, group, role, or managed policy) used to generate information about when the resource was last used in an attempt to access an Amazon Web Services service.',
+    }),
+    Granularity: AccessAdvisorUsageGranularityTypeSchema.exactOptional().openapi({
+      description:
+        "The level of detail that you want to generate. You can specify whether you want to generate information about the last attempt to access services or actions. If you specify service-level granularity, this operation generates only service data. If you specify action-level granularity, it generates service and action data. If you don't include this optional parameter, the operation generates service data.",
+    }),
   })
   .openapi({ required: ['Arn'], title: 'GenerateServiceLastAccessedDetailsRequest' })
   .openapi('GenerateServiceLastAccessedDetailsRequest')
 
 const GetAccessKeyLastUsedRequestSchema = z
   .object({
-    AccessKeyId: AccessKeyIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of an access key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
+    AccessKeyId: AccessKeyIdTypeSchema.openapi({
+      description:
+        '<p>The identifier of an access key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
   })
   .openapi({ required: ['AccessKeyId'], title: 'GetAccessKeyLastUsedRequest' })
   .openapi('GetAccessKeyLastUsedRequest')
@@ -6213,30 +4552,18 @@ const MaxItemsTypeSchema = z.int().min(1).max(1000).openapi('MaxItemsType')
 
 const GetAccountAuthorizationDetailsRequestSchema = z
   .object({
-    Filter: EntityListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of entity types used to filter the results. Only the entities that match the types you specify are included in the output. Use the value <code>LocalManagedPolicy</code> to include customer managed policies.</p> <p>The format for this parameter is a comma-separated (if more than one) list of strings. Each string value in the list must be one of the valid values listed below.</p>',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
+    Filter: EntityListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of entity types used to filter the results. Only the entities that match the types you specify are included in the output. Use the value <code>LocalManagedPolicy</code> to include customer managed policies.</p> <p>The format for this parameter is a comma-separated (if more than one) list of strings. Each string value in the list must be one of the valid values listed below.</p>',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
   })
   .openapi({ title: 'GetAccountAuthorizationDetailsRequest', required: [] })
   .openapi('GetAccountAuthorizationDetailsRequest')
@@ -6247,147 +4574,99 @@ const SimulationPolicyListTypeSchema = z
 
 const GetContextKeysForCustomPolicyRequestSchema = z
   .object({
-    PolicyInputList: SimulationPolicyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of policies for which you want the list of context keys referenced in those policies. Each document is specified as a string containing the complete, valid JSON text of an IAM policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
+    PolicyInputList: SimulationPolicyListTypeSchema.openapi({
+      description:
+        '<p>A list of policies for which you want the list of context keys referenced in those policies. Each document is specified as a string containing the complete, valid JSON text of an IAM policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['PolicyInputList'], title: 'GetContextKeysForCustomPolicyRequest' })
   .openapi('GetContextKeysForCustomPolicyRequest')
 
 const GetContextKeysForPrincipalPolicyRequestSchema = z
   .object({
-    PolicySourceArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of a user, group, or role whose policies contain the context keys that you want listed. If you specify a user, the list includes context keys that are found in all policies that are attached to the user. The list also includes all groups that the user is a member of. If you pick a group or a role, then it includes only those context keys that are found in policies attached to that entity. Note that all parameters are shown in unencoded form here for clarity, but must be URL encoded to be included as a part of a real HTML request.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    PolicyInputList: SimulationPolicyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of additional policies for which you want the list of context keys that are referenced.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    PolicySourceArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of a user, group, or role whose policies contain the context keys that you want listed. If you specify a user, the list includes context keys that are found in all policies that are attached to the user. The list also includes all groups that the user is a member of. If you pick a group or a role, then it includes only those context keys that are found in policies attached to that entity. Note that all parameters are shown in unencoded form here for clarity, but must be URL encoded to be included as a part of a real HTML request.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    PolicyInputList: SimulationPolicyListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of additional policies for which you want the list of context keys that are referenced.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['PolicySourceArn'], title: 'GetContextKeysForPrincipalPolicyRequest' })
   .openapi('GetContextKeysForPrincipalPolicyRequest')
 
 const GetGroupPolicyRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the group the policy is associated with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the policy document to get.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name of the group the policy is associated with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name of the policy document to get.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['GroupName', 'PolicyName'], title: 'GetGroupPolicyRequest' })
   .openapi('GetGroupPolicyRequest')
 
 const GetGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the group.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name of the group.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['GroupName'], title: 'GetGroupRequest' })
   .openapi('GetGroupRequest')
 
 const GetInstanceProfileRequestSchema = z
   .object({
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the instance profile to get information about.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description:
+        '<p>The name of the instance profile to get information about.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['InstanceProfileName'], title: 'GetInstanceProfileRequest' })
   .openapi('GetInstanceProfileRequest')
 
 const GetLoginProfileRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose login profile you want to retrieve.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user whose login profile you want to retrieve.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'GetLoginProfileRequest' })
   .openapi('GetLoginProfileRequest')
 
 const GetMFADeviceRequestSchema = z
   .object({
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Serial number that uniquely identifies the MFA device. For this API, we only accept FIDO security key <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html">ARNs</a>.',
-        }),
-    ),
-    UserName: UserNameTypeSchema.and(
-      z.any().openapi({ description: 'The friendly name identifying the user.' }),
-    ).exactOptional(),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        'Serial number that uniquely identifies the MFA device. For this API, we only accept FIDO security key <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html">ARNs</a>.',
+    }),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name identifying the user.',
+    }),
   })
   .openapi({ required: ['SerialNumber'], title: 'GetMFADeviceRequest' })
   .openapi('GetMFADeviceRequest')
 
 const GetOpenIDConnectProviderRequestSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the OIDC provider resource object in IAM to get information for. You can get a list of OIDC provider resource ARNs by using the <a>ListOpenIDConnectProviders</a> operation.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    OpenIDConnectProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the OIDC provider resource object in IAM to get information for. You can get a list of OIDC provider resource ARNs by using the <a>ListOpenIDConnectProviders</a> operation.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['OpenIDConnectProviderArn'], title: 'GetOpenIDConnectProviderRequest' })
   .openapi('GetOpenIDConnectProviderRequest')
@@ -6403,124 +4682,80 @@ const SortKeyTypeSchema = z
 
 const GetOrganizationsAccessReportRequestSchema = z
   .object({
-    JobId: JobIDTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the request generated by the <a>GenerateOrganizationsAccessReport</a> operation.',
-        }),
-    ),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    SortKey: SortKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key that is used to sort the results. If you choose the namespace key, the results are returned in alphabetical order. If you choose the time key, the results are sorted numerically by the date and time.',
-        }),
-    ).exactOptional(),
+    JobId: JobIDTypeSchema.openapi({
+      description:
+        'The identifier of the request generated by the <a>GenerateOrganizationsAccessReport</a> operation.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    SortKey: SortKeyTypeSchema.exactOptional().openapi({
+      description:
+        'The key that is used to sort the results. If you choose the namespace key, the results are returned in alphabetical order. If you choose the time key, the results are sorted numerically by the date and time.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetOrganizationsAccessReportRequest' })
   .openapi('GetOrganizationsAccessReportRequest')
 
 const GetPolicyRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the managed policy that you want information about.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the managed policy that you want information about.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['PolicyArn'], title: 'GetPolicyRequest' })
   .openapi('GetPolicyRequest')
 
 const GetPolicyVersionRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the managed policy that you want information about.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    VersionId: PolicyVersionIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Identifies the policy version to retrieve.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters that consists of the lowercase letter 'v' followed by one or two digits, and optionally followed by a period '.' and a string of letters and digits.</p>",
-        }),
-    ),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the managed policy that you want information about.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    VersionId: PolicyVersionIdTypeSchema.openapi({
+      description:
+        "<p>Identifies the policy version to retrieve.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters that consists of the lowercase letter 'v' followed by one or two digits, and optionally followed by a period '.' and a string of letters and digits.</p>",
+    }),
   })
   .openapi({ required: ['PolicyArn', 'VersionId'], title: 'GetPolicyVersionRequest' })
   .openapi('GetPolicyVersionRequest')
 
 const GetRolePolicyRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role associated with the policy.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the policy document to get.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role associated with the policy.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name of the policy document to get.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['RoleName', 'PolicyName'], title: 'GetRolePolicyRequest' })
   .openapi('GetRolePolicyRequest')
 
 const GetRoleRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM role to get information about.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM role to get information about.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'GetRoleRequest' })
   .openapi('GetRoleRequest')
 
 const GetSAMLProviderRequestSchema = z
   .object({
-    SAMLProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the SAML provider resource object in IAM to get information about.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    SAMLProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the SAML provider resource object in IAM to get information about.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['SAMLProviderArn'], title: 'GetSAMLProviderRequest' })
   .openapi('GetSAMLProviderRequest')
@@ -6529,30 +4764,18 @@ const EncodingTypeSchema = z.enum(['SSH', 'PEM']).openapi('EncodingType')
 
 const GetSSHPublicKeyRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user associated with the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    SSHPublicKeyId: PublicKeyIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
-    Encoding: EncodingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the public key encoding format to use in the response. To retrieve the public key in ssh-rsa format, use <code>SSH</code>. To retrieve the public key in PEM format, use <code>PEM</code>.',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user associated with the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    SSHPublicKeyId: PublicKeyIdTypeSchema.openapi({
+      description:
+        '<p>The unique identifier for the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
+    Encoding: EncodingTypeSchema.openapi({
+      description:
+        'Specifies the public key encoding format to use in the response. To retrieve the public key in ssh-rsa format, use <code>SSH</code>. To retrieve the public key in PEM format, use <code>PEM</code>.',
+    }),
   })
   .openapi({
     required: ['UserName', 'SSHPublicKeyId', 'Encoding'],
@@ -6562,82 +4785,50 @@ const GetSSHPublicKeyRequestSchema = z
 
 const GetServerCertificateRequestSchema = z
   .object({
-    ServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the server certificate you want to retrieve information about.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    ServerCertificateName: ServerCertificateNameTypeSchema.openapi({
+      description:
+        '<p>The name of the server certificate you want to retrieve information about.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['ServerCertificateName'], title: 'GetServerCertificateRequest' })
   .openapi('GetServerCertificateRequest')
 
 const GetServiceLastAccessedDetailsRequestSchema = z
   .object({
-    JobId: JobIDTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the request generated by the <a>GenerateServiceLastAccessedDetails</a> operation. The <code>JobId</code> returned by <code>GenerateServiceLastAccessedDetail</code> must be used by the same role within a session, or by the same user when used to call <code>GetServiceLastAccessedDetail</code>.',
-        }),
-    ),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
+    JobId: JobIDTypeSchema.openapi({
+      description:
+        'The ID of the request generated by the <a>GenerateServiceLastAccessedDetails</a> operation. The <code>JobId</code> returned by <code>GenerateServiceLastAccessedDetail</code> must be used by the same role within a session, or by the same user when used to call <code>GetServiceLastAccessedDetail</code>.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetServiceLastAccessedDetailsRequest' })
   .openapi('GetServiceLastAccessedDetailsRequest')
 
 const GetServiceLastAccessedDetailsWithEntitiesRequestSchema = z
   .object({
-    JobId: JobIDTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the request generated by the <code>GenerateServiceLastAccessedDetails</code> operation.',
-        }),
-    ),
-    ServiceNamespace: ServiceNamespaceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The service namespace for an Amazon Web Services service. Provide the service namespace to learn when the IAM entity last attempted to access the specified service.</p> <p>To learn the service namespace for a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>IAM User Guide</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
+    JobId: JobIDTypeSchema.openapi({
+      description:
+        'The ID of the request generated by the <code>GenerateServiceLastAccessedDetails</code> operation.',
+    }),
+    ServiceNamespace: ServiceNamespaceTypeSchema.openapi({
+      description:
+        '<p>The service namespace for an Amazon Web Services service. Provide the service namespace to learn when the IAM entity last attempted to access the specified service.</p> <p>To learn the service namespace for a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>IAM User Guide</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
   })
   .openapi({
     required: ['JobId', 'ServiceNamespace'],
@@ -6647,216 +4838,132 @@ const GetServiceLastAccessedDetailsWithEntitiesRequestSchema = z
 
 const GetServiceLinkedRoleDeletionStatusRequestSchema = z
   .object({
-    DeletionTaskId: DeletionTaskIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deletion task identifier. This identifier is returned by the <a>DeleteServiceLinkedRole</a> operation in the format <code>task/aws-service-role/&lt;service-principal-name&gt;/&lt;role-name&gt;/&lt;task-uuid&gt;</code>.',
-        }),
-    ),
+    DeletionTaskId: DeletionTaskIdTypeSchema.openapi({
+      description:
+        'The deletion task identifier. This identifier is returned by the <a>DeleteServiceLinkedRole</a> operation in the format <code>task/aws-service-role/&lt;service-principal-name&gt;/&lt;role-name&gt;/&lt;task-uuid&gt;</code>.',
+    }),
   })
   .openapi({ required: ['DeletionTaskId'], title: 'GetServiceLinkedRoleDeletionStatusRequest' })
   .openapi('GetServiceLinkedRoleDeletionStatusRequest')
 
 const GetUserPolicyRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user who the policy is associated with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the policy document to get.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user who the policy is associated with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name of the policy document to get.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['UserName', 'PolicyName'], title: 'GetUserPolicyRequest' })
   .openapi('GetUserPolicyRequest')
 
 const GetUserRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user to get information about.</p> <p>This parameter is optional. If it is not included, it defaults to the user making the request. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the user to get information about.</p> <p>This parameter is optional. If it is not included, it defaults to the user making the request. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ title: 'GetUserRequest', required: [] })
   .openapi('GetUserRequest')
 
 const ListAccessKeysRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the user.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListAccessKeysRequest', required: [] })
   .openapi('ListAccessKeysRequest')
 
 const ListAccountAliasesRequestSchema = z
   .object({
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListAccountAliasesRequest', required: [] })
   .openapi('ListAccountAliasesRequest')
 
 const ListAttachedGroupPoliciesRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the group to list attached policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PathPrefix: PolicyPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all policies.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the group to list attached policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PathPrefix: PolicyPathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all policies.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['GroupName'], title: 'ListAttachedGroupPoliciesRequest' })
   .openapi('ListAttachedGroupPoliciesRequest')
 
 const ListAttachedRolePoliciesRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the role to list attached policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PathPrefix: PolicyPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all policies.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the role to list attached policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PathPrefix: PolicyPathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all policies.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'ListAttachedRolePoliciesRequest' })
   .openapi('ListAttachedRolePoliciesRequest')
 
 const ListAttachedUserPoliciesRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name (friendly name, not ARN) of the user to list attached policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PathPrefix: PolicyPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all policies.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name (friendly name, not ARN) of the user to list attached policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PathPrefix: PolicyPathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all policies.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'ListAttachedUserPoliciesRequest' })
   .openapi('ListAttachedUserPoliciesRequest')
@@ -6871,114 +4978,66 @@ const PolicyUsageTypeSchema = z
 
 const ListEntitiesForPolicyRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy for which you want the versions.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    EntityFilter: EntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The entity type to use for filtering the results.</p> <p>For example, when <code>EntityFilter</code> is <code>Role</code>, only the roles that are attached to the specified policy are returned. This parameter is optional. If it is not included, all attached entities (users, groups, and roles) are returned. The argument for this parameter must be one of the valid values listed below.</p>',
-        }),
-    ).exactOptional(),
-    PathPrefix: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all entities.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    PolicyUsageFilter: PolicyUsageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy usage method to use for filtering the results.</p> <p>To list only permissions policies, set <code>PolicyUsageFilter</code> to <code>PermissionsPolicy</code>. To list only the policies used to set permissions boundaries, set the value to <code>PermissionsBoundary</code>.</p> <p>This parameter is optional. If it is not included, all policies are returned. </p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy for which you want the versions.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    EntityFilter: EntityTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The entity type to use for filtering the results.</p> <p>For example, when <code>EntityFilter</code> is <code>Role</code>, only the roles that are attached to the specified policy are returned. This parameter is optional. If it is not included, all attached entities (users, groups, and roles) are returned. The argument for this parameter must be one of the valid values listed below.</p>',
+    }),
+    PathPrefix: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all entities.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    PolicyUsageFilter: PolicyUsageTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The policy usage method to use for filtering the results.</p> <p>To list only permissions policies, set <code>PolicyUsageFilter</code> to <code>PermissionsPolicy</code>. To list only the policies used to set permissions boundaries, set the value to <code>PermissionsBoundary</code>.</p> <p>This parameter is optional. If it is not included, all policies are returned. </p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['PolicyArn'], title: 'ListEntitiesForPolicyRequest' })
   .openapi('ListEntitiesForPolicyRequest')
 
 const ListGroupPoliciesRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the group to list policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name of the group to list policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['GroupName'], title: 'ListGroupPoliciesRequest' })
   .openapi('ListGroupPoliciesRequest')
 
 const ListGroupsForUserRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user to list groups for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user to list groups for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'ListGroupsForUserRequest' })
   .openapi('ListGroupsForUserRequest')
@@ -6992,210 +5051,126 @@ const PathPrefixTypeSchema = z
 
 const ListGroupsRequestSchema = z
   .object({
-    PathPrefix: PathPrefixTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path prefix for filtering the results. For example, the prefix <code>/division_abc/subdivision_xyz/</code> gets all groups whose path starts with <code>/division_abc/subdivision_xyz/</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all groups. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    PathPrefix: PathPrefixTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path prefix for filtering the results. For example, the prefix <code>/division_abc/subdivision_xyz/</code> gets all groups whose path starts with <code>/division_abc/subdivision_xyz/</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all groups. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListGroupsRequest', required: [] })
   .openapi('ListGroupsRequest')
 
 const ListInstanceProfileTagsRequestSchema = z
   .object({
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM instance profile whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM instance profile whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['InstanceProfileName'], title: 'ListInstanceProfileTagsRequest' })
   .openapi('ListInstanceProfileTagsRequest')
 
 const ListInstanceProfilesForRoleRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role to list instance profiles for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role to list instance profiles for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'ListInstanceProfilesForRoleRequest' })
   .openapi('ListInstanceProfilesForRoleRequest')
 
 const ListInstanceProfilesRequestSchema = z
   .object({
-    PathPrefix: PathPrefixTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path prefix for filtering the results. For example, the prefix <code>/application_abc/component_xyz/</code> gets all instance profiles whose path starts with <code>/application_abc/component_xyz/</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all instance profiles. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    PathPrefix: PathPrefixTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path prefix for filtering the results. For example, the prefix <code>/application_abc/component_xyz/</code> gets all instance profiles whose path starts with <code>/application_abc/component_xyz/</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all instance profiles. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListInstanceProfilesRequest', required: [] })
   .openapi('ListInstanceProfilesRequest')
 
 const ListMFADeviceTagsRequestSchema = z
   .object({
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the IAM virtual MFA device whose tags you want to see. For virtual MFA devices, the serial number is the same as the ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        '<p>The unique identifier for the IAM virtual MFA device whose tags you want to see. For virtual MFA devices, the serial number is the same as the ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['SerialNumber'], title: 'ListMFADeviceTagsRequest' })
   .openapi('ListMFADeviceTagsRequest')
 
 const ListMFADevicesRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose MFA devices you want to list.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the user whose MFA devices you want to list.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListMFADevicesRequest', required: [] })
   .openapi('ListMFADevicesRequest')
 
 const ListOpenIDConnectProviderTagsRequestSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the OpenID Connect (OIDC) identity provider whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    OpenIDConnectProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the OpenID Connect (OIDC) identity provider whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({
     required: ['OpenIDConnectProviderArn'],
@@ -7204,7 +5179,7 @@ const ListOpenIDConnectProviderTagsRequestSchema = z
   .openapi('ListOpenIDConnectProviderTagsRequest')
 
 const ListOpenIDConnectProvidersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOpenIDConnectProvidersRequest' })
   .openapi('ListOpenIDConnectProvidersRequest')
 
@@ -7216,30 +5191,18 @@ const ServiceNamespaceListTypeSchema = z
 
 const ListPoliciesGrantingServiceAccessRequestSchema = z
   .object({
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    Arn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM identity (user, group, or role) whose policies you want to list.',
-        }),
-    ),
-    ServiceNamespaces: ServiceNamespaceListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The service namespace for the Amazon Web Services services whose policies you want to list.</p> <p>To learn the service namespace for a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>IAM User Guide</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    Arn: ArnTypeSchema.openapi({
+      description:
+        'The ARN of the IAM identity (user, group, or role) whose policies you want to list.',
+    }),
+    ServiceNamespaces: ServiceNamespaceListTypeSchema.openapi({
+      description:
+        '<p>The service namespace for the Amazon Web Services services whose policies you want to list.</p> <p>To learn the service namespace for a service, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>IAM User Guide</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({
     required: ['Arn', 'ServiceNamespaces'],
@@ -7251,471 +5214,283 @@ const PolicyScopeTypeSchema = z.enum(['All', 'AWS', 'Local']).openapi('PolicySco
 
 const ListPoliciesRequestSchema = z
   .object({
-    Scope: PolicyScopeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scope to use for filtering the results.</p> <p>To list only Amazon Web Services managed policies, set <code>Scope</code> to <code>AWS</code>. To list only the customer managed policies in your Amazon Web Services account, set <code>Scope</code> to <code>Local</code>.</p> <p>This parameter is optional. If it is not included, or if it is set to <code>All</code>, all policies are returned.</p>',
-        }),
-    ).exactOptional(),
-    OnlyAttached: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag to filter the results to only the attached policies.</p> <p>When <code>OnlyAttached</code> is <code>true</code>, the returned list contains only the policies that are attached to an IAM user, group, or role. When <code>OnlyAttached</code> is <code>false</code>, or when the parameter is not included, all policies are returned.</p>',
-        }),
-    ).exactOptional(),
-    PathPrefix: PolicyPathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all policies. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.',
-        }),
-    ).exactOptional(),
-    PolicyUsageFilter: PolicyUsageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy usage method to use for filtering the results.</p> <p>To list only permissions policies, set <code>PolicyUsageFilter</code> to <code>PermissionsPolicy</code>. To list only the policies used to set permissions boundaries, set the value to <code>PermissionsBoundary</code>.</p> <p>This parameter is optional. If it is not included, all policies are returned. </p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    Scope: PolicyScopeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The scope to use for filtering the results.</p> <p>To list only Amazon Web Services managed policies, set <code>Scope</code> to <code>AWS</code>. To list only the customer managed policies in your Amazon Web Services account, set <code>Scope</code> to <code>Local</code>.</p> <p>This parameter is optional. If it is not included, or if it is set to <code>All</code>, all policies are returned.</p>',
+    }),
+    OnlyAttached: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A flag to filter the results to only the attached policies.</p> <p>When <code>OnlyAttached</code> is <code>true</code>, the returned list contains only the policies that are attached to an IAM user, group, or role. When <code>OnlyAttached</code> is <code>false</code>, or when the parameter is not included, all policies are returned.</p>',
+    }),
+    PathPrefix: PolicyPathTypeSchema.exactOptional().openapi({
+      description:
+        'The path prefix for filtering the results. This parameter is optional. If it is not included, it defaults to a slash (/), listing all policies. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.',
+    }),
+    PolicyUsageFilter: PolicyUsageTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The policy usage method to use for filtering the results.</p> <p>To list only permissions policies, set <code>PolicyUsageFilter</code> to <code>PermissionsPolicy</code>. To list only the policies used to set permissions boundaries, set the value to <code>PermissionsBoundary</code>.</p> <p>This parameter is optional. If it is not included, all policies are returned. </p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListPoliciesRequest', required: [] })
   .openapi('ListPoliciesRequest')
 
 const ListPolicyTagsRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM customer managed policy whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the IAM customer managed policy whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['PolicyArn'], title: 'ListPolicyTagsRequest' })
   .openapi('ListPolicyTagsRequest')
 
 const ListPolicyVersionsRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy for which you want the versions.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy for which you want the versions.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['PolicyArn'], title: 'ListPolicyVersionsRequest' })
   .openapi('ListPolicyVersionsRequest')
 
 const ListRolePoliciesRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role to list policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role to list policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'ListRolePoliciesRequest' })
   .openapi('ListRolePoliciesRequest')
 
 const ListRoleTagsRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM role for which you want to see the list of tags.</p> <p>This parameter accepts (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that consist of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM role for which you want to see the list of tags.</p> <p>This parameter accepts (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that consist of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'ListRoleTagsRequest' })
   .openapi('ListRoleTagsRequest')
 
 const ListRolesRequestSchema = z
   .object({
-    PathPrefix: PathPrefixTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path prefix for filtering the results. For example, the prefix <code>/application_abc/component_xyz/</code> gets all roles whose path starts with <code>/application_abc/component_xyz/</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all roles. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    PathPrefix: PathPrefixTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path prefix for filtering the results. For example, the prefix <code>/application_abc/component_xyz/</code> gets all roles whose path starts with <code>/application_abc/component_xyz/</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all roles. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListRolesRequest', required: [] })
   .openapi('ListRolesRequest')
 
 const ListSAMLProviderTagsRequestSchema = z
   .object({
-    SAMLProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the Security Assertion Markup Language (SAML) identity provider whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    SAMLProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the Security Assertion Markup Language (SAML) identity provider whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['SAMLProviderArn'], title: 'ListSAMLProviderTagsRequest' })
   .openapi('ListSAMLProviderTagsRequest')
 
 const ListSAMLProvidersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSAMLProvidersRequest' })
   .openapi('ListSAMLProvidersRequest')
 
 const ListSSHPublicKeysRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user to list SSH public keys for. If none is specified, the <code>UserName</code> field is determined implicitly based on the Amazon Web Services access key used to sign the request.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM user to list SSH public keys for. If none is specified, the <code>UserName</code> field is determined implicitly based on the Amazon Web Services access key used to sign the request.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListSSHPublicKeysRequest', required: [] })
   .openapi('ListSSHPublicKeysRequest')
 
 const ListServerCertificateTagsRequestSchema = z
   .object({
-    ServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM server certificate whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    ServerCertificateName: ServerCertificateNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM server certificate whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['ServerCertificateName'], title: 'ListServerCertificateTagsRequest' })
   .openapi('ListServerCertificateTagsRequest')
 
 const ListServerCertificatesRequestSchema = z
   .object({
-    PathPrefix: PathPrefixTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path prefix for filtering the results. For example: <code>/company/servercerts</code> would get all server certificates for which the path starts with <code>/company/servercerts</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all server certificates. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    PathPrefix: PathPrefixTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path prefix for filtering the results. For example: <code>/company/servercerts</code> would get all server certificates for which the path starts with <code>/company/servercerts</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all server certificates. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListServerCertificatesRequest', required: [] })
   .openapi('ListServerCertificatesRequest')
 
 const ListServiceSpecificCredentialsRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose service-specific credentials you want information about. If this value is not specified, then the operation assumes the user whose credentials are used to call the operation.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the returned results to only those for the specified Amazon Web Services service. If not specified, then Amazon Web Services returns service-specific credentials for all services.',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the user whose service-specific credentials you want information about. If this value is not specified, then the operation assumes the user whose credentials are used to call the operation.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({
+      description:
+        'Filters the returned results to only those for the specified Amazon Web Services service. If not specified, then Amazon Web Services returns service-specific credentials for all services.',
+    }),
   })
   .openapi({ title: 'ListServiceSpecificCredentialsRequest', required: [] })
   .openapi('ListServiceSpecificCredentialsRequest')
 
 const ListSigningCertificatesRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user whose signing certificates you want to examine.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM user whose signing certificates you want to examine.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListSigningCertificatesRequest', required: [] })
   .openapi('ListSigningCertificatesRequest')
 
 const ListUserPoliciesRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user to list policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user to list policies for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'ListUserPoliciesRequest' })
   .openapi('ListUserPoliciesRequest')
 
 const ListUserTagsRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user whose tags you want to see.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'ListUserTagsRequest' })
   .openapi('ListUserTagsRequest')
 
 const ListUsersRequestSchema = z
   .object({
-    PathPrefix: PathPrefixTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The path prefix for filtering the results. For example: <code>/division_abc/subdivision_xyz/</code>, which would get all user names whose path starts with <code>/division_abc/subdivision_xyz/</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all user names. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    PathPrefix: PathPrefixTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The path prefix for filtering the results. For example: <code>/division_abc/subdivision_xyz/</code>, which would get all user names whose path starts with <code>/division_abc/subdivision_xyz/</code>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/), listing all user names. This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListUsersRequest', required: [] })
   .openapi('ListUsersRequest')
@@ -7726,60 +5501,36 @@ const AssignmentStatusTypeSchema = z
 
 const ListVirtualMFADevicesRequestSchema = z
   .object({
-    AssignmentStatus: AssignmentStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status (<code>Unassigned</code> or <code>Assigned</code>) of the devices to list. If you do not specify an <code>AssignmentStatus</code>, the operation defaults to <code>Any</code>, which lists both assigned and unassigned virtual MFA devices.,',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
+    AssignmentStatus: AssignmentStatusTypeSchema.exactOptional().openapi({
+      description:
+        ' The status (<code>Unassigned</code> or <code>Assigned</code>) of the devices to list. If you do not specify an <code>AssignmentStatus</code>, the operation defaults to <code>Any</code>, which lists both assigned and unassigned virtual MFA devices.,',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
   })
   .openapi({ title: 'ListVirtualMFADevicesRequest', required: [] })
   .openapi('ListVirtualMFADevicesRequest')
 
 const PutGroupPolicyRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the group to associate the policy with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-.</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the policy document.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy document.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name of the group to associate the policy with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-.</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name of the policy document.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The policy document.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['GroupName', 'PolicyName', 'PolicyDocument'],
@@ -7789,22 +5540,14 @@ const PutGroupPolicyRequestSchema = z
 
 const PutRolePermissionsBoundaryRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name (friendly name, not ARN) of the IAM role for which you want to set the permissions boundary.',
-        }),
-    ),
-    PermissionsBoundary: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the managed policy that is used to set the permissions boundary for the role.</p> <p>A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>.</p> <p>For more information about policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">Policy types </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        'The name (friendly name, not ARN) of the IAM role for which you want to set the permissions boundary.',
+    }),
+    PermissionsBoundary: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the managed policy that is used to set the permissions boundary for the role.</p> <p>A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>.</p> <p>For more information about policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">Policy types </a> in the <i>IAM User Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['RoleName', 'PermissionsBoundary'],
@@ -7814,30 +5557,18 @@ const PutRolePermissionsBoundaryRequestSchema = z
 
 const PutRolePolicyRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role to associate the policy with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the policy document.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy document.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role to associate the policy with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name of the policy document.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The policy document.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['RoleName', 'PolicyName', 'PolicyDocument'],
@@ -7847,22 +5578,14 @@ const PutRolePolicyRequestSchema = z
 
 const PutUserPermissionsBoundaryRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name (friendly name, not ARN) of the IAM user for which you want to set the permissions boundary.',
-        }),
-    ),
-    PermissionsBoundary: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the managed policy that is used to set the permissions boundary for the user.</p> <p>A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>.</p> <p>For more information about policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">Policy types </a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        'The name (friendly name, not ARN) of the IAM user for which you want to set the permissions boundary.',
+    }),
+    PermissionsBoundary: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the managed policy that is used to set the permissions boundary for the user.</p> <p>A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>.</p> <p>For more information about policy types, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">Policy types </a> in the <i>IAM User Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['UserName', 'PermissionsBoundary'],
@@ -7872,30 +5595,18 @@ const PutUserPermissionsBoundaryRequestSchema = z
 
 const PutUserPolicyRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user to associate the policy with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyName: PolicyNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the policy document.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy document.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user to associate the policy with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyName: PolicyNameTypeSchema.openapi({
+      description:
+        '<p>The name of the policy document.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The policy document.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['UserName', 'PolicyName', 'PolicyDocument'],
@@ -7905,22 +5616,14 @@ const PutUserPolicyRequestSchema = z
 
 const RemoveClientIDFromOpenIDConnectProviderRequestSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM OIDC provider resource to remove the client ID from. You can get a list of OIDC provider ARNs by using the <a>ListOpenIDConnectProviders</a> operation.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    ClientID: ClientIDTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The client ID (also known as audience) to remove from the IAM OIDC provider resource. For more information about client IDs, see <a>CreateOpenIDConnectProvider</a>.',
-        }),
-    ),
+    OpenIDConnectProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM OIDC provider resource to remove the client ID from. You can get a list of OIDC provider ARNs by using the <a>ListOpenIDConnectProviders</a> operation.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    ClientID: ClientIDTypeSchema.openapi({
+      description:
+        'The client ID (also known as audience) to remove from the IAM OIDC provider resource. For more information about client IDs, see <a>CreateOpenIDConnectProvider</a>.',
+    }),
   })
   .openapi({
     required: ['OpenIDConnectProviderArn', 'ClientID'],
@@ -7930,22 +5633,14 @@ const RemoveClientIDFromOpenIDConnectProviderRequestSchema = z
 
 const RemoveRoleFromInstanceProfileRequestSchema = z
   .object({
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the instance profile to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role to remove.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description:
+        '<p>The name of the instance profile to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role to remove.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({
     required: ['InstanceProfileName', 'RoleName'],
@@ -7955,44 +5650,28 @@ const RemoveRoleFromInstanceProfileRequestSchema = z
 
 const RemoveUserFromGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the group to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user to remove.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>The name of the group to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user to remove.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['GroupName', 'UserName'], title: 'RemoveUserFromGroupRequest' })
   .openapi('RemoveUserFromGroupRequest')
 
 const ResetServiceSpecificCredentialRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user associated with the service-specific credential. If this value is not specified, then the operation assumes the user whose credentials are used to call the operation.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the service-specific credential.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM user associated with the service-specific credential. If this value is not specified, then the operation assumes the user whose credentials are used to call the operation.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.openapi({
+      description:
+        '<p>The unique identifier of the service-specific credential.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
   })
   .openapi({
     required: ['ServiceSpecificCredentialId'],
@@ -8010,38 +5689,22 @@ const ResourceNameListTypeSchema = z.array(ResourceNameTypeSchema).openapi('Reso
 
 const ResyncMFADeviceRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose MFA device you want to resynchronize.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Serial number that uniquely identifies the MFA device.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    AuthenticationCode1: AuthenticationCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An authentication code emitted by the device.</p> <p>The format for this parameter is a sequence of six digits.</p>',
-        }),
-    ),
-    AuthenticationCode2: AuthenticationCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A subsequent authentication code emitted by the device.</p> <p>The format for this parameter is a sequence of six digits.</p>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user whose MFA device you want to resynchronize.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        '<p>Serial number that uniquely identifies the MFA device.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    AuthenticationCode1: AuthenticationCodeTypeSchema.openapi({
+      description:
+        '<p>An authentication code emitted by the device.</p> <p>The format for this parameter is a sequence of six digits.</p>',
+    }),
+    AuthenticationCode2: AuthenticationCodeTypeSchema.openapi({
+      description:
+        '<p>A subsequent authentication code emitted by the device.</p> <p>The format for this parameter is a sequence of six digits.</p>',
+    }),
   })
   .openapi({
     required: ['UserName', 'SerialNumber', 'AuthenticationCode1', 'AuthenticationCode2'],
@@ -8051,22 +5714,14 @@ const ResyncMFADeviceRequestSchema = z
 
 const SetDefaultPolicyVersionRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM policy whose default version you want to set.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    VersionId: PolicyVersionIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version of the policy to set as the default (operative) version.</p> <p>For more information about managed policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM policy whose default version you want to set.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    VersionId: PolicyVersionIdTypeSchema.openapi({
+      description:
+        '<p>The version of the policy to set as the default (operative) version.</p> <p>For more information about managed policy versions, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-versions.html">Versioning for managed policies</a> in the <i>IAM User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['PolicyArn', 'VersionId'], title: 'SetDefaultPolicyVersionRequest' })
   .openapi('SetDefaultPolicyVersionRequest')
@@ -8077,14 +5732,10 @@ const GlobalEndpointTokenVersionSchema = z
 
 const SetSecurityTokenServicePreferencesRequestSchema = z
   .object({
-    GlobalEndpointTokenVersion: GlobalEndpointTokenVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version of the global endpoint token. Version 1 tokens are valid only in Amazon Web Services Regions that are available by default. These tokens do not work in manually enabled Regions, such as Asia Pacific (Hong Kong). Version 2 tokens are valid in all Regions. However, version 2 tokens are longer and might affect systems where you temporarily store tokens.</p> <p>For information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html">Activating and deactivating STS in an Amazon Web Services Region</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ),
+    GlobalEndpointTokenVersion: GlobalEndpointTokenVersionSchema.openapi({
+      description:
+        '<p>The version of the global endpoint token. Version 1 tokens are valid only in Amazon Web Services Regions that are available by default. These tokens do not work in manually enabled Regions, such as Asia Pacific (Hong Kong). Version 2 tokens are valid in all Regions. However, version 2 tokens are longer and might affect systems where you temporarily store tokens.</p> <p>For information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html">Activating and deactivating STS in an Amazon Web Services Region</a> in the <i>IAM User Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['GlobalEndpointTokenVersion'],
@@ -8094,196 +5745,104 @@ const SetSecurityTokenServicePreferencesRequestSchema = z
 
 const SimulateCustomPolicyRequestSchema = z
   .object({
-    PolicyInputList: SimulationPolicyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of policy documents to include in the simulation. Each document is specified as a string containing the complete, valid JSON text of an IAM policy. Do not include any resource-based policies in this parameter. Any resource-based policy must be submitted with the <code>ResourcePolicy</code> parameter. The policies cannot be "scope-down" policies, such as you could include in a call to <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetFederationToken.html">GetFederationToken</a> or one of the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_AssumeRole.html">AssumeRole</a> API operations. In other words, do not use policies designed to restrict what a user can do while using the temporary credentials.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
-    PermissionsBoundaryPolicyInputList: SimulationPolicyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IAM permissions boundary policy to simulate. The permissions boundary sets the maximum permissions that an IAM entity can have. You can input only one permissions boundary when you pass a policy to this operation. For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>. The policy input is specified as a string that contains the complete, valid JSON text of a permissions boundary policy.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ActionNames: ActionNameListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of names of API operations to evaluate in the simulation. Each operation is evaluated against each resource. Each operation must include the service identifier, such as <code>iam:CreateUser</code>. This operation does not support using wildcards (*) in an action name.',
-        }),
-    ),
-    ResourceArns: ResourceNameListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of ARNs of Amazon Web Services resources to include in the simulation. If this parameter is not provided, then the value defaults to <code>*</code> (all resources). Each API in the <code>ActionNames</code> parameter is evaluated for each resource in this list. The simulation determines the access result (allowed or denied) of each combination and reports it in the response. You can simulate resources that don\'t exist in your account.</p> <p>The simulation does not automatically retrieve policies for the specified resources. If you want to include a resource policy in the simulation, then you must include the policy as a string in the <code>ResourcePolicy</code> parameter.</p> <p>If you include a <code>ResourcePolicy</code>, then it must be applicable to all of the resources included in the simulation or you receive an invalid input error.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p> <note> <p>Simulation of resource-based policies isn\'t supported for IAM roles.</p> </note>',
-        }),
-    ).exactOptional(),
-    ResourcePolicy: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A resource-based policy to include in the simulation provided as a string. Each resource in the simulation is treated as if it had this policy attached. You can include only one resource-based policy in a simulation.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul> <note> <p>Simulation of resource-based policies isn\'t supported for IAM roles.</p> </note>',
-        }),
-    ).exactOptional(),
-    ResourceOwner: ResourceNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An ARN representing the Amazon Web Services account ID that specifies the owner of any simulated resource that does not identify its owner in the resource ARN. Examples of resource ARNs include an S3 bucket or object. If <code>ResourceOwner</code> is specified, it is also used as the account owner of any <code>ResourcePolicy</code> included in the simulation. If the <code>ResourceOwner</code> parameter is not specified, then the owner of the resources and the resource policy defaults to the account of the identity provided in <code>CallerArn</code>. This parameter is required only if you specify a resource-based policy and account that owns the resource is different from the account that owns the simulated calling user <code>CallerArn</code>.</p> <p>The ARN for an account uses the following syntax: <code>arn:aws:iam::<i>AWS-account-ID</i>:root</code>. For example, to represent the account with the 112233445566 ID, use the following ARN: <code>arn:aws:iam::112233445566-ID:root</code>. </p>',
-        }),
-    ).exactOptional(),
-    CallerArn: ResourceNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ARN of the IAM user that you want to use as the simulated caller of the API operations. <code>CallerArn</code> is required if you include a <code>ResourcePolicy</code> so that the policy's <code>Principal</code> element has a value to use in evaluating the policy.</p> <p>You can specify only the ARN of an IAM user. You cannot specify the ARN of an assumed role, federated user, or a service principal.</p>",
-        }),
-    ).exactOptional(),
-    ContextEntries: ContextEntryListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of context keys and corresponding values for the simulation to use. Whenever a context key is evaluated in one of the simulated IAM permissions policies, the corresponding value is supplied.',
-        }),
-    ).exactOptional(),
-    ResourceHandlingOption: ResourceHandlingOptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the type of simulation to run. Different API operations that support resource-based policies require different combinations of resources. By specifying the type of simulation to run, you enable the policy simulator to enforce the presence of the required resources to ensure reliable simulation results. If your simulation does not match one of the following scenarios, then you can omit this parameter. The following list shows each of the supported scenario values and the resources that you must define to run the simulation.</p> <p>Each of the EC2 scenarios requires that you specify instance, image, and security group resources. If your scenario includes an EBS volume, then you must specify that volume as a resource. If the EC2 scenario includes VPC, then you must supply the network interface resource. If it includes an IP subnet, then you must specify the subnet resource. For more information on the EC2 scenario options, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html">Supported platforms</a> in the <i>Amazon EC2 User Guide</i>.</p> <ul> <li> <p> <b>EC2-VPC-InstanceStore</b> </p> <p>instance, image, security group, network interface</p> </li> <li> <p> <b>EC2-VPC-InstanceStore-Subnet</b> </p> <p>instance, image, security group, network interface, subnet</p> </li> <li> <p> <b>EC2-VPC-EBS</b> </p> <p>instance, image, security group, network interface, volume</p> </li> <li> <p> <b>EC2-VPC-EBS-Subnet</b> </p> <p>instance, image, security group, network interface, subnet, volume</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
+    PolicyInputList: SimulationPolicyListTypeSchema.openapi({
+      description:
+        '<p>A list of policy documents to include in the simulation. Each document is specified as a string containing the complete, valid JSON text of an IAM policy. Do not include any resource-based policies in this parameter. Any resource-based policy must be submitted with the <code>ResourcePolicy</code> parameter. The policies cannot be "scope-down" policies, such as you could include in a call to <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetFederationToken.html">GetFederationToken</a> or one of the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_AssumeRole.html">AssumeRole</a> API operations. In other words, do not use policies designed to restrict what a user can do while using the temporary credentials.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    PermissionsBoundaryPolicyInputList: SimulationPolicyListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IAM permissions boundary policy to simulate. The permissions boundary sets the maximum permissions that an IAM entity can have. You can input only one permissions boundary when you pass a policy to this operation. For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>. The policy input is specified as a string that contains the complete, valid JSON text of a permissions boundary policy.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    ActionNames: ActionNameListTypeSchema.openapi({
+      description:
+        'A list of names of API operations to evaluate in the simulation. Each operation is evaluated against each resource. Each operation must include the service identifier, such as <code>iam:CreateUser</code>. This operation does not support using wildcards (*) in an action name.',
+    }),
+    ResourceArns: ResourceNameListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of ARNs of Amazon Web Services resources to include in the simulation. If this parameter is not provided, then the value defaults to <code>*</code> (all resources). Each API in the <code>ActionNames</code> parameter is evaluated for each resource in this list. The simulation determines the access result (allowed or denied) of each combination and reports it in the response. You can simulate resources that don\'t exist in your account.</p> <p>The simulation does not automatically retrieve policies for the specified resources. If you want to include a resource policy in the simulation, then you must include the policy as a string in the <code>ResourcePolicy</code> parameter.</p> <p>If you include a <code>ResourcePolicy</code>, then it must be applicable to all of the resources included in the simulation or you receive an invalid input error.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p> <note> <p>Simulation of resource-based policies isn\'t supported for IAM roles.</p> </note>',
+    }),
+    ResourcePolicy: PolicyDocumentTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A resource-based policy to include in the simulation provided as a string. Each resource in the simulation is treated as if it had this policy attached. You can include only one resource-based policy in a simulation.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul> <note> <p>Simulation of resource-based policies isn\'t supported for IAM roles.</p> </note>',
+    }),
+    ResourceOwner: ResourceNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>An ARN representing the Amazon Web Services account ID that specifies the owner of any simulated resource that does not identify its owner in the resource ARN. Examples of resource ARNs include an S3 bucket or object. If <code>ResourceOwner</code> is specified, it is also used as the account owner of any <code>ResourcePolicy</code> included in the simulation. If the <code>ResourceOwner</code> parameter is not specified, then the owner of the resources and the resource policy defaults to the account of the identity provided in <code>CallerArn</code>. This parameter is required only if you specify a resource-based policy and account that owns the resource is different from the account that owns the simulated calling user <code>CallerArn</code>.</p> <p>The ARN for an account uses the following syntax: <code>arn:aws:iam::<i>AWS-account-ID</i>:root</code>. For example, to represent the account with the 112233445566 ID, use the following ARN: <code>arn:aws:iam::112233445566-ID:root</code>. </p>',
+    }),
+    CallerArn: ResourceNameTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The ARN of the IAM user that you want to use as the simulated caller of the API operations. <code>CallerArn</code> is required if you include a <code>ResourcePolicy</code> so that the policy's <code>Principal</code> element has a value to use in evaluating the policy.</p> <p>You can specify only the ARN of an IAM user. You cannot specify the ARN of an assumed role, federated user, or a service principal.</p>",
+    }),
+    ContextEntries: ContextEntryListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of context keys and corresponding values for the simulation to use. Whenever a context key is evaluated in one of the simulated IAM permissions policies, the corresponding value is supplied.',
+    }),
+    ResourceHandlingOption: ResourceHandlingOptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the type of simulation to run. Different API operations that support resource-based policies require different combinations of resources. By specifying the type of simulation to run, you enable the policy simulator to enforce the presence of the required resources to ensure reliable simulation results. If your simulation does not match one of the following scenarios, then you can omit this parameter. The following list shows each of the supported scenario values and the resources that you must define to run the simulation.</p> <p>Each of the EC2 scenarios requires that you specify instance, image, and security group resources. If your scenario includes an EBS volume, then you must specify that volume as a resource. If the EC2 scenario includes VPC, then you must supply the network interface resource. If it includes an IP subnet, then you must specify the subnet resource. For more information on the EC2 scenario options, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html">Supported platforms</a> in the <i>Amazon EC2 User Guide</i>.</p> <ul> <li> <p> <b>EC2-VPC-InstanceStore</b> </p> <p>instance, image, security group, network interface</p> </li> <li> <p> <b>EC2-VPC-InstanceStore-Subnet</b> </p> <p>instance, image, security group, network interface, subnet</p> </li> <li> <p> <b>EC2-VPC-EBS</b> </p> <p>instance, image, security group, network interface, volume</p> </li> <li> <p> <b>EC2-VPC-EBS-Subnet</b> </p> <p>instance, image, security group, network interface, subnet, volume</p> </li> </ul>',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
   })
   .openapi({ required: ['PolicyInputList', 'ActionNames'], title: 'SimulateCustomPolicyRequest' })
   .openapi('SimulateCustomPolicyRequest')
 
 const SimulatePrincipalPolicyRequestSchema = z
   .object({
-    PolicySourceArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of a user, group, or role whose policies you want to include in the simulation. If you specify a user, group, or role, the simulation includes all policies that are associated with that entity. If you specify a user, the simulation also includes all policies that are attached to any groups the user belongs to.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    PolicyInputList: SimulationPolicyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of additional policy documents to include in the simulation. Each document is specified as a string containing the complete, valid JSON text of an IAM policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PermissionsBoundaryPolicyInputList: SimulationPolicyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IAM permissions boundary policy to simulate. The permissions boundary sets the maximum permissions that the entity can have. You can input only one permissions boundary when you pass a policy to this operation. An IAM entity can only have one permissions boundary in effect at a time. For example, if a permissions boundary is attached to an entity and you pass in a different permissions boundary policy using this parameter, then the new permissions boundary policy is used for the simulation. For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>. The policy input is specified as a string containing the complete, valid JSON text of a permissions boundary policy.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ActionNames: ActionNameListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of names of API operations to evaluate in the simulation. Each operation is evaluated for each resource. Each operation must include the service identifier, such as <code>iam:CreateUser</code>.',
-        }),
-    ),
-    ResourceArns: ResourceNameListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of ARNs of Amazon Web Services resources to include in the simulation. If this parameter is not provided, then the value defaults to <code>*</code> (all resources). Each API in the <code>ActionNames</code> parameter is evaluated for each resource in this list. The simulation determines the access result (allowed or denied) of each combination and reports it in the response. You can simulate resources that don\'t exist in your account.</p> <p>The simulation does not automatically retrieve policies for the specified resources. If you want to include a resource policy in the simulation, then you must include the policy as a string in the <code>ResourcePolicy</code> parameter.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p> <note> <p>Simulation of resource-based policies isn\'t supported for IAM roles.</p> </note>',
-        }),
-    ).exactOptional(),
-    ResourcePolicy: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A resource-based policy to include in the simulation provided as a string. Each resource in the simulation is treated as if it had this policy attached. You can include only one resource-based policy in a simulation.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul> <note> <p>Simulation of resource-based policies isn\'t supported for IAM roles.</p> </note>',
-        }),
-    ).exactOptional(),
-    ResourceOwner: ResourceNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Web Services account ID that specifies the owner of any simulated resource that does not identify its owner in the resource ARN. Examples of resource ARNs include an S3 bucket or object. If <code>ResourceOwner</code> is specified, it is also used as the account owner of any <code>ResourcePolicy</code> included in the simulation. If the <code>ResourceOwner</code> parameter is not specified, then the owner of the resources and the resource policy defaults to the account of the identity provided in <code>CallerArn</code>. This parameter is required only if you specify a resource-based policy and account that owns the resource is different from the account that owns the simulated calling user <code>CallerArn</code>.',
-        }),
-    ).exactOptional(),
-    CallerArn: ResourceNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM user that you want to specify as the simulated caller of the API operations. If you do not specify a <code>CallerArn</code>, it defaults to the ARN of the user that you specify in <code>PolicySourceArn</code>, if you specified a user. If you include both a <code>PolicySourceArn</code> (for example, <code>arn:aws:iam::123456789012:user/David</code>) and a <code>CallerArn</code> (for example, <code>arn:aws:iam::123456789012:user/Bob</code>), the result is that you simulate calling the API operations as Bob, as if Bob had David\'s policies.</p> <p>You can specify only the ARN of an IAM user. You cannot specify the ARN of an assumed role, federated user, or a service principal.</p> <p> <code>CallerArn</code> is required if you include a <code>ResourcePolicy</code> and the <code>PolicySourceArn</code> is not the ARN for an IAM user. This is required so that the resource-based policy\'s <code>Principal</code> element has a value to use in evaluating the policy.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    ContextEntries: ContextEntryListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of context keys and corresponding values for the simulation to use. Whenever a context key is evaluated in one of the simulated IAM permissions policies, the corresponding value is supplied.',
-        }),
-    ).exactOptional(),
-    ResourceHandlingOption: ResourceHandlingOptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the type of simulation to run. Different API operations that support resource-based policies require different combinations of resources. By specifying the type of simulation to run, you enable the policy simulator to enforce the presence of the required resources to ensure reliable simulation results. If your simulation does not match one of the following scenarios, then you can omit this parameter. The following list shows each of the supported scenario values and the resources that you must define to run the simulation.</p> <p>Each of the EC2 scenarios requires that you specify instance, image, and security group resources. If your scenario includes an EBS volume, then you must specify that volume as a resource. If the EC2 scenario includes VPC, then you must supply the network interface resource. If it includes an IP subnet, then you must specify the subnet resource. For more information on the EC2 scenario options, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html">Supported platforms</a> in the <i>Amazon EC2 User Guide</i>.</p> <ul> <li> <p> <b>EC2-VPC-InstanceStore</b> </p> <p>instance, image, security group, network interface</p> </li> <li> <p> <b>EC2-VPC-InstanceStore-Subnet</b> </p> <p>instance, image, security group, network interface, subnet</p> </li> <li> <p> <b>EC2-VPC-EBS</b> </p> <p>instance, image, security group, network interface, volume</p> </li> <li> <p> <b>EC2-VPC-EBS-Subnet</b> </p> <p>instance, image, security group, network interface, subnet, volume</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
-        }),
-    ).exactOptional(),
+    PolicySourceArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of a user, group, or role whose policies you want to include in the simulation. If you specify a user, group, or role, the simulation includes all policies that are associated with that entity. If you specify a user, the simulation also includes all policies that are attached to any groups the user belongs to.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    PolicyInputList: SimulationPolicyListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of additional policy documents to include in the simulation. Each document is specified as a string containing the complete, valid JSON text of an IAM policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    PermissionsBoundaryPolicyInputList: SimulationPolicyListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IAM permissions boundary policy to simulate. The permissions boundary sets the maximum permissions that the entity can have. You can input only one permissions boundary when you pass a policy to this operation. An IAM entity can only have one permissions boundary in effect at a time. For example, if a permissions boundary is attached to an entity and you pass in a different permissions boundary policy using this parameter, then the new permissions boundary policy is used for the simulation. For more information about permissions boundaries, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html">Permissions boundaries for IAM entities</a> in the <i>IAM User Guide</i>. The policy input is specified as a string containing the complete, valid JSON text of a permissions boundary policy.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    ActionNames: ActionNameListTypeSchema.openapi({
+      description:
+        'A list of names of API operations to evaluate in the simulation. Each operation is evaluated for each resource. Each operation must include the service identifier, such as <code>iam:CreateUser</code>.',
+    }),
+    ResourceArns: ResourceNameListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of ARNs of Amazon Web Services resources to include in the simulation. If this parameter is not provided, then the value defaults to <code>*</code> (all resources). Each API in the <code>ActionNames</code> parameter is evaluated for each resource in this list. The simulation determines the access result (allowed or denied) of each combination and reports it in the response. You can simulate resources that don\'t exist in your account.</p> <p>The simulation does not automatically retrieve policies for the specified resources. If you want to include a resource policy in the simulation, then you must include the policy as a string in the <code>ResourcePolicy</code> parameter.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p> <note> <p>Simulation of resource-based policies isn\'t supported for IAM roles.</p> </note>',
+    }),
+    ResourcePolicy: PolicyDocumentTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A resource-based policy to include in the simulation provided as a string. Each resource in the simulation is treated as if it had this policy attached. You can include only one resource-based policy in a simulation.</p> <p>The maximum length of the policy document that you can pass in this operation, including whitespace, is listed below. To view the maximum character counts of a managed policy with no whitespaces, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length">IAM and STS character quotas</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul> <note> <p>Simulation of resource-based policies isn\'t supported for IAM roles.</p> </note>',
+    }),
+    ResourceOwner: ResourceNameTypeSchema.exactOptional().openapi({
+      description:
+        'An Amazon Web Services account ID that specifies the owner of any simulated resource that does not identify its owner in the resource ARN. Examples of resource ARNs include an S3 bucket or object. If <code>ResourceOwner</code> is specified, it is also used as the account owner of any <code>ResourcePolicy</code> included in the simulation. If the <code>ResourceOwner</code> parameter is not specified, then the owner of the resources and the resource policy defaults to the account of the identity provided in <code>CallerArn</code>. This parameter is required only if you specify a resource-based policy and account that owns the resource is different from the account that owns the simulated calling user <code>CallerArn</code>.',
+    }),
+    CallerArn: ResourceNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM user that you want to specify as the simulated caller of the API operations. If you do not specify a <code>CallerArn</code>, it defaults to the ARN of the user that you specify in <code>PolicySourceArn</code>, if you specified a user. If you include both a <code>PolicySourceArn</code> (for example, <code>arn:aws:iam::123456789012:user/David</code>) and a <code>CallerArn</code> (for example, <code>arn:aws:iam::123456789012:user/Bob</code>), the result is that you simulate calling the API operations as Bob, as if Bob had David\'s policies.</p> <p>You can specify only the ARN of an IAM user. You cannot specify the ARN of an assumed role, federated user, or a service principal.</p> <p> <code>CallerArn</code> is required if you include a <code>ResourcePolicy</code> and the <code>PolicySourceArn</code> is not the ARN for an IAM user. This is required so that the resource-based policy\'s <code>Principal</code> element has a value to use in evaluating the policy.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    ContextEntries: ContextEntryListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of context keys and corresponding values for the simulation to use. Whenever a context key is evaluated in one of the simulated IAM permissions policies, the corresponding value is supplied.',
+    }),
+    ResourceHandlingOption: ResourceHandlingOptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the type of simulation to run. Different API operations that support resource-based policies require different combinations of resources. By specifying the type of simulation to run, you enable the policy simulator to enforce the presence of the required resources to ensure reliable simulation results. If your simulation does not match one of the following scenarios, then you can omit this parameter. The following list shows each of the supported scenario values and the resources that you must define to run the simulation.</p> <p>Each of the EC2 scenarios requires that you specify instance, image, and security group resources. If your scenario includes an EBS volume, then you must specify that volume as a resource. If the EC2 scenario includes VPC, then you must supply the network interface resource. If it includes an IP subnet, then you must specify the subnet resource. For more information on the EC2 scenario options, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html">Supported platforms</a> in the <i>Amazon EC2 User Guide</i>.</p> <ul> <li> <p> <b>EC2-VPC-InstanceStore</b> </p> <p>instance, image, security group, network interface</p> </li> <li> <p> <b>EC2-VPC-InstanceStore-Subnet</b> </p> <p>instance, image, security group, network interface, subnet</p> </li> <li> <p> <b>EC2-VPC-EBS</b> </p> <p>instance, image, security group, network interface, volume</p> </li> <li> <p> <b>EC2-VPC-EBS-Subnet</b> </p> <p>instance, image, security group, network interface, subnet, volume</p> </li> </ul>',
+    }),
+    MaxItems: MaxItemsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from.</p>',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start.',
+    }),
   })
   .openapi({
     required: ['PolicySourceArn', 'ActionNames'],
@@ -8293,66 +5852,42 @@ const SimulatePrincipalPolicyRequestSchema = z
 
 const TagInstanceProfileRequestSchema = z
   .object({
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM instance profile to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that you want to attach to the IAM instance profile. Each tag consists of a key name and an associated value.',
-        }),
-    ),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM instance profile to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that you want to attach to the IAM instance profile. Each tag consists of a key name and an associated value.',
+    }),
   })
   .openapi({ required: ['InstanceProfileName', 'Tags'], title: 'TagInstanceProfileRequest' })
   .openapi('TagInstanceProfileRequest')
 
 const TagMFADeviceRequestSchema = z
   .object({
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the IAM virtual MFA device to which you want to add tags. For virtual MFA devices, the serial number is the same as the ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that you want to attach to the IAM virtual MFA device. Each tag consists of a key name and an associated value.',
-        }),
-    ),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        '<p>The unique identifier for the IAM virtual MFA device to which you want to add tags. For virtual MFA devices, the serial number is the same as the ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that you want to attach to the IAM virtual MFA device. Each tag consists of a key name and an associated value.',
+    }),
   })
   .openapi({ required: ['SerialNumber', 'Tags'], title: 'TagMFADeviceRequest' })
   .openapi('TagMFADeviceRequest')
 
 const TagOpenIDConnectProviderRequestSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the OIDC identity provider in IAM to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that you want to attach to the OIDC identity provider in IAM. Each tag consists of a key name and an associated value.',
-        }),
-    ),
+    OpenIDConnectProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the OIDC identity provider in IAM to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that you want to attach to the OIDC identity provider in IAM. Each tag consists of a key name and an associated value.',
+    }),
   })
   .openapi({
     required: ['OpenIDConnectProviderArn', 'Tags'],
@@ -8362,110 +5897,70 @@ const TagOpenIDConnectProviderRequestSchema = z
 
 const TagPolicyRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM customer managed policy to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that you want to attach to the IAM customer managed policy. Each tag consists of a key name and an associated value.',
-        }),
-    ),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the IAM customer managed policy to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that you want to attach to the IAM customer managed policy. Each tag consists of a key name and an associated value.',
+    }),
   })
   .openapi({ required: ['PolicyArn', 'Tags'], title: 'TagPolicyRequest' })
   .openapi('TagPolicyRequest')
 
 const TagRoleRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM role to which you want to add tags.</p> <p>This parameter accepts (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that consist of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that you want to attach to the IAM role. Each tag consists of a key name and an associated value.',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM role to which you want to add tags.</p> <p>This parameter accepts (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that consist of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that you want to attach to the IAM role. Each tag consists of a key name and an associated value.',
+    }),
   })
   .openapi({ required: ['RoleName', 'Tags'], title: 'TagRoleRequest' })
   .openapi('TagRoleRequest')
 
 const TagSAMLProviderRequestSchema = z
   .object({
-    SAMLProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the SAML identity provider in IAM to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that you want to attach to the SAML identity provider in IAM. Each tag consists of a key name and an associated value.',
-        }),
-    ),
+    SAMLProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the SAML identity provider in IAM to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that you want to attach to the SAML identity provider in IAM. Each tag consists of a key name and an associated value.',
+    }),
   })
   .openapi({ required: ['SAMLProviderArn', 'Tags'], title: 'TagSAMLProviderRequest' })
   .openapi('TagSAMLProviderRequest')
 
 const TagServerCertificateRequestSchema = z
   .object({
-    ServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM server certificate to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that you want to attach to the IAM server certificate. Each tag consists of a key name and an associated value.',
-        }),
-    ),
+    ServerCertificateName: ServerCertificateNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM server certificate to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that you want to attach to the IAM server certificate. Each tag consists of a key name and an associated value.',
+    }),
   })
   .openapi({ required: ['ServerCertificateName', 'Tags'], title: 'TagServerCertificateRequest' })
   .openapi('TagServerCertificateRequest')
 
 const TagUserRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that you want to attach to the IAM user. Each tag consists of a key name and an associated value.',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user to which you want to add tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Tags: TagListTypeSchema.openapi({
+      description:
+        'The list of tags that you want to attach to the IAM user. Each tag consists of a key name and an associated value.',
+    }),
   })
   .openapi({ required: ['UserName', 'Tags'], title: 'TagUserRequest' })
   .openapi('TagUserRequest')
@@ -8474,66 +5969,42 @@ const TagKeyListTypeSchema = z.array(TagKeyTypeSchema).max(50).openapi('TagKeyLi
 
 const UntagInstanceProfileRequestSchema = z
   .object({
-    InstanceProfileName: InstanceProfileNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM instance profile from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    TagKeys: TagKeyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified instance profile.',
-        }),
-    ),
+    InstanceProfileName: InstanceProfileNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM instance profile from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    TagKeys: TagKeyListTypeSchema.openapi({
+      description:
+        'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified instance profile.',
+    }),
   })
   .openapi({ required: ['InstanceProfileName', 'TagKeys'], title: 'UntagInstanceProfileRequest' })
   .openapi('UntagInstanceProfileRequest')
 
 const UntagMFADeviceRequestSchema = z
   .object({
-    SerialNumber: SerialNumberTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the IAM virtual MFA device from which you want to remove tags. For virtual MFA devices, the serial number is the same as the ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    TagKeys: TagKeyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified instance profile.',
-        }),
-    ),
+    SerialNumber: SerialNumberTypeSchema.openapi({
+      description:
+        '<p>The unique identifier for the IAM virtual MFA device from which you want to remove tags. For virtual MFA devices, the serial number is the same as the ARN.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    TagKeys: TagKeyListTypeSchema.openapi({
+      description:
+        'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified instance profile.',
+    }),
   })
   .openapi({ required: ['SerialNumber', 'TagKeys'], title: 'UntagMFADeviceRequest' })
   .openapi('UntagMFADeviceRequest')
 
 const UntagOpenIDConnectProviderRequestSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the OIDC provider in IAM from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    TagKeys: TagKeyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified OIDC provider.',
-        }),
-    ),
+    OpenIDConnectProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the OIDC provider in IAM from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    TagKeys: TagKeyListTypeSchema.openapi({
+      description:
+        'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified OIDC provider.',
+    }),
   })
   .openapi({
     required: ['OpenIDConnectProviderArn', 'TagKeys'],
@@ -8543,88 +6014,56 @@ const UntagOpenIDConnectProviderRequestSchema = z
 
 const UntagPolicyRequestSchema = z
   .object({
-    PolicyArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM customer managed policy from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    TagKeys: TagKeyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified policy.',
-        }),
-    ),
+    PolicyArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the IAM customer managed policy from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    TagKeys: TagKeyListTypeSchema.openapi({
+      description:
+        'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified policy.',
+    }),
   })
   .openapi({ required: ['PolicyArn', 'TagKeys'], title: 'UntagPolicyRequest' })
   .openapi('UntagPolicyRequest')
 
 const UntagRoleRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM role from which you want to remove tags.</p> <p>This parameter accepts (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that consist of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    TagKeys: TagKeyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified role.',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM role from which you want to remove tags.</p> <p>This parameter accepts (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that consist of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    TagKeys: TagKeyListTypeSchema.openapi({
+      description:
+        'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified role.',
+    }),
   })
   .openapi({ required: ['RoleName', 'TagKeys'], title: 'UntagRoleRequest' })
   .openapi('UntagRoleRequest')
 
 const UntagSAMLProviderRequestSchema = z
   .object({
-    SAMLProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the SAML identity provider in IAM from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    TagKeys: TagKeyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified SAML identity provider.',
-        }),
-    ),
+    SAMLProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The ARN of the SAML identity provider in IAM from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    TagKeys: TagKeyListTypeSchema.openapi({
+      description:
+        'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified SAML identity provider.',
+    }),
   })
   .openapi({ required: ['SAMLProviderArn', 'TagKeys'], title: 'UntagSAMLProviderRequest' })
   .openapi('UntagSAMLProviderRequest')
 
 const UntagServerCertificateRequestSchema = z
   .object({
-    ServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM server certificate from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    TagKeys: TagKeyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified IAM server certificate.',
-        }),
-    ),
+    ServerCertificateName: ServerCertificateNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM server certificate from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    TagKeys: TagKeyListTypeSchema.openapi({
+      description:
+        'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified IAM server certificate.',
+    }),
   })
   .openapi({
     required: ['ServerCertificateName', 'TagKeys'],
@@ -8634,234 +6073,138 @@ const UntagServerCertificateRequestSchema = z
 
 const UntagUserRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    TagKeys: TagKeyListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified user.',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user from which you want to remove tags.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    TagKeys: TagKeyListTypeSchema.openapi({
+      description:
+        'A list of key names as a simple array of strings. The tags with matching keys are removed from the specified user.',
+    }),
   })
   .openapi({ required: ['UserName', 'TagKeys'], title: 'UntagUserRequest' })
   .openapi('UntagUserRequest')
 
 const UpdateAccessKeyRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose key you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    AccessKeyId: AccessKeyIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The access key ID of the secret access key you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status you want to assign to the secret access key. <code>Active</code> means that the key can be used for programmatic calls to Amazon Web Services, while <code>Inactive</code> means that the key cannot be used.',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the user whose key you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    AccessKeyId: AccessKeyIdTypeSchema.openapi({
+      description:
+        '<p>The access key ID of the secret access key you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        ' The status you want to assign to the secret access key. <code>Active</code> means that the key can be used for programmatic calls to Amazon Web Services, while <code>Inactive</code> means that the key cannot be used.',
+    }),
   })
   .openapi({ required: ['AccessKeyId', 'Status'], title: 'UpdateAccessKeyRequest' })
   .openapi('UpdateAccessKeyRequest')
 
 const UpdateAccountPasswordPolicyRequestSchema = z
   .object({
-    MinimumPasswordLength: MinimumPasswordLengthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum number of characters allowed in an IAM user password.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>6</code>.</p>',
-        }),
-    ).exactOptional(),
-    RequireSymbols: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies whether IAM user passwords must contain at least one of the following non-alphanumeric characters:</p> <p>! @ # $ % ^ &amp; * ( ) _ + - = [ ] { } | '</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that passwords do not require at least one symbol character.</p>",
-        }),
-    ).exactOptional(),
-    RequireNumbers: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether IAM user passwords must contain at least one numeric character (0 to 9).</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that passwords do not require at least one numeric character.</p>',
-        }),
-    ).exactOptional(),
-    RequireUppercaseCharacters: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether IAM user passwords must contain at least one uppercase character from the ISO basic Latin alphabet (A to Z).</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that passwords do not require at least one uppercase character.</p>',
-        }),
-    ).exactOptional(),
-    RequireLowercaseCharacters: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether IAM user passwords must contain at least one lowercase character from the ISO basic Latin alphabet (a to z).</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that passwords do not require at least one lowercase character.</p>',
-        }),
-    ).exactOptional(),
-    AllowUsersToChangePassword: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Allows all IAM users in your account to use the Amazon Web Services Management Console to change their own passwords. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_enable-user-change.html">Permitting IAM users to change their own passwords</a> in the <i>IAM User Guide</i>.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that IAM users in the account do not automatically have permissions to change their own password.</p>',
-        }),
-    ).exactOptional(),
-    MaxPasswordAge: MaxPasswordAgeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that an IAM user password is valid.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>0</code>. The result is that IAM user passwords never expire.</p>',
-        }),
-    ).exactOptional(),
-    PasswordReusePrevention: PasswordReusePreventionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the number of previous passwords that IAM users are prevented from reusing.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>0</code>. The result is that IAM users are not prevented from reusing previous passwords.</p>',
-        }),
-    ).exactOptional(),
-    HardExpiry: BooleanObjectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Prevents IAM users who are accessing the account via the Amazon Web Services Management Console from setting a new console password after their password has expired. The IAM user cannot access the console until an administrator resets the password.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that IAM users can change their passwords after they expire and continue to sign in as the user.</p> <note> <p> In the Amazon Web Services Management Console, the custom password policy option <b>Allow users to change their own password</b> gives IAM users permissions to <code>iam:ChangePassword</code> for only their user and to the <code>iam:GetAccountPasswordPolicy</code> action. This option does not attach a permissions policy to each user, rather the permissions are applied at the account-level for all users by IAM. IAM users with <code>iam:ChangePassword</code> permission and active access keys can reset their own expired console password using the CLI or API.</p> </note>',
-        }),
-    ).exactOptional(),
+    MinimumPasswordLength: MinimumPasswordLengthTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The minimum number of characters allowed in an IAM user password.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>6</code>.</p>',
+    }),
+    RequireSymbols: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies whether IAM user passwords must contain at least one of the following non-alphanumeric characters:</p> <p>! @ # $ % ^ &amp; * ( ) _ + - = [ ] { } | '</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that passwords do not require at least one symbol character.</p>",
+    }),
+    RequireNumbers: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether IAM user passwords must contain at least one numeric character (0 to 9).</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that passwords do not require at least one numeric character.</p>',
+    }),
+    RequireUppercaseCharacters: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether IAM user passwords must contain at least one uppercase character from the ISO basic Latin alphabet (A to Z).</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that passwords do not require at least one uppercase character.</p>',
+    }),
+    RequireLowercaseCharacters: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether IAM user passwords must contain at least one lowercase character from the ISO basic Latin alphabet (a to z).</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that passwords do not require at least one lowercase character.</p>',
+    }),
+    AllowUsersToChangePassword: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p> Allows all IAM users in your account to use the Amazon Web Services Management Console to change their own passwords. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_enable-user-change.html">Permitting IAM users to change their own passwords</a> in the <i>IAM User Guide</i>.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that IAM users in the account do not automatically have permissions to change their own password.</p>',
+    }),
+    MaxPasswordAge: MaxPasswordAgeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that an IAM user password is valid.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>0</code>. The result is that IAM user passwords never expire.</p>',
+    }),
+    PasswordReusePrevention: PasswordReusePreventionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the number of previous passwords that IAM users are prevented from reusing.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>0</code>. The result is that IAM users are not prevented from reusing previous passwords.</p>',
+    }),
+    HardExpiry: BooleanObjectTypeSchema.exactOptional().openapi({
+      description:
+        '<p> Prevents IAM users who are accessing the account via the Amazon Web Services Management Console from setting a new console password after their password has expired. The IAM user cannot access the console until an administrator resets the password.</p> <p>If you do not specify a value for this parameter, then the operation uses the default value of <code>false</code>. The result is that IAM users can change their passwords after they expire and continue to sign in as the user.</p> <note> <p> In the Amazon Web Services Management Console, the custom password policy option <b>Allow users to change their own password</b> gives IAM users permissions to <code>iam:ChangePassword</code> for only their user and to the <code>iam:GetAccountPasswordPolicy</code> action. This option does not attach a permissions policy to each user, rather the permissions are applied at the account-level for all users by IAM. IAM users with <code>iam:ChangePassword</code> permission and active access keys can reset their own expired console password using the CLI or API.</p> </note>',
+    }),
   })
   .openapi({ title: 'UpdateAccountPasswordPolicyRequest', required: [] })
   .openapi('UpdateAccountPasswordPolicyRequest')
 
 const UpdateAssumeRolePolicyRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the role to update with the new policy.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    PolicyDocument: PolicyDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy that grants an entity permission to assume the role.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description:
+        '<p>The name of the role to update with the new policy.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    PolicyDocument: PolicyDocumentTypeSchema.openapi({
+      description:
+        '<p>The policy that grants an entity permission to assume the role.</p> <p>You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['RoleName', 'PolicyDocument'], title: 'UpdateAssumeRolePolicyRequest' })
   .openapi('UpdateAssumeRolePolicyRequest')
 
 const UpdateGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Name of the IAM group to update. If you\'re changing the name of the group, this is the original name.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    NewPath: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>New path for the IAM group. Only include this if changing the group\'s path.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    NewGroupName: GroupNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>New name for the IAM group. Only include this if changing the group\'s name.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameTypeSchema.openapi({
+      description:
+        '<p>Name of the IAM group to update. If you\'re changing the name of the group, this is the original name.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    NewPath: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>New path for the IAM group. Only include this if changing the group\'s path.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    NewGroupName: GroupNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>New name for the IAM group. Only include this if changing the group\'s name.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
+    }),
   })
   .openapi({ required: ['GroupName'], title: 'UpdateGroupRequest' })
   .openapi('UpdateGroupRequest')
 
 const UpdateLoginProfileRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user whose password you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    Password: PasswordTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new password for the specified IAM user.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul> <p>However, the format can be further restricted by the account administrator by setting a password policy on the Amazon Web Services account. For more information, see <a>UpdateAccountPasswordPolicy</a>.</p>',
-        }),
-    ).exactOptional(),
-    PasswordResetRequired: BooleanObjectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows this new password to be used only once by requiring the specified IAM user to set a new password on next sign-in.',
-        }),
-    ).exactOptional(),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the user whose password you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    Password: PasswordTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The new password for the specified IAM user.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul> <p>However, the format can be further restricted by the account administrator by setting a password policy on the Amazon Web Services account. For more information, see <a>UpdateAccountPasswordPolicy</a>.</p>',
+    }),
+    PasswordResetRequired: BooleanObjectTypeSchema.exactOptional().openapi({
+      description:
+        'Allows this new password to be used only once by requiring the specified IAM user to set a new password on next sign-in.',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'UpdateLoginProfileRequest' })
   .openapi('UpdateLoginProfileRequest')
 
 const UpdateOpenIDConnectProviderThumbprintRequestSchema = z
   .object({
-    OpenIDConnectProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM OIDC provider resource object for which you want to update the thumbprint. You can get a list of OIDC provider ARNs by using the <a>ListOpenIDConnectProviders</a> operation.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    ThumbprintList: ThumbprintListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of certificate thumbprints that are associated with the specified IAM OpenID Connect provider. For more information, see <a>CreateOpenIDConnectProvider</a>. ',
-        }),
-    ),
+    OpenIDConnectProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM OIDC provider resource object for which you want to update the thumbprint. You can get a list of OIDC provider ARNs by using the <a>ListOpenIDConnectProviders</a> operation.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    ThumbprintList: ThumbprintListTypeSchema.openapi({
+      description:
+        'A list of certificate thumbprints that are associated with the specified IAM OpenID Connect provider. For more information, see <a>CreateOpenIDConnectProvider</a>. ',
+    }),
   })
   .openapi({
     required: ['OpenIDConnectProviderArn', 'ThumbprintList'],
@@ -8871,62 +6214,42 @@ const UpdateOpenIDConnectProviderThumbprintRequestSchema = z
 
 const UpdateRoleDescriptionRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the role that you want to modify.' }),
-    ),
-    Description: RoleDescriptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The new description that you want to apply to the specified role.',
-        }),
-    ),
+    RoleName: RoleNameTypeSchema.openapi({
+      description: 'The name of the role that you want to modify.',
+    }),
+    Description: RoleDescriptionTypeSchema.openapi({
+      description: 'The new description that you want to apply to the specified role.',
+    }),
   })
   .openapi({ required: ['RoleName', 'Description'], title: 'UpdateRoleDescriptionRequest' })
   .openapi('UpdateRoleDescriptionRequest')
 
 const UpdateRoleRequestSchema = z
   .object({
-    RoleName: RoleNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the role that you want to modify.' }),
-    ),
-    Description: RoleDescriptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The new description that you want to apply to the specified role.',
-        }),
-    ).exactOptional(),
-    MaxSessionDuration: RoleMaxSessionDurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum session duration (in seconds) that you want to set for the specified role. If you do not specify a value for this setting, the default value of one hour is applied. This setting can have a value from 1 hour to 12 hours.</p> <p>Anyone who assumes the role from the CLI or API can use the <code>DurationSeconds</code> API parameter or the <code>duration-seconds</code> CLI parameter to request a longer session. The <code>MaxSessionDuration</code> setting determines the maximum duration that can be requested using the <code>DurationSeconds</code> parameter. If users don\'t specify a value for the <code>DurationSeconds</code> parameter, their security credentials are valid for one hour by default. This applies when you use the <code>AssumeRole*</code> API operations or the <code>assume-role*</code> CLI operations but does not apply when you use those operations to create a console URL. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html">Using IAM roles</a> in the <i>IAM User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    RoleName: RoleNameTypeSchema.openapi({
+      description: 'The name of the role that you want to modify.',
+    }),
+    Description: RoleDescriptionTypeSchema.exactOptional().openapi({
+      description: 'The new description that you want to apply to the specified role.',
+    }),
+    MaxSessionDuration: RoleMaxSessionDurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum session duration (in seconds) that you want to set for the specified role. If you do not specify a value for this setting, the default value of one hour is applied. This setting can have a value from 1 hour to 12 hours.</p> <p>Anyone who assumes the role from the CLI or API can use the <code>DurationSeconds</code> API parameter or the <code>duration-seconds</code> CLI parameter to request a longer session. The <code>MaxSessionDuration</code> setting determines the maximum duration that can be requested using the <code>DurationSeconds</code> parameter. If users don\'t specify a value for the <code>DurationSeconds</code> parameter, their security credentials are valid for one hour by default. This applies when you use the <code>AssumeRole*</code> API operations or the <code>assume-role*</code> CLI operations but does not apply when you use those operations to create a console URL. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html">Using IAM roles</a> in the <i>IAM User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['RoleName'], title: 'UpdateRoleRequest' })
   .openapi('UpdateRoleRequest')
 
 const UpdateSAMLProviderRequestSchema = z
   .object({
-    SAMLMetadataDocument: SAMLMetadataDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An XML document generated by an identity provider (IdP) that supports SAML 2.0. The document includes the issuer's name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that are received from the IdP. You must generate the metadata document using the identity management software that is used as your organization's IdP.",
-        }),
-    ),
-    SAMLProviderArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the SAML provider to update.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    SAMLMetadataDocument: SAMLMetadataDocumentTypeSchema.openapi({
+      description:
+        "An XML document generated by an identity provider (IdP) that supports SAML 2.0. The document includes the issuer's name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that are received from the IdP. You must generate the metadata document using the identity management software that is used as your organization's IdP.",
+    }),
+    SAMLProviderArn: ArnTypeSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the SAML provider to update.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({
     required: ['SAMLMetadataDocument', 'SAMLProviderArn'],
@@ -8936,30 +6259,18 @@ const UpdateSAMLProviderRequestSchema = z
 
 const UpdateSSHPublicKeyRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user associated with the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    SSHPublicKeyId: PublicKeyIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status to assign to the SSH public key. <code>Active</code> means that the key can be used for authentication with an CodeCommit repository. <code>Inactive</code> means that the key cannot be used.',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user associated with the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    SSHPublicKeyId: PublicKeyIdTypeSchema.openapi({
+      description:
+        '<p>The unique identifier for the SSH public key.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        'The status to assign to the SSH public key. <code>Active</code> means that the key can be used for authentication with an CodeCommit repository. <code>Inactive</code> means that the key cannot be used.',
+    }),
   })
   .openapi({
     required: ['UserName', 'SSHPublicKeyId', 'Status'],
@@ -8969,57 +6280,35 @@ const UpdateSSHPublicKeyRequestSchema = z
 
 const UpdateServerCertificateRequestSchema = z
   .object({
-    ServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the server certificate that you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    NewPath: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new path for the server certificate. Include this only if you are updating the server certificate\'s path.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    NewServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new name for the server certificate. Include this only if you are updating the server certificate\'s name. The name of the certificate cannot contain any spaces.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
+    ServerCertificateName: ServerCertificateNameTypeSchema.openapi({
+      description:
+        '<p>The name of the server certificate that you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    NewPath: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The new path for the server certificate. Include this only if you are updating the server certificate\'s path.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    NewServerCertificateName: ServerCertificateNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The new name for the server certificate. Include this only if you are updating the server certificate\'s name. The name of the certificate cannot contain any spaces.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
   })
   .openapi({ required: ['ServerCertificateName'], title: 'UpdateServerCertificateRequest' })
   .openapi('UpdateServerCertificateRequest')
 
 const UpdateServiceSpecificCredentialRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user associated with the service-specific credential. If you do not specify this value, then the operation assumes the user whose credentials are used to call the operation.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the service-specific credential.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status to be assigned to the service-specific credential.' }),
-    ),
+    UserName: UserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM user associated with the service-specific credential. If you do not specify this value, then the operation assumes the user whose credentials are used to call the operation.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    ServiceSpecificCredentialId: ServiceSpecificCredentialIdSchema.openapi({
+      description:
+        '<p>The unique identifier of the service-specific credential.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
+    Status: StatusTypeSchema.openapi({
+      description: 'The status to be assigned to the service-specific credential.',
+    }),
   })
   .openapi({
     required: ['ServiceSpecificCredentialId', 'Status'],
@@ -9029,82 +6318,50 @@ const UpdateServiceSpecificCredentialRequestSchema = z
 
 const UpdateSigningCertificateRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user the signing certificate belongs to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    CertificateId: CertificateIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the signing certificate you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
-        }),
-    ),
-    Status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status you want to assign to the certificate. <code>Active</code> means that the certificate can be used for programmatic calls to Amazon Web Services <code>Inactive</code> means that the certificate cannot be used.',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM user the signing certificate belongs to.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    CertificateId: CertificateIdTypeSchema.openapi({
+      description:
+        '<p>The ID of the signing certificate you want to update.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters that can consist of any upper or lowercased letter or digit.</p>',
+    }),
+    Status: StatusTypeSchema.openapi({
+      description:
+        ' The status you want to assign to the certificate. <code>Active</code> means that the certificate can be used for programmatic calls to Amazon Web Services <code>Inactive</code> means that the certificate cannot be used.',
+    }),
   })
   .openapi({ required: ['CertificateId', 'Status'], title: 'UpdateSigningCertificateRequest' })
   .openapi('UpdateSigningCertificateRequest')
 
 const UpdateUserRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Name of the user to update. If you\'re changing the name of the user, this is the original user name.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    NewPath: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>New path for the IAM user. Include this parameter only if you\'re changing the user\'s path.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
-        }),
-    ).exactOptional(),
-    NewUserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>New name for the user. Include this parameter only if you\'re changing the user\'s name.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
-        }),
-    ).exactOptional(),
+    UserName: ExistingUserNameTypeSchema.openapi({
+      description:
+        '<p>Name of the user to update. If you\'re changing the name of the user, this is the original user name.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    NewPath: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>New path for the IAM user. Include this parameter only if you\'re changing the user\'s path.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p>',
+    }),
+    NewUserName: UserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>New name for the user. Include this parameter only if you\'re changing the user\'s name.</p> <p>IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".</p>',
+    }),
   })
   .openapi({ required: ['UserName'], title: 'UpdateUserRequest' })
   .openapi('UpdateUserRequest')
 
 const UploadSSHPublicKeyRequestSchema = z
   .object({
-    UserName: UserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM user to associate the SSH public key with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    SSHPublicKeyBody: PublicKeyMaterialTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The SSH public key. The public key must be encoded in ssh-rsa format or PEM format. The minimum bit-length of the public key is 2048 bits. For example, you can generate a 2048-bit key, and the resulting PEM file is 1679 bytes long.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
+    UserName: UserNameTypeSchema.openapi({
+      description:
+        '<p>The name of the IAM user to associate the SSH public key with.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    SSHPublicKeyBody: PublicKeyMaterialTypeSchema.openapi({
+      description:
+        '<p>The SSH public key. The public key must be encoded in ssh-rsa format or PEM format. The minimum bit-length of the public key is 2048 bits. For example, you can generate a 2048-bit key, and the resulting PEM file is 1679 bytes long.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['UserName', 'SSHPublicKeyBody'], title: 'UploadSSHPublicKeyRequest' })
   .openapi('UploadSSHPublicKeyRequest')
@@ -9118,54 +6375,30 @@ const PrivateKeyTypeSchema = z
 
 const UploadServerCertificateRequestSchema = z
   .object({
-    Path: PathTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path for the server certificate. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/). This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p> <note> <p> If you are uploading a server certificate specifically for use with Amazon CloudFront distributions, you must specify a path using the <code>path</code> parameter. The path must begin with <code>/cloudfront</code> and must include a trailing slash (for example, <code>/cloudfront/test/</code>).</p> </note>',
-        }),
-    ).exactOptional(),
-    ServerCertificateName: ServerCertificateNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the server certificate. Do not include the path in this value. The name of the certificate cannot contain any spaces.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ),
-    CertificateBody: CertificateBodyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contents of the public key certificate in PEM-encoded format.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
-    PrivateKey: PrivateKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contents of the private key in PEM-encoded format.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
-    CertificateChain: CertificateChainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contents of the certificate chain. This is typically a concatenation of the PEM-encoded public key certificates of the chain.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the new IAM server certificate resource. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    Path: PathTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The path for the server certificate. For more information about paths, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM identifiers</a> in the <i>IAM User Guide</i>.</p> <p>This parameter is optional. If it is not included, it defaults to a slash (/). This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (<code>\\u0021</code>) through the DEL character (<code>\\u007F</code>), including most punctuation characters, digits, and upper and lowercased letters.</p> <note> <p> If you are uploading a server certificate specifically for use with Amazon CloudFront distributions, you must specify a path using the <code>path</code> parameter. The path must begin with <code>/cloudfront</code> and must include a trailing slash (for example, <code>/cloudfront/test/</code>).</p> </note>',
+    }),
+    ServerCertificateName: ServerCertificateNameTypeSchema.openapi({
+      description:
+        '<p>The name for the server certificate. Do not include the path in this value. The name of the certificate cannot contain any spaces.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    CertificateBody: CertificateBodyTypeSchema.openapi({
+      description:
+        '<p>The contents of the public key certificate in PEM-encoded format.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    PrivateKey: PrivateKeyTypeSchema.openapi({
+      description:
+        '<p>The contents of the private key in PEM-encoded format.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    CertificateChain: CertificateChainTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The contents of the certificate chain. This is typically a concatenation of the PEM-encoded public key certificates of the chain.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
+    Tags: TagListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the new IAM server certificate resource. Each tag consists of a key name and an associated value. For more information about tagging, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ServerCertificateName', 'CertificateBody', 'PrivateKey'],
@@ -9175,22 +6408,14 @@ const UploadServerCertificateRequestSchema = z
 
 const UploadSigningCertificateRequestSchema = z
   .object({
-    UserName: ExistingUserNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the user the signing certificate is for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
-        }),
-    ).exactOptional(),
-    CertificateBody: CertificateBodyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contents of the signing certificate.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
-        }),
-    ),
+    UserName: ExistingUserNameTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the user the signing certificate is for.</p> <p>This parameter allows (through its <a href="http://wikipedia.org/wiki/regex">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>',
+    }),
+    CertificateBody: CertificateBodyTypeSchema.openapi({
+      description:
+        '<p>The contents of the signing certificate.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> used to validate this parameter is a string of characters consisting of the following:</p> <ul> <li> <p>Any printable ASCII character ranging from the space character (<code>\\u0020</code>) through the end of the ASCII character range</p> </li> <li> <p>The printable characters in the Basic Latin and Latin-1 Supplement character set (through <code>\\u00FF</code>)</p> </li> <li> <p>The special characters tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>)</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['CertificateBody'], title: 'UploadSigningCertificateRequest' })
   .openapi('UploadSigningCertificateRequest')

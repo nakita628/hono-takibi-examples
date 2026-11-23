@@ -31,11 +31,42 @@ const OptionalLinkSchema = z
   })
   .openapi('OptionalLink')
 
-const LinkSchema = OptionalLinkSchema.openapi({
-  description: 'A link to a related resource',
-  required: ['href'],
-  title: 'link',
-}).openapi('Link')
+const LinkSchema = (() => {
+  const Schema = (() => {
+    const Schema = OptionalLinkSchema.and(z.looseObject({}).openapi({ required: ['href'] }))
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (!['href', 'type'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'href')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({ description: 'A link to a related resource', required: ['href'], title: 'link' })
+  .openapi('Link')
 
 const PaginationLinkSchema = z
   .strictObject({
@@ -125,10 +156,25 @@ const MonetaryValueSchema = z
   })
   .openapi('MonetaryValue')
 
-const AddFundsToCarrierRequestBodySchema = MonetaryValueSchema.openapi({
-  description: 'An add funds to carrier request body',
-  title: 'add_funds_to_carrier_request_body',
-}).openapi('AddFundsToCarrierRequestBody')
+const AddFundsToCarrierRequestBodySchema = (() => {
+  const Schema = MonetaryValueSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'An add funds to carrier request body',
+    title: 'add_funds_to_carrier_request_body',
+  })
+  .openapi('AddFundsToCarrierRequestBody')
 
 const AddFundsToCarrierResponseBodySchema = z
   .strictObject({
@@ -144,15 +190,45 @@ const AddFundsToCarrierResponseBodySchema = z
   })
   .openapi('AddFundsToCarrierResponseBody')
 
-const AddFundsToInsuranceRequestBodySchema = MonetaryValueSchema.openapi({
-  description: 'An add funds to insurance request body',
-  title: 'add_funds_to_insurance_request_body',
-}).openapi('AddFundsToInsuranceRequestBody')
+const AddFundsToInsuranceRequestBodySchema = (() => {
+  const Schema = MonetaryValueSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'An add funds to insurance request body',
+    title: 'add_funds_to_insurance_request_body',
+  })
+  .openapi('AddFundsToInsuranceRequestBody')
 
-const AddFundsToInsuranceResponseBodySchema = MonetaryValueSchema.openapi({
-  description: 'Add funds to insurance response body',
-  title: 'add_funds_to_insurance_response_body',
-}).openapi('AddFundsToInsuranceResponseBody')
+const AddFundsToInsuranceResponseBodySchema = (() => {
+  const Schema = MonetaryValueSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'Add funds to insurance response body',
+    title: 'add_funds_to_insurance_response_body',
+  })
+  .openapi('AddFundsToInsuranceResponseBody')
 
 const SeIdSchema = z
   .string()
@@ -181,10 +257,22 @@ const ModifyBatchSchema = z
   .openapi({ description: 'A modify batch object', title: 'modify_batch', required: [] })
   .openapi('ModifyBatch')
 
-const AddToBatchRequestBodySchema = ModifyBatchSchema.openapi({
-  description: 'An add to batch request body',
-  title: 'add_to_batch_request_body',
-}).openapi('AddToBatchRequestBody')
+const AddToBatchRequestBodySchema = (() => {
+  const Schema = ModifyBatchSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({ description: 'An add to batch request body', title: 'add_to_batch_request_body' })
+  .openapi('AddToBatchRequestBody')
 
 const AddressResidentialIndicatorSchema = z
   .enum(['unknown', 'yes', 'no'])
@@ -305,27 +393,178 @@ const PartialAddressSchema = z
   })
   .openapi('PartialAddress')
 
-const AddressSchema = PartialAddressSchema.openapi({
-  description:
-    'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
-  required: [
-    'name',
-    'phone',
-    'address_line1',
-    'city_locality',
-    'state_province',
-    'postal_code',
-    'country_code',
-    'address_residential_indicator',
-  ],
-  title: 'address',
-}).openapi('Address')
+const AddressSchema = (() => {
+  const Schema = (() => {
+    const Schema = PartialAddressSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'name',
+            'phone',
+            'address_line1',
+            'city_locality',
+            'state_province',
+            'postal_code',
+            'country_code',
+            'address_residential_indicator',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'address_line1',
+              'address_line2',
+              'address_line3',
+              'address_residential_indicator',
+              'city_locality',
+              'company_name',
+              'country_code',
+              'email',
+              'name',
+              'phone',
+              'postal_code',
+              'state_province',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'phone')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'address_line1')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'city_locality')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'state_province')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'postal_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'country_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'address_residential_indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description:
+      'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
+    required: [
+      'name',
+      'phone',
+      'address_line1',
+      'city_locality',
+      'state_province',
+      'postal_code',
+      'country_code',
+      'address_residential_indicator',
+    ],
+    title: 'address',
+  })
+  .openapi('Address')
 
-const AddressToValidateSchema = PartialAddressSchema.openapi({
-  description: 'Any residential or business mailing address, anywhere in the world.\n',
-  required: ['address_line1', 'city_locality', 'state_province', 'country_code'],
-  title: 'address_to_validate',
-}).openapi('AddressToValidate')
+const AddressToValidateSchema = (() => {
+  const Schema = (() => {
+    const Schema = PartialAddressSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: ['address_line1', 'city_locality', 'state_province', 'country_code'],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'address_line1',
+              'address_line2',
+              'address_line3',
+              'address_residential_indicator',
+              'city_locality',
+              'company_name',
+              'country_code',
+              'email',
+              'name',
+              'phone',
+              'postal_code',
+              'state_province',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'address_line1')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'city_locality')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'state_province')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'country_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'Any residential or business mailing address, anywhere in the world.\n',
+    required: ['address_line1', 'city_locality', 'state_province', 'country_code'],
+    title: 'address_to_validate',
+  })
+  .openapi('AddressToValidate')
 
 const ValidateAddressSchema = z
   .enum(['no_validation', 'validate_only', 'validate_and_clean'])
@@ -906,7 +1145,84 @@ const PartialShippingAddressSchema = z
   })
   .openapi('PartialShippingAddress')
 
-const ShippingAddressSchema = AddressSchema.and(PartialShippingAddressSchema)
+const ShippingAddressSchema = (() => {
+  const Schema = (() => {
+    const Member0 = AddressSchema
+    const Schema = Member0.and(PartialShippingAddressSchema)
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      const reported = ctx.issues.length
+      try {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          {
+            const result = Member0.safeParse(o)
+            if (
+              !result.success &&
+              result.error.issues.every(
+                (issue) => issue.code === 'unrecognized_keys' && issue.path.length === 0,
+              )
+            ) {
+              for (const issue of result.error.issues) {
+                if (issue.code === 'unrecognized_keys') {
+                  for (const k of issue.keys) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o, message: issue.message })
+                  }
+                }
+              }
+            }
+          }
+          for (const k of Object.keys(o)) {
+            if (!['instructions'].includes(k)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+          }
+        })(ctx)
+      } catch (error) {
+        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+        ctx.issues.length = reported
+        return (async (ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          {
+            const result = await Member0.safeParseAsync(o)
+            if (
+              !result.success &&
+              result.error.issues.every(
+                (issue) => issue.code === 'unrecognized_keys' && issue.path.length === 0,
+              )
+            ) {
+              for (const issue of result.error.issues) {
+                if (issue.code === 'unrecognized_keys') {
+                  for (const k of issue.keys) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o, message: issue.message })
+                  }
+                }
+              }
+            }
+          }
+          for (const k of Object.keys(o)) {
+            if (!['instructions'].includes(k)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+          }
+        })(ctx).then(() => val)
+      }
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ title: 'shipping_address' })
   .openapi('ShippingAddress')
 
@@ -1120,7 +1436,88 @@ const PartialShipmentSchema = z
   })
   .openapi('PartialShipment')
 
-const AddressValidatingShipmentSchema = ValidateShipmentFieldsSchema.and(PartialShipmentSchema)
+const AddressValidatingShipmentSchema = (() => {
+  const Schema = (() => {
+    const Schema = ValidateShipmentFieldsSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: ['shipment_id', 'carrier_id', 'service_code', 'ship_to', 'ship_from'],
+        }),
+    )
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'shipment_id')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'carrier_id')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'service_code')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'ship_to')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'ship_from')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(PartialShipmentSchema)
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'advanced_options',
+              'carrier_id',
+              'confirmation',
+              'created_at',
+              'customs',
+              'external_order_id',
+              'external_shipment_id',
+              'insurance_provider',
+              'items',
+              'modified_at',
+              'order_source_code',
+              'origin_type',
+              'packages',
+              'return_to',
+              'service_code',
+              'ship_date',
+              'ship_from',
+              'ship_to',
+              'shipment_id',
+              'shipment_number',
+              'shipment_status',
+              'tags',
+              'tax_identifiers',
+              'total_weight',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'An address validating shipment',
     required: ['shipment_id', 'carrier_id', 'service_code', 'ship_to', 'ship_from'],
@@ -1665,11 +2062,1830 @@ const RateRequestOptionsSchema = z
   .openapi({ title: 'rate_request_options', required: [] })
   .openapi('RateRequestOptions')
 
-const CalculateRatesRequestBodySchema = RateRequestOptionsSchema.openapi({
-  description: 'A rate shipment request body',
-  required: ['shipment_id', 'shipment'],
-  title: 'calculate_rates_request_body',
-}).openapi('CalculateRatesRequestBody')
+const ShipmentIdRequestSchema = z
+  .object({
+    shipment_id: SeIdSchema.exactOptional().openapi({
+      description: 'A string that uniquely identifies the shipment',
+    }),
+  })
+  .openapi({ title: 'shipment_id_request', required: [] })
+  .openapi('ShipmentIdRequest')
+
+const ShipmentRequestSchema = z
+  .object({
+    shipment: AddressValidatingShipmentSchema.exactOptional().openapi({
+      description: 'The shipment object',
+    }),
+  })
+  .openapi({ title: 'shipment_request', required: [] })
+  .openapi('ShipmentRequest')
+
+const CalculateRatesRequestBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = RateRequestOptionsSchema.and(
+      z.looseObject({}).openapi({ required: ['shipment_id', 'shipment'] }),
+    ).superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'shipment_id')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'shipment')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      const reported = ctx.issues.length
+      try {
+        ;((ctx) => {
+          const val = ctx.value
+          if (
+            (ShipmentIdRequestSchema.safeParse(val).success ? 1 : 0) +
+              (ShipmentRequestSchema.safeParse(val).success ? 1 : 0) !==
+            1
+          ) {
+            ctx.issues.push({ code: 'custom', input: val })
+          }
+        })(ctx)
+      } catch (error) {
+        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+        ctx.issues.length = reported
+        return (async (ctx) => {
+          const val = ctx.value
+          if (
+            ((await ShipmentIdRequestSchema.safeParseAsync(val)).success ? 1 : 0) +
+              ((await ShipmentRequestSchema.safeParseAsync(val)).success ? 1 : 0) !==
+            1
+          ) {
+            ctx.issues.push({ code: 'custom', input: val })
+          }
+        })(ctx).then(() => val)
+      }
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({
+    oneOf: [
+      {
+        properties: {
+          shipment_id: {
+            allOf: [
+              {
+                description:
+                  'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                example: 'se-28529731',
+                maxLength: 25,
+                minLength: 1,
+                pattern: '^se(-[a-z0-9]+)+$',
+                title: 'se_id',
+                type: 'string',
+              },
+            ],
+            description: 'A string that uniquely identifies the shipment',
+          },
+        },
+        title: 'shipment_id_request',
+        type: 'object',
+      },
+      {
+        properties: {
+          shipment: {
+            allOf: [
+              {
+                additionalProperties: false,
+                allOf: [
+                  {
+                    properties: {
+                      validate_address: {
+                        allOf: [
+                          {
+                            description: 'The possible validate address values',
+                            enum: ['no_validation', 'validate_only', 'validate_and_clean'],
+                            title: 'validate_address',
+                            type: 'string',
+                          },
+                        ],
+                        default: 'no_validation',
+                      },
+                    },
+                    title: 'validate_shipment_fields',
+                    type: 'object',
+                  },
+                  {
+                    additionalProperties: false,
+                    description:
+                      'The information necessary to ship a package, such as the origin, the destination, the carrier service, and the package dimensions and weight.\n',
+                    properties: {
+                      advanced_options: {
+                        allOf: [
+                          {
+                            additionalProperties: false,
+                            description: 'Advanced shipment options',
+                            properties: {
+                              bill_to_account: {
+                                default: null,
+                                description:
+                                  'This field is used to [bill shipping costs to a third party](https://www.shipengine.com/docs/shipping/bill-to-third-party/).  This field must be used in conjunction with the `bill_to_country_code`, `bill_to_party`, and `bill_to_postal_code` fields.\n',
+                                nullable: true,
+                                type: 'string',
+                              },
+                              bill_to_country_code: {
+                                allOf: [
+                                  {
+                                    description:
+                                      'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                    example: 'CA',
+                                    maxLength: 2,
+                                    minLength: 2,
+                                    title: 'country_code',
+                                    type: 'string',
+                                  },
+                                ],
+                                default: null,
+                                description:
+                                  'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the third-party that is responsible for shipping costs.\n',
+                                nullable: true,
+                              },
+                              bill_to_party: {
+                                allOf: [
+                                  {
+                                    description: 'The possible bill to party values',
+                                    enum: ['recipient', 'third_party'],
+                                    title: 'bill_to_party',
+                                    type: 'string',
+                                  },
+                                ],
+                                default: null,
+                                description:
+                                  'Indicates whether to bill shipping costs to the recipient or to a third-party.  When billing to a third-party, the `bill_to_account`, `bill_to_country_code`, and `bill_to_postal_code` fields must also be set.\n',
+                                nullable: true,
+                              },
+                              bill_to_postal_code: {
+                                default: null,
+                                description:
+                                  'The postal code of the third-party that is responsible for shipping costs.\n',
+                                nullable: true,
+                                type: 'string',
+                              },
+                              collect_on_delivery: {
+                                description:
+                                  'Defer payment until package is delivered, instead of when it is ordered.',
+                                properties: {
+                                  payment_amount: {
+                                    properties: {
+                                      amount: { format: 'double', minimum: 0, type: 'number' },
+                                      currency: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'The currencies that are supported by ShipEngine are the ones that specified by ISO 4217: https://www.iso.org/iso-4217-currency-codes.html\n',
+                                            title: 'currency',
+                                            type: 'string',
+                                          },
+                                        ],
+                                      },
+                                    },
+                                    title: 'payment_amount',
+                                    type: 'object',
+                                  },
+                                  payment_type: {
+                                    allOf: [
+                                      {
+                                        description: 'Types of payment that are supported',
+                                        enum: ['any', 'cash', 'cash_equivalent', 'none'],
+                                        title: 'collect_on_delivery_payment_type',
+                                        type: 'string',
+                                      },
+                                    ],
+                                  },
+                                },
+                                title: 'collect_on_delivery',
+                                type: 'object',
+                              },
+                              contains_alcohol: {
+                                default: false,
+                                description: 'Indicates that the shipment contains alcohol.',
+                                type: 'boolean',
+                              },
+                              custom_field1: {
+                                default: null,
+                                description:
+                                  'An arbitrary field that can be used to store information about the shipment.\n',
+                                maxLength: 100,
+                                nullable: true,
+                                type: 'string',
+                              },
+                              custom_field2: {
+                                default: null,
+                                description:
+                                  'An arbitrary field that can be used to store information about the shipment.\n',
+                                maxLength: 100,
+                                nullable: true,
+                                type: 'string',
+                              },
+                              custom_field3: {
+                                default: null,
+                                description:
+                                  'An arbitrary field that can be used to store information about the shipment.\n',
+                                maxLength: 100,
+                                nullable: true,
+                                type: 'string',
+                              },
+                              delivered_duty_paid: {
+                                default: false,
+                                description:
+                                  'Indicates that the shipper is paying the international delivery duties for this shipment.  This option is supported by UPS, FedEx, and DHL Express.\n',
+                                type: 'boolean',
+                              },
+                              dry_ice: {
+                                default: false,
+                                description: 'Indicates if the shipment contain dry ice',
+                                type: 'boolean',
+                              },
+                              dry_ice_weight: {
+                                allOf: [
+                                  {
+                                    additionalProperties: false,
+                                    description: 'The weight of a package',
+                                    properties: {
+                                      unit: {
+                                        allOf: [
+                                          {
+                                            description: 'The possible weight unit values',
+                                            enum: ['pound', 'ounce', 'gram', 'kilogram'],
+                                            title: 'weight_unit',
+                                            type: 'string',
+                                          },
+                                        ],
+                                      },
+                                      value: {
+                                        description: 'The weight, in the specified unit',
+                                        exclusiveMinimum: true,
+                                        format: 'double',
+                                        minimum: 0,
+                                        type: 'number',
+                                      },
+                                    },
+                                    required: ['value', 'unit'],
+                                    title: 'weight',
+                                    type: 'object',
+                                  },
+                                ],
+                                description: 'The weight of the dry ice in the shipment',
+                                nullable: true,
+                              },
+                              fedex_freight: {
+                                description: 'Provide details for the Fedex freight service',
+                                properties: {
+                                  booking_confirmation: { type: 'string' },
+                                  shipper_load_and_count: { type: 'string' },
+                                },
+                                type: 'object',
+                              },
+                              freight_class: {
+                                default: null,
+                                description:
+                                  'The National Motor Freight Traffic Association [freight class](http://www.nmfta.org/pages/nmfc?AspxAutoDetectCookieSupport=1), such as "77.5", "110", or "250".\n',
+                                example: 77.5,
+                                nullable: true,
+                                type: 'string',
+                              },
+                              non_machinable: {
+                                default: false,
+                                description:
+                                  'Indicates that the package cannot be processed automatically because it is too large or irregularly shaped. This is primarily for USPS shipments.  See [Section 1.2 of the USPS parcel standards](https://pe.usps.com/text/dmm300/101.htm#ep1047495) for details.\n',
+                                type: 'boolean',
+                              },
+                              origin_type: {
+                                allOf: [
+                                  {
+                                    description:
+                                      'Indicates if the package will be picked up or dropped off by the carrier',
+                                    enum: ['pickup', 'drop_off'],
+                                    title: 'origin_type',
+                                    type: 'string',
+                                  },
+                                ],
+                                default: null,
+                                nullable: true,
+                              },
+                              saturday_delivery: {
+                                default: false,
+                                description:
+                                  'Enables Saturday delivery, if supported by the carrier.',
+                                type: 'boolean',
+                              },
+                              shipper_release: { default: null, nullable: true, type: 'boolean' },
+                              third_party_consignee: {
+                                default: false,
+                                description:
+                                  'Third Party Consignee option is a value-added service that allows the shipper to supply goods without commercial invoices being attached',
+                                type: 'boolean',
+                              },
+                              use_ups_ground_freight_pricing: {
+                                default: null,
+                                description:
+                                  'Whether to use [UPS Ground Freight pricing](https://www.shipengine.com/docs/shipping/ups-ground-freight/).  If enabled, then a `freight_class` must also be specified.\n',
+                                nullable: true,
+                                type: 'boolean',
+                              },
+                            },
+                            title: 'advanced_shipment_options',
+                            type: 'object',
+                          },
+                        ],
+                        description: 'Advanced shipment options.  These are entirely optional.',
+                      },
+                      carrier_id: {
+                        allOf: [
+                          {
+                            description:
+                              'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                            example: 'se-28529731',
+                            maxLength: 25,
+                            minLength: 1,
+                            pattern: '^se(-[a-z0-9]+)+$',
+                            title: 'se_id',
+                            type: 'string',
+                          },
+                        ],
+                        description: 'The carrier account that is billed for the shipping charges',
+                      },
+                      confirmation: {
+                        allOf: [
+                          {
+                            description: 'The possible delivery confirmation values',
+                            enum: [
+                              'none',
+                              'delivery',
+                              'signature',
+                              'adult_signature',
+                              'direct_signature',
+                              'delivery_mailed',
+                              'verbal_confirmation',
+                            ],
+                            title: 'delivery_confirmation',
+                            type: 'string',
+                          },
+                        ],
+                        default: 'none',
+                        description:
+                          'The type of delivery confirmation that is required for this shipment.',
+                      },
+                      created_at: {
+                        allOf: [
+                          {
+                            description:
+                              'An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string that represents a date and time.\n',
+                            example: '2018-09-23T15:00:00.000Z',
+                            format: 'date-time',
+                            pattern:
+                              '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[-+]\\d{2}:\\d{2})$',
+                            title: 'date_time',
+                            type: 'string',
+                          },
+                        ],
+                        description:
+                          'The date and time that the shipment was created in ShipEngine.',
+                        readOnly: true,
+                      },
+                      customs: {
+                        allOf: [
+                          {
+                            additionalProperties: false,
+                            description:
+                              'Options for international shipments, such as customs declarations.',
+                            properties: {
+                              contents: {
+                                allOf: [
+                                  {
+                                    description: 'The possible package contents values',
+                                    enum: [
+                                      'merchandise',
+                                      'documents',
+                                      'gift',
+                                      'returned_goods',
+                                      'sample',
+                                    ],
+                                    title: 'package_contents',
+                                    type: 'string',
+                                  },
+                                ],
+                                default: 'merchandise',
+                                description:
+                                  'The type of contents in this shipment.  This may impact import duties or customs treatment.',
+                              },
+                              customs_items: {
+                                default: [],
+                                description: 'Customs declarations for each item in the shipment.',
+                                items: {
+                                  additionalProperties: false,
+                                  description:
+                                    'The customs declaration for a single item in the shipment.',
+                                  properties: {
+                                    country_of_origin: {
+                                      allOf: [
+                                        {
+                                          description:
+                                            'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                          example: 'CA',
+                                          maxLength: 2,
+                                          minLength: 2,
+                                          title: 'country_code',
+                                          type: 'string',
+                                        },
+                                      ],
+                                      default: null,
+                                      description:
+                                        'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1) where this item originated\n',
+                                      nullable: true,
+                                    },
+                                    customs_item_id: {
+                                      allOf: [
+                                        {
+                                          description:
+                                            'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                                          example: 'se-28529731',
+                                          maxLength: 25,
+                                          minLength: 1,
+                                          pattern: '^se(-[a-z0-9]+)+$',
+                                          title: 'se_id',
+                                          type: 'string',
+                                        },
+                                      ],
+                                      description:
+                                        'A string that uniquely identifies the customs item',
+                                      readOnly: true,
+                                    },
+                                    description: {
+                                      default: null,
+                                      description: 'A description of the item',
+                                      maxLength: 100,
+                                      nullable: true,
+                                      type: 'string',
+                                    },
+                                    harmonized_tariff_code: {
+                                      default: null,
+                                      description:
+                                        'The [Harmonized Tariff Code](https://en.wikipedia.org/wiki/Harmonized_System) of this item.',
+                                      example: 3926.1,
+                                      nullable: true,
+                                      type: 'string',
+                                    },
+                                    quantity: {
+                                      default: 0,
+                                      description: 'The quantity of this item in the shipment.',
+                                      format: 'int32',
+                                      minimum: 0,
+                                      type: 'integer',
+                                    },
+                                    sku: {
+                                      description:
+                                        'The SKU (Stock Keeping Unit) of the customs item',
+                                      nullable: true,
+                                      type: 'string',
+                                    },
+                                    sku_description: {
+                                      description: "Description of the Custom Item's SKU",
+                                      nullable: true,
+                                      type: 'string',
+                                    },
+                                    unit_of_measure: { nullable: true, type: 'string' },
+                                    value: {
+                                      allOf: [
+                                        {
+                                          additionalProperties: false,
+                                          description:
+                                            'A monetary value, such as the price of a shipping label, the insured value of a package, or an account balance.\n',
+                                          properties: {
+                                            amount: {
+                                              description:
+                                                'The monetary amount, in the specified currency.',
+                                              format: 'double',
+                                              minimum: 0,
+                                              type: 'number',
+                                            },
+                                            currency: {
+                                              allOf: [
+                                                {
+                                                  description:
+                                                    'The currencies that are supported by ShipEngine are the ones that specified by ISO 4217: https://www.iso.org/iso-4217-currency-codes.html\n',
+                                                  title: 'currency',
+                                                  type: 'string',
+                                                },
+                                              ],
+                                            },
+                                          },
+                                          required: ['currency', 'amount'],
+                                          title: 'monetary_value',
+                                          type: 'object',
+                                        },
+                                      ],
+                                      description: 'The declared customs value of each item',
+                                    },
+                                    weight: {
+                                      allOf: [
+                                        {
+                                          additionalProperties: false,
+                                          description: 'The weight of a package',
+                                          properties: {
+                                            unit: {
+                                              allOf: [
+                                                {
+                                                  description: 'The possible weight unit values',
+                                                  enum: ['pound', 'ounce', 'gram', 'kilogram'],
+                                                  title: 'weight_unit',
+                                                  type: 'string',
+                                                },
+                                              ],
+                                            },
+                                            value: {
+                                              description: 'The weight, in the specified unit',
+                                              exclusiveMinimum: true,
+                                              format: 'double',
+                                              minimum: 0,
+                                              type: 'number',
+                                            },
+                                          },
+                                          required: ['value', 'unit'],
+                                          title: 'weight',
+                                          type: 'object',
+                                        },
+                                      ],
+                                      description: 'The item weight',
+                                    },
+                                  },
+                                  required: ['customs_item_id'],
+                                  title: 'customs_item',
+                                  type: 'object',
+                                },
+                                minItems: 0,
+                                type: 'array',
+                              },
+                              non_delivery: {
+                                allOf: [
+                                  {
+                                    description: 'The possible non delivery values',
+                                    enum: ['return_to_sender', 'treat_as_abandoned'],
+                                    title: 'non_delivery',
+                                    type: 'string',
+                                  },
+                                ],
+                                default: 'return_to_sender',
+                                description:
+                                  'Indicates what to do if a package is unable to be delivered.',
+                              },
+                            },
+                            required: ['contents', 'non_delivery'],
+                            title: 'international_shipment_options',
+                            type: 'object',
+                          },
+                        ],
+                        default: null,
+                        description:
+                          'Customs information.  This is usually only needed for international shipments.\n',
+                        nullable: true,
+                      },
+                      external_order_id: {
+                        description: 'ID that the Order Source assigned',
+                        nullable: true,
+                        type: 'string',
+                      },
+                      external_shipment_id: {
+                        description:
+                          'A unique user-defined key to identify a shipment.  This can be used to retrieve the shipment.\n\n> **Warning:** The `external_shipment_id` is limited to 50 characters. Any additional characters will be truncated.\n',
+                        maxLength: 50,
+                        nullable: true,
+                        type: 'string',
+                      },
+                      insurance_provider: {
+                        allOf: [
+                          {
+                            description: 'The possible insurance provider values',
+                            enum: ['none', 'shipsurance', 'carrier', 'third_party'],
+                            title: 'insurance_provider',
+                            type: 'string',
+                          },
+                        ],
+                        default: 'none',
+                        description:
+                          'The insurance provider to use for any insured packages in the shipment.\n',
+                      },
+                      items: {
+                        default: [],
+                        description:
+                          'Describe the packages included in this shipment as related to potential metadata that was imported from\nexternal order sources\n',
+                        items: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              description: 'A shipment item',
+                              properties: {
+                                asin: {
+                                  description: 'Amazon Standard Identification Number',
+                                  example: 'B00005N5PF',
+                                  maxLength: 10,
+                                  minLength: 10,
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                external_order_id: {
+                                  description: 'external order id',
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                external_order_item_id: {
+                                  description: 'external order item id',
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                name: { description: 'item name', minLength: 0, type: 'string' },
+                                order_source_code: {
+                                  allOf: [
+                                    {
+                                      description:
+                                        'The order sources that are supported by ShipEngine',
+                                      enum: [
+                                        'amazon_ca',
+                                        'amazon_us',
+                                        'brightpearl',
+                                        'channel_advisor',
+                                        'cratejoy',
+                                        'ebay',
+                                        'etsy',
+                                        'jane',
+                                        'groupon_goods',
+                                        'magento',
+                                        'paypal',
+                                        'seller_active',
+                                        'shopify',
+                                        'stitch_labs',
+                                        'squarespace',
+                                        'three_dcart',
+                                        'tophatter',
+                                        'walmart',
+                                        'woo_commerce',
+                                        'volusion',
+                                      ],
+                                      title: 'order_source_name',
+                                      type: 'string',
+                                    },
+                                  ],
+                                },
+                                quantity: {
+                                  description: 'The quantity of this item included in the shipment',
+                                  format: 'int32',
+                                  minimum: 0,
+                                  type: 'integer',
+                                },
+                                sales_order_id: {
+                                  description: 'sales order id',
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                sales_order_item_id: {
+                                  description: 'sales order item id',
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                sku: {
+                                  description: 'Item Stock Keeping Unit',
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                              },
+                              title: 'shipment_item',
+                              type: 'object',
+                            },
+                          ],
+                        },
+                        type: 'array',
+                      },
+                      modified_at: {
+                        allOf: [
+                          {
+                            description:
+                              'An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string that represents a date and time.\n',
+                            example: '2018-09-23T15:00:00.000Z',
+                            format: 'date-time',
+                            pattern:
+                              '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[-+]\\d{2}:\\d{2})$',
+                            title: 'date_time',
+                            type: 'string',
+                          },
+                        ],
+                        description:
+                          'The date and time that the shipment was created or last modified.',
+                        readOnly: true,
+                      },
+                      order_source_code: {
+                        allOf: [
+                          {
+                            description: 'The order sources that are supported by ShipEngine',
+                            enum: [
+                              'amazon_ca',
+                              'amazon_us',
+                              'brightpearl',
+                              'channel_advisor',
+                              'cratejoy',
+                              'ebay',
+                              'etsy',
+                              'jane',
+                              'groupon_goods',
+                              'magento',
+                              'paypal',
+                              'seller_active',
+                              'shopify',
+                              'stitch_labs',
+                              'squarespace',
+                              'three_dcart',
+                              'tophatter',
+                              'walmart',
+                              'woo_commerce',
+                              'volusion',
+                            ],
+                            title: 'order_source_name',
+                            type: 'string',
+                          },
+                        ],
+                      },
+                      origin_type: {
+                        allOf: [
+                          {
+                            description:
+                              'Indicates if the package will be picked up or dropped off by the carrier',
+                            enum: ['pickup', 'drop_off'],
+                            title: 'origin_type',
+                            type: 'string',
+                          },
+                        ],
+                        description:
+                          'Indicates if the package will be picked up or dropped off by the carrier',
+                        nullable: true,
+                      },
+                      packages: {
+                        description:
+                          "The packages in the shipment.\n\n> **Note:** Some carriers only allow one package per shipment.  If you attempt to create a multi-package shipment for a carrier that doesn't allow it, an error will be returned.\n",
+                        items: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              description:
+                                'A package associated with a [shipping label](https://www.shipengine.com/docs/labels/create-a-label/)\n',
+                              properties: {
+                                content_description: {
+                                  description:
+                                    'A short description of the package content. Required for shipments moving to, from, and through Mexico.\n',
+                                  example: 'Hand knitted wool socks',
+                                  maxLength: 35,
+                                  minLength: 1,
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                dimensions: {
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description: 'The dimensions of a package',
+                                      properties: {
+                                        height: {
+                                          default: 0,
+                                          description:
+                                            'The length of the package, in the specified unit',
+                                          format: 'double',
+                                          minimum: 0,
+                                          type: 'number',
+                                        },
+                                        length: {
+                                          default: 0,
+                                          description:
+                                            'The length of the package, in the specified unit',
+                                          format: 'double',
+                                          minimum: 0,
+                                          type: 'number',
+                                        },
+                                        unit: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'The dimension units that are supported by ShipEngine.',
+                                              enum: ['inch', 'centimeter'],
+                                              title: 'dimension_unit',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          default: 'inch',
+                                        },
+                                        width: {
+                                          default: 0,
+                                          description:
+                                            'The width of the package, in the specified unit',
+                                          format: 'double',
+                                          minimum: 0,
+                                          type: 'number',
+                                        },
+                                      },
+                                      required: ['unit', 'length', 'width', 'height'],
+                                      title: 'dimensions',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  description: 'The package dimensions',
+                                },
+                                external_package_id: {
+                                  description: 'An external package id.',
+                                  minLength: 1,
+                                  type: 'string',
+                                },
+                                form_download: {
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description:
+                                        'A link to a related resource, or an empty object if there is no resource to link to',
+                                      properties: {
+                                        href: {
+                                          allOf: [
+                                            {
+                                              description: 'A URL',
+                                              example:
+                                                'http://api.shipengine.com/v1/labels/se-28529731',
+                                              format: 'url',
+                                              minLength: 1,
+                                              title: 'url',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          description: 'The URL of the linked resource, if any',
+                                        },
+                                        type: {
+                                          description:
+                                            'The type of resource, or the type of relationship to the parent resource',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                      },
+                                      title: 'optional_link',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  description: 'The form download for any customs that are needed',
+                                  readOnly: true,
+                                },
+                                insured_value: {
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description:
+                                        'A monetary value, such as the price of a shipping label, the insured value of a package, or an account balance.\n',
+                                      properties: {
+                                        amount: {
+                                          description:
+                                            'The monetary amount, in the specified currency.',
+                                          format: 'double',
+                                          minimum: 0,
+                                          type: 'number',
+                                        },
+                                        currency: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'The currencies that are supported by ShipEngine are the ones that specified by ISO 4217: https://www.iso.org/iso-4217-currency-codes.html\n',
+                                              title: 'currency',
+                                              type: 'string',
+                                            },
+                                          ],
+                                        },
+                                      },
+                                      required: ['currency', 'amount'],
+                                      title: 'monetary_value',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  default: [{ amount: 0, currency: 'usd' }],
+                                  description:
+                                    'The insured value of the package.  Requires the `insurance_provider` field of the shipment to be set.\n',
+                                },
+                                label_download: {
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description:
+                                        'Reference to the various downloadable file formats for the generated label\n',
+                                      properties: {
+                                        href: {
+                                          allOf: [
+                                            {
+                                              description: 'A URL',
+                                              example:
+                                                'http://api.shipengine.com/v1/labels/se-28529731',
+                                              format: 'url',
+                                              minLength: 1,
+                                              title: 'url',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          description: 'The URL of the linked resource, if any',
+                                        },
+                                        pdf: {
+                                          allOf: [
+                                            {
+                                              description: 'A URL',
+                                              example:
+                                                'http://api.shipengine.com/v1/labels/se-28529731',
+                                              format: 'url',
+                                              minLength: 1,
+                                              title: 'url',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          description: 'The URL for the pdf generated label',
+                                        },
+                                        png: {
+                                          allOf: [
+                                            {
+                                              description: 'A URL',
+                                              example:
+                                                'http://api.shipengine.com/v1/labels/se-28529731',
+                                              format: 'url',
+                                              minLength: 1,
+                                              title: 'url',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          description: 'The URL for the png generated label',
+                                        },
+                                        zpl: {
+                                          allOf: [
+                                            {
+                                              description: 'A URL',
+                                              example:
+                                                'http://api.shipengine.com/v1/labels/se-28529731',
+                                              format: 'url',
+                                              minLength: 1,
+                                              title: 'url',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          description: 'The URL for the zpl generated label',
+                                        },
+                                      },
+                                      title: 'label_download',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  description: 'The label download for the package',
+                                  readOnly: true,
+                                },
+                                label_messages: {
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description:
+                                        'Custom messages to print on the shipping label for the package.  These are typically used to print invoice numbers, product numbers, or other internal reference numbers.  Not all carriers support label messages. The number of lines and the maximum length of each line also varies by carrier.\n\n|Carrier            |Max lines |Max line length\n|-------------------|----------|--------------------\n|USPS (Stamps.com)  |3         |60\n|FedEx              |3         |35 for the first line. 30 for additional lines.\n|UPS                |2         |35\n|OnTrac             |2         |25\n',
+                                      properties: {
+                                        reference1: {
+                                          default: null,
+                                          description:
+                                            'The first line of the custom label message.  Some carriers may prefix this line with something like "REF", "Reference", "Trx Ref No.", etc.\n',
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        reference2: {
+                                          default: null,
+                                          description:
+                                            'The second line of the custom label message.  Some carriers may prefix this line with something like "INV", "Reference 2", "Trx Ref No.", etc.\n',
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        reference3: {
+                                          default: null,
+                                          description:
+                                            'The third line of the custom label message.  Some carriers may prefix this line with something like "PO", "Reference 3", etc.\n',
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                      },
+                                      required: ['reference1', 'reference2', 'reference3'],
+                                      title: 'label_messages',
+                                      type: 'object',
+                                    },
+                                  ],
+                                },
+                                package_code: {
+                                  allOf: [
+                                    {
+                                      description:
+                                        'A [package type](https://www.shipengine.com/docs/reference/list-carrier-packages/), such as `thick_envelope`, `small_flat_rate_box`, `large_package`, etc.  Use the code `package` for custom or unknown package types.\n',
+                                      example: 'small_flat_rate_box',
+                                      pattern: '^[a-z0-9]+(_[a-z0-9]+)*$',
+                                      title: 'package_code',
+                                      type: 'string',
+                                    },
+                                  ],
+                                  description:
+                                    'The [package type](https://www.shipengine.com/docs/reference/list-carrier-packages/), such as `thick_envelope`, `small_flat_rate_box`, `large_package`, etc.  The code `package` indicates a custom or unknown package type.\n',
+                                },
+                                package_id: {
+                                  allOf: [
+                                    {
+                                      description:
+                                        'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                                      example: 'se-28529731',
+                                      maxLength: 25,
+                                      minLength: 1,
+                                      pattern: '^se(-[a-z0-9]+)+$',
+                                      title: 'se_id',
+                                      type: 'string',
+                                    },
+                                  ],
+                                  description:
+                                    'A string that uniquely identifies this [package type](https://www.shipengine.com/docs/reference/list-carrier-packages/)',
+                                },
+                                sequence: {
+                                  description: 'Package sequence',
+                                  format: 'int32',
+                                  readOnly: true,
+                                  type: 'integer',
+                                },
+                                tracking_number: {
+                                  allOf: [
+                                    {
+                                      description:
+                                        'A tracking number for a package. The format depends on the carrier.',
+                                      example: '1Z932R800392060079',
+                                      minLength: 1,
+                                      title: 'tracking_number',
+                                      type: 'string',
+                                    },
+                                  ],
+                                  description:
+                                    'The tracking number for the package.  The format depends on the carrier.\n',
+                                  readOnly: true,
+                                },
+                                weight: {
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description: 'The weight of a package',
+                                      properties: {
+                                        unit: {
+                                          allOf: [
+                                            {
+                                              description: 'The possible weight unit values',
+                                              enum: ['pound', 'ounce', 'gram', 'kilogram'],
+                                              title: 'weight_unit',
+                                              type: 'string',
+                                            },
+                                          ],
+                                        },
+                                        value: {
+                                          description: 'The weight, in the specified unit',
+                                          exclusiveMinimum: true,
+                                          format: 'double',
+                                          minimum: 0,
+                                          type: 'number',
+                                        },
+                                      },
+                                      required: ['value', 'unit'],
+                                      title: 'weight',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  description: 'The package weight',
+                                },
+                              },
+                              required: ['weight'],
+                              title: 'package',
+                              type: 'object',
+                            },
+                          ],
+                        },
+                        minItems: 1,
+                        type: 'array',
+                      },
+                      return_to: {
+                        allOf: [
+                          {
+                            additionalProperties: false,
+                            allOf: [
+                              {
+                                additionalProperties: false,
+                                allOf: [
+                                  {
+                                    additionalProperties: false,
+                                    description: 'A complete or partial mailing address.',
+                                    properties: {
+                                      address_line1: {
+                                        description:
+                                          'The first line of the street address.  For some addresses, this may be the only line.  Other addresses may require 2 or 3 lines.\n',
+                                        example: '1999 Bishop Grandin Blvd.',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      address_line2: {
+                                        description:
+                                          'The second line of the street address.  For some addresses, this line may not be needed.\n',
+                                        example: 'Unit 408',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      address_line3: {
+                                        description:
+                                          'The third line of the street address.  For some addresses, this line may not be needed.\n',
+                                        example: 'Building #7',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      address_residential_indicator: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'Indicates whether an address is residential.',
+                                            enum: ['unknown', 'yes', 'no'],
+                                            title: 'address_residential_indicator',
+                                            type: 'string',
+                                          },
+                                        ],
+                                        default: 'unknown',
+                                        description:
+                                          'Indicates whether this is a residential address.',
+                                        example: 'no',
+                                      },
+                                      city_locality: {
+                                        description: 'The name of the city or locality',
+                                        example: 'Winnipeg',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      company_name: {
+                                        description:
+                                          'If this is a business address, then the company name should be specified here.\n',
+                                        example: 'The Home Depot',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      country_code: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                            example: 'CA',
+                                            maxLength: 2,
+                                            minLength: 2,
+                                            title: 'country_code',
+                                            type: 'string',
+                                          },
+                                        ],
+                                        description:
+                                          'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                      },
+                                      email: {
+                                        description: 'Email for the address owner.\n',
+                                        example: 'example@example.com',
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      name: {
+                                        description:
+                                          'The name of a contact person at this address.  This field may be set instead of - or in addition to - the `company_name` field.\n',
+                                        example: 'John Doe',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      phone: {
+                                        description:
+                                          'The phone number of a contact person at this address.  The format of this phone number varies depending on the country.\n',
+                                        example: '+1 204-253-9411 ext. 123',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      postal_code: {
+                                        allOf: [
+                                          {
+                                            description: 'postal code',
+                                            example: '78756-3717',
+                                            minLength: 1,
+                                            title: 'postal_code',
+                                            type: 'string',
+                                          },
+                                        ],
+                                      },
+                                      state_province: {
+                                        description:
+                                          'The state or province.  For some countries (including the U.S.) only abbreviations are allowed.  Other countries allow the full name or abbreviation.\n',
+                                        example: 'Manitoba',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                    },
+                                    title: 'partial_address',
+                                    type: 'object',
+                                  },
+                                ],
+                                description:
+                                  'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
+                                required: [
+                                  'name',
+                                  'phone',
+                                  'address_line1',
+                                  'city_locality',
+                                  'state_province',
+                                  'postal_code',
+                                  'country_code',
+                                  'address_residential_indicator',
+                                ],
+                                title: 'address',
+                                type: 'object',
+                              },
+                              {
+                                additionalProperties: false,
+                                description: 'A complete or partial mailing address.',
+                                properties: {
+                                  instructions: {
+                                    description:
+                                      'Additional text about how to handle the shipment at this address.\n',
+                                    minLength: 1,
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                },
+                                title: 'partial_shipping_address',
+                                type: 'object',
+                              },
+                            ],
+                            title: 'shipping_address',
+                            type: 'object',
+                          },
+                        ],
+                        description:
+                          'The return address for this shipment.  Defaults to the `ship_from` address.\n',
+                      },
+                      service_code: {
+                        allOf: [
+                          {
+                            description:
+                              'A [carrier service](https://www.shipengine.com/docs/shipping/use-a-carrier-service/), such as `fedex_ground`, `usps_first_class_mail`, `flat_rate_envelope`, etc.\n',
+                            example: 'usps_first_class_mail',
+                            pattern: '^[a-z0-9]+(_[a-z0-9-]+)* ?$',
+                            title: 'service_code',
+                            type: 'string',
+                          },
+                        ],
+                        description:
+                          'The [carrier service](https://www.shipengine.com/docs/shipping/use-a-carrier-service/) used to ship the package, such as `fedex_ground`, `usps_first_class_mail`, `flat_rate_envelope`, etc.\n',
+                      },
+                      ship_date: {
+                        allOf: [
+                          {
+                            description:
+                              'An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string that represents a date, but not a specific time.  The value _may_ contain a time component, but it will be set to `00:00:00` UTC by ShipEngine.\n',
+                            example: '2018-09-23T00:00:00.000Z',
+                            format: 'date-time',
+                            pattern:
+                              '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[-+]\\d{2}:\\d{2}))?$',
+                            title: 'date',
+                            type: 'string',
+                          },
+                        ],
+                        description:
+                          'The date that the shipment was (or will be) shippped.  ShipEngine will take the day of week into consideration. For example, if the carrier does not operate on Sundays, then a package that would have shipped on Sunday will ship on Monday instead.\n',
+                      },
+                      ship_from: {
+                        allOf: [
+                          {
+                            additionalProperties: false,
+                            allOf: [
+                              {
+                                additionalProperties: false,
+                                allOf: [
+                                  {
+                                    additionalProperties: false,
+                                    description: 'A complete or partial mailing address.',
+                                    properties: {
+                                      address_line1: {
+                                        description:
+                                          'The first line of the street address.  For some addresses, this may be the only line.  Other addresses may require 2 or 3 lines.\n',
+                                        example: '1999 Bishop Grandin Blvd.',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      address_line2: {
+                                        description:
+                                          'The second line of the street address.  For some addresses, this line may not be needed.\n',
+                                        example: 'Unit 408',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      address_line3: {
+                                        description:
+                                          'The third line of the street address.  For some addresses, this line may not be needed.\n',
+                                        example: 'Building #7',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      address_residential_indicator: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'Indicates whether an address is residential.',
+                                            enum: ['unknown', 'yes', 'no'],
+                                            title: 'address_residential_indicator',
+                                            type: 'string',
+                                          },
+                                        ],
+                                        default: 'unknown',
+                                        description:
+                                          'Indicates whether this is a residential address.',
+                                        example: 'no',
+                                      },
+                                      city_locality: {
+                                        description: 'The name of the city or locality',
+                                        example: 'Winnipeg',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      company_name: {
+                                        description:
+                                          'If this is a business address, then the company name should be specified here.\n',
+                                        example: 'The Home Depot',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      country_code: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                            example: 'CA',
+                                            maxLength: 2,
+                                            minLength: 2,
+                                            title: 'country_code',
+                                            type: 'string',
+                                          },
+                                        ],
+                                        description:
+                                          'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                      },
+                                      email: {
+                                        description: 'Email for the address owner.\n',
+                                        example: 'example@example.com',
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      name: {
+                                        description:
+                                          'The name of a contact person at this address.  This field may be set instead of - or in addition to - the `company_name` field.\n',
+                                        example: 'John Doe',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      phone: {
+                                        description:
+                                          'The phone number of a contact person at this address.  The format of this phone number varies depending on the country.\n',
+                                        example: '+1 204-253-9411 ext. 123',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      postal_code: {
+                                        allOf: [
+                                          {
+                                            description: 'postal code',
+                                            example: '78756-3717',
+                                            minLength: 1,
+                                            title: 'postal_code',
+                                            type: 'string',
+                                          },
+                                        ],
+                                      },
+                                      state_province: {
+                                        description:
+                                          'The state or province.  For some countries (including the U.S.) only abbreviations are allowed.  Other countries allow the full name or abbreviation.\n',
+                                        example: 'Manitoba',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                    },
+                                    title: 'partial_address',
+                                    type: 'object',
+                                  },
+                                ],
+                                description:
+                                  'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
+                                required: [
+                                  'name',
+                                  'phone',
+                                  'address_line1',
+                                  'city_locality',
+                                  'state_province',
+                                  'postal_code',
+                                  'country_code',
+                                  'address_residential_indicator',
+                                ],
+                                title: 'address',
+                                type: 'object',
+                              },
+                              {
+                                additionalProperties: false,
+                                description: 'A complete or partial mailing address.',
+                                properties: {
+                                  instructions: {
+                                    description:
+                                      'Additional text about how to handle the shipment at this address.\n',
+                                    minLength: 1,
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                },
+                                title: 'partial_shipping_address',
+                                type: 'object',
+                              },
+                            ],
+                            title: 'shipping_address',
+                            type: 'object',
+                          },
+                        ],
+                        description:
+                          "The shipment's origin address. If you frequently ship from the same location, consider [creating a warehouse](https://www.shipengine.com/docs/reference/create-warehouse/).  Then you can simply specify the `warehouse_id` rather than the complete address each time.\n",
+                      },
+                      ship_to: {
+                        allOf: [
+                          {
+                            additionalProperties: false,
+                            allOf: [
+                              {
+                                additionalProperties: false,
+                                allOf: [
+                                  {
+                                    additionalProperties: false,
+                                    description: 'A complete or partial mailing address.',
+                                    properties: {
+                                      address_line1: {
+                                        description:
+                                          'The first line of the street address.  For some addresses, this may be the only line.  Other addresses may require 2 or 3 lines.\n',
+                                        example: '1999 Bishop Grandin Blvd.',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      address_line2: {
+                                        description:
+                                          'The second line of the street address.  For some addresses, this line may not be needed.\n',
+                                        example: 'Unit 408',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      address_line3: {
+                                        description:
+                                          'The third line of the street address.  For some addresses, this line may not be needed.\n',
+                                        example: 'Building #7',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      address_residential_indicator: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'Indicates whether an address is residential.',
+                                            enum: ['unknown', 'yes', 'no'],
+                                            title: 'address_residential_indicator',
+                                            type: 'string',
+                                          },
+                                        ],
+                                        default: 'unknown',
+                                        description:
+                                          'Indicates whether this is a residential address.',
+                                        example: 'no',
+                                      },
+                                      city_locality: {
+                                        description: 'The name of the city or locality',
+                                        example: 'Winnipeg',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      company_name: {
+                                        description:
+                                          'If this is a business address, then the company name should be specified here.\n',
+                                        example: 'The Home Depot',
+                                        minLength: 1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      country_code: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                            example: 'CA',
+                                            maxLength: 2,
+                                            minLength: 2,
+                                            title: 'country_code',
+                                            type: 'string',
+                                          },
+                                        ],
+                                        description:
+                                          'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                      },
+                                      email: {
+                                        description: 'Email for the address owner.\n',
+                                        example: 'example@example.com',
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      name: {
+                                        description:
+                                          'The name of a contact person at this address.  This field may be set instead of - or in addition to - the `company_name` field.\n',
+                                        example: 'John Doe',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      phone: {
+                                        description:
+                                          'The phone number of a contact person at this address.  The format of this phone number varies depending on the country.\n',
+                                        example: '+1 204-253-9411 ext. 123',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                      postal_code: {
+                                        allOf: [
+                                          {
+                                            description: 'postal code',
+                                            example: '78756-3717',
+                                            minLength: 1,
+                                            title: 'postal_code',
+                                            type: 'string',
+                                          },
+                                        ],
+                                      },
+                                      state_province: {
+                                        description:
+                                          'The state or province.  For some countries (including the U.S.) only abbreviations are allowed.  Other countries allow the full name or abbreviation.\n',
+                                        example: 'Manitoba',
+                                        minLength: 1,
+                                        type: 'string',
+                                      },
+                                    },
+                                    title: 'partial_address',
+                                    type: 'object',
+                                  },
+                                ],
+                                description:
+                                  'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
+                                required: [
+                                  'name',
+                                  'phone',
+                                  'address_line1',
+                                  'city_locality',
+                                  'state_province',
+                                  'postal_code',
+                                  'country_code',
+                                  'address_residential_indicator',
+                                ],
+                                title: 'address',
+                                type: 'object',
+                              },
+                              {
+                                additionalProperties: false,
+                                description: 'A complete or partial mailing address.',
+                                properties: {
+                                  instructions: {
+                                    description:
+                                      'Additional text about how to handle the shipment at this address.\n',
+                                    minLength: 1,
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                },
+                                title: 'partial_shipping_address',
+                                type: 'object',
+                              },
+                            ],
+                            title: 'shipping_address',
+                            type: 'object',
+                          },
+                        ],
+                        description: "The recipient's mailing address",
+                      },
+                      shipment_id: {
+                        allOf: [
+                          {
+                            description:
+                              'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                            example: 'se-28529731',
+                            maxLength: 25,
+                            minLength: 1,
+                            pattern: '^se(-[a-z0-9]+)+$',
+                            title: 'se_id',
+                            type: 'string',
+                          },
+                        ],
+                        description: 'A string that uniquely identifies the shipment',
+                        readOnly: true,
+                      },
+                      shipment_number: {
+                        description:
+                          'A non-unique user-defined number used to identify a shipment.  If undefined, this will match the external_shipment_id of the shipment.\n\n> **Warning:** The `shipment_number` is limited to 50 characters. Any additional characters will be truncated.\n',
+                        maxLength: 50,
+                        nullable: true,
+                        type: 'string',
+                      },
+                      shipment_status: {
+                        allOf: [
+                          {
+                            description: 'The possible shipment status values',
+                            enum: ['pending', 'processing', 'label_purchased', 'cancelled'],
+                            title: 'shipment_status',
+                            type: 'string',
+                          },
+                        ],
+                        default: 'pending',
+                        description: 'The current status of the shipment',
+                        readOnly: true,
+                      },
+                      tags: {
+                        default: [],
+                        description:
+                          'Arbitrary tags associated with this shipment.  Tags can be used to categorize shipments, and shipments can be queried by their tags.\n',
+                        items: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              description:
+                                'Tags are arbitrary strings that you can use to categorize shipments.  For example, you may want to use tags to distinguish between domestic and international shipments, or between insured and uninsured shipments.  Or maybe you want to create a tag for each of your customers so you can easily retrieve every shipment for a customer.\n',
+                              properties: {
+                                name: {
+                                  description: 'The tag name.',
+                                  example: 'Fragile',
+                                  minLength: 1,
+                                  type: 'string',
+                                },
+                              },
+                              required: ['name'],
+                              title: 'tag',
+                              type: 'object',
+                            },
+                          ],
+                        },
+                        minItems: 0,
+                        readOnly: true,
+                        type: 'array',
+                      },
+                      tax_identifiers: {
+                        items: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              description: 'A tax identifier object',
+                              properties: {
+                                identifier_type: {
+                                  allOf: [
+                                    {
+                                      description:
+                                        'Determines how FedEx will pickup your packages\n\n|Pickup Type    | Description\n|---------------|-----------------------------------------\n|`vat`          | The tax identifier is a Value Added Tax.\n|`eori`         | The tax identifier is an Economic Operators Registration and Identification Number (EORI).\n|`ssn`          | The tax identifier is a Social Security Number.\n|`ein`          | The tax identifier is an Employer Identification Number (EIN).\n|`tin`          | The tax identifier is a Tax Identification Number (TIN).\n|`ioss`         | The tax identifier is an Import One-Stop Shop (IOSS).\n|`pan`          | The tax identifier is a Permanent Account Number (PAN).\n|`voec`         | The tax identifier is a Norwegian VAT On E-Commerce(VOEC).\n',
+                                      enum: [
+                                        'vat',
+                                        'eori',
+                                        'ssn',
+                                        'ein',
+                                        'tin',
+                                        'ioss',
+                                        'pan',
+                                        'voec',
+                                      ],
+                                      title: 'identifier_type',
+                                      type: 'string',
+                                    },
+                                  ],
+                                },
+                                issuing_authority: {
+                                  description:
+                                    'The authority that issued this tax. This must be a valid 2 character ISO 3166 Alpha 2 country code.',
+                                  type: 'string',
+                                },
+                                taxable_entity_type: {
+                                  allOf: [
+                                    {
+                                      description:
+                                        'The taxable entity type for this tax item. Valid values include the following\n\n|Value       |Description\n|:---------  |:-----------------------------------------------------\n|`shipper`   | The shipper is responsible for this tax.\n|`recipient` | The recipient of the shipment is responsible for this tax.\n',
+                                      enum: ['shipper', 'recipient'],
+                                      title: 'taxable_entity_type',
+                                      type: 'string',
+                                    },
+                                  ],
+                                },
+                                value: {
+                                  description: 'The value of the identifier',
+                                  type: 'string',
+                                },
+                              },
+                              required: [
+                                'taxable_entity_type',
+                                'identifier_type',
+                                'issuing_authority',
+                                'value',
+                              ],
+                              title: 'tax_identifier',
+                              type: 'object',
+                            },
+                          ],
+                        },
+                        nullable: true,
+                        type: 'array',
+                      },
+                      total_weight: {
+                        allOf: [
+                          {
+                            additionalProperties: false,
+                            description: 'The weight of a package',
+                            properties: {
+                              unit: {
+                                allOf: [
+                                  {
+                                    description: 'The possible weight unit values',
+                                    enum: ['pound', 'ounce', 'gram', 'kilogram'],
+                                    title: 'weight_unit',
+                                    type: 'string',
+                                  },
+                                ],
+                              },
+                              value: {
+                                description: 'The weight, in the specified unit',
+                                exclusiveMinimum: true,
+                                format: 'double',
+                                minimum: 0,
+                                type: 'number',
+                              },
+                            },
+                            required: ['value', 'unit'],
+                            title: 'weight',
+                            type: 'object',
+                          },
+                        ],
+                        description: 'The combined weight of all packages in the shipment',
+                        readOnly: true,
+                      },
+                      warehouse_id: {
+                        allOf: [
+                          {
+                            description:
+                              'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                            example: 'se-28529731',
+                            maxLength: 25,
+                            minLength: 1,
+                            pattern: '^se(-[a-z0-9]+)+$',
+                            title: 'se_id',
+                            type: 'string',
+                          },
+                        ],
+                        default: null,
+                        description:
+                          'The [warehouse](https://www.shipengine.com/docs/shipping/ship-from-a-warehouse/) that the shipment is being shipped from.  Either `warehouse_id` or `ship_from` must be specified.\n',
+                        nullable: true,
+                      },
+                    },
+                    title: 'partial_shipment',
+                    type: 'object',
+                  },
+                ],
+                description: 'An address validating shipment',
+                required: ['shipment_id', 'carrier_id', 'service_code', 'ship_to', 'ship_from'],
+                title: 'address_validating_shipment',
+                type: 'object',
+              },
+            ],
+            description: 'The shipment object',
+          },
+        },
+        title: 'shipment_request',
+        type: 'object',
+      },
+    ],
+    additionalProperties: false,
+  })
+  .openapi({
+    description: 'A rate shipment request body',
+    required: ['shipment_id', 'shipment'],
+    title: 'calculate_rates_request_body',
+  })
+  .openapi('CalculateRatesRequestBody')
 
 const RateTypeSchema = z
   .enum(['check', 'shipment'])
@@ -1852,7 +4068,177 @@ const RateResponseSchema = z
   .openapi({ title: 'rate_response', required: [] })
   .openapi('RateResponse')
 
-const CalculateRatesResponseBodySchema = PartialShipmentSchema.and(RateResponseSchema)
+const CalculateRatesResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = (() => {
+      const Schema = PartialShipmentSchema.and(
+        z
+          .looseObject({})
+          .openapi({
+            required: [
+              'rate_response',
+              'shipment_id',
+              'ship_date',
+              'created_at',
+              'modified_at',
+              'shipment_status',
+              'return_to',
+              'confirmation',
+              'customs',
+              'advanced_options',
+              'insurance_provider',
+              'tags',
+              'packages',
+              'total_weight',
+            ],
+          }),
+      )
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          for (const k of Object.keys(o)) {
+            if (
+              ![
+                'advanced_options',
+                'carrier_id',
+                'confirmation',
+                'created_at',
+                'customs',
+                'external_order_id',
+                'external_shipment_id',
+                'insurance_provider',
+                'items',
+                'modified_at',
+                'order_source_code',
+                'origin_type',
+                'packages',
+                'return_to',
+                'service_code',
+                'ship_date',
+                'ship_from',
+                'ship_to',
+                'shipment_id',
+                'shipment_number',
+                'shipment_status',
+                'tags',
+                'tax_identifiers',
+                'total_weight',
+                'warehouse_id',
+              ].includes(k)
+            ) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })()
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'rate_response')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'shipment_id')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'ship_date')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'created_at')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'modified_at')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'shipment_status')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'return_to')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'confirmation')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'customs')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'advanced_options')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'insurance_provider')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'tags')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'packages')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'total_weight')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(RateResponseSchema)
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'advanced_options',
+              'carrier_id',
+              'confirmation',
+              'created_at',
+              'customs',
+              'external_order_id',
+              'external_shipment_id',
+              'insurance_provider',
+              'items',
+              'modified_at',
+              'order_source_code',
+              'origin_type',
+              'packages',
+              'return_to',
+              'service_code',
+              'ship_date',
+              'ship_from',
+              'ship_to',
+              'shipment_id',
+              'shipment_number',
+              'shipment_status',
+              'tags',
+              'tax_identifiers',
+              'total_weight',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+        for (const k of Object.keys(o)) {
+          if (!['rate_response'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'A rate shipment response body',
     required: [
@@ -2124,11 +4510,1847 @@ const RateRequestRateOptionsSchema = z
   .openapi({ title: 'rate_request_rate_options', required: [] })
   .openapi('RateRequestRateOptions')
 
-const CompareBulkRatesRequestBodySchema = RateRequestRateOptionsSchema.openapi({
-  description: 'A rate shipments request body',
-  required: ['rate_options'],
-  title: 'compare_bulk_rates_request_body',
-}).openapi('CompareBulkRatesRequestBody')
+const RateRequestByShipmentIdsSchema = z
+  .object({
+    shipment_ids: z
+      .array(SeIdSchema.openapi({ description: 'shipment ids' }))
+      .openapi({ description: 'The array of shipment IDs' }),
+  })
+  .openapi({ required: ['shipment_ids'], title: 'rate_request_by_shipment_ids' })
+  .openapi('RateRequestByShipmentIds')
+
+const RateRequestByShipmentsSchema = z
+  .object({
+    shipments: z
+      .array(
+        AddressValidatingShipmentSchema.openapi({
+          description: 'The shipment to get a bulk rate estimate for',
+        }),
+      )
+      .min(1)
+      .openapi({ description: 'The array of shipments to get bulk rate estimates for' }),
+  })
+  .openapi({ required: ['shipments'], title: 'rate_request_by_shipments' })
+  .openapi('RateRequestByShipments')
+
+const CompareBulkRatesRequestBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = RateRequestRateOptionsSchema.and(
+      z.looseObject({}).openapi({ required: ['rate_options'] }),
+    ).superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'rate_options')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      const reported = ctx.issues.length
+      try {
+        ;((ctx) => {
+          const val = ctx.value
+          if (
+            (RateRequestByShipmentIdsSchema.safeParse(val).success ? 1 : 0) +
+              (RateRequestByShipmentsSchema.safeParse(val).success ? 1 : 0) !==
+            1
+          ) {
+            ctx.issues.push({ code: 'custom', input: val })
+          }
+        })(ctx)
+      } catch (error) {
+        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+        ctx.issues.length = reported
+        return (async (ctx) => {
+          const val = ctx.value
+          if (
+            ((await RateRequestByShipmentIdsSchema.safeParseAsync(val)).success ? 1 : 0) +
+              ((await RateRequestByShipmentsSchema.safeParseAsync(val)).success ? 1 : 0) !==
+            1
+          ) {
+            ctx.issues.push({ code: 'custom', input: val })
+          }
+        })(ctx).then(() => val)
+      }
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({
+    oneOf: [
+      {
+        properties: {
+          shipment_ids: {
+            description: 'The array of shipment IDs',
+            items: {
+              allOf: [
+                {
+                  description:
+                    'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                  example: 'se-28529731',
+                  maxLength: 25,
+                  minLength: 1,
+                  pattern: '^se(-[a-z0-9]+)+$',
+                  title: 'se_id',
+                  type: 'string',
+                },
+              ],
+              description: 'shipment ids',
+            },
+            type: 'array',
+          },
+        },
+        required: ['shipment_ids'],
+        title: 'rate_request_by_shipment_ids',
+        type: 'object',
+      },
+      {
+        properties: {
+          shipments: {
+            description: 'The array of shipments to get bulk rate estimates for',
+            items: {
+              allOf: [
+                {
+                  additionalProperties: false,
+                  allOf: [
+                    {
+                      properties: {
+                        validate_address: {
+                          allOf: [
+                            {
+                              description: 'The possible validate address values',
+                              enum: ['no_validation', 'validate_only', 'validate_and_clean'],
+                              title: 'validate_address',
+                              type: 'string',
+                            },
+                          ],
+                          default: 'no_validation',
+                        },
+                      },
+                      title: 'validate_shipment_fields',
+                      type: 'object',
+                    },
+                    {
+                      additionalProperties: false,
+                      description:
+                        'The information necessary to ship a package, such as the origin, the destination, the carrier service, and the package dimensions and weight.\n',
+                      properties: {
+                        advanced_options: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              description: 'Advanced shipment options',
+                              properties: {
+                                bill_to_account: {
+                                  default: null,
+                                  description:
+                                    'This field is used to [bill shipping costs to a third party](https://www.shipengine.com/docs/shipping/bill-to-third-party/).  This field must be used in conjunction with the `bill_to_country_code`, `bill_to_party`, and `bill_to_postal_code` fields.\n',
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                bill_to_country_code: {
+                                  allOf: [
+                                    {
+                                      description:
+                                        'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                      example: 'CA',
+                                      maxLength: 2,
+                                      minLength: 2,
+                                      title: 'country_code',
+                                      type: 'string',
+                                    },
+                                  ],
+                                  default: null,
+                                  description:
+                                    'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the third-party that is responsible for shipping costs.\n',
+                                  nullable: true,
+                                },
+                                bill_to_party: {
+                                  allOf: [
+                                    {
+                                      description: 'The possible bill to party values',
+                                      enum: ['recipient', 'third_party'],
+                                      title: 'bill_to_party',
+                                      type: 'string',
+                                    },
+                                  ],
+                                  default: null,
+                                  description:
+                                    'Indicates whether to bill shipping costs to the recipient or to a third-party.  When billing to a third-party, the `bill_to_account`, `bill_to_country_code`, and `bill_to_postal_code` fields must also be set.\n',
+                                  nullable: true,
+                                },
+                                bill_to_postal_code: {
+                                  default: null,
+                                  description:
+                                    'The postal code of the third-party that is responsible for shipping costs.\n',
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                collect_on_delivery: {
+                                  description:
+                                    'Defer payment until package is delivered, instead of when it is ordered.',
+                                  properties: {
+                                    payment_amount: {
+                                      properties: {
+                                        amount: { format: 'double', minimum: 0, type: 'number' },
+                                        currency: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'The currencies that are supported by ShipEngine are the ones that specified by ISO 4217: https://www.iso.org/iso-4217-currency-codes.html\n',
+                                              title: 'currency',
+                                              type: 'string',
+                                            },
+                                          ],
+                                        },
+                                      },
+                                      title: 'payment_amount',
+                                      type: 'object',
+                                    },
+                                    payment_type: {
+                                      allOf: [
+                                        {
+                                          description: 'Types of payment that are supported',
+                                          enum: ['any', 'cash', 'cash_equivalent', 'none'],
+                                          title: 'collect_on_delivery_payment_type',
+                                          type: 'string',
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  title: 'collect_on_delivery',
+                                  type: 'object',
+                                },
+                                contains_alcohol: {
+                                  default: false,
+                                  description: 'Indicates that the shipment contains alcohol.',
+                                  type: 'boolean',
+                                },
+                                custom_field1: {
+                                  default: null,
+                                  description:
+                                    'An arbitrary field that can be used to store information about the shipment.\n',
+                                  maxLength: 100,
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                custom_field2: {
+                                  default: null,
+                                  description:
+                                    'An arbitrary field that can be used to store information about the shipment.\n',
+                                  maxLength: 100,
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                custom_field3: {
+                                  default: null,
+                                  description:
+                                    'An arbitrary field that can be used to store information about the shipment.\n',
+                                  maxLength: 100,
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                delivered_duty_paid: {
+                                  default: false,
+                                  description:
+                                    'Indicates that the shipper is paying the international delivery duties for this shipment.  This option is supported by UPS, FedEx, and DHL Express.\n',
+                                  type: 'boolean',
+                                },
+                                dry_ice: {
+                                  default: false,
+                                  description: 'Indicates if the shipment contain dry ice',
+                                  type: 'boolean',
+                                },
+                                dry_ice_weight: {
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description: 'The weight of a package',
+                                      properties: {
+                                        unit: {
+                                          allOf: [
+                                            {
+                                              description: 'The possible weight unit values',
+                                              enum: ['pound', 'ounce', 'gram', 'kilogram'],
+                                              title: 'weight_unit',
+                                              type: 'string',
+                                            },
+                                          ],
+                                        },
+                                        value: {
+                                          description: 'The weight, in the specified unit',
+                                          exclusiveMinimum: true,
+                                          format: 'double',
+                                          minimum: 0,
+                                          type: 'number',
+                                        },
+                                      },
+                                      required: ['value', 'unit'],
+                                      title: 'weight',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  description: 'The weight of the dry ice in the shipment',
+                                  nullable: true,
+                                },
+                                fedex_freight: {
+                                  description: 'Provide details for the Fedex freight service',
+                                  properties: {
+                                    booking_confirmation: { type: 'string' },
+                                    shipper_load_and_count: { type: 'string' },
+                                  },
+                                  type: 'object',
+                                },
+                                freight_class: {
+                                  default: null,
+                                  description:
+                                    'The National Motor Freight Traffic Association [freight class](http://www.nmfta.org/pages/nmfc?AspxAutoDetectCookieSupport=1), such as "77.5", "110", or "250".\n',
+                                  example: 77.5,
+                                  nullable: true,
+                                  type: 'string',
+                                },
+                                non_machinable: {
+                                  default: false,
+                                  description:
+                                    'Indicates that the package cannot be processed automatically because it is too large or irregularly shaped. This is primarily for USPS shipments.  See [Section 1.2 of the USPS parcel standards](https://pe.usps.com/text/dmm300/101.htm#ep1047495) for details.\n',
+                                  type: 'boolean',
+                                },
+                                origin_type: {
+                                  allOf: [
+                                    {
+                                      description:
+                                        'Indicates if the package will be picked up or dropped off by the carrier',
+                                      enum: ['pickup', 'drop_off'],
+                                      title: 'origin_type',
+                                      type: 'string',
+                                    },
+                                  ],
+                                  default: null,
+                                  nullable: true,
+                                },
+                                saturday_delivery: {
+                                  default: false,
+                                  description:
+                                    'Enables Saturday delivery, if supported by the carrier.',
+                                  type: 'boolean',
+                                },
+                                shipper_release: { default: null, nullable: true, type: 'boolean' },
+                                third_party_consignee: {
+                                  default: false,
+                                  description:
+                                    'Third Party Consignee option is a value-added service that allows the shipper to supply goods without commercial invoices being attached',
+                                  type: 'boolean',
+                                },
+                                use_ups_ground_freight_pricing: {
+                                  default: null,
+                                  description:
+                                    'Whether to use [UPS Ground Freight pricing](https://www.shipengine.com/docs/shipping/ups-ground-freight/).  If enabled, then a `freight_class` must also be specified.\n',
+                                  nullable: true,
+                                  type: 'boolean',
+                                },
+                              },
+                              title: 'advanced_shipment_options',
+                              type: 'object',
+                            },
+                          ],
+                          description: 'Advanced shipment options.  These are entirely optional.',
+                        },
+                        carrier_id: {
+                          allOf: [
+                            {
+                              description:
+                                'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                              example: 'se-28529731',
+                              maxLength: 25,
+                              minLength: 1,
+                              pattern: '^se(-[a-z0-9]+)+$',
+                              title: 'se_id',
+                              type: 'string',
+                            },
+                          ],
+                          description:
+                            'The carrier account that is billed for the shipping charges',
+                        },
+                        confirmation: {
+                          allOf: [
+                            {
+                              description: 'The possible delivery confirmation values',
+                              enum: [
+                                'none',
+                                'delivery',
+                                'signature',
+                                'adult_signature',
+                                'direct_signature',
+                                'delivery_mailed',
+                                'verbal_confirmation',
+                              ],
+                              title: 'delivery_confirmation',
+                              type: 'string',
+                            },
+                          ],
+                          default: 'none',
+                          description:
+                            'The type of delivery confirmation that is required for this shipment.',
+                        },
+                        created_at: {
+                          allOf: [
+                            {
+                              description:
+                                'An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string that represents a date and time.\n',
+                              example: '2018-09-23T15:00:00.000Z',
+                              format: 'date-time',
+                              pattern:
+                                '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[-+]\\d{2}:\\d{2})$',
+                              title: 'date_time',
+                              type: 'string',
+                            },
+                          ],
+                          description:
+                            'The date and time that the shipment was created in ShipEngine.',
+                          readOnly: true,
+                        },
+                        customs: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              description:
+                                'Options for international shipments, such as customs declarations.',
+                              properties: {
+                                contents: {
+                                  allOf: [
+                                    {
+                                      description: 'The possible package contents values',
+                                      enum: [
+                                        'merchandise',
+                                        'documents',
+                                        'gift',
+                                        'returned_goods',
+                                        'sample',
+                                      ],
+                                      title: 'package_contents',
+                                      type: 'string',
+                                    },
+                                  ],
+                                  default: 'merchandise',
+                                  description:
+                                    'The type of contents in this shipment.  This may impact import duties or customs treatment.',
+                                },
+                                customs_items: {
+                                  default: [],
+                                  description:
+                                    'Customs declarations for each item in the shipment.',
+                                  items: {
+                                    additionalProperties: false,
+                                    description:
+                                      'The customs declaration for a single item in the shipment.',
+                                    properties: {
+                                      country_of_origin: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                            example: 'CA',
+                                            maxLength: 2,
+                                            minLength: 2,
+                                            title: 'country_code',
+                                            type: 'string',
+                                          },
+                                        ],
+                                        default: null,
+                                        description:
+                                          'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1) where this item originated\n',
+                                        nullable: true,
+                                      },
+                                      customs_item_id: {
+                                        allOf: [
+                                          {
+                                            description:
+                                              'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                                            example: 'se-28529731',
+                                            maxLength: 25,
+                                            minLength: 1,
+                                            pattern: '^se(-[a-z0-9]+)+$',
+                                            title: 'se_id',
+                                            type: 'string',
+                                          },
+                                        ],
+                                        description:
+                                          'A string that uniquely identifies the customs item',
+                                        readOnly: true,
+                                      },
+                                      description: {
+                                        default: null,
+                                        description: 'A description of the item',
+                                        maxLength: 100,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      harmonized_tariff_code: {
+                                        default: null,
+                                        description:
+                                          'The [Harmonized Tariff Code](https://en.wikipedia.org/wiki/Harmonized_System) of this item.',
+                                        example: 3926.1,
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      quantity: {
+                                        default: 0,
+                                        description: 'The quantity of this item in the shipment.',
+                                        format: 'int32',
+                                        minimum: 0,
+                                        type: 'integer',
+                                      },
+                                      sku: {
+                                        description:
+                                          'The SKU (Stock Keeping Unit) of the customs item',
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      sku_description: {
+                                        description: "Description of the Custom Item's SKU",
+                                        nullable: true,
+                                        type: 'string',
+                                      },
+                                      unit_of_measure: { nullable: true, type: 'string' },
+                                      value: {
+                                        allOf: [
+                                          {
+                                            additionalProperties: false,
+                                            description:
+                                              'A monetary value, such as the price of a shipping label, the insured value of a package, or an account balance.\n',
+                                            properties: {
+                                              amount: {
+                                                description:
+                                                  'The monetary amount, in the specified currency.',
+                                                format: 'double',
+                                                minimum: 0,
+                                                type: 'number',
+                                              },
+                                              currency: {
+                                                allOf: [
+                                                  {
+                                                    description:
+                                                      'The currencies that are supported by ShipEngine are the ones that specified by ISO 4217: https://www.iso.org/iso-4217-currency-codes.html\n',
+                                                    title: 'currency',
+                                                    type: 'string',
+                                                  },
+                                                ],
+                                              },
+                                            },
+                                            required: ['currency', 'amount'],
+                                            title: 'monetary_value',
+                                            type: 'object',
+                                          },
+                                        ],
+                                        description: 'The declared customs value of each item',
+                                      },
+                                      weight: {
+                                        allOf: [
+                                          {
+                                            additionalProperties: false,
+                                            description: 'The weight of a package',
+                                            properties: {
+                                              unit: {
+                                                allOf: [
+                                                  {
+                                                    description: 'The possible weight unit values',
+                                                    enum: ['pound', 'ounce', 'gram', 'kilogram'],
+                                                    title: 'weight_unit',
+                                                    type: 'string',
+                                                  },
+                                                ],
+                                              },
+                                              value: {
+                                                description: 'The weight, in the specified unit',
+                                                exclusiveMinimum: true,
+                                                format: 'double',
+                                                minimum: 0,
+                                                type: 'number',
+                                              },
+                                            },
+                                            required: ['value', 'unit'],
+                                            title: 'weight',
+                                            type: 'object',
+                                          },
+                                        ],
+                                        description: 'The item weight',
+                                      },
+                                    },
+                                    required: ['customs_item_id'],
+                                    title: 'customs_item',
+                                    type: 'object',
+                                  },
+                                  minItems: 0,
+                                  type: 'array',
+                                },
+                                non_delivery: {
+                                  allOf: [
+                                    {
+                                      description: 'The possible non delivery values',
+                                      enum: ['return_to_sender', 'treat_as_abandoned'],
+                                      title: 'non_delivery',
+                                      type: 'string',
+                                    },
+                                  ],
+                                  default: 'return_to_sender',
+                                  description:
+                                    'Indicates what to do if a package is unable to be delivered.',
+                                },
+                              },
+                              required: ['contents', 'non_delivery'],
+                              title: 'international_shipment_options',
+                              type: 'object',
+                            },
+                          ],
+                          default: null,
+                          description:
+                            'Customs information.  This is usually only needed for international shipments.\n',
+                          nullable: true,
+                        },
+                        external_order_id: {
+                          description: 'ID that the Order Source assigned',
+                          nullable: true,
+                          type: 'string',
+                        },
+                        external_shipment_id: {
+                          description:
+                            'A unique user-defined key to identify a shipment.  This can be used to retrieve the shipment.\n\n> **Warning:** The `external_shipment_id` is limited to 50 characters. Any additional characters will be truncated.\n',
+                          maxLength: 50,
+                          nullable: true,
+                          type: 'string',
+                        },
+                        insurance_provider: {
+                          allOf: [
+                            {
+                              description: 'The possible insurance provider values',
+                              enum: ['none', 'shipsurance', 'carrier', 'third_party'],
+                              title: 'insurance_provider',
+                              type: 'string',
+                            },
+                          ],
+                          default: 'none',
+                          description:
+                            'The insurance provider to use for any insured packages in the shipment.\n',
+                        },
+                        items: {
+                          default: [],
+                          description:
+                            'Describe the packages included in this shipment as related to potential metadata that was imported from\nexternal order sources\n',
+                          items: {
+                            allOf: [
+                              {
+                                additionalProperties: false,
+                                description: 'A shipment item',
+                                properties: {
+                                  asin: {
+                                    description: 'Amazon Standard Identification Number',
+                                    example: 'B00005N5PF',
+                                    maxLength: 10,
+                                    minLength: 10,
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                  external_order_id: {
+                                    description: 'external order id',
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                  external_order_item_id: {
+                                    description: 'external order item id',
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                  name: { description: 'item name', minLength: 0, type: 'string' },
+                                  order_source_code: {
+                                    allOf: [
+                                      {
+                                        description:
+                                          'The order sources that are supported by ShipEngine',
+                                        enum: [
+                                          'amazon_ca',
+                                          'amazon_us',
+                                          'brightpearl',
+                                          'channel_advisor',
+                                          'cratejoy',
+                                          'ebay',
+                                          'etsy',
+                                          'jane',
+                                          'groupon_goods',
+                                          'magento',
+                                          'paypal',
+                                          'seller_active',
+                                          'shopify',
+                                          'stitch_labs',
+                                          'squarespace',
+                                          'three_dcart',
+                                          'tophatter',
+                                          'walmart',
+                                          'woo_commerce',
+                                          'volusion',
+                                        ],
+                                        title: 'order_source_name',
+                                        type: 'string',
+                                      },
+                                    ],
+                                  },
+                                  quantity: {
+                                    description:
+                                      'The quantity of this item included in the shipment',
+                                    format: 'int32',
+                                    minimum: 0,
+                                    type: 'integer',
+                                  },
+                                  sales_order_id: {
+                                    description: 'sales order id',
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                  sales_order_item_id: {
+                                    description: 'sales order item id',
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                  sku: {
+                                    description: 'Item Stock Keeping Unit',
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                },
+                                title: 'shipment_item',
+                                type: 'object',
+                              },
+                            ],
+                          },
+                          type: 'array',
+                        },
+                        modified_at: {
+                          allOf: [
+                            {
+                              description:
+                                'An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string that represents a date and time.\n',
+                              example: '2018-09-23T15:00:00.000Z',
+                              format: 'date-time',
+                              pattern:
+                                '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[-+]\\d{2}:\\d{2})$',
+                              title: 'date_time',
+                              type: 'string',
+                            },
+                          ],
+                          description:
+                            'The date and time that the shipment was created or last modified.',
+                          readOnly: true,
+                        },
+                        order_source_code: {
+                          allOf: [
+                            {
+                              description: 'The order sources that are supported by ShipEngine',
+                              enum: [
+                                'amazon_ca',
+                                'amazon_us',
+                                'brightpearl',
+                                'channel_advisor',
+                                'cratejoy',
+                                'ebay',
+                                'etsy',
+                                'jane',
+                                'groupon_goods',
+                                'magento',
+                                'paypal',
+                                'seller_active',
+                                'shopify',
+                                'stitch_labs',
+                                'squarespace',
+                                'three_dcart',
+                                'tophatter',
+                                'walmart',
+                                'woo_commerce',
+                                'volusion',
+                              ],
+                              title: 'order_source_name',
+                              type: 'string',
+                            },
+                          ],
+                        },
+                        origin_type: {
+                          allOf: [
+                            {
+                              description:
+                                'Indicates if the package will be picked up or dropped off by the carrier',
+                              enum: ['pickup', 'drop_off'],
+                              title: 'origin_type',
+                              type: 'string',
+                            },
+                          ],
+                          description:
+                            'Indicates if the package will be picked up or dropped off by the carrier',
+                          nullable: true,
+                        },
+                        packages: {
+                          description:
+                            "The packages in the shipment.\n\n> **Note:** Some carriers only allow one package per shipment.  If you attempt to create a multi-package shipment for a carrier that doesn't allow it, an error will be returned.\n",
+                          items: {
+                            allOf: [
+                              {
+                                additionalProperties: false,
+                                description:
+                                  'A package associated with a [shipping label](https://www.shipengine.com/docs/labels/create-a-label/)\n',
+                                properties: {
+                                  content_description: {
+                                    description:
+                                      'A short description of the package content. Required for shipments moving to, from, and through Mexico.\n',
+                                    example: 'Hand knitted wool socks',
+                                    maxLength: 35,
+                                    minLength: 1,
+                                    nullable: true,
+                                    type: 'string',
+                                  },
+                                  dimensions: {
+                                    allOf: [
+                                      {
+                                        additionalProperties: false,
+                                        description: 'The dimensions of a package',
+                                        properties: {
+                                          height: {
+                                            default: 0,
+                                            description:
+                                              'The length of the package, in the specified unit',
+                                            format: 'double',
+                                            minimum: 0,
+                                            type: 'number',
+                                          },
+                                          length: {
+                                            default: 0,
+                                            description:
+                                              'The length of the package, in the specified unit',
+                                            format: 'double',
+                                            minimum: 0,
+                                            type: 'number',
+                                          },
+                                          unit: {
+                                            allOf: [
+                                              {
+                                                description:
+                                                  'The dimension units that are supported by ShipEngine.',
+                                                enum: ['inch', 'centimeter'],
+                                                title: 'dimension_unit',
+                                                type: 'string',
+                                              },
+                                            ],
+                                            default: 'inch',
+                                          },
+                                          width: {
+                                            default: 0,
+                                            description:
+                                              'The width of the package, in the specified unit',
+                                            format: 'double',
+                                            minimum: 0,
+                                            type: 'number',
+                                          },
+                                        },
+                                        required: ['unit', 'length', 'width', 'height'],
+                                        title: 'dimensions',
+                                        type: 'object',
+                                      },
+                                    ],
+                                    description: 'The package dimensions',
+                                  },
+                                  external_package_id: {
+                                    description: 'An external package id.',
+                                    minLength: 1,
+                                    type: 'string',
+                                  },
+                                  form_download: {
+                                    allOf: [
+                                      {
+                                        additionalProperties: false,
+                                        description:
+                                          'A link to a related resource, or an empty object if there is no resource to link to',
+                                        properties: {
+                                          href: {
+                                            allOf: [
+                                              {
+                                                description: 'A URL',
+                                                example:
+                                                  'http://api.shipengine.com/v1/labels/se-28529731',
+                                                format: 'url',
+                                                minLength: 1,
+                                                title: 'url',
+                                                type: 'string',
+                                              },
+                                            ],
+                                            description: 'The URL of the linked resource, if any',
+                                          },
+                                          type: {
+                                            description:
+                                              'The type of resource, or the type of relationship to the parent resource',
+                                            minLength: 1,
+                                            type: 'string',
+                                          },
+                                        },
+                                        title: 'optional_link',
+                                        type: 'object',
+                                      },
+                                    ],
+                                    description:
+                                      'The form download for any customs that are needed',
+                                    readOnly: true,
+                                  },
+                                  insured_value: {
+                                    allOf: [
+                                      {
+                                        additionalProperties: false,
+                                        description:
+                                          'A monetary value, such as the price of a shipping label, the insured value of a package, or an account balance.\n',
+                                        properties: {
+                                          amount: {
+                                            description:
+                                              'The monetary amount, in the specified currency.',
+                                            format: 'double',
+                                            minimum: 0,
+                                            type: 'number',
+                                          },
+                                          currency: {
+                                            allOf: [
+                                              {
+                                                description:
+                                                  'The currencies that are supported by ShipEngine are the ones that specified by ISO 4217: https://www.iso.org/iso-4217-currency-codes.html\n',
+                                                title: 'currency',
+                                                type: 'string',
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        required: ['currency', 'amount'],
+                                        title: 'monetary_value',
+                                        type: 'object',
+                                      },
+                                    ],
+                                    default: [{ amount: 0, currency: 'usd' }],
+                                    description:
+                                      'The insured value of the package.  Requires the `insurance_provider` field of the shipment to be set.\n',
+                                  },
+                                  label_download: {
+                                    allOf: [
+                                      {
+                                        additionalProperties: false,
+                                        description:
+                                          'Reference to the various downloadable file formats for the generated label\n',
+                                        properties: {
+                                          href: {
+                                            allOf: [
+                                              {
+                                                description: 'A URL',
+                                                example:
+                                                  'http://api.shipengine.com/v1/labels/se-28529731',
+                                                format: 'url',
+                                                minLength: 1,
+                                                title: 'url',
+                                                type: 'string',
+                                              },
+                                            ],
+                                            description: 'The URL of the linked resource, if any',
+                                          },
+                                          pdf: {
+                                            allOf: [
+                                              {
+                                                description: 'A URL',
+                                                example:
+                                                  'http://api.shipengine.com/v1/labels/se-28529731',
+                                                format: 'url',
+                                                minLength: 1,
+                                                title: 'url',
+                                                type: 'string',
+                                              },
+                                            ],
+                                            description: 'The URL for the pdf generated label',
+                                          },
+                                          png: {
+                                            allOf: [
+                                              {
+                                                description: 'A URL',
+                                                example:
+                                                  'http://api.shipengine.com/v1/labels/se-28529731',
+                                                format: 'url',
+                                                minLength: 1,
+                                                title: 'url',
+                                                type: 'string',
+                                              },
+                                            ],
+                                            description: 'The URL for the png generated label',
+                                          },
+                                          zpl: {
+                                            allOf: [
+                                              {
+                                                description: 'A URL',
+                                                example:
+                                                  'http://api.shipengine.com/v1/labels/se-28529731',
+                                                format: 'url',
+                                                minLength: 1,
+                                                title: 'url',
+                                                type: 'string',
+                                              },
+                                            ],
+                                            description: 'The URL for the zpl generated label',
+                                          },
+                                        },
+                                        title: 'label_download',
+                                        type: 'object',
+                                      },
+                                    ],
+                                    description: 'The label download for the package',
+                                    readOnly: true,
+                                  },
+                                  label_messages: {
+                                    allOf: [
+                                      {
+                                        additionalProperties: false,
+                                        description:
+                                          'Custom messages to print on the shipping label for the package.  These are typically used to print invoice numbers, product numbers, or other internal reference numbers.  Not all carriers support label messages. The number of lines and the maximum length of each line also varies by carrier.\n\n|Carrier            |Max lines |Max line length\n|-------------------|----------|--------------------\n|USPS (Stamps.com)  |3         |60\n|FedEx              |3         |35 for the first line. 30 for additional lines.\n|UPS                |2         |35\n|OnTrac             |2         |25\n',
+                                        properties: {
+                                          reference1: {
+                                            default: null,
+                                            description:
+                                              'The first line of the custom label message.  Some carriers may prefix this line with something like "REF", "Reference", "Trx Ref No.", etc.\n',
+                                            nullable: true,
+                                            type: 'string',
+                                          },
+                                          reference2: {
+                                            default: null,
+                                            description:
+                                              'The second line of the custom label message.  Some carriers may prefix this line with something like "INV", "Reference 2", "Trx Ref No.", etc.\n',
+                                            nullable: true,
+                                            type: 'string',
+                                          },
+                                          reference3: {
+                                            default: null,
+                                            description:
+                                              'The third line of the custom label message.  Some carriers may prefix this line with something like "PO", "Reference 3", etc.\n',
+                                            nullable: true,
+                                            type: 'string',
+                                          },
+                                        },
+                                        required: ['reference1', 'reference2', 'reference3'],
+                                        title: 'label_messages',
+                                        type: 'object',
+                                      },
+                                    ],
+                                  },
+                                  package_code: {
+                                    allOf: [
+                                      {
+                                        description:
+                                          'A [package type](https://www.shipengine.com/docs/reference/list-carrier-packages/), such as `thick_envelope`, `small_flat_rate_box`, `large_package`, etc.  Use the code `package` for custom or unknown package types.\n',
+                                        example: 'small_flat_rate_box',
+                                        pattern: '^[a-z0-9]+(_[a-z0-9]+)*$',
+                                        title: 'package_code',
+                                        type: 'string',
+                                      },
+                                    ],
+                                    description:
+                                      'The [package type](https://www.shipengine.com/docs/reference/list-carrier-packages/), such as `thick_envelope`, `small_flat_rate_box`, `large_package`, etc.  The code `package` indicates a custom or unknown package type.\n',
+                                  },
+                                  package_id: {
+                                    allOf: [
+                                      {
+                                        description:
+                                          'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                                        example: 'se-28529731',
+                                        maxLength: 25,
+                                        minLength: 1,
+                                        pattern: '^se(-[a-z0-9]+)+$',
+                                        title: 'se_id',
+                                        type: 'string',
+                                      },
+                                    ],
+                                    description:
+                                      'A string that uniquely identifies this [package type](https://www.shipengine.com/docs/reference/list-carrier-packages/)',
+                                  },
+                                  sequence: {
+                                    description: 'Package sequence',
+                                    format: 'int32',
+                                    readOnly: true,
+                                    type: 'integer',
+                                  },
+                                  tracking_number: {
+                                    allOf: [
+                                      {
+                                        description:
+                                          'A tracking number for a package. The format depends on the carrier.',
+                                        example: '1Z932R800392060079',
+                                        minLength: 1,
+                                        title: 'tracking_number',
+                                        type: 'string',
+                                      },
+                                    ],
+                                    description:
+                                      'The tracking number for the package.  The format depends on the carrier.\n',
+                                    readOnly: true,
+                                  },
+                                  weight: {
+                                    allOf: [
+                                      {
+                                        additionalProperties: false,
+                                        description: 'The weight of a package',
+                                        properties: {
+                                          unit: {
+                                            allOf: [
+                                              {
+                                                description: 'The possible weight unit values',
+                                                enum: ['pound', 'ounce', 'gram', 'kilogram'],
+                                                title: 'weight_unit',
+                                                type: 'string',
+                                              },
+                                            ],
+                                          },
+                                          value: {
+                                            description: 'The weight, in the specified unit',
+                                            exclusiveMinimum: true,
+                                            format: 'double',
+                                            minimum: 0,
+                                            type: 'number',
+                                          },
+                                        },
+                                        required: ['value', 'unit'],
+                                        title: 'weight',
+                                        type: 'object',
+                                      },
+                                    ],
+                                    description: 'The package weight',
+                                  },
+                                },
+                                required: ['weight'],
+                                title: 'package',
+                                type: 'object',
+                              },
+                            ],
+                          },
+                          minItems: 1,
+                          type: 'array',
+                        },
+                        return_to: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              allOf: [
+                                {
+                                  additionalProperties: false,
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description: 'A complete or partial mailing address.',
+                                      properties: {
+                                        address_line1: {
+                                          description:
+                                            'The first line of the street address.  For some addresses, this may be the only line.  Other addresses may require 2 or 3 lines.\n',
+                                          example: '1999 Bishop Grandin Blvd.',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        address_line2: {
+                                          description:
+                                            'The second line of the street address.  For some addresses, this line may not be needed.\n',
+                                          example: 'Unit 408',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        address_line3: {
+                                          description:
+                                            'The third line of the street address.  For some addresses, this line may not be needed.\n',
+                                          example: 'Building #7',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        address_residential_indicator: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'Indicates whether an address is residential.',
+                                              enum: ['unknown', 'yes', 'no'],
+                                              title: 'address_residential_indicator',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          default: 'unknown',
+                                          description:
+                                            'Indicates whether this is a residential address.',
+                                          example: 'no',
+                                        },
+                                        city_locality: {
+                                          description: 'The name of the city or locality',
+                                          example: 'Winnipeg',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        company_name: {
+                                          description:
+                                            'If this is a business address, then the company name should be specified here.\n',
+                                          example: 'The Home Depot',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        country_code: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                              example: 'CA',
+                                              maxLength: 2,
+                                              minLength: 2,
+                                              title: 'country_code',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          description:
+                                            'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                        },
+                                        email: {
+                                          description: 'Email for the address owner.\n',
+                                          example: 'example@example.com',
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        name: {
+                                          description:
+                                            'The name of a contact person at this address.  This field may be set instead of - or in addition to - the `company_name` field.\n',
+                                          example: 'John Doe',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        phone: {
+                                          description:
+                                            'The phone number of a contact person at this address.  The format of this phone number varies depending on the country.\n',
+                                          example: '+1 204-253-9411 ext. 123',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        postal_code: {
+                                          allOf: [
+                                            {
+                                              description: 'postal code',
+                                              example: '78756-3717',
+                                              minLength: 1,
+                                              title: 'postal_code',
+                                              type: 'string',
+                                            },
+                                          ],
+                                        },
+                                        state_province: {
+                                          description:
+                                            'The state or province.  For some countries (including the U.S.) only abbreviations are allowed.  Other countries allow the full name or abbreviation.\n',
+                                          example: 'Manitoba',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                      },
+                                      title: 'partial_address',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  description:
+                                    'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
+                                  required: [
+                                    'name',
+                                    'phone',
+                                    'address_line1',
+                                    'city_locality',
+                                    'state_province',
+                                    'postal_code',
+                                    'country_code',
+                                    'address_residential_indicator',
+                                  ],
+                                  title: 'address',
+                                  type: 'object',
+                                },
+                                {
+                                  additionalProperties: false,
+                                  description: 'A complete or partial mailing address.',
+                                  properties: {
+                                    instructions: {
+                                      description:
+                                        'Additional text about how to handle the shipment at this address.\n',
+                                      minLength: 1,
+                                      nullable: true,
+                                      type: 'string',
+                                    },
+                                  },
+                                  title: 'partial_shipping_address',
+                                  type: 'object',
+                                },
+                              ],
+                              title: 'shipping_address',
+                              type: 'object',
+                            },
+                          ],
+                          description:
+                            'The return address for this shipment.  Defaults to the `ship_from` address.\n',
+                        },
+                        service_code: {
+                          allOf: [
+                            {
+                              description:
+                                'A [carrier service](https://www.shipengine.com/docs/shipping/use-a-carrier-service/), such as `fedex_ground`, `usps_first_class_mail`, `flat_rate_envelope`, etc.\n',
+                              example: 'usps_first_class_mail',
+                              pattern: '^[a-z0-9]+(_[a-z0-9-]+)* ?$',
+                              title: 'service_code',
+                              type: 'string',
+                            },
+                          ],
+                          description:
+                            'The [carrier service](https://www.shipengine.com/docs/shipping/use-a-carrier-service/) used to ship the package, such as `fedex_ground`, `usps_first_class_mail`, `flat_rate_envelope`, etc.\n',
+                        },
+                        ship_date: {
+                          allOf: [
+                            {
+                              description:
+                                'An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string that represents a date, but not a specific time.  The value _may_ contain a time component, but it will be set to `00:00:00` UTC by ShipEngine.\n',
+                              example: '2018-09-23T00:00:00.000Z',
+                              format: 'date-time',
+                              pattern:
+                                '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[-+]\\d{2}:\\d{2}))?$',
+                              title: 'date',
+                              type: 'string',
+                            },
+                          ],
+                          description:
+                            'The date that the shipment was (or will be) shippped.  ShipEngine will take the day of week into consideration. For example, if the carrier does not operate on Sundays, then a package that would have shipped on Sunday will ship on Monday instead.\n',
+                        },
+                        ship_from: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              allOf: [
+                                {
+                                  additionalProperties: false,
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description: 'A complete or partial mailing address.',
+                                      properties: {
+                                        address_line1: {
+                                          description:
+                                            'The first line of the street address.  For some addresses, this may be the only line.  Other addresses may require 2 or 3 lines.\n',
+                                          example: '1999 Bishop Grandin Blvd.',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        address_line2: {
+                                          description:
+                                            'The second line of the street address.  For some addresses, this line may not be needed.\n',
+                                          example: 'Unit 408',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        address_line3: {
+                                          description:
+                                            'The third line of the street address.  For some addresses, this line may not be needed.\n',
+                                          example: 'Building #7',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        address_residential_indicator: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'Indicates whether an address is residential.',
+                                              enum: ['unknown', 'yes', 'no'],
+                                              title: 'address_residential_indicator',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          default: 'unknown',
+                                          description:
+                                            'Indicates whether this is a residential address.',
+                                          example: 'no',
+                                        },
+                                        city_locality: {
+                                          description: 'The name of the city or locality',
+                                          example: 'Winnipeg',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        company_name: {
+                                          description:
+                                            'If this is a business address, then the company name should be specified here.\n',
+                                          example: 'The Home Depot',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        country_code: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                              example: 'CA',
+                                              maxLength: 2,
+                                              minLength: 2,
+                                              title: 'country_code',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          description:
+                                            'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                        },
+                                        email: {
+                                          description: 'Email for the address owner.\n',
+                                          example: 'example@example.com',
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        name: {
+                                          description:
+                                            'The name of a contact person at this address.  This field may be set instead of - or in addition to - the `company_name` field.\n',
+                                          example: 'John Doe',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        phone: {
+                                          description:
+                                            'The phone number of a contact person at this address.  The format of this phone number varies depending on the country.\n',
+                                          example: '+1 204-253-9411 ext. 123',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        postal_code: {
+                                          allOf: [
+                                            {
+                                              description: 'postal code',
+                                              example: '78756-3717',
+                                              minLength: 1,
+                                              title: 'postal_code',
+                                              type: 'string',
+                                            },
+                                          ],
+                                        },
+                                        state_province: {
+                                          description:
+                                            'The state or province.  For some countries (including the U.S.) only abbreviations are allowed.  Other countries allow the full name or abbreviation.\n',
+                                          example: 'Manitoba',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                      },
+                                      title: 'partial_address',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  description:
+                                    'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
+                                  required: [
+                                    'name',
+                                    'phone',
+                                    'address_line1',
+                                    'city_locality',
+                                    'state_province',
+                                    'postal_code',
+                                    'country_code',
+                                    'address_residential_indicator',
+                                  ],
+                                  title: 'address',
+                                  type: 'object',
+                                },
+                                {
+                                  additionalProperties: false,
+                                  description: 'A complete or partial mailing address.',
+                                  properties: {
+                                    instructions: {
+                                      description:
+                                        'Additional text about how to handle the shipment at this address.\n',
+                                      minLength: 1,
+                                      nullable: true,
+                                      type: 'string',
+                                    },
+                                  },
+                                  title: 'partial_shipping_address',
+                                  type: 'object',
+                                },
+                              ],
+                              title: 'shipping_address',
+                              type: 'object',
+                            },
+                          ],
+                          description:
+                            "The shipment's origin address. If you frequently ship from the same location, consider [creating a warehouse](https://www.shipengine.com/docs/reference/create-warehouse/).  Then you can simply specify the `warehouse_id` rather than the complete address each time.\n",
+                        },
+                        ship_to: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              allOf: [
+                                {
+                                  additionalProperties: false,
+                                  allOf: [
+                                    {
+                                      additionalProperties: false,
+                                      description: 'A complete or partial mailing address.',
+                                      properties: {
+                                        address_line1: {
+                                          description:
+                                            'The first line of the street address.  For some addresses, this may be the only line.  Other addresses may require 2 or 3 lines.\n',
+                                          example: '1999 Bishop Grandin Blvd.',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        address_line2: {
+                                          description:
+                                            'The second line of the street address.  For some addresses, this line may not be needed.\n',
+                                          example: 'Unit 408',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        address_line3: {
+                                          description:
+                                            'The third line of the street address.  For some addresses, this line may not be needed.\n',
+                                          example: 'Building #7',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        address_residential_indicator: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'Indicates whether an address is residential.',
+                                              enum: ['unknown', 'yes', 'no'],
+                                              title: 'address_residential_indicator',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          default: 'unknown',
+                                          description:
+                                            'Indicates whether this is a residential address.',
+                                          example: 'no',
+                                        },
+                                        city_locality: {
+                                          description: 'The name of the city or locality',
+                                          example: 'Winnipeg',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        company_name: {
+                                          description:
+                                            'If this is a business address, then the company name should be specified here.\n',
+                                          example: 'The Home Depot',
+                                          minLength: 1,
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        country_code: {
+                                          allOf: [
+                                            {
+                                              description:
+                                                'A two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                              example: 'CA',
+                                              maxLength: 2,
+                                              minLength: 2,
+                                              title: 'country_code',
+                                              type: 'string',
+                                            },
+                                          ],
+                                          description:
+                                            'The two-letter [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1)\n',
+                                        },
+                                        email: {
+                                          description: 'Email for the address owner.\n',
+                                          example: 'example@example.com',
+                                          nullable: true,
+                                          type: 'string',
+                                        },
+                                        name: {
+                                          description:
+                                            'The name of a contact person at this address.  This field may be set instead of - or in addition to - the `company_name` field.\n',
+                                          example: 'John Doe',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        phone: {
+                                          description:
+                                            'The phone number of a contact person at this address.  The format of this phone number varies depending on the country.\n',
+                                          example: '+1 204-253-9411 ext. 123',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                        postal_code: {
+                                          allOf: [
+                                            {
+                                              description: 'postal code',
+                                              example: '78756-3717',
+                                              minLength: 1,
+                                              title: 'postal_code',
+                                              type: 'string',
+                                            },
+                                          ],
+                                        },
+                                        state_province: {
+                                          description:
+                                            'The state or province.  For some countries (including the U.S.) only abbreviations are allowed.  Other countries allow the full name or abbreviation.\n',
+                                          example: 'Manitoba',
+                                          minLength: 1,
+                                          type: 'string',
+                                        },
+                                      },
+                                      title: 'partial_address',
+                                      type: 'object',
+                                    },
+                                  ],
+                                  description:
+                                    'Any residential or business mailing address, anywhere in the world.\n\n> **Note:** Either `name` or `company_name` must be set. Both may be specified, if relevant.\n',
+                                  required: [
+                                    'name',
+                                    'phone',
+                                    'address_line1',
+                                    'city_locality',
+                                    'state_province',
+                                    'postal_code',
+                                    'country_code',
+                                    'address_residential_indicator',
+                                  ],
+                                  title: 'address',
+                                  type: 'object',
+                                },
+                                {
+                                  additionalProperties: false,
+                                  description: 'A complete or partial mailing address.',
+                                  properties: {
+                                    instructions: {
+                                      description:
+                                        'Additional text about how to handle the shipment at this address.\n',
+                                      minLength: 1,
+                                      nullable: true,
+                                      type: 'string',
+                                    },
+                                  },
+                                  title: 'partial_shipping_address',
+                                  type: 'object',
+                                },
+                              ],
+                              title: 'shipping_address',
+                              type: 'object',
+                            },
+                          ],
+                          description: "The recipient's mailing address",
+                        },
+                        shipment_id: {
+                          allOf: [
+                            {
+                              description:
+                                'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                              example: 'se-28529731',
+                              maxLength: 25,
+                              minLength: 1,
+                              pattern: '^se(-[a-z0-9]+)+$',
+                              title: 'se_id',
+                              type: 'string',
+                            },
+                          ],
+                          description: 'A string that uniquely identifies the shipment',
+                          readOnly: true,
+                        },
+                        shipment_number: {
+                          description:
+                            'A non-unique user-defined number used to identify a shipment.  If undefined, this will match the external_shipment_id of the shipment.\n\n> **Warning:** The `shipment_number` is limited to 50 characters. Any additional characters will be truncated.\n',
+                          maxLength: 50,
+                          nullable: true,
+                          type: 'string',
+                        },
+                        shipment_status: {
+                          allOf: [
+                            {
+                              description: 'The possible shipment status values',
+                              enum: ['pending', 'processing', 'label_purchased', 'cancelled'],
+                              title: 'shipment_status',
+                              type: 'string',
+                            },
+                          ],
+                          default: 'pending',
+                          description: 'The current status of the shipment',
+                          readOnly: true,
+                        },
+                        tags: {
+                          default: [],
+                          description:
+                            'Arbitrary tags associated with this shipment.  Tags can be used to categorize shipments, and shipments can be queried by their tags.\n',
+                          items: {
+                            allOf: [
+                              {
+                                additionalProperties: false,
+                                description:
+                                  'Tags are arbitrary strings that you can use to categorize shipments.  For example, you may want to use tags to distinguish between domestic and international shipments, or between insured and uninsured shipments.  Or maybe you want to create a tag for each of your customers so you can easily retrieve every shipment for a customer.\n',
+                                properties: {
+                                  name: {
+                                    description: 'The tag name.',
+                                    example: 'Fragile',
+                                    minLength: 1,
+                                    type: 'string',
+                                  },
+                                },
+                                required: ['name'],
+                                title: 'tag',
+                                type: 'object',
+                              },
+                            ],
+                          },
+                          minItems: 0,
+                          readOnly: true,
+                          type: 'array',
+                        },
+                        tax_identifiers: {
+                          items: {
+                            allOf: [
+                              {
+                                additionalProperties: false,
+                                description: 'A tax identifier object',
+                                properties: {
+                                  identifier_type: {
+                                    allOf: [
+                                      {
+                                        description:
+                                          'Determines how FedEx will pickup your packages\n\n|Pickup Type    | Description\n|---------------|-----------------------------------------\n|`vat`          | The tax identifier is a Value Added Tax.\n|`eori`         | The tax identifier is an Economic Operators Registration and Identification Number (EORI).\n|`ssn`          | The tax identifier is a Social Security Number.\n|`ein`          | The tax identifier is an Employer Identification Number (EIN).\n|`tin`          | The tax identifier is a Tax Identification Number (TIN).\n|`ioss`         | The tax identifier is an Import One-Stop Shop (IOSS).\n|`pan`          | The tax identifier is a Permanent Account Number (PAN).\n|`voec`         | The tax identifier is a Norwegian VAT On E-Commerce(VOEC).\n',
+                                        enum: [
+                                          'vat',
+                                          'eori',
+                                          'ssn',
+                                          'ein',
+                                          'tin',
+                                          'ioss',
+                                          'pan',
+                                          'voec',
+                                        ],
+                                        title: 'identifier_type',
+                                        type: 'string',
+                                      },
+                                    ],
+                                  },
+                                  issuing_authority: {
+                                    description:
+                                      'The authority that issued this tax. This must be a valid 2 character ISO 3166 Alpha 2 country code.',
+                                    type: 'string',
+                                  },
+                                  taxable_entity_type: {
+                                    allOf: [
+                                      {
+                                        description:
+                                          'The taxable entity type for this tax item. Valid values include the following\n\n|Value       |Description\n|:---------  |:-----------------------------------------------------\n|`shipper`   | The shipper is responsible for this tax.\n|`recipient` | The recipient of the shipment is responsible for this tax.\n',
+                                        enum: ['shipper', 'recipient'],
+                                        title: 'taxable_entity_type',
+                                        type: 'string',
+                                      },
+                                    ],
+                                  },
+                                  value: {
+                                    description: 'The value of the identifier',
+                                    type: 'string',
+                                  },
+                                },
+                                required: [
+                                  'taxable_entity_type',
+                                  'identifier_type',
+                                  'issuing_authority',
+                                  'value',
+                                ],
+                                title: 'tax_identifier',
+                                type: 'object',
+                              },
+                            ],
+                          },
+                          nullable: true,
+                          type: 'array',
+                        },
+                        total_weight: {
+                          allOf: [
+                            {
+                              additionalProperties: false,
+                              description: 'The weight of a package',
+                              properties: {
+                                unit: {
+                                  allOf: [
+                                    {
+                                      description: 'The possible weight unit values',
+                                      enum: ['pound', 'ounce', 'gram', 'kilogram'],
+                                      title: 'weight_unit',
+                                      type: 'string',
+                                    },
+                                  ],
+                                },
+                                value: {
+                                  description: 'The weight, in the specified unit',
+                                  exclusiveMinimum: true,
+                                  format: 'double',
+                                  minimum: 0,
+                                  type: 'number',
+                                },
+                              },
+                              required: ['value', 'unit'],
+                              title: 'weight',
+                              type: 'object',
+                            },
+                          ],
+                          description: 'The combined weight of all packages in the shipment',
+                          readOnly: true,
+                        },
+                        warehouse_id: {
+                          allOf: [
+                            {
+                              description:
+                                'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                              example: 'se-28529731',
+                              maxLength: 25,
+                              minLength: 1,
+                              pattern: '^se(-[a-z0-9]+)+$',
+                              title: 'se_id',
+                              type: 'string',
+                            },
+                          ],
+                          default: null,
+                          description:
+                            'The [warehouse](https://www.shipengine.com/docs/shipping/ship-from-a-warehouse/) that the shipment is being shipped from.  Either `warehouse_id` or `ship_from` must be specified.\n',
+                          nullable: true,
+                        },
+                      },
+                      title: 'partial_shipment',
+                      type: 'object',
+                    },
+                  ],
+                  description: 'An address validating shipment',
+                  required: ['shipment_id', 'carrier_id', 'service_code', 'ship_to', 'ship_from'],
+                  title: 'address_validating_shipment',
+                  type: 'object',
+                },
+              ],
+              description: 'The shipment to get a bulk rate estimate for',
+            },
+            minItems: 1,
+            type: 'array',
+          },
+        },
+        required: ['shipments'],
+        title: 'rate_request_by_shipments',
+        type: 'object',
+      },
+    ],
+    additionalProperties: false,
+  })
+  .openapi({
+    description: 'A rate shipments request body',
+    required: ['rate_options'],
+    title: 'compare_bulk_rates_request_body',
+  })
+  .openapi('CompareBulkRatesRequestBody')
 
 const CompareBulkRatesResponseBodySchema = z
   .array(BulkRateSchema)
@@ -2803,9 +7025,62 @@ const CreateShipmentResponseBodyFieldsSchema = z
   .openapi({ title: 'create_shipment_response_body_fields', required: [] })
   .openapi('CreateShipmentResponseBodyFields')
 
-const CreateAndValidateShipmentSchema = PartialShipmentSchema.and(
-  CreateShipmentResponseBodyFieldsSchema,
-)
+const CreateAndValidateShipmentSchema = (() => {
+  const Schema = (() => {
+    const Schema = PartialShipmentSchema.and(CreateShipmentResponseBodyFieldsSchema)
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'advanced_options',
+              'carrier_id',
+              'confirmation',
+              'created_at',
+              'customs',
+              'external_order_id',
+              'external_shipment_id',
+              'insurance_provider',
+              'items',
+              'modified_at',
+              'order_source_code',
+              'origin_type',
+              'packages',
+              'return_to',
+              'service_code',
+              'ship_date',
+              'ship_from',
+              'ship_to',
+              'shipment_id',
+              'shipment_number',
+              'shipment_status',
+              'tags',
+              'tax_identifiers',
+              'total_weight',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'A create and validate shipment resource',
     title: 'create_and_validate_shipment',
@@ -2841,10 +7116,22 @@ const CreateBatchRequestBodySchema = z
   })
   .openapi('CreateBatchRequestBody')
 
-const CreateBatchResponseBodySchema = BatchSchema.openapi({
-  description: 'A create batch response body',
-  title: 'create_batch_response_body',
-}).openapi('CreateBatchResponseBody')
+const CreateBatchResponseBodySchema = (() => {
+  const Schema = BatchSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({ description: 'A create batch response body', title: 'create_batch_response_body' })
+  .openapi('CreateBatchResponseBody')
 
 const DisplaySchemeSchema = z
   .enum(['label', 'qr_code', 'label_and_qr_code'])
@@ -2880,10 +7167,25 @@ const PurchaseLabelWithoutShipmentSchema = z
   })
   .openapi('PurchaseLabelWithoutShipment')
 
-const CreateLabelFromRateRequestBodySchema = PurchaseLabelWithoutShipmentSchema.openapi({
-  description: 'A purchase label without shipment request body',
-  title: 'create_label_from_rate_request_body',
-}).openapi('CreateLabelFromRateRequestBody')
+const CreateLabelFromRateRequestBodySchema = (() => {
+  const Schema = PurchaseLabelWithoutShipmentSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A purchase label without shipment request body',
+    title: 'create_label_from_rate_request_body',
+  })
+  .openapi('CreateLabelFromRateRequestBody')
 
 const LabelChargeEventSchema = z
   .enum(['carrier_default', 'on_creation', 'on_carrier_acceptance'])
@@ -2903,31 +7205,170 @@ const ImageIdSchema = z
   })
   .openapi('ImageId')
 
-const ShipmentSchema = PartialShipmentSchema.openapi({
-  description:
-    'The information necessary to ship a package, such as the origin, the destination, the carrier service, and the package dimensions and weight.\n\n> **Note:** Either `ship_from` or `warehouse_id` must be set.\n',
-  required: [
-    'shipment_id',
-    'carrier_id',
-    'service_code',
-    'ship_date',
-    'created_at',
-    'modified_at',
-    'shipment_status',
-    'ship_to',
-    'ship_from',
-    'warehouse_id',
-    'return_to',
-    'confirmation',
-    'customs',
-    'advanced_options',
-    'insurance_provider',
-    'tags',
-    'packages',
-    'total_weight',
-  ],
-  title: 'shipment',
-}).openapi('Shipment')
+const ShipmentSchema = (() => {
+  const Schema = (() => {
+    const Schema = PartialShipmentSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'shipment_id',
+            'carrier_id',
+            'service_code',
+            'ship_date',
+            'created_at',
+            'modified_at',
+            'shipment_status',
+            'ship_to',
+            'ship_from',
+            'warehouse_id',
+            'return_to',
+            'confirmation',
+            'customs',
+            'advanced_options',
+            'insurance_provider',
+            'tags',
+            'packages',
+            'total_weight',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'advanced_options',
+              'carrier_id',
+              'confirmation',
+              'created_at',
+              'customs',
+              'external_order_id',
+              'external_shipment_id',
+              'insurance_provider',
+              'items',
+              'modified_at',
+              'order_source_code',
+              'origin_type',
+              'packages',
+              'return_to',
+              'service_code',
+              'ship_date',
+              'ship_from',
+              'ship_to',
+              'shipment_id',
+              'shipment_number',
+              'shipment_status',
+              'tags',
+              'tax_identifiers',
+              'total_weight',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'shipment_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'service_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ship_date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'modified_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'shipment_status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ship_to')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ship_from')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'warehouse_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'return_to')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'confirmation')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'customs')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'advanced_options')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'insurance_provider')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'tags')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'packages')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'total_weight')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description:
+      'The information necessary to ship a package, such as the origin, the destination, the carrier service, and the package dimensions and weight.\n\n> **Note:** Either `ship_from` or `warehouse_id` must be set.\n',
+    required: [
+      'shipment_id',
+      'carrier_id',
+      'service_code',
+      'ship_date',
+      'created_at',
+      'modified_at',
+      'shipment_status',
+      'ship_to',
+      'ship_from',
+      'warehouse_id',
+      'return_to',
+      'confirmation',
+      'customs',
+      'advanced_options',
+      'insurance_provider',
+      'tags',
+      'packages',
+      'total_weight',
+    ],
+    title: 'shipment',
+  })
+  .openapi('Shipment')
 
 const LabelStatusSchema = z
   .enum(['processing', 'completed', 'error', 'voided'])
@@ -3152,10 +7593,25 @@ const LabelSchema = z
   })
   .openapi('Label')
 
-const CreateLabelFromRateResponseBodySchema = LabelSchema.openapi({
-  description: 'A create label from rate response body',
-  title: 'create_label_from_rate_response_body',
-}).openapi('CreateLabelFromRateResponseBody')
+const CreateLabelFromRateResponseBodySchema = (() => {
+  const Schema = LabelSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A create label from rate response body',
+    title: 'create_label_from_rate_response_body',
+  })
+  .openapi('CreateLabelFromRateResponseBody')
 
 const CreateLabelFromShipmentRequestBodySchema = z
   .strictObject({
@@ -3174,35 +7630,117 @@ const CreateLabelFromShipmentRequestBodySchema = z
   })
   .openapi('CreateLabelFromShipmentRequestBody')
 
-const CreateLabelFromShipmentResponseBodySchema = LabelSchema.openapi({
-  description: 'A create label from shipment response body',
-  title: 'create_label_from_shipment_response_body',
-}).openapi('CreateLabelFromShipmentResponseBody')
+const CreateLabelFromShipmentResponseBodySchema = (() => {
+  const Schema = LabelSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A create label from shipment response body',
+    title: 'create_label_from_shipment_response_body',
+  })
+  .openapi('CreateLabelFromShipmentResponseBody')
 
-const CreateLabelRequestBodySchema = LabelSchema.and(
-  z
-    .object({
-      ship_from_service_point_id: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            "A unique identifier for a carrier drop off point where a merchant plans to deliver packages. This will take precedence over a shipment's ship from address.",
-          example: '614940',
-        }),
-      ship_to_service_point_id: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            "A unique identifier for a carrier service point where the shipment will be delivered by the carrier. This will take precedence over a shipment's ship to address.",
-          example: '614940',
-        }),
-    })
-    .openapi({ required: ['shipment'] }),
-)
+const CreateLabelRequestBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = LabelSchema.and(
+      z
+        .object({
+          ship_from_service_point_id: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                "A unique identifier for a carrier drop off point where a merchant plans to deliver packages. This will take precedence over a shipment's ship from address.",
+              example: '614940',
+            }),
+          ship_to_service_point_id: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                "A unique identifier for a carrier service point where the shipment will be delivered by the carrier. This will take precedence over a shipment's ship to address.",
+              example: '614940',
+            }),
+        })
+        .openapi({ required: ['shipment'] }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'alternative_identifiers',
+              'batch_id',
+              'carrier_code',
+              'carrier_id',
+              'charge_event',
+              'created_at',
+              'display_scheme',
+              'form_download',
+              'insurance_claim',
+              'insurance_cost',
+              'is_international',
+              'is_return_label',
+              'label_download',
+              'label_download_type',
+              'label_format',
+              'label_id',
+              'label_image_id',
+              'label_layout',
+              'outbound_label_id',
+              'package_code',
+              'packages',
+              'rma_number',
+              'service_code',
+              'ship_date',
+              'shipment',
+              'shipment_cost',
+              'shipment_id',
+              'status',
+              'test_label',
+              'trackable',
+              'tracking_number',
+              'tracking_status',
+              'validate_address',
+              'voided',
+              'voided_at',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['ship_from_service_point_id', 'ship_to_service_point_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'A purchase label request body',
     required: ['shipment'],
@@ -3210,41 +7748,234 @@ const CreateLabelRequestBodySchema = LabelSchema.and(
   })
   .openapi('CreateLabelRequestBody')
 
-const CreateLabelResponseBodySchema = LabelSchema.openapi({
-  description: 'A create label response body',
-  required: [
-    'label_id',
-    'status',
-    'shipment_id',
-    'ship_date',
-    'created_at',
-    'shipment_cost',
-    'insurance_cost',
-    'tracking_number',
-    'is_international',
-    'batch_id',
-    'carrier_id',
-    'service_code',
-    'voided',
-    'voided_at',
-    'label_image_id',
-    'label_format',
-    'label_layout',
-    'trackable',
-    'carrier_code',
-    'tracking_status',
-    'label_download',
-    'form_download',
-    'insurance_claim',
-    'packages',
-    'is_return_label',
-    'rma_number',
-    'charge_event',
-    'package_code',
-    'display_scheme',
-  ],
-  title: 'create_label_response_body',
-}).openapi('CreateLabelResponseBody')
+const CreateLabelResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = LabelSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'label_id',
+            'status',
+            'shipment_id',
+            'ship_date',
+            'created_at',
+            'shipment_cost',
+            'insurance_cost',
+            'tracking_number',
+            'is_international',
+            'batch_id',
+            'carrier_id',
+            'service_code',
+            'voided',
+            'voided_at',
+            'label_image_id',
+            'label_format',
+            'label_layout',
+            'trackable',
+            'carrier_code',
+            'tracking_status',
+            'label_download',
+            'form_download',
+            'insurance_claim',
+            'packages',
+            'is_return_label',
+            'rma_number',
+            'charge_event',
+            'package_code',
+            'display_scheme',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'alternative_identifiers',
+              'batch_id',
+              'carrier_code',
+              'carrier_id',
+              'charge_event',
+              'created_at',
+              'display_scheme',
+              'form_download',
+              'insurance_claim',
+              'insurance_cost',
+              'is_international',
+              'is_return_label',
+              'label_download',
+              'label_download_type',
+              'label_format',
+              'label_id',
+              'label_image_id',
+              'label_layout',
+              'outbound_label_id',
+              'package_code',
+              'packages',
+              'rma_number',
+              'service_code',
+              'ship_date',
+              'shipment',
+              'shipment_cost',
+              'shipment_id',
+              'status',
+              'test_label',
+              'trackable',
+              'tracking_number',
+              'tracking_status',
+              'validate_address',
+              'voided',
+              'voided_at',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'label_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'shipment_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ship_date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'shipment_cost')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'insurance_cost')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'tracking_number')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'is_international')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'batch_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'service_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'voided')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'voided_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'label_image_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'label_format')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'label_layout')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'trackable')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'tracking_status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'label_download')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'form_download')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'insurance_claim')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'packages')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'is_return_label')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'rma_number')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'charge_event')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'package_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'display_scheme')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A create label response body',
+    required: [
+      'label_id',
+      'status',
+      'shipment_id',
+      'ship_date',
+      'created_at',
+      'shipment_cost',
+      'insurance_cost',
+      'tracking_number',
+      'is_international',
+      'batch_id',
+      'carrier_id',
+      'service_code',
+      'voided',
+      'voided_at',
+      'label_image_id',
+      'label_format',
+      'label_layout',
+      'trackable',
+      'carrier_code',
+      'tracking_status',
+      'label_download',
+      'form_download',
+      'insurance_claim',
+      'packages',
+      'is_return_label',
+      'rma_number',
+      'charge_event',
+      'package_code',
+      'display_scheme',
+    ],
+    title: 'create_label_response_body',
+  })
+  .openapi('CreateLabelResponseBody')
 
 const CreateManifestByObjectRequestBodySchema = z
   .strictObject({
@@ -3525,9 +8256,126 @@ const ErrorWithLabelIdResponseBodySchema = z
   })
   .openapi('ErrorWithLabelIdResponseBody')
 
-const CreateManifestResponseBodySchema = ManifestsSchema.and(ManifestsRequestsSchema)
-  .and(DeprecatedManifestSchema)
-  .and(ErrorWithLabelIdResponseBodySchema)
+const CreateManifestResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = (() => {
+      const Schema = ManifestsSchema.and(
+        z
+          .looseObject({})
+          .openapi({
+            required: [
+              'manifest_id',
+              'form_id',
+              'created_at',
+              'ship_date',
+              'shipments',
+              'warehouse_id',
+              'submission_id',
+              'carrier_id',
+              'manifest_download',
+            ],
+          }),
+      )
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          for (const k of Object.keys(o)) {
+            if (!['manifests'].includes(k)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })()
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'manifest_id')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'form_id')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'created_at')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'ship_date')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'shipments')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'warehouse_id')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'submission_id')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'carrier_id')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'manifest_download')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(ManifestsRequestsSchema)
+      .and(DeprecatedManifestSchema)
+      .and(ErrorWithLabelIdResponseBodySchema)
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (!['manifests'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+        for (const k of Object.keys(o)) {
+          if (!['manifest_requests'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'carrier_id',
+              'created_at',
+              'form_id',
+              'label_ids',
+              'manifest_download',
+              'manifest_id',
+              'ship_date',
+              'shipments',
+              'submission_id',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+        for (const k of Object.keys(o)) {
+          if (!['errors', 'request_id'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'A create manifest response body',
     required: [
@@ -3545,15 +8393,45 @@ const CreateManifestResponseBodySchema = ManifestsSchema.and(ManifestsRequestsSc
   })
   .openapi('CreateManifestResponseBody')
 
-const CreatePackageTypeRequestBodySchema = PackageTypeSchema.openapi({
-  description: 'A create package type request body',
-  title: 'create_package_type_request_body',
-}).openapi('CreatePackageTypeRequestBody')
+const CreatePackageTypeRequestBodySchema = (() => {
+  const Schema = PackageTypeSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A create package type request body',
+    title: 'create_package_type_request_body',
+  })
+  .openapi('CreatePackageTypeRequestBody')
 
-const CreatePackageTypeResponseBodySchema = PackageTypeSchema.openapi({
-  description: 'A create package type response body',
-  title: 'create_package_type_response_body',
-}).openapi('CreatePackageTypeResponseBody')
+const CreatePackageTypeResponseBodySchema = (() => {
+  const Schema = PackageTypeSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A create package type response body',
+    title: 'create_package_type_response_body',
+  })
+  .openapi('CreatePackageTypeResponseBody')
 
 const CreateReturnLabelRequestBodySchema = z
   .strictObject({
@@ -3591,10 +8469,25 @@ const CreateReturnLabelRequestBodySchema = z
   })
   .openapi('CreateReturnLabelRequestBody')
 
-const CreateReturnLabelResponseBodySchema = LabelSchema.openapi({
-  description: 'A create return label response body',
-  title: 'create_return_label_response_body',
-}).openapi('CreateReturnLabelResponseBody')
+const CreateReturnLabelResponseBodySchema = (() => {
+  const Schema = LabelSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A create return label response body',
+    title: 'create_return_label_response_body',
+  })
+  .openapi('CreateReturnLabelResponseBody')
 
 const CreateShipmentsRequestBodySchema = z
   .strictObject({
@@ -3629,10 +8522,22 @@ const CreateShipmentsResponseBodySchema = z
   })
   .openapi('CreateShipmentsResponseBody')
 
-const CreateTagResponseBodySchema = TagSchema.openapi({
-  description: 'Response body for creating tags',
-  title: 'create_tag_response_body',
-}).openapi('CreateTagResponseBody')
+const CreateTagResponseBodySchema = (() => {
+  const Schema = TagSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({ description: 'Response body for creating tags', title: 'create_tag_response_body' })
+  .openapi('CreateTagResponseBody')
 
 const WarehouseSchema = z
   .strictObject({
@@ -3670,17 +8575,128 @@ const WarehouseSchema = z
   .openapi({ description: 'A warehouse', title: 'warehouse', required: [] })
   .openapi('Warehouse')
 
-const CreateWarehouseRequestBodySchema = WarehouseSchema.openapi({
-  description: 'A create warehouse request body',
-  required: ['name', 'origin_address'],
-  title: 'create_warehouse_request_body',
-}).openapi('CreateWarehouseRequestBody')
+const CreateWarehouseRequestBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = WarehouseSchema.and(
+      z.looseObject({}).openapi({ required: ['name', 'origin_address'] }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'created_at',
+              'is_default',
+              'name',
+              'origin_address',
+              'return_address',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'origin_address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A create warehouse request body',
+    required: ['name', 'origin_address'],
+    title: 'create_warehouse_request_body',
+  })
+  .openapi('CreateWarehouseRequestBody')
 
-const CreateWarehouseResponseBodySchema = WarehouseSchema.openapi({
-  description: 'A create warehouse response body',
-  required: ['warehouse_id', 'name', 'created_at', 'origin_address', 'return_address'],
-  title: 'create_warehouse_response_body',
-}).openapi('CreateWarehouseResponseBody')
+const CreateWarehouseResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = WarehouseSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: ['warehouse_id', 'name', 'created_at', 'origin_address', 'return_address'],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'created_at',
+              'is_default',
+              'name',
+              'origin_address',
+              'return_address',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'warehouse_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'origin_address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'return_address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A create warehouse response body',
+    required: ['warehouse_id', 'name', 'created_at', 'origin_address', 'return_address'],
+    title: 'create_warehouse_response_body',
+  })
+  .openapi('CreateWarehouseResponseBody')
 
 const WebhookEventSchema = z
   .enum([
@@ -3725,11 +8741,54 @@ const WebhookSchema = z
   .openapi({ description: 'A webhook', title: 'webhook', required: [] })
   .openapi('Webhook')
 
-const CreateWebhookResponseBodySchema = WebhookSchema.openapi({
-  description: 'A webhook response body',
-  required: ['webhook_id', 'url', 'event'],
-  title: 'create_webhook_response_body',
-}).openapi('CreateWebhookResponseBody')
+const CreateWebhookResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = WebhookSchema.and(
+      z.looseObject({}).openapi({ required: ['webhook_id', 'url', 'event'] }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (!['event', 'url', 'webhook_id'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'webhook_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'url')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'event')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A webhook response body',
+    required: ['webhook_id', 'url', 'event'],
+    title: 'create_webhook_response_body',
+  })
+  .openapi('CreateWebhookResponseBody')
 
 const ErrorResponseBodySchema = z
   .strictObject({
@@ -3767,9 +8826,26 @@ const DeleteScheduledPickupResponseBodySchema = z
   })
   .openapi('DeleteScheduledPickupResponseBody')
 
-const DeletePickupByIdResponseBodySchema = ErrorResponseBodySchema.and(
-  DeleteScheduledPickupResponseBodySchema,
-)
+const DeletePickupByIdResponseBodySchema = (() => {
+  const Schema = ErrorResponseBodySchema.and(DeleteScheduledPickupResponseBodySchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['errors', 'request_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['pickup_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'delete_pickup_by_id_response_body' })
   .openapi('DeletePickupByIdResponseBody')
 
@@ -3795,10 +8871,25 @@ const DhlExpressAccountSettingsSchema = z
   })
   .openapi('DhlExpressAccountSettings')
 
-const DhlExpressSettingsResponseBodySchema = DhlExpressAccountSettingsSchema.openapi({
-  description: 'A DHL Express response body',
-  title: 'dhl_express_settings_response_body',
-}).openapi('DhlExpressSettingsResponseBody')
+const DhlExpressSettingsResponseBodySchema = (() => {
+  const Schema = DhlExpressAccountSettingsSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A DHL Express response body',
+    title: 'dhl_express_settings_response_body',
+  })
+  .openapi('DhlExpressSettingsResponseBody')
 
 const DisconnectInsurerResponseBodySchema = z
   .looseObject({})
@@ -3866,22 +8957,192 @@ const RateEstimateOptionsSchema = z
   .openapi({ title: 'rate_estimate_options', required: [] })
   .openapi('RateEstimateOptions')
 
-const EstimateRatesRequestBodySchema = RateEstimateOptionsSchema.openapi({
-  description: 'A rate estimate request body',
-  required: [
-    'from_country_code',
-    'from_postal_code',
-    'from_city_locality',
-    'from_state_province',
-    'to_country_code',
-    'to_postal_code',
-    'to_city_locality',
-    'to_state_province',
-    'weight',
-    'ship_date',
-  ],
-  title: 'estimate_rates_request_body',
-}).openapi('EstimateRatesRequestBody')
+const RateEstimateByCarrierIdSchema = z
+  .object({
+    carrier_id: SeIdSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'A string that uniquely identifies the carrier',
+    }),
+  })
+  .openapi({ title: 'rate_estimate_by_carrier_id', required: [] })
+  .openapi('RateEstimateByCarrierId')
+
+const RateEstimateByCarrierIdsSchema = z
+  .object({
+    carrier_ids: z
+      .array(SeIdSchema.openapi({ description: 'carrier id' }))
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'Array of Carrier Ids' }),
+  })
+  .openapi({ title: 'rate_estimate_by_carrier_ids', required: [] })
+  .openapi('RateEstimateByCarrierIds')
+
+const EstimateRatesRequestBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = RateEstimateOptionsSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'from_country_code',
+            'from_postal_code',
+            'from_city_locality',
+            'from_state_province',
+            'to_country_code',
+            'to_postal_code',
+            'to_city_locality',
+            'to_state_province',
+            'weight',
+            'ship_date',
+          ],
+        }),
+    ).superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'from_country_code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'from_postal_code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'from_city_locality')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'from_state_province')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'to_country_code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'to_postal_code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'to_city_locality')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'to_state_province')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'weight')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'ship_date')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      const reported = ctx.issues.length
+      try {
+        ;((ctx) => {
+          const val = ctx.value
+          if (
+            (RateEstimateByCarrierIdSchema.safeParse(val).success ? 1 : 0) +
+              (RateEstimateByCarrierIdsSchema.safeParse(val).success ? 1 : 0) !==
+            1
+          ) {
+            ctx.issues.push({ code: 'custom', input: val })
+          }
+        })(ctx)
+      } catch (error) {
+        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+        ctx.issues.length = reported
+        return (async (ctx) => {
+          const val = ctx.value
+          if (
+            ((await RateEstimateByCarrierIdSchema.safeParseAsync(val)).success ? 1 : 0) +
+              ((await RateEstimateByCarrierIdsSchema.safeParseAsync(val)).success ? 1 : 0) !==
+            1
+          ) {
+            ctx.issues.push({ code: 'custom', input: val })
+          }
+        })(ctx).then(() => val)
+      }
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({
+    oneOf: [
+      {
+        properties: {
+          carrier_id: {
+            allOf: [
+              {
+                description:
+                  'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                example: 'se-28529731',
+                maxLength: 25,
+                minLength: 1,
+                pattern: '^se(-[a-z0-9]+)+$',
+                title: 'se_id',
+                type: 'string',
+              },
+            ],
+            deprecated: true,
+            description: 'A string that uniquely identifies the carrier',
+          },
+        },
+        title: 'rate_estimate_by_carrier_id',
+        type: 'object',
+      },
+      {
+        properties: {
+          carrier_ids: {
+            description: 'Array of Carrier Ids',
+            items: {
+              allOf: [
+                {
+                  description:
+                    'A string that uniquely identifies a ShipEngine resource, such as a carrier, label, shipment, etc.',
+                  example: 'se-28529731',
+                  maxLength: 25,
+                  minLength: 1,
+                  pattern: '^se(-[a-z0-9]+)+$',
+                  title: 'se_id',
+                  type: 'string',
+                },
+              ],
+              description: 'carrier id',
+              type: 'string',
+            },
+            minItems: 1,
+            type: 'array',
+          },
+        },
+        title: 'rate_estimate_by_carrier_ids',
+        type: 'object',
+      },
+    ],
+    additionalProperties: false,
+  })
+  .openapi({
+    description: 'A rate estimate request body',
+    required: [
+      'from_country_code',
+      'from_postal_code',
+      'from_city_locality',
+      'from_state_province',
+      'to_country_code',
+      'to_postal_code',
+      'to_city_locality',
+      'to_state_province',
+      'weight',
+      'ship_date',
+    ],
+    title: 'estimate_rates_request_body',
+  })
+  .openapi('EstimateRatesRequestBody')
 
 const RateEstimateSchema = z
   .strictObject({
@@ -4088,30 +9349,102 @@ const FedexAccountSettingsSchema = z
   })
   .openapi('FedexAccountSettings')
 
-const FedexAccountSettingsRequestBodySchema = FedexAccountSettingsSchema.openapi({
-  description: 'A Fedex account settings request body',
-  title: 'fedex_account_settings_request_body',
-}).openapi('FedexAccountSettingsRequestBody')
+const FedexAccountSettingsRequestBodySchema = (() => {
+  const Schema = FedexAccountSettingsSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A Fedex account settings request body',
+    title: 'fedex_account_settings_request_body',
+  })
+  .openapi('FedexAccountSettingsRequestBody')
 
-const FedexSettingsResponseBodySchema = FedexAccountSettingsRequestBodySchema.openapi({
-  description: 'A Fedex settings response body',
-  title: 'fedex_settings_response_body',
-}).openapi('FedexSettingsResponseBody')
+const FedexSettingsResponseBodySchema = (() => {
+  const Schema = FedexAccountSettingsRequestBodySchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({ description: 'A Fedex settings response body', title: 'fedex_settings_response_body' })
+  .openapi('FedexSettingsResponseBody')
 
-const GetBatchByExternalIdResponseBodySchema = BatchSchema.openapi({
-  description: 'A get batch by external id response body',
-  title: 'get_batch_by_external_id_response_body',
-}).openapi('GetBatchByExternalIdResponseBody')
+const GetBatchByExternalIdResponseBodySchema = (() => {
+  const Schema = BatchSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get batch by external id response body',
+    title: 'get_batch_by_external_id_response_body',
+  })
+  .openapi('GetBatchByExternalIdResponseBody')
 
-const GetBatchByIdResponseBodySchema = BatchSchema.openapi({
-  description: 'A get batch by id response body',
-  title: 'get_batch_by_id_response_body',
-}).openapi('GetBatchByIdResponseBody')
+const GetBatchByIdResponseBodySchema = (() => {
+  const Schema = BatchSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get batch by id response body',
+    title: 'get_batch_by_id_response_body',
+  })
+  .openapi('GetBatchByIdResponseBody')
 
-const GetCarrierByIdResponseBodySchema = CarrierSchema.openapi({
-  description: 'A get carrier by id response body',
-  title: 'get_carrier_by_id_response_body',
-}).openapi('GetCarrierByIdResponseBody')
+const GetCarrierByIdResponseBodySchema = (() => {
+  const Schema = CarrierSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get carrier by id response body',
+    title: 'get_carrier_by_id_response_body',
+  })
+  .openapi('GetCarrierByIdResponseBody')
 
 const GetCarrierOptionsResponseBodySchema = z
   .strictObject({
@@ -4176,10 +9509,22 @@ const UpsAccountSettingsSchema = z
   .openapi({ description: 'UPS account settings', title: 'ups_account_settings', required: [] })
   .openapi('UpsAccountSettings')
 
-const UpsSettingsResponseBodySchema = UpsAccountSettingsSchema.openapi({
-  description: 'A UPS settings response body',
-  title: 'ups_settings_response_body',
-}).openapi('UpsSettingsResponseBody')
+const UpsSettingsResponseBodySchema = (() => {
+  const Schema = UpsAccountSettingsSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({ description: 'A UPS settings response body', title: 'ups_settings_response_body' })
+  .openapi('UpsSettingsResponseBody')
 
 const GetCarrierSettingsResponseBodySchema = z
   .xor([
@@ -4203,46 +9548,217 @@ const ListCarriersResponseBodySchema = z
   })
   .openapi('ListCarriersResponseBody')
 
-const GetCarriersResponseBodySchema = ListCarriersResponseBodySchema.and(ErrorResponseBodySchema)
+const GetCarriersResponseBodySchema = (() => {
+  const Schema = ListCarriersResponseBodySchema.and(ErrorResponseBodySchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['carriers'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['errors', 'request_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'get_carriers_response_body' })
   .openapi('GetCarriersResponseBody')
 
-const GetInsuranceBalanceResponseBodySchema = MonetaryValueSchema.openapi({
-  description: 'A get insurance balance response body',
-  title: 'get_insurance_balance_response_body',
-}).openapi('GetInsuranceBalanceResponseBody')
+const GetInsuranceBalanceResponseBodySchema = (() => {
+  const Schema = MonetaryValueSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get insurance balance response body',
+    title: 'get_insurance_balance_response_body',
+  })
+  .openapi('GetInsuranceBalanceResponseBody')
 
-const GetLabelByExternalShipmentIdResponseBodySchema = LabelSchema.openapi({
-  description: 'A get label by external shipment id response body',
-  title: 'get_label_by_external_shipment_id_response_body',
-}).openapi('GetLabelByExternalShipmentIdResponseBody')
+const GetLabelByExternalShipmentIdResponseBodySchema = (() => {
+  const Schema = LabelSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get label by external shipment id response body',
+    title: 'get_label_by_external_shipment_id_response_body',
+  })
+  .openapi('GetLabelByExternalShipmentIdResponseBody')
 
-const GetLabelByIdResponseBodySchema = LabelSchema.openapi({
-  description: 'A get label by id response body',
-  title: 'get_label_by_id_response_body',
-}).openapi('GetLabelByIdResponseBody')
+const GetLabelByIdResponseBodySchema = (() => {
+  const Schema = LabelSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get label by id response body',
+    title: 'get_label_by_id_response_body',
+  })
+  .openapi('GetLabelByIdResponseBody')
 
-const GetManifestByIdResponseBodySchema = ManifestSchema.openapi({
-  description: 'A get manifest by id response body',
-  required: [
-    'manifest_id',
-    'form_id',
-    'created_at',
-    'ship_date',
-    'shipments',
-    'warehouse_id',
-    'submission_id',
-    'carrier_id',
-    'manifest_download',
-    'label_ids',
-  ],
-  title: 'get_manifest_by_id_response_body',
-}).openapi('GetManifestByIdResponseBody')
+const GetManifestByIdResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = ManifestSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'manifest_id',
+            'form_id',
+            'created_at',
+            'ship_date',
+            'shipments',
+            'warehouse_id',
+            'submission_id',
+            'carrier_id',
+            'manifest_download',
+            'label_ids',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'carrier_id',
+              'created_at',
+              'form_id',
+              'label_ids',
+              'manifest_download',
+              'manifest_id',
+              'ship_date',
+              'shipments',
+              'submission_id',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'manifest_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'form_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ship_date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'shipments')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'warehouse_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'submission_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'manifest_download')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'label_ids')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get manifest by id response body',
+    required: [
+      'manifest_id',
+      'form_id',
+      'created_at',
+      'ship_date',
+      'shipments',
+      'warehouse_id',
+      'submission_id',
+      'carrier_id',
+      'manifest_download',
+      'label_ids',
+    ],
+    title: 'get_manifest_by_id_response_body',
+  })
+  .openapi('GetManifestByIdResponseBody')
 
-const GetPackageTypeByIdResponseBodySchema = PackageTypeSchema.openapi({
-  description: 'A get package type by id response body',
-  title: 'get_package_type_by_id_response_body',
-}).openapi('GetPackageTypeByIdResponseBody')
+const GetPackageTypeByIdResponseBodySchema = (() => {
+  const Schema = PackageTypeSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get package type by id response body',
+    title: 'get_package_type_by_id_response_body',
+  })
+  .openapi('GetPackageTypeByIdResponseBody')
 
 const PickupWindowSchema = z
   .object({ end_at: DateTimeSchema, start_at: DateTimeSchema })
@@ -4319,25 +9835,187 @@ const PickupSchema = z
   })
   .openapi('Pickup')
 
-const PickupResponseBodySchema = PickupSchema.openapi({
-  description: 'A pickup response body',
-  required: [
-    'pickup',
-    'pickup_id',
-    'label_ids',
-    'created_at',
-    'carrier_id',
-    'warehouse_id',
-    'pickup_address',
-    'contact_details',
-    'notes',
-    'pickup_window',
-    'confirmation_number',
-  ],
-  title: 'pickup_response_body',
-}).openapi('PickupResponseBody')
+const PickupResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = PickupSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'pickup',
+            'pickup_id',
+            'label_ids',
+            'created_at',
+            'carrier_id',
+            'warehouse_id',
+            'pickup_address',
+            'contact_details',
+            'notes',
+            'pickup_window',
+            'confirmation_number',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'cancelled_at',
+              'carrier_id',
+              'confirmation_number',
+              'contact_details',
+              'created_at',
+              'label_ids',
+              'pickup_address',
+              'pickup_id',
+              'pickup_notes',
+              'pickup_window',
+              'pickup_windows',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'pickup')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'pickup_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'label_ids')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'warehouse_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'pickup_address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'contact_details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'notes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'pickup_window')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'confirmation_number')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A pickup response body',
+    required: [
+      'pickup',
+      'pickup_id',
+      'label_ids',
+      'created_at',
+      'carrier_id',
+      'warehouse_id',
+      'pickup_address',
+      'contact_details',
+      'notes',
+      'pickup_window',
+      'confirmation_number',
+    ],
+    title: 'pickup_response_body',
+  })
+  .openapi('PickupResponseBody')
 
-const GetPickupByIdResponseBodySchema = PickupResponseBodySchema.and(ErrorResponseBodySchema)
+const GetPickupByIdResponseBodySchema = (() => {
+  const Member0 = PickupResponseBodySchema
+  const Schema = Member0.and(ErrorResponseBodySchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    const reported = ctx.issues.length
+    try {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        {
+          const result = Member0.safeParse(o)
+          if (
+            !result.success &&
+            result.error.issues.every(
+              (issue) => issue.code === 'unrecognized_keys' && issue.path.length === 0,
+            )
+          ) {
+            for (const issue of result.error.issues) {
+              if (issue.code === 'unrecognized_keys') {
+                for (const k of issue.keys) {
+                  ctx.issues.push({ code: 'custom', path: [k], input: o, message: issue.message })
+                }
+              }
+            }
+          }
+        }
+        for (const k of Object.keys(o)) {
+          if (!['errors', 'request_id'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+    } catch (error) {
+      if (!(error instanceof z.core.$ZodAsyncError)) throw error
+      ctx.issues.length = reported
+      return (async (ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        {
+          const result = await Member0.safeParseAsync(o)
+          if (
+            !result.success &&
+            result.error.issues.every(
+              (issue) => issue.code === 'unrecognized_keys' && issue.path.length === 0,
+            )
+          ) {
+            for (const issue of result.error.issues) {
+              if (issue.code === 'unrecognized_keys') {
+                for (const k of issue.keys) {
+                  ctx.issues.push({ code: 'custom', path: [k], input: o, message: issue.message })
+                }
+              }
+            }
+          }
+        }
+        for (const k of Object.keys(o)) {
+          if (!['errors', 'request_id'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx).then(() => val)
+    }
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'get_pickup_by_id_response_body' })
   .openapi('GetPickupByIdResponseBody')
 
@@ -4392,23 +10070,137 @@ const ListPickupResponseBodySchema = z
   })
   .openapi('ListPickupResponseBody')
 
-const GetPickupsResponseBodySchema = ListPickupResponseBodySchema.and(ErrorResponseBodySchema)
+const GetPickupsResponseBodySchema = (() => {
+  const Schema = ListPickupResponseBodySchema.and(ErrorResponseBodySchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['links', 'page', 'pages', 'pickups', 'total'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['errors', 'request_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'get_pickups_response_body' })
   .openapi('GetPickupsResponseBody')
 
-const GetRateByIdResponseBodySchema = RateSchema.openapi({
-  description: 'A rate response body',
-  required: [
-    'rates',
-    'invalid_rates',
-    'rate_request_id',
-    'shipment_id',
-    'created_at',
-    'status',
-    'errors',
-  ],
-  title: 'get_rate_by_id_response_body',
-}).openapi('GetRateByIdResponseBody')
+const GetRateByIdResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = RateSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'rates',
+            'invalid_rates',
+            'rate_request_id',
+            'shipment_id',
+            'created_at',
+            'status',
+            'errors',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'carrier_code',
+              'carrier_delivery_days',
+              'carrier_friendly_name',
+              'carrier_id',
+              'carrier_nickname',
+              'confirmation_amount',
+              'delivery_days',
+              'error_messages',
+              'estimated_delivery_date',
+              'guaranteed_service',
+              'insurance_amount',
+              'negotiated_rate',
+              'other_amount',
+              'package_type',
+              'rate_id',
+              'rate_type',
+              'service_code',
+              'service_type',
+              'ship_date',
+              'shipping_amount',
+              'tax_amount',
+              'trackable',
+              'validation_status',
+              'warning_messages',
+              'zone',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'rates')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'invalid_rates')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'rate_request_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'shipment_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'errors')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A rate response body',
+    required: [
+      'rates',
+      'invalid_rates',
+      'rate_request_id',
+      'shipment_id',
+      'created_at',
+      'status',
+      'errors',
+    ],
+    title: 'get_rate_by_id_response_body',
+  })
+  .openapi('GetRateByIdResponseBody')
 
 const GetServicePointByIdResponseBodySchema = z
   .object({
@@ -4607,15 +10399,45 @@ const GetServicePointsRequestSchema = z
   .openapi({ title: 'get_service_points_request' })
   .openapi('GetServicePointsRequest')
 
-const GetShipmentByExternalIdResponseBodySchema = ShipmentSchema.openapi({
-  description: 'A get shipment by external id response body',
-  title: 'get_shipment_by_external_id_response_body',
-}).openapi('GetShipmentByExternalIdResponseBody')
+const GetShipmentByExternalIdResponseBodySchema = (() => {
+  const Schema = ShipmentSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get shipment by external id response body',
+    title: 'get_shipment_by_external_id_response_body',
+  })
+  .openapi('GetShipmentByExternalIdResponseBody')
 
-const GetShipmentByIdResponseBodySchema = ShipmentSchema.openapi({
-  description: 'A get shipment by id response body',
-  title: 'get_shipment_by_id_response_body',
-}).openapi('GetShipmentByIdResponseBody')
+const GetShipmentByIdResponseBodySchema = (() => {
+  const Schema = ShipmentSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get shipment by id response body',
+    title: 'get_shipment_by_id_response_body',
+  })
+  .openapi('GetShipmentByIdResponseBody')
 
 const StatusCodeSchema = z
   .enum(['un', 'ac', 'it', 'de', 'ex', 'at', 'ny'])
@@ -4779,45 +10601,318 @@ const TrackingInformationSchema = z
   })
   .openapi('TrackingInformation')
 
-const GetTrackingLogFromLabelResponseBodySchema = TrackingInformationSchema.openapi({
-  description: 'A get tracking log from label response body',
-  required: [
-    'tracking_number',
-    'status_code',
-    'carrier_status_code',
-    'estimated_delivery_date',
-    'events',
-  ],
-  title: 'get_tracking_log_from_label_response_body',
-}).openapi('GetTrackingLogFromLabelResponseBody')
+const GetTrackingLogFromLabelResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = TrackingInformationSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'tracking_number',
+            'status_code',
+            'carrier_status_code',
+            'estimated_delivery_date',
+            'events',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'actual_delivery_date',
+              'carrier_code',
+              'carrier_detail_code',
+              'carrier_id',
+              'carrier_status_code',
+              'carrier_status_description',
+              'estimated_delivery_date',
+              'events',
+              'exception_description',
+              'ship_date',
+              'status_code',
+              'status_description',
+              'tracking_number',
+              'tracking_url',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'tracking_number')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_status_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'estimated_delivery_date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'events')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get tracking log from label response body',
+    required: [
+      'tracking_number',
+      'status_code',
+      'carrier_status_code',
+      'estimated_delivery_date',
+      'events',
+    ],
+    title: 'get_tracking_log_from_label_response_body',
+  })
+  .openapi('GetTrackingLogFromLabelResponseBody')
 
-const GetTrackingLogResponseBodySchema = TrackingInformationSchema.openapi({
-  description: 'A get tracking log response body',
-  required: [
-    'tracking_number',
-    'tracking_url',
-    'status_code',
-    'carrier_code',
-    'carrier_id',
-    'carrier_detail_code',
-    'carrier_status_code',
-    'estimated_delivery_date',
-    'events',
-  ],
-  title: 'get_tracking_log_response_body',
-}).openapi('GetTrackingLogResponseBody')
+const GetTrackingLogResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = TrackingInformationSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'tracking_number',
+            'tracking_url',
+            'status_code',
+            'carrier_code',
+            'carrier_id',
+            'carrier_detail_code',
+            'carrier_status_code',
+            'estimated_delivery_date',
+            'events',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'actual_delivery_date',
+              'carrier_code',
+              'carrier_detail_code',
+              'carrier_id',
+              'carrier_status_code',
+              'carrier_status_description',
+              'estimated_delivery_date',
+              'events',
+              'exception_description',
+              'ship_date',
+              'status_code',
+              'status_description',
+              'tracking_number',
+              'tracking_url',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'tracking_number')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'tracking_url')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_detail_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_status_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'estimated_delivery_date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'events')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get tracking log response body',
+    required: [
+      'tracking_number',
+      'tracking_url',
+      'status_code',
+      'carrier_code',
+      'carrier_id',
+      'carrier_detail_code',
+      'carrier_status_code',
+      'estimated_delivery_date',
+      'events',
+    ],
+    title: 'get_tracking_log_response_body',
+  })
+  .openapi('GetTrackingLogResponseBody')
 
-const GetWarehouseByIdResponseBodySchema = WarehouseSchema.openapi({
-  description: 'A get warehouse by id response body',
-  required: ['warehouse_id', 'name', 'created_at', 'origin_address', 'return_address'],
-  title: 'get_warehouse_by_id_response_body',
-}).openapi('GetWarehouseByIdResponseBody')
+const GetWarehouseByIdResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = WarehouseSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: ['warehouse_id', 'name', 'created_at', 'origin_address', 'return_address'],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'created_at',
+              'is_default',
+              'name',
+              'origin_address',
+              'return_address',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'warehouse_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'origin_address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'return_address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get warehouse by id response body',
+    required: ['warehouse_id', 'name', 'created_at', 'origin_address', 'return_address'],
+    title: 'get_warehouse_by_id_response_body',
+  })
+  .openapi('GetWarehouseByIdResponseBody')
 
-const GetWebhookByIdResponseBodySchema = WebhookSchema.openapi({
-  description: 'A get webhook id response body',
-  required: ['webhook_id', 'url', 'event'],
-  title: 'get_webhook_by_id_response_body',
-}).openapi('GetWebhookByIdResponseBody')
+const GetWebhookByIdResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = WebhookSchema.and(
+      z.looseObject({}).openapi({ required: ['webhook_id', 'url', 'event'] }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (!['event', 'url', 'webhook_id'].includes(k)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'webhook_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'url')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'event')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A get webhook id response body',
+    required: ['webhook_id', 'url', 'event'],
+    title: 'get_webhook_by_id_response_body',
+  })
+  .openapi('GetWebhookByIdResponseBody')
 
 const ListBatchErrorsResponseBodySchema = z
   .strictObject({
@@ -4913,8 +11008,8 @@ const ListCarrierServicesResponseBodySchema = z
   })
   .openapi('ListCarrierServicesResponseBody')
 
-const ListLabelsResponseBodySchema: z.ZodType<ListLabelsResponseBodyType> =
-  PagedListResponseBodySchema.and(
+const ListLabelsResponseBodySchema: z.ZodType<ListLabelsResponseBodyType> = (() => {
+  const Schema = PagedListResponseBodySchema.and(
     z
       .object({
         labels: z
@@ -5136,12 +11231,26 @@ const ListLabelsResponseBodySchema: z.ZodType<ListLabelsResponseBodyType> =
       })
       .openapi({ required: ['labels'] }),
   )
-    .openapi({
-      description: 'A list label response body',
-      required: ['labels'],
-      title: 'list_labels_response_body',
-    })
-    .openapi('ListLabelsResponseBody')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['labels'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A list label response body',
+    required: ['labels'],
+    title: 'list_labels_response_body',
+  })
+  .openapi('ListLabelsResponseBody')
 
 const ListManifestsResponseBodySchema = z
   .strictObject({
@@ -5336,19 +11445,96 @@ const ListServicePointsResponseBodySchema = z
   })
   .openapi('ListServicePointsResponseBody')
 
-const ListShipmentRatesResponseBodySchema = RatesInformationSchema.openapi({
-  description: 'A list shipment rates response body',
-  required: [
-    'rates',
-    'invalid_rates',
-    'rate_request_id',
-    'shipment_id',
-    'created_at',
-    'status',
-    'errors',
-  ],
-  title: 'list_shipment_rates_response_body',
-}).openapi('ListShipmentRatesResponseBody')
+const ListShipmentRatesResponseBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = RatesInformationSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          required: [
+            'rates',
+            'invalid_rates',
+            'rate_request_id',
+            'shipment_id',
+            'created_at',
+            'status',
+            'errors',
+          ],
+        }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'created_at',
+              'errors',
+              'invalid_rates',
+              'rate_request_id',
+              'rates',
+              'shipment_id',
+              'status',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'rates')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'invalid_rates')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'rate_request_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'shipment_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'errors')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A list shipment rates response body',
+    required: [
+      'rates',
+      'invalid_rates',
+      'rate_request_id',
+      'shipment_id',
+      'created_at',
+      'status',
+      'errors',
+    ],
+    title: 'list_shipment_rates_response_body',
+  })
+  .openapi('ListShipmentRatesResponseBody')
 
 const ListShipmentsResponseBodySchema = z
   .strictObject({
@@ -5591,87 +11777,129 @@ const ProcessBatchRequestBodySchema = z
   })
   .openapi('ProcessBatchRequestBody')
 
-const RateEstimateByCarrierIdSchema = z
-  .object({
-    carrier_id: SeIdSchema.exactOptional().openapi({
-      deprecated: true,
-      description: 'A string that uniquely identifies the carrier',
-    }),
-  })
-  .openapi({ title: 'rate_estimate_by_carrier_id', required: [] })
-  .openapi('RateEstimateByCarrierId')
-
-const RateEstimateByCarrierIdsSchema = z
-  .object({
-    carrier_ids: z
-      .array(SeIdSchema.openapi({ description: 'carrier id' }))
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'Array of Carrier Ids' }),
-  })
-  .openapi({ title: 'rate_estimate_by_carrier_ids', required: [] })
-  .openapi('RateEstimateByCarrierIds')
-
-const RateRequestByShipmentIdsSchema = z
-  .object({
-    shipment_ids: z
-      .array(SeIdSchema.openapi({ description: 'shipment ids' }))
-      .openapi({ description: 'The array of shipment IDs' }),
-  })
-  .openapi({ required: ['shipment_ids'], title: 'rate_request_by_shipment_ids' })
-  .openapi('RateRequestByShipmentIds')
-
-const RateRequestByShipmentsSchema = z
-  .object({
-    shipments: z
-      .array(
-        AddressValidatingShipmentSchema.openapi({
-          description: 'The shipment to get a bulk rate estimate for',
-        }),
-      )
-      .min(1)
-      .openapi({ description: 'The array of shipments to get bulk rate estimates for' }),
-  })
-  .openapi({ required: ['shipments'], title: 'rate_request_by_shipments' })
-  .openapi('RateRequestByShipments')
-
 const RedirectSchema = z
   .literal('shipengine-dashboard')
   .openapi({ description: 'The resource to return a redirect URL to.', title: 'redirect' })
   .openapi('Redirect')
 
-const RemoveFromBatchRequestBodySchema = ModifyBatchSchema.openapi({
-  description: 'A modify batch request body',
-  title: 'remove_from_batch_request_body',
-}).openapi('RemoveFromBatchRequestBody')
+const RemoveFromBatchRequestBodySchema = (() => {
+  const Schema = ModifyBatchSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({ description: 'A modify batch request body', title: 'remove_from_batch_request_body' })
+  .openapi('RemoveFromBatchRequestBody')
 
-const SchedulePickupRequestBodySchema = PickupSchema.openapi({
-  description: 'A schedule pickup request body',
-  required: ['contact_details', 'label_ids', 'pickup_window'],
-  title: 'schedule_pickup_request_body',
-}).openapi('SchedulePickupRequestBody')
+const SchedulePickupRequestBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = PickupSchema.and(
+      z.looseObject({}).openapi({ required: ['contact_details', 'label_ids', 'pickup_window'] }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'cancelled_at',
+              'carrier_id',
+              'confirmation_number',
+              'contact_details',
+              'created_at',
+              'label_ids',
+              'pickup_address',
+              'pickup_id',
+              'pickup_notes',
+              'pickup_window',
+              'pickup_windows',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'contact_details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'label_ids')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'pickup_window')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'A schedule pickup request body',
+    required: ['contact_details', 'label_ids', 'pickup_window'],
+    title: 'schedule_pickup_request_body',
+  })
+  .openapi('SchedulePickupRequestBody')
 
-const SchedulePickupResponseBodySchema = PickupSchema.and(ErrorResponseBodySchema)
+const SchedulePickupResponseBodySchema = (() => {
+  const Schema = PickupSchema.and(ErrorResponseBodySchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'cancelled_at',
+            'carrier_id',
+            'confirmation_number',
+            'contact_details',
+            'created_at',
+            'label_ids',
+            'pickup_address',
+            'pickup_id',
+            'pickup_notes',
+            'pickup_window',
+            'pickup_windows',
+            'warehouse_id',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['errors', 'request_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'schedule_pickup_response_body' })
   .openapi('SchedulePickupResponseBody')
-
-const ShipmentIdRequestSchema = z
-  .object({
-    shipment_id: SeIdSchema.exactOptional().openapi({
-      description: 'A string that uniquely identifies the shipment',
-    }),
-  })
-  .openapi({ title: 'shipment_id_request', required: [] })
-  .openapi('ShipmentIdRequest')
-
-const ShipmentRequestSchema = z
-  .object({
-    shipment: AddressValidatingShipmentSchema.exactOptional().openapi({
-      description: 'The shipment object',
-    }),
-  })
-  .openapi({ title: 'shipment_request', required: [] })
-  .openapi('ShipmentRequest')
 
 const ShipmentsSortBySchema = z
   .enum(['modified_at', 'created_at'])
@@ -5739,15 +11967,45 @@ const UpdateAmazonBuyShippingRequestBodySchema = z
   })
   .openapi('UpdateAmazonBuyShippingRequestBody')
 
-const UpdateDhlExpressSettingsRequestBodySchema = DhlExpressAccountSettingsSchema.openapi({
-  description: 'An update dhl express settings request body',
-  title: 'update_dhl_express_settings_request_body',
-}).openapi('UpdateDhlExpressSettingsRequestBody')
+const UpdateDhlExpressSettingsRequestBodySchema = (() => {
+  const Schema = DhlExpressAccountSettingsSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'An update dhl express settings request body',
+    title: 'update_dhl_express_settings_request_body',
+  })
+  .openapi('UpdateDhlExpressSettingsRequestBody')
 
-const UpdateFedexSettingsRequestBodySchema = FedexAccountSettingsSchema.openapi({
-  description: 'An update Fedex settings request body',
-  title: 'update_fedex_settings_request_body',
-}).openapi('UpdateFedexSettingsRequestBody')
+const UpdateFedexSettingsRequestBodySchema = (() => {
+  const Schema = FedexAccountSettingsSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'An update Fedex settings request body',
+    title: 'update_fedex_settings_request_body',
+  })
+  .openapi('UpdateFedexSettingsRequestBody')
 
 const UpdateNewgisticsSettingsRequestBodySchema = z
   .strictObject({
@@ -5761,10 +12019,25 @@ const UpdateNewgisticsSettingsRequestBodySchema = z
   })
   .openapi('UpdateNewgisticsSettingsRequestBody')
 
-const UpdateUpsSettingsRequestBodySchema = UpsAccountSettingsSchema.openapi({
-  description: 'An update UPS settings request body',
-  title: 'update_ups_settings_request_body',
-}).openapi('UpdateUpsSettingsRequestBody')
+const UpdateUpsSettingsRequestBodySchema = (() => {
+  const Schema = UpsAccountSettingsSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'An update UPS settings request body',
+    title: 'update_ups_settings_request_body',
+  })
+  .openapi('UpdateUpsSettingsRequestBody')
 
 const UpdateCarrierSettingsRequestBodySchema = z
   .xor([
@@ -5777,17 +12050,142 @@ const UpdateCarrierSettingsRequestBodySchema = z
   .openapi({ title: 'update_carrier_settings_request_body' })
   .openapi('UpdateCarrierSettingsRequestBody')
 
-const UpdatePackageTypeRequestBodySchema = PackageTypeSchema.openapi({
-  description: 'An update package type request body',
-  title: 'update_package_type_request_body',
-}).openapi('UpdatePackageTypeRequestBody')
+const UpdatePackageTypeRequestBodySchema = (() => {
+  const Schema = PackageTypeSchema
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'An update package type request body',
+    title: 'update_package_type_request_body',
+  })
+  .openapi('UpdatePackageTypeRequestBody')
 
 const UpdateShipmentFieldsSchema = z
   .object({ validate_address: ValidateAddressSchema.default('no_validation').exactOptional() })
   .openapi({ title: 'update_shipment_fields', required: [] })
   .openapi('UpdateShipmentFields')
 
-const UpdateShipmentRequestBodySchema = PartialShipmentSchema.and(UpdateShipmentFieldsSchema)
+const UpdateShipmentRequestBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = (() => {
+      const Schema = PartialShipmentSchema.and(
+        z.looseObject({}).openapi({ required: ['ship_to', 'ship_from'] }),
+      )
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          for (const k of Object.keys(o)) {
+            if (
+              ![
+                'advanced_options',
+                'carrier_id',
+                'confirmation',
+                'created_at',
+                'customs',
+                'external_order_id',
+                'external_shipment_id',
+                'insurance_provider',
+                'items',
+                'modified_at',
+                'order_source_code',
+                'origin_type',
+                'packages',
+                'return_to',
+                'service_code',
+                'ship_date',
+                'ship_from',
+                'ship_to',
+                'shipment_id',
+                'shipment_number',
+                'shipment_status',
+                'tags',
+                'tax_identifiers',
+                'total_weight',
+                'warehouse_id',
+              ].includes(k)
+            ) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })()
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'ship_to')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+          if (!Object.hasOwn(val, 'ship_from')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(UpdateShipmentFieldsSchema)
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'advanced_options',
+              'carrier_id',
+              'confirmation',
+              'created_at',
+              'customs',
+              'external_order_id',
+              'external_shipment_id',
+              'insurance_provider',
+              'items',
+              'modified_at',
+              'order_source_code',
+              'origin_type',
+              'packages',
+              'return_to',
+              'service_code',
+              'ship_date',
+              'ship_from',
+              'ship_to',
+              'shipment_id',
+              'shipment_number',
+              'shipment_status',
+              'tags',
+              'tax_identifiers',
+              'total_weight',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })()
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'An update shipment request body',
     required: ['ship_to', 'ship_from'],
@@ -5795,37 +12193,187 @@ const UpdateShipmentRequestBodySchema = PartialShipmentSchema.and(UpdateShipment
   })
   .openapi('UpdateShipmentRequestBody')
 
-const UpdateShipmentResponseBodySchema = CreateAndValidateShipmentSchema.openapi({
-  description: 'An update shipment response body',
-  required: [
-    'errors',
-    'has_errors',
-    'address_validation',
-    'shipment_id',
-    'carrier_id',
-    'service_code',
-    'ship_date',
-    'created_at',
-    'shipment_status',
-    'ship_to',
-    'ship_from',
-    'return_to',
-    'confirmation',
-    'customs',
-    'advanced_options',
-    'insurance_provider',
-    'tags',
-    'packages',
-    'total_weight',
-  ],
-  title: 'update_shipment_response_body',
-}).openapi('UpdateShipmentResponseBody')
+const UpdateShipmentResponseBodySchema = (() => {
+  const Schema = CreateAndValidateShipmentSchema.and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'errors',
+          'has_errors',
+          'address_validation',
+          'shipment_id',
+          'carrier_id',
+          'service_code',
+          'ship_date',
+          'created_at',
+          'shipment_status',
+          'ship_to',
+          'ship_from',
+          'return_to',
+          'confirmation',
+          'customs',
+          'advanced_options',
+          'insurance_provider',
+          'tags',
+          'packages',
+          'total_weight',
+        ],
+      }),
+  ).superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'errors')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'has_errors')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'address_validation')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'shipment_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'carrier_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'service_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ship_date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'shipment_status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ship_to')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ship_from')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'return_to')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'confirmation')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'customs')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'advanced_options')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'insurance_provider')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'tags')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'packages')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'total_weight')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'An update shipment response body',
+    required: [
+      'errors',
+      'has_errors',
+      'address_validation',
+      'shipment_id',
+      'carrier_id',
+      'service_code',
+      'ship_date',
+      'created_at',
+      'shipment_status',
+      'ship_to',
+      'ship_from',
+      'return_to',
+      'confirmation',
+      'customs',
+      'advanced_options',
+      'insurance_provider',
+      'tags',
+      'packages',
+      'total_weight',
+    ],
+    title: 'update_shipment_response_body',
+  })
+  .openapi('UpdateShipmentResponseBody')
 
-const UpdateWarehouseRequestBodySchema = WarehouseSchema.openapi({
-  description: 'An update warehouse request body',
-  required: ['name', 'origin_address'],
-  title: 'update_warehouse_request_body',
-}).openapi('UpdateWarehouseRequestBody')
+const UpdateWarehouseRequestBodySchema = (() => {
+  const Schema = (() => {
+    const Schema = WarehouseSchema.and(
+      z.looseObject({}).openapi({ required: ['name', 'origin_address'] }),
+    )
+    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+      ;((ctx) => {
+        const o = ctx.value
+        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+        for (const k of Object.keys(o)) {
+          if (
+            ![
+              'created_at',
+              'is_default',
+              'name',
+              'origin_address',
+              'return_address',
+              'warehouse_id',
+            ].includes(k)
+          ) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        }
+      })(ctx)
+      return val
+    }, Schema)
+  })().superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'origin_address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description: 'An update warehouse request body',
+    required: ['name', 'origin_address'],
+    title: 'update_warehouse_request_body',
+  })
+  .openapi('UpdateWarehouseRequestBody')
 
 const UpdateWarehouseSettingsRequestBodySchema = z
   .strictObject({

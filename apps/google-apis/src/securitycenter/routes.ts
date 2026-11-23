@@ -91,52 +91,6 @@ const AccessSchema = z
   .openapi({ description: 'Represents an access event.', required: [] })
   .openapi('Access')
 
-const AccessReviewSchema = z
-  .object({
-    group: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Group is the API Group of the Resource. "*" means all.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name is the name of the resource being requested. Empty means all.',
-      }),
-    ns: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the action being requested. Currently, there is no distinction between no namespace and all namespaces. Both are represented by "" (empty).',
-      }),
-    resource: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Resource is the optional resource type requested. "*" means all.' }),
-    subresource: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Subresource is the optional subresource type.' }),
-    verb: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Verb is a Kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy. "*" means all.',
-      }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Version is the API Version of the Resource. "*" means all.' }),
-  })
-  .openapi({
-    description:
-      'Conveys information about a Kubernetes access review (e.g. kubectl auth can-i ...) that was involved in a finding.',
-    required: [],
-  })
-  .openapi('AccessReview')
-
 const CloudDlpDataProfileSchema = z
   .object({
     dataProfile: z
@@ -215,26 +169,6 @@ const ComplianceSchema = z
     required: [],
   })
   .openapi('Compliance')
-
-const ConfigSchema = z
-  .object({
-    moduleEnablementState: z
-      .enum(['ENABLEMENT_STATE_UNSPECIFIED', 'INHERITED', 'ENABLED', 'DISABLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The state of enablement for the module at its level of the resource hierarchy.',
-      }),
-    value: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'The configuration value for the module. The absence of this field implies its inheritance from the parent.',
-      }),
-  })
-  .openapi({ description: 'Configuration of a module.', required: [] })
-  .openapi('Config')
 
 const ConnectionSchema = z
   .object({
@@ -319,171 +253,6 @@ const ContainerSchema = z
   .openapi({ description: 'Container associated with the finding.', required: [] })
   .openapi('Container')
 
-const ContainerThreatDetectionSettingsSchema = z
-  .object({
-    modules: z
-      .record(z.string(), ConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The configurations including the state of enablement for the service's different modules. The absence of a module in the map implies its configuration is inherited from its parent's.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the ContainerThreatDetectionSettings. Formats: * organizations/{organization}/containerThreatDetectionSettings * folders/{folder}/containerThreatDetectionSettings * projects/{project}/containerThreatDetectionSettings * projects/{project}/locations/{location}/clusters/{cluster}/containerThreatDetectionSettings',
-      }),
-    serviceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The service account used by Container Threat Detection for scanning. Service accounts are scoped at the project level meaning this field will be empty at any level above a project.',
-        readOnly: true,
-      }),
-    serviceEnablementState: z
-      .enum(['ENABLEMENT_STATE_UNSPECIFIED', 'INHERITED', 'ENABLED', 'DISABLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The state of enablement for the service at its level of the resource hierarchy. A DISABLED state will override all module enablement_states to DISABLED.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time the settings were last updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Resource capturing the settings for the Container Threat Detection service.',
-    required: [],
-  })
-  .openapi('ContainerThreatDetectionSettings')
-
-const Cvssv3Schema = z
-  .object({
-    attackComplexity: z
-      .enum(['ATTACK_COMPLEXITY_UNSPECIFIED', 'ATTACK_COMPLEXITY_LOW', 'ATTACK_COMPLEXITY_HIGH'])
-      .exactOptional()
-      .openapi({
-        description:
-          "This metric describes the conditions beyond the attacker's control that must exist in order to exploit the vulnerability.",
-      }),
-    attackVector: z
-      .enum([
-        'ATTACK_VECTOR_UNSPECIFIED',
-        'ATTACK_VECTOR_NETWORK',
-        'ATTACK_VECTOR_ADJACENT',
-        'ATTACK_VECTOR_LOCAL',
-        'ATTACK_VECTOR_PHYSICAL',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Base Metrics Represents the intrinsic characteristics of a vulnerability that are constant over time and across user environments. This metric reflects the context by which vulnerability exploitation is possible.',
-      }),
-    availabilityImpact: z
-      .enum(['IMPACT_UNSPECIFIED', 'IMPACT_HIGH', 'IMPACT_LOW', 'IMPACT_NONE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This metric measures the impact to the availability of the impacted component resulting from a successfully exploited vulnerability.',
-      }),
-    baseScore: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The base score is a function of the base metric scores.' }),
-    confidentialityImpact: z
-      .enum(['IMPACT_UNSPECIFIED', 'IMPACT_HIGH', 'IMPACT_LOW', 'IMPACT_NONE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This metric measures the impact to the confidentiality of the information resources managed by a software component due to a successfully exploited vulnerability.',
-      }),
-    integrityImpact: z
-      .enum(['IMPACT_UNSPECIFIED', 'IMPACT_HIGH', 'IMPACT_LOW', 'IMPACT_NONE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This metric measures the impact to integrity of a successfully exploited vulnerability.',
-      }),
-    privilegesRequired: z
-      .enum([
-        'PRIVILEGES_REQUIRED_UNSPECIFIED',
-        'PRIVILEGES_REQUIRED_NONE',
-        'PRIVILEGES_REQUIRED_LOW',
-        'PRIVILEGES_REQUIRED_HIGH',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'This metric describes the level of privileges an attacker must possess before successfully exploiting the vulnerability.',
-      }),
-    scope: z
-      .enum(['SCOPE_UNSPECIFIED', 'SCOPE_UNCHANGED', 'SCOPE_CHANGED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The Scope metric captures whether a vulnerability in one vulnerable component impacts resources in components beyond its security scope.',
-      }),
-    userInteraction: z
-      .enum(['USER_INTERACTION_UNSPECIFIED', 'USER_INTERACTION_NONE', 'USER_INTERACTION_REQUIRED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This metric captures the requirement for a human user, other than the attacker, to participate in the successful compromise of the vulnerable component.',
-      }),
-  })
-  .openapi({ description: 'Common Vulnerability Scoring System version 3.', required: [] })
-  .openapi('Cvssv3')
-
-const ReferenceSchema = z
-  .object({
-    source: z.string().exactOptional().openapi({ description: 'Source of the reference e.g. NVD' }),
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Uri for the mentioned source e.g. https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527.',
-      }),
-  })
-  .openapi({ description: 'Additional Links', required: [] })
-  .openapi('Reference')
-
-const CveSchema = z
-  .object({
-    cvssv3: Cvssv3Schema.exactOptional().openapi({
-      description:
-        'Describe Common Vulnerability Scoring System specified at https://www.first.org/cvss/v3.1/specification-document',
-    }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the vulnerability. e.g. CVE-2021-34527' }),
-    references: z
-      .array(ReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional information about the CVE. e.g. https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527',
-      }),
-    upstreamFixAvailable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether upstream fix is available for the CVE.' }),
-  })
-  .openapi({
-    description:
-      'CVE stands for Common Vulnerabilities and Exposures. More information: https://cve.mitre.org',
-    required: [],
-  })
-  .openapi('Cve')
-
 const DatabaseSchema = z
   .object({
     displayName: z
@@ -522,100 +291,6 @@ const DatabaseSchema = z
     required: [],
   })
   .openapi('Database')
-
-const DetailsSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time the subscription has or will end.' }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time the subscription has or will start.' }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'STANDARD', 'TRIAL', 'ALPHA', 'DEMO', 'PAY_AS_YOU_GO'])
-      .exactOptional()
-      .openapi({ description: 'The type of subscription' }),
-  })
-  .openapi({ description: 'Details of a subscription.', required: [] })
-  .openapi('Details')
-
-const DetectionSchema = z
-  .object({
-    binary: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the binary associated with the memory hash signature detection.',
-      }),
-    percentPagesMatched: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The percentage of memory page hashes in the signature that were matched.',
-      }),
-  })
-  .openapi({
-    description: 'Memory hash detection contributing to the binary family match.',
-    required: [],
-  })
-  .openapi('Detection')
-
-const EnvironmentVariableSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Environment variable name as a JSON encoded string.' }),
-    val: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Environment variable value as a JSON encoded string.' }),
-  })
-  .openapi({
-    description:
-      'EnvironmentVariable is a name-value pair to store environment variables for Process.',
-    required: [],
-  })
-  .openapi('EnvironmentVariable')
-
-const EventThreatDetectionSettingsSchema = z
-  .object({
-    modules: z
-      .record(z.string(), ConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The configurations including the state of enablement for the service's different modules. The absence of a module in the map implies its configuration is inherited from its parent's.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the EventThreatDetectionSettings. Formats: * organizations/{organization}/eventThreatDetectionSettings * folders/{folder}/eventThreatDetectionSettings * projects/{project}/eventThreatDetectionSettings',
-      }),
-    serviceEnablementState: z
-      .enum(['ENABLEMENT_STATE_UNSPECIFIED', 'INHERITED', 'ENABLED', 'DISABLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The state of enablement for the service at its level of the resource hierarchy. A DISABLED state will override all module enablement_states to DISABLED.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time the settings were last updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Resource capturing the settings for the Event Threat Detection service.',
-    required: [],
-  })
-  .openapi('EventThreatDetectionSettings')
 
 const ExfilResourceSchema = z
   .object({
@@ -657,84 +332,6 @@ const ExfiltrationSchema = z
     required: [],
   })
   .openapi('Exfiltration')
-
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const FileSchema = z
-  .object({
-    contents: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Prefix of the file contents as a JSON encoded string. (Currently only populated for Malicious Script Executed findings.)',
-      }),
-    hashedSize: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The length in bytes of the file prefix that was hashed. If hashed_size == size, any hashes reported represent the entire file.',
-      }),
-    partiallyHashed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True when the hash covers only a prefix of the file.' }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Absolute path of the file as a JSON encoded string.' }),
-    sha256: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'SHA256 hash of the first hashed_size bytes of the file encoded as a hex string. If hashed_size == size, sha256 represents the SHA256 hash of the entire file.',
-      }),
-    size: z.string().exactOptional().openapi({ description: 'Size of the file in bytes.' }),
-  })
-  .openapi({
-    description:
-      'File information about the related binary/library used by an executable, or the script used by a script interpreter',
-    required: [],
-  })
-  .openapi('File')
 
 const GoogleCloudSecuritycenterV1ExternalSystemSchema = z
   .object({
@@ -778,6 +375,46 @@ const GoogleCloudSecuritycenterV1ExternalSystemSchema = z
   })
   .openapi('GoogleCloudSecuritycenterV1ExternalSystem')
 
+const FileSchema = z
+  .object({
+    contents: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Prefix of the file contents as a JSON encoded string. (Currently only populated for Malicious Script Executed findings.)',
+      }),
+    hashedSize: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The length in bytes of the file prefix that was hashed. If hashed_size == size, any hashes reported represent the entire file.',
+      }),
+    partiallyHashed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True when the hash covers only a prefix of the file.' }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Absolute path of the file as a JSON encoded string.' }),
+    sha256: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'SHA256 hash of the first hashed_size bytes of the file encoded as a hex string. If hashed_size == size, sha256 represents the SHA256 hash of the entire file.',
+      }),
+    size: z.string().exactOptional().openapi({ description: 'Size of the file in bytes.' }),
+  })
+  .openapi({
+    description:
+      'File information about the related binary/library used by an executable, or the script used by a script interpreter',
+    required: [],
+  })
+  .openapi('File')
+
 const IamBindingSchema = z
   .object({
     action: z
@@ -805,6 +442,27 @@ const IamBindingSchema = z
     required: [],
   })
   .openapi('IamBinding')
+
+const DetectionSchema = z
+  .object({
+    binary: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the binary associated with the memory hash signature detection.',
+      }),
+    percentPagesMatched: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The percentage of memory page hashes in the signature that were matched.',
+      }),
+  })
+  .openapi({
+    description: 'Memory hash detection contributing to the binary family match.',
+    required: [],
+  })
+  .openapi('Detection')
 
 const MemoryHashSignatureSchema = z
   .object({
@@ -928,6 +586,52 @@ const KernelRootkitSchema = z
   })
   .openapi({ description: 'Kernel mode rootkit signatures.', required: [] })
   .openapi('KernelRootkit')
+
+const AccessReviewSchema = z
+  .object({
+    group: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Group is the API Group of the Resource. "*" means all.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name is the name of the resource being requested. Empty means all.',
+      }),
+    ns: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the action being requested. Currently, there is no distinction between no namespace and all namespaces. Both are represented by "" (empty).',
+      }),
+    resource: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Resource is the optional resource type requested. "*" means all.' }),
+    subresource: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Subresource is the optional subresource type.' }),
+    verb: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Verb is a Kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy. "*" means all.',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version is the API Version of the Resource. "*" means all.' }),
+  })
+  .openapi({
+    description:
+      'Conveys information about a Kubernetes access review (e.g. kubectl auth can-i ...) that was involved in a finding.',
+    required: [],
+  })
+  .openapi('AccessReview')
 
 const RoleSchema = z
   .object({
@@ -1212,6 +916,24 @@ const MitreAttackSchema = z
   })
   .openapi('MitreAttack')
 
+const EnvironmentVariableSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Environment variable name as a JSON encoded string.' }),
+    val: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Environment variable value as a JSON encoded string.' }),
+  })
+  .openapi({
+    description:
+      'EnvironmentVariable is a name-value pair to store environment variables for Process.',
+    required: [],
+  })
+  .openapi('EnvironmentVariable')
+
 const ProcessSchema = z
   .object({
     args: z
@@ -1285,6 +1007,126 @@ const SecurityMarksSchema = z
   })
   .openapi('SecurityMarks')
 
+const Cvssv3Schema = z
+  .object({
+    attackComplexity: z
+      .enum(['ATTACK_COMPLEXITY_UNSPECIFIED', 'ATTACK_COMPLEXITY_LOW', 'ATTACK_COMPLEXITY_HIGH'])
+      .exactOptional()
+      .openapi({
+        description:
+          "This metric describes the conditions beyond the attacker's control that must exist in order to exploit the vulnerability.",
+      }),
+    attackVector: z
+      .enum([
+        'ATTACK_VECTOR_UNSPECIFIED',
+        'ATTACK_VECTOR_NETWORK',
+        'ATTACK_VECTOR_ADJACENT',
+        'ATTACK_VECTOR_LOCAL',
+        'ATTACK_VECTOR_PHYSICAL',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Base Metrics Represents the intrinsic characteristics of a vulnerability that are constant over time and across user environments. This metric reflects the context by which vulnerability exploitation is possible.',
+      }),
+    availabilityImpact: z
+      .enum(['IMPACT_UNSPECIFIED', 'IMPACT_HIGH', 'IMPACT_LOW', 'IMPACT_NONE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'This metric measures the impact to the availability of the impacted component resulting from a successfully exploited vulnerability.',
+      }),
+    baseScore: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The base score is a function of the base metric scores.' }),
+    confidentialityImpact: z
+      .enum(['IMPACT_UNSPECIFIED', 'IMPACT_HIGH', 'IMPACT_LOW', 'IMPACT_NONE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'This metric measures the impact to the confidentiality of the information resources managed by a software component due to a successfully exploited vulnerability.',
+      }),
+    integrityImpact: z
+      .enum(['IMPACT_UNSPECIFIED', 'IMPACT_HIGH', 'IMPACT_LOW', 'IMPACT_NONE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'This metric measures the impact to integrity of a successfully exploited vulnerability.',
+      }),
+    privilegesRequired: z
+      .enum([
+        'PRIVILEGES_REQUIRED_UNSPECIFIED',
+        'PRIVILEGES_REQUIRED_NONE',
+        'PRIVILEGES_REQUIRED_LOW',
+        'PRIVILEGES_REQUIRED_HIGH',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'This metric describes the level of privileges an attacker must possess before successfully exploiting the vulnerability.',
+      }),
+    scope: z
+      .enum(['SCOPE_UNSPECIFIED', 'SCOPE_UNCHANGED', 'SCOPE_CHANGED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The Scope metric captures whether a vulnerability in one vulnerable component impacts resources in components beyond its security scope.',
+      }),
+    userInteraction: z
+      .enum(['USER_INTERACTION_UNSPECIFIED', 'USER_INTERACTION_NONE', 'USER_INTERACTION_REQUIRED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'This metric captures the requirement for a human user, other than the attacker, to participate in the successful compromise of the vulnerable component.',
+      }),
+  })
+  .openapi({ description: 'Common Vulnerability Scoring System version 3.', required: [] })
+  .openapi('Cvssv3')
+
+const ReferenceSchema = z
+  .object({
+    source: z.string().exactOptional().openapi({ description: 'Source of the reference e.g. NVD' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Uri for the mentioned source e.g. https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527.',
+      }),
+  })
+  .openapi({ description: 'Additional Links', required: [] })
+  .openapi('Reference')
+
+const CveSchema = z
+  .object({
+    cvssv3: Cvssv3Schema.exactOptional().openapi({
+      description:
+        'Describe Common Vulnerability Scoring System specified at https://www.first.org/cvss/v3.1/specification-document',
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the vulnerability. e.g. CVE-2021-34527' }),
+    references: z
+      .array(ReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional information about the CVE. e.g. https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527',
+      }),
+    upstreamFixAvailable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether upstream fix is available for the CVE.' }),
+  })
+  .openapi({
+    description:
+      'CVE stands for Common Vulnerabilities and Exposures. More information: https://cve.mitre.org',
+    required: [],
+  })
+  .openapi('Cve')
+
 const VulnerabilitySchema = z
   .object({
     cve: CveSchema.exactOptional().openapi({
@@ -1298,7 +1140,56 @@ const VulnerabilitySchema = z
   })
   .openapi('Vulnerability')
 
-const FindingSchema = z
+type FindingType = {
+  access?: z.infer<typeof AccessSchema>
+  canonicalName?: string
+  category?: string
+  cloudDlpDataProfile?: z.infer<typeof CloudDlpDataProfileSchema>
+  cloudDlpInspection?: z.infer<typeof CloudDlpInspectionSchema>
+  compliances?: z.infer<typeof ComplianceSchema>[]
+  connections?: z.infer<typeof ConnectionSchema>[]
+  contacts?: { [key: string]: z.infer<typeof ContactDetailsSchema> }
+  containers?: z.infer<typeof ContainerSchema>[]
+  createTime?: string
+  database?: z.infer<typeof DatabaseSchema>
+  description?: string
+  eventTime?: string
+  exfiltration?: z.infer<typeof ExfiltrationSchema>
+  externalSystems?: {
+    [key: string]: z.infer<typeof GoogleCloudSecuritycenterV1ExternalSystemSchema>
+  }
+  externalUri?: string
+  files?: z.infer<typeof FileSchema>[]
+  findingClass?:
+    | 'FINDING_CLASS_UNSPECIFIED'
+    | 'THREAT'
+    | 'VULNERABILITY'
+    | 'MISCONFIGURATION'
+    | 'OBSERVATION'
+    | 'SCC_ERROR'
+  iamBindings?: z.infer<typeof IamBindingSchema>[]
+  indicator?: z.infer<typeof IndicatorSchema>
+  kernelRootkit?: z.infer<typeof KernelRootkitSchema>
+  kubernetes?: z.infer<typeof KubernetesSchema>
+  mitreAttack?: z.infer<typeof MitreAttackSchema>
+  moduleName?: string
+  mute?: 'MUTE_UNSPECIFIED' | 'MUTED' | 'UNMUTED' | 'UNDEFINED'
+  muteInitiator?: string
+  muteUpdateTime?: string
+  name?: string
+  nextSteps?: string
+  parent?: string
+  parentDisplayName?: string
+  processes?: z.infer<typeof ProcessSchema>[]
+  resourceName?: string
+  securityMarks?: z.infer<typeof SecurityMarksSchema>
+  severity?: 'SEVERITY_UNSPECIFIED' | 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'
+  sourceProperties?: { [key: string]: unknown }
+  state?: 'STATE_UNSPECIFIED' | 'ACTIVE' | 'INACTIVE'
+  vulnerability?: z.infer<typeof VulnerabilitySchema>
+}
+
+const FindingSchema: z.ZodType<FindingType> = z
   .object({
     access: AccessSchema.exactOptional().openapi({
       description:
@@ -1543,6 +1434,215 @@ const FolderSchema = z
   })
   .openapi('Folder')
 
+const GoogleCloudSecuritycenterV1ResourceSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The human readable name of the resource.' }),
+    folders: z
+      .array(FolderSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Contains a Folder message for each folder in the assets ancestry. The first folder is the deepest nested folder, and the last folder is the folder directly under the Organization.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The full resource name of the resource. See: https://cloud.google.com/apis/design/resource_names#full_resource_name',
+      }),
+    parent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The full resource name of resource's parent." }),
+    parentDisplayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The human readable name of resource's parent." }),
+    project: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full resource name of project that the resource belongs to.' }),
+    projectDisplayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The project ID that the resource belongs to.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full resource type of the resource.' }),
+  })
+  .openapi({ description: 'Information related to the Google Cloud resource.', required: [] })
+  .openapi('GoogleCloudSecuritycenterV1Resource')
+
+type GoogleCloudSecuritycenterV1NotificationMessageType = {
+  finding?: z.infer<typeof FindingSchema>
+  notificationConfigName?: string
+  resource?: z.infer<typeof GoogleCloudSecuritycenterV1ResourceSchema>
+}
+
+const ConfigSchema = z
+  .object({
+    moduleEnablementState: z
+      .enum(['ENABLEMENT_STATE_UNSPECIFIED', 'INHERITED', 'ENABLED', 'DISABLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The state of enablement for the module at its level of the resource hierarchy.',
+      }),
+    value: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'The configuration value for the module. The absence of this field implies its inheritance from the parent.',
+      }),
+  })
+  .openapi({ description: 'Configuration of a module.', required: [] })
+  .openapi('Config')
+
+const ContainerThreatDetectionSettingsSchema = z
+  .object({
+    modules: z
+      .record(z.string(), ConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The configurations including the state of enablement for the service's different modules. The absence of a module in the map implies its configuration is inherited from its parent's.",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the ContainerThreatDetectionSettings. Formats: * organizations/{organization}/containerThreatDetectionSettings * folders/{folder}/containerThreatDetectionSettings * projects/{project}/containerThreatDetectionSettings * projects/{project}/locations/{location}/clusters/{cluster}/containerThreatDetectionSettings',
+      }),
+    serviceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The service account used by Container Threat Detection for scanning. Service accounts are scoped at the project level meaning this field will be empty at any level above a project.',
+        readOnly: true,
+      }),
+    serviceEnablementState: z
+      .enum(['ENABLEMENT_STATE_UNSPECIFIED', 'INHERITED', 'ENABLED', 'DISABLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The state of enablement for the service at its level of the resource hierarchy. A DISABLED state will override all module enablement_states to DISABLED.',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time the settings were last updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Resource capturing the settings for the Container Threat Detection service.',
+    required: [],
+  })
+  .openapi('ContainerThreatDetectionSettings')
+
+const DetailsSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time the subscription has or will end.' }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time the subscription has or will start.' }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'STANDARD', 'TRIAL', 'ALPHA', 'DEMO', 'PAY_AS_YOU_GO'])
+      .exactOptional()
+      .openapi({ description: 'The type of subscription' }),
+  })
+  .openapi({ description: 'Details of a subscription.', required: [] })
+  .openapi('Details')
+
+const EventThreatDetectionSettingsSchema = z
+  .object({
+    modules: z
+      .record(z.string(), ConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The configurations including the state of enablement for the service's different modules. The absence of a module in the map implies its configuration is inherited from its parent's.",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the EventThreatDetectionSettings. Formats: * organizations/{organization}/eventThreatDetectionSettings * folders/{folder}/eventThreatDetectionSettings * projects/{project}/eventThreatDetectionSettings',
+      }),
+    serviceEnablementState: z
+      .enum(['ENABLEMENT_STATE_UNSPECIFIED', 'INHERITED', 'ENABLED', 'DISABLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The state of enablement for the service at its level of the resource hierarchy. A DISABLED state will override all module enablement_states to DISABLED.',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time the settings were last updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Resource capturing the settings for the Event Threat Detection service.',
+    required: [],
+  })
+  .openapi('EventThreatDetectionSettings')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
 const GoogleCloudSecuritycenterV1BigQueryExportSchema = z
   .object({
     createTime: z
@@ -1610,7 +1710,7 @@ const GoogleCloudSecuritycenterV1BigQueryExportSchema = z
   .openapi('GoogleCloudSecuritycenterV1BigQueryExport')
 
 const GoogleCloudSecuritycenterV1BulkMuteFindingsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response to a BulkMute request. Contains the LRO information.' })
   .openapi('GoogleCloudSecuritycenterV1BulkMuteFindingsResponse')
 
@@ -1788,68 +1888,24 @@ const GoogleCloudSecuritycenterV1MuteConfigSchema = z
   })
   .openapi('GoogleCloudSecuritycenterV1MuteConfig')
 
-const GoogleCloudSecuritycenterV1ResourceSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The human readable name of the resource.' }),
-    folders: z
-      .array(FolderSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Contains a Folder message for each folder in the assets ancestry. The first folder is the deepest nested folder, and the last folder is the folder directly under the Organization.',
-        readOnly: true,
+const GoogleCloudSecuritycenterV1NotificationMessageSchema: z.ZodType<GoogleCloudSecuritycenterV1NotificationMessageType> =
+  z
+    .object({
+      finding: FindingSchema.exactOptional().openapi({
+        description: "If it's a Finding based notification config, this field will be populated.",
       }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The full resource name of the resource. See: https://cloud.google.com/apis/design/resource_names#full_resource_name',
+      notificationConfigName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Name of the notification config that generated current notification.',
+        }),
+      resource: GoogleCloudSecuritycenterV1ResourceSchema.exactOptional().openapi({
+        description: "The Cloud resource tied to this notification's Finding.",
       }),
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The full resource name of resource's parent." }),
-    parentDisplayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The human readable name of resource's parent." }),
-    project: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The full resource name of project that the resource belongs to.' }),
-    projectDisplayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The project ID that the resource belongs to.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The full resource type of the resource.' }),
-  })
-  .openapi({ description: 'Information related to the Google Cloud resource.', required: [] })
-  .openapi('GoogleCloudSecuritycenterV1Resource')
-
-const GoogleCloudSecuritycenterV1NotificationMessageSchema = z
-  .object({
-    finding: FindingSchema.exactOptional().openapi({
-      description: "If it's a Finding based notification config, this field will be populated.",
-    }),
-    notificationConfigName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name of the notification config that generated current notification.',
-      }),
-    resource: GoogleCloudSecuritycenterV1ResourceSchema.exactOptional().openapi({
-      description: "The Cloud resource tied to this notification's Finding.",
-    }),
-  })
-  .openapi({ description: "Cloud SCC's Notification", required: [] })
-  .openapi('GoogleCloudSecuritycenterV1NotificationMessage')
+    })
+    .openapi({ description: "Cloud SCC's Notification", required: [] })
+    .openapi('GoogleCloudSecuritycenterV1NotificationMessage')
 
 const GoogleCloudSecuritycenterV1RunAssetDiscoveryResponseSchema = z
   .object({

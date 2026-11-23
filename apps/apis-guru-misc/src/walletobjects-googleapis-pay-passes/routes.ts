@@ -1,722 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const Blobstore2InfoSchema = z
-  .object({
-    blobGeneration: z.string().exactOptional().openapi({ description: 'The blob generation id.' }),
-    blobId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The blob id, e.g., /blobstore/prod/playground/scotty' }),
-    downloadReadHandle: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Read handle passed from Bigstore -> Scotty for a GCS download. This is a signed, serialized blobstore2.ReadHandle proto which must never be set outside of Bigstore, and is not applicable to non-GCS media downloads.',
-      }),
-    readToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The blob read token. Needed to read blobs that have not been replicated. Might not be available until the final call.',
-      }),
-    uploadMetadataContainer: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Metadata passed from Blobstore -> Scotty for a new GCS upload. This is a signed, serialized blobstore2.BlobMetadataContainer proto which must never be consumed outside of Bigstore, and is not applicable to non-GCS media uploads.',
-      }),
-  })
-  .openapi({ description: 'Information to read/write to blobstore2.', required: [] })
-  .openapi('Blobstore2Info')
-
-const ObjectIdSchema = z
-  .object({
-    bucketName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the bucket to which this object belongs.' }),
-    generation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Generation of the object. Generations are monotonically increasing across writes, allowing them to be be compared to determine which generation is newer. If this is omitted in a request, then you are requesting the live object. See http://go/bigstore-versions',
-      }),
-    objectName: z.string().exactOptional().openapi({ description: 'The name of the object.' }),
-  })
-  .openapi({
-    description:
-      'This is a copy of the tech.blob.ObjectId proto, which could not be used directly here due to transitive closure issues with JavaScript support; see http://b/8801763.',
-    required: [],
-  })
-  .openapi('ObjectId')
-
-const CompositeMediaSchema = z
-  .object({
-    blobRef: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Blobstore v1 reference, set if reference_type is BLOBSTORE_REF This should be the byte representation of a blobstore.BlobRef. Since Blobstore is deprecating v1, use blobstore2_info instead. For now, any v2 blob will also be represented in this field as v1 BlobRef.',
-      }),
-    blobstore2Info: Blobstore2InfoSchema.exactOptional().openapi({
-      description:
-        'Blobstore v2 info, set if reference_type is BLOBSTORE_REF and it refers to a v2 blob.',
-    }),
-    cosmoBinaryReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A binary data reference for a media download. Serves as a technology-agnostic binary reference in some Google infrastructure. This value is a serialized storage_cosmo.BinaryReference proto. Storing it as bytes is a hack to get around the fact that the cosmo proto (as well as others it includes) doesn't support JavaScript. This prevents us from including the actual type of this field.",
-      }),
-    crc32cHash: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'crc32.c hash for the payload.' }),
-    inline: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Media data, set if reference_type is INLINE' }),
-    length: z.string().exactOptional().openapi({ description: 'Size of the data, in bytes' }),
-    md5Hash: z.string().exactOptional().openapi({ description: 'MD5 hash for the payload.' }),
-    objectId: ObjectIdSchema.exactOptional().openapi({
-      description: 'Reference to a TI Blob, set if reference_type is BIGSTORE_REF.',
-    }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Path to the data, set if reference_type is PATH' }),
-    referenceType: z
-      .enum(['PATH', 'BLOB_REF', 'INLINE', 'BIGSTORE_REF', 'COSMO_BINARY_REFERENCE'])
-      .exactOptional()
-      .openapi({ description: 'Describes what the field reference contains.' }),
-    sha1Hash: z.string().exactOptional().openapi({ description: 'SHA-1 hash for the payload.' }),
-  })
-  .openapi({
-    description:
-      'A sequence of media data references representing composite data. Introduced to support Bigstore composite objects. For details, visit http://go/bigstore-composites.',
-    required: [],
-  })
-  .openapi('CompositeMedia')
-
-const ContentTypeInfoSchema = z
-  .object({
-    bestGuess: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Scotty's best guess of what the content type of the file is." }),
-    fromBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content type of the file derived by looking at specific bytes (i.e. "magic bytes") of the actual file.',
-      }),
-    fromFileName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content type of the file derived from the file extension of the original file name used by the client.',
-      }),
-    fromHeader: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content type of the file as specified in the request headers, multipart headers, or RUPIO start request.',
-      }),
-    fromUrlPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content type of the file derived from the file extension of the URL path. The URL path is assumed to represent a file name (which is typically only true for agents that are providing a REST API).',
-      }),
-  })
-  .openapi({
-    description:
-      "Detailed Content-Type information from Scotty. The Content-Type of the media will typically be filled in by the header or Scotty's best_guess, but this extended information provides the backend with more information so that it can make a better decision if needed. This is only used on media upload requests from Scotty.",
-    required: [],
-  })
-  .openapi('ContentTypeInfo')
-
-const DiffChecksumsResponseSchema = z
-  .object({
-    checksumsLocation: CompositeMediaSchema.exactOptional().openapi({
-      description:
-        'Exactly one of these fields must be populated. If checksums_location is filled, the server will return the corresponding contents to the user. If object_location is filled, the server will calculate the checksums based on the content there and return that to the user. For details on the format of the checksums, see http://go/scotty-diff-protocol.',
-    }),
-    chunkSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The chunk size of checksums. Must be a multiple of 256KB.' }),
-    objectLocation: CompositeMediaSchema.exactOptional().openapi({
-      description:
-        'If set, calculate the checksums based on the contents and return them to the caller.',
-    }),
-    objectSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The total size of the server object.' }),
-    objectVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The object version of the object the checksums are being returned for.',
-      }),
-  })
-  .openapi({
-    description:
-      'Backend response for a Diff get checksums response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
-    required: [],
-  })
-  .openapi('DiffChecksumsResponse')
-
-const DiffDownloadResponseSchema = z
-  .object({
-    objectLocation: CompositeMediaSchema.exactOptional().openapi({
-      description: 'The original object location.',
-    }),
-  })
-  .openapi({
-    description:
-      'Backend response for a Diff download response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
-    required: [],
-  })
-  .openapi('DiffDownloadResponse')
-
-const DiffUploadRequestSchema = z
-  .object({
-    checksumsInfo: CompositeMediaSchema.exactOptional().openapi({
-      description:
-        'The location of the checksums for the new object. Agents must clone the object located here, as the upload server will delete the contents once a response is received. For details on the format of the checksums, see http://go/scotty-diff-protocol.',
-    }),
-    objectInfo: CompositeMediaSchema.exactOptional().openapi({
-      description:
-        'The location of the new object. Agents must clone the object located here, as the upload server will delete the contents once a response is received.',
-    }),
-    objectVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The object version of the object that is the base version the incoming diff script will be applied to. This field will always be filled in.',
-      }),
-  })
-  .openapi({
-    description:
-      'A Diff upload request. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
-    required: [],
-  })
-  .openapi('DiffUploadRequest')
-
-const DiffUploadResponseSchema = z
-  .object({
-    objectVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The object version of the object at the server. Must be included in the end notification response. The version in the end notification response must correspond to the new version of the object that is now stored at the server, after the upload.',
-      }),
-    originalObject: CompositeMediaSchema.exactOptional().openapi({
-      description:
-        'The location of the original file for a diff upload request. Must be filled in if responding to an upload start notification.',
-    }),
-  })
-  .openapi({
-    description:
-      'Backend response for a Diff upload request. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
-    required: [],
-  })
-  .openapi('DiffUploadResponse')
-
-const DiffVersionResponseSchema = z
-  .object({
-    objectSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The total size of the server object.' }),
-    objectVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The version of the object stored at the server.' }),
-  })
-  .openapi({
-    description:
-      'Backend response for a Diff get version response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
-    required: [],
-  })
-  .openapi('DiffVersionResponse')
-
-const DownloadParametersSchema = z
-  .object({
-    allowGzipCompression: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "A boolean to be returned in the response to Scotty. Allows/disallows gzip encoding of the payload content when the server thinks it's advantageous (hence, does not guarantee compression) which allows Scotty to GZip the response to the client.",
-      }),
-    ignoreRange: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determining whether or not Apiary should skip the inclusion of any Content-Range header on its response to Scotty.',
-      }),
-  })
-  .openapi({ description: 'Parameters specific to media downloads.', required: [] })
-  .openapi('DownloadParameters')
-
-type MediaType = {
-  algorithm?: string
-  bigstoreObjectRef?: string
-  blobRef?: string
-  blobstore2Info?: z.infer<typeof Blobstore2InfoSchema>
-  compositeMedia?: z.infer<typeof CompositeMediaSchema>[]
-  contentType?: string
-  contentTypeInfo?: z.infer<typeof ContentTypeInfoSchema>
-  cosmoBinaryReference?: string
-  crc32cHash?: number
-  diffChecksumsResponse?: z.infer<typeof DiffChecksumsResponseSchema>
-  diffDownloadResponse?: z.infer<typeof DiffDownloadResponseSchema>
-  diffUploadRequest?: z.infer<typeof DiffUploadRequestSchema>
-  diffUploadResponse?: z.infer<typeof DiffUploadResponseSchema>
-  diffVersionResponse?: z.infer<typeof DiffVersionResponseSchema>
-  downloadParameters?: z.infer<typeof DownloadParametersSchema>
-  filename?: string
-  hash?: string
-  hashVerified?: boolean
-  inline?: string
-  isPotentialRetry?: boolean
-  length?: string
-  md5Hash?: string
-  mediaId?: string
-  objectId?: z.infer<typeof ObjectIdSchema>
-  path?: string
-  referenceType?:
-    | 'PATH'
-    | 'BLOB_REF'
-    | 'INLINE'
-    | 'GET_MEDIA'
-    | 'COMPOSITE_MEDIA'
-    | 'BIGSTORE_REF'
-    | 'DIFF_VERSION_RESPONSE'
-    | 'DIFF_CHECKSUMS_RESPONSE'
-    | 'DIFF_DOWNLOAD_RESPONSE'
-    | 'DIFF_UPLOAD_REQUEST'
-    | 'DIFF_UPLOAD_RESPONSE'
-    | 'COSMO_BINARY_REFERENCE'
-    | 'ARBITRARY_BYTES'
-  sha1Hash?: string
-  sha256Hash?: string
-  timestamp?: string
-  token?: string
-}
-
-const ActivationOptionsSchema = z
-  .object({
-    activationUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'HTTPS URL that supports REST semantics. Would be used for requesting activation from partners for given valuable, triggered by the users.',
-      }),
-    allowReactivation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag to allow users to make activation call from different device. This allows client to render the activation button enabled even if the activationStatus is ACTIVATED but the requested device is different than the current device.',
-      }),
-  })
-  .openapi({ description: 'ActivationOptions for the class', required: [] })
-  .openapi('ActivationOptions')
-
-const ActivationStatusSchema = z
-  .object({
-    state: z
-      .enum(['UNKNOWN_STATE', 'NOT_ACTIVATED', 'not_activated', 'ACTIVATED', 'activated'])
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      'The activation status of the object. This field includes activation status if valuable supports activation.',
-    required: [],
-  })
-  .openapi('ActivationStatus')
-
-const DateTimeSchema = z
-  .object({
-    date: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DateTime')
-
-const TimeIntervalSchema = z
-  .object({
-    end: DateTimeSchema.exactOptional().openapi({
-      description:
-        'End time of the interval. Offset is not required. If an offset is provided and `start` time is set, `start` must also include an offset.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#timeInterval"`.',
-      }),
-    start: DateTimeSchema.exactOptional().openapi({
-      description:
-        'Start time of the interval. Offset is not required. If an offset is provided and `end` time is set, `end` must also include an offset.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('TimeInterval')
-
-const TranslatedStringSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-      }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The UTF-8 encoded translated string.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TranslatedString')
-
-const LocalizedStringSchema = z
-  .object({
-    defaultValue: TranslatedStringSchema.exactOptional().openapi({
-      description:
-        'Contains the string to be displayed if no appropriate translation is available.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-      }),
-    translatedValues: z
-      .array(TranslatedStringSchema)
-      .exactOptional()
-      .openapi({ description: 'Contains the translations for the string.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('LocalizedString')
-
-const MessageSchema = z
-  .object({
-    body: z.string().exactOptional().openapi({ description: 'The message body.' }),
-    displayInterval: TimeIntervalSchema.exactOptional().openapi({
-      description:
-        'The period of time that the message will be displayed to users. You can define both a `startTime` and `endTime` for each message. A message is displayed immediately after a Wallet Object is inserted unless a `startTime` is set. The message will appear in a list of messages indefinitely if `endTime` is not provided.',
-    }),
-    header: z.string().exactOptional().openapi({ description: 'The message header.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID associated with a message. This field is here to enable ease of management of messages. Notice ID values could possibly duplicate across multiple messages in the same class/instance, and care must be taken to select a reasonable ID for each message.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#walletObjectMessage"`.',
-      }),
-    localizedBody: LocalizedStringSchema.exactOptional().openapi({
-      description: 'Translated strings for the message body.',
-    }),
-    localizedHeader: LocalizedStringSchema.exactOptional().openapi({
-      description: 'Translated strings for the message header.',
-    }),
-    messageType: z
-      .enum([
-        'MESSAGE_TYPE_UNSPECIFIED',
-        'TEXT',
-        'text',
-        'EXPIRATION_NOTIFICATION',
-        'expirationNotification',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The type of the message. Currently, this can only be set for offers.',
-      }),
-  })
-  .openapi({ description: 'A message that will be displayed with a Valuable', required: [] })
-  .openapi('Message')
-
-const AddMessageRequestSchema = z
-  .object({ message: MessageSchema.exactOptional() })
-  .openapi({ description: 'Resource used when the AddMessage endpoints are called.', required: [] })
-  .openapi('AddMessageRequest')
-
-const AirportInfoSchema = z
-  .object({
-    airportIataCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Three character IATA airport code. This is a required field for `origin` and `destination`. Eg: "SFO"',
-      }),
-    airportNameOverride: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'Optional field that overrides the airport city name defined by IATA. By default, Google takes the `airportIataCode` provided and maps it to the official airport city name defined by IATA. Official IATA airport city names can be found at IATA airport city names website. For example, for the airport IATA code "LTN", IATA website tells us that the corresponding airport city is "London". If this field is not populated, Google would display "London". However, populating this field with a custom name (eg: "London Luton") would override it.',
-    }),
-    gate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A name of the gate. Eg: "B59" or "59"' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#airportInfo"`.',
-      }),
-    terminal: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Terminal name. Eg: "INTL" or "I"' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AirportInfo')
-
-const ImageUriSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional information about the image, which is unused and retained only for backward compatibility.',
-      }),
-    localizedDescription: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'Translated strings for the description, which are unused and retained only for backward compatibility.',
-    }),
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The location of the image. URIs must have a scheme.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ImageUri')
-
-const ImageSchema = z
-  .object({
-    contentDescription: LocalizedStringSchema.exactOptional().openapi({
-      description: 'Description of the image used for accessibility.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
-      }),
-    sourceUri: ImageUriSchema.exactOptional().openapi({ description: 'The URI for the image.' }),
-  })
-  .openapi({ description: 'Wrapping type for Google hosted images. Next ID: 7', required: [] })
-  .openapi('Image')
-
-const UriSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URI's title appearing in the app as text. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens. Note that in some contexts this text is not used, such as when `description` is part of an image.",
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID associated with a uri. This field is here to enable ease of management of uris.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
-      }),
-    localizedDescription: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'Translated strings for the description. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens.',
-    }),
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Uri')
-
-const AppLinkDataAppLinkInfoAppTargetSchema = z
-  .object({ targetUri: UriSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AppLinkDataAppLinkInfoAppTarget')
-
-const AppLinkDataAppLinkInfoSchema = z
-  .object({
-    appLogoImage: ImageSchema.exactOptional().openapi({
-      description: 'Optional image to be displayed in the App Link Module',
-    }),
-    appTarget: AppLinkDataAppLinkInfoAppTargetSchema.exactOptional().openapi({
-      description:
-        'Url to follow when opening the App Link Module on clients. It will be used by partners to open their webpage or deeplink into their app.',
-    }),
-    description: LocalizedStringSchema.exactOptional().openapi({
-      description: 'String to be displayed in the description of the App Link Module Required',
-    }),
-    title: LocalizedStringSchema.exactOptional().openapi({
-      description: 'String to be displayed in the title of the App Link Module Required',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('AppLinkDataAppLinkInfo')
-
-const AppLinkDataSchema = z
-  .object({
-    androidAppLinkInfo: AppLinkDataAppLinkInfoSchema.exactOptional().openapi({
-      description:
-        'Optional information about the partner app link. If included, the app link link module will be rendered on the valuable details on the android client.',
-    }),
-    iosAppLinkInfo: AppLinkDataAppLinkInfoSchema.exactOptional().openapi({
-      description:
-        'Optional information about the partner app link. If included, the app link link module will be rendered on the valuable details on the ios client.',
-    }),
-    webAppLinkInfo: AppLinkDataAppLinkInfoSchema.exactOptional().openapi({
-      description:
-        'Optional information about the partner app link. If included, the app link link module will be rendered on the valuable details on the web client.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('AppLinkData')
-
-const AuthenticationKeySchema = z
-  .object({
-    id: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
-      }),
-    publicKeyPem: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AuthenticationKey')
-
-const BarcodeSchema = z
-  .object({
-    alternateText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An optional text that will override the default text that shows under the barcode. This field is intended for a human readable equivalent of the barcode value, used when the barcode cannot be scanned.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#barcode"`.',
-      }),
-    renderEncoding: z
-      .enum(['RENDER_ENCODING_UNSPECIFIED', 'UTF_8'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The render encoding for the barcode. When specified, barcode is rendered in the given encoding. Otherwise best known encoding is chosen by Google.',
-      }),
-    showCodeText: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'Optional text that will be shown when the barcode is hidden behind a click action. This happens in cases where a pass has Smart Tap enabled. If not specified, a default is chosen by Google.',
-    }),
-    type: z
-      .enum([
-        'BARCODE_TYPE_UNSPECIFIED',
-        'AZTEC',
-        'aztec',
-        'CODE_39',
-        'code39',
-        'CODE_128',
-        'code128',
-        'CODABAR',
-        'codabar',
-        'DATA_MATRIX',
-        'dataMatrix',
-        'EAN_8',
-        'ean8',
-        'EAN_13',
-        'ean13',
-        'EAN13',
-        'ITF_14',
-        'itf14',
-        'PDF_417',
-        'pdf417',
-        'PDF417',
-        'QR_CODE',
-        'qrCode',
-        'qrcode',
-        'UPC_A',
-        'upcA',
-        'TEXT_ONLY',
-        'textOnly',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of barcode.' }),
-    value: z.string().exactOptional().openapi({ description: 'The value encoded in the barcode.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Barcode')
-
 const FieldReferenceSchema = z
   .object({
     dateFormat: z
@@ -763,154 +46,6 @@ const FieldSelectorSchema = z
   })
   .openapi({ description: 'Custom field selector to use with field overrides.', required: [] })
   .openapi('FieldSelector')
-
-const BarcodeSectionDetailSchema = z
-  .object({
-    fieldSelector: FieldSelectorSchema.exactOptional().openapi({
-      description: 'A reference to an existing text-based or image field to display.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('BarcodeSectionDetail')
-
-const BoardingAndSeatingInfoSchema = z
-  .object({
-    boardingDoor: z
-      .enum(['BOARDING_DOOR_UNSPECIFIED', 'FRONT', 'front', 'BACK', 'back'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Set this field only if this flight boards through more than one door or bridge and you want to explicitly print the door location on the boarding pass. Most airlines route their passengers to the right door or bridge by refering to doors/bridges by the `seatClass`. In those cases `boardingDoor` should not be set.',
-      }),
-    boardingGroup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of boarding group (or zone) this passenger shall board with. eg: "B" The label for this value will be determined by the `boardingPolicy` field in the `flightClass` referenced by this object.',
-      }),
-    boardingPosition: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value of boarding position. eg: "76"' }),
-    boardingPrivilegeImage: ImageSchema.exactOptional().openapi({
-      description:
-        'A small image shown above the boarding barcode. Airlines can use it to communicate any special boarding privileges. In the event the security program logo is also set, this image might be rendered alongside the logo for that security program.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#boardingAndSeatingInfo"`.',
-      }),
-    seatAssignment: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'The passenger\'s seat assignment. To be used when there is no specific identifier to use in `seatNumber`. eg: "assigned at gate"',
-    }),
-    seatClass: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value of the seat class. eg: "Economy" or "Economy Plus"' }),
-    seatNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of passenger seat. If there is no specific identifier, use `seatAssignment` instead. eg: "25A"',
-      }),
-    sequenceNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sequence number on the boarding pass. This usually matches the sequence in which the passengers checked in. Airline might use the number for manual boarding and bag tags. eg: "49"',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BoardingAndSeatingInfo')
-
-const BoardingAndSeatingPolicySchema = z
-  .object({
-    boardingPolicy: z
-      .enum([
-        'BOARDING_POLICY_UNSPECIFIED',
-        'ZONE_BASED',
-        'zoneBased',
-        'GROUP_BASED',
-        'groupBased',
-        'BOARDING_POLICY_OTHER',
-        'boardingPolicyOther',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the policy the airline uses for boarding. If unset, Google will default to `zoneBased`.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#boardingAndSeatingPolicy"`.',
-      }),
-    seatClassPolicy: z
-      .enum([
-        'SEAT_CLASS_POLICY_UNSPECIFIED',
-        'CABIN_BASED',
-        'cabinBased',
-        'CLASS_BASED',
-        'classBased',
-        'TIER_BASED',
-        'tierBased',
-        'SEAT_CLASS_POLICY_OTHER',
-        'seatClassPolicyOther',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Seating policy which dictates how we display the seat class. If unset, Google will default to `cabinBased`.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BoardingAndSeatingPolicy')
-
-const CallbackOptionsSchema = z
-  .object({
-    updateRequestUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'URL for the merchant endpoint that would be called to request updates. The URL should be hosted on HTTPS and robots.txt should allow the URL path to be accessible by UserAgent:Google-Valuables. Deprecated.',
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The HTTPS url configured by the merchant. The URL should be hosted on HTTPS and robots.txt should allow the URL path to be accessible by UserAgent:Google-Valuables.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CallbackOptions')
-
-const CardBarcodeSectionDetailsSchema = z
-  .object({
-    firstBottomDetail: BarcodeSectionDetailSchema.exactOptional().openapi({
-      description: 'Optional information to display below the barcode.',
-    }),
-    firstTopDetail: BarcodeSectionDetailSchema.exactOptional().openapi({
-      description:
-        'Optional information to display above the barcode. If `secondTopDetail` is defined, this will be displayed to the start side of this detail section.',
-    }),
-    secondTopDetail: BarcodeSectionDetailSchema.exactOptional().openapi({
-      description:
-        'Optional second piece of information to display above the barcode. If `firstTopDetail` is defined, this will be displayed to the end side of this detail section.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('CardBarcodeSectionDetails')
 
 const TemplateItemSchema = z
   .object({
@@ -998,7 +133,37 @@ const CardRowTemplateInfoSchema = z
   .openapi({ required: [] })
   .openapi('CardRowTemplateInfo')
 
-const CardTemplateOverrideSchema = z
+type CardTemplateOverrideType = {
+  cardRowTemplateInfos?: z.infer<typeof CardRowTemplateInfoSchema>[]
+}
+
+const BarcodeSectionDetailSchema = z
+  .object({
+    fieldSelector: FieldSelectorSchema.exactOptional().openapi({
+      description: 'A reference to an existing text-based or image field to display.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BarcodeSectionDetail')
+
+const CardBarcodeSectionDetailsSchema = z
+  .object({
+    firstBottomDetail: BarcodeSectionDetailSchema.exactOptional().openapi({
+      description: 'Optional information to display below the barcode.',
+    }),
+    firstTopDetail: BarcodeSectionDetailSchema.exactOptional().openapi({
+      description:
+        'Optional information to display above the barcode. If `secondTopDetail` is defined, this will be displayed to the start side of this detail section.',
+    }),
+    secondTopDetail: BarcodeSectionDetailSchema.exactOptional().openapi({
+      description:
+        'Optional second piece of information to display above the barcode. If `firstTopDetail` is defined, this will be displayed to the end side of this detail section.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CardBarcodeSectionDetails')
+
+const CardTemplateOverrideSchema: z.ZodType<CardTemplateOverrideType> = z
   .object({
     cardRowTemplateInfos: z
       .array(CardRowTemplateInfoSchema)
@@ -1068,7 +233,34 @@ const ListTemplateOverrideSchema = z
   .openapi({ required: [] })
   .openapi('ListTemplateOverride')
 
-const ClassTemplateInfoSchema = z
+type ClassTemplateInfoType = {
+  cardBarcodeSectionDetails?: z.infer<typeof CardBarcodeSectionDetailsSchema>
+  cardTemplateOverride?: z.infer<typeof CardTemplateOverrideSchema>
+  detailsTemplateOverride?: z.infer<typeof DetailsTemplateOverrideSchema>
+  listTemplateOverride?: z.infer<typeof ListTemplateOverrideSchema>
+}
+
+const CallbackOptionsSchema = z
+  .object({
+    updateRequestUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL for the merchant endpoint that would be called to request updates. The URL should be hosted on HTTPS and robots.txt should allow the URL path to be accessible by UserAgent:Google-Valuables. Deprecated.',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The HTTPS url configured by the merchant. The URL should be hosted on HTTPS and robots.txt should allow the URL path to be accessible by UserAgent:Google-Valuables.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CallbackOptions')
+
+const ClassTemplateInfoSchema: z.ZodType<ClassTemplateInfoType> = z
   .object({
     cardBarcodeSectionDetails: CardBarcodeSectionDetailsSchema.exactOptional().openapi({
       description: 'Specifies extra information to be displayed above and below the barcode.',
@@ -1086,95 +278,50 @@ const ClassTemplateInfoSchema = z
   .openapi({ required: [] })
   .openapi('ClassTemplateInfo')
 
-const DeviceContextSchema = z
+const TranslatedStringSchema = z
   .object({
-    deviceToken: z
+    kind: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          "If set, redemption information will only be returned to the given device upon activation of the object. This should not be used as a stable identifier to trace a user's device. It can change across different passes for the same device or even across different activations for the same device. When setting this, callers must also set has_linked_device on the object being activated.",
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
       }),
-  })
-  .openapi({ description: 'Device context associated with the object.', required: [] })
-  .openapi('DeviceContext')
-
-const DiscoverableProgramMerchantSigninInfoSchema = z
-  .object({
-    signinWebsite: UriSchema.exactOptional().openapi({
-      description: "The URL to direct the user to for the merchant's signin site.",
-    }),
-  })
-  .openapi({
-    description: 'Information about the merchant hosted signin flow for a program.',
-    required: [],
-  })
-  .openapi('DiscoverableProgramMerchantSigninInfo')
-
-const DiscoverableProgramMerchantSignupInfoSchema = z
-  .object({
-    signupSharedDatas: z
-      .array(
-        z.enum([
-          'SHARED_DATA_TYPE_UNSPECIFIED',
-          'FIRST_NAME',
-          'LAST_NAME',
-          'STREET_ADDRESS',
-          'ADDRESS_LINE_1',
-          'ADDRESS_LINE_2',
-          'ADDRESS_LINE_3',
-          'CITY',
-          'STATE',
-          'ZIPCODE',
-          'COUNTRY',
-          'EMAIL',
-          'PHONE',
-        ]),
-      )
+    language: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          " User data that is sent in a POST request to the signup website URL. This information is encoded and then shared so that the merchant's website can prefill fields used to enroll the user for the discoverable program.",
+          'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
       }),
-    signupWebsite: UriSchema.exactOptional().openapi({
-      description: "The URL to direct the user to for the merchant's signup site.",
-    }),
-  })
-  .openapi({
-    description: 'Information about the merchant hosted signup flow for a program.',
-    required: [],
-  })
-  .openapi('DiscoverableProgramMerchantSignupInfo')
-
-const DiscoverableProgramSchema = z
-  .object({
-    merchantSigninInfo: DiscoverableProgramMerchantSigninInfoSchema.exactOptional().openapi({
-      description:
-        'Information about the ability to signin and add a valuable for this program through a merchant site. Used when MERCHANT_HOSTED_SIGNIN is enabled.',
-    }),
-    merchantSignupInfo: DiscoverableProgramMerchantSignupInfoSchema.exactOptional().openapi({
-      description:
-        'Information about the ability to signup and add a valuable for this program through a merchant site. Used when MERCHANT_HOSTED_SIGNUP is enabled.',
-    }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'TRUSTED_TESTERS',
-        'trustedTesters',
-        'LIVE',
-        'live',
-        'DISABLED',
-        'disabled',
-      ])
+    value: z
+      .string()
       .exactOptional()
-      .openapi({ description: 'Visibility state of the discoverable program.' }),
+      .openapi({ description: 'The UTF-8 encoded translated string.' }),
   })
-  .openapi({
-    description:
-      'Information about how a class may be discovered and instantiated from within the Android Pay app. This is done by searching for a loyalty or gift card program and scanning or manually entering.',
-    required: [],
+  .openapi({ required: [] })
+  .openapi('TranslatedString')
+
+const LocalizedStringSchema = z
+  .object({
+    defaultValue: TranslatedStringSchema.exactOptional().openapi({
+      description:
+        'Contains the string to be displayed if no appropriate translation is available.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
+      }),
+    translatedValues: z
+      .array(TranslatedStringSchema)
+      .exactOptional()
+      .openapi({ description: 'Contains the translations for the string.' }),
   })
-  .openapi('DiscoverableProgram')
+  .openapi({ required: [] })
+  .openapi('LocalizedString')
 
 const EventDateTimeSchema = z
   .object({
@@ -1221,54 +368,81 @@ const EventDateTimeSchema = z
   .openapi({ required: [] })
   .openapi('EventDateTime')
 
-const EventReservationInfoSchema = z
+const ImageUriSchema = z
   .object({
-    confirmationCode: z
+    description: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The confirmation code of the event reservation. This may also take the form of an "order number", "confirmation number", "reservation number", or other equivalent.',
+          'Additional information about the image, which is unused and retained only for backward compatibility.',
       }),
-    kind: z
+    localizedDescription: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'Translated strings for the description, which are unused and retained only for backward compatibility.',
+    }),
+    uri: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#eventReservationInfo"`.',
-      }),
+      .openapi({ description: 'The location of the image. URIs must have a scheme.' }),
   })
   .openapi({ required: [] })
-  .openapi('EventReservationInfo')
+  .openapi('ImageUri')
 
-const EventSeatSchema = z
+const ImageSchema = z
   .object({
-    gate: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'The gate the ticket holder should enter to get to their seat, such as "A" or "West". This field is localizable so you may translate words or use different alphabets for the characters in an identifier.',
+    contentDescription: LocalizedStringSchema.exactOptional().openapi({
+      description: 'Description of the image used for accessibility.',
     }),
     kind: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#eventSeat"`.',
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
       }),
-    row: LocalizedStringSchema.exactOptional().openapi({
+    sourceUri: ImageUriSchema.exactOptional().openapi({ description: 'The URI for the image.' }),
+  })
+  .openapi({ description: 'Wrapping type for Google hosted images. Next ID: 7', required: [] })
+  .openapi('Image')
+
+const UriSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URI's title appearing in the app as text. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens. Note that in some contexts this text is not used, such as when `description` is part of an image.",
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID associated with a uri. This field is here to enable ease of management of uris.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
+      }),
+    localizedDescription: LocalizedStringSchema.exactOptional().openapi({
       description:
-        'The row of the seat, such as "1", E", "BB", or "A5". This field is localizable so you may translate words or use different alphabets for the characters in an identifier.',
+        'Translated strings for the description. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens.',
     }),
-    seat: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'The seat number, such as "1", "2", "3", or any other seat identifier. This field is localizable so you may translate words or use different alphabets for the characters in an identifier.',
-    }),
-    section: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'The section of the seat, such as "121". This field is localizable so you may translate words or use different alphabets for the characters in an identifier.',
-    }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.',
+      }),
   })
   .openapi({ required: [] })
-  .openapi('EventSeat')
+  .openapi('Uri')
 
 const ImageModuleDataSchema = z
   .object({
@@ -1329,7 +503,12 @@ const LabelValueRowSchema = z
   .openapi({ required: [] })
   .openapi('LabelValueRow')
 
-const InfoModuleDataSchema = z
+type InfoModuleDataType = {
+  labelValueRows?: z.infer<typeof LabelValueRowSchema>[]
+  showLastUpdateTime?: boolean
+}
+
+const InfoModuleDataSchema: z.ZodType<InfoModuleDataType> = z
   .object({
     labelValueRows: z
       .array(LabelValueRowSchema)
@@ -1376,6 +555,84 @@ const LatLongPointSchema = z
   })
   .openapi({ required: [] })
   .openapi('LatLongPoint')
+
+const DateTimeSchema = z
+  .object({
+    date: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DateTime')
+
+const TimeIntervalSchema = z
+  .object({
+    end: DateTimeSchema.exactOptional().openapi({
+      description:
+        'End time of the interval. Offset is not required. If an offset is provided and `start` time is set, `start` must also include an offset.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#timeInterval"`.',
+      }),
+    start: DateTimeSchema.exactOptional().openapi({
+      description:
+        'Start time of the interval. Offset is not required. If an offset is provided and `end` time is set, `end` must also include an offset.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('TimeInterval')
+
+const MessageSchema = z
+  .object({
+    body: z.string().exactOptional().openapi({ description: 'The message body.' }),
+    displayInterval: TimeIntervalSchema.exactOptional().openapi({
+      description:
+        'The period of time that the message will be displayed to users. You can define both a `startTime` and `endTime` for each message. A message is displayed immediately after a Wallet Object is inserted unless a `startTime` is set. The message will appear in a list of messages indefinitely if `endTime` is not provided.',
+    }),
+    header: z.string().exactOptional().openapi({ description: 'The message header.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID associated with a message. This field is here to enable ease of management of messages. Notice ID values could possibly duplicate across multiple messages in the same class/instance, and care must be taken to select a reasonable ID for each message.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#walletObjectMessage"`.',
+      }),
+    localizedBody: LocalizedStringSchema.exactOptional().openapi({
+      description: 'Translated strings for the message body.',
+    }),
+    localizedHeader: LocalizedStringSchema.exactOptional().openapi({
+      description: 'Translated strings for the message header.',
+    }),
+    messageType: z
+      .enum([
+        'MESSAGE_TYPE_UNSPECIFIED',
+        'TEXT',
+        'text',
+        'EXPIRATION_NOTIFICATION',
+        'expirationNotification',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The type of the message. Currently, this can only be set for offers.',
+      }),
+  })
+  .openapi({ description: 'A message that will be displayed with a Valuable', required: [] })
+  .openapi('Message')
 
 const ReviewSchema = z
   .object({ comments: z.string().exactOptional() })
@@ -1451,7 +708,80 @@ const EventVenueSchema = z
   .openapi({ required: [] })
   .openapi('EventVenue')
 
-const EventTicketClassSchema = z
+type EventTicketClassType = {
+  allowMultipleUsersPerObject?: boolean
+  callbackOptions?: z.infer<typeof CallbackOptionsSchema>
+  classTemplateInfo?: z.infer<typeof ClassTemplateInfoSchema>
+  confirmationCodeLabel?:
+    | 'CONFIRMATION_CODE_LABEL_UNSPECIFIED'
+    | 'CONFIRMATION_CODE'
+    | 'confirmationCode'
+    | 'CONFIRMATION_NUMBER'
+    | 'confirmationNumber'
+    | 'ORDER_NUMBER'
+    | 'orderNumber'
+    | 'RESERVATION_NUMBER'
+    | 'reservationNumber'
+  countryCode?: string
+  customConfirmationCodeLabel?: z.infer<typeof LocalizedStringSchema>
+  customGateLabel?: z.infer<typeof LocalizedStringSchema>
+  customRowLabel?: z.infer<typeof LocalizedStringSchema>
+  customSeatLabel?: z.infer<typeof LocalizedStringSchema>
+  customSectionLabel?: z.infer<typeof LocalizedStringSchema>
+  dateTime?: z.infer<typeof EventDateTimeSchema>
+  enableSmartTap?: boolean
+  eventId?: string
+  eventName?: z.infer<typeof LocalizedStringSchema>
+  finePrint?: z.infer<typeof LocalizedStringSchema>
+  gateLabel?: 'GATE_LABEL_UNSPECIFIED' | 'GATE' | 'gate' | 'DOOR' | 'door' | 'ENTRANCE' | 'entrance'
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  homepageUri?: z.infer<typeof UriSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  issuerName?: string
+  kind?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  localizedIssuerName?: z.infer<typeof LocalizedStringSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  logo?: z.infer<typeof ImageSchema>
+  messages?: z.infer<typeof MessageSchema>[]
+  multipleDevicesAndHoldersAllowedStatus?:
+    | 'STATUS_UNSPECIFIED'
+    | 'MULTIPLE_HOLDERS'
+    | 'multipleHolders'
+    | 'ONE_USER_ALL_DEVICES'
+    | 'oneUserAllDevices'
+    | 'ONE_USER_ONE_DEVICE'
+    | 'oneUserOneDevice'
+  redemptionIssuers?: string[]
+  review?: z.infer<typeof ReviewSchema>
+  reviewStatus?:
+    | 'REVIEW_STATUS_UNSPECIFIED'
+    | 'UNDER_REVIEW'
+    | 'underReview'
+    | 'APPROVED'
+    | 'approved'
+    | 'REJECTED'
+    | 'rejected'
+    | 'DRAFT'
+    | 'draft'
+  rowLabel?: 'ROW_LABEL_UNSPECIFIED' | 'ROW' | 'row'
+  seatLabel?: 'SEAT_LABEL_UNSPECIFIED' | 'SEAT' | 'seat'
+  sectionLabel?: 'SECTION_LABEL_UNSPECIFIED' | 'SECTION' | 'section' | 'THEATER' | 'theater'
+  securityAnimation?: z.infer<typeof SecurityAnimationSchema>
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  venue?: z.infer<typeof EventVenueSchema>
+  version?: string
+  viewUnlockRequirement?:
+    | 'VIEW_UNLOCK_REQUIREMENT_UNSPECIFIED'
+    | 'UNLOCK_NOT_REQUIRED'
+    | 'UNLOCK_REQUIRED_TO_VIEW'
+  wordMark?: z.infer<typeof ImageSchema>
+}
+
+const EventTicketClassSchema: z.ZodType<EventTicketClassType> = z
   .object({
     allowMultipleUsersPerObject: z
       .boolean()
@@ -1702,14 +1032,7 @@ const EventTicketClassSchema = z
   .openapi({ required: [] })
   .openapi('EventTicketClass')
 
-const EventTicketClassAddMessageResponseSchema = z
-  .object({
-    resource: EventTicketClassSchema.exactOptional().openapi({
-      description: 'The updated EventTicketClass resource.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('EventTicketClassAddMessageResponse')
+type EventTicketClassAddMessageResponseType = { resource?: z.infer<typeof EventTicketClassSchema> }
 
 const PaginationSchema = z
   .object({
@@ -1732,18 +1055,117 @@ const PaginationSchema = z
   .openapi({ required: [] })
   .openapi('Pagination')
 
-const EventTicketClassListResponseSchema = z
+type EventTicketClassListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof EventTicketClassSchema>[]
+}
+
+const AppLinkDataAppLinkInfoAppTargetSchema = z
+  .object({ targetUri: UriSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AppLinkDataAppLinkInfoAppTarget')
+
+const AppLinkDataAppLinkInfoSchema = z
   .object({
-    pagination: PaginationSchema.exactOptional().openapi({
-      description: 'Pagination of the response.',
+    appLogoImage: ImageSchema.exactOptional().openapi({
+      description: 'Optional image to be displayed in the App Link Module',
     }),
-    resources: z
-      .array(EventTicketClassSchema)
-      .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
+    appTarget: AppLinkDataAppLinkInfoAppTargetSchema.exactOptional().openapi({
+      description:
+        'Url to follow when opening the App Link Module on clients. It will be used by partners to open their webpage or deeplink into their app.',
+    }),
+    description: LocalizedStringSchema.exactOptional().openapi({
+      description: 'String to be displayed in the description of the App Link Module Required',
+    }),
+    title: LocalizedStringSchema.exactOptional().openapi({
+      description: 'String to be displayed in the title of the App Link Module Required',
+    }),
   })
   .openapi({ required: [] })
-  .openapi('EventTicketClassListResponse')
+  .openapi('AppLinkDataAppLinkInfo')
+
+const AppLinkDataSchema = z
+  .object({
+    androidAppLinkInfo: AppLinkDataAppLinkInfoSchema.exactOptional().openapi({
+      description:
+        'Optional information about the partner app link. If included, the app link link module will be rendered on the valuable details on the android client.',
+    }),
+    iosAppLinkInfo: AppLinkDataAppLinkInfoSchema.exactOptional().openapi({
+      description:
+        'Optional information about the partner app link. If included, the app link link module will be rendered on the valuable details on the ios client.',
+    }),
+    webAppLinkInfo: AppLinkDataAppLinkInfoSchema.exactOptional().openapi({
+      description:
+        'Optional information about the partner app link. If included, the app link link module will be rendered on the valuable details on the web client.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppLinkData')
+
+const BarcodeSchema = z
+  .object({
+    alternateText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An optional text that will override the default text that shows under the barcode. This field is intended for a human readable equivalent of the barcode value, used when the barcode cannot be scanned.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#barcode"`.',
+      }),
+    renderEncoding: z
+      .enum(['RENDER_ENCODING_UNSPECIFIED', 'UTF_8'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The render encoding for the barcode. When specified, barcode is rendered in the given encoding. Otherwise best known encoding is chosen by Google.',
+      }),
+    showCodeText: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'Optional text that will be shown when the barcode is hidden behind a click action. This happens in cases where a pass has Smart Tap enabled. If not specified, a default is chosen by Google.',
+    }),
+    type: z
+      .enum([
+        'BARCODE_TYPE_UNSPECIFIED',
+        'AZTEC',
+        'aztec',
+        'CODE_39',
+        'code39',
+        'CODE_128',
+        'code128',
+        'CODABAR',
+        'codabar',
+        'DATA_MATRIX',
+        'dataMatrix',
+        'EAN_8',
+        'ean8',
+        'EAN_13',
+        'ean13',
+        'EAN13',
+        'ITF_14',
+        'itf14',
+        'PDF_417',
+        'pdf417',
+        'PDF417',
+        'QR_CODE',
+        'qrCode',
+        'qrcode',
+        'UPC_A',
+        'upcA',
+        'TEXT_ONLY',
+        'textOnly',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of barcode.' }),
+    value: z.string().exactOptional().openapi({ description: 'The value encoded in the barcode.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Barcode')
 
 const MoneySchema = z
   .object({
@@ -1801,6 +1223,26 @@ const PassConstraintsSchema = z
     required: [],
   })
   .openapi('PassConstraints')
+
+const EventReservationInfoSchema = z
+  .object({
+    confirmationCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The confirmation code of the event reservation. This may also take the form of an "order number", "confirmation number", "reservation number", or other equivalent.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#eventReservationInfo"`.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('EventReservationInfo')
 
 const RotatingBarcodeTotpDetailsTotpParametersSchema = z
   .object({
@@ -1917,7 +1359,79 @@ const RotatingBarcodeSchema = z
   .openapi({ required: [] })
   .openapi('RotatingBarcode')
 
-const EventTicketObjectSchema = z
+const EventSeatSchema = z
+  .object({
+    gate: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'The gate the ticket holder should enter to get to their seat, such as "A" or "West". This field is localizable so you may translate words or use different alphabets for the characters in an identifier.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#eventSeat"`.',
+      }),
+    row: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'The row of the seat, such as "1", E", "BB", or "A5". This field is localizable so you may translate words or use different alphabets for the characters in an identifier.',
+    }),
+    seat: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'The seat number, such as "1", "2", "3", or any other seat identifier. This field is localizable so you may translate words or use different alphabets for the characters in an identifier.',
+    }),
+    section: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'The section of the seat, such as "121". This field is localizable so you may translate words or use different alphabets for the characters in an identifier.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('EventSeat')
+
+type EventTicketObjectType = {
+  appLinkData?: z.infer<typeof AppLinkDataSchema>
+  barcode?: z.infer<typeof BarcodeSchema>
+  classId?: string
+  classReference?: z.infer<typeof EventTicketClassSchema>
+  disableExpirationNotification?: boolean
+  faceValue?: z.infer<typeof MoneySchema>
+  groupingInfo?: z.infer<typeof GroupingInfoSchema>
+  hasLinkedDevice?: boolean
+  hasUsers?: boolean
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  kind?: string
+  linkedOfferIds?: string[]
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  messages?: z.infer<typeof MessageSchema>[]
+  passConstraints?: z.infer<typeof PassConstraintsSchema>
+  reservationInfo?: z.infer<typeof EventReservationInfoSchema>
+  rotatingBarcode?: z.infer<typeof RotatingBarcodeSchema>
+  seatInfo?: z.infer<typeof EventSeatSchema>
+  smartTapRedemptionValue?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'ACTIVE'
+    | 'active'
+    | 'COMPLETED'
+    | 'completed'
+    | 'EXPIRED'
+    | 'expired'
+    | 'INACTIVE'
+    | 'inactive'
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  ticketHolderName?: string
+  ticketNumber?: string
+  ticketType?: z.infer<typeof LocalizedStringSchema>
+  validTimeInterval?: z.infer<typeof TimeIntervalSchema>
+  version?: string
+}
+
+const EventTicketObjectSchema: z.ZodType<EventTicketObjectType> = z
   .object({
     appLinkData: AppLinkDataSchema.exactOptional().openapi({
       description: 'Optional information about the partner app link.',
@@ -2090,43 +1604,91 @@ const EventTicketObjectSchema = z
   .openapi({ required: [] })
   .openapi('EventTicketObject')
 
-const EventTicketObjectAddMessageResponseSchema = z
-  .object({
-    resource: EventTicketObjectSchema.exactOptional().openapi({
-      description: 'The updated EventTicketObject resource.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('EventTicketObjectAddMessageResponse')
+type EventTicketObjectAddMessageResponseType = {
+  resource?: z.infer<typeof EventTicketObjectSchema>
+}
 
-const EventTicketObjectListResponseSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional().openapi({
-      description: 'Pagination of the response.',
-    }),
-    resources: z
-      .array(EventTicketObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EventTicketObjectListResponse')
+type EventTicketObjectListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof EventTicketObjectSchema>[]
+}
 
-const ExpiryNotificationSchema = z
+const BoardingAndSeatingPolicySchema = z
   .object({
-    enableNotification: z
-      .boolean()
+    boardingPolicy: z
+      .enum([
+        'BOARDING_POLICY_UNSPECIFIED',
+        'ZONE_BASED',
+        'zoneBased',
+        'GROUP_BASED',
+        'groupBased',
+        'BOARDING_POLICY_OTHER',
+        'boardingPolicyOther',
+      ])
       .exactOptional()
       .openapi({
-        description: 'Indicates if the object needs to have expiry notification enabled.',
+        description:
+          'Indicates the policy the airline uses for boarding. If unset, Google will default to `zoneBased`.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#boardingAndSeatingPolicy"`.',
+      }),
+    seatClassPolicy: z
+      .enum([
+        'SEAT_CLASS_POLICY_UNSPECIFIED',
+        'CABIN_BASED',
+        'cabinBased',
+        'CLASS_BASED',
+        'classBased',
+        'TIER_BASED',
+        'tierBased',
+        'SEAT_CLASS_POLICY_OTHER',
+        'seatClassPolicyOther',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Seating policy which dictates how we display the seat class. If unset, Google will default to `cabinBased`.',
       }),
   })
-  .openapi({
-    description:
-      'Indicates that the issuer would like GooglePay to send expiry notifications 2 days prior to the card expiration.',
-    required: [],
+  .openapi({ required: [] })
+  .openapi('BoardingAndSeatingPolicy')
+
+const AirportInfoSchema = z
+  .object({
+    airportIataCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Three character IATA airport code. This is a required field for `origin` and `destination`. Eg: "SFO"',
+      }),
+    airportNameOverride: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'Optional field that overrides the airport city name defined by IATA. By default, Google takes the `airportIataCode` provided and maps it to the official airport city name defined by IATA. Official IATA airport city names can be found at IATA airport city names website. For example, for the airport IATA code "LTN", IATA website tells us that the corresponding airport city is "London". If this field is not populated, Google would display "London". However, populating this field with a custom name (eg: "London Luton") would override it.',
+    }),
+    gate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A name of the gate. Eg: "B59" or "59"' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#airportInfo"`.',
+      }),
+    terminal: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Terminal name. Eg: "INTL" or "I"' }),
   })
-  .openapi('ExpiryNotification')
+  .openapi({ required: [] })
+  .openapi('AirportInfo')
 
 const FlightCarrierSchema = z
   .object({
@@ -2208,7 +1770,80 @@ const FlightHeaderSchema = z
   .openapi({ required: [] })
   .openapi('FlightHeader')
 
-const FlightClassSchema = z
+type FlightClassType = {
+  allowMultipleUsersPerObject?: boolean
+  boardingAndSeatingPolicy?: z.infer<typeof BoardingAndSeatingPolicySchema>
+  callbackOptions?: z.infer<typeof CallbackOptionsSchema>
+  classTemplateInfo?: z.infer<typeof ClassTemplateInfoSchema>
+  countryCode?: string
+  destination?: z.infer<typeof AirportInfoSchema>
+  enableSmartTap?: boolean
+  flightHeader?: z.infer<typeof FlightHeaderSchema>
+  flightStatus?:
+    | 'FLIGHT_STATUS_UNSPECIFIED'
+    | 'SCHEDULED'
+    | 'scheduled'
+    | 'ACTIVE'
+    | 'active'
+    | 'LANDED'
+    | 'landed'
+    | 'CANCELLED'
+    | 'cancelled'
+    | 'REDIRECTED'
+    | 'redirected'
+    | 'DIVERTED'
+    | 'diverted'
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  homepageUri?: z.infer<typeof UriSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  issuerName?: string
+  kind?: string
+  languageOverride?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  localBoardingDateTime?: string
+  localEstimatedOrActualArrivalDateTime?: string
+  localEstimatedOrActualDepartureDateTime?: string
+  localGateClosingDateTime?: string
+  localScheduledArrivalDateTime?: string
+  localScheduledDepartureDateTime?: string
+  localizedIssuerName?: z.infer<typeof LocalizedStringSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  messages?: z.infer<typeof MessageSchema>[]
+  multipleDevicesAndHoldersAllowedStatus?:
+    | 'STATUS_UNSPECIFIED'
+    | 'MULTIPLE_HOLDERS'
+    | 'multipleHolders'
+    | 'ONE_USER_ALL_DEVICES'
+    | 'oneUserAllDevices'
+    | 'ONE_USER_ONE_DEVICE'
+    | 'oneUserOneDevice'
+  origin?: z.infer<typeof AirportInfoSchema>
+  redemptionIssuers?: string[]
+  review?: z.infer<typeof ReviewSchema>
+  reviewStatus?:
+    | 'REVIEW_STATUS_UNSPECIFIED'
+    | 'UNDER_REVIEW'
+    | 'underReview'
+    | 'APPROVED'
+    | 'approved'
+    | 'REJECTED'
+    | 'rejected'
+    | 'DRAFT'
+    | 'draft'
+  securityAnimation?: z.infer<typeof SecurityAnimationSchema>
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  version?: string
+  viewUnlockRequirement?:
+    | 'VIEW_UNLOCK_REQUIREMENT_UNSPECIFIED'
+    | 'UNLOCK_NOT_REQUIRED'
+    | 'UNLOCK_REQUIRED_TO_VIEW'
+  wordMark?: z.infer<typeof ImageSchema>
+}
+
+const FlightClassSchema: z.ZodType<FlightClassType> = z
   .object({
     allowMultipleUsersPerObject: z
       .boolean()
@@ -2454,27 +2089,69 @@ const FlightClassSchema = z
   .openapi({ required: [] })
   .openapi('FlightClass')
 
-const FlightClassAddMessageResponseSchema = z
-  .object({
-    resource: FlightClassSchema.exactOptional().openapi({
-      description: 'The updated FlightClass resource.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('FlightClassAddMessageResponse')
+type FlightClassAddMessageResponseType = { resource?: z.infer<typeof FlightClassSchema> }
 
-const FlightClassListResponseSchema = z
+type FlightClassListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof FlightClassSchema>[]
+}
+
+const BoardingAndSeatingInfoSchema = z
   .object({
-    pagination: PaginationSchema.exactOptional().openapi({
-      description: 'Pagination of the response.',
-    }),
-    resources: z
-      .array(FlightClassSchema)
+    boardingDoor: z
+      .enum(['BOARDING_DOOR_UNSPECIFIED', 'FRONT', 'front', 'BACK', 'back'])
       .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
+      .openapi({
+        description:
+          'Set this field only if this flight boards through more than one door or bridge and you want to explicitly print the door location on the boarding pass. Most airlines route their passengers to the right door or bridge by refering to doors/bridges by the `seatClass`. In those cases `boardingDoor` should not be set.',
+      }),
+    boardingGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value of boarding group (or zone) this passenger shall board with. eg: "B" The label for this value will be determined by the `boardingPolicy` field in the `flightClass` referenced by this object.',
+      }),
+    boardingPosition: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value of boarding position. eg: "76"' }),
+    boardingPrivilegeImage: ImageSchema.exactOptional().openapi({
+      description:
+        'A small image shown above the boarding barcode. Airlines can use it to communicate any special boarding privileges. In the event the security program logo is also set, this image might be rendered alongside the logo for that security program.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#boardingAndSeatingInfo"`.',
+      }),
+    seatAssignment: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'The passenger\'s seat assignment. To be used when there is no specific identifier to use in `seatNumber`. eg: "assigned at gate"',
+    }),
+    seatClass: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value of the seat class. eg: "Economy" or "Economy Plus"' }),
+    seatNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value of passenger seat. If there is no specific identifier, use `seatAssignment` instead. eg: "25A"',
+      }),
+    sequenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sequence number on the boarding pass. This usually matches the sequence in which the passengers checked in. Airline might use the number for manual boarding and bag tags. eg: "49"',
+      }),
   })
   .openapi({ required: [] })
-  .openapi('FlightClassListResponse')
+  .openapi('BoardingAndSeatingInfo')
 
 const FrequentFlyerInfoSchema = z
   .object({
@@ -2523,7 +2200,47 @@ const ReservationInfoSchema = z
   .openapi({ required: [] })
   .openapi('ReservationInfo')
 
-const FlightObjectSchema = z
+type FlightObjectType = {
+  appLinkData?: z.infer<typeof AppLinkDataSchema>
+  barcode?: z.infer<typeof BarcodeSchema>
+  boardingAndSeatingInfo?: z.infer<typeof BoardingAndSeatingInfoSchema>
+  classId?: string
+  classReference?: z.infer<typeof FlightClassSchema>
+  disableExpirationNotification?: boolean
+  groupingInfo?: z.infer<typeof GroupingInfoSchema>
+  hasLinkedDevice?: boolean
+  hasUsers?: boolean
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  kind?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  messages?: z.infer<typeof MessageSchema>[]
+  passConstraints?: z.infer<typeof PassConstraintsSchema>
+  passengerName?: string
+  reservationInfo?: z.infer<typeof ReservationInfoSchema>
+  rotatingBarcode?: z.infer<typeof RotatingBarcodeSchema>
+  securityProgramLogo?: z.infer<typeof ImageSchema>
+  smartTapRedemptionValue?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'ACTIVE'
+    | 'active'
+    | 'COMPLETED'
+    | 'completed'
+    | 'EXPIRED'
+    | 'expired'
+    | 'INACTIVE'
+    | 'inactive'
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  validTimeInterval?: z.infer<typeof TimeIntervalSchema>
+  version?: string
+}
+
+const FlightObjectSchema: z.ZodType<FlightObjectType> = z
   .object({
     appLinkData: AppLinkDataSchema.exactOptional().openapi({
       description: 'Optional information about the partner app link.',
@@ -2677,29 +2394,38 @@ const FlightObjectSchema = z
   .openapi({ required: [] })
   .openapi('FlightObject')
 
-const FlightObjectAddMessageResponseSchema = z
-  .object({
-    resource: FlightObjectSchema.exactOptional().openapi({
-      description: 'The updated FlightObject resource.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('FlightObjectAddMessageResponse')
+type FlightObjectAddMessageResponseType = { resource?: z.infer<typeof FlightObjectSchema> }
 
-const FlightObjectListResponseSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional().openapi({
-      description: 'Pagination of the response.',
-    }),
-    resources: z
-      .array(FlightObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FlightObjectListResponse')
+type FlightObjectListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof FlightObjectSchema>[]
+}
 
-const GenericClassSchema = z
+type GenericClassType = {
+  callbackOptions?: z.infer<typeof CallbackOptionsSchema>
+  classTemplateInfo?: z.infer<typeof ClassTemplateInfoSchema>
+  enableSmartTap?: boolean
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  multipleDevicesAndHoldersAllowedStatus?:
+    | 'STATUS_UNSPECIFIED'
+    | 'MULTIPLE_HOLDERS'
+    | 'multipleHolders'
+    | 'ONE_USER_ALL_DEVICES'
+    | 'oneUserAllDevices'
+    | 'ONE_USER_ONE_DEVICE'
+    | 'oneUserOneDevice'
+  redemptionIssuers?: string[]
+  securityAnimation?: z.infer<typeof SecurityAnimationSchema>
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  viewUnlockRequirement?:
+    | 'VIEW_UNLOCK_REQUIREMENT_UNSPECIFIED'
+    | 'UNLOCK_NOT_REQUIRED'
+    | 'UNLOCK_REQUIRED_TO_VIEW'
+}
+
+const GenericClassSchema: z.ZodType<GenericClassType> = z
   .object({
     callbackOptions: CallbackOptionsSchema.exactOptional().openapi({
       description:
@@ -2779,22 +2505,26 @@ const GenericClassSchema = z
   .openapi({ description: 'Generic Class', required: [] })
   .openapi('GenericClass')
 
-const GenericClassListResponseSchema = z
+type GenericClassListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof GenericClassSchema>[]
+}
+
+const ExpiryNotificationSchema = z
   .object({
-    pagination: PaginationSchema.exactOptional().openapi({
-      description: 'Pagination of the response.',
-    }),
-    resources: z
-      .array(GenericClassSchema)
+    enableNotification: z
+      .boolean()
       .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
+      .openapi({
+        description: 'Indicates if the object needs to have expiry notification enabled.',
+      }),
   })
   .openapi({
     description:
-      'List response which contains the list of all generic classes for a given issuer ID.',
+      'Indicates that the issuer would like GooglePay to send expiry notifications 2 days prior to the card expiration.',
     required: [],
   })
-  .openapi('GenericClassListResponse')
+  .openapi('ExpiryNotification')
 
 const UpcomingNotificationSchema = z
   .object({
@@ -2829,7 +2559,41 @@ const NotificationsSchema = z
   })
   .openapi('Notifications')
 
-const GenericObjectSchema = z
+type GenericObjectType = {
+  appLinkData?: z.infer<typeof AppLinkDataSchema>
+  barcode?: z.infer<typeof BarcodeSchema>
+  cardTitle?: z.infer<typeof LocalizedStringSchema>
+  classId?: string
+  genericType?: 'GENERIC_TYPE_UNSPECIFIED'
+  groupingInfo?: z.infer<typeof GroupingInfoSchema>
+  hasUsers?: boolean
+  header?: z.infer<typeof LocalizedStringSchema>
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  logo?: z.infer<typeof ImageSchema>
+  notifications?: z.infer<typeof NotificationsSchema>
+  passConstraints?: z.infer<typeof PassConstraintsSchema>
+  rotatingBarcode?: z.infer<typeof RotatingBarcodeSchema>
+  smartTapRedemptionValue?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'ACTIVE'
+    | 'active'
+    | 'COMPLETED'
+    | 'completed'
+    | 'EXPIRED'
+    | 'expired'
+    | 'INACTIVE'
+    | 'inactive'
+  subheader?: z.infer<typeof LocalizedStringSchema>
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  validTimeInterval?: z.infer<typeof TimeIntervalSchema>
+}
+
+const GenericObjectSchema: z.ZodType<GenericObjectType> = z
   .object({
     appLinkData: AppLinkDataSchema.exactOptional().openapi({
       description:
@@ -2952,24 +2716,70 @@ const GenericObjectSchema = z
   .openapi({ description: 'Generic Object Next ID: 119', required: [] })
   .openapi('GenericObject')
 
-const GenericObjectListResponseSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional().openapi({
-      description: 'Pagination of the response.',
-    }),
-    resources: z
-      .array(GenericObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
-  })
-  .openapi({
-    description:
-      'List response which contains the list of all generic objects for a given issuer ID.',
-    required: [],
-  })
-  .openapi('GenericObjectListResponse')
+type GenericObjectListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof GenericObjectSchema>[]
+}
 
-const GiftCardClassSchema = z
+type GiftCardClassType = {
+  allowBarcodeRedemption?: boolean
+  allowMultipleUsersPerObject?: boolean
+  callbackOptions?: z.infer<typeof CallbackOptionsSchema>
+  cardNumberLabel?: string
+  classTemplateInfo?: z.infer<typeof ClassTemplateInfoSchema>
+  countryCode?: string
+  enableSmartTap?: boolean
+  eventNumberLabel?: string
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  homepageUri?: z.infer<typeof UriSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  issuerName?: string
+  kind?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  localizedCardNumberLabel?: z.infer<typeof LocalizedStringSchema>
+  localizedEventNumberLabel?: z.infer<typeof LocalizedStringSchema>
+  localizedIssuerName?: z.infer<typeof LocalizedStringSchema>
+  localizedMerchantName?: z.infer<typeof LocalizedStringSchema>
+  localizedPinLabel?: z.infer<typeof LocalizedStringSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  merchantName?: string
+  messages?: z.infer<typeof MessageSchema>[]
+  multipleDevicesAndHoldersAllowedStatus?:
+    | 'STATUS_UNSPECIFIED'
+    | 'MULTIPLE_HOLDERS'
+    | 'multipleHolders'
+    | 'ONE_USER_ALL_DEVICES'
+    | 'oneUserAllDevices'
+    | 'ONE_USER_ONE_DEVICE'
+    | 'oneUserOneDevice'
+  pinLabel?: string
+  programLogo?: z.infer<typeof ImageSchema>
+  redemptionIssuers?: string[]
+  review?: z.infer<typeof ReviewSchema>
+  reviewStatus?:
+    | 'REVIEW_STATUS_UNSPECIFIED'
+    | 'UNDER_REVIEW'
+    | 'underReview'
+    | 'APPROVED'
+    | 'approved'
+    | 'REJECTED'
+    | 'rejected'
+    | 'DRAFT'
+    | 'draft'
+  securityAnimation?: z.infer<typeof SecurityAnimationSchema>
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  version?: string
+  viewUnlockRequirement?:
+    | 'VIEW_UNLOCK_REQUIREMENT_UNSPECIFIED'
+    | 'UNLOCK_NOT_REQUIRED'
+    | 'UNLOCK_REQUIRED_TO_VIEW'
+  wordMark?: z.infer<typeof ImageSchema>
+}
+
+const GiftCardClassSchema: z.ZodType<GiftCardClassType> = z
   .object({
     allowBarcodeRedemption: z
       .boolean()
@@ -3177,29 +2987,54 @@ const GiftCardClassSchema = z
   .openapi({ required: [] })
   .openapi('GiftCardClass')
 
-const GiftCardClassAddMessageResponseSchema = z
-  .object({
-    resource: GiftCardClassSchema.exactOptional().openapi({
-      description: 'The updated GiftCardClass resource.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('GiftCardClassAddMessageResponse')
+type GiftCardClassAddMessageResponseType = { resource?: z.infer<typeof GiftCardClassSchema> }
 
-const GiftCardClassListResponseSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional().openapi({
-      description: 'Pagination of the response.',
-    }),
-    resources: z
-      .array(GiftCardClassSchema)
-      .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GiftCardClassListResponse')
+type GiftCardClassListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof GiftCardClassSchema>[]
+}
 
-const GiftCardObjectSchema = z
+type GiftCardObjectType = {
+  appLinkData?: z.infer<typeof AppLinkDataSchema>
+  balance?: z.infer<typeof MoneySchema>
+  balanceUpdateTime?: z.infer<typeof DateTimeSchema>
+  barcode?: z.infer<typeof BarcodeSchema>
+  cardNumber?: string
+  classId?: string
+  classReference?: z.infer<typeof GiftCardClassSchema>
+  disableExpirationNotification?: boolean
+  eventNumber?: string
+  groupingInfo?: z.infer<typeof GroupingInfoSchema>
+  hasLinkedDevice?: boolean
+  hasUsers?: boolean
+  heroImage?: z.infer<typeof ImageSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  kind?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  messages?: z.infer<typeof MessageSchema>[]
+  passConstraints?: z.infer<typeof PassConstraintsSchema>
+  pin?: string
+  rotatingBarcode?: z.infer<typeof RotatingBarcodeSchema>
+  smartTapRedemptionValue?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'ACTIVE'
+    | 'active'
+    | 'COMPLETED'
+    | 'completed'
+    | 'EXPIRED'
+    | 'expired'
+    | 'INACTIVE'
+    | 'inactive'
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  validTimeInterval?: z.infer<typeof TimeIntervalSchema>
+  version?: string
+}
+
+const GiftCardObjectSchema: z.ZodType<GiftCardObjectType> = z
   .object({
     appLinkData: AppLinkDataSchema.exactOptional().openapi({
       description: 'Optional information about the partner app link.',
@@ -3343,123 +3178,155 @@ const GiftCardObjectSchema = z
   .openapi({ required: [] })
   .openapi('GiftCardObject')
 
-const GiftCardObjectAddMessageResponseSchema = z
+type GiftCardObjectAddMessageResponseType = { resource?: z.infer<typeof GiftCardObjectSchema> }
+
+type GiftCardObjectListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof GiftCardObjectSchema>[]
+}
+
+const DiscoverableProgramMerchantSigninInfoSchema = z
   .object({
-    resource: GiftCardObjectSchema.exactOptional().openapi({
-      description: 'The updated GiftCardObject resource.',
+    signinWebsite: UriSchema.exactOptional().openapi({
+      description: "The URL to direct the user to for the merchant's signin site.",
     }),
   })
-  .openapi({ required: [] })
-  .openapi('GiftCardObjectAddMessageResponse')
-
-const GiftCardObjectListResponseSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional().openapi({
-      description: 'Pagination of the response.',
-    }),
-    resources: z
-      .array(GiftCardObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
+  .openapi({
+    description: 'Information about the merchant hosted signin flow for a program.',
+    required: [],
   })
-  .openapi({ required: [] })
-  .openapi('GiftCardObjectListResponse')
+  .openapi('DiscoverableProgramMerchantSigninInfo')
 
-const IssuerContactInfoSchema = z
+const DiscoverableProgramMerchantSignupInfoSchema = z
   .object({
-    alertsEmails: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Email addresses which will receive alerts.' }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The primary contact email address.' }),
-    name: z.string().exactOptional().openapi({ description: 'The primary contact name.' }),
-    phone: z.string().exactOptional().openapi({ description: 'The primary contact phone number.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IssuerContactInfo')
-
-const SmartTapMerchantDataSchema = z
-  .object({
-    authenticationKeys: z
-      .array(AuthenticationKeySchema)
+    signupSharedDatas: z
+      .array(
+        z.enum([
+          'SHARED_DATA_TYPE_UNSPECIFIED',
+          'FIRST_NAME',
+          'LAST_NAME',
+          'STREET_ADDRESS',
+          'ADDRESS_LINE_1',
+          'ADDRESS_LINE_2',
+          'ADDRESS_LINE_3',
+          'CITY',
+          'STATE',
+          'ZIPCODE',
+          'COUNTRY',
+          'EMAIL',
+          'PHONE',
+        ]),
+      )
       .exactOptional()
       .openapi({
         description:
-          'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
+          " User data that is sent in a POST request to the signup website URL. This information is encoded and then shared so that the merchant's website can prefill fields used to enroll the user for the discoverable program.",
       }),
-    smartTapMerchantId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SmartTapMerchantData')
-
-const IssuerSchema = z
-  .object({
-    contactInfo: IssuerContactInfoSchema.exactOptional().openapi({
-      description: 'Issuer contact information.',
+    signupWebsite: UriSchema.exactOptional().openapi({
+      description: "The URL to direct the user to for the merchant's signup site.",
     }),
-    homepageUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "URL for the issuer's home page." }),
-    issuerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier for an issuer account. This is automatically generated when the issuer is inserted.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The account name of the issuer.' }),
-    smartTapMerchantData: SmartTapMerchantDataSchema.exactOptional().openapi({
+  })
+  .openapi({
+    description: 'Information about the merchant hosted signup flow for a program.',
+    required: [],
+  })
+  .openapi('DiscoverableProgramMerchantSignupInfo')
+
+const DiscoverableProgramSchema = z
+  .object({
+    merchantSigninInfo: DiscoverableProgramMerchantSigninInfoSchema.exactOptional().openapi({
       description:
-        'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
+        'Information about the ability to signin and add a valuable for this program through a merchant site. Used when MERCHANT_HOSTED_SIGNIN is enabled.',
     }),
-  })
-  .openapi({ required: [] })
-  .openapi('Issuer')
-
-const IssuerListResponseSchema = z
-  .object({
-    resources: z
-      .array(IssuerSchema)
+    merchantSignupInfo: DiscoverableProgramMerchantSignupInfoSchema.exactOptional().openapi({
+      description:
+        'Information about the ability to signup and add a valuable for this program through a merchant site. Used when MERCHANT_HOSTED_SIGNUP is enabled.',
+    }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'TRUSTED_TESTERS',
+        'trustedTesters',
+        'LIVE',
+        'live',
+        'DISABLED',
+        'disabled',
+      ])
       .exactOptional()
-      .openapi({ description: 'Resources corresponding to the list request.' }),
+      .openapi({ description: 'Visibility state of the discoverable program.' }),
   })
-  .openapi({ required: [] })
-  .openapi('IssuerListResponse')
-
-const SignUpInfoSchema = z
-  .object({
-    classId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the class the user can sign up for.' }),
+  .openapi({
+    description:
+      'Information about how a class may be discovered and instantiated from within the Android Pay app. This is done by searching for a loyalty or gift card program and scanning or manually entering.',
+    required: [],
   })
-  .openapi({ required: [] })
-  .openapi('SignUpInfo')
+  .openapi('DiscoverableProgram')
 
-const IssuerToUserInfoSchema = z
-  .object({
-    action: z.enum(['ACTION_UNSPECIFIED', 'S2AP', 's2ap', 'SIGN_UP', 'signUp']).exactOptional(),
-    signUpInfo: SignUpInfoSchema.exactOptional(),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Currently not used, consider deprecating.' }),
-    value: z.string().exactOptional().openapi({ description: 'JSON web token for action S2AP.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IssuerToUserInfo')
+type LoyaltyClassType = {
+  accountIdLabel?: string
+  accountNameLabel?: string
+  allowMultipleUsersPerObject?: boolean
+  callbackOptions?: z.infer<typeof CallbackOptionsSchema>
+  classTemplateInfo?: z.infer<typeof ClassTemplateInfoSchema>
+  countryCode?: string
+  discoverableProgram?: z.infer<typeof DiscoverableProgramSchema>
+  enableSmartTap?: boolean
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  homepageUri?: z.infer<typeof UriSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  issuerName?: string
+  kind?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  localizedAccountIdLabel?: z.infer<typeof LocalizedStringSchema>
+  localizedAccountNameLabel?: z.infer<typeof LocalizedStringSchema>
+  localizedIssuerName?: z.infer<typeof LocalizedStringSchema>
+  localizedProgramName?: z.infer<typeof LocalizedStringSchema>
+  localizedRewardsTier?: z.infer<typeof LocalizedStringSchema>
+  localizedRewardsTierLabel?: z.infer<typeof LocalizedStringSchema>
+  localizedSecondaryRewardsTier?: z.infer<typeof LocalizedStringSchema>
+  localizedSecondaryRewardsTierLabel?: z.infer<typeof LocalizedStringSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  messages?: z.infer<typeof MessageSchema>[]
+  multipleDevicesAndHoldersAllowedStatus?:
+    | 'STATUS_UNSPECIFIED'
+    | 'MULTIPLE_HOLDERS'
+    | 'multipleHolders'
+    | 'ONE_USER_ALL_DEVICES'
+    | 'oneUserAllDevices'
+    | 'ONE_USER_ONE_DEVICE'
+    | 'oneUserOneDevice'
+  programLogo?: z.infer<typeof ImageSchema>
+  programName?: string
+  redemptionIssuers?: string[]
+  review?: z.infer<typeof ReviewSchema>
+  reviewStatus?:
+    | 'REVIEW_STATUS_UNSPECIFIED'
+    | 'UNDER_REVIEW'
+    | 'underReview'
+    | 'APPROVED'
+    | 'approved'
+    | 'REJECTED'
+    | 'rejected'
+    | 'DRAFT'
+    | 'draft'
+  rewardsTier?: string
+  rewardsTierLabel?: string
+  secondaryRewardsTier?: string
+  secondaryRewardsTierLabel?: string
+  securityAnimation?: z.infer<typeof SecurityAnimationSchema>
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  version?: string
+  viewUnlockRequirement?:
+    | 'VIEW_UNLOCK_REQUIREMENT_UNSPECIFIED'
+    | 'UNLOCK_NOT_REQUIRED'
+    | 'UNLOCK_REQUIRED_TO_VIEW'
+  wordMark?: z.infer<typeof ImageSchema>
+}
 
-const LoyaltyClassSchema = z
+const LoyaltyClassSchema: z.ZodType<LoyaltyClassType> = z
   .object({
     accountIdLabel: z
       .string()
@@ -3752,7 +3619,47 @@ const LoyaltyPointsSchema = z
   .openapi({ required: [] })
   .openapi('LoyaltyPoints')
 
-const LoyaltyObjectSchema = z
+type LoyaltyObjectType = {
+  accountId?: string
+  accountName?: string
+  appLinkData?: z.infer<typeof AppLinkDataSchema>
+  barcode?: z.infer<typeof BarcodeSchema>
+  classId?: string
+  classReference?: z.infer<typeof LoyaltyClassSchema>
+  disableExpirationNotification?: boolean
+  groupingInfo?: z.infer<typeof GroupingInfoSchema>
+  hasLinkedDevice?: boolean
+  hasUsers?: boolean
+  heroImage?: z.infer<typeof ImageSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  kind?: string
+  linkedOfferIds?: string[]
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  loyaltyPoints?: z.infer<typeof LoyaltyPointsSchema>
+  messages?: z.infer<typeof MessageSchema>[]
+  passConstraints?: z.infer<typeof PassConstraintsSchema>
+  rotatingBarcode?: z.infer<typeof RotatingBarcodeSchema>
+  secondaryLoyaltyPoints?: z.infer<typeof LoyaltyPointsSchema>
+  smartTapRedemptionValue?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'ACTIVE'
+    | 'active'
+    | 'COMPLETED'
+    | 'completed'
+    | 'EXPIRED'
+    | 'expired'
+    | 'INACTIVE'
+    | 'inactive'
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  validTimeInterval?: z.infer<typeof TimeIntervalSchema>
+  version?: string
+}
+
+const LoyaltyObjectSchema: z.ZodType<LoyaltyObjectType> = z
   .object({
     accountId: z
       .string()
@@ -3910,7 +3817,77 @@ const LoyaltyObjectSchema = z
   .openapi({ required: [] })
   .openapi('LoyaltyObject')
 
-const OfferClassSchema = z
+type OfferClassType = {
+  allowMultipleUsersPerObject?: boolean
+  callbackOptions?: z.infer<typeof CallbackOptionsSchema>
+  classTemplateInfo?: z.infer<typeof ClassTemplateInfoSchema>
+  countryCode?: string
+  details?: string
+  enableSmartTap?: boolean
+  finePrint?: string
+  helpUri?: z.infer<typeof UriSchema>
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  homepageUri?: z.infer<typeof UriSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  issuerName?: string
+  kind?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  localizedDetails?: z.infer<typeof LocalizedStringSchema>
+  localizedFinePrint?: z.infer<typeof LocalizedStringSchema>
+  localizedIssuerName?: z.infer<typeof LocalizedStringSchema>
+  localizedProvider?: z.infer<typeof LocalizedStringSchema>
+  localizedShortTitle?: z.infer<typeof LocalizedStringSchema>
+  localizedTitle?: z.infer<typeof LocalizedStringSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  messages?: z.infer<typeof MessageSchema>[]
+  multipleDevicesAndHoldersAllowedStatus?:
+    | 'STATUS_UNSPECIFIED'
+    | 'MULTIPLE_HOLDERS'
+    | 'multipleHolders'
+    | 'ONE_USER_ALL_DEVICES'
+    | 'oneUserAllDevices'
+    | 'ONE_USER_ONE_DEVICE'
+    | 'oneUserOneDevice'
+  provider?: string
+  redemptionChannel?:
+    | 'REDEMPTION_CHANNEL_UNSPECIFIED'
+    | 'INSTORE'
+    | 'instore'
+    | 'ONLINE'
+    | 'online'
+    | 'BOTH'
+    | 'both'
+    | 'TEMPORARY_PRICE_REDUCTION'
+    | 'temporaryPriceReduction'
+  redemptionIssuers?: string[]
+  review?: z.infer<typeof ReviewSchema>
+  reviewStatus?:
+    | 'REVIEW_STATUS_UNSPECIFIED'
+    | 'UNDER_REVIEW'
+    | 'underReview'
+    | 'APPROVED'
+    | 'approved'
+    | 'REJECTED'
+    | 'rejected'
+    | 'DRAFT'
+    | 'draft'
+  securityAnimation?: z.infer<typeof SecurityAnimationSchema>
+  shortTitle?: string
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  title?: string
+  titleImage?: z.infer<typeof ImageSchema>
+  version?: string
+  viewUnlockRequirement?:
+    | 'VIEW_UNLOCK_REQUIREMENT_UNSPECIFIED'
+    | 'UNLOCK_NOT_REQUIRED'
+    | 'UNLOCK_REQUIRED_TO_VIEW'
+  wordMark?: z.infer<typeof ImageSchema>
+}
+
+const OfferClassSchema: z.ZodType<OfferClassType> = z
   .object({
     allowMultipleUsersPerObject: z
       .boolean()
@@ -4143,7 +4120,42 @@ const OfferClassSchema = z
   .openapi({ required: [] })
   .openapi('OfferClass')
 
-const OfferObjectSchema = z
+type OfferObjectType = {
+  appLinkData?: z.infer<typeof AppLinkDataSchema>
+  barcode?: z.infer<typeof BarcodeSchema>
+  classId?: string
+  classReference?: z.infer<typeof OfferClassSchema>
+  disableExpirationNotification?: boolean
+  groupingInfo?: z.infer<typeof GroupingInfoSchema>
+  hasLinkedDevice?: boolean
+  hasUsers?: boolean
+  heroImage?: z.infer<typeof ImageSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  kind?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  messages?: z.infer<typeof MessageSchema>[]
+  passConstraints?: z.infer<typeof PassConstraintsSchema>
+  rotatingBarcode?: z.infer<typeof RotatingBarcodeSchema>
+  smartTapRedemptionValue?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'ACTIVE'
+    | 'active'
+    | 'COMPLETED'
+    | 'completed'
+    | 'EXPIRED'
+    | 'expired'
+    | 'INACTIVE'
+    | 'inactive'
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  validTimeInterval?: z.infer<typeof TimeIntervalSchema>
+  version?: string
+}
+
+const OfferObjectSchema: z.ZodType<OfferObjectType> = z
   .object({
     appLinkData: AppLinkDataSchema.exactOptional().openapi({
       description: 'Optional information about the partner app link.',
@@ -4274,7 +4286,111 @@ const OfferObjectSchema = z
   .openapi({ required: [] })
   .openapi('OfferObject')
 
-const TransitClassSchema = z
+const ActivationOptionsSchema = z
+  .object({
+    activationUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'HTTPS URL that supports REST semantics. Would be used for requesting activation from partners for given valuable, triggered by the users.',
+      }),
+    allowReactivation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag to allow users to make activation call from different device. This allows client to render the activation button enabled even if the activationStatus is ACTIVATED but the requested device is different than the current device.',
+      }),
+  })
+  .openapi({ description: 'ActivationOptions for the class', required: [] })
+  .openapi('ActivationOptions')
+
+type TransitClassType = {
+  activationOptions?: z.infer<typeof ActivationOptionsSchema>
+  allowMultipleUsersPerObject?: boolean
+  callbackOptions?: z.infer<typeof CallbackOptionsSchema>
+  classTemplateInfo?: z.infer<typeof ClassTemplateInfoSchema>
+  countryCode?: string
+  customCarriageLabel?: z.infer<typeof LocalizedStringSchema>
+  customCoachLabel?: z.infer<typeof LocalizedStringSchema>
+  customConcessionCategoryLabel?: z.infer<typeof LocalizedStringSchema>
+  customConfirmationCodeLabel?: z.infer<typeof LocalizedStringSchema>
+  customDiscountMessageLabel?: z.infer<typeof LocalizedStringSchema>
+  customFareClassLabel?: z.infer<typeof LocalizedStringSchema>
+  customFareNameLabel?: z.infer<typeof LocalizedStringSchema>
+  customOtherRestrictionsLabel?: z.infer<typeof LocalizedStringSchema>
+  customPlatformLabel?: z.infer<typeof LocalizedStringSchema>
+  customPurchaseFaceValueLabel?: z.infer<typeof LocalizedStringSchema>
+  customPurchasePriceLabel?: z.infer<typeof LocalizedStringSchema>
+  customPurchaseReceiptNumberLabel?: z.infer<typeof LocalizedStringSchema>
+  customRouteRestrictionsDetailsLabel?: z.infer<typeof LocalizedStringSchema>
+  customRouteRestrictionsLabel?: z.infer<typeof LocalizedStringSchema>
+  customSeatLabel?: z.infer<typeof LocalizedStringSchema>
+  customTicketNumberLabel?: z.infer<typeof LocalizedStringSchema>
+  customTimeRestrictionsLabel?: z.infer<typeof LocalizedStringSchema>
+  customTransitTerminusNameLabel?: z.infer<typeof LocalizedStringSchema>
+  customZoneLabel?: z.infer<typeof LocalizedStringSchema>
+  enableSingleLegItinerary?: boolean
+  enableSmartTap?: boolean
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  homepageUri?: z.infer<typeof UriSchema>
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  issuerName?: string
+  languageOverride?: string
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  localizedIssuerName?: z.infer<typeof LocalizedStringSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  logo?: z.infer<typeof ImageSchema>
+  messages?: z.infer<typeof MessageSchema>[]
+  multipleDevicesAndHoldersAllowedStatus?:
+    | 'STATUS_UNSPECIFIED'
+    | 'MULTIPLE_HOLDERS'
+    | 'multipleHolders'
+    | 'ONE_USER_ALL_DEVICES'
+    | 'oneUserAllDevices'
+    | 'ONE_USER_ONE_DEVICE'
+    | 'oneUserOneDevice'
+  redemptionIssuers?: string[]
+  review?: z.infer<typeof ReviewSchema>
+  reviewStatus?:
+    | 'REVIEW_STATUS_UNSPECIFIED'
+    | 'UNDER_REVIEW'
+    | 'underReview'
+    | 'APPROVED'
+    | 'approved'
+    | 'REJECTED'
+    | 'rejected'
+    | 'DRAFT'
+    | 'draft'
+  securityAnimation?: z.infer<typeof SecurityAnimationSchema>
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  transitOperatorName?: z.infer<typeof LocalizedStringSchema>
+  transitType?:
+    | 'TRANSIT_TYPE_UNSPECIFIED'
+    | 'BUS'
+    | 'bus'
+    | 'RAIL'
+    | 'rail'
+    | 'TRAM'
+    | 'tram'
+    | 'FERRY'
+    | 'ferry'
+    | 'OTHER'
+    | 'other'
+  version?: string
+  viewUnlockRequirement?:
+    | 'VIEW_UNLOCK_REQUIREMENT_UNSPECIFIED'
+    | 'UNLOCK_NOT_REQUIRED'
+    | 'UNLOCK_REQUIRED_TO_VIEW'
+  watermark?: z.infer<typeof ImageSchema>
+  wordMark?: z.infer<typeof ImageSchema>
+}
+
+const TransitClassSchema: z.ZodType<TransitClassType> = z
   .object({
     activationOptions: ActivationOptionsSchema.exactOptional().openapi({
       description: 'Activation options for an activatable ticket.',
@@ -4553,6 +4669,32 @@ const TransitClassSchema = z
   .openapi({ required: [] })
   .openapi('TransitClass')
 
+const ActivationStatusSchema = z
+  .object({
+    state: z
+      .enum(['UNKNOWN_STATE', 'NOT_ACTIVATED', 'not_activated', 'ACTIVATED', 'activated'])
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      'The activation status of the object. This field includes activation status if valuable supports activation.',
+    required: [],
+  })
+  .openapi('ActivationStatus')
+
+const DeviceContextSchema = z
+  .object({
+    deviceToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "If set, redemption information will only be returned to the given device upon activation of the object. This should not be used as a stable identifier to trace a user's device. It can change across different passes for the same device or even across different activations for the same device. When setting this, callers must also set has_linked_device on the object being activated.",
+      }),
+  })
+  .openapi({ description: 'Device context associated with the object.', required: [] })
+  .openapi('DeviceContext')
+
 const TicketCostSchema = z
   .object({
     discountMessage: LocalizedStringSchema.exactOptional().openapi({
@@ -4734,7 +4876,76 @@ const TicketRestrictionsSchema = z
   .openapi({ required: [] })
   .openapi('TicketRestrictions')
 
-const TransitObjectSchema = z
+type TransitObjectType = {
+  activationStatus?: z.infer<typeof ActivationStatusSchema>
+  appLinkData?: z.infer<typeof AppLinkDataSchema>
+  barcode?: z.infer<typeof BarcodeSchema>
+  classId?: string
+  classReference?: z.infer<typeof TransitClassSchema>
+  concessionCategory?:
+    | 'CONCESSION_CATEGORY_UNSPECIFIED'
+    | 'ADULT'
+    | 'adult'
+    | 'CHILD'
+    | 'child'
+    | 'SENIOR'
+    | 'senior'
+  customConcessionCategory?: z.infer<typeof LocalizedStringSchema>
+  customTicketStatus?: z.infer<typeof LocalizedStringSchema>
+  deviceContext?: z.infer<typeof DeviceContextSchema>
+  disableExpirationNotification?: boolean
+  groupingInfo?: z.infer<typeof GroupingInfoSchema>
+  hasLinkedDevice?: boolean
+  hasUsers?: boolean
+  heroImage?: z.infer<typeof ImageSchema>
+  hexBackgroundColor?: string
+  id?: string
+  imageModulesData?: z.infer<typeof ImageModuleDataSchema>[]
+  infoModuleData?: z.infer<typeof InfoModuleDataSchema>
+  linksModuleData?: z.infer<typeof LinksModuleDataSchema>
+  locations?: z.infer<typeof LatLongPointSchema>[]
+  messages?: z.infer<typeof MessageSchema>[]
+  passConstraints?: z.infer<typeof PassConstraintsSchema>
+  passengerNames?: string
+  passengerType?:
+    | 'PASSENGER_TYPE_UNSPECIFIED'
+    | 'SINGLE_PASSENGER'
+    | 'singlePassenger'
+    | 'MULTIPLE_PASSENGERS'
+    | 'multiplePassengers'
+  purchaseDetails?: z.infer<typeof PurchaseDetailsSchema>
+  rotatingBarcode?: z.infer<typeof RotatingBarcodeSchema>
+  smartTapRedemptionValue?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'ACTIVE'
+    | 'active'
+    | 'COMPLETED'
+    | 'completed'
+    | 'EXPIRED'
+    | 'expired'
+    | 'INACTIVE'
+    | 'inactive'
+  textModulesData?: z.infer<typeof TextModuleDataSchema>[]
+  ticketLeg?: z.infer<typeof TicketLegSchema>
+  ticketLegs?: z.infer<typeof TicketLegSchema>[]
+  ticketNumber?: string
+  ticketRestrictions?: z.infer<typeof TicketRestrictionsSchema>
+  ticketStatus?:
+    | 'TICKET_STATUS_UNSPECIFIED'
+    | 'USED'
+    | 'used'
+    | 'REFUNDED'
+    | 'refunded'
+    | 'EXCHANGED'
+    | 'exchanged'
+  tripId?: string
+  tripType?: 'TRIP_TYPE_UNSPECIFIED' | 'ROUND_TRIP' | 'roundTrip' | 'ONE_WAY' | 'oneWay'
+  validTimeInterval?: z.infer<typeof TimeIntervalSchema>
+  version?: string
+}
+
+const TransitObjectSchema: z.ZodType<TransitObjectType> = z
   .object({
     activationStatus: ActivationStatusSchema.exactOptional().openapi({
       description:
@@ -4963,7 +5174,22 @@ const TransitObjectSchema = z
   .openapi({ required: [] })
   .openapi('TransitObject')
 
-const ResourcesSchema = z
+type ResourcesType = {
+  eventTicketClasses?: z.infer<typeof EventTicketClassSchema>[]
+  eventTicketObjects?: z.infer<typeof EventTicketObjectSchema>[]
+  flightClasses?: z.infer<typeof FlightClassSchema>[]
+  flightObjects?: z.infer<typeof FlightObjectSchema>[]
+  giftCardClasses?: z.infer<typeof GiftCardClassSchema>[]
+  giftCardObjects?: z.infer<typeof GiftCardObjectSchema>[]
+  loyaltyClasses?: z.infer<typeof LoyaltyClassSchema>[]
+  loyaltyObjects?: z.infer<typeof LoyaltyObjectSchema>[]
+  offerClasses?: z.infer<typeof OfferClassSchema>[]
+  offerObjects?: z.infer<typeof OfferObjectSchema>[]
+  transitClasses?: z.infer<typeof TransitClassSchema>[]
+  transitObjects?: z.infer<typeof TransitObjectSchema>[]
+}
+
+const ResourcesSchema: z.ZodType<ResourcesType> = z
   .object({
     eventTicketClasses: z.array(EventTicketClassSchema).exactOptional(),
     eventTicketObjects: z.array(EventTicketObjectSchema).exactOptional(),
@@ -4981,7 +5207,613 @@ const ResourcesSchema = z
   .openapi({ required: [] })
   .openapi('Resources')
 
-const JwtInsertResponseSchema = z
+type JwtInsertResponseType = { resources?: z.infer<typeof ResourcesSchema>; saveUri?: string }
+
+type LoyaltyClassAddMessageResponseType = { resource?: z.infer<typeof LoyaltyClassSchema> }
+
+type LoyaltyClassListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof LoyaltyClassSchema>[]
+}
+
+type LoyaltyObjectAddMessageResponseType = { resource?: z.infer<typeof LoyaltyObjectSchema> }
+
+type LoyaltyObjectListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof LoyaltyObjectSchema>[]
+}
+
+type OfferClassAddMessageResponseType = { resource?: z.infer<typeof OfferClassSchema> }
+
+type OfferClassListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof OfferClassSchema>[]
+}
+
+type OfferObjectAddMessageResponseType = { resource?: z.infer<typeof OfferObjectSchema> }
+
+type OfferObjectListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof OfferObjectSchema>[]
+}
+
+type TransitClassAddMessageResponseType = { resource?: z.infer<typeof TransitClassSchema> }
+
+type TransitClassListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof TransitClassSchema>[]
+}
+
+type TransitObjectAddMessageResponseType = { resource?: z.infer<typeof TransitObjectSchema> }
+
+type TransitObjectListResponseType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  resources?: z.infer<typeof TransitObjectSchema>[]
+}
+
+const AddMessageRequestSchema = z
+  .object({ message: MessageSchema.exactOptional() })
+  .openapi({ description: 'Resource used when the AddMessage endpoints are called.', required: [] })
+  .openapi('AddMessageRequest')
+
+const AuthenticationKeySchema = z
+  .object({
+    id: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
+      }),
+    publicKeyPem: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AuthenticationKey')
+
+const Blobstore2InfoSchema = z
+  .object({
+    blobGeneration: z.string().exactOptional().openapi({ description: 'The blob generation id.' }),
+    blobId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The blob id, e.g., /blobstore/prod/playground/scotty' }),
+    downloadReadHandle: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Read handle passed from Bigstore -> Scotty for a GCS download. This is a signed, serialized blobstore2.ReadHandle proto which must never be set outside of Bigstore, and is not applicable to non-GCS media downloads.',
+      }),
+    readToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The blob read token. Needed to read blobs that have not been replicated. Might not be available until the final call.',
+      }),
+    uploadMetadataContainer: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata passed from Blobstore -> Scotty for a new GCS upload. This is a signed, serialized blobstore2.BlobMetadataContainer proto which must never be consumed outside of Bigstore, and is not applicable to non-GCS media uploads.',
+      }),
+  })
+  .openapi({ description: 'Information to read/write to blobstore2.', required: [] })
+  .openapi('Blobstore2Info')
+
+const ObjectIdSchema = z
+  .object({
+    bucketName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the bucket to which this object belongs.' }),
+    generation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Generation of the object. Generations are monotonically increasing across writes, allowing them to be be compared to determine which generation is newer. If this is omitted in a request, then you are requesting the live object. See http://go/bigstore-versions',
+      }),
+    objectName: z.string().exactOptional().openapi({ description: 'The name of the object.' }),
+  })
+  .openapi({
+    description:
+      'This is a copy of the tech.blob.ObjectId proto, which could not be used directly here due to transitive closure issues with JavaScript support; see http://b/8801763.',
+    required: [],
+  })
+  .openapi('ObjectId')
+
+const CompositeMediaSchema = z
+  .object({
+    blobRef: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Blobstore v1 reference, set if reference_type is BLOBSTORE_REF This should be the byte representation of a blobstore.BlobRef. Since Blobstore is deprecating v1, use blobstore2_info instead. For now, any v2 blob will also be represented in this field as v1 BlobRef.',
+      }),
+    blobstore2Info: Blobstore2InfoSchema.exactOptional().openapi({
+      description:
+        'Blobstore v2 info, set if reference_type is BLOBSTORE_REF and it refers to a v2 blob.',
+    }),
+    cosmoBinaryReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A binary data reference for a media download. Serves as a technology-agnostic binary reference in some Google infrastructure. This value is a serialized storage_cosmo.BinaryReference proto. Storing it as bytes is a hack to get around the fact that the cosmo proto (as well as others it includes) doesn't support JavaScript. This prevents us from including the actual type of this field.",
+      }),
+    crc32cHash: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'crc32.c hash for the payload.' }),
+    inline: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Media data, set if reference_type is INLINE' }),
+    length: z.string().exactOptional().openapi({ description: 'Size of the data, in bytes' }),
+    md5Hash: z.string().exactOptional().openapi({ description: 'MD5 hash for the payload.' }),
+    objectId: ObjectIdSchema.exactOptional().openapi({
+      description: 'Reference to a TI Blob, set if reference_type is BIGSTORE_REF.',
+    }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Path to the data, set if reference_type is PATH' }),
+    referenceType: z
+      .enum(['PATH', 'BLOB_REF', 'INLINE', 'BIGSTORE_REF', 'COSMO_BINARY_REFERENCE'])
+      .exactOptional()
+      .openapi({ description: 'Describes what the field reference contains.' }),
+    sha1Hash: z.string().exactOptional().openapi({ description: 'SHA-1 hash for the payload.' }),
+  })
+  .openapi({
+    description:
+      'A sequence of media data references representing composite data. Introduced to support Bigstore composite objects. For details, visit http://go/bigstore-composites.',
+    required: [],
+  })
+  .openapi('CompositeMedia')
+
+const ContentTypeInfoSchema = z
+  .object({
+    bestGuess: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Scotty's best guess of what the content type of the file is." }),
+    fromBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content type of the file derived by looking at specific bytes (i.e. "magic bytes") of the actual file.',
+      }),
+    fromFileName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content type of the file derived from the file extension of the original file name used by the client.',
+      }),
+    fromHeader: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content type of the file as specified in the request headers, multipart headers, or RUPIO start request.',
+      }),
+    fromUrlPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content type of the file derived from the file extension of the URL path. The URL path is assumed to represent a file name (which is typically only true for agents that are providing a REST API).',
+      }),
+  })
+  .openapi({
+    description:
+      "Detailed Content-Type information from Scotty. The Content-Type of the media will typically be filled in by the header or Scotty's best_guess, but this extended information provides the backend with more information so that it can make a better decision if needed. This is only used on media upload requests from Scotty.",
+    required: [],
+  })
+  .openapi('ContentTypeInfo')
+
+const DiffChecksumsResponseSchema = z
+  .object({
+    checksumsLocation: CompositeMediaSchema.exactOptional().openapi({
+      description:
+        'Exactly one of these fields must be populated. If checksums_location is filled, the server will return the corresponding contents to the user. If object_location is filled, the server will calculate the checksums based on the content there and return that to the user. For details on the format of the checksums, see http://go/scotty-diff-protocol.',
+    }),
+    chunkSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The chunk size of checksums. Must be a multiple of 256KB.' }),
+    objectLocation: CompositeMediaSchema.exactOptional().openapi({
+      description:
+        'If set, calculate the checksums based on the contents and return them to the caller.',
+    }),
+    objectSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The total size of the server object.' }),
+    objectVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The object version of the object the checksums are being returned for.',
+      }),
+  })
+  .openapi({
+    description:
+      'Backend response for a Diff get checksums response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
+    required: [],
+  })
+  .openapi('DiffChecksumsResponse')
+
+const DiffDownloadResponseSchema = z
+  .object({
+    objectLocation: CompositeMediaSchema.exactOptional().openapi({
+      description: 'The original object location.',
+    }),
+  })
+  .openapi({
+    description:
+      'Backend response for a Diff download response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
+    required: [],
+  })
+  .openapi('DiffDownloadResponse')
+
+const DiffUploadRequestSchema = z
+  .object({
+    checksumsInfo: CompositeMediaSchema.exactOptional().openapi({
+      description:
+        'The location of the checksums for the new object. Agents must clone the object located here, as the upload server will delete the contents once a response is received. For details on the format of the checksums, see http://go/scotty-diff-protocol.',
+    }),
+    objectInfo: CompositeMediaSchema.exactOptional().openapi({
+      description:
+        'The location of the new object. Agents must clone the object located here, as the upload server will delete the contents once a response is received.',
+    }),
+    objectVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The object version of the object that is the base version the incoming diff script will be applied to. This field will always be filled in.',
+      }),
+  })
+  .openapi({
+    description:
+      'A Diff upload request. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
+    required: [],
+  })
+  .openapi('DiffUploadRequest')
+
+const DiffUploadResponseSchema = z
+  .object({
+    objectVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The object version of the object at the server. Must be included in the end notification response. The version in the end notification response must correspond to the new version of the object that is now stored at the server, after the upload.',
+      }),
+    originalObject: CompositeMediaSchema.exactOptional().openapi({
+      description:
+        'The location of the original file for a diff upload request. Must be filled in if responding to an upload start notification.',
+    }),
+  })
+  .openapi({
+    description:
+      'Backend response for a Diff upload request. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
+    required: [],
+  })
+  .openapi('DiffUploadResponse')
+
+const DiffVersionResponseSchema = z
+  .object({
+    objectSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The total size of the server object.' }),
+    objectVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The version of the object stored at the server.' }),
+  })
+  .openapi({
+    description:
+      'Backend response for a Diff get version response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.',
+    required: [],
+  })
+  .openapi('DiffVersionResponse')
+
+const DownloadParametersSchema = z
+  .object({
+    allowGzipCompression: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "A boolean to be returned in the response to Scotty. Allows/disallows gzip encoding of the payload content when the server thinks it's advantageous (hence, does not guarantee compression) which allows Scotty to GZip the response to the client.",
+      }),
+    ignoreRange: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determining whether or not Apiary should skip the inclusion of any Content-Range header on its response to Scotty.',
+      }),
+  })
+  .openapi({ description: 'Parameters specific to media downloads.', required: [] })
+  .openapi('DownloadParameters')
+
+const EventTicketClassAddMessageResponseSchema: z.ZodType<EventTicketClassAddMessageResponseType> =
+  z
+    .object({
+      resource: EventTicketClassSchema.exactOptional().openapi({
+        description: 'The updated EventTicketClass resource.',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('EventTicketClassAddMessageResponse')
+
+const EventTicketClassListResponseSchema: z.ZodType<EventTicketClassListResponseType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional().openapi({
+      description: 'Pagination of the response.',
+    }),
+    resources: z
+      .array(EventTicketClassSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EventTicketClassListResponse')
+
+const EventTicketObjectAddMessageResponseSchema: z.ZodType<EventTicketObjectAddMessageResponseType> =
+  z
+    .object({
+      resource: EventTicketObjectSchema.exactOptional().openapi({
+        description: 'The updated EventTicketObject resource.',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('EventTicketObjectAddMessageResponse')
+
+const EventTicketObjectListResponseSchema: z.ZodType<EventTicketObjectListResponseType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional().openapi({
+      description: 'Pagination of the response.',
+    }),
+    resources: z
+      .array(EventTicketObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EventTicketObjectListResponse')
+
+const FlightClassAddMessageResponseSchema: z.ZodType<FlightClassAddMessageResponseType> = z
+  .object({
+    resource: FlightClassSchema.exactOptional().openapi({
+      description: 'The updated FlightClass resource.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('FlightClassAddMessageResponse')
+
+const FlightClassListResponseSchema: z.ZodType<FlightClassListResponseType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional().openapi({
+      description: 'Pagination of the response.',
+    }),
+    resources: z
+      .array(FlightClassSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FlightClassListResponse')
+
+const FlightObjectAddMessageResponseSchema: z.ZodType<FlightObjectAddMessageResponseType> = z
+  .object({
+    resource: FlightObjectSchema.exactOptional().openapi({
+      description: 'The updated FlightObject resource.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('FlightObjectAddMessageResponse')
+
+const FlightObjectListResponseSchema: z.ZodType<FlightObjectListResponseType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional().openapi({
+      description: 'Pagination of the response.',
+    }),
+    resources: z
+      .array(FlightObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FlightObjectListResponse')
+
+const GenericClassListResponseSchema: z.ZodType<GenericClassListResponseType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional().openapi({
+      description: 'Pagination of the response.',
+    }),
+    resources: z
+      .array(GenericClassSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({
+    description:
+      'List response which contains the list of all generic classes for a given issuer ID.',
+    required: [],
+  })
+  .openapi('GenericClassListResponse')
+
+const GenericObjectListResponseSchema: z.ZodType<GenericObjectListResponseType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional().openapi({
+      description: 'Pagination of the response.',
+    }),
+    resources: z
+      .array(GenericObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({
+    description:
+      'List response which contains the list of all generic objects for a given issuer ID.',
+    required: [],
+  })
+  .openapi('GenericObjectListResponse')
+
+const GiftCardClassAddMessageResponseSchema: z.ZodType<GiftCardClassAddMessageResponseType> = z
+  .object({
+    resource: GiftCardClassSchema.exactOptional().openapi({
+      description: 'The updated GiftCardClass resource.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('GiftCardClassAddMessageResponse')
+
+const GiftCardClassListResponseSchema: z.ZodType<GiftCardClassListResponseType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional().openapi({
+      description: 'Pagination of the response.',
+    }),
+    resources: z
+      .array(GiftCardClassSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GiftCardClassListResponse')
+
+const GiftCardObjectAddMessageResponseSchema: z.ZodType<GiftCardObjectAddMessageResponseType> = z
+  .object({
+    resource: GiftCardObjectSchema.exactOptional().openapi({
+      description: 'The updated GiftCardObject resource.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('GiftCardObjectAddMessageResponse')
+
+const GiftCardObjectListResponseSchema: z.ZodType<GiftCardObjectListResponseType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional().openapi({
+      description: 'Pagination of the response.',
+    }),
+    resources: z
+      .array(GiftCardObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GiftCardObjectListResponse')
+
+const IssuerContactInfoSchema = z
+  .object({
+    alertsEmails: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Email addresses which will receive alerts.' }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The primary contact email address.' }),
+    name: z.string().exactOptional().openapi({ description: 'The primary contact name.' }),
+    phone: z.string().exactOptional().openapi({ description: 'The primary contact phone number.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IssuerContactInfo')
+
+const SmartTapMerchantDataSchema = z
+  .object({
+    authenticationKeys: z
+      .array(AuthenticationKeySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
+      }),
+    smartTapMerchantId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SmartTapMerchantData')
+
+const IssuerSchema = z
+  .object({
+    contactInfo: IssuerContactInfoSchema.exactOptional().openapi({
+      description: 'Issuer contact information.',
+    }),
+    homepageUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "URL for the issuer's home page." }),
+    issuerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier for an issuer account. This is automatically generated when the issuer is inserted.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The account name of the issuer.' }),
+    smartTapMerchantData: SmartTapMerchantDataSchema.exactOptional().openapi({
+      description:
+        'Available only to Smart Tap enabled partners. Contact support for additional guidance.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('Issuer')
+
+const IssuerListResponseSchema = z
+  .object({
+    resources: z
+      .array(IssuerSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources corresponding to the list request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IssuerListResponse')
+
+const SignUpInfoSchema = z
+  .object({
+    classId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the class the user can sign up for.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SignUpInfo')
+
+const IssuerToUserInfoSchema = z
+  .object({
+    action: z.enum(['ACTION_UNSPECIFIED', 'S2AP', 's2ap', 'SIGN_UP', 'signUp']).exactOptional(),
+    signUpInfo: SignUpInfoSchema.exactOptional(),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Currently not used, consider deprecating.' }),
+    value: z.string().exactOptional().openapi({ description: 'JSON web token for action S2AP.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IssuerToUserInfo')
+
+const JwtInsertResponseSchema: z.ZodType<JwtInsertResponseType> = z
   .object({
     resources: ResourcesSchema.exactOptional().openapi({
       description:
@@ -5011,7 +5843,7 @@ const JwtResourceSchema = z
   .openapi({ required: [] })
   .openapi('JwtResource')
 
-const LoyaltyClassAddMessageResponseSchema = z
+const LoyaltyClassAddMessageResponseSchema: z.ZodType<LoyaltyClassAddMessageResponseType> = z
   .object({
     resource: LoyaltyClassSchema.exactOptional().openapi({
       description: 'The updated LoyaltyClass resource.',
@@ -5020,7 +5852,7 @@ const LoyaltyClassAddMessageResponseSchema = z
   .openapi({ required: [] })
   .openapi('LoyaltyClassAddMessageResponse')
 
-const LoyaltyClassListResponseSchema = z
+const LoyaltyClassListResponseSchema: z.ZodType<LoyaltyClassListResponseType> = z
   .object({
     pagination: PaginationSchema.exactOptional().openapi({
       description: 'Pagination of the response.',
@@ -5033,7 +5865,7 @@ const LoyaltyClassListResponseSchema = z
   .openapi({ required: [] })
   .openapi('LoyaltyClassListResponse')
 
-const LoyaltyObjectAddMessageResponseSchema = z
+const LoyaltyObjectAddMessageResponseSchema: z.ZodType<LoyaltyObjectAddMessageResponseType> = z
   .object({
     resource: LoyaltyObjectSchema.exactOptional().openapi({
       description: 'The updated LoyaltyObject resource.',
@@ -5042,7 +5874,7 @@ const LoyaltyObjectAddMessageResponseSchema = z
   .openapi({ required: [] })
   .openapi('LoyaltyObjectAddMessageResponse')
 
-const LoyaltyObjectListResponseSchema = z
+const LoyaltyObjectListResponseSchema: z.ZodType<LoyaltyObjectListResponseType> = z
   .object({
     pagination: PaginationSchema.exactOptional().openapi({
       description: 'Pagination of the response.',
@@ -5055,163 +5887,160 @@ const LoyaltyObjectListResponseSchema = z
   .openapi({ required: [] })
   .openapi('LoyaltyObjectListResponse')
 
-const MediaSchema: z.ZodType<MediaType> = z
-  .lazy(() =>
-    z
-      .object({
-        algorithm: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Deprecated, use one of explicit hash type fields instead. Algorithm used for calculating the hash. As of 2011/01/21, "MD5" is the only possible value for this field. New values may be added at any time.',
-          }),
-        bigstoreObjectRef: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Use object_id instead.' }),
-        blobRef: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Blobstore v1 reference, set if reference_type is BLOBSTORE_REF This should be the byte representation of a blobstore.BlobRef. Since Blobstore is deprecating v1, use blobstore2_info instead. For now, any v2 blob will also be represented in this field as v1 BlobRef.',
-          }),
-        blobstore2Info: Blobstore2InfoSchema.exactOptional().openapi({
-          description:
-            'Blobstore v2 info, set if reference_type is BLOBSTORE_REF and it refers to a v2 blob.',
-        }),
-        compositeMedia: z
-          .array(CompositeMediaSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'A composite media composed of one or more media objects, set if reference_type is COMPOSITE_MEDIA. The media length field must be set to the sum of the lengths of all composite media objects. Note: All composite media must have length specified.',
-          }),
-        contentType: z.string().exactOptional().openapi({ description: 'MIME type of the data' }),
-        contentTypeInfo: ContentTypeInfoSchema.exactOptional().openapi({
-          description: 'Extended content type information provided for Scotty uploads.',
-        }),
-        cosmoBinaryReference: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "A binary data reference for a media download. Serves as a technology-agnostic binary reference in some Google infrastructure. This value is a serialized storage_cosmo.BinaryReference proto. Storing it as bytes is a hack to get around the fact that the cosmo proto (as well as others it includes) doesn't support JavaScript. This prevents us from including the actual type of this field.",
-          }),
-        crc32cHash: z
-          .uint32()
-          .exactOptional()
-          .openapi({
-            description:
-              'For Scotty Uploads: Scotty-provided hashes for uploads For Scotty Downloads: (WARNING: DO NOT USE WITHOUT PERMISSION FROM THE SCOTTY TEAM.) A Hash provided by the agent to be used to verify the data being downloaded. Currently only supported for inline payloads. Further, only crc32c_hash is currently supported.',
-          }),
-        diffChecksumsResponse: DiffChecksumsResponseSchema.exactOptional().openapi({
-          description: 'Set if reference_type is DIFF_CHECKSUMS_RESPONSE.',
-        }),
-        diffDownloadResponse: DiffDownloadResponseSchema.exactOptional().openapi({
-          description: 'Set if reference_type is DIFF_DOWNLOAD_RESPONSE.',
-        }),
-        diffUploadRequest: DiffUploadRequestSchema.exactOptional().openapi({
-          description: 'Set if reference_type is DIFF_UPLOAD_REQUEST.',
-        }),
-        diffUploadResponse: DiffUploadResponseSchema.exactOptional().openapi({
-          description: 'Set if reference_type is DIFF_UPLOAD_RESPONSE.',
-        }),
-        diffVersionResponse: DiffVersionResponseSchema.exactOptional().openapi({
-          description: 'Set if reference_type is DIFF_VERSION_RESPONSE.',
-        }),
-        downloadParameters: DownloadParametersSchema.exactOptional().openapi({
-          description: 'Parameters for a media download.',
-        }),
-        filename: z.string().exactOptional().openapi({ description: 'Original file name' }),
-        hash: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Deprecated, use one of explicit hash type fields instead. These two hash related fields will only be populated on Scotty based media uploads and will contain the content of the hash group in the NotificationRequest: http://cs/#google3/uploader/service/proto/upload_listener.proto&q=class:Hash Hex encoded hash value of the uploaded media.',
-          }),
-        hashVerified: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              "For Scotty uploads only. If a user sends a hash code and the backend has requested that Scotty verify the upload against the client hash, Scotty will perform the check on behalf of the backend and will reject it if the hashes don't match. This is set to true if Scotty performed this verification.",
-          }),
-        inline: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Media data, set if reference_type is INLINE' }),
-        isPotentialRetry: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              '|is_potential_retry| is set false only when Scotty is certain that it has not sent the request before. When a client resumes an upload, this field must be set true in agent calls, because Scotty cannot be certain that it has never sent the request before due to potential failure in the session state persistence.',
-          }),
-        length: z.string().exactOptional().openapi({ description: 'Size of the data, in bytes' }),
-        md5Hash: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Scotty-provided MD5 hash for an upload.' }),
-        mediaId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Media id to forward to the operation GetMedia. Can be set if reference_type is GET_MEDIA.',
-          }),
-        objectId: ObjectIdSchema.exactOptional().openapi({
-          description: 'Reference to a TI Blob, set if reference_type is BIGSTORE_REF.',
-        }),
-        path: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Path to the data, set if reference_type is PATH' }),
-        referenceType: z
-          .enum([
-            'PATH',
-            'BLOB_REF',
-            'INLINE',
-            'GET_MEDIA',
-            'COMPOSITE_MEDIA',
-            'BIGSTORE_REF',
-            'DIFF_VERSION_RESPONSE',
-            'DIFF_CHECKSUMS_RESPONSE',
-            'DIFF_DOWNLOAD_RESPONSE',
-            'DIFF_UPLOAD_REQUEST',
-            'DIFF_UPLOAD_RESPONSE',
-            'COSMO_BINARY_REFERENCE',
-            'ARBITRARY_BYTES',
-          ])
-          .exactOptional()
-          .openapi({ description: 'Describes what the field reference contains.' }),
-        sha1Hash: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Scotty-provided SHA1 hash for an upload.' }),
-        sha256Hash: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Scotty-provided SHA256 hash for an upload.' }),
-        timestamp: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Time at which the media data was last updated, in milliseconds since UNIX epoch',
-          }),
-        token: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A unique fingerprint/version id for the media data' }),
-      })
+const MediaSchema = z
+  .object({
+    algorithm: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'A reference to data stored on the filesystem, on GFS or in blobstore.',
-        required: [],
+        description:
+          'Deprecated, use one of explicit hash type fields instead. Algorithm used for calculating the hash. As of 2011/01/21, "MD5" is the only possible value for this field. New values may be added at any time.',
       }),
-  )
+    bigstoreObjectRef: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Use object_id instead.' }),
+    blobRef: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Blobstore v1 reference, set if reference_type is BLOBSTORE_REF This should be the byte representation of a blobstore.BlobRef. Since Blobstore is deprecating v1, use blobstore2_info instead. For now, any v2 blob will also be represented in this field as v1 BlobRef.',
+      }),
+    blobstore2Info: Blobstore2InfoSchema.exactOptional().openapi({
+      description:
+        'Blobstore v2 info, set if reference_type is BLOBSTORE_REF and it refers to a v2 blob.',
+    }),
+    compositeMedia: z
+      .array(CompositeMediaSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A composite media composed of one or more media objects, set if reference_type is COMPOSITE_MEDIA. The media length field must be set to the sum of the lengths of all composite media objects. Note: All composite media must have length specified.',
+      }),
+    contentType: z.string().exactOptional().openapi({ description: 'MIME type of the data' }),
+    contentTypeInfo: ContentTypeInfoSchema.exactOptional().openapi({
+      description: 'Extended content type information provided for Scotty uploads.',
+    }),
+    cosmoBinaryReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A binary data reference for a media download. Serves as a technology-agnostic binary reference in some Google infrastructure. This value is a serialized storage_cosmo.BinaryReference proto. Storing it as bytes is a hack to get around the fact that the cosmo proto (as well as others it includes) doesn't support JavaScript. This prevents us from including the actual type of this field.",
+      }),
+    crc32cHash: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'For Scotty Uploads: Scotty-provided hashes for uploads For Scotty Downloads: (WARNING: DO NOT USE WITHOUT PERMISSION FROM THE SCOTTY TEAM.) A Hash provided by the agent to be used to verify the data being downloaded. Currently only supported for inline payloads. Further, only crc32c_hash is currently supported.',
+      }),
+    diffChecksumsResponse: DiffChecksumsResponseSchema.exactOptional().openapi({
+      description: 'Set if reference_type is DIFF_CHECKSUMS_RESPONSE.',
+    }),
+    diffDownloadResponse: DiffDownloadResponseSchema.exactOptional().openapi({
+      description: 'Set if reference_type is DIFF_DOWNLOAD_RESPONSE.',
+    }),
+    diffUploadRequest: DiffUploadRequestSchema.exactOptional().openapi({
+      description: 'Set if reference_type is DIFF_UPLOAD_REQUEST.',
+    }),
+    diffUploadResponse: DiffUploadResponseSchema.exactOptional().openapi({
+      description: 'Set if reference_type is DIFF_UPLOAD_RESPONSE.',
+    }),
+    diffVersionResponse: DiffVersionResponseSchema.exactOptional().openapi({
+      description: 'Set if reference_type is DIFF_VERSION_RESPONSE.',
+    }),
+    downloadParameters: DownloadParametersSchema.exactOptional().openapi({
+      description: 'Parameters for a media download.',
+    }),
+    filename: z.string().exactOptional().openapi({ description: 'Original file name' }),
+    hash: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated, use one of explicit hash type fields instead. These two hash related fields will only be populated on Scotty based media uploads and will contain the content of the hash group in the NotificationRequest: http://cs/#google3/uploader/service/proto/upload_listener.proto&q=class:Hash Hex encoded hash value of the uploaded media.',
+      }),
+    hashVerified: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "For Scotty uploads only. If a user sends a hash code and the backend has requested that Scotty verify the upload against the client hash, Scotty will perform the check on behalf of the backend and will reject it if the hashes don't match. This is set to true if Scotty performed this verification.",
+      }),
+    inline: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Media data, set if reference_type is INLINE' }),
+    isPotentialRetry: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          '|is_potential_retry| is set false only when Scotty is certain that it has not sent the request before. When a client resumes an upload, this field must be set true in agent calls, because Scotty cannot be certain that it has never sent the request before due to potential failure in the session state persistence.',
+      }),
+    length: z.string().exactOptional().openapi({ description: 'Size of the data, in bytes' }),
+    md5Hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Scotty-provided MD5 hash for an upload.' }),
+    mediaId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Media id to forward to the operation GetMedia. Can be set if reference_type is GET_MEDIA.',
+      }),
+    objectId: ObjectIdSchema.exactOptional().openapi({
+      description: 'Reference to a TI Blob, set if reference_type is BIGSTORE_REF.',
+    }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Path to the data, set if reference_type is PATH' }),
+    referenceType: z
+      .enum([
+        'PATH',
+        'BLOB_REF',
+        'INLINE',
+        'GET_MEDIA',
+        'COMPOSITE_MEDIA',
+        'BIGSTORE_REF',
+        'DIFF_VERSION_RESPONSE',
+        'DIFF_CHECKSUMS_RESPONSE',
+        'DIFF_DOWNLOAD_RESPONSE',
+        'DIFF_UPLOAD_REQUEST',
+        'DIFF_UPLOAD_RESPONSE',
+        'COSMO_BINARY_REFERENCE',
+        'ARBITRARY_BYTES',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Describes what the field reference contains.' }),
+    sha1Hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Scotty-provided SHA1 hash for an upload.' }),
+    sha256Hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Scotty-provided SHA256 hash for an upload.' }),
+    timestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time at which the media data was last updated, in milliseconds since UNIX epoch',
+      }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique fingerprint/version id for the media data' }),
+  })
+  .openapi({
+    description: 'A reference to data stored on the filesystem, on GFS or in blobstore.',
+    required: [],
+  })
   .openapi('Media')
 
 const MediaRequestInfoSchema = z
@@ -5281,7 +6110,7 @@ const ModifyLinkedOfferObjectsRequestSchema = z
   .openapi({ required: [] })
   .openapi('ModifyLinkedOfferObjectsRequest')
 
-const OfferClassAddMessageResponseSchema = z
+const OfferClassAddMessageResponseSchema: z.ZodType<OfferClassAddMessageResponseType> = z
   .object({
     resource: OfferClassSchema.exactOptional().openapi({
       description: 'The updated OfferClass resource.',
@@ -5290,7 +6119,7 @@ const OfferClassAddMessageResponseSchema = z
   .openapi({ required: [] })
   .openapi('OfferClassAddMessageResponse')
 
-const OfferClassListResponseSchema = z
+const OfferClassListResponseSchema: z.ZodType<OfferClassListResponseType> = z
   .object({
     pagination: PaginationSchema.exactOptional().openapi({
       description: 'Pagination of the response.',
@@ -5303,7 +6132,7 @@ const OfferClassListResponseSchema = z
   .openapi({ required: [] })
   .openapi('OfferClassListResponse')
 
-const OfferObjectAddMessageResponseSchema = z
+const OfferObjectAddMessageResponseSchema: z.ZodType<OfferObjectAddMessageResponseType> = z
   .object({
     resource: OfferObjectSchema.exactOptional().openapi({
       description: 'The updated OfferObject resource.',
@@ -5312,7 +6141,7 @@ const OfferObjectAddMessageResponseSchema = z
   .openapi({ required: [] })
   .openapi('OfferObjectAddMessageResponse')
 
-const OfferObjectListResponseSchema = z
+const OfferObjectListResponseSchema: z.ZodType<OfferObjectListResponseType> = z
   .object({
     pagination: PaginationSchema.exactOptional().openapi({
       description: 'Pagination of the response.',
@@ -5423,7 +6252,7 @@ const SmartTapSchema = z
   .openapi({ required: [] })
   .openapi('SmartTap')
 
-const TransitClassAddMessageResponseSchema = z
+const TransitClassAddMessageResponseSchema: z.ZodType<TransitClassAddMessageResponseType> = z
   .object({
     resource: TransitClassSchema.exactOptional().openapi({
       description: 'The updated TransitClass resource.',
@@ -5432,7 +6261,7 @@ const TransitClassAddMessageResponseSchema = z
   .openapi({ required: [] })
   .openapi('TransitClassAddMessageResponse')
 
-const TransitClassListResponseSchema = z
+const TransitClassListResponseSchema: z.ZodType<TransitClassListResponseType> = z
   .object({
     pagination: PaginationSchema.exactOptional().openapi({
       description: 'Pagination of the response.',
@@ -5445,7 +6274,7 @@ const TransitClassListResponseSchema = z
   .openapi({ required: [] })
   .openapi('TransitClassListResponse')
 
-const TransitObjectAddMessageResponseSchema = z
+const TransitObjectAddMessageResponseSchema: z.ZodType<TransitObjectAddMessageResponseType> = z
   .object({
     resource: TransitObjectSchema.exactOptional().openapi({
       description: 'The updated TransitObject resource.',
@@ -5454,7 +6283,7 @@ const TransitObjectAddMessageResponseSchema = z
   .openapi({ required: [] })
   .openapi('TransitObjectAddMessageResponse')
 
-const TransitObjectListResponseSchema = z
+const TransitObjectListResponseSchema: z.ZodType<TransitObjectListResponseType> = z
   .object({
     pagination: PaginationSchema.exactOptional().openapi({
       description: 'Pagination of the response.',

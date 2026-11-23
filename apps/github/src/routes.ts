@@ -21763,89 +21763,110 @@ const CodeQualitySetupSchema = z
   .openapi({ description: 'Configuration for code quality setup.', required: [] })
   .openapi('CodeQualitySetup')
 
-const CodeQualitySetupUpdateSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'state')) {
-            ctx.addIssue({ code: 'custom' })
+const CodeQualitySetupUpdateSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'state')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['state'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'runner_type')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['state'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'runner_type')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['runner_type'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'runner_label')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['runner_type'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'runner_label')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['runner_label'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'languages')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['runner_label'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'languages')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['languages'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'ai_findings_option')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['languages'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'ai_findings_option')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['ai_findings_option'] }),
+    ])
+    .and(
+      z
+        .object({
+          state: z
+            .enum(['configured', 'not-configured'])
+            .exactOptional()
+            .openapi({ description: 'The desired state of code quality setup.' }),
+          runner_type: z
+            .enum(['standard', 'labeled'])
+            .exactOptional()
+            .openapi({ description: 'Runner type to be used.' }),
+          runner_label: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'Runner label to be used if the runner type is labeled.',
+              example: 'code-scanning',
+            }),
+          languages: z
+            .array(
+              z.enum(['csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby']),
+            )
+            .exactOptional()
+            .openapi({ description: 'Languages to be analyzed.' }),
+          ai_findings_option: z
+            .enum(['disabled', 'on_push'])
+            .exactOptional()
+            .openapi({
+              description: 'Whether AI findings run for Code Quality on this repository.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          !['state', 'runner_type', 'runner_label', 'languages', 'ai_findings_option'].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['ai_findings_option'] }),
-  ])
-  .and(
-    z
-      .object({
-        state: z
-          .enum(['configured', 'not-configured'])
-          .exactOptional()
-          .openapi({ description: 'The desired state of code quality setup.' }),
-        runner_type: z
-          .enum(['standard', 'labeled'])
-          .exactOptional()
-          .openapi({ description: 'Runner type to be used.' }),
-        runner_label: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Runner label to be used if the runner type is labeled.',
-            example: 'code-scanning',
-          }),
-        languages: z
-          .array(z.enum(['csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby']))
-          .exactOptional()
-          .openapi({ description: 'Languages to be analyzed.' }),
-        ai_findings_option: z
-          .enum(['disabled', 'on_push'])
-          .exactOptional()
-          .openapi({ description: 'Whether AI findings run for Code Quality on this repository.' }),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ description: 'Configuration for code quality setup.' })
   .openapi('CodeQualitySetupUpdate')
 
@@ -167165,97 +167186,123 @@ export const postOrgsOrgCampaignsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'code_scanning_alerts')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'code_scanning_alerts')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['code_scanning_alerts'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'secret_scanning_alerts')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['code_scanning_alerts'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'secret_scanning_alerts')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['secret_scanning_alerts'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    name: z
+                      .string()
+                      .min(1)
+                      .max(50)
+                      .openapi({ description: 'The name of the campaign' }),
+                    description: z
+                      .string()
+                      .min(1)
+                      .max(255)
+                      .openapi({ description: 'A description for the campaign' }),
+                    managers: z
+                      .array(z.string().openapi({ description: 'The login of each manager' }))
+                      .max(10)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The logins of the users to set as the campaign managers. At this time, only a single manager can be supplied.',
+                      }),
+                    team_managers: z
+                      .array(z.string().openapi({ description: 'The slug of each team' }))
+                      .max(10)
+                      .exactOptional()
+                      .openapi({
+                        description: 'The slugs of the teams to set as the campaign managers.',
+                      }),
+                    ends_at: z.iso
+                      .datetime({ offset: true })
+                      .openapi({
+                        description:
+                          'The end date and time of the campaign. The date must be in the future.',
+                      }),
+                    contact_link: z
+                      .url()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ description: 'The contact link of the campaign. Must be a URI.' }),
+                    code_scanning_alerts: z
+                      .array(
+                        z
+                          .strictObject({
+                            repository_id: z.int().openapi({ description: 'The repository id' }),
+                            alert_numbers: z
+                              .array(z.int())
+                              .min(1)
+                              .openapi({ description: 'The alert numbers' }),
+                          })
+                          .openapi({ required: ['repository_id', 'alert_numbers'] }),
+                      )
+                      .min(1)
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description: 'The code scanning alerts to include in this campaign',
+                      }),
+                    generate_issues: z
+                      .boolean()
+                      .default(false)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'If true, will automatically generate issues for the campaign. The default is false.',
+                      }),
+                  })
+                  .openapi({ required: ['name', 'description', 'ends_at'] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (
+                    ![
+                      'name',
+                      'description',
+                      'managers',
+                      'team_managers',
+                      'ends_at',
+                      'contact_link',
+                      'code_scanning_alerts',
+                      'generate_issues',
+                    ].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['secret_scanning_alerts'] }),
-            ])
-            .and(
-              z
-                .object({
-                  name: z
-                    .string()
-                    .min(1)
-                    .max(50)
-                    .openapi({ description: 'The name of the campaign' }),
-                  description: z
-                    .string()
-                    .min(1)
-                    .max(255)
-                    .openapi({ description: 'A description for the campaign' }),
-                  managers: z
-                    .array(z.string().openapi({ description: 'The login of each manager' }))
-                    .max(10)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The logins of the users to set as the campaign managers. At this time, only a single manager can be supplied.',
-                    }),
-                  team_managers: z
-                    .array(z.string().openapi({ description: 'The slug of each team' }))
-                    .max(10)
-                    .exactOptional()
-                    .openapi({
-                      description: 'The slugs of the teams to set as the campaign managers.',
-                    }),
-                  ends_at: z.iso
-                    .datetime({ offset: true })
-                    .openapi({
-                      description:
-                        'The end date and time of the campaign. The date must be in the future.',
-                    }),
-                  contact_link: z
-                    .url()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({ description: 'The contact link of the campaign. Must be a URI.' }),
-                  code_scanning_alerts: z
-                    .array(
-                      z
-                        .strictObject({
-                          repository_id: z.int().openapi({ description: 'The repository id' }),
-                          alert_numbers: z
-                            .array(z.int())
-                            .min(1)
-                            .openapi({ description: 'The alert numbers' }),
-                        })
-                        .openapi({ required: ['repository_id', 'alert_numbers'] }),
-                    )
-                    .min(1)
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description: 'The code scanning alerts to include in this campaign',
-                    }),
-                  generate_issues: z
-                    .boolean()
-                    .default(false)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'If true, will automatically generate issues for the campaign. The default is false.',
-                    }),
-                })
-                .openapi({ required: ['name', 'description', 'ends_at'] }),
-            )
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['name', 'description', 'ends_at'] }),
           examples: {
             default: {
@@ -176954,63 +177001,81 @@ export const postOrgsOrgProjectsV2ProjectNumberItemsRoute = createRoute({
         'Details of the item to add to the project. You can specify either the unique ID or the repository owner, name, and issue/PR number.',
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'id')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['id'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'owner')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'repo')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'number')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['owner', 'repo', 'number'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    type: z
+                      .enum(['Issue', 'PullRequest'])
+                      .openapi({
+                        description:
+                          'The type of item to add to the project. Must be either Issue or PullRequest.',
+                      }),
+                    id: z
+                      .int()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The unique identifier of the issue or pull request to add to the project.',
+                      }),
+                    owner: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'The repository owner login.' }),
+                    repo: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'The repository name.' }),
+                    number: z
+                      .int()
+                      .exactOptional()
+                      .openapi({ description: 'The issue or pull request number.' }),
+                  })
+                  .openapi({ required: ['type'] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (!['type', 'id', 'owner', 'repo', 'number'].includes(k)) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['id'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'owner')) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                    if (!Object.hasOwn(val, 'repo')) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                    if (!Object.hasOwn(val, 'number')) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .openapi({ required: ['owner', 'repo', 'number'] }),
-            ])
-            .and(
-              z
-                .object({
-                  type: z
-                    .enum(['Issue', 'PullRequest'])
-                    .openapi({
-                      description:
-                        'The type of item to add to the project. Must be either Issue or PullRequest.',
-                    }),
-                  id: z
-                    .int()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The unique identifier of the issue or pull request to add to the project.',
-                    }),
-                  owner: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ description: 'The repository owner login.' }),
-                  repo: z.string().exactOptional().openapi({ description: 'The repository name.' }),
-                  number: z
-                    .int()
-                    .exactOptional()
-                    .openapi({ description: 'The issue or pull request number.' }),
-                })
-                .openapi({ required: ['type'] }),
-            )
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['type'] }),
           examples: {
             issue_with_id: {
@@ -189240,75 +189305,98 @@ export const postReposOwnerRepoCodeScanningCodeqlVariantAnalysesRoute = createRo
     body: {
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'repositories')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'repositories')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['repositories'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'repository_lists')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['repositories'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'repository_lists')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['repository_lists'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'repository_owners')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['repository_lists'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'repository_owners')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['repository_owners'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    language: CodeScanningVariantAnalysisLanguageSchema,
+                    query_pack: z
+                      .string()
+                      .openapi({
+                        description:
+                          'A Base64-encoded tarball containing a CodeQL query and all its dependencies',
+                      }),
+                    repositories: z
+                      .array(z.string())
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'List of repository names (in the form `owner/repo-name`) to run the query against. Precisely one property from `repositories`, `repository_lists` and `repository_owners` is required.',
+                      }),
+                    repository_lists: z
+                      .array(z.string())
+                      .max(1)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'List of repository lists to run the query against. Precisely one property from `repositories`, `repository_lists` and `repository_owners` is required.',
+                      }),
+                    repository_owners: z
+                      .array(z.string())
+                      .max(1)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'List of organization or user names whose repositories the query should be run against. Precisely one property from `repositories`, `repository_lists` and `repository_owners` is required.',
+                      }),
+                  })
+                  .openapi({ required: ['language', 'query_pack'] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (
+                    ![
+                      'language',
+                      'query_pack',
+                      'repositories',
+                      'repository_lists',
+                      'repository_owners',
+                    ].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['repository_owners'] }),
-            ])
-            .and(
-              z
-                .object({
-                  language: CodeScanningVariantAnalysisLanguageSchema,
-                  query_pack: z
-                    .string()
-                    .openapi({
-                      description:
-                        'A Base64-encoded tarball containing a CodeQL query and all its dependencies',
-                    }),
-                  repositories: z
-                    .array(z.string())
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'List of repository names (in the form `owner/repo-name`) to run the query against. Precisely one property from `repositories`, `repository_lists` and `repository_owners` is required.',
-                    }),
-                  repository_lists: z
-                    .array(z.string())
-                    .max(1)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'List of repository lists to run the query against. Precisely one property from `repositories`, `repository_lists` and `repository_owners` is required.',
-                    }),
-                  repository_owners: z
-                    .array(z.string())
-                    .max(1)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'List of organization or user names whose repositories the query should be run against. Precisely one property from `repositories`, `repository_lists` and `repository_owners` is required.',
-                    }),
-                })
-                .openapi({ required: ['language', 'query_pack'] }),
-            )
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['language', 'query_pack'] }),
           examples: {
             repositories_parameter: {
@@ -192280,90 +192368,112 @@ export const patchReposOwnerRepoDependabotAlertsAlertNumberRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .union([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'state')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'state')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['state'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'assignees')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['state'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'assignees')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['assignees'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    state: z
+                      .enum(['dismissed', 'open'])
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The state of the Dependabot alert.\nA `dismissed_reason` must be provided when setting the state to `dismissed`.',
+                      }),
+                    dismissed_reason: z
+                      .enum([
+                        'fix_started',
+                        'inaccurate',
+                        'no_bandwidth',
+                        'not_used',
+                        'tolerable_risk',
+                      ])
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '**Required when `state` is `dismissed`.** A reason for dismissing the alert.',
+                      }),
+                    dismissed_comment: z
+                      .string()
+                      .max(280)
+                      .exactOptional()
+                      .openapi({
+                        description: 'An optional comment associated with dismissing the alert.',
+                      }),
+                    assignees: z
+                      .array(z.string())
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Usernames to assign to this Dependabot Alert.\nPass one or more user logins to _replace_ the set of assignees on this alert.\nSend an empty array (`[]`) to clear all assignees from the alert.\nTo assign an AI agent, include the bot login (for example, `copilot-swe-agent[bot]`).',
+                      }),
+                    agent_assignment: z
+                      .strictObject({
+                        custom_instructions: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'Custom instructions for the agent.' }),
+                        custom_agent: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'A custom agent identifier.' }),
+                        model: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'The model to use for the agent.' }),
+                      })
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Parameters for AI agent assignment. Only used when an agent bot login is\nincluded in `assignees`. Ignored when no agent is being assigned.',
+                        required: [],
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (
+                    ![
+                      'state',
+                      'dismissed_reason',
+                      'dismissed_comment',
+                      'assignees',
+                      'agent_assignment',
+                    ].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['assignees'] }),
-            ])
-            .and(
-              z
-                .object({
-                  state: z
-                    .enum(['dismissed', 'open'])
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The state of the Dependabot alert.\nA `dismissed_reason` must be provided when setting the state to `dismissed`.',
-                    }),
-                  dismissed_reason: z
-                    .enum([
-                      'fix_started',
-                      'inaccurate',
-                      'no_bandwidth',
-                      'not_used',
-                      'tolerable_risk',
-                    ])
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        '**Required when `state` is `dismissed`.** A reason for dismissing the alert.',
-                    }),
-                  dismissed_comment: z
-                    .string()
-                    .max(280)
-                    .exactOptional()
-                    .openapi({
-                      description: 'An optional comment associated with dismissing the alert.',
-                    }),
-                  assignees: z
-                    .array(z.string())
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Usernames to assign to this Dependabot Alert.\nPass one or more user logins to _replace_ the set of assignees on this alert.\nSend an empty array (`[]`) to clear all assignees from the alert.\nTo assign an AI agent, include the bot login (for example, `copilot-swe-agent[bot]`).',
-                    }),
-                  agent_assignment: z
-                    .strictObject({
-                      custom_instructions: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'Custom instructions for the agent.' }),
-                      custom_agent: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'A custom agent identifier.' }),
-                      model: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'The model to use for the agent.' }),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Parameters for AI agent assignment. Only used when an agent bot login is\nincluded in `assignees`. Ignored when no agent is being assigned.',
-                      required: [],
-                    }),
-                })
-                .openapi({ required: [] }),
-            ),
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })().openapi({ additionalProperties: false }),
           examples: {
             default: {
               value: {
@@ -217214,63 +217324,81 @@ export const postUsersUsernameProjectsV2ProjectNumberItemsRoute = createRoute({
         'Details of the item to add to the project. You can specify either the unique ID or the repository owner, name, and issue/PR number.',
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'id')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['id'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'owner')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'repo')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'number')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['owner', 'repo', 'number'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    type: z
+                      .enum(['Issue', 'PullRequest'])
+                      .openapi({
+                        description:
+                          'The type of item to add to the project. Must be either Issue or PullRequest.',
+                      }),
+                    id: z
+                      .int()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The unique identifier of the issue or pull request to add to the project.',
+                      }),
+                    owner: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'The repository owner login.' }),
+                    repo: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'The repository name.' }),
+                    number: z
+                      .int()
+                      .exactOptional()
+                      .openapi({ description: 'The issue or pull request number.' }),
+                  })
+                  .openapi({ required: ['type'] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (!['type', 'id', 'owner', 'repo', 'number'].includes(k)) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['id'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'owner')) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                    if (!Object.hasOwn(val, 'repo')) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                    if (!Object.hasOwn(val, 'number')) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .openapi({ required: ['owner', 'repo', 'number'] }),
-            ])
-            .and(
-              z
-                .object({
-                  type: z
-                    .enum(['Issue', 'PullRequest'])
-                    .openapi({
-                      description:
-                        'The type of item to add to the project. Must be either Issue or PullRequest.',
-                    }),
-                  id: z
-                    .int()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The unique identifier of the issue or pull request to add to the project.',
-                    }),
-                  owner: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ description: 'The repository owner login.' }),
-                  repo: z.string().exactOptional().openapi({ description: 'The repository name.' }),
-                  number: z
-                    .int()
-                    .exactOptional()
-                    .openapi({ description: 'The issue or pull request number.' }),
-                })
-                .openapi({ required: ['type'] }),
-            )
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['type'] }),
           examples: {
             issue_with_id: {

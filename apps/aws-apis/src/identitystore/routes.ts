@@ -18,16 +18,12 @@ const IdentityStoreIdSchema = z
 
 const CreateGroupResponseSchema = z
   .object({
-    GroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the newly created group in the identity store.',
-        }),
-    ),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier of the newly created group in the identity store.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({ required: ['GroupId', 'IdentityStoreId'] })
   .openapi('CreateGroupResponse')
@@ -48,20 +44,16 @@ const SensitiveStringTypeSchema = z
 
 const CreateGroupRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    DisplayName: GroupDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing the name of the group. This value is commonly displayed when the group is referenced. "Administrator" and "AWSAdministrators" are reserved names and can\'t be used for users or groups.',
-        }),
-    ).exactOptional(),
-    Description: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string containing the description of the group.' }),
-    ).exactOptional(),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    DisplayName: GroupDisplayNameSchema.exactOptional().openapi({
+      description:
+        'A string containing the name of the group. This value is commonly displayed when the group is referenced. "Administrator" and "AWSAdministrators" are reserved names and can\'t be used for users or groups.',
+    }),
+    Description: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing the description of the group.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId'], title: 'CreateGroupRequest' })
   .openapi('CreateGroupRequest')
@@ -82,50 +74,38 @@ const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceede
 
 const CreateGroupMembershipResponseSchema = z
   .object({
-    MembershipId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for a newly created <code>GroupMembership</code> in an identity store.',
-        }),
-    ),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    MembershipId: ResourceIdSchema.openapi({
+      description:
+        'The identifier for a newly created <code>GroupMembership</code> in an identity store.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({ required: ['MembershipId', 'IdentityStoreId'] })
   .openapi('CreateGroupMembershipResponse')
 
 const MemberIdSchema = z
   .object({
-    UserId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object containing the identifiers of resources that can be members.',
-        }),
-    ).exactOptional(),
+    UserId: ResourceIdSchema.exactOptional().openapi({
+      description: 'An object containing the identifiers of resources that can be members.',
+    }),
   })
   .openapi({ description: 'An object containing the identifier of a group member.', required: [] })
   .openapi('MemberId')
 
 const CreateGroupMembershipRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
-    MemberId: MemberIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
-        }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    MemberId: MemberIdSchema.openapi({
+      description:
+        'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
+    }),
   })
   .openapi({
     required: ['IdentityStoreId', 'GroupId', 'MemberId'],
@@ -135,16 +115,12 @@ const CreateGroupMembershipRequestSchema = z
 
 const CreateUserResponseSchema = z
   .object({
-    UserId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the newly created user in the identity store.',
-        }),
-    ),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    UserId: ResourceIdSchema.openapi({
+      description: 'The identifier of the newly created user in the identity store.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({ required: ['UserId', 'IdentityStoreId'] })
   .openapi('CreateUserResponse')
@@ -158,28 +134,24 @@ const UserNameSchema = z
 
 const NameSchema = z
   .object({
-    Formatted: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string containing a formatted version of the name for display.',
-        }),
-    ).exactOptional(),
-    FamilyName: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The family name of the user.' }),
-    ).exactOptional(),
-    GivenName: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The given name of the user.' }),
-    ).exactOptional(),
-    MiddleName: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The middle name of the user.' }),
-    ).exactOptional(),
-    HonorificPrefix: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The honorific prefix of the user. For example, "Dr."' }),
-    ).exactOptional(),
-    HonorificSuffix: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The honorific suffix of the user. For example, "M.D."' }),
-    ).exactOptional(),
+    Formatted: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing a formatted version of the name for display.',
+    }),
+    FamilyName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The family name of the user.',
+    }),
+    GivenName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The given name of the user.',
+    }),
+    MiddleName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The middle name of the user.',
+    }),
+    HonorificPrefix: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The honorific prefix of the user. For example, "Dr."',
+    }),
+    HonorificSuffix: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The honorific suffix of the user. For example, "M.D."',
+    }),
   })
   .openapi({ description: 'The full name of the user.', required: [] })
   .openapi('Name')
@@ -188,28 +160,16 @@ const SensitiveBooleanTypeSchema = z.boolean().openapi('SensitiveBooleanType')
 
 const EmailSchema = z
   .object({
-    Value: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string containing an email address. For example, "johndoe@amazon.com."',
-        }),
-    ).exactOptional(),
-    Type: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string representing the type of address. For example, "Work."',
-        }),
-    ).exactOptional(),
-    Primary: SensitiveBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value representing whether this is the primary email address for the associated resource.',
-        }),
-    ).exactOptional(),
+    Value: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing an email address. For example, "johndoe@amazon.com."',
+    }),
+    Type: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string representing the type of address. For example, "Work."',
+    }),
+    Primary: SensitiveBooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A Boolean value representing whether this is the primary email address for the associated resource.',
+    }),
   })
   .openapi({ description: 'The email address associated with the user.', required: [] })
   .openapi('Email')
@@ -218,43 +178,31 @@ const EmailsSchema = z.array(EmailSchema).length(1).openapi('Emails')
 
 const AddressSchema = z
   .object({
-    StreetAddress: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The street of the address.' }),
-    ).exactOptional(),
-    Locality: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string of the address locality.' }),
-    ).exactOptional(),
-    Region: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The region of the address.' }),
-    ).exactOptional(),
-    PostalCode: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The postal code of the address.' }),
-    ).exactOptional(),
-    Country: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The country of the address.' }),
-    ).exactOptional(),
-    Formatted: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string containing a formatted version of the address for display.',
-        }),
-    ).exactOptional(),
-    Type: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string representing the type of address. For example, "Home."',
-        }),
-    ).exactOptional(),
-    Primary: SensitiveBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value representing whether this is the primary address for the associated resource.',
-        }),
-    ).exactOptional(),
+    StreetAddress: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The street of the address.',
+    }),
+    Locality: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string of the address locality.',
+    }),
+    Region: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The region of the address.',
+    }),
+    PostalCode: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The postal code of the address.',
+    }),
+    Country: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The country of the address.',
+    }),
+    Formatted: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing a formatted version of the address for display.',
+    }),
+    Type: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string representing the type of address. For example, "Home."',
+    }),
+    Primary: SensitiveBooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A Boolean value representing whether this is the primary address for the associated resource.',
+    }),
   })
   .openapi({ description: 'The address associated with the specified user.', required: [] })
   .openapi('Address')
@@ -263,29 +211,17 @@ const AddressesSchema = z.array(AddressSchema).length(1).openapi('Addresses')
 
 const PhoneNumberSchema = z
   .object({
-    Value: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing a phone number. For example, "8675309" or "+1 (800) 123-4567".',
-        }),
-    ).exactOptional(),
-    Type: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string representing the type of a phone number. For example, "Mobile."',
-        }),
-    ).exactOptional(),
-    Primary: SensitiveBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value representing whether this is the primary phone number for the associated resource.',
-        }),
-    ).exactOptional(),
+    Value: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string containing a phone number. For example, "8675309" or "+1 (800) 123-4567".',
+    }),
+    Type: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string representing the type of a phone number. For example, "Mobile."',
+    }),
+    Primary: SensitiveBooleanTypeSchema.exactOptional().openapi({
+      description:
+        'A Boolean value representing whether this is the primary phone number for the associated resource.',
+    }),
   })
   .openapi({ description: 'The phone number associated with the user.', required: [] })
   .openapi('PhoneNumber')
@@ -294,142 +230,100 @@ const PhoneNumbersSchema = z.array(PhoneNumberSchema).length(1).openapi('PhoneNu
 
 const CreateUserRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    UserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string used to identify the user. The length limit is 128 characters. This value can consist of letters, accented characters, symbols, numbers, and punctuation. This value is specified at the time the user is created and stored as an attribute of the user object in the identity store. "Administrator" and "AWSAdministrators" are reserved names and can\'t be used for users or groups.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'An object containing the name of the user.' }),
-    ).exactOptional(),
-    DisplayName: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing the name of the user. This value is typically formatted for display when the user is referenced. For example, "John Doe." ',
-        }),
-    ).exactOptional(),
-    NickName: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string containing an alternate name for the user.' }),
-    ).exactOptional(),
-    ProfileUrl: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string containing a URL that might be associated with the user.',
-        }),
-    ).exactOptional(),
-    Emails: EmailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Email</code> objects containing email addresses associated with the user.',
-        }),
-    ).exactOptional(),
-    Addresses: AddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Address</code> objects containing addresses associated with the user.',
-        }),
-    ).exactOptional(),
-    PhoneNumbers: PhoneNumbersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>PhoneNumber</code> objects containing phone numbers associated with the user.',
-        }),
-    ).exactOptional(),
-    UserType: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string indicating the type of user. Possible values are left unspecified. The value can vary based on your specific use case.',
-        }),
-    ).exactOptional(),
-    Title: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing the title of the user. Possible values are left unspecified. The value can vary based on your specific use case.',
-        }),
-    ).exactOptional(),
-    PreferredLanguage: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing the preferred language of the user. For example, "American English" or "en-us."',
-        }),
-    ).exactOptional(),
-    Locale: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string containing the geographical region or location of the user.',
-        }),
-    ).exactOptional(),
-    Timezone: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string containing the time zone of the user.' }),
-    ).exactOptional(),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    UserName: UserNameSchema.exactOptional().openapi({
+      description:
+        'A unique string used to identify the user. The length limit is 128 characters. This value can consist of letters, accented characters, symbols, numbers, and punctuation. This value is specified at the time the user is created and stored as an attribute of the user object in the identity store. "Administrator" and "AWSAdministrators" are reserved names and can\'t be used for users or groups.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'An object containing the name of the user.',
+    }),
+    DisplayName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string containing the name of the user. This value is typically formatted for display when the user is referenced. For example, "John Doe." ',
+    }),
+    NickName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing an alternate name for the user.',
+    }),
+    ProfileUrl: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing a URL that might be associated with the user.',
+    }),
+    Emails: EmailsSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Email</code> objects containing email addresses associated with the user.',
+    }),
+    Addresses: AddressesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Address</code> objects containing addresses associated with the user.',
+    }),
+    PhoneNumbers: PhoneNumbersSchema.exactOptional().openapi({
+      description:
+        'A list of <code>PhoneNumber</code> objects containing phone numbers associated with the user.',
+    }),
+    UserType: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string indicating the type of user. Possible values are left unspecified. The value can vary based on your specific use case.',
+    }),
+    Title: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string containing the title of the user. Possible values are left unspecified. The value can vary based on your specific use case.',
+    }),
+    PreferredLanguage: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string containing the preferred language of the user. For example, "American English" or "en-us."',
+    }),
+    Locale: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing the geographical region or location of the user.',
+    }),
+    Timezone: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing the time zone of the user.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId'], title: 'CreateUserRequest' })
   .openapi('CreateUserRequest')
 
-const DeleteGroupResponseSchema = z.object({}).openapi('DeleteGroupResponse')
+const DeleteGroupResponseSchema = z.looseObject({}).openapi('DeleteGroupResponse')
 
 const DeleteGroupRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'GroupId'], title: 'DeleteGroupRequest' })
   .openapi('DeleteGroupRequest')
 
-const DeleteGroupMembershipResponseSchema = z.object({}).openapi('DeleteGroupMembershipResponse')
+const DeleteGroupMembershipResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteGroupMembershipResponse')
 
 const DeleteGroupMembershipRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    MembershipId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for a <code>GroupMembership</code> in an identity store.',
-        }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    MembershipId: ResourceIdSchema.openapi({
+      description: 'The identifier for a <code>GroupMembership</code> in an identity store.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'MembershipId'], title: 'DeleteGroupMembershipRequest' })
   .openapi('DeleteGroupMembershipRequest')
 
-const DeleteUserResponseSchema = z.object({}).openapi('DeleteUserResponse')
+const DeleteUserResponseSchema = z.looseObject({}).openapi('DeleteUserResponse')
 
 const DeleteUserRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    UserId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a user in the identity store.' }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    UserId: ResourceIdSchema.openapi({
+      description: 'The identifier for a user in the identity store.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'UserId'], title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
@@ -450,16 +344,12 @@ const ExternalIdIdentifierSchema = z
 
 const ExternalIdSchema = z
   .object({
-    Issuer: ExternalIdIssuerSchema.and(
-      z.any().openapi({ description: 'The issuer for an external identifier.' }),
-    ),
-    Id: ExternalIdIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier issued to this resource by an external identity provider.',
-        }),
-    ),
+    Issuer: ExternalIdIssuerSchema.openapi({
+      description: 'The issuer for an external identifier.',
+    }),
+    Id: ExternalIdIdentifierSchema.openapi({
+      description: 'The identifier issued to this resource by an external identity provider.',
+    }),
   })
   .openapi({
     required: ['Issuer', 'Id'],
@@ -471,67 +361,51 @@ const ExternalIdsSchema = z.array(ExternalIdSchema).min(1).max(10).openapi('Exte
 
 const DescribeGroupResponseSchema = z
   .object({
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
-    DisplayName: GroupDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The group’s display name value. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time that the group is created and stored as an attribute of the group object in the identity store.',
-        }),
-    ).exactOptional(),
-    ExternalIds: ExternalIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ExternalId</code> objects that contains the identifiers issued to this resource by an external identity provider.',
-        }),
-    ).exactOptional(),
-    Description: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string containing a description of the group.' }),
-    ).exactOptional(),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    DisplayName: GroupDisplayNameSchema.exactOptional().openapi({
+      description:
+        'The group’s display name value. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time that the group is created and stored as an attribute of the group object in the identity store.',
+    }),
+    ExternalIds: ExternalIdsSchema.exactOptional().openapi({
+      description:
+        'A list of <code>ExternalId</code> objects that contains the identifiers issued to this resource by an external identity provider.',
+    }),
+    Description: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing a description of the group.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({ required: ['GroupId', 'IdentityStoreId'] })
   .openapi('DescribeGroupResponse')
 
 const DescribeGroupRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.',
-        }),
-    ),
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description:
+        'The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.',
+    }),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'GroupId'], title: 'DescribeGroupRequest' })
   .openapi('DescribeGroupRequest')
 
 const DescribeGroupMembershipResponseSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    MembershipId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for a <code>GroupMembership</code> in an identity store.',
-        }),
-    ),
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    MembershipId: ResourceIdSchema.openapi({
+      description: 'The identifier for a <code>GroupMembership</code> in an identity store.',
+    }),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
     MemberId: MemberIdSchema,
   })
   .openapi({ required: ['IdentityStoreId', 'MembershipId', 'GroupId', 'MemberId'] })
@@ -539,16 +413,12 @@ const DescribeGroupMembershipResponseSchema = z
 
 const DescribeGroupMembershipRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    MembershipId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for a <code>GroupMembership</code> in an identity store.',
-        }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    MembershipId: ResourceIdSchema.openapi({
+      description: 'The identifier for a <code>GroupMembership</code> in an identity store.',
+    }),
   })
   .openapi({
     required: ['IdentityStoreId', 'MembershipId'],
@@ -558,99 +428,77 @@ const DescribeGroupMembershipRequestSchema = z
 
 const DescribeUserResponseSchema = z
   .object({
-    UserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string used to identify the user. The length limit is 128 characters. This value can consist of letters, accented characters, symbols, numbers, and punctuation. This value is specified at the time the user is created and stored as an attribute of the user object in the identity store.',
-        }),
-    ).exactOptional(),
-    UserId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a user in the identity store.' }),
-    ),
-    ExternalIds: ExternalIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ExternalId</code> objects that contains the identifiers issued to this resource by an external identity provider.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the user.' })).exactOptional(),
-    DisplayName: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The display name of the user.' }),
-    ).exactOptional(),
-    NickName: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'An alternative descriptive name for the user.' }),
-    ).exactOptional(),
-    ProfileUrl: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: "A URL link for the user's profile." }),
-    ).exactOptional(),
-    Emails: EmailsSchema.and(
-      z.any().openapi({ description: 'The email address of the user.' }),
-    ).exactOptional(),
-    Addresses: AddressesSchema.and(
-      z.any().openapi({ description: 'The physical address of the user.' }),
-    ).exactOptional(),
-    PhoneNumbers: PhoneNumbersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code>PhoneNumber</code> objects associated with a user.',
-        }),
-    ).exactOptional(),
-    UserType: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string indicating the type of user.' }),
-    ).exactOptional(),
-    Title: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string containing the title of the user.' }),
-    ).exactOptional(),
-    PreferredLanguage: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The preferred language of the user.' }),
-    ).exactOptional(),
-    Locale: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string containing the geographical region or location of the user.',
-        }),
-    ).exactOptional(),
-    Timezone: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'The time zone for a user.' }),
-    ).exactOptional(),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    UserName: UserNameSchema.exactOptional().openapi({
+      description:
+        'A unique string used to identify the user. The length limit is 128 characters. This value can consist of letters, accented characters, symbols, numbers, and punctuation. This value is specified at the time the user is created and stored as an attribute of the user object in the identity store.',
+    }),
+    UserId: ResourceIdSchema.openapi({
+      description: 'The identifier for a user in the identity store.',
+    }),
+    ExternalIds: ExternalIdsSchema.exactOptional().openapi({
+      description:
+        'A list of <code>ExternalId</code> objects that contains the identifiers issued to this resource by an external identity provider.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the user.' }),
+    DisplayName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The display name of the user.',
+    }),
+    NickName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'An alternative descriptive name for the user.',
+    }),
+    ProfileUrl: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: "A URL link for the user's profile.",
+    }),
+    Emails: EmailsSchema.exactOptional().openapi({ description: 'The email address of the user.' }),
+    Addresses: AddressesSchema.exactOptional().openapi({
+      description: 'The physical address of the user.',
+    }),
+    PhoneNumbers: PhoneNumbersSchema.exactOptional().openapi({
+      description: 'A list of <code>PhoneNumber</code> objects associated with a user.',
+    }),
+    UserType: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string indicating the type of user.',
+    }),
+    Title: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing the title of the user.',
+    }),
+    PreferredLanguage: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The preferred language of the user.',
+    }),
+    Locale: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing the geographical region or location of the user.',
+    }),
+    Timezone: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'The time zone for a user.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({ required: ['UserId', 'IdentityStoreId'] })
   .openapi('DescribeUserResponse')
 
 const DescribeUserRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.',
-        }),
-    ),
-    UserId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a user in the identity store.' }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description:
+        'The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.',
+    }),
+    UserId: ResourceIdSchema.openapi({
+      description: 'The identifier for a user in the identity store.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'UserId'], title: 'DescribeUserRequest' })
   .openapi('DescribeUserRequest')
 
 const GetGroupIdResponseSchema = z
   .object({
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({ required: ['GroupId', 'IdentityStoreId'] })
   .openapi('GetGroupIdResponse')
@@ -663,7 +511,7 @@ const AttributePathSchema = z
   .openapi('AttributePath')
 
 const AttributeValueSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'The value of the attribute. This is a <code>Document</code> type. This type is not supported by Java V1, Go V1, and older versions of the AWS CLI.',
@@ -672,22 +520,14 @@ const AttributeValueSchema = z
 
 const UniqueAttributeSchema = z
   .object({
-    AttributePath: AttributePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string representation of the path to a given attribute or sub-attribute. Supports JMESPath.',
-        }),
-    ),
-    AttributeValue: AttributeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the attribute. This is a <code>Document</code> type. This type is not supported by Java V1, Go V1, and older versions of the AWS CLI.',
-        }),
-    ),
+    AttributePath: AttributePathSchema.openapi({
+      description:
+        'A string representation of the path to a given attribute or sub-attribute. Supports JMESPath.',
+    }),
+    AttributeValue: AttributeValueSchema.openapi({
+      description:
+        'The value of the attribute. This is a <code>Document</code> type. This type is not supported by Java V1, Go V1, and older versions of the AWS CLI.',
+    }),
   })
   .openapi({
     required: ['AttributePath', 'AttributeValue'],
@@ -697,16 +537,12 @@ const UniqueAttributeSchema = z
 
 const AlternateIdentifierSchema = z
   .object({
-    ExternalId: ExternalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier issued to this resource by an external identity provider.',
-        }),
-    ).exactOptional(),
-    UniqueAttribute: UniqueAttributeSchema.and(
-      z.any().openapi({ description: "An entity attribute that's unique to a specific entity." }),
-    ).exactOptional(),
+    ExternalId: ExternalIdSchema.exactOptional().openapi({
+      description: 'The identifier issued to this resource by an external identity provider.',
+    }),
+    UniqueAttribute: UniqueAttributeSchema.exactOptional().openapi({
+      description: "An entity attribute that's unique to a specific entity.",
+    }),
   })
   .openapi({
     description:
@@ -717,53 +553,41 @@ const AlternateIdentifierSchema = z
 
 const GetGroupIdRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    AlternateIdentifier: AlternateIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For the unique attribute, the only valid path is <code>displayName</code>.',
-        }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    AlternateIdentifier: AlternateIdentifierSchema.openapi({
+      description:
+        'A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For the unique attribute, the only valid path is <code>displayName</code>.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'AlternateIdentifier'], title: 'GetGroupIdRequest' })
   .openapi('GetGroupIdRequest')
 
 const GetGroupMembershipIdResponseSchema = z
   .object({
-    MembershipId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for a <code>GroupMembership</code> in an identity store.',
-        }),
-    ),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    MembershipId: ResourceIdSchema.openapi({
+      description: 'The identifier for a <code>GroupMembership</code> in an identity store.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({ required: ['MembershipId', 'IdentityStoreId'] })
   .openapi('GetGroupMembershipIdResponse')
 
 const GetGroupMembershipIdRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
-    MemberId: MemberIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
-        }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    MemberId: MemberIdSchema.openapi({
+      description:
+        'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
+    }),
   })
   .openapi({
     required: ['IdentityStoreId', 'GroupId', 'MemberId'],
@@ -773,49 +597,41 @@ const GetGroupMembershipIdRequestSchema = z
 
 const GetUserIdResponseSchema = z
   .object({
-    UserId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a user in the identity store.' }),
-    ),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    UserId: ResourceIdSchema.openapi({
+      description: 'The identifier for a user in the identity store.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({ required: ['UserId', 'IdentityStoreId'] })
   .openapi('GetUserIdResponse')
 
 const GetUserIdRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    AlternateIdentifier: AlternateIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For the unique attribute, the only valid paths are <code>userName</code> and <code>emails.value</code>.',
-        }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    AlternateIdentifier: AlternateIdentifierSchema.openapi({
+      description:
+        'A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For the unique attribute, the only valid paths are <code>userName</code> and <code>emails.value</code>.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'AlternateIdentifier'], title: 'GetUserIdRequest' })
   .openapi('GetUserIdRequest')
 
 const GroupMembershipExistenceResultSchema = z
   .object({
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ).exactOptional(),
-    MemberId: MemberIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
-        }),
-    ).exactOptional(),
-    MembershipExists: SensitiveBooleanTypeSchema.and(
-      z.any().openapi({ description: 'Indicates whether a membership relation exists or not.' }),
-    ).exactOptional(),
+    GroupId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    MemberId: MemberIdSchema.exactOptional().openapi({
+      description:
+        'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
+    }),
+    MembershipExists: SensitiveBooleanTypeSchema.exactOptional().openapi({
+      description: 'Indicates whether a membership relation exists or not.',
+    }),
   })
   .openapi({
     description: 'Indicates whether a resource is a member of a group in the identity store.',
@@ -829,11 +645,9 @@ const GroupMembershipExistenceResultsSchema = z
 
 const IsMemberInGroupsResponseSchema = z
   .object({
-    Results: GroupMembershipExistenceResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the results of membership existence checks.' }),
-    ),
+    Results: GroupMembershipExistenceResultsSchema.openapi({
+      description: 'A list containing the results of membership existence checks.',
+    }),
   })
   .openapi({ required: ['Results'] })
   .openapi('IsMemberInGroupsResponse')
@@ -842,15 +656,15 @@ const GroupIdsSchema = z.array(ResourceIdSchema).min(1).max(100).openapi('GroupI
 
 const IsMemberInGroupsRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    MemberId: MemberIdSchema.and(
-      z.any().openapi({ description: 'An object containing the identifier of a group member.' }),
-    ),
-    GroupIds: GroupIdsSchema.and(
-      z.any().openapi({ description: 'A list of identifiers for groups in the identity store.' }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    MemberId: MemberIdSchema.openapi({
+      description: 'An object containing the identifier of a group member.',
+    }),
+    GroupIds: GroupIdsSchema.openapi({
+      description: 'A list of identifiers for groups in the identity store.',
+    }),
   })
   .openapi({
     required: ['IdentityStoreId', 'MemberId', 'GroupIds'],
@@ -860,28 +674,19 @@ const IsMemberInGroupsRequestSchema = z
 
 const GroupMembershipSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    MembershipId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for a <code>GroupMembership</code> object in an identity store.',
-        }),
-    ).exactOptional(),
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ).exactOptional(),
-    MemberId: MemberIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
-        }),
-    ).exactOptional(),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    MembershipId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier for a <code>GroupMembership</code> object in an identity store.',
+    }),
+    GroupId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    MemberId: MemberIdSchema.exactOptional().openapi({
+      description:
+        'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
+    }),
   })
   .openapi({
     required: ['IdentityStoreId'],
@@ -901,19 +706,13 @@ const NextTokenSchema = z
 
 const ListGroupMembershipsResponseSchema = z
   .object({
-    GroupMemberships: GroupMembershipsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>GroupMembership</code> objects in the group.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used for the <code>ListUsers</code>, <code>ListGroups</code>, and <code>ListGroupMemberships</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
-        }),
-    ).exactOptional(),
+    GroupMemberships: GroupMembershipsSchema.openapi({
+      description: 'A list of <code>GroupMembership</code> objects in the group.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used for the <code>ListUsers</code>, <code>ListGroups</code>, and <code>ListGroupMemberships</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
+    }),
   })
   .openapi({ required: ['GroupMemberships'] })
   .openapi('ListGroupMembershipsResponse')
@@ -922,83 +721,55 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListGroupMembershipsRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned per request. This parameter is used in all <code>List</code> requests to specify how many results to return in one page.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used for the <code>ListUsers</code>, <code>ListGroups</code> and <code>ListGroupMemberships</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
-        }),
-    ).exactOptional(),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned per request. This parameter is used in all <code>List</code> requests to specify how many results to return in one page.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used for the <code>ListUsers</code>, <code>ListGroups</code> and <code>ListGroupMemberships</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'GroupId'], title: 'ListGroupMembershipsRequest' })
   .openapi('ListGroupMembershipsRequest')
 
 const ListGroupMembershipsForMemberResponseSchema = z
   .object({
-    GroupMemberships: GroupMembershipsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>GroupMembership</code> objects in the group for a specified member.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used for the <code>ListUsers</code>, <code>ListGroups</code>, and <code>ListGroupMemberships</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page. ',
-        }),
-    ).exactOptional(),
+    GroupMemberships: GroupMembershipsSchema.openapi({
+      description:
+        'A list of <code>GroupMembership</code> objects in the group for a specified member.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used for the <code>ListUsers</code>, <code>ListGroups</code>, and <code>ListGroupMemberships</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page. ',
+    }),
   })
   .openapi({ required: ['GroupMemberships'] })
   .openapi('ListGroupMembershipsForMemberResponse')
 
 const ListGroupMembershipsForMemberRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    MemberId: MemberIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned per request. This parameter is used in the <code>ListUsers</code> and <code>ListGroups</code> requests to specify how many results to return in one page. The length limit is 50 characters.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used for the <code>ListUsers</code>, <code>ListGroups</code>, and <code>ListGroupMemberships</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
-        }),
-    ).exactOptional(),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    MemberId: MemberIdSchema.openapi({
+      description:
+        'An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned per request. This parameter is used in the <code>ListUsers</code> and <code>ListGroups</code> requests to specify how many results to return in one page. The length limit is 50 characters.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used for the <code>ListUsers</code>, <code>ListGroups</code>, and <code>ListGroupMemberships</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
+    }),
   })
   .openapi({
     required: ['IdentityStoreId', 'MemberId'],
@@ -1008,31 +779,23 @@ const ListGroupMembershipsForMemberRequestSchema = z
 
 const GroupSchema = z
   .object({
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
-    DisplayName: GroupDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The display name value for the group. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time the group is created and stored as an attribute of the group object in the identity store.',
-        }),
-    ).exactOptional(),
-    ExternalIds: ExternalIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ExternalId</code> objects that contains the identifiers issued to this resource by an external identity provider.',
-        }),
-    ).exactOptional(),
-    Description: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string containing a description of the specified group.' }),
-    ).exactOptional(),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    DisplayName: GroupDisplayNameSchema.exactOptional().openapi({
+      description:
+        'The display name value for the group. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time the group is created and stored as an attribute of the group object in the identity store.',
+    }),
+    ExternalIds: ExternalIdsSchema.exactOptional().openapi({
+      description:
+        'A list of <code>ExternalId</code> objects that contains the identifiers issued to this resource by an external identity provider.',
+    }),
+    Description: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing a description of the specified group.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({
     required: ['GroupId', 'IdentityStoreId'],
@@ -1044,41 +807,27 @@ const GroupsSchema = z.array(GroupSchema).openapi('Groups')
 
 const ListGroupsResponseSchema = z
   .object({
-    Groups: GroupsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>Group</code> objects in the identity store.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used for the <code>ListUsers</code> and <code>ListGroups</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it1 is used in the API request to search for the next page.',
-        }),
-    ).exactOptional(),
+    Groups: GroupsSchema.openapi({
+      description: 'A list of <code>Group</code> objects in the identity store.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used for the <code>ListUsers</code> and <code>ListGroups</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it1 is used in the API request to search for the next page.',
+    }),
   })
   .openapi({ required: ['Groups'] })
   .openapi('ListGroupsResponse')
 
 const FilterSchema = z
   .object({
-    AttributePath: AttributePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The attribute path that is used to specify which attribute name to search. Length limit is 255 characters. For example, <code>UserName</code> is a valid attribute path for the <code>ListUsers</code> API, and <code>DisplayName</code> is a valid attribute path for the <code>ListGroups</code> API.',
-        }),
-    ),
-    AttributeValue: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the data for an attribute. Each attribute value is described as a name-value pair. ',
-        }),
-    ),
+    AttributePath: AttributePathSchema.openapi({
+      description:
+        'The attribute path that is used to specify which attribute name to search. Length limit is 255 characters. For example, <code>UserName</code> is a valid attribute path for the <code>ListUsers</code> API, and <code>DisplayName</code> is a valid attribute path for the <code>ListGroups</code> API.',
+    }),
+    AttributeValue: SensitiveStringTypeSchema.openapi({
+      description:
+        'Represents the data for an attribute. Each attribute value is described as a name-value pair. ',
+    }),
   })
   .openapi({
     required: ['AttributePath', 'AttributeValue'],
@@ -1091,146 +840,86 @@ const FiltersSchema = z.array(FilterSchema).min(0).max(1).openapi('Filters')
 
 const ListGroupsRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned per request. This parameter is used in the <code>ListUsers</code> and <code>ListGroups</code> requests to specify how many results to return in one page. The length limit is 50 characters.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used for the <code>ListUsers</code> and <code>ListGroups</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'A list of <code>Filter</code> objects, which is used in the <code>ListUsers</code> and <code>ListGroups</code> requests.Using filters with ListGroups API is deprecated, please use GetGroupId API instead.',
-        }),
-    ).exactOptional(),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description:
+        'The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned per request. This parameter is used in the <code>ListUsers</code> and <code>ListGroups</code> requests to specify how many results to return in one page. The length limit is 50 characters.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used for the <code>ListUsers</code> and <code>ListGroups</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'A list of <code>Filter</code> objects, which is used in the <code>ListUsers</code> and <code>ListGroups</code> requests.Using filters with ListGroups API is deprecated, please use GetGroupId API instead.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId'], title: 'ListGroupsRequest' })
   .openapi('ListGroupsRequest')
 
 const UserSchema = z
   .object({
-    UserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string used to identify the user. The length limit is 128 characters. This value can consist of letters, accented characters, symbols, numbers, and punctuation. This value is specified at the time the user is created and stored as an attribute of the user object in the identity store.',
-        }),
-    ).exactOptional(),
-    UserId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a user in the identity store.' }),
-    ),
-    ExternalIds: ExternalIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ExternalId</code> objects that contains the identifiers issued to this resource by an external identity provider.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'An object containing the name of the user.' }),
-    ).exactOptional(),
-    DisplayName: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing the name of the user that is formatted for display when the user is referenced. For example, "John Doe."',
-        }),
-    ).exactOptional(),
-    NickName: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string containing an alternate name for the user.' }),
-    ).exactOptional(),
-    ProfileUrl: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string containing a URL that might be associated with the user.',
-        }),
-    ).exactOptional(),
-    Emails: EmailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Email</code> objects containing email addresses associated with the user.',
-        }),
-    ).exactOptional(),
-    Addresses: AddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Address</code> objects containing addresses associated with the user.',
-        }),
-    ).exactOptional(),
-    PhoneNumbers: PhoneNumbersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>PhoneNumber</code> objects containing phone numbers associated with the user.',
-        }),
-    ).exactOptional(),
-    UserType: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string indicating the type of user. Possible values are left unspecified. The value can vary based on your specific use case.',
-        }),
-    ).exactOptional(),
-    Title: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing the title of the user. Possible values are left unspecified. The value can vary based on your specific use case.',
-        }),
-    ).exactOptional(),
-    PreferredLanguage: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing the preferred language of the user. For example, "American English" or "en-us."',
-        }),
-    ).exactOptional(),
-    Locale: SensitiveStringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string containing the geographical region or location of the user.',
-        }),
-    ).exactOptional(),
-    Timezone: SensitiveStringTypeSchema.and(
-      z.any().openapi({ description: 'A string containing the time zone of the user.' }),
-    ).exactOptional(),
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
+    UserName: UserNameSchema.exactOptional().openapi({
+      description:
+        'A unique string used to identify the user. The length limit is 128 characters. This value can consist of letters, accented characters, symbols, numbers, and punctuation. This value is specified at the time the user is created and stored as an attribute of the user object in the identity store.',
+    }),
+    UserId: ResourceIdSchema.openapi({
+      description: 'The identifier for a user in the identity store.',
+    }),
+    ExternalIds: ExternalIdsSchema.exactOptional().openapi({
+      description:
+        'A list of <code>ExternalId</code> objects that contains the identifiers issued to this resource by an external identity provider.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'An object containing the name of the user.',
+    }),
+    DisplayName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string containing the name of the user that is formatted for display when the user is referenced. For example, "John Doe."',
+    }),
+    NickName: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing an alternate name for the user.',
+    }),
+    ProfileUrl: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing a URL that might be associated with the user.',
+    }),
+    Emails: EmailsSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Email</code> objects containing email addresses associated with the user.',
+    }),
+    Addresses: AddressesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Address</code> objects containing addresses associated with the user.',
+    }),
+    PhoneNumbers: PhoneNumbersSchema.exactOptional().openapi({
+      description:
+        'A list of <code>PhoneNumber</code> objects containing phone numbers associated with the user.',
+    }),
+    UserType: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string indicating the type of user. Possible values are left unspecified. The value can vary based on your specific use case.',
+    }),
+    Title: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string containing the title of the user. Possible values are left unspecified. The value can vary based on your specific use case.',
+    }),
+    PreferredLanguage: SensitiveStringTypeSchema.exactOptional().openapi({
+      description:
+        'A string containing the preferred language of the user. For example, "American English" or "en-us."',
+    }),
+    Locale: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing the geographical region or location of the user.',
+    }),
+    Timezone: SensitiveStringTypeSchema.exactOptional().openapi({
+      description: 'A string containing the time zone of the user.',
+    }),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
   })
   .openapi({
     required: ['UserId', 'IdentityStoreId'],
@@ -1242,82 +931,52 @@ const UsersSchema = z.array(UserSchema).openapi('Users')
 
 const ListUsersResponseSchema = z
   .object({
-    Users: UsersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>User</code> objects in the identity store.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used for the <code>ListUsers</code> and <code>ListGroups</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
-        }),
-    ).exactOptional(),
+    Users: UsersSchema.openapi({
+      description: 'A list of <code>User</code> objects in the identity store.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used for the <code>ListUsers</code> and <code>ListGroups</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
+    }),
   })
   .openapi({ required: ['Users'] })
   .openapi('ListUsersResponse')
 
 const ListUsersRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned per request. This parameter is used in the <code>ListUsers</code> and <code>ListGroups</code> requests to specify how many results to return in one page. The length limit is 50 characters.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used for the <code>ListUsers</code> and <code>ListGroups</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'A list of <code>Filter</code> objects, which is used in the <code>ListUsers</code> and <code>ListGroups</code> requests. Using filters with ListUsers API is deprecated, please use GetGroupId API instead.',
-        }),
-    ).exactOptional(),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description:
+        'The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned per request. This parameter is used in the <code>ListUsers</code> and <code>ListGroups</code> requests to specify how many results to return in one page. The length limit is 50 characters.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used for the <code>ListUsers</code> and <code>ListGroups</code> API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'A list of <code>Filter</code> objects, which is used in the <code>ListUsers</code> and <code>ListGroups</code> requests. Using filters with ListUsers API is deprecated, please use GetGroupId API instead.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId'], title: 'ListUsersRequest' })
   .openapi('ListUsersRequest')
 
-const UpdateGroupResponseSchema = z.object({}).openapi('UpdateGroupResponse')
+const UpdateGroupResponseSchema = z.looseObject({}).openapi('UpdateGroupResponse')
 
 const AttributeOperationSchema = z
   .object({
-    AttributePath: AttributePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string representation of the path to a given attribute or sub-attribute. Supports JMESPath.',
-        }),
-    ),
-    AttributeValue: AttributeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the attribute. This is a <code>Document</code> type. This type is not supported by Java V1, Go V1, and older versions of the AWS CLI.',
-        }),
-    ).exactOptional(),
+    AttributePath: AttributePathSchema.openapi({
+      description:
+        'A string representation of the path to a given attribute or sub-attribute. Supports JMESPath.',
+    }),
+    AttributeValue: AttributeValueSchema.exactOptional().openapi({
+      description:
+        'The value of the attribute. This is a <code>Document</code> type. This type is not supported by Java V1, Go V1, and older versions of the AWS CLI.',
+    }),
   })
   .openapi({
     required: ['AttributePath'],
@@ -1334,42 +993,34 @@ const AttributeOperationsSchema = z
 
 const UpdateGroupRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    GroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a group in the identity store.' }),
-    ),
-    Operations: AttributeOperationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>AttributeOperation</code> objects to apply to the requested group. These operations might add, replace, or remove an attribute.',
-        }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    GroupId: ResourceIdSchema.openapi({
+      description: 'The identifier for a group in the identity store.',
+    }),
+    Operations: AttributeOperationsSchema.openapi({
+      description:
+        'A list of <code>AttributeOperation</code> objects to apply to the requested group. These operations might add, replace, or remove an attribute.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'GroupId', 'Operations'], title: 'UpdateGroupRequest' })
   .openapi('UpdateGroupRequest')
 
-const UpdateUserResponseSchema = z.object({}).openapi('UpdateUserResponse')
+const UpdateUserResponseSchema = z.looseObject({}).openapi('UpdateUserResponse')
 
 const UpdateUserRequestSchema = z
   .object({
-    IdentityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The globally unique identifier for the identity store.' }),
-    ),
-    UserId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for a user in the identity store.' }),
-    ),
-    Operations: AttributeOperationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>AttributeOperation</code> objects to apply to the requested user. These operations might add, replace, or remove an attribute.',
-        }),
-    ),
+    IdentityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The globally unique identifier for the identity store.',
+    }),
+    UserId: ResourceIdSchema.openapi({
+      description: 'The identifier for a user in the identity store.',
+    }),
+    Operations: AttributeOperationsSchema.openapi({
+      description:
+        'A list of <code>AttributeOperation</code> objects to apply to the requested user. These operations might add, replace, or remove an attribute.',
+    }),
   })
   .openapi({ required: ['IdentityStoreId', 'UserId', 'Operations'], title: 'UpdateUserRequest' })
   .openapi('UpdateUserRequest')

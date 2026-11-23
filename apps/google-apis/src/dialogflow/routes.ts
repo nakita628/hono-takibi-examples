@@ -1,60 +1,188 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseSchema: z.ZodType<GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          caseContent: z
-            .array(GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentSchema)
-            .exactOptional()
-            .openapi({ description: 'A list of case content.' }),
-          condition: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The condition to activate and select this case. Empty means the condition is always true. The condition is evaluated against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition).',
-            }),
-        })
-        .openapi({
-          description:
-            'Each case has a Boolean condition. When it is evaluated to be True, the corresponding messages will be selected and evaluated recursively.',
-          required: [],
-        }),
-    )
-    .openapi('GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCase')
+const GoogleCloudDialogflowCxV3InputAudioConfigSchema = z
+  .object({
+    audioEncoding: z
+      .enum([
+        'AUDIO_ENCODING_UNSPECIFIED',
+        'AUDIO_ENCODING_LINEAR_16',
+        'AUDIO_ENCODING_FLAC',
+        'AUDIO_ENCODING_MULAW',
+        'AUDIO_ENCODING_AMR',
+        'AUDIO_ENCODING_AMR_WB',
+        'AUDIO_ENCODING_OGG_OPUS',
+        'AUDIO_ENCODING_SPEEX_WITH_HEADER_BYTE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. Audio encoding of the audio content to process.' }),
+    enableWordInfo: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. If `true`, Dialogflow returns SpeechWordInfo in StreamingRecognitionResult with information about the recognized speech words, e.g. start and end time offsets. If false or unspecified, Speech doesn't return any word-level information.",
+      }),
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Which Speech model to select for the given request. Select the model best suited to your domain to get best results. If a model is not explicitly specified, then we auto-select a model based on the parameters in the InputAudioConfig. If enhanced speech model is enabled for the agent and an enhanced version of the specified model for the language does not exist, then the speech is recognized using the standard version of the specified model. Refer to [Cloud Speech API documentation](https://cloud.google.com/speech-to-text/docs/basics#select-model) for more details. If you specify a model, the following models typically have the best performance: - phone_call (best for Agent Assist and telephony) - latest_short (best for Dialogflow non-telephony) - command_and_search (best for very short utterances and commands)',
+      }),
+    modelVariant: z
+      .enum([
+        'SPEECH_MODEL_VARIANT_UNSPECIFIED',
+        'USE_BEST_AVAILABLE',
+        'USE_STANDARD',
+        'USE_ENHANCED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Optional. Which variant of the Speech model to use.' }),
+    phraseHints: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A list of strings containing words and phrases that the speech recognizer should recognize with higher likelihood. See [the Cloud Speech documentation](https://cloud.google.com/speech-to-text/docs/basics#phrase-hints) for more details.',
+      }),
+    sampleRateHertz: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sample rate (in Hertz) of the audio content sent in the query. Refer to [Cloud Speech API documentation](https://cloud.google.com/speech-to-text/docs/basics) for more details.',
+      }),
+    singleUtterance: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. If `false` (default), recognition does not cease until the client closes the stream. If `true`, the recognizer will detect a single spoken utterance in input audio. Recognition ceases when it detects the audio's voice has stopped or paused. In this case, once a detected intent is received, the client should close the stream and start a new request with a new stream as needed. Note: This setting is relevant only for streaming methods.",
+      }),
+  })
+  .openapi({
+    description: 'Instructs the speech recognizer on how to process the audio content.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3InputAudioConfig')
 
-type GoogleCloudDialogflowCxV3FulfillmentConditionalCasesType = {
-  cases?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseSchema>[]
-}
+const GoogleCloudDialogflowCxV3AudioInputSchema = z
+  .object({
+    audio: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The natural language speech audio to be processed. A single request can contain up to 2 minutes of speech audio data. The transcribed text cannot contain more than 256 bytes. For non-streaming audio detect intent, both `config` and `audio` must be provided. For streaming audio detect intent, `config` must be provided in the first request and `audio` must be provided in all following requests.',
+      }),
+    config: GoogleCloudDialogflowCxV3InputAudioConfigSchema.exactOptional().openapi({
+      description: 'Required. Instructs the speech recognizer how to process the speech audio.',
+    }),
+  })
+  .openapi({ description: 'Represents the natural speech audio to be processed.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3AudioInput')
 
-const GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentSchema: z.ZodType<GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          additionalCases:
-            GoogleCloudDialogflowCxV3FulfillmentConditionalCasesSchema.exactOptional().openapi({
-              description: 'Additional cases to be evaluated.',
-            }),
-          message: GoogleCloudDialogflowCxV3ResponseMessageSchema.exactOptional().openapi({
-            description: 'Returned message.',
-          }),
-        })
-        .openapi({
-          description: 'The list of messages or conditional cases to activate for this case.',
-          required: [],
-        }),
-    )
-    .openapi('GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContent')
+const GoogleCloudDialogflowCxV3DtmfInputSchema = z
+  .object({
+    digits: z.string().exactOptional().openapi({ description: 'The dtmf digits.' }),
+    finishDigit: z.string().exactOptional().openapi({ description: 'The finish digit (if any).' }),
+  })
+  .openapi({ description: 'Represents the input for dtmf event.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3DtmfInput')
 
-type GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseType = {
-  caseContent?: z.infer<
-    typeof GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentSchema
-  >[]
-  condition?: string
-}
+const GoogleCloudDialogflowCxV3EventInputSchema = z
+  .object({ event: z.string().exactOptional().openapi({ description: 'Name of the event.' }) })
+  .openapi({ description: 'Represents the event to trigger.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3EventInput')
+
+const GoogleCloudDialogflowCxV3IntentInputSchema = z
+  .object({
+    intent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The unique identifier of the intent. Format: `projects//locations//agents//intents/`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents the intent to trigger programmatically rather than as a result of natural language processing.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3IntentInput')
+
+const GoogleCloudDialogflowCxV3TextInputSchema = z
+  .object({
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The UTF-8 encoded natural language text to be processed. Text length must not exceed 256 characters.',
+      }),
+  })
+  .openapi({ description: 'Represents the natural language text to be processed.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3TextInput')
+
+const GoogleCloudDialogflowCxV3QueryInputSchema = z
+  .object({
+    audio: GoogleCloudDialogflowCxV3AudioInputSchema.exactOptional().openapi({
+      description: 'The natural language speech audio to be processed.',
+    }),
+    dtmf: GoogleCloudDialogflowCxV3DtmfInputSchema.exactOptional().openapi({
+      description: 'The DTMF event to be handled.',
+    }),
+    event: GoogleCloudDialogflowCxV3EventInputSchema.exactOptional().openapi({
+      description: 'The event to be triggered.',
+    }),
+    intent: GoogleCloudDialogflowCxV3IntentInputSchema.exactOptional().openapi({
+      description: 'The intent to be triggered.',
+    }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The language of the input. See [Language Support](https://cloud.google.com/dialogflow/cx/docs/reference/language) for a list of the currently supported language codes. Note that queries in the same session do not necessarily need to specify the same language.',
+      }),
+    text: GoogleCloudDialogflowCxV3TextInputSchema.exactOptional().openapi({
+      description: 'The natural language text to be processed.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents the query input. It can contain one of: 1. A conversational query in the form of text. 2. An intent query that specifies which intent to trigger. 3. Natural language speech audio to be processed. 4. An event to be triggered. ',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3QueryInput')
+
+const GoogleCloudDialogflowCxV3ConversationTurnUserInputSchema = z
+  .object({
+    enableSentimentAnalysis: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether sentiment analysis is enabled.' }),
+    injectedParameters: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Parameters that need to be injected into the conversation during intent detection.',
+      }),
+    input: GoogleCloudDialogflowCxV3QueryInputSchema.exactOptional().openapi({
+      description: 'Supports text input, event input, dtmf input in the test case.',
+    }),
+    isWebhookEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If webhooks should be allowed to trigger in response to the user utterance. Often if parameters are injected, webhooks should not be enabled.',
+      }),
+  })
+  .openapi({ description: 'The input from the human user.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ConversationTurnUserInput')
 
 const GoogleCloudDialogflowCxV3FulfillmentConditionalCasesSchema: z.ZodType<GoogleCloudDialogflowCxV3FulfillmentConditionalCasesType> =
   z
@@ -91,7 +219,7 @@ const GoogleCloudDialogflowCxV3ResponseMessageConversationSuccessSchema = z
   .openapi('GoogleCloudDialogflowCxV3ResponseMessageConversationSuccess')
 
 const GoogleCloudDialogflowCxV3ResponseMessageEndInteractionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Indicates that interaction with the Dialogflow agent has ended. This message is generated by Dialogflow only and not supposed to be defined by the user.',
@@ -251,7 +379,7 @@ type GoogleCloudDialogflowCxV3ResponseMessageType = {
   liveAgentHandoff?: z.infer<typeof GoogleCloudDialogflowCxV3ResponseMessageLiveAgentHandoffSchema>
   mixedAudio?: z.infer<typeof GoogleCloudDialogflowCxV3ResponseMessageMixedAudioSchema>
   outputAudioText?: z.infer<typeof GoogleCloudDialogflowCxV3ResponseMessageOutputAudioTextSchema>
-  payload?: { [key: string]: { [key: string]: unknown } }
+  payload?: { [key: string]: unknown }
   playAudio?: z.infer<typeof GoogleCloudDialogflowCxV3ResponseMessagePlayAudioSchema>
   telephonyTransferCall?: z.infer<
     typeof GoogleCloudDialogflowCxV3ResponseMessageTelephonyTransferCallSchema
@@ -321,593 +449,6 @@ const GoogleCloudDialogflowCxV3ResponseMessageSchema: z.ZodType<GoogleCloudDialo
     })
     .openapi('GoogleCloudDialogflowCxV3ResponseMessage')
 
-type GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentType = {
-  additionalCases?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentConditionalCasesSchema>
-  message?: z.infer<typeof GoogleCloudDialogflowCxV3ResponseMessageSchema>
-}
-
-const GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          caseContent: z
-            .array(GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentSchema)
-            .exactOptional()
-            .openapi({ description: 'A list of case content.' }),
-          condition: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The condition to activate and select this case. Empty means the condition is always true. The condition is evaluated against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition).',
-            }),
-        })
-        .openapi({
-          description:
-            'Each case has a Boolean condition. When it is evaluated to be True, the corresponding messages will be selected and evaluated recursively.',
-          required: [],
-        }),
-    )
-    .openapi('GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCase')
-
-type GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesType = {
-  cases?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseSchema>[]
-}
-
-const GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          additionalCases:
-            GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema.exactOptional().openapi(
-              { description: 'Additional cases to be evaluated.' },
-            ),
-          message: GoogleCloudDialogflowCxV3beta1ResponseMessageSchema.exactOptional().openapi({
-            description: 'Returned message.',
-          }),
-        })
-        .openapi({
-          description: 'The list of messages or conditional cases to activate for this case.',
-          required: [],
-        }),
-    )
-    .openapi('GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContent')
-
-type GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseType = {
-  caseContent?: z.infer<
-    typeof GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentSchema
-  >[]
-  condition?: string
-}
-
-const GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          cases: z
-            .array(GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseSchema)
-            .exactOptional()
-            .openapi({ description: 'A list of cascading if-else conditions.' }),
-        })
-        .openapi({
-          description:
-            'A list of cascading if-else conditions. Cases are mutually exclusive. The first one with a matching condition is selected, all the rest ignored.',
-          required: [],
-        }),
-    )
-    .openapi('GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCases')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccessSchema = z
-  .object({
-    metadata: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description: "Custom metadata. Dialogflow doesn't impose any structure on this.",
-      }),
-  })
-  .openapi({
-    description:
-      "Indicates that the conversation succeeded, i.e., the bot handled the issue that the customer talked to it about. Dialogflow only uses this to determine which conversations should be counted as successful and doesn't process the metadata in this message in any way. Note that Dialogflow also considers conversations that get to the conversation end page as successful even if they don't return ConversationSuccess. You may set this, for example: * In the entry_fulfillment of a Page if entering the page indicates that the conversation succeeded. * In a webhook response when you determine that you handled the customer issue.",
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccess')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteractionSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Indicates that interaction with the Dialogflow agent has ended. This message is generated by Dialogflow only and not supposed to be defined by the user.',
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteraction')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoffSchema = z
-  .object({
-    metadata: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          "Custom metadata for your handoff procedure. Dialogflow doesn't impose any structure on this.",
-      }),
-  })
-  .openapi({
-    description:
-      'Indicates that the conversation should be handed off to a live agent. Dialogflow only uses this to determine which conversations were handed off to a human agent for measurement purposes. What else to do with this signal is up to you and your handoff procedures. You may set this, for example: * In the entry_fulfillment of a Page if entering the page indicates something went extremely wrong in the conversation. * In a webhook response when you determine that the customer issue can only be handled by a human.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoff')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSegmentSchema = z
-  .object({
-    allowPlaybackInterruption: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Whether the playback of this segment can be interrupted by the end user's speech and the client should then start the next Dialogflow request.",
-        readOnly: true,
-      }),
-    audio: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Raw audio synthesized from the Dialogflow agent's response using the output config specified in the request.",
-      }),
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Client-specific URI that points to an audio clip accessible to the client. Dialogflow does not impose any validation on it.',
-      }),
-  })
-  .openapi({ description: 'Represents one segment of audio.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSegment')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSchema = z
-  .object({
-    segments: z
-      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Segments this audio response is composed of.' }),
-  })
-  .openapi({
-    description:
-      'Represents an audio message that is composed of both segments synthesized from the Dialogflow agent prompts and ones hosted externally at the specified URIs. The external URIs are specified via play_audio. This message is generated by Dialogflow only and not supposed to be defined by the user.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudio')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageOutputAudioTextSchema = z
-  .object({
-    allowPlaybackInterruption: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.",
-        readOnly: true,
-      }),
-    ssml: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The SSML text to be synthesized. For more information, see [SSML](/speech/text-to-speech/docs/ssml).',
-      }),
-    text: z.string().exactOptional().openapi({ description: 'The raw text to be synthesized.' }),
-  })
-  .openapi({
-    description:
-      'A text or ssml response that is preferentially used for TTS output audio synthesis, as described in the comment on the ResponseMessage message.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageOutputAudioText')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessagePlayAudioSchema = z
-  .object({
-    allowPlaybackInterruption: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.",
-        readOnly: true,
-      }),
-    audioUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. URI of the audio clip. Dialogflow does not impose any validation on this value. It is specific to the client that reads it.',
-      }),
-  })
-  .openapi({
-    description: 'Specifies an audio clip to be played by the client as part of the response.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessagePlayAudio')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageTelephonyTransferCallSchema = z
-  .object({
-    phoneNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Transfer the call to a phone number in [E.164 format](https://en.wikipedia.org/wiki/E.164).',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents the signal that telles the client to transfer the phone call connected to the agent to a third-party endpoint.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageTelephonyTransferCall')
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema = z
-  .object({
-    allowPlaybackInterruption: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.",
-        readOnly: true,
-      }),
-    text: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Required. A collection of text responses.' }),
-  })
-  .openapi({ description: 'The text response message.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageText')
-
-type GoogleCloudDialogflowCxV3beta1ResponseMessageType = {
-  channel?: string
-  conversationSuccess?: z.infer<
-    typeof GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccessSchema
-  >
-  endInteraction?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteractionSchema>
-  liveAgentHandoff?: z.infer<
-    typeof GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoffSchema
-  >
-  mixedAudio?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSchema>
-  outputAudioText?: z.infer<
-    typeof GoogleCloudDialogflowCxV3beta1ResponseMessageOutputAudioTextSchema
-  >
-  payload?: { [key: string]: { [key: string]: unknown } }
-  playAudio?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessagePlayAudioSchema>
-  telephonyTransferCall?: z.infer<
-    typeof GoogleCloudDialogflowCxV3beta1ResponseMessageTelephonyTransferCallSchema
-  >
-  text?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema>
-}
-
-const GoogleCloudDialogflowCxV3beta1ResponseMessageSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ResponseMessageType> =
-  z
-    .object({
-      channel: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The channel which the response is associated with. Clients can specify the channel via QueryParameters.channel, and only associated channel response will be returned.',
-        }),
-      conversationSuccess:
-        GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccessSchema.exactOptional().openapi(
-          { description: 'Indicates that the conversation succeeded.' },
-        ),
-      endInteraction:
-        GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteractionSchema.exactOptional().openapi({
-          description:
-            "Output only. A signal that indicates the interaction with the Dialogflow agent has ended. This message is generated by Dialogflow only when the conversation reaches `END_SESSION` page. It is not supposed to be defined by the user. It's guaranteed that there is at most one such message in each response.",
-          readOnly: true,
-        }),
-      liveAgentHandoff:
-        GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoffSchema.exactOptional().openapi(
-          { description: 'Hands off conversation to a human agent.' },
-        ),
-      mixedAudio:
-        GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSchema.exactOptional().openapi({
-          description:
-            'Output only. An audio response message composed of both the synthesized Dialogflow agent responses and responses defined via play_audio. This message is generated by Dialogflow only and not supposed to be defined by the user.',
-          readOnly: true,
-        }),
-      outputAudioText:
-        GoogleCloudDialogflowCxV3beta1ResponseMessageOutputAudioTextSchema.exactOptional().openapi({
-          description:
-            'A text or ssml response that is preferentially used for TTS output audio synthesis, as described in the comment on the ResponseMessage message.',
-        }),
-      payload: z
-        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-        .exactOptional()
-        .openapi({
-          description: 'Returns a response containing a custom, platform-specific payload.',
-        }),
-      playAudio:
-        GoogleCloudDialogflowCxV3beta1ResponseMessagePlayAudioSchema.exactOptional().openapi({
-          description:
-            'Signal that the client should play an audio clip hosted at a client-specific URI. Dialogflow uses this to construct mixed_audio. However, Dialogflow itself does not try to read or process the URI in any way.',
-        }),
-      telephonyTransferCall:
-        GoogleCloudDialogflowCxV3beta1ResponseMessageTelephonyTransferCallSchema.exactOptional().openapi(
-          {
-            description:
-              'A signal that the client should transfer the phone call connected to this agent to a third-party endpoint.',
-          },
-        ),
-      text: GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema.exactOptional().openapi({
-        description: 'Returns a text response.',
-      }),
-    })
-    .openapi({
-      description:
-        'Represents a response message that can be returned by a conversational agent. Response messages are also used for output audio synthesis. The approach is as follows: * If at least one OutputAudioText response is present, then all OutputAudioText responses are linearly concatenated, and the result is used for output audio synthesis. * If the OutputAudioText responses are a mixture of text and SSML, then the concatenated result is treated as SSML; otherwise, the result is treated as either text or SSML as appropriate. The agent designer should ideally use either text or SSML consistently throughout the bot design. * Otherwise, all Text responses are linearly concatenated, and the result is used for output audio synthesis. This approach allows for more sophisticated user experience scenarios, where the text displayed to the user may differ from what is heard.',
-      required: [],
-    })
-    .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessage')
-
-type GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentType = {
-  additionalCases?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema>
-  message?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageSchema>
-}
-
-const GoogleCloudDialogflowCxV3InputAudioConfigSchema = z
-  .object({
-    audioEncoding: z
-      .enum([
-        'AUDIO_ENCODING_UNSPECIFIED',
-        'AUDIO_ENCODING_LINEAR_16',
-        'AUDIO_ENCODING_FLAC',
-        'AUDIO_ENCODING_MULAW',
-        'AUDIO_ENCODING_AMR',
-        'AUDIO_ENCODING_AMR_WB',
-        'AUDIO_ENCODING_OGG_OPUS',
-        'AUDIO_ENCODING_SPEEX_WITH_HEADER_BYTE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. Audio encoding of the audio content to process.' }),
-    enableWordInfo: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. If `true`, Dialogflow returns SpeechWordInfo in StreamingRecognitionResult with information about the recognized speech words, e.g. start and end time offsets. If false or unspecified, Speech doesn't return any word-level information.",
-      }),
-    model: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Which Speech model to select for the given request. Select the model best suited to your domain to get best results. If a model is not explicitly specified, then we auto-select a model based on the parameters in the InputAudioConfig. If enhanced speech model is enabled for the agent and an enhanced version of the specified model for the language does not exist, then the speech is recognized using the standard version of the specified model. Refer to [Cloud Speech API documentation](https://cloud.google.com/speech-to-text/docs/basics#select-model) for more details. If you specify a model, the following models typically have the best performance: - phone_call (best for Agent Assist and telephony) - latest_short (best for Dialogflow non-telephony) - command_and_search (best for very short utterances and commands)',
-      }),
-    modelVariant: z
-      .enum([
-        'SPEECH_MODEL_VARIANT_UNSPECIFIED',
-        'USE_BEST_AVAILABLE',
-        'USE_STANDARD',
-        'USE_ENHANCED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Optional. Which variant of the Speech model to use.' }),
-    phraseHints: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A list of strings containing words and phrases that the speech recognizer should recognize with higher likelihood. See [the Cloud Speech documentation](https://cloud.google.com/speech-to-text/docs/basics#phrase-hints) for more details.',
-      }),
-    sampleRateHertz: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Sample rate (in Hertz) of the audio content sent in the query. Refer to [Cloud Speech API documentation](https://cloud.google.com/speech-to-text/docs/basics) for more details.',
-      }),
-    singleUtterance: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. If `false` (default), recognition does not cease until the client closes the stream. If `true`, the recognizer will detect a single spoken utterance in input audio. Recognition ceases when it detects the audio's voice has stopped or paused. In this case, once a detected intent is received, the client should close the stream and start a new request with a new stream as needed. Note: This setting is relevant only for streaming methods.",
-      }),
-  })
-  .openapi({
-    description: 'Instructs the speech recognizer on how to process the audio content.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3InputAudioConfig')
-
-const GoogleCloudDialogflowCxV3AudioInputSchema = z
-  .object({
-    audio: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The natural language speech audio to be processed. A single request can contain up to 2 minutes of speech audio data. The transcribed text cannot contain more than 256 bytes. For non-streaming audio detect intent, both `config` and `audio` must be provided. For streaming audio detect intent, `config` must be provided in the first request and `audio` must be provided in all following requests.',
-      }),
-    config: GoogleCloudDialogflowCxV3InputAudioConfigSchema.exactOptional().openapi({
-      description: 'Required. Instructs the speech recognizer how to process the speech audio.',
-    }),
-  })
-  .openapi({ description: 'Represents the natural speech audio to be processed.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3AudioInput')
-
-const GoogleRpcStatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('GoogleRpcStatus')
-
-const GoogleCloudDialogflowCxV3TestErrorSchema = z
-  .object({
-    status: GoogleRpcStatusSchema.exactOptional().openapi({
-      description: 'The status associated with the test.',
-    }),
-    testCase: z.string().exactOptional().openapi({ description: 'The test case resource name.' }),
-    testTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timestamp when the test was completed.' }),
-  })
-  .openapi({ description: 'Error info for running a test.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3TestError')
-
-const GoogleCloudDialogflowCxV3BatchRunTestCasesMetadataSchema = z
-  .object({
-    errors: z
-      .array(GoogleCloudDialogflowCxV3TestErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'The test errors.' }),
-  })
-  .openapi({
-    description: 'Metadata returned for the TestCases.BatchRunTestCases long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3BatchRunTestCasesMetadata')
-
-const GoogleCloudDialogflowCxV3DtmfInputSchema = z
-  .object({
-    digits: z.string().exactOptional().openapi({ description: 'The dtmf digits.' }),
-    finishDigit: z.string().exactOptional().openapi({ description: 'The finish digit (if any).' }),
-  })
-  .openapi({ description: 'Represents the input for dtmf event.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3DtmfInput')
-
-const GoogleCloudDialogflowCxV3EventInputSchema = z
-  .object({ event: z.string().exactOptional().openapi({ description: 'Name of the event.' }) })
-  .openapi({ description: 'Represents the event to trigger.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3EventInput')
-
-const GoogleCloudDialogflowCxV3IntentInputSchema = z
-  .object({
-    intent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The unique identifier of the intent. Format: `projects//locations//agents//intents/`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents the intent to trigger programmatically rather than as a result of natural language processing.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3IntentInput')
-
-const GoogleCloudDialogflowCxV3TextInputSchema = z
-  .object({
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The UTF-8 encoded natural language text to be processed. Text length must not exceed 256 characters.',
-      }),
-  })
-  .openapi({ description: 'Represents the natural language text to be processed.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3TextInput')
-
-const GoogleCloudDialogflowCxV3QueryInputSchema = z
-  .object({
-    audio: GoogleCloudDialogflowCxV3AudioInputSchema.exactOptional().openapi({
-      description: 'The natural language speech audio to be processed.',
-    }),
-    dtmf: GoogleCloudDialogflowCxV3DtmfInputSchema.exactOptional().openapi({
-      description: 'The DTMF event to be handled.',
-    }),
-    event: GoogleCloudDialogflowCxV3EventInputSchema.exactOptional().openapi({
-      description: 'The event to be triggered.',
-    }),
-    intent: GoogleCloudDialogflowCxV3IntentInputSchema.exactOptional().openapi({
-      description: 'The intent to be triggered.',
-    }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The language of the input. See [Language Support](https://cloud.google.com/dialogflow/cx/docs/reference/language) for a list of the currently supported language codes. Note that queries in the same session do not necessarily need to specify the same language.',
-      }),
-    text: GoogleCloudDialogflowCxV3TextInputSchema.exactOptional().openapi({
-      description: 'The natural language text to be processed.',
-    }),
-  })
-  .openapi({
-    description:
-      'Represents the query input. It can contain one of: 1. A conversational query in the form of text. 2. An intent query that specifies which intent to trigger. 3. Natural language speech audio to be processed. 4. An event to be triggered. ',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3QueryInput')
-
-const GoogleCloudDialogflowCxV3ConversationTurnUserInputSchema = z
-  .object({
-    enableSentimentAnalysis: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether sentiment analysis is enabled.' }),
-    injectedParameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Parameters that need to be injected into the conversation during intent detection.',
-      }),
-    input: GoogleCloudDialogflowCxV3QueryInputSchema.exactOptional().openapi({
-      description: 'Supports text input, event input, dtmf input in the test case.',
-    }),
-    isWebhookEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If webhooks should be allowed to trigger in response to the user utterance. Often if parameters are injected, webhooks should not be enabled.',
-      }),
-  })
-  .openapi({ description: 'The input from the human user.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ConversationTurnUserInput')
-
 const GoogleCloudDialogflowCxV3FulfillmentSetParameterActionSchema = z
   .object({
     parameter: z
@@ -924,155 +465,199 @@ const GoogleCloudDialogflowCxV3FulfillmentSetParameterActionSchema = z
   .openapi({ description: 'Setting a parameter value.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3FulfillmentSetParameterAction')
 
-const GoogleCloudDialogflowCxV3FulfillmentSchema = z
-  .object({
-    conditionalCases: z
-      .array(GoogleCloudDialogflowCxV3FulfillmentConditionalCasesSchema)
-      .exactOptional()
-      .openapi({ description: 'Conditional cases for this fulfillment.' }),
-    messages: z
-      .array(GoogleCloudDialogflowCxV3ResponseMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of rich message responses to present to the user.' }),
-    returnPartialResponses: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.',
-      }),
-    setParameterActions: z
-      .array(GoogleCloudDialogflowCxV3FulfillmentSetParameterActionSchema)
-      .exactOptional()
-      .openapi({ description: 'Set parameter values before executing the webhook.' }),
-    tag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of this field will be populated in the WebhookRequest `fulfillmentInfo.tag` field by Dialogflow when the associated webhook is called. The tag is typically used by the webhook service to identify which fulfillment is being called, but it could be used for other purposes. This field is required if `webhook` is specified.',
-      }),
-    webhook: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The webhook to call. Format: `projects//locations//agents//webhooks/`.',
-      }),
-  })
-  .openapi({
-    description:
-      "A fulfillment can do one or more of the following actions at the same time: * Generate rich message responses. * Set parameter values. * Call the webhook. Fulfillments can be called at various stages in the Page or Form lifecycle. For example, when a DetectIntentRequest drives a session to enter a new page, the page's entry fulfillment can add a static response to the QueryResult in the returning DetectIntentResponse, call the webhook (for example, to load user data from a database), or both.",
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3Fulfillment')
+type GoogleCloudDialogflowCxV3FulfillmentType = {
+  conditionalCases?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentConditionalCasesSchema>[]
+  messages?: z.infer<typeof GoogleCloudDialogflowCxV3ResponseMessageSchema>[]
+  returnPartialResponses?: boolean
+  setParameterActions?: z.infer<
+    typeof GoogleCloudDialogflowCxV3FulfillmentSetParameterActionSchema
+  >[]
+  tag?: string
+  webhook?: string
+}
 
-const GoogleCloudDialogflowCxV3EventHandlerSchema = z
-  .object({
-    event: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the event to handle.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The unique identifier of this event handler.',
-        readOnly: true,
-      }),
-    targetFlow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
-      }),
-    targetPage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
-      }),
-    triggerFulfillment: GoogleCloudDialogflowCxV3FulfillmentSchema.exactOptional().openapi({
+const GoogleCloudDialogflowCxV3FulfillmentSchema: z.ZodType<GoogleCloudDialogflowCxV3FulfillmentType> =
+  z
+    .object({
+      conditionalCases: z
+        .array(GoogleCloudDialogflowCxV3FulfillmentConditionalCasesSchema)
+        .exactOptional()
+        .openapi({ description: 'Conditional cases for this fulfillment.' }),
+      messages: z
+        .array(GoogleCloudDialogflowCxV3ResponseMessageSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of rich message responses to present to the user.' }),
+      returnPartialResponses: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.',
+        }),
+      setParameterActions: z
+        .array(GoogleCloudDialogflowCxV3FulfillmentSetParameterActionSchema)
+        .exactOptional()
+        .openapi({ description: 'Set parameter values before executing the webhook.' }),
+      tag: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The value of this field will be populated in the WebhookRequest `fulfillmentInfo.tag` field by Dialogflow when the associated webhook is called. The tag is typically used by the webhook service to identify which fulfillment is being called, but it could be used for other purposes. This field is required if `webhook` is specified.',
+        }),
+      webhook: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The webhook to call. Format: `projects//locations//agents//webhooks/`.',
+        }),
+    })
+    .openapi({
       description:
-        'The fulfillment to call when the event occurs. Handling webhook errors with a fulfillment enabled with webhook could cause infinite loop. It is invalid to specify such fulfillment for a handler handling webhooks.',
-    }),
-  })
-  .openapi({
-    description:
-      'An event handler specifies an event that can be handled during a session. When the specified event happens, the following actions are taken in order: * If there is a `trigger_fulfillment` associated with the event, it will be called. * If there is a `target_page` associated with the event, the session will transition into the specified page. * If there is a `target_flow` associated with the event, the session will transition into the specified flow.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3EventHandler')
+        "A fulfillment can do one or more of the following actions at the same time: * Generate rich message responses. * Set parameter values. * Call the webhook. Fulfillments can be called at various stages in the Page or Form lifecycle. For example, when a DetectIntentRequest drives a session to enter a new page, the page's entry fulfillment can add a static response to the QueryResult in the returning DetectIntentResponse, call the webhook (for example, to load user data from a database), or both.",
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3Fulfillment')
 
-const GoogleCloudDialogflowCxV3FormParameterFillBehaviorSchema = z
-  .object({
-    initialPromptFulfillment: GoogleCloudDialogflowCxV3FulfillmentSchema.exactOptional().openapi({
+type GoogleCloudDialogflowCxV3EventHandlerType = {
+  event?: string
+  name?: string
+  targetFlow?: string
+  targetPage?: string
+  triggerFulfillment?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentSchema>
+}
+
+const GoogleCloudDialogflowCxV3EventHandlerSchema: z.ZodType<GoogleCloudDialogflowCxV3EventHandlerType> =
+  z
+    .object({
+      event: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. The name of the event to handle.' }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The unique identifier of this event handler.',
+          readOnly: true,
+        }),
+      targetFlow: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
+        }),
+      targetPage: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
+        }),
+      triggerFulfillment: GoogleCloudDialogflowCxV3FulfillmentSchema.exactOptional().openapi({
+        description:
+          'The fulfillment to call when the event occurs. Handling webhook errors with a fulfillment enabled with webhook could cause infinite loop. It is invalid to specify such fulfillment for a handler handling webhooks.',
+      }),
+    })
+    .openapi({
       description:
-        'Required. The fulfillment to provide the initial prompt that the agent can present to the user in order to fill the parameter.',
-    }),
-    repromptEventHandlers: z
-      .array(GoogleCloudDialogflowCxV3EventHandlerSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The handlers for parameter-level events, used to provide reprompt for the parameter or transition to a different page/flow. The supported events are: * `sys.no-match-`, where N can be from 1 to 6 * `sys.no-match-default` * `sys.no-input-`, where N can be from 1 to 6 * `sys.no-input-default` * `sys.invalid-parameter` `initial_prompt_fulfillment` provides the first prompt for the parameter. If the user's response does not fill the parameter, a no-match/no-input event will be triggered, and the fulfillment associated with the `sys.no-match-1`/`sys.no-input-1` handler (if defined) will be called to provide a prompt. The `sys.no-match-2`/`sys.no-input-2` handler (if defined) will respond to the next no-match/no-input event, and so on. A `sys.no-match-default` or `sys.no-input-default` handler will be used to handle all following no-match/no-input events after all numbered no-match/no-input handlers for the parameter are consumed. A `sys.invalid-parameter` handler can be defined to handle the case where the parameter values have been `invalidated` by webhook. For example, if the user's response fill the parameter, however the parameter was invalidated by webhook, the fulfillment associated with the `sys.invalid-parameter` handler (if defined) will be called to provide a prompt. If the event handler for the corresponding event can't be found on the parameter, `initial_prompt_fulfillment` will be re-prompted.",
-      }),
-  })
-  .openapi({
-    description: 'Configuration for how the filling of a parameter should be handled.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3FormParameterFillBehavior')
+        'An event handler specifies an event that can be handled during a session. When the specified event happens, the following actions are taken in order: * If there is a `trigger_fulfillment` associated with the event, it will be called. * If there is a `target_page` associated with the event, the session will transition into the specified page. * If there is a `target_flow` associated with the event, the session will transition into the specified flow.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3EventHandler')
 
-const GoogleCloudDialogflowCxV3FormParameterSchema = z
-  .object({
-    defaultValue: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'The default value of an optional parameter. If the parameter is required, the default value will be ignored.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The human-readable name of the parameter, unique within the form.',
-      }),
-    entityType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The entity type of the parameter. Format: `projects/-/locations/-/agents/-/entityTypes/` for system entity types (for example, `projects/-/locations/-/agents/-/entityTypes/sys.date`), or `projects//locations//agents//entityTypes/` for developer entity types.',
-      }),
-    fillBehavior: GoogleCloudDialogflowCxV3FormParameterFillBehaviorSchema.exactOptional().openapi({
-      description: 'Required. Defines fill behavior for the parameter.',
-    }),
-    isList: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the parameter represents a list of values.' }),
-    redact: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the parameter content should be redacted in log. If redaction is enabled, the parameter content will be replaced by parameter name during logging. Note: the parameter content is subject to redaction if either parameter level redaction or entity type level redaction is enabled.',
-      }),
-    required: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them. Required parameters must be filled before form filling concludes.',
-      }),
-  })
-  .openapi({ description: 'Represents a form parameter.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3FormParameter')
+type GoogleCloudDialogflowCxV3FormParameterFillBehaviorType = {
+  initialPromptFulfillment?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentSchema>
+  repromptEventHandlers?: z.infer<typeof GoogleCloudDialogflowCxV3EventHandlerSchema>[]
+}
 
-const GoogleCloudDialogflowCxV3FormSchema = z
+const GoogleCloudDialogflowCxV3FormParameterFillBehaviorSchema: z.ZodType<GoogleCloudDialogflowCxV3FormParameterFillBehaviorType> =
+  z
+    .object({
+      initialPromptFulfillment: GoogleCloudDialogflowCxV3FulfillmentSchema.exactOptional().openapi({
+        description:
+          'Required. The fulfillment to provide the initial prompt that the agent can present to the user in order to fill the parameter.',
+      }),
+      repromptEventHandlers: z
+        .array(GoogleCloudDialogflowCxV3EventHandlerSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "The handlers for parameter-level events, used to provide reprompt for the parameter or transition to a different page/flow. The supported events are: * `sys.no-match-`, where N can be from 1 to 6 * `sys.no-match-default` * `sys.no-input-`, where N can be from 1 to 6 * `sys.no-input-default` * `sys.invalid-parameter` `initial_prompt_fulfillment` provides the first prompt for the parameter. If the user's response does not fill the parameter, a no-match/no-input event will be triggered, and the fulfillment associated with the `sys.no-match-1`/`sys.no-input-1` handler (if defined) will be called to provide a prompt. The `sys.no-match-2`/`sys.no-input-2` handler (if defined) will respond to the next no-match/no-input event, and so on. A `sys.no-match-default` or `sys.no-input-default` handler will be used to handle all following no-match/no-input events after all numbered no-match/no-input handlers for the parameter are consumed. A `sys.invalid-parameter` handler can be defined to handle the case where the parameter values have been `invalidated` by webhook. For example, if the user's response fill the parameter, however the parameter was invalidated by webhook, the fulfillment associated with the `sys.invalid-parameter` handler (if defined) will be called to provide a prompt. If the event handler for the corresponding event can't be found on the parameter, `initial_prompt_fulfillment` will be re-prompted.",
+        }),
+    })
+    .openapi({
+      description: 'Configuration for how the filling of a parameter should be handled.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3FormParameterFillBehavior')
+
+type GoogleCloudDialogflowCxV3FormParameterType = {
+  defaultValue?: unknown
+  displayName?: string
+  entityType?: string
+  fillBehavior?: z.infer<typeof GoogleCloudDialogflowCxV3FormParameterFillBehaviorSchema>
+  isList?: boolean
+  redact?: boolean
+  required?: boolean
+}
+
+const GoogleCloudDialogflowCxV3FormParameterSchema: z.ZodType<GoogleCloudDialogflowCxV3FormParameterType> =
+  z
+    .object({
+      defaultValue: z
+        .any()
+        .exactOptional()
+        .openapi({
+          description:
+            'The default value of an optional parameter. If the parameter is required, the default value will be ignored.',
+        }),
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The human-readable name of the parameter, unique within the form.',
+        }),
+      entityType: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The entity type of the parameter. Format: `projects/-/locations/-/agents/-/entityTypes/` for system entity types (for example, `projects/-/locations/-/agents/-/entityTypes/sys.date`), or `projects//locations//agents//entityTypes/` for developer entity types.',
+        }),
+      fillBehavior:
+        GoogleCloudDialogflowCxV3FormParameterFillBehaviorSchema.exactOptional().openapi({
+          description: 'Required. Defines fill behavior for the parameter.',
+        }),
+      isList: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Indicates whether the parameter represents a list of values.' }),
+      redact: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the parameter content should be redacted in log. If redaction is enabled, the parameter content will be replaced by parameter name during logging. Note: the parameter content is subject to redaction if either parameter level redaction or entity type level redaction is enabled.',
+        }),
+      required: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them. Required parameters must be filled before form filling concludes.',
+        }),
+    })
+    .openapi({ description: 'Represents a form parameter.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3FormParameter')
+
+type GoogleCloudDialogflowCxV3FormType = {
+  parameters?: z.infer<typeof GoogleCloudDialogflowCxV3FormParameterSchema>[]
+}
+
+const GoogleCloudDialogflowCxV3FormSchema: z.ZodType<GoogleCloudDialogflowCxV3FormType> = z
   .object({
     parameters: z
       .array(GoogleCloudDialogflowCxV3FormParameterSchema)
@@ -1086,56 +671,76 @@ const GoogleCloudDialogflowCxV3FormSchema = z
   })
   .openapi('GoogleCloudDialogflowCxV3Form')
 
-const GoogleCloudDialogflowCxV3TransitionRouteSchema = z
-  .object({
-    condition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The condition to evaluate against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition). At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.',
-      }),
-    intent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of an Intent. Format: `projects//locations//agents//intents/`. Indicates that the transition can only happen when the given intent is matched. At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The unique identifier of this transition route.',
-        readOnly: true,
-      }),
-    targetFlow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
-      }),
-    targetPage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
-      }),
-    triggerFulfillment: GoogleCloudDialogflowCxV3FulfillmentSchema.exactOptional().openapi({
-      description:
-        'The fulfillment to call when the condition is satisfied. At least one of `trigger_fulfillment` and `target` must be specified. When both are defined, `trigger_fulfillment` is executed first.',
-    }),
-  })
-  .openapi({
-    description:
-      'A transition route specifies a intent that can be matched and/or a data condition that can be evaluated during a session. When a specified transition is matched, the following actions are taken in order: * If there is a `trigger_fulfillment` associated with the transition, it will be called. * If there is a `target_page` associated with the transition, the session will transition into the specified page. * If there is a `target_flow` associated with the transition, the session will transition into the specified flow.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3TransitionRoute')
+type GoogleCloudDialogflowCxV3TransitionRouteType = {
+  condition?: string
+  intent?: string
+  name?: string
+  targetFlow?: string
+  targetPage?: string
+  triggerFulfillment?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentSchema>
+}
 
-const GoogleCloudDialogflowCxV3PageSchema = z
+const GoogleCloudDialogflowCxV3TransitionRouteSchema: z.ZodType<GoogleCloudDialogflowCxV3TransitionRouteType> =
+  z
+    .object({
+      condition: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The condition to evaluate against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition). At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.',
+        }),
+      intent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of an Intent. Format: `projects//locations//agents//intents/`. Indicates that the transition can only happen when the given intent is matched. At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The unique identifier of this transition route.',
+          readOnly: true,
+        }),
+      targetFlow: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
+        }),
+      targetPage: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
+        }),
+      triggerFulfillment: GoogleCloudDialogflowCxV3FulfillmentSchema.exactOptional().openapi({
+        description:
+          'The fulfillment to call when the condition is satisfied. At least one of `trigger_fulfillment` and `target` must be specified. When both are defined, `trigger_fulfillment` is executed first.',
+      }),
+    })
+    .openapi({
+      description:
+        'A transition route specifies a intent that can be matched and/or a data condition that can be evaluated during a session. When a specified transition is matched, the following actions are taken in order: * If there is a `trigger_fulfillment` associated with the transition, it will be called. * If there is a `target_page` associated with the transition, the session will transition into the specified page. * If there is a `target_flow` associated with the transition, the session will transition into the specified flow.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3TransitionRoute')
+
+type GoogleCloudDialogflowCxV3PageType = {
+  displayName?: string
+  entryFulfillment?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentSchema>
+  eventHandlers?: z.infer<typeof GoogleCloudDialogflowCxV3EventHandlerSchema>[]
+  form?: z.infer<typeof GoogleCloudDialogflowCxV3FormSchema>
+  name?: string
+  transitionRouteGroups?: string[]
+  transitionRoutes?: z.infer<typeof GoogleCloudDialogflowCxV3TransitionRouteSchema>[]
+}
+
+const GoogleCloudDialogflowCxV3PageSchema: z.ZodType<GoogleCloudDialogflowCxV3PageType> = z
   .object({
     displayName: z
       .string()
@@ -1204,6 +809,45 @@ const GoogleCloudDialogflowCxV3TestRunDifferenceSchema = z
     required: [],
   })
   .openapi('GoogleCloudDialogflowCxV3TestRunDifference')
+
+const GoogleRpcStatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('GoogleRpcStatus')
 
 const GoogleCloudDialogflowCxV3IntentParameterSchema = z
   .object({
@@ -1336,268 +980,133 @@ const GoogleCloudDialogflowCxV3IntentSchema = z
   })
   .openapi('GoogleCloudDialogflowCxV3Intent')
 
-const GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutputSchema = z
-  .object({
-    currentPage: GoogleCloudDialogflowCxV3PageSchema.exactOptional().openapi({
+type GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutputType = {
+  currentPage?: z.infer<typeof GoogleCloudDialogflowCxV3PageSchema>
+  diagnosticInfo?: { [key: string]: unknown }
+  differences?: z.infer<typeof GoogleCloudDialogflowCxV3TestRunDifferenceSchema>[]
+  sessionParameters?: { [key: string]: unknown }
+  status?: z.infer<typeof GoogleRpcStatusSchema>
+  textResponses?: z.infer<typeof GoogleCloudDialogflowCxV3ResponseMessageTextSchema>[]
+  triggeredIntent?: z.infer<typeof GoogleCloudDialogflowCxV3IntentSchema>
+}
+
+const GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutputSchema: z.ZodType<GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutputType> =
+  z
+    .object({
+      currentPage: GoogleCloudDialogflowCxV3PageSchema.exactOptional().openapi({
+        description:
+          'The Page on which the utterance was spoken. Only name and displayName will be set.',
+      }),
+      diagnosticInfo: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. Input only. The diagnostic info output for the turn. Required to calculate the testing coverage.',
+        }),
+      differences: z
+        .array(GoogleCloudDialogflowCxV3TestRunDifferenceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. If this is part of a result conversation turn, the list of differences between the original run and the replay for this output, if any.',
+          readOnly: true,
+        }),
+      sessionParameters: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({ description: 'The session parameters available to the bot at this point.' }),
+      status: GoogleRpcStatusSchema.exactOptional().openapi({
+        description:
+          'Response error from the agent in the test result. If set, other output is empty.',
+      }),
+      textResponses: z
+        .array(GoogleCloudDialogflowCxV3ResponseMessageTextSchema)
+        .exactOptional()
+        .openapi({ description: 'The text responses from the agent for the turn.' }),
+      triggeredIntent: GoogleCloudDialogflowCxV3IntentSchema.exactOptional().openapi({
+        description:
+          'The Intent that triggered the response. Only name and displayName will be set.',
+      }),
+    })
+    .openapi({ description: 'The output from the virtual agent.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutput')
+
+type GoogleCloudDialogflowCxV3ConversationTurnType = {
+  userInput?: z.infer<typeof GoogleCloudDialogflowCxV3ConversationTurnUserInputSchema>
+  virtualAgentOutput?: z.infer<
+    typeof GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutputSchema
+  >
+}
+
+const GoogleCloudDialogflowCxV3ConversationTurnSchema: z.ZodType<GoogleCloudDialogflowCxV3ConversationTurnType> =
+  z
+    .object({
+      userInput: GoogleCloudDialogflowCxV3ConversationTurnUserInputSchema.exactOptional().openapi({
+        description: 'The user input.',
+      }),
+      virtualAgentOutput:
+        GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutputSchema.exactOptional().openapi({
+          description: 'The virtual agent output.',
+        }),
+    })
+    .openapi({
       description:
-        'The Page on which the utterance was spoken. Only name and displayName will be set.',
-    }),
-    diagnosticInfo: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Input only. The diagnostic info output for the turn. Required to calculate the testing coverage.',
-      }),
-    differences: z
-      .array(GoogleCloudDialogflowCxV3TestRunDifferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. If this is part of a result conversation turn, the list of differences between the original run and the replay for this output, if any.',
-        readOnly: true,
-      }),
-    sessionParameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'The session parameters available to the bot at this point.' }),
-    status: GoogleRpcStatusSchema.exactOptional().openapi({
-      description:
-        'Response error from the agent in the test result. If set, other output is empty.',
-    }),
-    textResponses: z
-      .array(GoogleCloudDialogflowCxV3ResponseMessageTextSchema)
-      .exactOptional()
-      .openapi({ description: 'The text responses from the agent for the turn.' }),
-    triggeredIntent: GoogleCloudDialogflowCxV3IntentSchema.exactOptional().openapi({
-      description: 'The Intent that triggered the response. Only name and displayName will be set.',
-    }),
-  })
-  .openapi({ description: 'The output from the virtual agent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutput')
+        'One interaction between a human and virtual agent. The human provides some input and the virtual agent provides a response.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3ConversationTurn')
 
-const GoogleCloudDialogflowCxV3ConversationTurnSchema = z
-  .object({
-    userInput: GoogleCloudDialogflowCxV3ConversationTurnUserInputSchema.exactOptional().openapi({
-      description: 'The user input.',
-    }),
-    virtualAgentOutput:
-      GoogleCloudDialogflowCxV3ConversationTurnVirtualAgentOutputSchema.exactOptional().openapi({
-        description: 'The virtual agent output.',
-      }),
-  })
-  .openapi({
-    description:
-      'One interaction between a human and virtual agent. The human provides some input and the virtual agent provides a response.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3ConversationTurn')
+type GoogleCloudDialogflowCxV3TestCaseResultType = {
+  conversationTurns?: z.infer<typeof GoogleCloudDialogflowCxV3ConversationTurnSchema>[]
+  environment?: string
+  name?: string
+  testResult?: 'TEST_RESULT_UNSPECIFIED' | 'PASSED' | 'FAILED'
+  testTime?: string
+}
 
-const GoogleCloudDialogflowCxV3TestCaseResultSchema = z
-  .object({
-    conversationTurns: z
-      .array(GoogleCloudDialogflowCxV3ConversationTurnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The conversation turns uttered during the test case replay in chronological order.',
-      }),
-    environment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Environment where the test was run. If not set, it indicates the draft environment.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name for the test case result. Format: `projects//locations//agents//testCases/ /results/`.',
-      }),
-    testResult: z
-      .enum(['TEST_RESULT_UNSPECIFIED', 'PASSED', 'FAILED'])
-      .exactOptional()
-      .openapi({ description: 'Whether the test case passed in the agent environment.' }),
-    testTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time that the test was run.' }),
-  })
-  .openapi({
-    description: 'Represents a result from running a test case in an agent environment.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3TestCaseResult')
+const GoogleCloudDialogflowCxV3TestCaseResultSchema: z.ZodType<GoogleCloudDialogflowCxV3TestCaseResultType> =
+  z
+    .object({
+      conversationTurns: z
+        .array(GoogleCloudDialogflowCxV3ConversationTurnSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The conversation turns uttered during the test case replay in chronological order.',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Environment where the test was run. If not set, it indicates the draft environment.',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The resource name for the test case result. Format: `projects//locations//agents//testCases/ /results/`.',
+        }),
+      testResult: z
+        .enum(['TEST_RESULT_UNSPECIFIED', 'PASSED', 'FAILED'])
+        .exactOptional()
+        .openapi({ description: 'Whether the test case passed in the agent environment.' }),
+      testTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The time that the test was run.' }),
+    })
+    .openapi({
+      description: 'Represents a result from running a test case in an agent environment.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3TestCaseResult')
 
-const GoogleCloudDialogflowCxV3BatchRunTestCasesResponseSchema = z
-  .object({
-    results: z
-      .array(GoogleCloudDialogflowCxV3TestCaseResultSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The test case results. The detailed conversation turns are empty in this response.',
-      }),
-  })
-  .openapi({ description: 'The response message for TestCases.BatchRunTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3BatchRunTestCasesResponse')
-
-const GoogleCloudDialogflowCxV3ContinuousTestResultSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name for the continuous test result. Format: `projects//locations//agents//environments//continuousTestResults/`.',
-      }),
-    result: z
-      .enum(['AGGREGATED_TEST_RESULT_UNSPECIFIED', 'PASSED', 'FAILED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The result of this continuous test run, i.e. whether all the tests in this continuous test run pass or not.',
-      }),
-    runTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the continuous testing run starts.' }),
-    testCaseResults: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of individual test case results names in this continuous test run.',
-      }),
-  })
-  .openapi({
-    description: 'Represents a result from running a test case in an agent environment.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3ContinuousTestResult')
-
-const GoogleCloudDialogflowCxV3TurnSignalsSchema = z
-  .object({
-    agentEscalated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether agent responded with LiveAgentHandoff fulfillment.' }),
-    dtmfUsed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether user was using DTMF input.' }),
-    failureReasons: z
-      .array(z.enum(['FAILURE_REASON_UNSPECIFIED', 'FAILED_INTENT', 'FAILED_WEBHOOK']))
-      .exactOptional()
-      .openapi({ description: 'Failure reasons of the turn.' }),
-    noMatch: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether NLU predicted NO_MATCH.' }),
-    noUserInput: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether user provided no input.' }),
-    reachedEndPage: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether turn resulted in End Session page.' }),
-    userEscalated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether user was specifically asking for a live agent.' }),
-    webhookStatuses: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Human-readable statuses of the webhooks triggered during this turn.',
-      }),
-  })
-  .openapi({
-    description:
-      'Collection of all signals that were extracted for a single turn of the conversation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3TurnSignals')
-
-const GoogleCloudDialogflowCxV3ConversationSignalsSchema = z
-  .object({
-    turnSignals: GoogleCloudDialogflowCxV3TurnSignalsSchema.exactOptional().openapi({
-      description: 'Required. Turn signals for the current turn.',
-    }),
-  })
-  .openapi({
-    description:
-      'This message is used to hold all the Conversation Signals data, which will be converted to JSON and exported to BigQuery.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3ConversationSignals')
-
-const GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema = z
-  .object({
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'DONE'])
-      .exactOptional()
-      .openapi({
-        description: 'Required. Output only. The current state of this operation.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Metadata in google::longrunning::Operation for Knowledge operations.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadata')
-
-const GoogleCloudDialogflowCxV3CreateDocumentOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
-        description: 'The generic information of the operation.',
-      }),
-  })
-  .openapi({ description: 'Metadata for CreateDocument operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3CreateDocumentOperationMetadata')
-
-const GoogleCloudDialogflowCxV3CreateVersionOperationMetadataSchema = z
-  .object({
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the created version. Format: `projects//locations//agents//flows//versions/`.',
-      }),
-  })
-  .openapi({
-    description: 'Metadata associated with the long running operation for Versions.CreateVersion.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3CreateVersionOperationMetadata')
-
-const GoogleCloudDialogflowCxV3DeleteDocumentOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
-        description: 'The generic information of the operation.',
-      }),
-  })
-  .openapi({ description: 'Metadata for DeleteDocument operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3DeleteDocumentOperationMetadata')
-
-const GoogleCloudDialogflowCxV3DeployFlowMetadataSchema = z
-  .object({
-    testErrors: z
-      .array(GoogleCloudDialogflowCxV3TestErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Errors of running deployment tests.' }),
-  })
-  .openapi({
-    description: 'Metadata returned for the Environments.DeployFlow long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3DeployFlowMetadata')
+type GoogleCloudDialogflowCxV3BatchRunTestCasesResponseType = {
+  results?: z.infer<typeof GoogleCloudDialogflowCxV3TestCaseResultSchema>[]
+}
 
 const GoogleCloudDialogflowCxV3EnvironmentTestCasesConfigSchema = z
   .object({
@@ -1794,113 +1303,71 @@ const GoogleCloudDialogflowCxV3EnvironmentSchema = z
   })
   .openapi('GoogleCloudDialogflowCxV3Environment')
 
-const GoogleCloudDialogflowCxV3DeployFlowResponseSchema = z
-  .object({
-    deployment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the flow version Deployment. Format: `projects//locations//agents// environments//deployments/`.',
-      }),
-    environment: GoogleCloudDialogflowCxV3EnvironmentSchema.exactOptional().openapi({
-      description: 'The updated environment where the flow is deployed.',
-    }),
-  })
-  .openapi({ description: 'The response message for Environments.DeployFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3DeployFlowResponse')
+type GoogleCloudDialogflowCxV3DeployFlowResponseType = {
+  deployment?: string
+  environment?: z.infer<typeof GoogleCloudDialogflowCxV3EnvironmentSchema>
+}
 
-const GoogleCloudDialogflowCxV3ExportAgentResponseSchema = z
-  .object({
-    agentContent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for agent.' }),
-    agentUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI to a file containing the exported agent. This field is populated only if `agent_uri` is specified in ExportAgentRequest.',
-      }),
-  })
-  .openapi({ description: 'The response message for Agents.ExportAgent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ExportAgentResponse')
+const GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseSchema: z.ZodType<GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          caseContent: z
+            .array(GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentSchema)
+            .exactOptional()
+            .openapi({ description: 'A list of case content.' }),
+          condition: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The condition to activate and select this case. Empty means the condition is always true. The condition is evaluated against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition).',
+            }),
+        })
+        .openapi({
+          description:
+            'Each case has a Boolean condition. When it is evaluated to be True, the corresponding messages will be selected and evaluated recursively.',
+          required: [],
+        }),
+    )
+    .openapi('GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCase')
 
-const GoogleCloudDialogflowCxV3ExportFlowResponseSchema = z
-  .object({
-    flowContent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for flow.' }),
-    flowUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI to a file containing the exported flow. This field is populated only if `flow_uri` is specified in ExportFlowRequest.',
-      }),
-  })
-  .openapi({ description: 'The response message for Flows.ExportFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ExportFlowResponse')
+type GoogleCloudDialogflowCxV3FulfillmentConditionalCasesType = {
+  cases?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseSchema>[]
+}
 
-const GoogleCloudDialogflowCxV3ExportTestCasesMetadataSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Metadata returned for the TestCases.ExportTestCases long running operation. This message currently has no fields.',
-  })
-  .openapi('GoogleCloudDialogflowCxV3ExportTestCasesMetadata')
+const GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentSchema: z.ZodType<GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          additionalCases:
+            GoogleCloudDialogflowCxV3FulfillmentConditionalCasesSchema.exactOptional().openapi({
+              description: 'Additional cases to be evaluated.',
+            }),
+          message: GoogleCloudDialogflowCxV3ResponseMessageSchema.exactOptional().openapi({
+            description: 'Returned message.',
+          }),
+        })
+        .openapi({
+          description: 'The list of messages or conditional cases to activate for this case.',
+          required: [],
+        }),
+    )
+    .openapi('GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContent')
 
-const GoogleCloudDialogflowCxV3ExportTestCasesResponseSchema = z
-  .object({
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for test cases.' }),
-    gcsUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI to a file containing the exported test cases. This field is populated only if `gcs_uri` is specified in ExportTestCasesRequest.',
-      }),
-  })
-  .openapi({ description: 'The response message for TestCases.ExportTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ExportTestCasesResponse')
+type GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseType = {
+  caseContent?: z.infer<
+    typeof GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentSchema
+  >[]
+  condition?: string
+}
 
-const GoogleCloudDialogflowCxV3ImportDocumentsOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
-        description: 'The generic information of the operation.',
-      }),
-  })
-  .openapi({ description: 'Metadata for ImportDocuments operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ImportDocumentsOperationMetadata')
-
-const GoogleCloudDialogflowCxV3ImportDocumentsResponseSchema = z
-  .object({
-    warnings: z
-      .array(GoogleRpcStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'Includes details about skipped documents or any other warnings.' }),
-  })
-  .openapi({ description: 'Response message for Documents.ImportDocuments.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ImportDocumentsResponse')
-
-const GoogleCloudDialogflowCxV3ImportFlowResponseSchema = z
-  .object({
-    flow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the new flow. Format: `projects//locations//agents//flows/`.',
-      }),
-  })
-  .openapi({ description: 'The response message for Flows.ImportFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ImportFlowResponse')
+type GoogleCloudDialogflowCxV3FulfillmentConditionalCasesCaseCaseContentType = {
+  additionalCases?: z.infer<typeof GoogleCloudDialogflowCxV3FulfillmentConditionalCasesSchema>
+  message?: z.infer<typeof GoogleCloudDialogflowCxV3ResponseMessageSchema>
+}
 
 const GoogleCloudDialogflowCxV3TestConfigSchema = z
   .object({
@@ -1926,7 +1393,18 @@ const GoogleCloudDialogflowCxV3TestConfigSchema = z
   .openapi({ description: 'Represents configurations for a test case.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3TestConfig')
 
-const GoogleCloudDialogflowCxV3TestCaseSchema = z
+type GoogleCloudDialogflowCxV3TestCaseType = {
+  creationTime?: string
+  displayName?: string
+  lastTestResult?: z.infer<typeof GoogleCloudDialogflowCxV3TestCaseResultSchema>
+  name?: string
+  notes?: string
+  tags?: string[]
+  testCaseConversationTurns?: z.infer<typeof GoogleCloudDialogflowCxV3ConversationTurnSchema>[]
+  testConfig?: z.infer<typeof GoogleCloudDialogflowCxV3TestConfigSchema>
+}
+
+const GoogleCloudDialogflowCxV3TestCaseSchema: z.ZodType<GoogleCloudDialogflowCxV3TestCaseType> = z
   .object({
     creationTime: z
       .string()
@@ -1976,767 +1454,31 @@ const GoogleCloudDialogflowCxV3TestCaseSchema = z
   .openapi({ description: 'Represents a test case.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3TestCase')
 
-const GoogleCloudDialogflowCxV3TestCaseErrorSchema = z
-  .object({
-    status: GoogleRpcStatusSchema.exactOptional().openapi({
-      description: 'The status associated with the test case.',
-    }),
-    testCase: GoogleCloudDialogflowCxV3TestCaseSchema.exactOptional().openapi({
-      description: 'The test case.',
-    }),
-  })
-  .openapi({ description: 'Error info for importing a test.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3TestCaseError')
+type GoogleCloudDialogflowCxV3TestCaseErrorType = {
+  status?: z.infer<typeof GoogleRpcStatusSchema>
+  testCase?: z.infer<typeof GoogleCloudDialogflowCxV3TestCaseSchema>
+}
 
-const GoogleCloudDialogflowCxV3ImportTestCasesMetadataSchema = z
-  .object({
-    errors: z
-      .array(GoogleCloudDialogflowCxV3TestCaseErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Errors for failed test cases.' }),
-  })
-  .openapi({
-    description: 'Metadata returned for the TestCases.ImportTestCases long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3ImportTestCasesMetadata')
+const GoogleCloudDialogflowCxV3TestCaseErrorSchema: z.ZodType<GoogleCloudDialogflowCxV3TestCaseErrorType> =
+  z
+    .object({
+      status: GoogleRpcStatusSchema.exactOptional().openapi({
+        description: 'The status associated with the test case.',
+      }),
+      testCase: GoogleCloudDialogflowCxV3TestCaseSchema.exactOptional().openapi({
+        description: 'The test case.',
+      }),
+    })
+    .openapi({ description: 'Error info for importing a test.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3TestCaseError')
 
-const GoogleCloudDialogflowCxV3ImportTestCasesResponseSchema = z
-  .object({
-    names: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifiers of the new test cases. Format: `projects//locations//agents//testCases/`.',
-      }),
-  })
-  .openapi({ description: 'The response message for TestCases.ImportTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ImportTestCasesResponse')
+type GoogleCloudDialogflowCxV3ImportTestCasesMetadataType = {
+  errors?: z.infer<typeof GoogleCloudDialogflowCxV3TestCaseErrorSchema>[]
+}
 
-const GoogleCloudDialogflowCxV3PageInfoFormInfoParameterInfoSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Required for WebhookResponse. The human-readable name of the parameter, unique within the form. This field cannot be modified by the webhook.',
-      }),
-    justCollected: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional for WebhookRequest. Ignored for WebhookResponse. Indicates if the parameter value was just collected on the last conversation turn.',
-      }),
-    required: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional for both WebhookRequest and WebhookResponse. Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them. Required parameters must be filled before form filling concludes.',
-      }),
-    state: z
-      .enum(['PARAMETER_STATE_UNSPECIFIED', 'EMPTY', 'INVALID', 'FILLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Required for WebhookResponse. The state of the parameter. This field can be set to INVALID by the webhook to invalidate the parameter; other values set by the webhook will be ignored.',
-      }),
-    value: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional for both WebhookRequest and WebhookResponse. The value of the parameter. This field can be set by the webhook to change the parameter value.',
-      }),
-  })
-  .openapi({ description: 'Represents parameter information.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3PageInfoFormInfoParameterInfo')
-
-const GoogleCloudDialogflowCxV3PageInfoFormInfoSchema = z
-  .object({
-    parameterInfo: z
-      .array(GoogleCloudDialogflowCxV3PageInfoFormInfoParameterInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional for both WebhookRequest and WebhookResponse. The parameters contained in the form. Note that the webhook cannot add or remove any form parameter.',
-      }),
-  })
-  .openapi({ description: 'Represents form information.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3PageInfoFormInfo')
-
-const GoogleCloudDialogflowCxV3PageInfoSchema = z
-  .object({
-    currentPage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Ignored for WebhookResponse. The unique identifier of the current page. Format: `projects//locations//agents//flows//pages/`.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Ignored for WebhookResponse. The display name of the current page.',
-      }),
-    formInfo: GoogleCloudDialogflowCxV3PageInfoFormInfoSchema.exactOptional().openapi({
-      description:
-        'Optional for both WebhookRequest and WebhookResponse. Information about the form.',
-    }),
-  })
-  .openapi({
-    description: 'Represents page information communicated to and from the webhook.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3PageInfo')
-
-const GoogleCloudDialogflowCxV3ReloadDocumentOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
-        description: 'The generic information of the operation.',
-      }),
-  })
-  .openapi({ description: 'Metadata for ReloadDocument operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3ReloadDocumentOperationMetadata')
-
-const GoogleCloudDialogflowCxV3RunContinuousTestMetadataSchema = z
-  .object({
-    errors: z
-      .array(GoogleCloudDialogflowCxV3TestErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'The test errors.' }),
-  })
-  .openapi({
-    description: 'Metadata returned for the Environments.RunContinuousTest long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3RunContinuousTestMetadata')
-
-const GoogleCloudDialogflowCxV3RunContinuousTestResponseSchema = z
-  .object({
-    continuousTestResult:
-      GoogleCloudDialogflowCxV3ContinuousTestResultSchema.exactOptional().openapi({
-        description: 'The result for a continuous test run.',
-      }),
-  })
-  .openapi({
-    description: 'The response message for Environments.RunContinuousTest.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3RunContinuousTestResponse')
-
-const GoogleCloudDialogflowCxV3RunTestCaseMetadataSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Metadata returned for the TestCases.RunTestCase long running operation. This message currently has no fields.',
-  })
-  .openapi('GoogleCloudDialogflowCxV3RunTestCaseMetadata')
-
-const GoogleCloudDialogflowCxV3RunTestCaseResponseSchema = z
-  .object({
-    result: GoogleCloudDialogflowCxV3TestCaseResultSchema.exactOptional().openapi({
-      description: 'The result.',
-    }),
-  })
-  .openapi({ description: 'The response message for TestCases.RunTestCase.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3RunTestCaseResponse')
-
-const GoogleCloudDialogflowCxV3SessionInfoSchema = z
-  .object({
-    parameters: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional for WebhookRequest. Optional for WebhookResponse. All parameters collected from forms and intents during the session. Parameters can be created, updated, or removed by the webhook. To remove a parameter from the session, the webhook should explicitly set the parameter value to null in WebhookResponse. The map is keyed by parameters' display names.",
-      }),
-    session: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Ignored for WebhookResponse. The unique identifier of the session. This field can be used by the webhook to identify a session. Format: `projects//locations//agents//sessions/` or `projects//locations//agents//environments//sessions/` if environment is specified.',
-      }),
-  })
-  .openapi({
-    description: 'Represents session information communicated to and from the webhook.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3SessionInfo')
-
-const GoogleCloudDialogflowCxV3UpdateDocumentOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
-        description: 'The generic information of the operation.',
-      }),
-  })
-  .openapi({ description: 'Metadata for UpdateDocument operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3UpdateDocumentOperationMetadata')
-
-const GoogleCloudDialogflowCxV3WebhookRequestFulfillmentInfoSchema = z
-  .object({
-    tag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present. The value of the Fulfillment.tag field will be populated in this field by Dialogflow when the associated webhook is called. The tag is typically used by the webhook service to identify which fulfillment is being called, but it could be used for other purposes.',
-      }),
-  })
-  .openapi({
-    description: 'Represents fulfillment information communicated to the webhook.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3WebhookRequestFulfillmentInfo')
-
-const GoogleCloudDialogflowCxV3WebhookRequestIntentInfoIntentParameterValueSchema = z
-  .object({
-    originalValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Always present. Original text value extracted from user utterance.',
-      }),
-    resolvedValue: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present. Structured value for the parameter extracted from user utterance.',
-      }),
-  })
-  .openapi({ description: 'Represents a value for an intent parameter.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3WebhookRequestIntentInfoIntentParameterValue')
-
-const GoogleCloudDialogflowCxV3WebhookRequestIntentInfoSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The confidence of the matched intent. Values range from 0.0 (completely uncertain) to 1.0 (completely certain).',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Always present. The display name of the last matched intent.' }),
-    lastMatchedIntent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present. The unique identifier of the last matched intent. Format: `projects//locations//agents//intents/`.',
-      }),
-    parameters: z
-      .record(
-        z.string(),
-        GoogleCloudDialogflowCxV3WebhookRequestIntentInfoIntentParameterValueSchema,
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          "Parameters identified as a result of intent matching. This is a map of the name of the identified parameter to the value of the parameter identified from the user's utterance. All parameters defined in the matched intent that are identified will be surfaced here.",
-      }),
-  })
-  .openapi({
-    description: 'Represents intent information communicated to the webhook.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3WebhookRequestIntentInfo')
-
-const GoogleCloudDialogflowCxV3WebhookRequestSentimentAnalysisResultSchema = z
-  .object({
-    magnitude: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'A non-negative number in the [0, +inf) range, which represents the absolute magnitude of sentiment, regardless of score (positive or negative).',
-      }),
-    score: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Sentiment score between -1.0 (negative sentiment) and 1.0 (positive sentiment).',
-      }),
-  })
-  .openapi({ description: 'Represents the result of sentiment analysis.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3WebhookRequestSentimentAnalysisResult')
-
-const GoogleCloudDialogflowCxV3WebhookRequestSchema = z
-  .object({
-    detectIntentResponseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present. The unique identifier of the DetectIntentResponse that will be returned to the API caller.',
-      }),
-    dtmfDigits: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If DTMF was provided as input, this field will contain the DTMF digits.',
-      }),
-    fulfillmentInfo:
-      GoogleCloudDialogflowCxV3WebhookRequestFulfillmentInfoSchema.exactOptional().openapi({
-        description:
-          'Always present. Information about the fulfillment that triggered this webhook call.',
-      }),
-    intentInfo: GoogleCloudDialogflowCxV3WebhookRequestIntentInfoSchema.exactOptional().openapi({
-      description: 'Information about the last matched intent.',
-    }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The language code specified in the original request.' }),
-    messages: z
-      .array(GoogleCloudDialogflowCxV3ResponseMessageSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of rich message responses to present to the user. Webhook can choose to append or replace this list in WebhookResponse.fulfillment_response;',
-      }),
-    pageInfo: GoogleCloudDialogflowCxV3PageInfoSchema.exactOptional().openapi({
-      description: 'Information about page status.',
-    }),
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'Custom data set in QueryParameters.payload.' }),
-    sentimentAnalysisResult:
-      GoogleCloudDialogflowCxV3WebhookRequestSentimentAnalysisResultSchema.exactOptional().openapi({
-        description:
-          'The sentiment analysis result of the current user request. The field is filled when sentiment analysis is configured to be enabled for the request.',
-      }),
-    sessionInfo: GoogleCloudDialogflowCxV3SessionInfoSchema.exactOptional().openapi({
-      description: 'Information about session status.',
-    }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If natural language text was provided as input, this field will contain a copy of the text.',
-      }),
-    transcript: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If natural language speech audio was provided as input, this field will contain the transcript for the audio.',
-      }),
-    triggerEvent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If an event was provided as input, this field will contain the name of the event.',
-      }),
-    triggerIntent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If an intent was provided as input, this field will contain a copy of the intent identifier. Format: `projects//locations//agents//intents/`.',
-      }),
-  })
-  .openapi({
-    description:
-      'The request message for a webhook call. The request is sent as a JSON object and the field names will be presented in camel cases. You may see undocumented fields in an actual request. These fields are used internally by Dialogflow and should be ignored.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3WebhookRequest')
-
-const GoogleCloudDialogflowCxV3WebhookResponseFulfillmentResponseSchema = z
-  .object({
-    mergeBehavior: z
-      .enum(['MERGE_BEHAVIOR_UNSPECIFIED', 'APPEND', 'REPLACE'])
-      .exactOptional()
-      .openapi({ description: 'Merge behavior for `messages`.' }),
-    messages: z
-      .array(GoogleCloudDialogflowCxV3ResponseMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of rich message responses to present to the user.' }),
-  })
-  .openapi({ description: 'Represents a fulfillment response to the user.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3WebhookResponseFulfillmentResponse')
-
-const GoogleCloudDialogflowCxV3WebhookResponseSchema = z
-  .object({
-    fulfillmentResponse:
-      GoogleCloudDialogflowCxV3WebhookResponseFulfillmentResponseSchema.exactOptional().openapi({
-        description:
-          'The fulfillment response to send to the user. This field can be omitted by the webhook if it does not intend to send any response to the user.',
-      }),
-    pageInfo: GoogleCloudDialogflowCxV3PageInfoSchema.exactOptional().openapi({
-      description:
-        'Information about page status. This field can be omitted by the webhook if it does not intend to modify page status.',
-    }),
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'Value to append directly to QueryResult.webhook_payloads.' }),
-    sessionInfo: GoogleCloudDialogflowCxV3SessionInfoSchema.exactOptional().openapi({
-      description:
-        'Information about session status. This field can be omitted by the webhook if it does not intend to modify session status.',
-    }),
-    targetFlow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
-      }),
-    targetPage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
-      }),
-  })
-  .openapi({ description: 'The response message for a webhook call.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3WebhookResponse')
-
-const GoogleCloudDialogflowCxV3beta1GcsDestinationSchema = z
-  .object({
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The Google Cloud Storage URI for the exported objects. A URI is of the form: gs://bucket/object-name-or-prefix Whether a full object name, or just a prefix, its usage depends on the Dialogflow operation.',
-      }),
-  })
-  .openapi({
-    description:
-      'Google Cloud Storage location for a Dialogflow operation that writes or exports objects (e.g. exported agent or transcripts) outside of Dialogflow.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1GcsDestination')
-
-const GoogleCloudDialogflowCxV3beta1AdvancedSettingsLoggingSettingsSchema = z
-  .object({
-    enableInteractionLogging: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, DF Interaction logging is currently enabled.' }),
-    enableStackdriverLogging: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, StackDriver logging is currently enabled.' }),
-  })
-  .openapi({ description: 'Define behaviors on logging.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1AdvancedSettingsLoggingSettings')
-
-const GoogleCloudDialogflowCxV3beta1AdvancedSettingsSchema = z
-  .object({
-    audioExportGcsDestination:
-      GoogleCloudDialogflowCxV3beta1GcsDestinationSchema.exactOptional().openapi({
-        description:
-          'If present, incoming audio is exported by Dialogflow to the configured Google Cloud Storage destination. Exposed at the following levels: - Agent level - Flow level',
-      }),
-    loggingSettings:
-      GoogleCloudDialogflowCxV3beta1AdvancedSettingsLoggingSettingsSchema.exactOptional().openapi({
-        description:
-          'Settings for logging. Settings for Dialogflow History, Contact Center messages, StackDriver logs, and speech logging. Exposed at the following levels: - Agent level.',
-      }),
-  })
-  .openapi({
-    description:
-      'Hierarchical advanced settings for agent/flow/page/fulfillment/parameter. Settings exposed at lower level overrides the settings exposed at higher level. Overriding occurs at the sub-setting level. For example, the playback_interruption_settings at fulfillment level only overrides the playback_interruption_settings at the agent level, leaving other settings at the agent level unchanged. DTMF settings does not override each other. DTMF settings set at different levels define DTMF detections running in parallel. Hierarchy: Agent->Flow->Page->Fulfillment/Parameter.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1AdvancedSettings')
-
-const GoogleCloudDialogflowCxV3beta1SpeechToTextSettingsSchema = z
-  .object({
-    enableSpeechAdaptation: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to use speech adaptation for speech recognition.' }),
-  })
-  .openapi({ description: 'Settings related to speech recognition.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1SpeechToTextSettings')
-
-const GoogleCloudDialogflowCxV3beta1VoiceSelectionParamsSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The name of the voice. If not set, the service will choose a voice based on the other parameters such as language_code and ssml_gender. For the list of available voices, please refer to [Supported voices and languages](https://cloud.google.com/text-to-speech/docs/voices).',
-      }),
-    ssmlGender: z
-      .enum([
-        'SSML_VOICE_GENDER_UNSPECIFIED',
-        'SSML_VOICE_GENDER_MALE',
-        'SSML_VOICE_GENDER_FEMALE',
-        'SSML_VOICE_GENDER_NEUTRAL',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The preferred gender of the voice. If not set, the service will choose a voice based on the other parameters such as language_code and name. Note that this is only a preference, not requirement. If a voice of the appropriate gender is not available, the synthesizer should substitute a voice with a different gender rather than failing the request.',
-      }),
-  })
-  .openapi({ description: 'Description of which voice to use for speech synthesis.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1VoiceSelectionParams')
-
-const GoogleCloudDialogflowCxV3beta1SynthesizeSpeechConfigSchema = z
-  .object({
-    effectsProfileId: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. An identifier which selects 'audio effects' profiles that are applied on (post synthesized) text to speech. Effects are applied on top of each other in the order they are given.",
-      }),
-    pitch: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Speaking pitch, in the range [-20.0, 20.0]. 20 means increase 20 semitones from the original pitch. -20 means decrease 20 semitones from the original pitch.',
-      }),
-    speakingRate: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Speaking rate/speed, in the range [0.25, 4.0]. 1.0 is the normal native speed supported by the specific voice. 2.0 is twice as fast, and 0.5 is half as fast. If unset(0.0), defaults to the native 1.0 speed. Any other values < 0.25 or > 4.0 will return an error.',
-      }),
-    voice: GoogleCloudDialogflowCxV3beta1VoiceSelectionParamsSchema.exactOptional().openapi({
-      description: 'Optional. The desired voice of the synthesized audio.',
-    }),
-    volumeGainDb: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Volume gain (in dB) of the normal native volume supported by the specific voice, in the range [-96.0, 16.0]. If unset, or set to a value of 0.0 (dB), will play at normal native signal amplitude. A value of -6.0 (dB) will play at approximately half the amplitude of the normal native signal amplitude. A value of +6.0 (dB) will play at approximately twice the amplitude of the normal native signal amplitude. We strongly recommend not to exceed +10 (dB) as there's usually no effective increase in loudness for any value greater than that.",
-      }),
-  })
-  .openapi({ description: 'Configuration of how speech should be synthesized.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1SynthesizeSpeechConfig')
-
-const GoogleCloudDialogflowCxV3beta1TextToSpeechSettingsSchema = z
-  .object({
-    synthesizeSpeechConfigs: z
-      .record(z.string(), GoogleCloudDialogflowCxV3beta1SynthesizeSpeechConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Configuration of how speech should be synthesized, mapping from language (https://dialogflow.com/docs/reference/language) to SynthesizeSpeechConfig.',
-      }),
-  })
-  .openapi({ description: 'Settings related to speech generating.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TextToSpeechSettings')
-
-const GoogleCloudDialogflowCxV3beta1AgentSchema = z
-  .object({
-    advancedSettings: GoogleCloudDialogflowCxV3beta1AdvancedSettingsSchema.exactOptional().openapi({
-      description:
-        'Hierarchical advanced settings for this agent. The settings exposed at the lower level overrides the settings exposed at the higher level.',
-    }),
-    avatarUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URI of the agent's avatar. Avatars are used throughout the Dialogflow console and in the self-hosted [Web Demo](https://cloud.google.com/dialogflow/docs/integrations/web-demo) integration.",
-      }),
-    defaultLanguageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. The default language of the agent as a language tag. See [Language Support](https://cloud.google.com/dialogflow/cx/docs/reference/language) for a list of the currently supported language codes. This field cannot be set by the Agents.UpdateAgent method.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description of the agent. The maximum length is 500 characters. If exceeded, the request is rejected.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The human-readable name of the agent, unique within the location.',
-      }),
-    enableSpellCorrection: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if automatic spell correction is enabled in detect intent requests.',
-      }),
-    enableStackdriverLogging: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if stackdriver logging is enabled for the agent. Please use agent.advanced_settings instead.',
-      }),
-    locked: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the agent is locked for changes. If the agent is locked, modifications to the agent will be rejected except for RestoreAgent.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the agent. Required for the Agents.UpdateAgent method. Agents.CreateAgent populates the name automatically. Format: `projects//locations//agents/`.',
-      }),
-    securitySettings: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the SecuritySettings reference for the agent. Format: `projects//locations//securitySettings/`.',
-      }),
-    speechToTextSettings:
-      GoogleCloudDialogflowCxV3beta1SpeechToTextSettingsSchema.exactOptional().openapi({
-        description: 'Speech recognition related settings.',
-      }),
-    startFlow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. Name of the start flow in this agent. A start flow will be automatically created when the agent is created, and can only be deleted by deleting the agent. Format: `projects//locations//agents//flows/`.',
-      }),
-    supportedLanguageCodes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of all languages supported by the agent (except for the `default_language_code`).',
-      }),
-    textToSpeechSettings:
-      GoogleCloudDialogflowCxV3beta1TextToSpeechSettingsSchema.exactOptional().openapi({
-        description:
-          'Settings on instructing the speech synthesizer on how to generate the output audio content.',
-      }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The time zone of the agent from the [time zone database](https://www.iana.org/time-zones), e.g., America/New_York, Europe/Paris.',
-      }),
-  })
-  .openapi({
-    description:
-      'Agents are best described as Natural Language Understanding (NLU) modules that transform user requests into actionable data. You can include agents in your app, product, or service to determine user intent and respond to the user in a natural way. After you create an agent, you can add Intents, Entity Types, Flows, Fulfillments, Webhooks, and so on to manage the conversation flows..',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1Agent')
-
-const GoogleCloudDialogflowCxV3beta1ResourceNameSchema = z
-  .object({
-    displayName: z.string().exactOptional().openapi({ description: 'Display name.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name.' }),
-  })
-  .openapi({ description: 'Resource name and display name.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ResourceName')
-
-const GoogleCloudDialogflowCxV3beta1ValidationMessageSchema = z
-  .object({
-    detail: z.string().exactOptional().openapi({ description: 'The message detail.' }),
-    resourceNames: z
-      .array(GoogleCloudDialogflowCxV3beta1ResourceNameSchema)
-      .exactOptional()
-      .openapi({ description: 'The resource names of the resources where the message is found.' }),
-    resourceType: z
-      .enum([
-        'RESOURCE_TYPE_UNSPECIFIED',
-        'AGENT',
-        'INTENT',
-        'INTENT_TRAINING_PHRASE',
-        'INTENT_PARAMETER',
-        'INTENTS',
-        'INTENT_TRAINING_PHRASES',
-        'ENTITY_TYPE',
-        'ENTITY_TYPES',
-        'WEBHOOK',
-        'FLOW',
-        'PAGE',
-        'PAGES',
-        'TRANSITION_ROUTE_GROUP',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the resources where the message is found.' }),
-    resources: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The names of the resources where the message is found.' }),
-    severity: z
-      .enum(['SEVERITY_UNSPECIFIED', 'INFO', 'WARNING', 'ERROR'])
-      .exactOptional()
-      .openapi({ description: 'Indicates the severity of the message.' }),
-  })
-  .openapi({ description: 'Agent/flow validation message.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ValidationMessage')
-
-const GoogleCloudDialogflowCxV3beta1FlowValidationResultSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the flow validation result. Format: `projects//locations//agents//flows//validationResult`.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Last time the flow was validated.' }),
-    validationMessages: z
-      .array(GoogleCloudDialogflowCxV3beta1ValidationMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'Contains all validation messages.' }),
-  })
-  .openapi({ description: 'The response message for Flows.GetFlowValidationResult.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1FlowValidationResult')
-
-const GoogleCloudDialogflowCxV3beta1AgentValidationResultSchema = z
-  .object({
-    flowValidationResults: z
-      .array(GoogleCloudDialogflowCxV3beta1FlowValidationResultSchema)
-      .exactOptional()
-      .openapi({ description: 'Contains all flow validation results.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the agent validation result. Format: `projects//locations//agents//validationResult`.',
-      }),
-  })
-  .openapi({
-    description: 'The response message for Agents.GetAgentValidationResult.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1AgentValidationResult')
+type GoogleCloudDialogflowCxV3RunTestCaseResponseType = {
+  result?: z.infer<typeof GoogleCloudDialogflowCxV3TestCaseResultSchema>
+}
 
 const GoogleCloudDialogflowCxV3beta1InputAudioConfigSchema = z
   .object({
@@ -2819,63 +1561,6 @@ const GoogleCloudDialogflowCxV3beta1AudioInputSchema = z
   })
   .openapi({ description: 'Represents the natural speech audio to be processed.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3beta1AudioInput')
-
-const GoogleCloudDialogflowCxV3beta1BatchDeleteTestCasesRequestSchema = z
-  .object({
-    names: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Format of test case names: `projects//locations/ /agents//testCases/`.',
-      }),
-  })
-  .openapi({ description: 'The request message for TestCases.BatchDeleteTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1BatchDeleteTestCasesRequest')
-
-const GoogleCloudDialogflowCxV3beta1TestErrorSchema = z
-  .object({
-    status: GoogleRpcStatusSchema.exactOptional().openapi({
-      description: 'The status associated with the test.',
-    }),
-    testCase: z.string().exactOptional().openapi({ description: 'The test case resource name.' }),
-    testTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timestamp when the test was completed.' }),
-  })
-  .openapi({ description: 'Error info for running a test.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TestError')
-
-const GoogleCloudDialogflowCxV3beta1BatchRunTestCasesMetadataSchema = z
-  .object({
-    errors: z
-      .array(GoogleCloudDialogflowCxV3beta1TestErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'The test errors.' }),
-  })
-  .openapi({
-    description: 'Metadata returned for the TestCases.BatchRunTestCases long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1BatchRunTestCasesMetadata')
-
-const GoogleCloudDialogflowCxV3beta1BatchRunTestCasesRequestSchema = z
-  .object({
-    environment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If not set, draft environment is assumed. Format: `projects//locations//agents//environments/`.',
-      }),
-    testCases: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Required. Format: `projects//locations//agents//testCases/`.' }),
-  })
-  .openapi({ description: 'The request message for TestCases.BatchRunTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1BatchRunTestCasesRequest')
 
 const GoogleCloudDialogflowCxV3beta1DtmfInputSchema = z
   .object({
@@ -2979,6 +1664,277 @@ const GoogleCloudDialogflowCxV3beta1ConversationTurnUserInputSchema = z
   .openapi({ description: 'The input from the human user.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3beta1ConversationTurnUserInput')
 
+const GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          cases: z
+            .array(GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseSchema)
+            .exactOptional()
+            .openapi({ description: 'A list of cascading if-else conditions.' }),
+        })
+        .openapi({
+          description:
+            'A list of cascading if-else conditions. Cases are mutually exclusive. The first one with a matching condition is selected, all the rest ignored.',
+          required: [],
+        }),
+    )
+    .openapi('GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCases')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccessSchema = z
+  .object({
+    metadata: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description: "Custom metadata. Dialogflow doesn't impose any structure on this.",
+      }),
+  })
+  .openapi({
+    description:
+      "Indicates that the conversation succeeded, i.e., the bot handled the issue that the customer talked to it about. Dialogflow only uses this to determine which conversations should be counted as successful and doesn't process the metadata in this message in any way. Note that Dialogflow also considers conversations that get to the conversation end page as successful even if they don't return ConversationSuccess. You may set this, for example: * In the entry_fulfillment of a Page if entering the page indicates that the conversation succeeded. * In a webhook response when you determine that you handled the customer issue.",
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccess')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteractionSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Indicates that interaction with the Dialogflow agent has ended. This message is generated by Dialogflow only and not supposed to be defined by the user.',
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteraction')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoffSchema = z
+  .object({
+    metadata: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          "Custom metadata for your handoff procedure. Dialogflow doesn't impose any structure on this.",
+      }),
+  })
+  .openapi({
+    description:
+      'Indicates that the conversation should be handed off to a live agent. Dialogflow only uses this to determine which conversations were handed off to a human agent for measurement purposes. What else to do with this signal is up to you and your handoff procedures. You may set this, for example: * In the entry_fulfillment of a Page if entering the page indicates something went extremely wrong in the conversation. * In a webhook response when you determine that the customer issue can only be handled by a human.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoff')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSegmentSchema = z
+  .object({
+    allowPlaybackInterruption: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. Whether the playback of this segment can be interrupted by the end user's speech and the client should then start the next Dialogflow request.",
+        readOnly: true,
+      }),
+    audio: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Raw audio synthesized from the Dialogflow agent's response using the output config specified in the request.",
+      }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Client-specific URI that points to an audio clip accessible to the client. Dialogflow does not impose any validation on it.',
+      }),
+  })
+  .openapi({ description: 'Represents one segment of audio.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSegment')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSchema = z
+  .object({
+    segments: z
+      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSegmentSchema)
+      .exactOptional()
+      .openapi({ description: 'Segments this audio response is composed of.' }),
+  })
+  .openapi({
+    description:
+      'Represents an audio message that is composed of both segments synthesized from the Dialogflow agent prompts and ones hosted externally at the specified URIs. The external URIs are specified via play_audio. This message is generated by Dialogflow only and not supposed to be defined by the user.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudio')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageOutputAudioTextSchema = z
+  .object({
+    allowPlaybackInterruption: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.",
+        readOnly: true,
+      }),
+    ssml: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The SSML text to be synthesized. For more information, see [SSML](/speech/text-to-speech/docs/ssml).',
+      }),
+    text: z.string().exactOptional().openapi({ description: 'The raw text to be synthesized.' }),
+  })
+  .openapi({
+    description:
+      'A text or ssml response that is preferentially used for TTS output audio synthesis, as described in the comment on the ResponseMessage message.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageOutputAudioText')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessagePlayAudioSchema = z
+  .object({
+    allowPlaybackInterruption: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.",
+        readOnly: true,
+      }),
+    audioUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. URI of the audio clip. Dialogflow does not impose any validation on this value. It is specific to the client that reads it.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies an audio clip to be played by the client as part of the response.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessagePlayAudio')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageTelephonyTransferCallSchema = z
+  .object({
+    phoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Transfer the call to a phone number in [E.164 format](https://en.wikipedia.org/wiki/E.164).',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents the signal that telles the client to transfer the phone call connected to the agent to a third-party endpoint.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageTelephonyTransferCall')
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema = z
+  .object({
+    allowPlaybackInterruption: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.",
+        readOnly: true,
+      }),
+    text: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Required. A collection of text responses.' }),
+  })
+  .openapi({ description: 'The text response message.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessageText')
+
+type GoogleCloudDialogflowCxV3beta1ResponseMessageType = {
+  channel?: string
+  conversationSuccess?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccessSchema
+  >
+  endInteraction?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteractionSchema>
+  liveAgentHandoff?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoffSchema
+  >
+  mixedAudio?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSchema>
+  outputAudioText?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1ResponseMessageOutputAudioTextSchema
+  >
+  payload?: { [key: string]: unknown }
+  playAudio?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessagePlayAudioSchema>
+  telephonyTransferCall?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1ResponseMessageTelephonyTransferCallSchema
+  >
+  text?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema>
+}
+
+const GoogleCloudDialogflowCxV3beta1ResponseMessageSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ResponseMessageType> =
+  z
+    .object({
+      channel: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The channel which the response is associated with. Clients can specify the channel via QueryParameters.channel, and only associated channel response will be returned.',
+        }),
+      conversationSuccess:
+        GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccessSchema.exactOptional().openapi(
+          { description: 'Indicates that the conversation succeeded.' },
+        ),
+      endInteraction:
+        GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteractionSchema.exactOptional().openapi({
+          description:
+            "Output only. A signal that indicates the interaction with the Dialogflow agent has ended. This message is generated by Dialogflow only when the conversation reaches `END_SESSION` page. It is not supposed to be defined by the user. It's guaranteed that there is at most one such message in each response.",
+          readOnly: true,
+        }),
+      liveAgentHandoff:
+        GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoffSchema.exactOptional().openapi(
+          { description: 'Hands off conversation to a human agent.' },
+        ),
+      mixedAudio:
+        GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudioSchema.exactOptional().openapi({
+          description:
+            'Output only. An audio response message composed of both the synthesized Dialogflow agent responses and responses defined via play_audio. This message is generated by Dialogflow only and not supposed to be defined by the user.',
+          readOnly: true,
+        }),
+      outputAudioText:
+        GoogleCloudDialogflowCxV3beta1ResponseMessageOutputAudioTextSchema.exactOptional().openapi({
+          description:
+            'A text or ssml response that is preferentially used for TTS output audio synthesis, as described in the comment on the ResponseMessage message.',
+        }),
+      payload: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description: 'Returns a response containing a custom, platform-specific payload.',
+        }),
+      playAudio:
+        GoogleCloudDialogflowCxV3beta1ResponseMessagePlayAudioSchema.exactOptional().openapi({
+          description:
+            'Signal that the client should play an audio clip hosted at a client-specific URI. Dialogflow uses this to construct mixed_audio. However, Dialogflow itself does not try to read or process the URI in any way.',
+        }),
+      telephonyTransferCall:
+        GoogleCloudDialogflowCxV3beta1ResponseMessageTelephonyTransferCallSchema.exactOptional().openapi(
+          {
+            description:
+              'A signal that the client should transfer the phone call connected to this agent to a third-party endpoint.',
+          },
+        ),
+      text: GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema.exactOptional().openapi({
+        description: 'Returns a text response.',
+      }),
+    })
+    .openapi({
+      description:
+        'Represents a response message that can be returned by a conversational agent. Response messages are also used for output audio synthesis. The approach is as follows: * If at least one OutputAudioText response is present, then all OutputAudioText responses are linearly concatenated, and the result is used for output audio synthesis. * If the OutputAudioText responses are a mixture of text and SSML, then the concatenated result is treated as SSML; otherwise, the result is treated as either text or SSML as appropriate. The agent designer should ideally use either text or SSML consistently throughout the bot design. * Otherwise, all Text responses are linearly concatenated, and the result is used for output audio synthesis. This approach allows for more sophisticated user experience scenarios, where the text displayed to the user may differ from what is heard.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1ResponseMessage')
+
 const GoogleCloudDialogflowCxV3beta1FulfillmentSetParameterActionSchema = z
   .object({
     parameter: z
@@ -2995,269 +1951,336 @@ const GoogleCloudDialogflowCxV3beta1FulfillmentSetParameterActionSchema = z
   .openapi({ description: 'Setting a parameter value.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3beta1FulfillmentSetParameterAction')
 
-const GoogleCloudDialogflowCxV3beta1FulfillmentSchema = z
-  .object({
-    conditionalCases: z
-      .array(GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema)
-      .exactOptional()
-      .openapi({ description: 'Conditional cases for this fulfillment.' }),
-    messages: z
-      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of rich message responses to present to the user.' }),
-    returnPartialResponses: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.',
-      }),
-    setParameterActions: z
-      .array(GoogleCloudDialogflowCxV3beta1FulfillmentSetParameterActionSchema)
-      .exactOptional()
-      .openapi({ description: 'Set parameter values before executing the webhook.' }),
-    tag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of this field will be populated in the WebhookRequest `fulfillmentInfo.tag` field by Dialogflow when the associated webhook is called. The tag is typically used by the webhook service to identify which fulfillment is being called, but it could be used for other purposes. This field is required if `webhook` is specified.',
-      }),
-    webhook: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The webhook to call. Format: `projects//locations//agents//webhooks/`.',
-      }),
-  })
-  .openapi({
-    description:
-      "A fulfillment can do one or more of the following actions at the same time: * Generate rich message responses. * Set parameter values. * Call the webhook. Fulfillments can be called at various stages in the Page or Form lifecycle. For example, when a DetectIntentRequest drives a session to enter a new page, the page's entry fulfillment can add a static response to the QueryResult in the returning DetectIntentResponse, call the webhook (for example, to load user data from a database), or both.",
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1Fulfillment')
+type GoogleCloudDialogflowCxV3beta1FulfillmentType = {
+  conditionalCases?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema
+  >[]
+  messages?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageSchema>[]
+  returnPartialResponses?: boolean
+  setParameterActions?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1FulfillmentSetParameterActionSchema
+  >[]
+  tag?: string
+  webhook?: string
+}
 
-const GoogleCloudDialogflowCxV3beta1EventHandlerSchema = z
-  .object({
-    event: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the event to handle.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The unique identifier of this event handler.',
-        readOnly: true,
-      }),
-    targetFlow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
-      }),
-    targetPage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
-      }),
-    triggerFulfillment: GoogleCloudDialogflowCxV3beta1FulfillmentSchema.exactOptional().openapi({
+const GoogleCloudDialogflowCxV3beta1FulfillmentSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillmentType> =
+  z
+    .object({
+      conditionalCases: z
+        .array(GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema)
+        .exactOptional()
+        .openapi({ description: 'Conditional cases for this fulfillment.' }),
+      messages: z
+        .array(GoogleCloudDialogflowCxV3beta1ResponseMessageSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of rich message responses to present to the user.' }),
+      returnPartialResponses: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.',
+        }),
+      setParameterActions: z
+        .array(GoogleCloudDialogflowCxV3beta1FulfillmentSetParameterActionSchema)
+        .exactOptional()
+        .openapi({ description: 'Set parameter values before executing the webhook.' }),
+      tag: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The value of this field will be populated in the WebhookRequest `fulfillmentInfo.tag` field by Dialogflow when the associated webhook is called. The tag is typically used by the webhook service to identify which fulfillment is being called, but it could be used for other purposes. This field is required if `webhook` is specified.',
+        }),
+      webhook: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The webhook to call. Format: `projects//locations//agents//webhooks/`.',
+        }),
+    })
+    .openapi({
       description:
-        'The fulfillment to call when the event occurs. Handling webhook errors with a fulfillment enabled with webhook could cause infinite loop. It is invalid to specify such fulfillment for a handler handling webhooks.',
-    }),
-  })
-  .openapi({
-    description:
-      'An event handler specifies an event that can be handled during a session. When the specified event happens, the following actions are taken in order: * If there is a `trigger_fulfillment` associated with the event, it will be called. * If there is a `target_page` associated with the event, the session will transition into the specified page. * If there is a `target_flow` associated with the event, the session will transition into the specified flow.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1EventHandler')
+        "A fulfillment can do one or more of the following actions at the same time: * Generate rich message responses. * Set parameter values. * Call the webhook. Fulfillments can be called at various stages in the Page or Form lifecycle. For example, when a DetectIntentRequest drives a session to enter a new page, the page's entry fulfillment can add a static response to the QueryResult in the returning DetectIntentResponse, call the webhook (for example, to load user data from a database), or both.",
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1Fulfillment')
 
-const GoogleCloudDialogflowCxV3beta1FormParameterFillBehaviorSchema = z
-  .object({
-    initialPromptFulfillment:
-      GoogleCloudDialogflowCxV3beta1FulfillmentSchema.exactOptional().openapi({
-        description:
-          'Required. The fulfillment to provide the initial prompt that the agent can present to the user in order to fill the parameter.',
-      }),
-    repromptEventHandlers: z
-      .array(GoogleCloudDialogflowCxV3beta1EventHandlerSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The handlers for parameter-level events, used to provide reprompt for the parameter or transition to a different page/flow. The supported events are: * `sys.no-match-`, where N can be from 1 to 6 * `sys.no-match-default` * `sys.no-input-`, where N can be from 1 to 6 * `sys.no-input-default` * `sys.invalid-parameter` `initial_prompt_fulfillment` provides the first prompt for the parameter. If the user's response does not fill the parameter, a no-match/no-input event will be triggered, and the fulfillment associated with the `sys.no-match-1`/`sys.no-input-1` handler (if defined) will be called to provide a prompt. The `sys.no-match-2`/`sys.no-input-2` handler (if defined) will respond to the next no-match/no-input event, and so on. A `sys.no-match-default` or `sys.no-input-default` handler will be used to handle all following no-match/no-input events after all numbered no-match/no-input handlers for the parameter are consumed. A `sys.invalid-parameter` handler can be defined to handle the case where the parameter values have been `invalidated` by webhook. For example, if the user's response fill the parameter, however the parameter was invalidated by webhook, the fulfillment associated with the `sys.invalid-parameter` handler (if defined) will be called to provide a prompt. If the event handler for the corresponding event can't be found on the parameter, `initial_prompt_fulfillment` will be re-prompted.",
-      }),
-  })
-  .openapi({
-    description: 'Configuration for how the filling of a parameter should be handled.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1FormParameterFillBehavior')
+type GoogleCloudDialogflowCxV3beta1EventHandlerType = {
+  event?: string
+  name?: string
+  targetFlow?: string
+  targetPage?: string
+  triggerFulfillment?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FulfillmentSchema>
+}
 
-const GoogleCloudDialogflowCxV3beta1FormParameterSchema = z
-  .object({
-    defaultValue: z
-      .any()
-      .exactOptional()
-      .openapi({
+const GoogleCloudDialogflowCxV3beta1EventHandlerSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1EventHandlerType> =
+  z
+    .object({
+      event: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. The name of the event to handle.' }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The unique identifier of this event handler.',
+          readOnly: true,
+        }),
+      targetFlow: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
+        }),
+      targetPage: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
+        }),
+      triggerFulfillment: GoogleCloudDialogflowCxV3beta1FulfillmentSchema.exactOptional().openapi({
         description:
-          'The default value of an optional parameter. If the parameter is required, the default value will be ignored.',
+          'The fulfillment to call when the event occurs. Handling webhook errors with a fulfillment enabled with webhook could cause infinite loop. It is invalid to specify such fulfillment for a handler handling webhooks.',
       }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The human-readable name of the parameter, unique within the form.',
-      }),
-    entityType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The entity type of the parameter. Format: `projects/-/locations/-/agents/-/entityTypes/` for system entity types (for example, `projects/-/locations/-/agents/-/entityTypes/sys.date`), or `projects//locations//agents//entityTypes/` for developer entity types.',
-      }),
-    fillBehavior:
-      GoogleCloudDialogflowCxV3beta1FormParameterFillBehaviorSchema.exactOptional().openapi({
-        description: 'Required. Defines fill behavior for the parameter.',
-      }),
-    isList: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the parameter represents a list of values.' }),
-    redact: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the parameter content should be redacted in log. If redaction is enabled, the parameter content will be replaced by parameter name during logging. Note: the parameter content is subject to redaction if either parameter level redaction or entity type level redaction is enabled.',
-      }),
-    required: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them. Required parameters must be filled before form filling concludes.',
-      }),
-  })
-  .openapi({ description: 'Represents a form parameter.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1FormParameter')
-
-const GoogleCloudDialogflowCxV3beta1FormSchema = z
-  .object({
-    parameters: z
-      .array(GoogleCloudDialogflowCxV3beta1FormParameterSchema)
-      .exactOptional()
-      .openapi({ description: 'Parameters to collect from the user.' }),
-  })
-  .openapi({
-    description:
-      'A form is a data model that groups related parameters that can be collected from the user. The process in which the agent prompts the user and collects parameter values from the user is called form filling. A form can be added to a page. When form filling is done, the filled parameters will be written to the session.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1Form')
-
-const GoogleCloudDialogflowCxV3beta1TransitionRouteSchema = z
-  .object({
-    condition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The condition to evaluate against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition). At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.',
-      }),
-    intent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of an Intent. Format: `projects//locations//agents//intents/`. Indicates that the transition can only happen when the given intent is matched. At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The unique identifier of this transition route.',
-        readOnly: true,
-      }),
-    targetFlow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
-      }),
-    targetPage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
-      }),
-    triggerFulfillment: GoogleCloudDialogflowCxV3beta1FulfillmentSchema.exactOptional().openapi({
+    })
+    .openapi({
       description:
-        'The fulfillment to call when the condition is satisfied. At least one of `trigger_fulfillment` and `target` must be specified. When both are defined, `trigger_fulfillment` is executed first.',
-    }),
-  })
-  .openapi({
-    description:
-      'A transition route specifies a intent that can be matched and/or a data condition that can be evaluated during a session. When a specified transition is matched, the following actions are taken in order: * If there is a `trigger_fulfillment` associated with the transition, it will be called. * If there is a `target_page` associated with the transition, the session will transition into the specified page. * If there is a `target_flow` associated with the transition, the session will transition into the specified flow.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1TransitionRoute')
+        'An event handler specifies an event that can be handled during a session. When the specified event happens, the following actions are taken in order: * If there is a `trigger_fulfillment` associated with the event, it will be called. * If there is a `target_page` associated with the event, the session will transition into the specified page. * If there is a `target_flow` associated with the event, the session will transition into the specified flow.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1EventHandler')
 
-const GoogleCloudDialogflowCxV3beta1PageSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The human-readable name of the page, unique within the flow.',
-      }),
-    entryFulfillment: GoogleCloudDialogflowCxV3beta1FulfillmentSchema.exactOptional().openapi({
-      description: 'The fulfillment to call when the session is entering the page.',
-    }),
-    eventHandlers: z
-      .array(GoogleCloudDialogflowCxV3beta1EventHandlerSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Handlers associated with the page to handle events such as webhook errors, no match or no input.',
-      }),
-    form: GoogleCloudDialogflowCxV3beta1FormSchema.exactOptional().openapi({
+type GoogleCloudDialogflowCxV3beta1FormParameterFillBehaviorType = {
+  initialPromptFulfillment?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FulfillmentSchema>
+  repromptEventHandlers?: z.infer<typeof GoogleCloudDialogflowCxV3beta1EventHandlerSchema>[]
+}
+
+const GoogleCloudDialogflowCxV3beta1FormParameterFillBehaviorSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FormParameterFillBehaviorType> =
+  z
+    .object({
+      initialPromptFulfillment:
+        GoogleCloudDialogflowCxV3beta1FulfillmentSchema.exactOptional().openapi({
+          description:
+            'Required. The fulfillment to provide the initial prompt that the agent can present to the user in order to fill the parameter.',
+        }),
+      repromptEventHandlers: z
+        .array(GoogleCloudDialogflowCxV3beta1EventHandlerSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "The handlers for parameter-level events, used to provide reprompt for the parameter or transition to a different page/flow. The supported events are: * `sys.no-match-`, where N can be from 1 to 6 * `sys.no-match-default` * `sys.no-input-`, where N can be from 1 to 6 * `sys.no-input-default` * `sys.invalid-parameter` `initial_prompt_fulfillment` provides the first prompt for the parameter. If the user's response does not fill the parameter, a no-match/no-input event will be triggered, and the fulfillment associated with the `sys.no-match-1`/`sys.no-input-1` handler (if defined) will be called to provide a prompt. The `sys.no-match-2`/`sys.no-input-2` handler (if defined) will respond to the next no-match/no-input event, and so on. A `sys.no-match-default` or `sys.no-input-default` handler will be used to handle all following no-match/no-input events after all numbered no-match/no-input handlers for the parameter are consumed. A `sys.invalid-parameter` handler can be defined to handle the case where the parameter values have been `invalidated` by webhook. For example, if the user's response fill the parameter, however the parameter was invalidated by webhook, the fulfillment associated with the `sys.invalid-parameter` handler (if defined) will be called to provide a prompt. If the event handler for the corresponding event can't be found on the parameter, `initial_prompt_fulfillment` will be re-prompted.",
+        }),
+    })
+    .openapi({
+      description: 'Configuration for how the filling of a parameter should be handled.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1FormParameterFillBehavior')
+
+type GoogleCloudDialogflowCxV3beta1FormParameterType = {
+  defaultValue?: unknown
+  displayName?: string
+  entityType?: string
+  fillBehavior?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FormParameterFillBehaviorSchema>
+  isList?: boolean
+  redact?: boolean
+  required?: boolean
+}
+
+const GoogleCloudDialogflowCxV3beta1FormParameterSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FormParameterType> =
+  z
+    .object({
+      defaultValue: z
+        .any()
+        .exactOptional()
+        .openapi({
+          description:
+            'The default value of an optional parameter. If the parameter is required, the default value will be ignored.',
+        }),
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The human-readable name of the parameter, unique within the form.',
+        }),
+      entityType: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The entity type of the parameter. Format: `projects/-/locations/-/agents/-/entityTypes/` for system entity types (for example, `projects/-/locations/-/agents/-/entityTypes/sys.date`), or `projects//locations//agents//entityTypes/` for developer entity types.',
+        }),
+      fillBehavior:
+        GoogleCloudDialogflowCxV3beta1FormParameterFillBehaviorSchema.exactOptional().openapi({
+          description: 'Required. Defines fill behavior for the parameter.',
+        }),
+      isList: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Indicates whether the parameter represents a list of values.' }),
+      redact: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the parameter content should be redacted in log. If redaction is enabled, the parameter content will be replaced by parameter name during logging. Note: the parameter content is subject to redaction if either parameter level redaction or entity type level redaction is enabled.',
+        }),
+      required: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them. Required parameters must be filled before form filling concludes.',
+        }),
+    })
+    .openapi({ description: 'Represents a form parameter.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1FormParameter')
+
+type GoogleCloudDialogflowCxV3beta1FormType = {
+  parameters?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FormParameterSchema>[]
+}
+
+const GoogleCloudDialogflowCxV3beta1FormSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FormType> =
+  z
+    .object({
+      parameters: z
+        .array(GoogleCloudDialogflowCxV3beta1FormParameterSchema)
+        .exactOptional()
+        .openapi({ description: 'Parameters to collect from the user.' }),
+    })
+    .openapi({
       description:
-        'The form associated with the page, used for collecting parameters relevant to the page.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
+        'A form is a data model that groups related parameters that can be collected from the user. The process in which the agent prompts the user and collects parameter values from the user is called form filling. A form can be added to a page. When form filling is done, the filled parameters will be written to the session.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1Form')
+
+type GoogleCloudDialogflowCxV3beta1TransitionRouteType = {
+  condition?: string
+  intent?: string
+  name?: string
+  targetFlow?: string
+  targetPage?: string
+  triggerFulfillment?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FulfillmentSchema>
+}
+
+const GoogleCloudDialogflowCxV3beta1TransitionRouteSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TransitionRouteType> =
+  z
+    .object({
+      condition: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The condition to evaluate against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition). At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.',
+        }),
+      intent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of an Intent. Format: `projects//locations//agents//intents/`. Indicates that the transition can only happen when the given intent is matched. At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The unique identifier of this transition route.',
+          readOnly: true,
+        }),
+      targetFlow: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
+        }),
+      targetPage: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
+        }),
+      triggerFulfillment: GoogleCloudDialogflowCxV3beta1FulfillmentSchema.exactOptional().openapi({
         description:
-          'The unique identifier of the page. Required for the Pages.UpdatePage method. Pages.CreatePage populates the name automatically. Format: `projects//locations//agents//flows//pages/`.',
+          'The fulfillment to call when the condition is satisfied. At least one of `trigger_fulfillment` and `target` must be specified. When both are defined, `trigger_fulfillment` is executed first.',
       }),
-    transitionRouteGroups: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
+    })
+    .openapi({
+      description:
+        'A transition route specifies a intent that can be matched and/or a data condition that can be evaluated during a session. When a specified transition is matched, the following actions are taken in order: * If there is a `trigger_fulfillment` associated with the transition, it will be called. * If there is a `target_page` associated with the transition, the session will transition into the specified page. * If there is a `target_flow` associated with the transition, the session will transition into the specified flow.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1TransitionRoute')
+
+type GoogleCloudDialogflowCxV3beta1PageType = {
+  displayName?: string
+  entryFulfillment?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FulfillmentSchema>
+  eventHandlers?: z.infer<typeof GoogleCloudDialogflowCxV3beta1EventHandlerSchema>[]
+  form?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FormSchema>
+  name?: string
+  transitionRouteGroups?: string[]
+  transitionRoutes?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionRouteSchema>[]
+}
+
+const GoogleCloudDialogflowCxV3beta1PageSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1PageType> =
+  z
+    .object({
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Required. The human-readable name of the page, unique within the flow.',
+        }),
+      entryFulfillment: GoogleCloudDialogflowCxV3beta1FulfillmentSchema.exactOptional().openapi({
+        description: 'The fulfillment to call when the session is entering the page.',
+      }),
+      eventHandlers: z
+        .array(GoogleCloudDialogflowCxV3beta1EventHandlerSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Handlers associated with the page to handle events such as webhook errors, no match or no input.',
+        }),
+      form: GoogleCloudDialogflowCxV3beta1FormSchema.exactOptional().openapi({
         description:
-          "Ordered list of `TransitionRouteGroups` associated with the page. Transition route groups must be unique within a page. * If multiple transition routes within a page scope refer to the same intent, then the precedence order is: page's transition route -> page's transition route group -> flow's transition routes. * If multiple transition route groups within a page contain the same intent, then the first group in the ordered list takes precedence. Format:`projects//locations//agents//flows//transitionRouteGroups/`.",
+          'The form associated with the page, used for collecting parameters relevant to the page.',
       }),
-    transitionRoutes: z
-      .array(GoogleCloudDialogflowCxV3beta1TransitionRouteSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of transitions for the transition rules of this page. They route the conversation to another page in the same flow, or another flow. When we are in a certain page, the TransitionRoutes are evalauted in the following order: * TransitionRoutes defined in the page with intent specified. * TransitionRoutes defined in the transition route groups with intent specified. * TransitionRoutes defined in flow with intent specified. * TransitionRoutes defined in the transition route groups with intent specified. * TransitionRoutes defined in the page with only condition specified. * TransitionRoutes defined in the transition route groups with only condition specified.',
-      }),
-  })
-  .openapi({
-    description:
-      'A Dialogflow CX conversation (session) can be described and visualized as a state machine. The states of a CX session are represented by pages. For each flow, you define many pages, where your combined pages can handle a complete conversation on the topics the flow is designed for. At any given moment, exactly one page is the current page, the current page is considered active, and the flow associated with that page is considered active. Every flow has a special start page. When a flow initially becomes active, the start page page becomes the current page. For each conversational turn, the current page will either stay the same or transition to another page. You configure each page to collect information from the end-user that is relevant for the conversational state represented by the page. For more information, see the [Page guide](https://cloud.google.com/dialogflow/cx/docs/concept/page).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1Page')
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of the page. Required for the Pages.UpdatePage method. Pages.CreatePage populates the name automatically. Format: `projects//locations//agents//flows//pages/`.',
+        }),
+      transitionRouteGroups: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            "Ordered list of `TransitionRouteGroups` associated with the page. Transition route groups must be unique within a page. * If multiple transition routes within a page scope refer to the same intent, then the precedence order is: page's transition route -> page's transition route group -> flow's transition routes. * If multiple transition route groups within a page contain the same intent, then the first group in the ordered list takes precedence. Format:`projects//locations//agents//flows//transitionRouteGroups/`.",
+        }),
+      transitionRoutes: z
+        .array(GoogleCloudDialogflowCxV3beta1TransitionRouteSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of transitions for the transition rules of this page. They route the conversation to another page in the same flow, or another flow. When we are in a certain page, the TransitionRoutes are evalauted in the following order: * TransitionRoutes defined in the page with intent specified. * TransitionRoutes defined in the transition route groups with intent specified. * TransitionRoutes defined in flow with intent specified. * TransitionRoutes defined in the transition route groups with intent specified. * TransitionRoutes defined in the page with only condition specified. * TransitionRoutes defined in the transition route groups with only condition specified.',
+        }),
+    })
+    .openapi({
+      description:
+        'A Dialogflow CX conversation (session) can be described and visualized as a state machine. The states of a CX session are represented by pages. For each flow, you define many pages, where your combined pages can handle a complete conversation on the topics the flow is designed for. At any given moment, exactly one page is the current page, the current page is considered active, and the flow associated with that page is considered active. Every flow has a special start page. When a flow initially becomes active, the start page page becomes the current page. For each conversational turn, the current page will either stay the same or transition to another page. You configure each page to collect information from the end-user that is relevant for the conversational state represented by the page. For more information, see the [Page guide](https://cloud.google.com/dialogflow/cx/docs/concept/page).',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1Page')
 
 const GoogleCloudDialogflowCxV3beta1TestRunDifferenceSchema = z
   .object({
@@ -3410,114 +2433,134 @@ const GoogleCloudDialogflowCxV3beta1IntentSchema = z
   })
   .openapi('GoogleCloudDialogflowCxV3beta1Intent')
 
-const GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutputSchema = z
-  .object({
-    currentPage: GoogleCloudDialogflowCxV3beta1PageSchema.exactOptional().openapi({
+type GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutputType = {
+  currentPage?: z.infer<typeof GoogleCloudDialogflowCxV3beta1PageSchema>
+  diagnosticInfo?: { [key: string]: unknown }
+  differences?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestRunDifferenceSchema>[]
+  sessionParameters?: { [key: string]: unknown }
+  status?: z.infer<typeof GoogleRpcStatusSchema>
+  textResponses?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema>[]
+  triggeredIntent?: z.infer<typeof GoogleCloudDialogflowCxV3beta1IntentSchema>
+}
+
+const GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutputSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutputType> =
+  z
+    .object({
+      currentPage: GoogleCloudDialogflowCxV3beta1PageSchema.exactOptional().openapi({
+        description:
+          'The Page on which the utterance was spoken. Only name and displayName will be set.',
+      }),
+      diagnosticInfo: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. Input only. The diagnostic info output for the turn. Required to calculate the testing coverage.',
+        }),
+      differences: z
+        .array(GoogleCloudDialogflowCxV3beta1TestRunDifferenceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. If this is part of a result conversation turn, the list of differences between the original run and the replay for this output, if any.',
+          readOnly: true,
+        }),
+      sessionParameters: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({ description: 'The session parameters available to the bot at this point.' }),
+      status: GoogleRpcStatusSchema.exactOptional().openapi({
+        description:
+          'Response error from the agent in the test result. If set, other output is empty.',
+      }),
+      textResponses: z
+        .array(GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema)
+        .exactOptional()
+        .openapi({ description: 'The text responses from the agent for the turn.' }),
+      triggeredIntent: GoogleCloudDialogflowCxV3beta1IntentSchema.exactOptional().openapi({
+        description:
+          'The Intent that triggered the response. Only name and displayName will be set.',
+      }),
+    })
+    .openapi({ description: 'The output from the virtual agent.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutput')
+
+type GoogleCloudDialogflowCxV3beta1ConversationTurnType = {
+  userInput?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ConversationTurnUserInputSchema>
+  virtualAgentOutput?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutputSchema
+  >
+}
+
+const GoogleCloudDialogflowCxV3beta1ConversationTurnSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ConversationTurnType> =
+  z
+    .object({
+      userInput:
+        GoogleCloudDialogflowCxV3beta1ConversationTurnUserInputSchema.exactOptional().openapi({
+          description: 'The user input.',
+        }),
+      virtualAgentOutput:
+        GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutputSchema.exactOptional().openapi(
+          { description: 'The virtual agent output.' },
+        ),
+    })
+    .openapi({
       description:
-        'The Page on which the utterance was spoken. Only name and displayName will be set.',
-    }),
-    diagnosticInfo: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Input only. The diagnostic info output for the turn. Required to calculate the testing coverage.',
-      }),
-    differences: z
-      .array(GoogleCloudDialogflowCxV3beta1TestRunDifferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. If this is part of a result conversation turn, the list of differences between the original run and the replay for this output, if any.',
-        readOnly: true,
-      }),
-    sessionParameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'The session parameters available to the bot at this point.' }),
-    status: GoogleRpcStatusSchema.exactOptional().openapi({
-      description:
-        'Response error from the agent in the test result. If set, other output is empty.',
-    }),
-    textResponses: z
-      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageTextSchema)
-      .exactOptional()
-      .openapi({ description: 'The text responses from the agent for the turn.' }),
-    triggeredIntent: GoogleCloudDialogflowCxV3beta1IntentSchema.exactOptional().openapi({
-      description: 'The Intent that triggered the response. Only name and displayName will be set.',
-    }),
-  })
-  .openapi({ description: 'The output from the virtual agent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutput')
+        'One interaction between a human and virtual agent. The human provides some input and the virtual agent provides a response.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1ConversationTurn')
 
-const GoogleCloudDialogflowCxV3beta1ConversationTurnSchema = z
-  .object({
-    userInput:
-      GoogleCloudDialogflowCxV3beta1ConversationTurnUserInputSchema.exactOptional().openapi({
-        description: 'The user input.',
-      }),
-    virtualAgentOutput:
-      GoogleCloudDialogflowCxV3beta1ConversationTurnVirtualAgentOutputSchema.exactOptional().openapi(
-        { description: 'The virtual agent output.' },
-      ),
-  })
-  .openapi({
-    description:
-      'One interaction between a human and virtual agent. The human provides some input and the virtual agent provides a response.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ConversationTurn')
+type GoogleCloudDialogflowCxV3beta1TestCaseResultType = {
+  conversationTurns?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ConversationTurnSchema>[]
+  environment?: string
+  name?: string
+  testResult?: 'TEST_RESULT_UNSPECIFIED' | 'PASSED' | 'FAILED'
+  testTime?: string
+}
 
-const GoogleCloudDialogflowCxV3beta1TestCaseResultSchema = z
-  .object({
-    conversationTurns: z
-      .array(GoogleCloudDialogflowCxV3beta1ConversationTurnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The conversation turns uttered during the test case replay in chronological order.',
-      }),
-    environment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Environment where the test was run. If not set, it indicates the draft environment.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name for the test case result. Format: `projects//locations//agents//testCases/ /results/`.',
-      }),
-    testResult: z
-      .enum(['TEST_RESULT_UNSPECIFIED', 'PASSED', 'FAILED'])
-      .exactOptional()
-      .openapi({ description: 'Whether the test case passed in the agent environment.' }),
-    testTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time that the test was run.' }),
-  })
-  .openapi({
-    description: 'Represents a result from running a test case in an agent environment.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1TestCaseResult')
+const GoogleCloudDialogflowCxV3beta1TestCaseResultSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TestCaseResultType> =
+  z
+    .object({
+      conversationTurns: z
+        .array(GoogleCloudDialogflowCxV3beta1ConversationTurnSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The conversation turns uttered during the test case replay in chronological order.',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Environment where the test was run. If not set, it indicates the draft environment.',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The resource name for the test case result. Format: `projects//locations//agents//testCases/ /results/`.',
+        }),
+      testResult: z
+        .enum(['TEST_RESULT_UNSPECIFIED', 'PASSED', 'FAILED'])
+        .exactOptional()
+        .openapi({ description: 'Whether the test case passed in the agent environment.' }),
+      testTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The time that the test was run.' }),
+    })
+    .openapi({
+      description: 'Represents a result from running a test case in an agent environment.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1TestCaseResult')
 
-const GoogleCloudDialogflowCxV3beta1BatchRunTestCasesResponseSchema = z
-  .object({
-    results: z
-      .array(GoogleCloudDialogflowCxV3beta1TestCaseResultSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The test case results. The detailed conversation turns are empty in this response.',
-      }),
-  })
-  .openapi({ description: 'The response message for TestCases.BatchRunTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1BatchRunTestCasesResponse')
+type GoogleCloudDialogflowCxV3beta1BatchRunTestCasesResponseType = {
+  results?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestCaseResultSchema>[]
+}
 
 const GoogleCloudDialogflowCxV3beta1IntentCoverageIntentSchema = z
   .object({
@@ -3551,92 +2594,125 @@ const GoogleCloudDialogflowCxV3beta1IntentCoverageSchema = z
   })
   .openapi('GoogleCloudDialogflowCxV3beta1IntentCoverage')
 
-const GoogleCloudDialogflowCxV3beta1TransitionRouteGroupSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The human-readable name of the transition route group, unique within the flow. The display name can be no longer than 30 characters.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the transition route group. TransitionRouteGroups.CreateTransitionRouteGroup populates the name automatically. Format: `projects//locations//agents//flows//transitionRouteGroups/`.',
-      }),
-    transitionRoutes: z
-      .array(GoogleCloudDialogflowCxV3beta1TransitionRouteSchema)
-      .exactOptional()
-      .openapi({ description: 'Transition routes associated with the TransitionRouteGroup.' }),
-  })
-  .openapi({
-    description:
-      'An TransitionRouteGroup represents a group of `TransitionRoutes` to be used by a Page.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1TransitionRouteGroup')
+type GoogleCloudDialogflowCxV3beta1TransitionRouteGroupType = {
+  displayName?: string
+  name?: string
+  transitionRoutes?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionRouteSchema>[]
+}
 
-const GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransitionSchema = z
-  .object({
-    covered: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether or not the transition route is covered by at least one of the agent's test cases.",
-      }),
-    transitionRoute: GoogleCloudDialogflowCxV3beta1TransitionRouteSchema.exactOptional().openapi({
-      description: 'Intent route or condition route.',
-    }),
-  })
-  .openapi({ description: 'A transition coverage in a transition route group.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransition')
+const GoogleCloudDialogflowCxV3beta1TransitionRouteGroupSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TransitionRouteGroupType> =
+  z
+    .object({
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The human-readable name of the transition route group, unique within the flow. The display name can be no longer than 30 characters.',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of the transition route group. TransitionRouteGroups.CreateTransitionRouteGroup populates the name automatically. Format: `projects//locations//agents//flows//transitionRouteGroups/`.',
+        }),
+      transitionRoutes: z
+        .array(GoogleCloudDialogflowCxV3beta1TransitionRouteSchema)
+        .exactOptional()
+        .openapi({ description: 'Transition routes associated with the TransitionRouteGroup.' }),
+    })
+    .openapi({
+      description:
+        'An TransitionRouteGroup represents a group of `TransitionRoutes` to be used by a Page.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1TransitionRouteGroup')
 
-const GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageSchema = z
-  .object({
-    coverageScore: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percent of transition routes in the transition route group that are covered.',
-      }),
-    routeGroup: GoogleCloudDialogflowCxV3beta1TransitionRouteGroupSchema.exactOptional().openapi({
-      description: 'Transition route group metadata. Only name and displayName will be set.',
-    }),
-    transitions: z
-      .array(GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransitionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of transition routes and coverage in the transition route group.',
-      }),
-  })
-  .openapi({ description: 'Coverage result message for one transition route group.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverage')
+type GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransitionType = {
+  covered?: boolean
+  transitionRoute?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionRouteSchema>
+}
 
-const GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageSchema = z
-  .object({
-    coverageScore: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percent of transition routes in all the transition route groups that are covered.',
+const GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransitionSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransitionType> =
+  z
+    .object({
+      covered: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            "Whether or not the transition route is covered by at least one of the agent's test cases.",
+        }),
+      transitionRoute: GoogleCloudDialogflowCxV3beta1TransitionRouteSchema.exactOptional().openapi({
+        description: 'Intent route or condition route.',
       }),
-    coverages: z
-      .array(GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageSchema)
-      .exactOptional()
-      .openapi({ description: 'Transition route group coverages.' }),
-  })
-  .openapi({
-    description:
-      "Transition route group coverage represents the percentage of all possible transition routes present within any of a parent's test cases. The results are grouped by the transition route group.",
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverage')
+    })
+    .openapi({ description: 'A transition coverage in a transition route group.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransition')
+
+type GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageType = {
+  coverageScore?: number
+  routeGroup?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionRouteGroupSchema>
+  transitions?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransitionSchema
+  >[]
+}
+
+const GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageType> =
+  z
+    .object({
+      coverageScore: z
+        .float32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The percent of transition routes in the transition route group that are covered.',
+        }),
+      routeGroup: GoogleCloudDialogflowCxV3beta1TransitionRouteGroupSchema.exactOptional().openapi({
+        description: 'Transition route group metadata. Only name and displayName will be set.',
+      }),
+      transitions: z
+        .array(GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageTransitionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of transition routes and coverage in the transition route group.',
+        }),
+    })
+    .openapi({
+      description: 'Coverage result message for one transition route group.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverage')
+
+type GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageType = {
+  coverageScore?: number
+  coverages?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageSchema
+  >[]
+}
+
+const GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageType> =
+  z
+    .object({
+      coverageScore: z
+        .float32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The percent of transition routes in all the transition route groups that are covered.',
+        }),
+      coverages: z
+        .array(GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageCoverageSchema)
+        .exactOptional()
+        .openapi({ description: 'Transition route group coverages.' }),
+    })
+    .openapi({
+      description:
+        "Transition route group coverage represents the percentage of all possible transition routes present within any of a parent's test cases. The results are grouped by the transition route group.",
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverage')
 
 const GoogleCloudDialogflowCxV3beta1NluSettingsSchema = z
   .object({
@@ -3663,379 +2739,164 @@ const GoogleCloudDialogflowCxV3beta1NluSettingsSchema = z
   .openapi({ description: 'Settings related to NLU.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3beta1NluSettings')
 
-const GoogleCloudDialogflowCxV3beta1FlowSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description of the flow. The maximum length is 500 characters. If exceeded, the request is rejected.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The human-readable name of the flow.' }),
-    eventHandlers: z
-      .array(GoogleCloudDialogflowCxV3beta1EventHandlerSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "A flow's event handlers serve two purposes: * They are responsible for handling events (e.g. no match, webhook errors) in the flow. * They are inherited by every page's event handlers, which can be used to handle common events regardless of the current page. Event handlers defined in the page have higher priority than those defined in the flow. Unlike transition_routes, these handlers are evaluated on a first-match basis. The first one that matches the event get executed, with the rest being ignored.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the flow. Format: `projects//locations//agents//flows/`.',
-      }),
-    nluSettings: GoogleCloudDialogflowCxV3beta1NluSettingsSchema.exactOptional().openapi({
-      description: 'NLU related settings of the flow.',
-    }),
-    transitionRouteGroups: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "A flow's transition route group serve two purposes: * They are responsible for matching the user's first utterances in the flow. * They are inherited by every page's transition route groups. Transition route groups defined in the page have higher priority than those defined in the flow. Format:`projects//locations//agents//flows//transitionRouteGroups/`.",
-      }),
-    transitionRoutes: z
-      .array(GoogleCloudDialogflowCxV3beta1TransitionRouteSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A flow\'s transition routes serve two purposes: * They are responsible for matching the user\'s first utterances in the flow. * They are inherited by every page\'s transition routes and can support use cases such as the user saying "help" or "can I talk to a human?", which can be handled in a common way regardless of the current page. Transition routes defined in the page have higher priority than those defined in the flow. TransitionRoutes are evalauted in the following order: * TransitionRoutes with intent specified. * TransitionRoutes with only condition specified. TransitionRoutes with intent specified are inherited by pages in the flow.',
-      }),
-  })
-  .openapi({
-    description:
-      'Flows represents the conversation flows when you build your chatbot agent. A flow consists of many pages connected by the transition routes. Conversations always start with the built-in Start Flow (with an all-0 ID). Transition routes can direct the conversation session from the current flow (parent flow) to another flow (sub flow). When the sub flow is finished, Dialogflow will bring the session back to the parent flow, where the sub flow is started. Usually, when a transition route is followed by a matched intent, the intent will be "consumed". This means the intent won\'t activate more transition routes. However, when the followed transition route moves the conversation session into a different flow, the matched intent can be carried over and to be consumed in the target flow.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1Flow')
+type GoogleCloudDialogflowCxV3beta1FlowType = {
+  description?: string
+  displayName?: string
+  eventHandlers?: z.infer<typeof GoogleCloudDialogflowCxV3beta1EventHandlerSchema>[]
+  name?: string
+  nluSettings?: z.infer<typeof GoogleCloudDialogflowCxV3beta1NluSettingsSchema>
+  transitionRouteGroups?: string[]
+  transitionRoutes?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionRouteSchema>[]
+}
 
-const GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeSchema = z
-  .object({
-    flow: GoogleCloudDialogflowCxV3beta1FlowSchema.exactOptional().openapi({
+const GoogleCloudDialogflowCxV3beta1FlowSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FlowType> =
+  z
+    .object({
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The description of the flow. The maximum length is 500 characters. If exceeded, the request is rejected.',
+        }),
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. The human-readable name of the flow.' }),
+      eventHandlers: z
+        .array(GoogleCloudDialogflowCxV3beta1EventHandlerSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "A flow's event handlers serve two purposes: * They are responsible for handling events (e.g. no match, webhook errors) in the flow. * They are inherited by every page's event handlers, which can be used to handle common events regardless of the current page. Event handlers defined in the page have higher priority than those defined in the flow. Unlike transition_routes, these handlers are evaluated on a first-match basis. The first one that matches the event get executed, with the rest being ignored.",
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of the flow. Format: `projects//locations//agents//flows/`.',
+        }),
+      nluSettings: GoogleCloudDialogflowCxV3beta1NluSettingsSchema.exactOptional().openapi({
+        description: 'NLU related settings of the flow.',
+      }),
+      transitionRouteGroups: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            "A flow's transition route group serve two purposes: * They are responsible for matching the user's first utterances in the flow. * They are inherited by every page's transition route groups. Transition route groups defined in the page have higher priority than those defined in the flow. Format:`projects//locations//agents//flows//transitionRouteGroups/`.",
+        }),
+      transitionRoutes: z
+        .array(GoogleCloudDialogflowCxV3beta1TransitionRouteSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'A flow\'s transition routes serve two purposes: * They are responsible for matching the user\'s first utterances in the flow. * They are inherited by every page\'s transition routes and can support use cases such as the user saying "help" or "can I talk to a human?", which can be handled in a common way regardless of the current page. Transition routes defined in the page have higher priority than those defined in the flow. TransitionRoutes are evalauted in the following order: * TransitionRoutes with intent specified. * TransitionRoutes with only condition specified. TransitionRoutes with intent specified are inherited by pages in the flow.',
+        }),
+    })
+    .openapi({
       description:
-        'Indicates a transition to a Flow. Only some fields such as name and displayname will be set.',
-    }),
-    page: GoogleCloudDialogflowCxV3beta1PageSchema.exactOptional().openapi({
+        'Flows represents the conversation flows when you build your chatbot agent. A flow consists of many pages connected by the transition routes. Conversations always start with the built-in Start Flow (with an all-0 ID). Transition routes can direct the conversation session from the current flow (parent flow) to another flow (sub flow). When the sub flow is finished, Dialogflow will bring the session back to the parent flow, where the sub flow is started. Usually, when a transition route is followed by a matched intent, the intent will be "consumed". This means the intent won\'t activate more transition routes. However, when the followed transition route moves the conversation session into a different flow, the matched intent can be carried over and to be consumed in the target flow.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1Flow')
+
+type GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeType = {
+  flow?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FlowSchema>
+  page?: z.infer<typeof GoogleCloudDialogflowCxV3beta1PageSchema>
+}
+
+const GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeType> =
+  z
+    .object({
+      flow: GoogleCloudDialogflowCxV3beta1FlowSchema.exactOptional().openapi({
+        description:
+          'Indicates a transition to a Flow. Only some fields such as name and displayname will be set.',
+      }),
+      page: GoogleCloudDialogflowCxV3beta1PageSchema.exactOptional().openapi({
+        description:
+          'Indicates a transition to a Page. Only some fields such as name and displayname will be set.',
+      }),
+    })
+    .openapi({ description: 'The source or target of a transition.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNode')
+
+type GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionType = {
+  covered?: boolean
+  eventHandler?: z.infer<typeof GoogleCloudDialogflowCxV3beta1EventHandlerSchema>
+  index?: number
+  source?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeSchema>
+  target?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeSchema>
+  transitionRoute?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionRouteSchema>
+}
+
+const GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionType> =
+  z
+    .object({
+      covered: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            "Whether or not the transition is covered by at least one of the agent's test cases.",
+        }),
+      eventHandler: GoogleCloudDialogflowCxV3beta1EventHandlerSchema.exactOptional().openapi({
+        description: 'Event handler.',
+      }),
+      index: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description: 'The index of a transition in the transition list. Starting from 0.',
+        }),
+      source:
+        GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeSchema.exactOptional().openapi(
+          { description: 'The start node of a transition.' },
+        ),
+      target:
+        GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeSchema.exactOptional().openapi(
+          { description: 'The end node of a transition.' },
+        ),
+      transitionRoute: GoogleCloudDialogflowCxV3beta1TransitionRouteSchema.exactOptional().openapi({
+        description: 'Intent route or condition route.',
+      }),
+    })
+    .openapi({ description: 'A transition in a page.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1TransitionCoverageTransition')
+
+type GoogleCloudDialogflowCxV3beta1TransitionCoverageType = {
+  coverageScore?: number
+  transitions?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionSchema>[]
+}
+
+const GoogleCloudDialogflowCxV3beta1TransitionCoverageSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TransitionCoverageType> =
+  z
+    .object({
+      coverageScore: z
+        .float32()
+        .exactOptional()
+        .openapi({ description: 'The percent of transitions in the agent that are covered.' }),
+      transitions: z
+        .array(GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of Transitions present in the agent.' }),
+    })
+    .openapi({
       description:
-        'Indicates a transition to a Page. Only some fields such as name and displayname will be set.',
-    }),
-  })
-  .openapi({ description: 'The source or target of a transition.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNode')
+        "Transition coverage represents the percentage of all possible page transitions (page-level transition routes and event handlers, excluding transition route groups) present within any of a parent's test cases.",
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1TransitionCoverage')
 
-const GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionSchema = z
-  .object({
-    covered: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether or not the transition is covered by at least one of the agent's test cases.",
-      }),
-    eventHandler: GoogleCloudDialogflowCxV3beta1EventHandlerSchema.exactOptional().openapi({
-      description: 'Event handler.',
-    }),
-    index: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of a transition in the transition list. Starting from 0.',
-      }),
-    source:
-      GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeSchema.exactOptional().openapi({
-        description: 'The start node of a transition.',
-      }),
-    target:
-      GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionNodeSchema.exactOptional().openapi({
-        description: 'The end node of a transition.',
-      }),
-    transitionRoute: GoogleCloudDialogflowCxV3beta1TransitionRouteSchema.exactOptional().openapi({
-      description: 'Intent route or condition route.',
-    }),
-  })
-  .openapi({ description: 'A transition in a page.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TransitionCoverageTransition')
-
-const GoogleCloudDialogflowCxV3beta1TransitionCoverageSchema = z
-  .object({
-    coverageScore: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The percent of transitions in the agent that are covered.' }),
-    transitions: z
-      .array(GoogleCloudDialogflowCxV3beta1TransitionCoverageTransitionSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of Transitions present in the agent.' }),
-  })
-  .openapi({
-    description:
-      "Transition coverage represents the percentage of all possible page transitions (page-level transition routes and event handlers, excluding transition route groups) present within any of a parent's test cases.",
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1TransitionCoverage')
-
-const GoogleCloudDialogflowCxV3beta1CalculateCoverageResponseSchema = z
-  .object({
-    agent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The agent to calculate coverage for. Format: `projects//locations//agents/`.',
-      }),
-    intentCoverage: GoogleCloudDialogflowCxV3beta1IntentCoverageSchema.exactOptional().openapi({
-      description: 'Intent coverage.',
-    }),
-    routeGroupCoverage:
-      GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageSchema.exactOptional().openapi({
-        description: 'Transition route group coverage.',
-      }),
-    transitionCoverage:
-      GoogleCloudDialogflowCxV3beta1TransitionCoverageSchema.exactOptional().openapi({
-        description: 'Transition (excluding transition route groups) coverage.',
-      }),
-  })
-  .openapi({ description: 'The response message for TestCases.CalculateCoverage.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1CalculateCoverageResponse')
-
-const GoogleCloudDialogflowCxV3beta1ChangelogSchema = z
-  .object({
-    action: z.string().exactOptional().openapi({ description: 'The action of the change.' }),
-    createTime: z.string().exactOptional().openapi({ description: 'The timestamp of the change.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The affected resource display name of the change.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the changelog. Format: `projects//locations//agents//changelogs/`.',
-      }),
-    resource: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The affected resource name of the change.' }),
-    type: z.string().exactOptional().openapi({ description: 'The affected resource type.' }),
-    userEmail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Email address of the authenticated user.' }),
-  })
-  .openapi({ description: 'Changelogs represents a change made to a given agent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1Changelog')
-
-const GoogleCloudDialogflowCxV3beta1CompareVersionsRequestSchema = z
-  .object({
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The language to compare the flow versions for. If not specified, the agent's default language is used. [Many languages](https://cloud.google.com/dialogflow/docs/reference/language) are supported. Note: languages must be enabled in the agent before they can be used.",
-      }),
-    targetVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the target flow version to compare with the base version. Use version ID `0` to indicate the draft version of the specified flow. Format: `projects//locations//agents//flows//versions/`.',
-      }),
-  })
-  .openapi({ description: 'The request message for Versions.CompareVersions.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1CompareVersionsRequest')
-
-const GoogleCloudDialogflowCxV3beta1CompareVersionsResponseSchema = z
-  .object({
-    baseVersionContentJson: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'JSON representation of the base version content.' }),
-    compareTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timestamp when the two version compares.' }),
-    targetVersionContentJson: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'JSON representation of the target version content.' }),
-  })
-  .openapi({ description: 'The response message for Versions.CompareVersions.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1CompareVersionsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ContinuousTestResultSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name for the continuous test result. Format: `projects//locations//agents//environments//continuousTestResults/`.',
-      }),
-    result: z
-      .enum(['AGGREGATED_TEST_RESULT_UNSPECIFIED', 'PASSED', 'FAILED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The result of this continuous test run, i.e. whether all the tests in this continuous test run pass or not.',
-      }),
-    runTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the continuous testing run starts.' }),
-    testCaseResults: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of individual test case results names in this continuous test run.',
-      }),
-  })
-  .openapi({
-    description: 'Represents a result from running a test case in an agent environment.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ContinuousTestResult')
-
-const GoogleCloudDialogflowCxV3beta1TurnSignalsSchema = z
-  .object({
-    agentEscalated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether agent responded with LiveAgentHandoff fulfillment.' }),
-    dtmfUsed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether user was using DTMF input.' }),
-    failureReasons: z
-      .array(z.enum(['FAILURE_REASON_UNSPECIFIED', 'FAILED_INTENT', 'FAILED_WEBHOOK']))
-      .exactOptional()
-      .openapi({ description: 'Failure reasons of the turn.' }),
-    noMatch: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether NLU predicted NO_MATCH.' }),
-    noUserInput: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether user provided no input.' }),
-    reachedEndPage: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether turn resulted in End Session page.' }),
-    userEscalated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether user was specifically asking for a live agent.' }),
-    webhookStatuses: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Human-readable statuses of the webhooks triggered during this turn.',
-      }),
-  })
-  .openapi({
-    description:
-      'Collection of all signals that were extracted for a single turn of the conversation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1TurnSignals')
-
-const GoogleCloudDialogflowCxV3beta1ConversationSignalsSchema = z
-  .object({
-    turnSignals: GoogleCloudDialogflowCxV3beta1TurnSignalsSchema.exactOptional().openapi({
-      description: 'Required. Turn signals for the current turn.',
-    }),
-  })
-  .openapi({
-    description:
-      'This message is used to hold all the Conversation Signals data, which will be converted to JSON and exported to BigQuery.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ConversationSignals')
-
-const GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema = z
-  .object({
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'DONE'])
-      .exactOptional()
-      .openapi({
-        description: 'Required. Output only. The current state of this operation.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Metadata in google::longrunning::Operation for Knowledge operations.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadata')
-
-const GoogleCloudDialogflowCxV3beta1CreateDocumentOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
-        { description: 'The generic information of the operation.' },
-      ),
-  })
-  .openapi({ description: 'Metadata for CreateDocument operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1CreateDocumentOperationMetadata')
-
-const GoogleCloudDialogflowCxV3beta1CreateVersionOperationMetadataSchema = z
-  .object({
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the created version. Format: `projects//locations//agents//flows//versions/`.',
-      }),
-  })
-  .openapi({
-    description: 'Metadata associated with the long running operation for Versions.CreateVersion.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1CreateVersionOperationMetadata')
-
-const GoogleCloudDialogflowCxV3beta1DeleteDocumentOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
-        { description: 'The generic information of the operation.' },
-      ),
-  })
-  .openapi({ description: 'Metadata for DeleteDocument operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1DeleteDocumentOperationMetadata')
-
-const GoogleCloudDialogflowCxV3beta1DeployFlowMetadataSchema = z
-  .object({
-    testErrors: z
-      .array(GoogleCloudDialogflowCxV3beta1TestErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Errors of running deployment tests.' }),
-  })
-  .openapi({
-    description: 'Metadata returned for the Environments.DeployFlow long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1DeployFlowMetadata')
-
-const GoogleCloudDialogflowCxV3beta1DeployFlowRequestSchema = z
-  .object({
-    flowVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The flow version to deploy. Format: `projects//locations//agents// flows//versions/`.',
-      }),
-  })
-  .openapi({ description: 'The request message for Environments.DeployFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1DeployFlowRequest')
+type GoogleCloudDialogflowCxV3beta1CalculateCoverageResponseType = {
+  agent?: string
+  intentCoverage?: z.infer<typeof GoogleCloudDialogflowCxV3beta1IntentCoverageSchema>
+  routeGroupCoverage?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageSchema
+  >
+  transitionCoverage?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionCoverageSchema>
+}
 
 const GoogleCloudDialogflowCxV3beta1EnvironmentTestCasesConfigSchema = z
   .object({
@@ -4233,77 +3094,72 @@ const GoogleCloudDialogflowCxV3beta1EnvironmentSchema = z
   })
   .openapi('GoogleCloudDialogflowCxV3beta1Environment')
 
-const GoogleCloudDialogflowCxV3beta1DeployFlowResponseSchema = z
-  .object({
-    deployment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the flow version deployment. Format: `projects//locations//agents// environments//deployments/`.',
-      }),
-    environment: GoogleCloudDialogflowCxV3beta1EnvironmentSchema.exactOptional().openapi({
-      description: 'The updated environment where the flow is deployed.',
-    }),
-  })
-  .openapi({ description: 'The response message for Environments.DeployFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1DeployFlowResponse')
+type GoogleCloudDialogflowCxV3beta1DeployFlowResponseType = {
+  deployment?: string
+  environment?: z.infer<typeof GoogleCloudDialogflowCxV3beta1EnvironmentSchema>
+}
 
-const GoogleCloudDialogflowCxV3beta1DeploymentResultSchema = z
+const GoogleCloudDialogflowCxV3beta1VoiceSelectionParamsSchema = z
   .object({
-    deploymentTestResults: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Results of test cases running before the deployment. Format: `projects//locations//agents//testCases//results/`.',
-      }),
-    experiment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the experiment triggered by this deployment. Format: projects//locations//agents//environments//experiments/.',
-      }),
-  })
-  .openapi({ description: 'Result of the deployment.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1DeploymentResult')
-
-const GoogleCloudDialogflowCxV3beta1DeploymentSchema = z
-  .object({
-    endTime: z.string().exactOptional().openapi({ description: 'End time of this deployment.' }),
-    flowVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the flow version for this deployment. Format: projects//locations//agents//flows//versions/.',
-      }),
     name: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The name of the deployment. Format: projects//locations//agents//environments//deployments/.',
+          'Optional. The name of the voice. If not set, the service will choose a voice based on the other parameters such as language_code and ssml_gender. For the list of available voices, please refer to [Supported voices and languages](https://cloud.google.com/text-to-speech/docs/voices).',
       }),
-    result: GoogleCloudDialogflowCxV3beta1DeploymentResultSchema.exactOptional().openapi({
-      description: 'Result of the deployment.',
+    ssmlGender: z
+      .enum([
+        'SSML_VOICE_GENDER_UNSPECIFIED',
+        'SSML_VOICE_GENDER_MALE',
+        'SSML_VOICE_GENDER_FEMALE',
+        'SSML_VOICE_GENDER_NEUTRAL',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The preferred gender of the voice. If not set, the service will choose a voice based on the other parameters such as language_code and name. Note that this is only a preference, not requirement. If a voice of the appropriate gender is not available, the synthesizer should substitute a voice with a different gender rather than failing the request.',
+      }),
+  })
+  .openapi({ description: 'Description of which voice to use for speech synthesis.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1VoiceSelectionParams')
+
+const GoogleCloudDialogflowCxV3beta1SynthesizeSpeechConfigSchema = z
+  .object({
+    effectsProfileId: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. An identifier which selects 'audio effects' profiles that are applied on (post synthesized) text to speech. Effects are applied on top of each other in the order they are given.",
+      }),
+    pitch: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Speaking pitch, in the range [-20.0, 20.0]. 20 means increase 20 semitones from the original pitch. -20 means decrease 20 semitones from the original pitch.',
+      }),
+    speakingRate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Speaking rate/speed, in the range [0.25, 4.0]. 1.0 is the normal native speed supported by the specific voice. 2.0 is twice as fast, and 0.5 is half as fast. If unset(0.0), defaults to the native 1.0 speed. Any other values < 0.25 or > 4.0 will return an error.',
+      }),
+    voice: GoogleCloudDialogflowCxV3beta1VoiceSelectionParamsSchema.exactOptional().openapi({
+      description: 'Optional. The desired voice of the synthesized audio.',
     }),
-    startTime: z
-      .string()
+    volumeGainDb: z
+      .float64()
       .exactOptional()
-      .openapi({ description: 'Start time of this deployment.' }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'RUNNING', 'SUCCEEDED', 'FAILED'])
-      .exactOptional()
-      .openapi({ description: 'The current state of the deployment.' }),
+      .openapi({
+        description:
+          "Optional. Volume gain (in dB) of the normal native volume supported by the specific voice, in the range [-96.0, 16.0]. If unset, or set to a value of 0.0 (dB), will play at normal native signal amplitude. A value of -6.0 (dB) will play at approximately half the amplitude of the normal native signal amplitude. A value of +6.0 (dB) will play at approximately twice the amplitude of the normal native signal amplitude. We strongly recommend not to exceed +10 (dB) as there's usually no effective increase in loudness for any value greater than that.",
+      }),
   })
-  .openapi({
-    description:
-      'Represents a deployment in an environment. A deployment happens when a flow version configured to be active in the environment. You can configure running pre-deployment steps, e.g. running validation test cases, experiment auto-rollout, etc.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1Deployment')
+  .openapi({ description: 'Configuration of how speech should be synthesized.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1SynthesizeSpeechConfig')
 
 const GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema = z
   .object({
@@ -4335,6 +3191,211 @@ const GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema = z
     required: [],
   })
   .openapi('GoogleCloudDialogflowCxV3beta1OutputAudioConfig')
+
+const GoogleCloudDialogflowCxV3beta1MatchSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The confidence of this match. Values range from 0.0 (completely uncertain) to 1.0 (completely certain). This value is for informational purpose only and is only used to help match the best intent within the classification threshold. This value may change for the same end-user expression at any time due to a model retraining or change in implementation.',
+      }),
+    event: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The event that matched the query. Filled for `EVENT`, `NO_MATCH` and `NO_INPUT` match types.',
+      }),
+    intent: GoogleCloudDialogflowCxV3beta1IntentSchema.exactOptional().openapi({
+      description:
+        'The Intent that matched the query. Some, not all fields are filled in this message, including but not limited to: `name` and `display_name`. Only filled for `INTENT` match type.',
+    }),
+    matchType: z
+      .enum([
+        'MATCH_TYPE_UNSPECIFIED',
+        'INTENT',
+        'DIRECT_INTENT',
+        'PARAMETER_FILLING',
+        'NO_MATCH',
+        'NO_INPUT',
+        'EVENT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Type of this Match.' }),
+    parameters: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          "The collection of parameters extracted from the query. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: * MapKey type: string * MapKey value: parameter name * MapValue type: If parameter's entity type is a composite entity then use map, otherwise, depending on the parameter value type, it could be one of string, number, boolean, null, list or map. * MapValue value: If parameter's entity type is a composite entity then use map from composite entity property names to property values, otherwise, use parameter value.",
+      }),
+    resolvedInput: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Final text input which was matched during MatchIntent. This value can be different from original input sent in request because of spelling correction or other processing.',
+      }),
+  })
+  .openapi({ description: 'Represents one match result of MatchIntent.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1Match')
+
+const GoogleCloudDialogflowCxV3beta1SentimentAnalysisResultSchema = z
+  .object({
+    magnitude: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'A non-negative number in the [0, +inf) range, which represents the absolute magnitude of sentiment, regardless of score (positive or negative).',
+      }),
+    score: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sentiment score between -1.0 (negative sentiment) and 1.0 (positive sentiment).',
+      }),
+  })
+  .openapi({
+    description:
+      "The result of sentiment analysis. Sentiment analysis inspects user input and identifies the prevailing subjective opinion, especially to determine a user's attitude as positive, negative, or neutral.",
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1SentimentAnalysisResult')
+
+type GoogleCloudDialogflowCxV3beta1QueryResultType = {
+  currentPage?: z.infer<typeof GoogleCloudDialogflowCxV3beta1PageSchema>
+  diagnosticInfo?: { [key: string]: unknown }
+  dtmf?: z.infer<typeof GoogleCloudDialogflowCxV3beta1DtmfInputSchema>
+  intent?: z.infer<typeof GoogleCloudDialogflowCxV3beta1IntentSchema>
+  intentDetectionConfidence?: number
+  languageCode?: string
+  match?: z.infer<typeof GoogleCloudDialogflowCxV3beta1MatchSchema>
+  parameters?: { [key: string]: unknown }
+  responseMessages?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageSchema>[]
+  sentimentAnalysisResult?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1SentimentAnalysisResultSchema
+  >
+  text?: string
+  transcript?: string
+  triggerEvent?: string
+  triggerIntent?: string
+  webhookPayloads?: { [key: string]: unknown }[]
+  webhookStatuses?: z.infer<typeof GoogleRpcStatusSchema>[]
+}
+
+const GoogleCloudDialogflowCxV3beta1QueryResultSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1QueryResultType> =
+  z
+    .object({
+      currentPage: GoogleCloudDialogflowCxV3beta1PageSchema.exactOptional().openapi({
+        description:
+          'The current Page. Some, not all fields are filled in this message, including but not limited to `name` and `display_name`.',
+      }),
+      diagnosticInfo: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'The free-form diagnostic info. For example, this field could contain webhook call latency. The fields of this data can change without notice, so you should not write code that depends on its structure. One of the fields is called "Alternative Matched Intents", which may aid with debugging. The following describes these intent results: - The list is empty if no intent was matched to end-user input. - Only intents that are referenced in the currently active flow are included. - The matched intent is included. - Other intents that could have matched end-user input, but did not match because they are referenced by intent routes that are out of [scope](https://cloud.google.com/dialogflow/cx/docs/concept/handler#scope), are included. - Other intents referenced by intent routes in scope that matched end-user input, but had a lower confidence score.',
+        }),
+      dtmf: GoogleCloudDialogflowCxV3beta1DtmfInputSchema.exactOptional().openapi({
+        description:
+          'If a DTMF was provided as input, this field will contain a copy of the DtmfInput.',
+      }),
+      intent: GoogleCloudDialogflowCxV3beta1IntentSchema.exactOptional().openapi({
+        description:
+          'The Intent that matched the conversational query. Some, not all fields are filled in this message, including but not limited to: `name` and `display_name`. This field is deprecated, please use QueryResult.match instead.',
+      }),
+      intentDetectionConfidence: z
+        .float32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The intent detection confidence. Values range from 0.0 (completely uncertain) to 1.0 (completely certain). This value is for informational purpose only and is only used to help match the best intent within the classification threshold. This value may change for the same end-user expression at any time due to a model retraining or change in implementation. This field is deprecated, please use QueryResult.match instead.',
+        }),
+      languageCode: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The language that was triggered during intent detection. See [Language Support](https://cloud.google.com/dialogflow/cx/docs/reference/language) for a list of the currently supported language codes.',
+        }),
+      match: GoogleCloudDialogflowCxV3beta1MatchSchema.exactOptional().openapi({
+        description: 'Intent match result, could be an intent or an event.',
+      }),
+      parameters: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            "The collected session parameters. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: * MapKey type: string * MapKey value: parameter name * MapValue type: If parameter's entity type is a composite entity then use map, otherwise, depending on the parameter value type, it could be one of string, number, boolean, null, list or map. * MapValue value: If parameter's entity type is a composite entity then use map from composite entity property names to property values, otherwise, use parameter value.",
+        }),
+      responseMessages: z
+        .array(GoogleCloudDialogflowCxV3beta1ResponseMessageSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of rich messages returned to the client. Responses vary from simple text messages to more sophisticated, structured payloads used to drive complex logic.',
+        }),
+      sentimentAnalysisResult:
+        GoogleCloudDialogflowCxV3beta1SentimentAnalysisResultSchema.exactOptional().openapi({
+          description:
+            'The sentiment analyss result, which depends on `analyze_query_text_sentiment`, specified in the request.',
+        }),
+      text: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If natural language text was provided as input, this field will contain a copy of the text.',
+        }),
+      transcript: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If natural language speech audio was provided as input, this field will contain the transcript for the audio.',
+        }),
+      triggerEvent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If an event was provided as input, this field will contain the name of the event.',
+        }),
+      triggerIntent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If an intent was provided as input, this field will contain a copy of the intent identifier. Format: `projects//locations//agents//intents/`.',
+        }),
+      webhookPayloads: z
+        .array(z.record(z.string(), z.any().openapi({ description: 'Properties of the object.' })))
+        .exactOptional()
+        .openapi({
+          description:
+            "The list of webhook payload in WebhookResponse.payload, in the order of call sequence. If some webhook call fails or doesn't return any payload, an empty `Struct` would be used instead.",
+        }),
+      webhookStatuses: z
+        .array(GoogleRpcStatusSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of webhook call status in the order of call sequence.' }),
+    })
+    .openapi({ description: 'Represents the result of a conversational query.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1QueryResult')
+
+type GoogleCloudDialogflowCxV3beta1DetectIntentResponseType = {
+  allowCancellation?: boolean
+  outputAudio?: string
+  outputAudioConfig?: z.infer<typeof GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema>
+  queryResult?: z.infer<typeof GoogleCloudDialogflowCxV3beta1QueryResultSchema>
+  responseId?: string
+  responseType?: 'RESPONSE_TYPE_UNSPECIFIED' | 'PARTIAL' | 'FINAL'
+}
 
 const GoogleTypeLatLngSchema = z
   .object({
@@ -4487,12 +3548,12 @@ const GoogleCloudDialogflowCxV3beta1QueryParametersSchema = z
   .openapi({ description: 'Represents the parameters of a conversational query.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3beta1QueryParameters')
 
-const GoogleCloudDialogflowCxV3beta1DetectIntentRequestSchema = z
+const GoogleCloudDialogflowCxV3beta1MatchIntentRequestSchema = z
   .object({
-    outputAudioConfig:
-      GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema.exactOptional().openapi({
-        description: 'Instructs the speech synthesizer how to generate the output audio.',
-      }),
+    persistParameterChanges: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Persist session parameter changes from `query_params`.' }),
     queryInput: GoogleCloudDialogflowCxV3beta1QueryInputSchema.exactOptional().openapi({
       description: 'Required. The input specification.',
     }),
@@ -4500,286 +3561,195 @@ const GoogleCloudDialogflowCxV3beta1DetectIntentRequestSchema = z
       description: 'The parameters of this query.',
     }),
   })
-  .openapi({ description: "The request to detect user's intent.", required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1DetectIntentRequest')
+  .openapi({ description: 'Request of MatchIntent.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1MatchIntentRequest')
 
-const GoogleCloudDialogflowCxV3beta1MatchSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The confidence of this match. Values range from 0.0 (completely uncertain) to 1.0 (completely certain). This value is for informational purpose only and is only used to help match the best intent within the classification threshold. This value may change for the same end-user expression at any time due to a model retraining or change in implementation.',
-      }),
-    event: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The event that matched the query. Filled for `EVENT`, `NO_MATCH` and `NO_INPUT` match types.',
-      }),
-    intent: GoogleCloudDialogflowCxV3beta1IntentSchema.exactOptional().openapi({
-      description:
-        'The Intent that matched the query. Some, not all fields are filled in this message, including but not limited to: `name` and `display_name`. Only filled for `INTENT` match type.',
-    }),
-    matchType: z
-      .enum([
-        'MATCH_TYPE_UNSPECIFIED',
-        'INTENT',
-        'DIRECT_INTENT',
-        'PARAMETER_FILLING',
-        'NO_MATCH',
-        'NO_INPUT',
-        'EVENT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Type of this Match.' }),
-    parameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          "The collection of parameters extracted from the query. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: * MapKey type: string * MapKey value: parameter name * MapValue type: If parameter's entity type is a composite entity then use map, otherwise, depending on the parameter value type, it could be one of string, number, boolean, null, list or map. * MapValue value: If parameter's entity type is a composite entity then use map from composite entity property names to property values, otherwise, use parameter value.",
-      }),
-    resolvedInput: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Final text input which was matched during MatchIntent. This value can be different from original input sent in request because of spelling correction or other processing.',
-      }),
-  })
-  .openapi({ description: 'Represents one match result of MatchIntent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1Match')
+type GoogleCloudDialogflowCxV3beta1FulfillIntentRequestType = {
+  match?: z.infer<typeof GoogleCloudDialogflowCxV3beta1MatchSchema>
+  matchIntentRequest?: z.infer<typeof GoogleCloudDialogflowCxV3beta1MatchIntentRequestSchema>
+  outputAudioConfig?: z.infer<typeof GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema>
+}
 
-const GoogleCloudDialogflowCxV3beta1SentimentAnalysisResultSchema = z
-  .object({
-    magnitude: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'A non-negative number in the [0, +inf) range, which represents the absolute magnitude of sentiment, regardless of score (positive or negative).',
-      }),
-    score: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Sentiment score between -1.0 (negative sentiment) and 1.0 (positive sentiment).',
-      }),
-  })
-  .openapi({
-    description:
-      "The result of sentiment analysis. Sentiment analysis inspects user input and identifies the prevailing subjective opinion, especially to determine a user's attitude as positive, negative, or neutral.",
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1SentimentAnalysisResult')
+type GoogleCloudDialogflowCxV3beta1FulfillIntentResponseType = {
+  outputAudio?: string
+  outputAudioConfig?: z.infer<typeof GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema>
+  queryResult?: z.infer<typeof GoogleCloudDialogflowCxV3beta1QueryResultSchema>
+  responseId?: string
+}
 
-const GoogleCloudDialogflowCxV3beta1QueryResultSchema = z
-  .object({
-    currentPage: GoogleCloudDialogflowCxV3beta1PageSchema.exactOptional().openapi({
-      description:
-        'The current Page. Some, not all fields are filled in this message, including but not limited to `name` and `display_name`.',
-    }),
-    diagnosticInfo: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'The free-form diagnostic info. For example, this field could contain webhook call latency. The fields of this data can change without notice, so you should not write code that depends on its structure. One of the fields is called "Alternative Matched Intents", which may aid with debugging. The following describes these intent results: - The list is empty if no intent was matched to end-user input. - Only intents that are referenced in the currently active flow are included. - The matched intent is included. - Other intents that could have matched end-user input, but did not match because they are referenced by intent routes that are out of [scope](https://cloud.google.com/dialogflow/cx/docs/concept/handler#scope), are included. - Other intents referenced by intent routes in scope that matched end-user input, but had a lower confidence score.',
-      }),
-    dtmf: GoogleCloudDialogflowCxV3beta1DtmfInputSchema.exactOptional().openapi({
-      description:
-        'If a DTMF was provided as input, this field will contain a copy of the DtmfInput.',
-    }),
-    intent: GoogleCloudDialogflowCxV3beta1IntentSchema.exactOptional().openapi({
-      description:
-        'The Intent that matched the conversational query. Some, not all fields are filled in this message, including but not limited to: `name` and `display_name`. This field is deprecated, please use QueryResult.match instead.',
-    }),
-    intentDetectionConfidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The intent detection confidence. Values range from 0.0 (completely uncertain) to 1.0 (completely certain). This value is for informational purpose only and is only used to help match the best intent within the classification threshold. This value may change for the same end-user expression at any time due to a model retraining or change in implementation. This field is deprecated, please use QueryResult.match instead.',
-      }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The language that was triggered during intent detection. See [Language Support](https://cloud.google.com/dialogflow/cx/docs/reference/language) for a list of the currently supported language codes.',
-      }),
-    match: GoogleCloudDialogflowCxV3beta1MatchSchema.exactOptional().openapi({
-      description: 'Intent match result, could be an intent or an event.',
-    }),
-    parameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          "The collected session parameters. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: * MapKey type: string * MapKey value: parameter name * MapValue type: If parameter's entity type is a composite entity then use map, otherwise, depending on the parameter value type, it could be one of string, number, boolean, null, list or map. * MapValue value: If parameter's entity type is a composite entity then use map from composite entity property names to property values, otherwise, use parameter value.",
-      }),
-    responseMessages: z
-      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of rich messages returned to the client. Responses vary from simple text messages to more sophisticated, structured payloads used to drive complex logic.',
-      }),
-    sentimentAnalysisResult:
-      GoogleCloudDialogflowCxV3beta1SentimentAnalysisResultSchema.exactOptional().openapi({
-        description:
-          'The sentiment analyss result, which depends on `analyze_query_text_sentiment`, specified in the request.',
-      }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If natural language text was provided as input, this field will contain a copy of the text.',
-      }),
-    transcript: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If natural language speech audio was provided as input, this field will contain the transcript for the audio.',
-      }),
-    triggerEvent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If an event was provided as input, this field will contain the name of the event.',
-      }),
-    triggerIntent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If an intent was provided as input, this field will contain a copy of the intent identifier. Format: `projects//locations//agents//intents/`.',
-      }),
-    webhookPayloads: z
-      .array(z.record(z.string(), z.any().openapi({ description: 'Properties of the object.' })))
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of webhook payload in WebhookResponse.payload, in the order of call sequence. If some webhook call fails or doesn't return any payload, an empty `Struct` would be used instead.",
-      }),
-    webhookStatuses: z
-      .array(GoogleRpcStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of webhook call status in the order of call sequence.' }),
-  })
-  .openapi({ description: 'Represents the result of a conversational query.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1QueryResult')
+const GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          caseContent: z
+            .array(GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentSchema)
+            .exactOptional()
+            .openapi({ description: 'A list of case content.' }),
+          condition: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The condition to activate and select this case. Empty means the condition is always true. The condition is evaluated against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition).',
+            }),
+        })
+        .openapi({
+          description:
+            'Each case has a Boolean condition. When it is evaluated to be True, the corresponding messages will be selected and evaluated recursively.',
+          required: [],
+        }),
+    )
+    .openapi('GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCase')
 
-const GoogleCloudDialogflowCxV3beta1DetectIntentResponseSchema = z
-  .object({
-    allowCancellation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the partial response can be cancelled when a later response arrives. e.g. if the agent specified some music as partial response, it can be cancelled.',
-      }),
-    outputAudio: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The audio data bytes encoded as specified in the request. Note: The output audio is generated based on the values of default platform text responses found in the `query_result.response_messages` field. If multiple default text responses exist, they will be concatenated when generating audio. If no default platform text responses exist, the generated audio content will be empty. In some scenarios, multiple output audio fields may be present in the response structure. In these cases, only the top-most-level audio output has content.',
-      }),
-    outputAudioConfig:
-      GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema.exactOptional().openapi({
-        description: 'The config used by the speech synthesizer to generate the output audio.',
-      }),
-    queryResult: GoogleCloudDialogflowCxV3beta1QueryResultSchema.exactOptional().openapi({
-      description: 'The result of the conversational query.',
-    }),
-    responseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The unique identifier of the response. It can be used to locate a response in the training example set or for reporting issues.',
-      }),
-    responseType: z
-      .enum(['RESPONSE_TYPE_UNSPECIFIED', 'PARTIAL', 'FINAL'])
-      .exactOptional()
-      .openapi({ description: 'Response type.' }),
-  })
-  .openapi({ description: 'The message returned from the DetectIntent method.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1DetectIntentResponse')
+type GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesType = {
+  cases?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseSchema>[]
+}
 
-const GoogleCloudDialogflowCxV3beta1EntityTypeExcludedPhraseSchema = z
-  .object({
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The word or phrase to be excluded.' }),
-  })
-  .openapi({ description: 'An excluded entity phrase that should not be matched.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1EntityTypeExcludedPhrase')
+const GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          additionalCases:
+            GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema.exactOptional().openapi(
+              { description: 'Additional cases to be evaluated.' },
+            ),
+          message: GoogleCloudDialogflowCxV3beta1ResponseMessageSchema.exactOptional().openapi({
+            description: 'Returned message.',
+          }),
+        })
+        .openapi({
+          description: 'The list of messages or conditional cases to activate for this case.',
+          required: [],
+        }),
+    )
+    .openapi('GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContent')
 
-const GoogleCloudDialogflowCxV3beta1EntityTypeSchema = z
+type GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseType = {
+  caseContent?: z.infer<
+    typeof GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentSchema
+  >[]
+  condition?: string
+}
+
+type GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesCaseCaseContentType = {
+  additionalCases?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FulfillmentConditionalCasesSchema>
+  message?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ResponseMessageSchema>
+}
+
+const GoogleCloudDialogflowCxV3beta1TestConfigSchema = z
   .object({
-    autoExpansionMode: z
-      .enum(['AUTO_EXPANSION_MODE_UNSPECIFIED', 'AUTO_EXPANSION_MODE_DEFAULT'])
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the entity type can be automatically expanded.' }),
-    displayName: z
+    flow: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. The human-readable name of the entity type, unique within the agent.',
+          'Flow name to start the test case with. Format: `projects//locations//agents//flows/`. Only one of `flow` and `page` should be set to indicate the starting point of the test case. If both are set, `page` takes precedence over `flow`. If neither is set, the test case will start with start page on the default start flow.',
       }),
-    enableFuzzyExtraction: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enables fuzzy entity extraction during classification.' }),
-    entities: z
-      .array(GoogleCloudDialogflowCxV3beta1EntityTypeEntitySchema)
-      .exactOptional()
-      .openapi({
-        description: 'The collection of entity entries associated with the entity type.',
-      }),
-    excludedPhrases: z
-      .array(GoogleCloudDialogflowCxV3beta1EntityTypeExcludedPhraseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Collection of exceptional words and phrases that shouldn't be matched. For example, if you have a size entity type with entry `giant`(an adjective), you might consider adding `giants`(a noun) as an exclusion. If the kind of entity type is `KIND_MAP`, then the phrases specified by entities and excluded phrases should be mutually exclusive.",
-      }),
-    kind: z
-      .enum(['KIND_UNSPECIFIED', 'KIND_MAP', 'KIND_LIST', 'KIND_REGEXP'])
-      .exactOptional()
-      .openapi({ description: 'Required. Indicates the kind of entity type.' }),
-    name: z
+    page: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The unique identifier of the entity type. Required for EntityTypes.UpdateEntityType. Format: `projects//locations//agents//entityTypes/`.',
+          'The page to start the test case with. Format: `projects//locations//agents//flows//pages/`. Only one of `flow` and `page` should be set to indicate the starting point of the test case. If both are set, `page` takes precedence over `flow`. If neither is set, the test case will start with start page on the default start flow.',
       }),
-    redact: z
-      .boolean()
+    trackingParameters: z
+      .array(z.string())
       .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether parameters of the entity type should be redacted in log. If redaction is enabled, page parameters and intent parameters referring to the entity type will be replaced by parameter name during logging.',
+      .openapi({ description: 'Session parameters to be compared when calculating differences.' }),
+  })
+  .openapi({ description: 'Represents configurations for a test case.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1TestConfig')
+
+type GoogleCloudDialogflowCxV3beta1TestCaseType = {
+  creationTime?: string
+  displayName?: string
+  lastTestResult?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestCaseResultSchema>
+  name?: string
+  notes?: string
+  tags?: string[]
+  testCaseConversationTurns?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ConversationTurnSchema>[]
+  testConfig?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestConfigSchema>
+}
+
+const GoogleCloudDialogflowCxV3beta1TestCaseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TestCaseType> =
+  z
+    .object({
+      creationTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Output only. When the test was created.', readOnly: true }),
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The human-readable name of the test case, unique within the agent. Limit of 200 characters.',
+        }),
+      lastTestResult: GoogleCloudDialogflowCxV3beta1TestCaseResultSchema.exactOptional().openapi({
+        description: 'The latest test result.',
       }),
-  })
-  .openapi({
-    description:
-      'Entities are extracted from user input and represent parameters that are meaningful to your application. For example, a date range, a proper name such as a geographic location or landmark, and so on. Entities represent actionable data for your application. When you define an entity, you can also include synonyms that all map to that entity. For example, "soft drink", "soda", "pop", and so on. There are three types of entities: * **System** - entities that are defined by the Dialogflow API for common data types such as date, time, currency, and so on. A system entity is represented by the `EntityType` type. * **Custom** - entities that are defined by you that represent actionable data that is meaningful to your application. For example, you could define a `pizza.sauce` entity for red or white pizza sauce, a `pizza.cheese` entity for the different types of cheese on a pizza, a `pizza.topping` entity for different toppings, and so on. A custom entity is represented by the `EntityType` type. * **User** - entities that are built for an individual user such as favorites, preferences, playlists, and so on. A user entity is represented by the SessionEntityType type. For more information about entity types, see the [Dialogflow documentation](https://cloud.google.com/dialogflow/docs/entities-overview).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1EntityType')
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of the test case. TestCases.CreateTestCase will populate the name automatically. Otherwise use format: `projects//locations//agents/ /testCases/`.',
+        }),
+      notes: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Additional freeform notes about the test case. Limit of 400 characters.',
+        }),
+      tags: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Tags are short descriptions that users may apply to test cases for organizational and filtering purposes. Each tag should start with "#" and has a limit of 30 characters.',
+        }),
+      testCaseConversationTurns: z
+        .array(GoogleCloudDialogflowCxV3beta1ConversationTurnSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The conversation turns uttered when the test case was created, in chronological order. These include the canonical set of agent utterances that should occur when the agent is working properly.',
+        }),
+      testConfig: GoogleCloudDialogflowCxV3beta1TestConfigSchema.exactOptional().openapi({
+        description: 'Config for the test case.',
+      }),
+    })
+    .openapi({ description: 'Represents a test case.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1TestCase')
+
+type GoogleCloudDialogflowCxV3beta1TestCaseErrorType = {
+  status?: z.infer<typeof GoogleRpcStatusSchema>
+  testCase?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestCaseSchema>
+}
+
+const GoogleCloudDialogflowCxV3beta1TestCaseErrorSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1TestCaseErrorType> =
+  z
+    .object({
+      status: GoogleRpcStatusSchema.exactOptional().openapi({
+        description: 'The status associated with the test case.',
+      }),
+      testCase: GoogleCloudDialogflowCxV3beta1TestCaseSchema.exactOptional().openapi({
+        description: 'The test case.',
+      }),
+    })
+    .openapi({ description: 'Error info for importing a test.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1TestCaseError')
+
+type GoogleCloudDialogflowCxV3beta1ImportTestCasesMetadataType = {
+  errors?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestCaseErrorSchema>[]
+}
+
+type GoogleCloudDialogflowCxV3beta1ListEnvironmentsResponseType = {
+  environments?: z.infer<typeof GoogleCloudDialogflowCxV3beta1EnvironmentSchema>[]
+  nextPageToken?: string
+}
 
 const GoogleCloudDialogflowCxV3beta1VersionVariantsVariantSchema = z
   .object({
@@ -5108,1586 +4078,53 @@ const GoogleCloudDialogflowCxV3beta1ExperimentSchema = z
   .openapi({ description: 'Represents an experiment in an environment.', required: [] })
   .openapi('GoogleCloudDialogflowCxV3beta1Experiment')
 
-const GoogleCloudDialogflowCxV3beta1ExportAgentRequestSchema = z
-  .object({
-    agentUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to export the agent to. The format of this URI must be `gs:///`. If left unspecified, the serialized agent is returned inline. Dialogflow performs a write operation for the Cloud Storage object on the caller's behalf, so your request authentication must have write permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
-      }),
-    dataFormat: z
-      .enum(['DATA_FORMAT_UNSPECIFIED', 'BLOB', 'JSON_PACKAGE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The data format of the exported agent. If not specified, `BLOB` is assumed.',
-      }),
-    environment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Environment name. If not set, draft environment is assumed. Format: `projects//locations//agents//environments/`.',
-      }),
-  })
-  .openapi({ description: 'The request message for Agents.ExportAgent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ExportAgentRequest')
-
-const GoogleCloudDialogflowCxV3beta1ExportAgentResponseSchema = z
-  .object({
-    agentContent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for agent.' }),
-    agentUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI to a file containing the exported agent. This field is populated only if `agent_uri` is specified in ExportAgentRequest.',
-      }),
-  })
-  .openapi({ description: 'The response message for Agents.ExportAgent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ExportAgentResponse')
-
-const GoogleCloudDialogflowCxV3beta1ExportFlowRequestSchema = z
-  .object({
-    flowUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to export the flow to. The format of this URI must be `gs:///`. If left unspecified, the serialized flow is returned inline. Dialogflow performs a write operation for the Cloud Storage object on the caller's behalf, so your request authentication must have write permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
-      }),
-    includeReferencedFlows: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Whether to export flows referenced by the specified flow.',
-      }),
-  })
-  .openapi({ description: 'The request message for Flows.ExportFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ExportFlowRequest')
-
-const GoogleCloudDialogflowCxV3beta1ExportFlowResponseSchema = z
-  .object({
-    flowContent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for flow.' }),
-    flowUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI to a file containing the exported flow. This field is populated only if `flow_uri` is specified in ExportFlowRequest.',
-      }),
-  })
-  .openapi({ description: 'The response message for Flows.ExportFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ExportFlowResponse')
-
-const GoogleCloudDialogflowCxV3beta1ExportTestCasesMetadataSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Metadata returned for the TestCases.ExportTestCases long running operation. This message currently has no fields.',
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ExportTestCasesMetadata')
-
-const GoogleCloudDialogflowCxV3beta1ExportTestCasesRequestSchema = z
-  .object({
-    dataFormat: z
-      .enum(['DATA_FORMAT_UNSPECIFIED', 'BLOB', 'JSON'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The data format of the exported test cases. If not specified, `BLOB` is assumed.',
-      }),
-    filter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The filter expression used to filter exported test cases, see [API Filtering](https://aip.dev/160). The expression is case insensitive and supports the following syntax: name = [OR name = ] ... For example: * "name = t1 OR name = t2" matches the test case with the exact resource name "t1" or "t2".',
-      }),
-    gcsUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to export the test cases to. The format of this URI must be `gs:///`. If unspecified, the serialized test cases is returned inline. Dialogflow performs a write operation for the Cloud Storage object on the caller's behalf, so your request authentication must have write permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
-      }),
-  })
-  .openapi({ description: 'The request message for TestCases.ExportTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ExportTestCasesRequest')
-
-const GoogleCloudDialogflowCxV3beta1ExportTestCasesResponseSchema = z
-  .object({
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for test cases.' }),
-    gcsUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI to a file containing the exported test cases. This field is populated only if `gcs_uri` is specified in ExportTestCasesRequest.',
-      }),
-  })
-  .openapi({ description: 'The response message for TestCases.ExportTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ExportTestCasesResponse')
-
-const GoogleCloudDialogflowCxV3beta1MatchIntentRequestSchema = z
-  .object({
-    persistParameterChanges: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Persist session parameter changes from `query_params`.' }),
-    queryInput: GoogleCloudDialogflowCxV3beta1QueryInputSchema.exactOptional().openapi({
-      description: 'Required. The input specification.',
-    }),
-    queryParams: GoogleCloudDialogflowCxV3beta1QueryParametersSchema.exactOptional().openapi({
-      description: 'The parameters of this query.',
-    }),
-  })
-  .openapi({ description: 'Request of MatchIntent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1MatchIntentRequest')
-
-const GoogleCloudDialogflowCxV3beta1FulfillIntentRequestSchema = z
-  .object({
-    match: GoogleCloudDialogflowCxV3beta1MatchSchema.exactOptional().openapi({
-      description: 'The matched intent/event to fulfill.',
-    }),
-    matchIntentRequest:
-      GoogleCloudDialogflowCxV3beta1MatchIntentRequestSchema.exactOptional().openapi({
-        description:
-          'Must be same as the corresponding MatchIntent request, otherwise the behavior is undefined.',
-      }),
-    outputAudioConfig:
-      GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema.exactOptional().openapi({
-        description: 'Instructs the speech synthesizer how to generate output audio.',
-      }),
-  })
-  .openapi({ description: 'Request of FulfillIntent', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1FulfillIntentRequest')
-
-const GoogleCloudDialogflowCxV3beta1FulfillIntentResponseSchema = z
-  .object({
-    outputAudio: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The audio data bytes encoded as specified in the request. Note: The output audio is generated based on the values of default platform text responses found in the `query_result.response_messages` field. If multiple default text responses exist, they will be concatenated when generating audio. If no default platform text responses exist, the generated audio content will be empty. In some scenarios, multiple output audio fields may be present in the response structure. In these cases, only the top-most-level audio output has content.',
-      }),
-    outputAudioConfig:
-      GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema.exactOptional().openapi({
-        description: 'The config used by the speech synthesizer to generate the output audio.',
-      }),
-    queryResult: GoogleCloudDialogflowCxV3beta1QueryResultSchema.exactOptional().openapi({
-      description: 'The result of the conversational query.',
-    }),
-    responseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The unique identifier of the response. It can be used to locate a response in the training example set or for reporting issues.',
-      }),
-  })
-  .openapi({ description: 'Response of FulfillIntent', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1FulfillIntentResponse')
-
-const GoogleCloudDialogflowCxV3beta1ImportDocumentsOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
-        { description: 'The generic information of the operation.' },
-      ),
-  })
-  .openapi({ description: 'Metadata for ImportDocuments operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ImportDocumentsOperationMetadata')
-
-const GoogleCloudDialogflowCxV3beta1ImportDocumentsResponseSchema = z
-  .object({
-    warnings: z
-      .array(GoogleRpcStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'Includes details about skipped documents or any other warnings.' }),
-  })
-  .openapi({ description: 'Response message for Documents.ImportDocuments.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ImportDocumentsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ImportFlowRequestSchema = z
-  .object({
-    flowContent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for flow.' }),
-    flowUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to import flow from. The format of this URI must be `gs:///`. Dialogflow performs a read operation for the Cloud Storage object on the caller's behalf, so your request authentication must have read permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
-      }),
-    importOption: z
-      .enum(['IMPORT_OPTION_UNSPECIFIED', 'KEEP', 'FALLBACK'])
-      .exactOptional()
-      .openapi({ description: 'Flow import mode. If not specified, `KEEP` is assumed.' }),
-  })
-  .openapi({ description: 'The request message for Flows.ImportFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ImportFlowRequest')
-
-const GoogleCloudDialogflowCxV3beta1ImportFlowResponseSchema = z
-  .object({
-    flow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the new flow. Format: `projects//locations//agents//flows/`.',
-      }),
-  })
-  .openapi({ description: 'The response message for Flows.ImportFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ImportFlowResponse')
-
-const GoogleCloudDialogflowCxV3beta1TestConfigSchema = z
-  .object({
-    flow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flow name to start the test case with. Format: `projects//locations//agents//flows/`. Only one of `flow` and `page` should be set to indicate the starting point of the test case. If both are set, `page` takes precedence over `flow`. If neither is set, the test case will start with start page on the default start flow.',
-      }),
-    page: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The page to start the test case with. Format: `projects//locations//agents//flows//pages/`. Only one of `flow` and `page` should be set to indicate the starting point of the test case. If both are set, `page` takes precedence over `flow`. If neither is set, the test case will start with start page on the default start flow.',
-      }),
-    trackingParameters: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Session parameters to be compared when calculating differences.' }),
-  })
-  .openapi({ description: 'Represents configurations for a test case.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TestConfig')
-
-const GoogleCloudDialogflowCxV3beta1TestCaseSchema = z
-  .object({
-    creationTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. When the test was created.', readOnly: true }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The human-readable name of the test case, unique within the agent. Limit of 200 characters.',
-      }),
-    lastTestResult: GoogleCloudDialogflowCxV3beta1TestCaseResultSchema.exactOptional().openapi({
-      description: 'The latest test result.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the test case. TestCases.CreateTestCase will populate the name automatically. Otherwise use format: `projects//locations//agents/ /testCases/`.',
-      }),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Additional freeform notes about the test case. Limit of 400 characters.',
-      }),
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Tags are short descriptions that users may apply to test cases for organizational and filtering purposes. Each tag should start with "#" and has a limit of 30 characters.',
-      }),
-    testCaseConversationTurns: z
-      .array(GoogleCloudDialogflowCxV3beta1ConversationTurnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The conversation turns uttered when the test case was created, in chronological order. These include the canonical set of agent utterances that should occur when the agent is working properly.',
-      }),
-    testConfig: GoogleCloudDialogflowCxV3beta1TestConfigSchema.exactOptional().openapi({
-      description: 'Config for the test case.',
-    }),
-  })
-  .openapi({ description: 'Represents a test case.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TestCase')
-
-const GoogleCloudDialogflowCxV3beta1TestCaseErrorSchema = z
-  .object({
-    status: GoogleRpcStatusSchema.exactOptional().openapi({
-      description: 'The status associated with the test case.',
-    }),
-    testCase: GoogleCloudDialogflowCxV3beta1TestCaseSchema.exactOptional().openapi({
-      description: 'The test case.',
-    }),
-  })
-  .openapi({ description: 'Error info for importing a test.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1TestCaseError')
-
-const GoogleCloudDialogflowCxV3beta1ImportTestCasesMetadataSchema = z
-  .object({
-    errors: z
-      .array(GoogleCloudDialogflowCxV3beta1TestCaseErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Errors for failed test cases.' }),
-  })
-  .openapi({
-    description: 'Metadata returned for the TestCases.ImportTestCases long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ImportTestCasesMetadata')
-
-const GoogleCloudDialogflowCxV3beta1ImportTestCasesRequestSchema = z
-  .object({
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for test cases.' }),
-    gcsUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to import test cases from. The format of this URI must be `gs:///`. Dialogflow performs a read operation for the Cloud Storage object on the caller's behalf, so your request authentication must have read permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
-      }),
-  })
-  .openapi({ description: 'The request message for TestCases.ImportTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ImportTestCasesRequest')
-
-const GoogleCloudDialogflowCxV3beta1ImportTestCasesResponseSchema = z
-  .object({
-    names: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifiers of the new test cases. Format: `projects//locations//agents//testCases/`.',
-      }),
-  })
-  .openapi({ description: 'The response message for TestCases.ImportTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ImportTestCasesResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListAgentsResponseSchema = z
-  .object({
-    agents: z
-      .array(GoogleCloudDialogflowCxV3beta1AgentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of agents. There will be a maximum number of items returned based on the page_size field in the request.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'The response message for Agents.ListAgents.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListAgentsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListChangelogsResponseSchema = z
-  .object({
-    changelogs: z
-      .array(GoogleCloudDialogflowCxV3beta1ChangelogSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of changelogs. There will be a maximum number of items returned based on the page_size field in the request. The changelogs will be ordered by timestamp.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'The response message for Changelogs.ListChangelogs.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListChangelogsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListContinuousTestResultsResponseSchema = z
-  .object({
-    continuousTestResults: z
-      .array(GoogleCloudDialogflowCxV3beta1ContinuousTestResultSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of continuous test results.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({
-    description: 'The response message for Environments.ListTestCaseResults.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListContinuousTestResultsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListDeploymentsResponseSchema = z
-  .object({
-    deployments: z
-      .array(GoogleCloudDialogflowCxV3beta1DeploymentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of deployments. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'The response message for Deployments.ListDeployments.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListDeploymentsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListEntityTypesResponseSchema = z
-  .object({
-    entityTypes: z
-      .array(GoogleCloudDialogflowCxV3beta1EntityTypeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of entity types. There will be a maximum number of items returned based on the page_size field in the request.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'The response message for EntityTypes.ListEntityTypes.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListEntityTypesResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListEnvironmentsResponseSchema = z
-  .object({
-    environments: z
-      .array(GoogleCloudDialogflowCxV3beta1EnvironmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of environments. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'The response message for Environments.ListEnvironments.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListEnvironmentsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListExperimentsResponseSchema = z
-  .object({
-    experiments: z
-      .array(GoogleCloudDialogflowCxV3beta1ExperimentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of experiments. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'The response message for Experiments.ListExperiments.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListExperimentsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListFlowsResponseSchema = z
-  .object({
-    flows: z
-      .array(GoogleCloudDialogflowCxV3beta1FlowSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of flows. There will be a maximum number of items returned based on the page_size field in the request.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'The response message for Flows.ListFlows.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListFlowsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListIntentsResponseSchema = z
-  .object({
-    intents: z
-      .array(GoogleCloudDialogflowCxV3beta1IntentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of intents. There will be a maximum number of items returned based on the page_size field in the request.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'The response message for Intents.ListIntents.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListIntentsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListPagesResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    pages: z
-      .array(GoogleCloudDialogflowCxV3beta1PageSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of pages. There will be a maximum number of items returned based on the page_size field in the request.',
-      }),
-  })
-  .openapi({ description: 'The response message for Pages.ListPages.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListPagesResponse')
-
-const GoogleCloudDialogflowCxV3beta1SecuritySettingsAudioExportSettingsSchema = z
-  .object({
-    audioExportPattern: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Filename pattern for exported audio.' }),
-    audioFormat: z
-      .enum(['AUDIO_FORMAT_UNSPECIFIED', 'MULAW', 'MP3', 'OGG'])
-      .exactOptional()
-      .openapi({
-        description: 'File format for exported audio file. Currently only in telephony recordings.',
-      }),
-    enableAudioRedaction: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enable audio redaction if it is true.' }),
-    gcsBucket: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud Storage bucket to export audio record to. Setting this field would grant the Storage Object Creator role to the Dialogflow Service Agent. API caller that tries to modify this field should have the permission of storage.buckets.setIamPolicy.',
-      }),
-  })
-  .openapi({ description: 'Settings for exporting audio.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1SecuritySettingsAudioExportSettings')
-
-const GoogleCloudDialogflowCxV3beta1SecuritySettingsInsightsExportSettingsSchema = z
-  .object({
-    enableInsightsExport: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If enabled, we will automatically exports conversations to Insights and Insights runs its analyzers.',
-      }),
-  })
-  .openapi({
-    description:
-      'Settings for exporting conversations to [Insights](https://cloud.google.com/contact-center/insights/docs).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1SecuritySettingsInsightsExportSettings')
-
-const GoogleCloudDialogflowCxV3beta1SecuritySettingsSchema = z
-  .object({
-    audioExportSettings:
-      GoogleCloudDialogflowCxV3beta1SecuritySettingsAudioExportSettingsSchema.exactOptional().openapi(
-        {
-          description:
-            "Controls audio export settings for post-conversation analytics when ingesting audio to conversations via Participants.AnalyzeContent or Participants.StreamingAnalyzeContent. If retention_strategy is set to REMOVE_AFTER_CONVERSATION or audio_export_settings.gcs_bucket is empty, audio export is disabled. If audio export is enabled, audio is recorded and saved to audio_export_settings.gcs_bucket, subject to retention policy of audio_export_settings.gcs_bucket. This setting won't effect audio input for implicit sessions via Sessions.DetectIntent or Sessions.StreamingDetectIntent.",
-        },
-      ),
-    deidentifyTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "[DLP](https://cloud.google.com/dlp/docs) deidentify template name. Use this template to define de-identification configuration for the content. The `DLP De-identify Templates Reader` role is needed on the Dialogflow service identity service account (has the form `service-PROJECT_NUMBER@gcp-sa-dialogflow.iam.gserviceaccount.com`) for your agent's project. If empty, Dialogflow replaces sensitive info with `[redacted]` text. The template name will have one of the following formats: `projects//locations//deidentifyTemplates/` OR `organizations//locations//deidentifyTemplates/` Note: `deidentify_template` must be located in the same region as the `SecuritySettings`.",
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The human-readable name of the security settings, unique within the location.',
-      }),
-    insightsExportSettings:
-      GoogleCloudDialogflowCxV3beta1SecuritySettingsInsightsExportSettingsSchema.exactOptional().openapi(
-        {
-          description:
-            'Controls conversation exporting settings to Insights after conversation is completed. If retention_strategy is set to REMOVE_AFTER_CONVERSATION, Insights export is disabled no matter what you configure here.',
-        },
-      ),
-    inspectTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "[DLP](https://cloud.google.com/dlp/docs) inspect template name. Use this template to define inspect base settings. The `DLP Inspect Templates Reader` role is needed on the Dialogflow service identity service account (has the form `service-PROJECT_NUMBER@gcp-sa-dialogflow.iam.gserviceaccount.com`) for your agent's project. If empty, we use the default DLP inspect config. The template name will have one of the following formats: `projects//locations//inspectTemplates/` OR `organizations//locations//inspectTemplates/` Note: `inspect_template` must be located in the same region as the `SecuritySettings`.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of the settings. Required for the SecuritySettingsService.UpdateSecuritySettings method. SecuritySettingsService.CreateSecuritySettings populates the name automatically. Format: `projects//locations//securitySettings/`.',
-      }),
-    purgeDataTypes: z
-      .array(z.enum(['PURGE_DATA_TYPE_UNSPECIFIED', 'DIALOGFLOW_HISTORY']))
-      .exactOptional()
-      .openapi({
-        description: 'List of types of data to remove when retention settings triggers purge.',
-      }),
-    redactionScope: z
-      .enum(['REDACTION_SCOPE_UNSPECIFIED', 'REDACT_DISK_STORAGE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the data for which Dialogflow applies redaction. Dialogflow does not redact data that it does not have access to – for example, Cloud logging.',
-      }),
-    redactionStrategy: z
-      .enum(['REDACTION_STRATEGY_UNSPECIFIED', 'REDACT_WITH_SERVICE'])
-      .exactOptional()
-      .openapi({ description: 'Strategy that defines how we do redaction.' }),
-    retentionWindowDays: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Retains data in interaction logging for the specified number of days. This does not apply to Cloud logging, which is owned by the user - not Dialogflow. User must set a value lower than Dialogflow's default 365d TTL (30 days for Agent Assist traffic), higher value will be ignored and use default. Setting a value higher than that has no effect. A missing value or setting to 0 also means we use default TTL.",
-      }),
-  })
-  .openapi({
-    description:
-      'Represents the settings related to security issues, such as data redaction and data retention. It may take hours for updates on the settings to propagate to all the related components and take effect.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1SecuritySettings')
-
-const GoogleCloudDialogflowCxV3beta1ListSecuritySettingsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    securitySettings: z
-      .array(GoogleCloudDialogflowCxV3beta1SecuritySettingsSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of security settings.' }),
-  })
-  .openapi({
-    description: 'The response message for SecuritySettings.ListSecuritySettings.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListSecuritySettingsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListSessionEntityTypesResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    sessionEntityTypes: z
-      .array(GoogleCloudDialogflowCxV3beta1SessionEntityTypeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of session entity types. There will be a maximum number of items returned based on the page_size field in the request.',
-      }),
-  })
-  .openapi({
-    description: 'The response message for SessionEntityTypes.ListSessionEntityTypes.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListSessionEntityTypesResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListTestCaseResultsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    testCaseResults: z
-      .array(GoogleCloudDialogflowCxV3beta1TestCaseResultSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of test case results.' }),
-  })
-  .openapi({ description: 'The response message for TestCases.ListTestCaseResults.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListTestCaseResultsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListTestCasesResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    testCases: z
-      .array(GoogleCloudDialogflowCxV3beta1TestCaseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of test cases. There will be a maximum number of items returned based on the page_size field in the request.',
-      }),
-  })
-  .openapi({ description: 'The response message for TestCases.ListTestCases.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListTestCasesResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListTransitionRouteGroupsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    transitionRouteGroups: z
-      .array(GoogleCloudDialogflowCxV3beta1TransitionRouteGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of transition route groups. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
-      }),
-  })
-  .openapi({
-    description: 'The response message for TransitionRouteGroups.ListTransitionRouteGroups.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListTransitionRouteGroupsResponse')
-
-const GoogleCloudDialogflowCxV3beta1VersionSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Create time of the version.', readOnly: true }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description of the version. The maximum length is 500 characters. If exceeded, the request is rejected.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The human-readable name of the version. Limit of 64 characters.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Format: projects//locations//agents//flows//versions/. Version ID is a self-increasing number generated by Dialogflow upon version creation.',
-      }),
-    nluSettings: GoogleCloudDialogflowCxV3beta1NluSettingsSchema.exactOptional().openapi({
-      description: 'Output only. The NLU settings of the flow at version creation.',
-      readOnly: true,
-    }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'RUNNING', 'SUCCEEDED', 'FAILED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The state of this version. This field is read-only and cannot be set by create and update methods.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Represents a version of a flow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1Version')
-
-const GoogleCloudDialogflowCxV3beta1ListVersionsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    versions: z
-      .array(GoogleCloudDialogflowCxV3beta1VersionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "A list of versions. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
-      }),
-  })
-  .openapi({ description: 'The response message for Versions.ListVersions.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListVersionsResponse')
-
-const GoogleCloudDialogflowCxV3beta1ListWebhooksResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    webhooks: z
-      .array(GoogleCloudDialogflowCxV3beta1WebhookSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of webhooks. There will be a maximum number of items returned based on the page_size field in the request.',
-      }),
-  })
-  .openapi({ description: 'The response message for Webhooks.ListWebhooks.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ListWebhooksResponse')
-
-const GoogleCloudDialogflowCxV3beta1LoadVersionRequestSchema = z
-  .object({
-    allowOverrideAgentResources: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field is used to prevent accidental overwrite of other agent resources, which can potentially impact other flow's behavior. If `allow_override_agent_resources` is false, conflicted agent-level resources will not be overridden (i.e. intents, entities, webhooks).",
-      }),
-  })
-  .openapi({ description: 'The request message for Versions.LoadVersion.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1LoadVersionRequest')
-
-const GoogleCloudDialogflowCxV3beta1LookupEnvironmentHistoryResponseSchema = z
-  .object({
-    environments: z
-      .array(GoogleCloudDialogflowCxV3beta1EnvironmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Represents a list of snapshots for an environment. Time of the snapshots is stored in `update_time`.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({
-    description: 'The response message for Environments.LookupEnvironmentHistory.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1LookupEnvironmentHistoryResponse')
-
-const GoogleCloudDialogflowCxV3beta1MatchIntentResponseSchema = z
-  .object({
-    currentPage: GoogleCloudDialogflowCxV3beta1PageSchema.exactOptional().openapi({
-      description:
-        'The current Page. Some, not all fields are filled in this message, including but not limited to `name` and `display_name`.',
-    }),
-    matches: z
-      .array(GoogleCloudDialogflowCxV3beta1MatchSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Match results, if more than one, ordered descendingly by the confidence we have that the particular intent matches the query.',
-      }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If natural language text was provided as input, this field will contain a copy of the text.',
-      }),
-    transcript: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If natural language speech audio was provided as input, this field will contain the transcript for the audio.',
-      }),
-    triggerEvent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If an event was provided as input, this field will contain a copy of the event name.',
-      }),
-    triggerIntent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If an intent was provided as input, this field will contain a copy of the intent identifier. Format: `projects//locations//agents//intents/`.',
-      }),
-  })
-  .openapi({ description: 'Response of MatchIntent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1MatchIntentResponse')
-
-const GoogleCloudDialogflowCxV3beta1PageInfoFormInfoParameterInfoSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Required for WebhookResponse. The human-readable name of the parameter, unique within the form. This field cannot be modified by the webhook.',
-      }),
-    justCollected: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional for WebhookRequest. Ignored for WebhookResponse. Indicates if the parameter value was just collected on the last conversation turn.',
-      }),
-    required: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional for both WebhookRequest and WebhookResponse. Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them. Required parameters must be filled before form filling concludes.',
-      }),
-    state: z
-      .enum(['PARAMETER_STATE_UNSPECIFIED', 'EMPTY', 'INVALID', 'FILLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Required for WebhookResponse. The state of the parameter. This field can be set to INVALID by the webhook to invalidate the parameter; other values set by the webhook will be ignored.',
-      }),
-    value: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional for both WebhookRequest and WebhookResponse. The value of the parameter. This field can be set by the webhook to change the parameter value.',
-      }),
-  })
-  .openapi({ description: 'Represents parameter information.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1PageInfoFormInfoParameterInfo')
-
-const GoogleCloudDialogflowCxV3beta1PageInfoFormInfoSchema = z
-  .object({
-    parameterInfo: z
-      .array(GoogleCloudDialogflowCxV3beta1PageInfoFormInfoParameterInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional for both WebhookRequest and WebhookResponse. The parameters contained in the form. Note that the webhook cannot add or remove any form parameter.',
-      }),
-  })
-  .openapi({ description: 'Represents form information.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1PageInfoFormInfo')
-
-const GoogleCloudDialogflowCxV3beta1PageInfoSchema = z
-  .object({
-    currentPage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Ignored for WebhookResponse. The unique identifier of the current page. Format: `projects//locations//agents//flows//pages/`.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Ignored for WebhookResponse. The display name of the current page.',
-      }),
-    formInfo: GoogleCloudDialogflowCxV3beta1PageInfoFormInfoSchema.exactOptional().openapi({
-      description:
-        'Optional for both WebhookRequest and WebhookResponse. Information about the form.',
-    }),
-  })
-  .openapi({
-    description: 'Represents page information communicated to and from the webhook.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1PageInfo')
-
-const GoogleCloudDialogflowCxV3beta1ReloadDocumentOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
-        { description: 'The generic information of the operation.' },
-      ),
-  })
-  .openapi({ description: 'Metadata for ReloadDocument operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ReloadDocumentOperationMetadata')
-
-const GoogleCloudDialogflowCxV3beta1RestoreAgentRequestSchema = z
-  .object({
-    agentContent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Uncompressed raw byte content for agent.' }),
-    agentUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to restore agent from. The format of this URI must be `gs:///`. Dialogflow performs a read operation for the Cloud Storage object on the caller's behalf, so your request authentication must have read permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
-      }),
-    restoreOption: z
-      .enum(['RESTORE_OPTION_UNSPECIFIED', 'KEEP', 'FALLBACK'])
-      .exactOptional()
-      .openapi({ description: 'Agent restore mode. If not specified, `KEEP` is assumed.' }),
-  })
-  .openapi({ description: 'The request message for Agents.RestoreAgent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1RestoreAgentRequest')
-
-const GoogleCloudDialogflowCxV3beta1RunContinuousTestMetadataSchema = z
-  .object({
-    errors: z
-      .array(GoogleCloudDialogflowCxV3beta1TestErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'The test errors.' }),
-  })
-  .openapi({
-    description: 'Metadata returned for the Environments.RunContinuousTest long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1RunContinuousTestMetadata')
-
-const GoogleCloudDialogflowCxV3beta1RunContinuousTestRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Environments.RunContinuousTest.' })
-  .openapi('GoogleCloudDialogflowCxV3beta1RunContinuousTestRequest')
-
-const GoogleCloudDialogflowCxV3beta1RunContinuousTestResponseSchema = z
-  .object({
-    continuousTestResult:
-      GoogleCloudDialogflowCxV3beta1ContinuousTestResultSchema.exactOptional().openapi({
-        description: 'The result for a continuous test run.',
-      }),
-  })
-  .openapi({
-    description: 'The response message for Environments.RunContinuousTest.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1RunContinuousTestResponse')
-
-const GoogleCloudDialogflowCxV3beta1RunTestCaseMetadataSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Metadata returned for the TestCases.RunTestCase long running operation. This message currently has no fields.',
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1RunTestCaseMetadata')
-
-const GoogleCloudDialogflowCxV3beta1RunTestCaseRequestSchema = z
-  .object({
-    environment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Environment name. If not set, draft environment is assumed. Format: `projects//locations//agents//environments/`.',
-      }),
-  })
-  .openapi({ description: 'The request message for TestCases.RunTestCase.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1RunTestCaseRequest')
-
-const GoogleCloudDialogflowCxV3beta1RunTestCaseResponseSchema = z
-  .object({
-    result: GoogleCloudDialogflowCxV3beta1TestCaseResultSchema.exactOptional().openapi({
-      description: 'The result.',
-    }),
-  })
-  .openapi({ description: 'The response message for TestCases.RunTestCase.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1RunTestCaseResponse')
-
-const GoogleCloudDialogflowCxV3beta1SessionInfoSchema = z
-  .object({
-    parameters: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional for WebhookRequest. Optional for WebhookResponse. All parameters collected from forms and intents during the session. Parameters can be created, updated, or removed by the webhook. To remove a parameter from the session, the webhook should explicitly set the parameter value to null in WebhookResponse. The map is keyed by parameters' display names.",
-      }),
-    session: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present for WebhookRequest. Ignored for WebhookResponse. The unique identifier of the session. This field can be used by the webhook to identify a session. Format: `projects//locations//agents//sessions/` or `projects//locations//agents//environments//sessions/` if environment is specified.',
-      }),
-  })
-  .openapi({
-    description: 'Represents session information communicated to and from the webhook.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1SessionInfo')
-
-const GoogleCloudDialogflowCxV3beta1StartExperimentRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Experiments.StartExperiment.' })
-  .openapi('GoogleCloudDialogflowCxV3beta1StartExperimentRequest')
-
-const GoogleCloudDialogflowCxV3beta1StopExperimentRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Experiments.StopExperiment.' })
-  .openapi('GoogleCloudDialogflowCxV3beta1StopExperimentRequest')
-
-const GoogleCloudDialogflowCxV3beta1TrainFlowRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Flows.TrainFlow.' })
-  .openapi('GoogleCloudDialogflowCxV3beta1TrainFlowRequest')
-
-const GoogleCloudDialogflowCxV3beta1UpdateDocumentOperationMetadataSchema = z
-  .object({
-    genericMetadata:
-      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
-        { description: 'The generic information of the operation.' },
-      ),
-  })
-  .openapi({ description: 'Metadata for UpdateDocument operation.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1UpdateDocumentOperationMetadata')
-
-const GoogleCloudDialogflowCxV3beta1ValidateAgentRequestSchema = z
-  .object({
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "If not specified, the agent's default language is used." }),
-  })
-  .openapi({ description: 'The request message for Agents.ValidateAgent.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ValidateAgentRequest')
-
-const GoogleCloudDialogflowCxV3beta1ValidateFlowRequestSchema = z
-  .object({
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "If not specified, the agent's default language is used." }),
-  })
-  .openapi({ description: 'The request message for Flows.ValidateFlow.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1ValidateFlowRequest')
-
-const GoogleCloudDialogflowCxV3beta1WebhookRequestFulfillmentInfoSchema = z
-  .object({
-    tag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present. The value of the Fulfillment.tag field will be populated in this field by Dialogflow when the associated webhook is called. The tag is typically used by the webhook service to identify which fulfillment is being called, but it could be used for other purposes.',
-      }),
-  })
-  .openapi({
-    description: 'Represents fulfillment information communicated to the webhook.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequestFulfillmentInfo')
-
-const GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoIntentParameterValueSchema = z
-  .object({
-    originalValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Always present. Original text value extracted from user utterance.',
-      }),
-    resolvedValue: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present. Structured value for the parameter extracted from user utterance.',
-      }),
-  })
-  .openapi({ description: 'Represents a value for an intent parameter.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoIntentParameterValue')
-
-const GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The confidence of the matched intent. Values range from 0.0 (completely uncertain) to 1.0 (completely certain).',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Always present. The display name of the last matched intent.' }),
-    lastMatchedIntent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present. The unique identifier of the last matched intent. Format: `projects//locations//agents//intents/`.',
-      }),
-    parameters: z
-      .record(
-        z.string(),
-        GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoIntentParameterValueSchema,
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          "Parameters identified as a result of intent matching. This is a map of the name of the identified parameter to the value of the parameter identified from the user's utterance. All parameters defined in the matched intent that are identified will be surfaced here.",
-      }),
-  })
-  .openapi({
-    description: 'Represents intent information communicated to the webhook.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfo')
-
-const GoogleCloudDialogflowCxV3beta1WebhookRequestSentimentAnalysisResultSchema = z
-  .object({
-    magnitude: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'A non-negative number in the [0, +inf) range, which represents the absolute magnitude of sentiment, regardless of score (positive or negative).',
-      }),
-    score: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Sentiment score between -1.0 (negative sentiment) and 1.0 (positive sentiment).',
-      }),
-  })
-  .openapi({ description: 'Represents the result of sentiment analysis.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequestSentimentAnalysisResult')
-
-const GoogleCloudDialogflowCxV3beta1WebhookRequestSchema = z
-  .object({
-    detectIntentResponseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Always present. The unique identifier of the DetectIntentResponse that will be returned to the API caller.',
-      }),
-    dtmfDigits: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If DTMF was provided as input, this field will contain the DTMF digits.',
-      }),
-    fulfillmentInfo:
-      GoogleCloudDialogflowCxV3beta1WebhookRequestFulfillmentInfoSchema.exactOptional().openapi({
-        description:
-          'Always present. Information about the fulfillment that triggered this webhook call.',
-      }),
-    intentInfo:
-      GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoSchema.exactOptional().openapi({
-        description: 'Information about the last matched intent.',
-      }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The language code specified in the original request.' }),
-    messages: z
-      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of rich message responses to present to the user. Webhook can choose to append or replace this list in WebhookResponse.fulfillment_response;',
-      }),
-    pageInfo: GoogleCloudDialogflowCxV3beta1PageInfoSchema.exactOptional().openapi({
-      description: 'Information about page status.',
-    }),
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'Custom data set in QueryParameters.payload.' }),
-    sentimentAnalysisResult:
-      GoogleCloudDialogflowCxV3beta1WebhookRequestSentimentAnalysisResultSchema.exactOptional().openapi(
-        {
-          description:
-            'The sentiment analysis result of the current user request. The field is filled when sentiment analysis is configured to be enabled for the request.',
-        },
-      ),
-    sessionInfo: GoogleCloudDialogflowCxV3beta1SessionInfoSchema.exactOptional().openapi({
-      description: 'Information about session status.',
-    }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If natural language text was provided as input, this field will contain a copy of the text.',
-      }),
-    transcript: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If natural language speech audio was provided as input, this field will contain the transcript for the audio.',
-      }),
-    triggerEvent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If an event was provided as input, this field will contain the name of the event.',
-      }),
-    triggerIntent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If an intent was provided as input, this field will contain a copy of the intent identifier. Format: `projects//locations//agents//intents/`.',
-      }),
-  })
-  .openapi({
-    description:
-      'The request message for a webhook call. The request is sent as a JSON object and the field names will be presented in camel cases. You may see undocumented fields in an actual request. These fields are used internally by Dialogflow and should be ignored.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequest')
-
-const GoogleCloudDialogflowCxV3beta1WebhookResponseFulfillmentResponseSchema = z
-  .object({
-    mergeBehavior: z
-      .enum(['MERGE_BEHAVIOR_UNSPECIFIED', 'APPEND', 'REPLACE'])
-      .exactOptional()
-      .openapi({ description: 'Merge behavior for `messages`.' }),
-    messages: z
-      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of rich message responses to present to the user.' }),
-  })
-  .openapi({ description: 'Represents a fulfillment response to the user.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1WebhookResponseFulfillmentResponse')
-
-const GoogleCloudDialogflowCxV3beta1WebhookResponseSchema = z
-  .object({
-    fulfillmentResponse:
-      GoogleCloudDialogflowCxV3beta1WebhookResponseFulfillmentResponseSchema.exactOptional().openapi(
-        {
-          description:
-            'The fulfillment response to send to the user. This field can be omitted by the webhook if it does not intend to send any response to the user.',
-        },
-      ),
-    pageInfo: GoogleCloudDialogflowCxV3beta1PageInfoSchema.exactOptional().openapi({
-      description:
-        'Information about page status. This field can be omitted by the webhook if it does not intend to modify page status.',
-    }),
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'Value to append directly to QueryResult.webhook_payloads.' }),
-    sessionInfo: GoogleCloudDialogflowCxV3beta1SessionInfoSchema.exactOptional().openapi({
-      description:
-        'Information about session status. This field can be omitted by the webhook if it does not intend to modify session status.',
-    }),
-    targetFlow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
-      }),
-    targetPage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
-      }),
-  })
-  .openapi({ description: 'The response message for a webhook call.', required: [] })
-  .openapi('GoogleCloudDialogflowCxV3beta1WebhookResponse')
-
-const GoogleCloudDialogflowV2AnnotatedMessagePartSchema = z
-  .object({
-    entityType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [Dialogflow system entity type](https://cloud.google.com/dialogflow/docs/reference/system-entities) of this message part. If this is empty, Dialogflow could not annotate the phrase part with a system entity.',
-      }),
-    formattedValue: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [Dialogflow system entity formatted value ](https://cloud.google.com/dialogflow/docs/reference/system-entities) of this message part. For example for a system entity of type `@sys.unit-currency`, this may contain: { "amount": 5, "currency": "USD" } ',
-      }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A part of a message possibly annotated with an entity.' }),
-  })
-  .openapi({
-    description:
-      'Represents a part of a message possibly annotated with an entity. The part can be an entity or purely a part of the message between two entities or message start/end.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2AnnotatedMessagePart')
-
-const GoogleCloudDialogflowV2ArticleAnswerSchema = z
-  .object({
-    answerRecord: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of answer record, in the format of "projects//locations//answerRecords/"',
-      }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Article match confidence. The system's confidence score that this article is a good match for this conversation, as a value from 0.0 (completely uncertain) to 1.0 (completely certain).",
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A map that contains metadata about the answer and the document from which it originates.',
-      }),
-    snippets: z.array(z.string()).exactOptional().openapi({ description: 'Article snippets.' }),
-    title: z.string().exactOptional().openapi({ description: 'The article title.' }),
-    uri: z.string().exactOptional().openapi({ description: 'The article URI.' }),
-  })
-  .openapi({ description: 'Represents article answer.', required: [] })
-  .openapi('GoogleCloudDialogflowV2ArticleAnswer')
-
-const GoogleCloudDialogflowV2ArticleSuggestionModelMetadataSchema = z
-  .object({
-    trainingModelType: z
-      .enum(['MODEL_TYPE_UNSPECIFIED', 'SMART_REPLY_DUAL_ENCODER_MODEL', 'SMART_REPLY_BERT_MODEL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Type of the article suggestion model. If not provided, model_type is used.',
-      }),
-  })
-  .openapi({ description: 'Metadata for article suggestion models.', required: [] })
-  .openapi('GoogleCloudDialogflowV2ArticleSuggestionModelMetadata')
-
-const GoogleCloudDialogflowV2EntityTypeEntitySchema = z
-  .object({
-    synonyms: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A collection of value synonyms. For example, if the entity type is *vegetable*, and `value` is *scallions*, a synonym could be *green onions*. For `KIND_LIST` entity types: * This collection must contain exactly one synonym equal to `value`.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The primary value associated with this entity entry. For example, if the entity type is *vegetable*, the value could be *scallions*. For `KIND_MAP` entity types: * A reference value to be used in place of synonyms. For `KIND_LIST` entity types: * A string that can contain references to other entity types (with or without aliases).',
-      }),
-  })
-  .openapi({ description: 'An **entity entry** for an associated entity type.', required: [] })
-  .openapi('GoogleCloudDialogflowV2EntityTypeEntity')
-
-const GoogleCloudDialogflowV2EntityTypeSchema = z
-  .object({
-    autoExpansionMode: z
-      .enum(['AUTO_EXPANSION_MODE_UNSPECIFIED', 'AUTO_EXPANSION_MODE_DEFAULT'])
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Indicates whether the entity type can be automatically expanded.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the entity type.' }),
-    enableFuzzyExtraction: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Optional. Enables fuzzy entity extraction during classification.' }),
-    entities: z
-      .array(GoogleCloudDialogflowV2EntityTypeEntitySchema)
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The collection of entity entries associated with the entity type.',
-      }),
-    kind: z
-      .enum(['KIND_UNSPECIFIED', 'KIND_MAP', 'KIND_LIST', 'KIND_REGEXP'])
-      .exactOptional()
-      .openapi({ description: 'Required. Indicates the kind of entity type.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the entity type. Required for EntityTypes.UpdateEntityType and EntityTypes.BatchUpdateEntityTypes methods. Format: `projects//agent/entityTypes/`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Each intent parameter has a type, called the entity type, which dictates exactly how data from an end-user expression is extracted. Dialogflow provides predefined system entities that can match many common types of data. For example, there are system entities for matching dates, times, colors, email addresses, and so on. You can also create your own custom entities for matching custom data. For example, you could define a vegetable entity that can match the types of vegetables available for purchase with a grocery store agent. For more information, see the [Entity guide](https://cloud.google.com/dialogflow/docs/entities-overview).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2EntityType')
-
-const GoogleCloudDialogflowV2BatchUpdateEntityTypesResponseSchema = z
-  .object({
-    entityTypes: z
-      .array(GoogleCloudDialogflowV2EntityTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'The collection of updated or created entity types.' }),
-  })
-  .openapi({
-    description: 'The response message for EntityTypes.BatchUpdateEntityTypes.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2BatchUpdateEntityTypesResponse')
+type GoogleCloudDialogflowCxV3beta1ListExperimentsResponseType = {
+  experiments?: z.infer<typeof GoogleCloudDialogflowCxV3beta1ExperimentSchema>[]
+  nextPageToken?: string
+}
+
+type GoogleCloudDialogflowCxV3beta1ListFlowsResponseType = {
+  flows?: z.infer<typeof GoogleCloudDialogflowCxV3beta1FlowSchema>[]
+  nextPageToken?: string
+}
+
+type GoogleCloudDialogflowCxV3beta1ListPagesResponseType = {
+  nextPageToken?: string
+  pages?: z.infer<typeof GoogleCloudDialogflowCxV3beta1PageSchema>[]
+}
+
+type GoogleCloudDialogflowCxV3beta1ListTestCaseResultsResponseType = {
+  nextPageToken?: string
+  testCaseResults?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestCaseResultSchema>[]
+}
+
+type GoogleCloudDialogflowCxV3beta1ListTestCasesResponseType = {
+  nextPageToken?: string
+  testCases?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestCaseSchema>[]
+}
+
+type GoogleCloudDialogflowCxV3beta1ListTransitionRouteGroupsResponseType = {
+  nextPageToken?: string
+  transitionRouteGroups?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TransitionRouteGroupSchema>[]
+}
+
+type GoogleCloudDialogflowCxV3beta1LookupEnvironmentHistoryResponseType = {
+  environments?: z.infer<typeof GoogleCloudDialogflowCxV3beta1EnvironmentSchema>[]
+  nextPageToken?: string
+}
+
+type GoogleCloudDialogflowCxV3beta1MatchIntentResponseType = {
+  currentPage?: z.infer<typeof GoogleCloudDialogflowCxV3beta1PageSchema>
+  matches?: z.infer<typeof GoogleCloudDialogflowCxV3beta1MatchSchema>[]
+  text?: string
+  transcript?: string
+  triggerEvent?: string
+  triggerIntent?: string
+}
+
+type GoogleCloudDialogflowCxV3beta1RunTestCaseResponseType = {
+  result?: z.infer<typeof GoogleCloudDialogflowCxV3beta1TestCaseResultSchema>
+}
 
 const GoogleCloudDialogflowV2IntentFollowupIntentInfoSchema = z
   .object({
@@ -7394,7 +4831,44 @@ const GoogleCloudDialogflowV2IntentTrainingPhraseSchema = z
   .openapi({ description: 'Represents an example that the agent is trained on.', required: [] })
   .openapi('GoogleCloudDialogflowV2IntentTrainingPhrase')
 
-const GoogleCloudDialogflowV2IntentSchema = z
+type GoogleCloudDialogflowV2IntentType = {
+  action?: string
+  defaultResponsePlatforms?: (
+    | 'PLATFORM_UNSPECIFIED'
+    | 'FACEBOOK'
+    | 'SLACK'
+    | 'TELEGRAM'
+    | 'KIK'
+    | 'SKYPE'
+    | 'LINE'
+    | 'VIBER'
+    | 'ACTIONS_ON_GOOGLE'
+    | 'GOOGLE_HANGOUTS'
+  )[]
+  displayName?: string
+  endInteraction?: boolean
+  events?: string[]
+  followupIntentInfo?: z.infer<typeof GoogleCloudDialogflowV2IntentFollowupIntentInfoSchema>[]
+  inputContextNames?: string[]
+  isFallback?: boolean
+  liveAgentHandoff?: boolean
+  messages?: z.infer<typeof GoogleCloudDialogflowV2IntentMessageSchema>[]
+  mlDisabled?: boolean
+  name?: string
+  outputContexts?: z.infer<typeof GoogleCloudDialogflowV2ContextSchema>[]
+  parameters?: z.infer<typeof GoogleCloudDialogflowV2IntentParameterSchema>[]
+  parentFollowupIntentName?: string
+  priority?: number
+  resetContexts?: boolean
+  rootFollowupIntentName?: string
+  trainingPhrases?: z.infer<typeof GoogleCloudDialogflowV2IntentTrainingPhraseSchema>[]
+  webhookState?:
+    | 'WEBHOOK_STATE_UNSPECIFIED'
+    | 'WEBHOOK_STATE_ENABLED'
+    | 'WEBHOOK_STATE_ENABLED_FOR_SLOT_FILLING'
+}
+
+const GoogleCloudDialogflowV2IntentSchema: z.ZodType<GoogleCloudDialogflowV2IntentType> = z
   .object({
     action: z
       .string()
@@ -7552,65 +5026,9 @@ const GoogleCloudDialogflowV2IntentSchema = z
   })
   .openapi('GoogleCloudDialogflowV2Intent')
 
-const GoogleCloudDialogflowV2BatchUpdateIntentsResponseSchema = z
-  .object({
-    intents: z
-      .array(GoogleCloudDialogflowV2IntentSchema)
-      .exactOptional()
-      .openapi({ description: 'The collection of updated or created intents.' }),
-  })
-  .openapi({ description: 'The response message for Intents.BatchUpdateIntents.', required: [] })
-  .openapi('GoogleCloudDialogflowV2BatchUpdateIntentsResponse')
-
-const GoogleCloudDialogflowV2ClearSuggestionFeatureConfigOperationMetadataSchema = z
-  .object({
-    conversationProfile: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation profile. Format: `projects//locations//conversationProfiles/`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp whe the request was created. The time is measured on server side.',
-      }),
-    participantRole: z
-      .enum(['ROLE_UNSPECIFIED', 'HUMAN_AGENT', 'AUTOMATED_AGENT', 'END_USER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The participant role to remove the suggestion feature config. Only HUMAN_AGENT or END_USER can be used.',
-      }),
-    suggestionFeatureType: z
-      .enum(['TYPE_UNSPECIFIED', 'ARTICLE_SUGGESTION', 'FAQ', 'SMART_REPLY'])
-      .exactOptional()
-      .openapi({ description: 'Required. The type of the suggestion feature to remove.' }),
-  })
-  .openapi({
-    description: 'Metadata for a ConversationProfile.ClearSuggestionFeatureConfig operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2ClearSuggestionFeatureConfigOperationMetadata')
-
-const GoogleCloudDialogflowV2MessageAnnotationSchema = z
-  .object({
-    containEntities: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the text message contains entities.' }),
-    parts: z
-      .array(GoogleCloudDialogflowV2AnnotatedMessagePartSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The collection of annotated message parts ordered by their position in the message. You can recover the annotated message by concatenating [AnnotatedMessagePart.text].',
-      }),
-  })
-  .openapi({ description: 'Represents the result of annotation for the message.', required: [] })
-  .openapi('GoogleCloudDialogflowV2MessageAnnotation')
+type GoogleCloudDialogflowV2BatchUpdateIntentsResponseType = {
+  intents?: z.infer<typeof GoogleCloudDialogflowV2IntentSchema>[]
+}
 
 const GoogleCloudDialogflowV2SentimentSchema = z
   .object({
@@ -7649,664 +5067,24 @@ const GoogleCloudDialogflowV2SentimentAnalysisResultSchema = z
   })
   .openapi('GoogleCloudDialogflowV2SentimentAnalysisResult')
 
-const GoogleCloudDialogflowV2MessageSchema = z
-  .object({
-    content: z.string().exactOptional().openapi({ description: 'Required. The message content.' }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the message was created in Contact Center AI.',
-        readOnly: true,
-      }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The message language. This should be a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag. Example: "en-US".',
-      }),
-    messageAnnotation: GoogleCloudDialogflowV2MessageAnnotationSchema.exactOptional().openapi({
-      description: 'Output only. The annotation for the message.',
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The unique identifier of the message. Format: `projects//locations//conversations//messages/`.',
-      }),
-    participant: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The participant that sends this message.',
-        readOnly: true,
-      }),
-    participantRole: z
-      .enum(['ROLE_UNSPECIFIED', 'HUMAN_AGENT', 'AUTOMATED_AGENT', 'END_USER'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The role of the participant.', readOnly: true }),
-    sendTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The time when the message was sent.' }),
-    sentimentAnalysis: GoogleCloudDialogflowV2SentimentAnalysisResultSchema.exactOptional().openapi(
-      {
-        description: 'Output only. The sentiment analysis result for the message.',
-        readOnly: true,
-      },
-    ),
-  })
-  .openapi({ description: 'Represents a message posted into a conversation.', required: [] })
-  .openapi('GoogleCloudDialogflowV2Message')
-
-const GoogleCloudDialogflowV2ConversationEventSchema = z
-  .object({
-    conversation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the conversation this notification refers to. Format: `projects//conversations/`.',
-      }),
-    errorStatus: GoogleRpcStatusSchema.exactOptional().openapi({
-      description:
-        'More detailed information about an error. Only set for type UNRECOVERABLE_ERROR_IN_PHONE_CALL.',
-    }),
-    newMessagePayload: GoogleCloudDialogflowV2MessageSchema.exactOptional().openapi({
-      description: 'Payload of NEW_MESSAGE event.',
-    }),
-    type: z
-      .enum([
-        'TYPE_UNSPECIFIED',
-        'CONVERSATION_STARTED',
-        'CONVERSATION_FINISHED',
-        'HUMAN_INTERVENTION_NEEDED',
-        'NEW_MESSAGE',
-        'UNRECOVERABLE_ERROR',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the event that this notification refers to.' }),
-  })
-  .openapi({
-    description:
-      'Represents a notification sent to Pub/Sub subscribers for conversation lifecycle events.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2ConversationEvent')
-
-const GoogleCloudDialogflowV2InputDatasetSchema = z
-  .object({
-    dataset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. ConversationDataset resource name. Format: `projects//locations//conversationDatasets/`',
-      }),
-  })
-  .openapi({
-    description: 'InputDataset used to create model or do evaluation. NextID:5',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2InputDataset')
-
-const GoogleCloudDialogflowV2SmartReplyModelMetadataSchema = z
-  .object({
-    trainingModelType: z
-      .enum(['MODEL_TYPE_UNSPECIFIED', 'SMART_REPLY_DUAL_ENCODER_MODEL', 'SMART_REPLY_BERT_MODEL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Type of the smart reply model. If not provided, model_type is used.',
-      }),
-  })
-  .openapi({ description: 'Metadata for smart reply models.', required: [] })
-  .openapi('GoogleCloudDialogflowV2SmartReplyModelMetadata')
-
-const GoogleCloudDialogflowV2ConversationModelSchema = z
-  .object({
-    articleSuggestionModelMetadata:
-      GoogleCloudDialogflowV2ArticleSuggestionModelMetadataSchema.exactOptional().openapi({
-        description: 'Metadata for article suggestion models.',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Creation time of this model.', readOnly: true }),
-    datasets: z
-      .array(GoogleCloudDialogflowV2InputDatasetSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. Datasets used to create model.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The display name of the model. At most 64 bytes long.' }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Language code for the conversation model. If not specified, the language is en-US. Language at ConversationModel should be set for all non en-us languages. This should be a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag. Example: "en-US".',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ConversationModel resource name. Format: `projects//conversationModels/`',
-      }),
-    smartReplyModelMetadata:
-      GoogleCloudDialogflowV2SmartReplyModelMetadataSchema.exactOptional().openapi({
-        description: 'Metadata for smart reply models.',
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'CREATING',
-        'UNDEPLOYED',
-        'DEPLOYING',
-        'DEPLOYED',
-        'UNDEPLOYING',
-        'DELETING',
-        'FAILED',
-        'PENDING',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. State of the model. A model can only serve prediction requests after it gets deployed.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Represents a conversation model.', required: [] })
-  .openapi('GoogleCloudDialogflowV2ConversationModel')
-
-const GoogleCloudDialogflowV2CreateConversationDatasetOperationMetadataSchema = z
-  .object({
-    conversationDataset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation dataset that will be created. Format: `projects//locations//conversationDatasets/`',
-      }),
-  })
-  .openapi({ description: 'Metadata for ConversationDatasets.', required: [] })
-  .openapi('GoogleCloudDialogflowV2CreateConversationDatasetOperationMetadata')
-
-const GoogleCloudDialogflowV2CreateConversationModelEvaluationOperationMetadataSchema = z
-  .object({
-    conversationModel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation model. Format: `projects//locations//conversationModels/`',
-      }),
-    conversationModelEvaluation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation model. Format: `projects//locations//conversationModels//evaluations/`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp when the request to create conversation model was submitted. The time is measured on server side.',
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'INITIALIZING', 'RUNNING', 'CANCELLED', 'SUCCEEDED', 'FAILED'])
-      .exactOptional()
-      .openapi({ description: 'State of CreateConversationModel operation.' }),
-  })
-  .openapi({
-    description: 'Metadata for a ConversationModels.CreateConversationModelEvaluation operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2CreateConversationModelEvaluationOperationMetadata')
-
-const GoogleCloudDialogflowV2CreateConversationModelOperationMetadataSchema = z
-  .object({
-    conversationModel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation model. Format: `projects//conversationModels/`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp when the request to create conversation model is submitted. The time is measured on server side.',
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'SUCCEEDED',
-        'FAILED',
-        'CANCELLED',
-        'CANCELLING',
-        'TRAINING',
-      ])
-      .exactOptional()
-      .openapi({ description: 'State of CreateConversationModel operation.' }),
-  })
-  .openapi({
-    description: 'Metadata for a ConversationModels.CreateConversationModel operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2CreateConversationModelOperationMetadata')
-
-const GoogleCloudDialogflowV2DeleteConversationDatasetOperationMetadataSchema = z
-  .object({})
-  .openapi({ description: 'Metadata for ConversationDatasets.' })
-  .openapi('GoogleCloudDialogflowV2DeleteConversationDatasetOperationMetadata')
-
-const GoogleCloudDialogflowV2DeleteConversationModelOperationMetadataSchema = z
-  .object({
-    conversationModel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation model. Format: `projects//conversationModels/`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp when delete conversation model request was created. The time is measured on server side.',
-      }),
-  })
-  .openapi({
-    description: 'Metadata for a ConversationModels.DeleteConversationModel operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2DeleteConversationModelOperationMetadata')
-
-const GoogleCloudDialogflowV2DeployConversationModelOperationMetadataSchema = z
-  .object({
-    conversationModel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation model. Format: `projects//conversationModels/`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp when request to deploy conversation model was submitted. The time is measured on server side.',
-      }),
-  })
-  .openapi({
-    description: 'Metadata for a ConversationModels.DeployConversationModel operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2DeployConversationModelOperationMetadata')
-
-const GoogleCloudDialogflowV2EventInputSchema = z
-  .object({
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The language of this query. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language) for a list of the currently supported language codes. Note that queries in the same session do not necessarily need to specify the same language. This field is ignored when used in the context of a WebhookResponse.followup_event_input field, because the language was already defined in the originating detect intent request.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The unique identifier of the event.' }),
-    parameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          "The collection of parameters associated with the event. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: - MapKey type: string - MapKey value: parameter name - MapValue type: - If parameter's entity type is a composite entity: map - Else: depending on parameter value type, could be one of string, number, boolean, null, list or map - MapValue value: - If parameter's entity type is a composite entity: map from composite entity property names to property values - Else: parameter value",
-      }),
-  })
-  .openapi({
-    description:
-      'Events allow for matching intents by event name instead of the natural language input. For instance, input `` can trigger a personalized welcome response. The parameter `name` may be used by the agent in the response: `"Hello #welcome_event.name! What can I do for you today?"`.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2EventInput')
-
-const GoogleCloudDialogflowV2ExportAgentResponseSchema = z
-  .object({
-    agentContent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Zip compressed raw byte content for agent.' }),
-    agentUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI to a file containing the exported agent. This field is populated only if `agent_uri` is specified in `ExportAgentRequest`.',
-      }),
-  })
-  .openapi({ description: 'The response message for Agents.ExportAgent.', required: [] })
-  .openapi('GoogleCloudDialogflowV2ExportAgentResponse')
-
-const GoogleCloudDialogflowV2GcsDestinationSchema = z
-  .object({
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Google Cloud Storage URIs for the output. A URI is of the form: gs://bucket/object-prefix-or-name Whether a prefix or name is used depends on the use case. The requesting user must have "write-permission" to the bucket.',
-      }),
-  })
-  .openapi({ description: 'Google Cloud Storage location for the output.', required: [] })
-  .openapi('GoogleCloudDialogflowV2GcsDestination')
-
-const GoogleCloudDialogflowV2ExportOperationMetadataSchema = z
-  .object({
-    exportedGcsDestination: GoogleCloudDialogflowV2GcsDestinationSchema.exactOptional().openapi({
-      description: 'Cloud Storage file path of the exported data.',
-    }),
-  })
-  .openapi({
-    description: 'Metadata related to the Export Data Operations (e.g. ExportDocument).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2ExportOperationMetadata')
-
-const GoogleCloudDialogflowV2FaqAnswerSchema = z
-  .object({
-    answer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The piece of text from the `source` knowledge base document.' }),
-    answerRecord: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of answer record, in the format of "projects//locations//answerRecords/"',
-      }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The system's confidence score that this Knowledge answer is a good match for this conversational query, range from 0.0 (completely uncertain) to 1.0 (completely certain).",
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A map that contains metadata about the answer and the document from which it originates.',
-      }),
-    question: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The corresponding FAQ question.' }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates which Knowledge Document this answer was extracted from. Format: `projects//locations//agent/knowledgeBases//documents/`.',
-      }),
-  })
-  .openapi({ description: 'Represents answer from "frequently asked questions".', required: [] })
-  .openapi('GoogleCloudDialogflowV2FaqAnswer')
-
-const GoogleCloudDialogflowV2SuggestArticlesResponseSchema = z
-  .object({
-    articleAnswers: z
-      .array(GoogleCloudDialogflowV2ArticleAnswerSchema)
-      .exactOptional()
-      .openapi({ description: 'Articles ordered by score in descending order.' }),
-    contextSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Number of messages prior to and including latest_message to compile the suggestion. It may be smaller than the SuggestArticlesRequest.context_size field in the request if there aren't that many messages in the conversation.",
-      }),
-    latestMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the latest conversation message used to compile suggestion for. Format: `projects//locations//conversations//messages/`.',
-      }),
-  })
-  .openapi({ description: 'The response message for Participants.SuggestArticles.', required: [] })
-  .openapi('GoogleCloudDialogflowV2SuggestArticlesResponse')
-
-const GoogleCloudDialogflowV2SuggestFaqAnswersResponseSchema = z
-  .object({
-    contextSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Number of messages prior to and including latest_message to compile the suggestion. It may be smaller than the SuggestFaqAnswersRequest.context_size field in the request if there aren't that many messages in the conversation.",
-      }),
-    faqAnswers: z
-      .array(GoogleCloudDialogflowV2FaqAnswerSchema)
-      .exactOptional()
-      .openapi({ description: 'Answers extracted from FAQ documents.' }),
-    latestMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the latest conversation message used to compile suggestion for. Format: `projects//locations//conversations//messages/`.',
-      }),
-  })
-  .openapi({ description: 'The request message for Participants.SuggestFaqAnswers.', required: [] })
-  .openapi('GoogleCloudDialogflowV2SuggestFaqAnswersResponse')
-
-const GoogleCloudDialogflowV2SmartReplyAnswerSchema = z
-  .object({
-    answerRecord: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of answer record, in the format of "projects//locations//answerRecords/"',
-      }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Smart reply confidence. The system's confidence score that this reply is a good match for this conversation, as a value from 0.0 (completely uncertain) to 1.0 (completely certain).",
-      }),
-    reply: z.string().exactOptional().openapi({ description: 'The content of the reply.' }),
-  })
-  .openapi({ description: 'Represents a smart reply answer.', required: [] })
-  .openapi('GoogleCloudDialogflowV2SmartReplyAnswer')
-
-const GoogleCloudDialogflowV2SuggestSmartRepliesResponseSchema = z
-  .object({
-    contextSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Number of messages prior to and including latest_message to compile the suggestion. It may be smaller than the SuggestSmartRepliesRequest.context_size field in the request if there aren't that many messages in the conversation.",
-      }),
-    latestMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the latest conversation message used to compile suggestion for. Format: `projects//locations//conversations//messages/`.',
-      }),
-    smartReplyAnswers: z
-      .array(GoogleCloudDialogflowV2SmartReplyAnswerSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Multiple reply options provided by smart reply service. The order is based on the rank of the model prediction. The maximum number of the returned replies is set in SmartReplyConfig.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'The response message for Participants.SuggestSmartReplies.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2SuggestSmartRepliesResponse')
-
-const GoogleCloudDialogflowV2SuggestionResultSchema = z
-  .object({
-    error: GoogleRpcStatusSchema.exactOptional().openapi({
-      description: 'Error status if the request failed.',
-    }),
-    suggestArticlesResponse:
-      GoogleCloudDialogflowV2SuggestArticlesResponseSchema.exactOptional().openapi({
-        description: 'SuggestArticlesResponse if request is for ARTICLE_SUGGESTION.',
-      }),
-    suggestFaqAnswersResponse:
-      GoogleCloudDialogflowV2SuggestFaqAnswersResponseSchema.exactOptional().openapi({
-        description: 'SuggestFaqAnswersResponse if request is for FAQ_ANSWER.',
-      }),
-    suggestSmartRepliesResponse:
-      GoogleCloudDialogflowV2SuggestSmartRepliesResponseSchema.exactOptional().openapi({
-        description: 'SuggestSmartRepliesResponse if request is for SMART_REPLY.',
-      }),
-  })
-  .openapi({
-    description:
-      'One response of different type of suggestion response which is used in the response of Participants.AnalyzeContent and Participants.AnalyzeContent, as well as HumanAgentAssistantEvent.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2SuggestionResult')
-
-const GoogleCloudDialogflowV2HumanAgentAssistantEventSchema = z
-  .object({
-    conversation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The conversation this notification refers to. Format: `projects//conversations/`.',
-      }),
-    participant: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The participant that the suggestion is compiled for. Format: `projects//conversations//participants/`. It will not be set in legacy workflow.',
-      }),
-    suggestionResults: z
-      .array(GoogleCloudDialogflowV2SuggestionResultSchema)
-      .exactOptional()
-      .openapi({ description: 'The suggestion results payload that this notification refers to.' }),
-  })
-  .openapi({
-    description:
-      'Represents a notification sent to Cloud Pub/Sub subscribers for human agent assistant events in a specific conversation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2HumanAgentAssistantEvent')
-
-const GoogleCloudDialogflowV2ImportConversationDataOperationMetadataSchema = z
-  .object({
-    conversationDataset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the imported conversation dataset. Format: `projects//locations//conversationDatasets/`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp when import conversation data request was created. The time is measured on server side.',
-      }),
-    partialFailures: z
-      .array(GoogleRpcStatusSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Partial failures are failures that don't fail the whole long running operation, e.g. single files that couldn't be read.",
-      }),
-  })
-  .openapi({
-    description: 'Metadata for a ConversationDatasets.ImportConversationData operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2ImportConversationDataOperationMetadata')
-
-const GoogleCloudDialogflowV2ImportConversationDataOperationResponseSchema = z
-  .object({
-    conversationDataset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the imported conversation dataset. Format: `projects//locations//conversationDatasets/`',
-      }),
-    importCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of conversations imported successfully.' }),
-  })
-  .openapi({
-    description:
-      'Response used for ConversationDatasets.ImportConversationData long running operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2ImportConversationDataOperationResponse')
-
-const GoogleCloudDialogflowV2ImportDocumentsResponseSchema = z
-  .object({
-    warnings: z
-      .array(GoogleRpcStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'Includes details about skipped documents or any other warnings.' }),
-  })
-  .openapi({ description: 'Response message for Documents.ImportDocuments.', required: [] })
-  .openapi('GoogleCloudDialogflowV2ImportDocumentsResponse')
-
-const GoogleCloudDialogflowV2KnowledgeOperationMetadataSchema = z
-  .object({
-    exportOperationMetadata:
-      GoogleCloudDialogflowV2ExportOperationMetadataSchema.exactOptional().openapi({
-        description: 'Metadata for the Export Data Operation such as the destination of export.',
-      }),
-    knowledgeBase: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the knowledge base interacted with during the operation.',
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'DONE'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The current state of this operation.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Metadata in google::longrunning::Operation for Knowledge operations.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2KnowledgeOperationMetadata')
+type GoogleCloudDialogflowV2QueryResultType = {
+  action?: string
+  allRequiredParamsPresent?: boolean
+  cancelsSlotFilling?: boolean
+  diagnosticInfo?: { [key: string]: unknown }
+  fulfillmentMessages?: z.infer<typeof GoogleCloudDialogflowV2IntentMessageSchema>[]
+  fulfillmentText?: string
+  intent?: z.infer<typeof GoogleCloudDialogflowV2IntentSchema>
+  intentDetectionConfidence?: number
+  languageCode?: string
+  outputContexts?: z.infer<typeof GoogleCloudDialogflowV2ContextSchema>[]
+  parameters?: { [key: string]: unknown }
+  queryText?: string
+  sentimentAnalysisResult?: z.infer<typeof GoogleCloudDialogflowV2SentimentAnalysisResultSchema>
+  speechRecognitionConfidence?: number
+  webhookPayload?: { [key: string]: unknown }
+  webhookSource?: string
+}
 
 const GoogleCloudDialogflowV2OriginalDetectIntentRequestSchema = z
   .object({
@@ -8339,115 +5117,173 @@ const GoogleCloudDialogflowV2OriginalDetectIntentRequestSchema = z
   })
   .openapi('GoogleCloudDialogflowV2OriginalDetectIntentRequest')
 
-const GoogleCloudDialogflowV2QueryResultSchema = z
+const GoogleCloudDialogflowV2QueryResultSchema: z.ZodType<GoogleCloudDialogflowV2QueryResultType> =
+  z
+    .object({
+      action: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The action name from the matched intent.' }),
+      allRequiredParamsPresent: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            "This field is set to: - `false` if the matched intent has required parameters and not all of the required parameter values have been collected. - `true` if all required parameter values have been collected, or if the matched intent doesn't contain any required parameters.",
+        }),
+      cancelsSlotFilling: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the conversational query triggers a cancellation for slot filling. For more information, see the [cancel slot filling documentation](https://cloud.google.com/dialogflow/es/docs/intents-actions-parameters#cancel).',
+        }),
+      diagnosticInfo: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'Free-form diagnostic information for the associated detect intent request. The fields of this data can change without notice, so you should not write code that depends on its structure. The data may contain: - webhook call latency - webhook errors',
+        }),
+      fulfillmentMessages: z
+        .array(GoogleCloudDialogflowV2IntentMessageSchema)
+        .exactOptional()
+        .openapi({ description: 'The collection of rich messages to present to the user.' }),
+      fulfillmentText: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The text to be pronounced to the user or shown on the screen. Note: This is a legacy field, `fulfillment_messages` should be preferred.',
+        }),
+      intent: GoogleCloudDialogflowV2IntentSchema.exactOptional().openapi({
+        description:
+          'The intent that matched the conversational query. Some, not all fields are filled in this message, including but not limited to: `name`, `display_name`, `end_interaction` and `is_fallback`.',
+      }),
+      intentDetectionConfidence: z
+        .float32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The intent detection confidence. Values range from 0.0 (completely uncertain) to 1.0 (completely certain). This value is for informational purpose only and is only used to help match the best intent within the classification threshold. This value may change for the same end-user expression at any time due to a model retraining or change in implementation. If there are `multiple knowledge_answers` messages, this value is set to the greatest `knowledgeAnswers.match_confidence` value in the list.',
+        }),
+      languageCode: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The language that was triggered during intent detection. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language) for a list of the currently supported language codes.',
+        }),
+      outputContexts: z
+        .array(GoogleCloudDialogflowV2ContextSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The collection of output contexts. If applicable, `output_contexts.parameters` contains entries with name `.original` containing the original parameter values before the query.',
+        }),
+      parameters: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            "The collection of extracted parameters. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: - MapKey type: string - MapKey value: parameter name - MapValue type: - If parameter's entity type is a composite entity: map - Else: depending on parameter value type, could be one of string, number, boolean, null, list or map - MapValue value: - If parameter's entity type is a composite entity: map from composite entity property names to property values - Else: parameter value",
+        }),
+      queryText: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The original conversational query text: - If natural language text was provided as input, `query_text` contains a copy of the input. - If natural language speech audio was provided as input, `query_text` contains the speech recognition result. If speech recognizer produced multiple alternatives, a particular one is picked. - If automatic spell correction is enabled, `query_text` will contain the corrected user input.',
+        }),
+      sentimentAnalysisResult:
+        GoogleCloudDialogflowV2SentimentAnalysisResultSchema.exactOptional().openapi({
+          description:
+            'The sentiment analysis result, which depends on the `sentiment_analysis_request_config` specified in the request.',
+        }),
+      speechRecognitionConfidence: z
+        .float32()
+        .exactOptional()
+        .openapi({
+          description:
+            "The Speech recognition confidence between 0.0 and 1.0. A higher number indicates an estimated greater likelihood that the recognized words are correct. The default of 0.0 is a sentinel value indicating that confidence was not set. This field is not guaranteed to be accurate or set. In particular this field isn't set for StreamingDetectIntent since the streaming endpoint has separate confidence estimates per portion of the audio in StreamingRecognitionResult.",
+        }),
+      webhookPayload: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'If the query was fulfilled by a webhook call, this field is set to the value of the `payload` field returned in the webhook response.',
+        }),
+      webhookSource: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If the query was fulfilled by a webhook call, this field is set to the value of the `source` field returned in the webhook response.',
+        }),
+    })
+    .openapi({
+      description: 'Represents the result of conversational query or event processing.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowV2QueryResult')
+
+type GoogleCloudDialogflowV2WebhookRequestType = {
+  originalDetectIntentRequest?: z.infer<
+    typeof GoogleCloudDialogflowV2OriginalDetectIntentRequestSchema
+  >
+  queryResult?: z.infer<typeof GoogleCloudDialogflowV2QueryResultSchema>
+  responseId?: string
+  session?: string
+}
+
+const GoogleCloudDialogflowV2EventInputSchema = z
   .object({
-    action: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The action name from the matched intent.' }),
-    allRequiredParamsPresent: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field is set to: - `false` if the matched intent has required parameters and not all of the required parameter values have been collected. - `true` if all required parameter values have been collected, or if the matched intent doesn't contain any required parameters.",
-      }),
-    cancelsSlotFilling: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the conversational query triggers a cancellation for slot filling. For more information, see the [cancel slot filling documentation](https://cloud.google.com/dialogflow/es/docs/intents-actions-parameters#cancel).',
-      }),
-    diagnosticInfo: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Free-form diagnostic information for the associated detect intent request. The fields of this data can change without notice, so you should not write code that depends on its structure. The data may contain: - webhook call latency - webhook errors',
-      }),
-    fulfillmentMessages: z
-      .array(GoogleCloudDialogflowV2IntentMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The collection of rich messages to present to the user.' }),
-    fulfillmentText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text to be pronounced to the user or shown on the screen. Note: This is a legacy field, `fulfillment_messages` should be preferred.',
-      }),
-    intent: GoogleCloudDialogflowV2IntentSchema.exactOptional().openapi({
-      description:
-        'The intent that matched the conversational query. Some, not all fields are filled in this message, including but not limited to: `name`, `display_name`, `end_interaction` and `is_fallback`.',
-    }),
-    intentDetectionConfidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The intent detection confidence. Values range from 0.0 (completely uncertain) to 1.0 (completely certain). This value is for informational purpose only and is only used to help match the best intent within the classification threshold. This value may change for the same end-user expression at any time due to a model retraining or change in implementation. If there are `multiple knowledge_answers` messages, this value is set to the greatest `knowledgeAnswers.match_confidence` value in the list.',
-      }),
     languageCode: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The language that was triggered during intent detection. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language) for a list of the currently supported language codes.',
+          'Required. The language of this query. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language) for a list of the currently supported language codes. Note that queries in the same session do not necessarily need to specify the same language. This field is ignored when used in the context of a WebhookResponse.followup_event_input field, because the language was already defined in the originating detect intent request.',
       }),
-    outputContexts: z
-      .array(GoogleCloudDialogflowV2ContextSchema)
+    name: z
+      .string()
       .exactOptional()
-      .openapi({
-        description:
-          'The collection of output contexts. If applicable, `output_contexts.parameters` contains entries with name `.original` containing the original parameter values before the query.',
-      }),
+      .openapi({ description: 'Required. The unique identifier of the event.' }),
     parameters: z
       .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
       .exactOptional()
       .openapi({
         description:
-          "The collection of extracted parameters. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: - MapKey type: string - MapKey value: parameter name - MapValue type: - If parameter's entity type is a composite entity: map - Else: depending on parameter value type, could be one of string, number, boolean, null, list or map - MapValue value: - If parameter's entity type is a composite entity: map from composite entity property names to property values - Else: parameter value",
-      }),
-    queryText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The original conversational query text: - If natural language text was provided as input, `query_text` contains a copy of the input. - If natural language speech audio was provided as input, `query_text` contains the speech recognition result. If speech recognizer produced multiple alternatives, a particular one is picked. - If automatic spell correction is enabled, `query_text` will contain the corrected user input.',
-      }),
-    sentimentAnalysisResult:
-      GoogleCloudDialogflowV2SentimentAnalysisResultSchema.exactOptional().openapi({
-        description:
-          'The sentiment analysis result, which depends on the `sentiment_analysis_request_config` specified in the request.',
-      }),
-    speechRecognitionConfidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The Speech recognition confidence between 0.0 and 1.0. A higher number indicates an estimated greater likelihood that the recognized words are correct. The default of 0.0 is a sentinel value indicating that confidence was not set. This field is not guaranteed to be accurate or set. In particular this field isn't set for StreamingDetectIntent since the streaming endpoint has separate confidence estimates per portion of the audio in StreamingRecognitionResult.",
-      }),
-    webhookPayload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'If the query was fulfilled by a webhook call, this field is set to the value of the `payload` field returned in the webhook response.',
-      }),
-    webhookSource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the query was fulfilled by a webhook call, this field is set to the value of the `source` field returned in the webhook response.',
+          "The collection of parameters associated with the event. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: - MapKey type: string - MapKey value: parameter name - MapValue type: - If parameter's entity type is a composite entity: map - Else: depending on parameter value type, could be one of string, number, boolean, null, list or map - MapValue value: - If parameter's entity type is a composite entity: map from composite entity property names to property values - Else: parameter value",
       }),
   })
   .openapi({
-    description: 'Represents the result of conversational query or event processing.',
+    description:
+      'Events allow for matching intents by event name instead of the natural language input. For instance, input `` can trigger a personalized welcome response. The parameter `name` may be used by the agent in the response: `"Hello #welcome_event.name! What can I do for you today?"`.',
     required: [],
   })
-  .openapi('GoogleCloudDialogflowV2QueryResult')
+  .openapi('GoogleCloudDialogflowV2EventInput')
+
+const GoogleCloudDialogflowV2EntityTypeEntitySchema = z
+  .object({
+    synonyms: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A collection of value synonyms. For example, if the entity type is *vegetable*, and `value` is *scallions*, a synonym could be *green onions*. For `KIND_LIST` entity types: * This collection must contain exactly one synonym equal to `value`.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The primary value associated with this entity entry. For example, if the entity type is *vegetable*, the value could be *scallions*. For `KIND_MAP` entity types: * A reference value to be used in place of synonyms. For `KIND_LIST` entity types: * A string that can contain references to other entity types (with or without aliases).',
+      }),
+  })
+  .openapi({ description: 'An **entity entry** for an associated entity type.', required: [] })
+  .openapi('GoogleCloudDialogflowV2EntityTypeEntity')
 
 const GoogleCloudDialogflowV2SessionEntityTypeSchema = z
   .object({
@@ -8484,274 +5320,15 @@ const GoogleCloudDialogflowV2SessionEntityTypeSchema = z
   })
   .openapi('GoogleCloudDialogflowV2SessionEntityType')
 
-const GoogleCloudDialogflowV2SetSuggestionFeatureConfigOperationMetadataSchema = z
-  .object({
-    conversationProfile: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation profile. Format: `projects//locations//conversationProfiles/`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp whe the request was created. The time is measured on server side.',
-      }),
-    participantRole: z
-      .enum(['ROLE_UNSPECIFIED', 'HUMAN_AGENT', 'AUTOMATED_AGENT', 'END_USER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The participant role to add or update the suggestion feature config. Only HUMAN_AGENT or END_USER can be used.',
-      }),
-    suggestionFeatureType: z
-      .enum(['TYPE_UNSPECIFIED', 'ARTICLE_SUGGESTION', 'FAQ', 'SMART_REPLY'])
-      .exactOptional()
-      .openapi({ description: 'Required. The type of the suggestion feature to add or update.' }),
-  })
-  .openapi({
-    description: 'Metadata for a ConversationProfile.SetSuggestionFeatureConfig operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2SetSuggestionFeatureConfigOperationMetadata')
-
-const GoogleCloudDialogflowV2UndeployConversationModelOperationMetadataSchema = z
-  .object({
-    conversationModel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the conversation model. Format: `projects//conversationModels/`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp when the request to undeploy conversation model was submitted. The time is measured on server side.',
-      }),
-  })
-  .openapi({
-    description: 'Metadata for a ConversationModels.UndeployConversationModel operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2UndeployConversationModelOperationMetadata')
-
-const GoogleCloudDialogflowV2WebhookRequestSchema = z
-  .object({
-    originalDetectIntentRequest:
-      GoogleCloudDialogflowV2OriginalDetectIntentRequestSchema.exactOptional().openapi({
-        description:
-          'Optional. The contents of the original request that was passed to `[Streaming]DetectIntent` call.',
-      }),
-    queryResult: GoogleCloudDialogflowV2QueryResultSchema.exactOptional().openapi({
-      description:
-        'The result of the conversational query or event processing. Contains the same value as `[Streaming]DetectIntentResponse.query_result`.',
-    }),
-    responseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the response. Contains the same value as `[Streaming]DetectIntentResponse.response_id`.',
-      }),
-    session: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of detectIntent request session. Can be used to identify end-user inside webhook implementation. Format: `projects//agent/sessions/`, or `projects//agent/environments//users//sessions/`.',
-      }),
-  })
-  .openapi({ description: 'The request message for a webhook call.', required: [] })
-  .openapi('GoogleCloudDialogflowV2WebhookRequest')
-
-const GoogleCloudDialogflowV2WebhookResponseSchema = z
-  .object({
-    followupEventInput: GoogleCloudDialogflowV2EventInputSchema.exactOptional().openapi({
-      description:
-        'Optional. Invokes the supplied events. When this field is set, Dialogflow ignores the `fulfillment_text`, `fulfillment_messages`, and `payload` fields.',
-    }),
-    fulfillmentMessages: z
-      .array(GoogleCloudDialogflowV2IntentMessageSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The rich response messages intended for the end-user. When provided, Dialogflow uses this field to populate QueryResult.fulfillment_messages sent to the integration or API caller.',
-      }),
-    fulfillmentText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The text response message intended for the end-user. It is recommended to use `fulfillment_messages.text.text[0]` instead. When provided, Dialogflow uses this field to populate QueryResult.fulfillment_text sent to the integration or API caller.',
-      }),
-    outputContexts: z
-      .array(GoogleCloudDialogflowV2ContextSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The collection of output contexts that will overwrite currently active contexts for the session and reset their lifespans. When provided, Dialogflow uses this field to populate QueryResult.output_contexts sent to the integration or API caller.',
-      }),
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. This field can be used to pass custom data from your webhook to the integration or API caller. Arbitrary JSON objects are supported. When provided, Dialogflow uses this field to populate QueryResult.webhook_payload sent to the integration or API caller. This field is also used by the [Google Assistant integration](https://cloud.google.com/dialogflow/docs/integrations/aog) for rich response messages. See the format definition at [Google Assistant Dialogflow webhook format](https://developers.google.com/assistant/actions/build/json/dialogflow-webhook-json)',
-      }),
-    sessionEntityTypes: z
-      .array(GoogleCloudDialogflowV2SessionEntityTypeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Additional session entity types to replace or extend developer entity types with. The entity synonyms apply to all languages and persist for the session. Setting this data from a webhook overwrites the session entity types that have been set using `detectIntent`, `streamingDetectIntent` or SessionEntityType management methods.',
-      }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A custom field used to identify the webhook source. Arbitrary strings are supported. When provided, Dialogflow uses this field to populate QueryResult.webhook_source sent to the integration or API caller.',
-      }),
-  })
-  .openapi({
-    description:
-      'The response message for a webhook call. This response is validated by the Dialogflow server. If validation fails, an error will be returned in the QueryResult.diagnostic_info field. Setting JSON fields to an empty value with the wrong type is a common error. To avoid this error: - Use `""` for empty strings - Use `{}` or `null` for empty objects - Use `[]` or `null` for empty arrays For more information, see the [Protocol Buffers Language Guide](https://developers.google.com/protocol-buffers/docs/proto3#json).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2WebhookResponse')
-
-const GoogleCloudDialogflowV2beta1AnnotatedMessagePartSchema = z
-  .object({
-    entityType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The [Dialogflow system entity type](https://cloud.google.com/dialogflow/docs/reference/system-entities) of this message part. If this is empty, Dialogflow could not annotate the phrase part with a system entity.',
-      }),
-    formattedValue: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The [Dialogflow system entity formatted value ](https://cloud.google.com/dialogflow/docs/reference/system-entities) of this message part. For example for a system entity of type `@sys.unit-currency`, this may contain: { "amount": 5, "currency": "USD" } ',
-      }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. A part of a message possibly annotated with an entity.' }),
-  })
-  .openapi({
-    description:
-      'Represents a part of a message possibly annotated with an entity. The part can be an entity or purely a part of the message between two entities or message start/end.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1AnnotatedMessagePart')
-
-const GoogleCloudDialogflowV2beta1ArticleAnswerSchema = z
-  .object({
-    answerRecord: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of answer record, in the format of "projects//locations//answerRecords/"',
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A map that contains metadata about the answer and the document from which it originates.',
-      }),
-    snippets: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Output only. Article snippets.' }),
-    title: z.string().exactOptional().openapi({ description: 'The article title.' }),
-    uri: z.string().exactOptional().openapi({ description: 'The article URI.' }),
-  })
-  .openapi({ description: 'Represents article answer.', required: [] })
-  .openapi('GoogleCloudDialogflowV2beta1ArticleAnswer')
-
-const GoogleCloudDialogflowV2beta1EntityTypeEntitySchema = z
-  .object({
-    synonyms: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A collection of value synonyms. For example, if the entity type is *vegetable*, and `value` is *scallions*, a synonym could be *green onions*. For `KIND_LIST` entity types: * This collection must contain exactly one synonym equal to `value`.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The primary value associated with this entity entry. For example, if the entity type is *vegetable*, the value could be *scallions*. For `KIND_MAP` entity types: * A reference value to be used in place of synonyms. For `KIND_LIST` entity types: * A string that can contain references to other entity types (with or without aliases).',
-      }),
-  })
-  .openapi({ description: 'An **entity entry** for an associated entity type.', required: [] })
-  .openapi('GoogleCloudDialogflowV2beta1EntityTypeEntity')
-
-const GoogleCloudDialogflowV2beta1EntityTypeSchema = z
-  .object({
-    autoExpansionMode: z
-      .enum(['AUTO_EXPANSION_MODE_UNSPECIFIED', 'AUTO_EXPANSION_MODE_DEFAULT'])
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Indicates whether the entity type can be automatically expanded.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the entity type.' }),
-    enableFuzzyExtraction: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Optional. Enables fuzzy entity extraction during classification.' }),
-    entities: z
-      .array(GoogleCloudDialogflowV2beta1EntityTypeEntitySchema)
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The collection of entity entries associated with the entity type.',
-      }),
-    kind: z
-      .enum(['KIND_UNSPECIFIED', 'KIND_MAP', 'KIND_LIST', 'KIND_REGEXP'])
-      .exactOptional()
-      .openapi({ description: 'Required. Indicates the kind of entity type.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the entity type. Required for EntityTypes.UpdateEntityType and EntityTypes.BatchUpdateEntityTypes methods. Supported formats: - `projects//agent/entityTypes/` - `projects//locations//agent/entityTypes/`',
-      }),
-  })
-  .openapi({
-    description:
-      'Each intent parameter has a type, called the entity type, which dictates exactly how data from an end-user expression is extracted. Dialogflow provides predefined system entities that can match many common types of data. For example, there are system entities for matching dates, times, colors, email addresses, and so on. You can also create your own custom entities for matching custom data. For example, you could define a vegetable entity that can match the types of vegetables available for purchase with a grocery store agent. For more information, see the [Entity guide](https://cloud.google.com/dialogflow/docs/entities-overview).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1EntityType')
-
-const GoogleCloudDialogflowV2beta1BatchUpdateEntityTypesResponseSchema = z
-  .object({
-    entityTypes: z
-      .array(GoogleCloudDialogflowV2beta1EntityTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'The collection of updated or created entity types.' }),
-  })
-  .openapi({
-    description: 'The response message for EntityTypes.BatchUpdateEntityTypes.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1BatchUpdateEntityTypesResponse')
+type GoogleCloudDialogflowV2WebhookResponseType = {
+  followupEventInput?: z.infer<typeof GoogleCloudDialogflowV2EventInputSchema>
+  fulfillmentMessages?: z.infer<typeof GoogleCloudDialogflowV2IntentMessageSchema>[]
+  fulfillmentText?: string
+  outputContexts?: z.infer<typeof GoogleCloudDialogflowV2ContextSchema>[]
+  payload?: { [key: string]: unknown }
+  sessionEntityTypes?: z.infer<typeof GoogleCloudDialogflowV2SessionEntityTypeSchema>[]
+  source?: string
+}
 
 const GoogleCloudDialogflowV2beta1IntentFollowupIntentInfoSchema = z
   .object({
@@ -9180,7 +5757,7 @@ const GoogleCloudDialogflowV2beta1IntentMessageRbmSuggestedActionRbmSuggestedAct
 
 const GoogleCloudDialogflowV2beta1IntentMessageRbmSuggestedActionRbmSuggestedActionShareLocationSchema =
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description:
         "Opens the device's location chooser so the user can pick a location to send back to the agent.",
@@ -9524,103 +6101,154 @@ const GoogleCloudDialogflowV2beta1IntentMessageTextSchema = z
   .openapi({ description: 'The text response message.', required: [] })
   .openapi('GoogleCloudDialogflowV2beta1IntentMessageText')
 
-const GoogleCloudDialogflowV2beta1IntentMessageSchema = z
-  .object({
-    basicCard: GoogleCloudDialogflowV2beta1IntentMessageBasicCardSchema.exactOptional().openapi({
-      description: 'Displays a basic card for Actions on Google.',
-    }),
-    browseCarouselCard:
-      GoogleCloudDialogflowV2beta1IntentMessageBrowseCarouselCardSchema.exactOptional().openapi({
-        description: 'Browse carousel card for Actions on Google.',
+type GoogleCloudDialogflowV2beta1IntentMessageType = {
+  basicCard?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageBasicCardSchema>
+  browseCarouselCard?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1IntentMessageBrowseCarouselCardSchema
+  >
+  card?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageCardSchema>
+  carouselSelect?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageCarouselSelectSchema>
+  image?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageImageSchema>
+  linkOutSuggestion?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1IntentMessageLinkOutSuggestionSchema
+  >
+  listSelect?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageListSelectSchema>
+  mediaContent?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageMediaContentSchema>
+  payload?: { [key: string]: unknown }
+  platform?:
+    | 'PLATFORM_UNSPECIFIED'
+    | 'FACEBOOK'
+    | 'SLACK'
+    | 'TELEGRAM'
+    | 'KIK'
+    | 'SKYPE'
+    | 'LINE'
+    | 'VIBER'
+    | 'ACTIONS_ON_GOOGLE'
+    | 'TELEPHONY'
+    | 'GOOGLE_HANGOUTS'
+  quickReplies?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageQuickRepliesSchema>
+  rbmCarouselRichCard?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1IntentMessageRbmCarouselCardSchema
+  >
+  rbmStandaloneRichCard?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1IntentMessageRbmStandaloneCardSchema
+  >
+  rbmText?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageRbmTextSchema>
+  simpleResponses?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageSimpleResponsesSchema>
+  suggestions?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageSuggestionsSchema>
+  tableCard?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageTableCardSchema>
+  telephonyPlayAudio?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1IntentMessageTelephonyPlayAudioSchema
+  >
+  telephonySynthesizeSpeech?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1IntentMessageTelephonySynthesizeSpeechSchema
+  >
+  telephonyTransferCall?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1IntentMessageTelephonyTransferCallSchema
+  >
+  text?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageTextSchema>
+}
+
+const GoogleCloudDialogflowV2beta1IntentMessageSchema: z.ZodType<GoogleCloudDialogflowV2beta1IntentMessageType> =
+  z
+    .object({
+      basicCard: GoogleCloudDialogflowV2beta1IntentMessageBasicCardSchema.exactOptional().openapi({
+        description: 'Displays a basic card for Actions on Google.',
       }),
-    card: GoogleCloudDialogflowV2beta1IntentMessageCardSchema.exactOptional().openapi({
-      description: 'Displays a card.',
-    }),
-    carouselSelect:
-      GoogleCloudDialogflowV2beta1IntentMessageCarouselSelectSchema.exactOptional().openapi({
-        description: 'Displays a carousel card for Actions on Google.',
+      browseCarouselCard:
+        GoogleCloudDialogflowV2beta1IntentMessageBrowseCarouselCardSchema.exactOptional().openapi({
+          description: 'Browse carousel card for Actions on Google.',
+        }),
+      card: GoogleCloudDialogflowV2beta1IntentMessageCardSchema.exactOptional().openapi({
+        description: 'Displays a card.',
       }),
-    image: GoogleCloudDialogflowV2beta1IntentMessageImageSchema.exactOptional().openapi({
-      description: 'Displays an image.',
-    }),
-    linkOutSuggestion:
-      GoogleCloudDialogflowV2beta1IntentMessageLinkOutSuggestionSchema.exactOptional().openapi({
-        description: 'Displays a link out suggestion chip for Actions on Google.',
+      carouselSelect:
+        GoogleCloudDialogflowV2beta1IntentMessageCarouselSelectSchema.exactOptional().openapi({
+          description: 'Displays a carousel card for Actions on Google.',
+        }),
+      image: GoogleCloudDialogflowV2beta1IntentMessageImageSchema.exactOptional().openapi({
+        description: 'Displays an image.',
       }),
-    listSelect: GoogleCloudDialogflowV2beta1IntentMessageListSelectSchema.exactOptional().openapi({
-      description: 'Displays a list card for Actions on Google.',
-    }),
-    mediaContent:
-      GoogleCloudDialogflowV2beta1IntentMessageMediaContentSchema.exactOptional().openapi({
-        description: 'The media content card for Actions on Google.',
-      }),
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'A custom platform-specific response.' }),
-    platform: z
-      .enum([
-        'PLATFORM_UNSPECIFIED',
-        'FACEBOOK',
-        'SLACK',
-        'TELEGRAM',
-        'KIK',
-        'SKYPE',
-        'LINE',
-        'VIBER',
-        'ACTIONS_ON_GOOGLE',
-        'TELEPHONY',
-        'GOOGLE_HANGOUTS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Optional. The platform that this message is intended for.' }),
-    quickReplies:
-      GoogleCloudDialogflowV2beta1IntentMessageQuickRepliesSchema.exactOptional().openapi({
-        description: 'Displays quick replies.',
-      }),
-    rbmCarouselRichCard:
-      GoogleCloudDialogflowV2beta1IntentMessageRbmCarouselCardSchema.exactOptional().openapi({
-        description: 'Rich Business Messaging (RBM) carousel rich card response.',
-      }),
-    rbmStandaloneRichCard:
-      GoogleCloudDialogflowV2beta1IntentMessageRbmStandaloneCardSchema.exactOptional().openapi({
-        description: 'Standalone Rich Business Messaging (RBM) rich card response.',
-      }),
-    rbmText: GoogleCloudDialogflowV2beta1IntentMessageRbmTextSchema.exactOptional().openapi({
-      description:
-        'Rich Business Messaging (RBM) text response. RBM allows businesses to send enriched and branded versions of SMS. See https://jibe.google.com/business-messaging.',
-    }),
-    simpleResponses:
-      GoogleCloudDialogflowV2beta1IntentMessageSimpleResponsesSchema.exactOptional().openapi({
-        description: 'Returns a voice or text-only response for Actions on Google.',
-      }),
-    suggestions: GoogleCloudDialogflowV2beta1IntentMessageSuggestionsSchema.exactOptional().openapi(
-      { description: 'Displays suggestion chips for Actions on Google.' },
-    ),
-    tableCard: GoogleCloudDialogflowV2beta1IntentMessageTableCardSchema.exactOptional().openapi({
-      description: 'Table card for Actions on Google.',
-    }),
-    telephonyPlayAudio:
-      GoogleCloudDialogflowV2beta1IntentMessageTelephonyPlayAudioSchema.exactOptional().openapi({
-        description: 'Plays audio from a file in Telephony Gateway.',
-      }),
-    telephonySynthesizeSpeech:
-      GoogleCloudDialogflowV2beta1IntentMessageTelephonySynthesizeSpeechSchema.exactOptional().openapi(
-        { description: 'Synthesizes speech in Telephony Gateway.' },
+      linkOutSuggestion:
+        GoogleCloudDialogflowV2beta1IntentMessageLinkOutSuggestionSchema.exactOptional().openapi({
+          description: 'Displays a link out suggestion chip for Actions on Google.',
+        }),
+      listSelect: GoogleCloudDialogflowV2beta1IntentMessageListSelectSchema.exactOptional().openapi(
+        { description: 'Displays a list card for Actions on Google.' },
       ),
-    telephonyTransferCall:
-      GoogleCloudDialogflowV2beta1IntentMessageTelephonyTransferCallSchema.exactOptional().openapi({
-        description: 'Transfers the call in Telephony Gateway.',
+      mediaContent:
+        GoogleCloudDialogflowV2beta1IntentMessageMediaContentSchema.exactOptional().openapi({
+          description: 'The media content card for Actions on Google.',
+        }),
+      payload: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({ description: 'A custom platform-specific response.' }),
+      platform: z
+        .enum([
+          'PLATFORM_UNSPECIFIED',
+          'FACEBOOK',
+          'SLACK',
+          'TELEGRAM',
+          'KIK',
+          'SKYPE',
+          'LINE',
+          'VIBER',
+          'ACTIONS_ON_GOOGLE',
+          'TELEPHONY',
+          'GOOGLE_HANGOUTS',
+        ])
+        .exactOptional()
+        .openapi({ description: 'Optional. The platform that this message is intended for.' }),
+      quickReplies:
+        GoogleCloudDialogflowV2beta1IntentMessageQuickRepliesSchema.exactOptional().openapi({
+          description: 'Displays quick replies.',
+        }),
+      rbmCarouselRichCard:
+        GoogleCloudDialogflowV2beta1IntentMessageRbmCarouselCardSchema.exactOptional().openapi({
+          description: 'Rich Business Messaging (RBM) carousel rich card response.',
+        }),
+      rbmStandaloneRichCard:
+        GoogleCloudDialogflowV2beta1IntentMessageRbmStandaloneCardSchema.exactOptional().openapi({
+          description: 'Standalone Rich Business Messaging (RBM) rich card response.',
+        }),
+      rbmText: GoogleCloudDialogflowV2beta1IntentMessageRbmTextSchema.exactOptional().openapi({
+        description:
+          'Rich Business Messaging (RBM) text response. RBM allows businesses to send enriched and branded versions of SMS. See https://jibe.google.com/business-messaging.',
       }),
-    text: GoogleCloudDialogflowV2beta1IntentMessageTextSchema.exactOptional().openapi({
-      description: 'Returns a text response.',
-    }),
-  })
-  .openapi({
-    description: 'Corresponds to the `Response` field in the Dialogflow console.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1IntentMessage')
+      simpleResponses:
+        GoogleCloudDialogflowV2beta1IntentMessageSimpleResponsesSchema.exactOptional().openapi({
+          description: 'Returns a voice or text-only response for Actions on Google.',
+        }),
+      suggestions:
+        GoogleCloudDialogflowV2beta1IntentMessageSuggestionsSchema.exactOptional().openapi({
+          description: 'Displays suggestion chips for Actions on Google.',
+        }),
+      tableCard: GoogleCloudDialogflowV2beta1IntentMessageTableCardSchema.exactOptional().openapi({
+        description: 'Table card for Actions on Google.',
+      }),
+      telephonyPlayAudio:
+        GoogleCloudDialogflowV2beta1IntentMessageTelephonyPlayAudioSchema.exactOptional().openapi({
+          description: 'Plays audio from a file in Telephony Gateway.',
+        }),
+      telephonySynthesizeSpeech:
+        GoogleCloudDialogflowV2beta1IntentMessageTelephonySynthesizeSpeechSchema.exactOptional().openapi(
+          { description: 'Synthesizes speech in Telephony Gateway.' },
+        ),
+      telephonyTransferCall:
+        GoogleCloudDialogflowV2beta1IntentMessageTelephonyTransferCallSchema.exactOptional().openapi(
+          { description: 'Transfers the call in Telephony Gateway.' },
+        ),
+      text: GoogleCloudDialogflowV2beta1IntentMessageTextSchema.exactOptional().openapi({
+        description: 'Returns a text response.',
+      }),
+    })
+    .openapi({
+      description: 'Corresponds to the `Response` field in the Dialogflow console.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowV2beta1IntentMessage')
 
 const GoogleCloudDialogflowV2beta1ContextSchema = z
   .object({
@@ -9764,181 +6392,4529 @@ const GoogleCloudDialogflowV2beta1IntentTrainingPhraseSchema = z
   .openapi({ description: 'Represents an example that the agent is trained on.', required: [] })
   .openapi('GoogleCloudDialogflowV2beta1IntentTrainingPhrase')
 
-const GoogleCloudDialogflowV2beta1IntentSchema = z
+type GoogleCloudDialogflowV2beta1IntentType = {
+  action?: string
+  defaultResponsePlatforms?: (
+    | 'PLATFORM_UNSPECIFIED'
+    | 'FACEBOOK'
+    | 'SLACK'
+    | 'TELEGRAM'
+    | 'KIK'
+    | 'SKYPE'
+    | 'LINE'
+    | 'VIBER'
+    | 'ACTIONS_ON_GOOGLE'
+    | 'TELEPHONY'
+    | 'GOOGLE_HANGOUTS'
+  )[]
+  displayName?: string
+  endInteraction?: boolean
+  events?: string[]
+  followupIntentInfo?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentFollowupIntentInfoSchema>[]
+  inputContextNames?: string[]
+  isFallback?: boolean
+  liveAgentHandoff?: boolean
+  messages?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageSchema>[]
+  mlDisabled?: boolean
+  mlEnabled?: boolean
+  name?: string
+  outputContexts?: z.infer<typeof GoogleCloudDialogflowV2beta1ContextSchema>[]
+  parameters?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentParameterSchema>[]
+  parentFollowupIntentName?: string
+  priority?: number
+  resetContexts?: boolean
+  rootFollowupIntentName?: string
+  trainingPhrases?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentTrainingPhraseSchema>[]
+  webhookState?:
+    | 'WEBHOOK_STATE_UNSPECIFIED'
+    | 'WEBHOOK_STATE_ENABLED'
+    | 'WEBHOOK_STATE_ENABLED_FOR_SLOT_FILLING'
+}
+
+const GoogleCloudDialogflowV2beta1IntentSchema: z.ZodType<GoogleCloudDialogflowV2beta1IntentType> =
+  z
+    .object({
+      action: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The name of the action associated with the intent. Note: The action name must not contain whitespaces.',
+        }),
+      defaultResponsePlatforms: z
+        .array(
+          z.enum([
+            'PLATFORM_UNSPECIFIED',
+            'FACEBOOK',
+            'SLACK',
+            'TELEGRAM',
+            'KIK',
+            'SKYPE',
+            'LINE',
+            'VIBER',
+            'ACTIONS_ON_GOOGLE',
+            'TELEPHONY',
+            'GOOGLE_HANGOUTS',
+          ]),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The list of platforms for which the first responses will be copied from the messages in PLATFORM_UNSPECIFIED (i.e. default platform).',
+        }),
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. The name of this intent.' }),
+      endInteraction: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Indicates that this intent ends an interaction. Some integrations (e.g., Actions on Google or Dialogflow phone gateway) use this information to close interaction with an end user. Default is false.',
+        }),
+      events: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The collection of event names that trigger the intent. If the collection of input contexts is not empty, all of the contexts must be present in the active user session for an event to trigger this intent. Event names are limited to 150 characters.',
+        }),
+      followupIntentInfo: z
+        .array(GoogleCloudDialogflowV2beta1IntentFollowupIntentInfoSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Information about all followup intents that have this intent as a direct or indirect parent. We populate this field only in the output.',
+          readOnly: true,
+        }),
+      inputContextNames: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The list of context names required for this intent to be triggered. Formats: - `projects//agent/sessions/-/contexts/` - `projects//locations//agent/sessions/-/contexts/`',
+        }),
+      isFallback: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Optional. Indicates whether this is a fallback intent.' }),
+      liveAgentHandoff: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Indicates that a live agent should be brought in to handle the interaction with the user. In most cases, when you set this flag to true, you would also want to set end_interaction to true as well. Default is false.',
+        }),
+      messages: z
+        .array(GoogleCloudDialogflowV2beta1IntentMessageSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The collection of rich messages corresponding to the `Response` field in the Dialogflow console.',
+        }),
+      mlDisabled: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Indicates whether Machine Learning is disabled for the intent. Note: If `ml_disabled` setting is set to true, then this intent is not taken into account during inference in `ML ONLY` match mode. Also, auto-markup in the UI is turned off.',
+        }),
+      mlEnabled: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Indicates whether Machine Learning is enabled for the intent. Note: If `ml_enabled` setting is set to false, then this intent is not taken into account during inference in `ML ONLY` match mode. Also, auto-markup in the UI is turned off. DEPRECATED! Please use `ml_disabled` field instead. NOTE: If both `ml_enabled` and `ml_disabled` are either not set or false, then the default value is determined as follows: - Before April 15th, 2018 the default is: ml_enabled = false / ml_disabled = true. - After April 15th, 2018 the default is: ml_enabled = true / ml_disabled = false.',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The unique identifier of this intent. Required for Intents.UpdateIntent and Intents.BatchUpdateIntents methods. Supported formats: - `projects//agent/intents/` - `projects//locations//agent/intents/`',
+        }),
+      outputContexts: z
+        .array(GoogleCloudDialogflowV2beta1ContextSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The collection of contexts that are activated when the intent is matched. Context messages in this collection should not set the parameters field. Setting the `lifespan_count` to 0 will reset the context when the intent is matched. Format: `projects//agent/sessions/-/contexts/`.',
+        }),
+      parameters: z
+        .array(GoogleCloudDialogflowV2beta1IntentParameterSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Optional. The collection of parameters associated with the intent.',
+        }),
+      parentFollowupIntentName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The unique identifier of the parent intent in the chain of followup intents. You can set this field when creating an intent, for example with CreateIntent or BatchUpdateIntents, in order to make this intent a followup intent. It identifies the parent followup intent. Format: `projects//agent/intents/`.',
+        }),
+      priority: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The priority of this intent. Higher numbers represent higher priorities. - If the supplied value is unspecified or 0, the service translates the value to 500,000, which corresponds to the `Normal` priority in the console. - If the supplied value is negative, the intent is ignored in runtime detect intent requests.',
+        }),
+      resetContexts: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Indicates whether to delete all contexts in the current session when this intent is matched.',
+        }),
+      rootFollowupIntentName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The unique identifier of the root intent in the chain of followup intents. It identifies the correct followup intents chain for this intent. Format: `projects//agent/intents/`.',
+          readOnly: true,
+        }),
+      trainingPhrases: z
+        .array(GoogleCloudDialogflowV2beta1IntentTrainingPhraseSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Optional. The collection of examples that the agent is trained on.',
+        }),
+      webhookState: z
+        .enum([
+          'WEBHOOK_STATE_UNSPECIFIED',
+          'WEBHOOK_STATE_ENABLED',
+          'WEBHOOK_STATE_ENABLED_FOR_SLOT_FILLING',
+        ])
+        .exactOptional()
+        .openapi({
+          description: 'Optional. Indicates whether webhooks are enabled for the intent.',
+        }),
+    })
+    .openapi({
+      description:
+        "An intent categorizes an end-user's intention for one conversation turn. For each agent, you define many intents, where your combined intents can handle a complete conversation. When an end-user writes or says something, referred to as an end-user expression or end-user input, Dialogflow matches the end-user input to the best intent in your agent. Matching an intent is also known as intent classification. For more information, see the [intent guide](https://cloud.google.com/dialogflow/docs/intents-overview).",
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowV2beta1Intent')
+
+type GoogleCloudDialogflowV2beta1BatchUpdateIntentsResponseType = {
+  intents?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentSchema>[]
+}
+
+const GoogleCloudDialogflowV2beta1KnowledgeAnswersAnswerSchema = z
   .object({
-    action: z
+    answer: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Optional. The name of the action associated with the intent. Note: The action name must not contain whitespaces.',
+          'The piece of text from the `source` knowledge base document that answers this conversational query.',
       }),
-    defaultResponsePlatforms: z
-      .array(
-        z.enum([
-          'PLATFORM_UNSPECIFIED',
-          'FACEBOOK',
-          'SLACK',
-          'TELEGRAM',
-          'KIK',
-          'SKYPE',
-          'LINE',
-          'VIBER',
-          'ACTIONS_ON_GOOGLE',
-          'TELEPHONY',
-          'GOOGLE_HANGOUTS',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The list of platforms for which the first responses will be copied from the messages in PLATFORM_UNSPECIFIED (i.e. default platform).',
-      }),
-    displayName: z
+    faqQuestion: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Required. The name of this intent.' }),
-    endInteraction: z
-      .boolean()
+      .openapi({
+        description:
+          'The corresponding FAQ question if the answer was extracted from a FAQ Document, empty otherwise.',
+      }),
+    matchConfidence: z
+      .float32()
       .exactOptional()
       .openapi({
         description:
-          'Optional. Indicates that this intent ends an interaction. Some integrations (e.g., Actions on Google or Dialogflow phone gateway) use this information to close interaction with an end user. Default is false.',
+          "The system's confidence score that this Knowledge answer is a good match for this conversational query. The range is from 0.0 (completely uncertain) to 1.0 (completely certain). Note: The confidence score is likely to vary somewhat (possibly even for identical requests), as the underlying model is under constant improvement. It may be deprecated in the future. We recommend using `match_confidence_level` which should be generally more stable.",
       }),
-    events: z
+    matchConfidenceLevel: z
+      .enum(['MATCH_CONFIDENCE_LEVEL_UNSPECIFIED', 'LOW', 'MEDIUM', 'HIGH'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The system's confidence level that this knowledge answer is a good match for this conversational query. NOTE: The confidence level for a given `` pair may change without notice, as it depends on models that are constantly being improved. However, it will change less frequently than the confidence score below, and should be preferred for referencing the quality of an answer.",
+      }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates which Knowledge Document this answer was extracted from. Format: `projects//knowledgeBases//documents/`.',
+      }),
+  })
+  .openapi({ description: 'An answer from Knowledge Connector.', required: [] })
+  .openapi('GoogleCloudDialogflowV2beta1KnowledgeAnswersAnswer')
+
+const GoogleCloudDialogflowV2beta1KnowledgeAnswersSchema = z
+  .object({
+    answers: z
+      .array(GoogleCloudDialogflowV2beta1KnowledgeAnswersAnswerSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of answers from Knowledge Connector.' }),
+  })
+  .openapi({ description: 'Represents the result of querying a Knowledge base.', required: [] })
+  .openapi('GoogleCloudDialogflowV2beta1KnowledgeAnswers')
+
+const GoogleCloudDialogflowV2beta1SentimentSchema = z
+  .object({
+    magnitude: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'A non-negative number in the [0, +inf) range, which represents the absolute magnitude of sentiment, regardless of score (positive or negative).',
+      }),
+    score: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sentiment score between -1.0 (negative sentiment) and 1.0 (positive sentiment).',
+      }),
+  })
+  .openapi({
+    description:
+      'The sentiment, such as positive/negative feeling or association, for a unit of analysis, such as the query text. See: https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values for how to interpret the result.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2beta1Sentiment')
+
+const GoogleCloudDialogflowV2beta1SentimentAnalysisResultSchema = z
+  .object({
+    queryTextSentiment: GoogleCloudDialogflowV2beta1SentimentSchema.exactOptional().openapi({
+      description: 'The sentiment analysis result for `query_text`.',
+    }),
+  })
+  .openapi({
+    description:
+      "The result of sentiment analysis. Sentiment analysis inspects user input and identifies the prevailing subjective opinion, especially to determine a user's attitude as positive, negative, or neutral. For Participants.DetectIntent, it needs to be configured in DetectIntentRequest.query_params. For Participants.StreamingDetectIntent, it needs to be configured in StreamingDetectIntentRequest.query_params. And for Participants.AnalyzeContent and Participants.StreamingAnalyzeContent, it needs to be configured in ConversationProfile.human_agent_assistant_config",
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2beta1SentimentAnalysisResult')
+
+type GoogleCloudDialogflowV2beta1QueryResultType = {
+  action?: string
+  allRequiredParamsPresent?: boolean
+  cancelsSlotFilling?: boolean
+  diagnosticInfo?: { [key: string]: unknown }
+  fulfillmentMessages?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageSchema>[]
+  fulfillmentText?: string
+  intent?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentSchema>
+  intentDetectionConfidence?: number
+  knowledgeAnswers?: z.infer<typeof GoogleCloudDialogflowV2beta1KnowledgeAnswersSchema>
+  languageCode?: string
+  outputContexts?: z.infer<typeof GoogleCloudDialogflowV2beta1ContextSchema>[]
+  parameters?: { [key: string]: unknown }
+  queryText?: string
+  sentimentAnalysisResult?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1SentimentAnalysisResultSchema
+  >
+  speechRecognitionConfidence?: number
+  webhookPayload?: { [key: string]: unknown }
+  webhookSource?: string
+}
+
+const GoogleCloudDialogflowV2beta1QueryResultSchema: z.ZodType<GoogleCloudDialogflowV2beta1QueryResultType> =
+  z
+    .object({
+      action: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The action name from the matched intent.' }),
+      allRequiredParamsPresent: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            "This field is set to: - `false` if the matched intent has required parameters and not all of the required parameter values have been collected. - `true` if all required parameter values have been collected, or if the matched intent doesn't contain any required parameters.",
+        }),
+      cancelsSlotFilling: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the conversational query triggers a cancellation for slot filling. For more information, see the [cancel slot filling documentation](https://cloud.google.com/dialogflow/es/docs/intents-actions-parameters#cancel).',
+        }),
+      diagnosticInfo: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'Free-form diagnostic information for the associated detect intent request. The fields of this data can change without notice, so you should not write code that depends on its structure. The data may contain: - webhook call latency - webhook errors',
+        }),
+      fulfillmentMessages: z
+        .array(GoogleCloudDialogflowV2beta1IntentMessageSchema)
+        .exactOptional()
+        .openapi({ description: 'The collection of rich messages to present to the user.' }),
+      fulfillmentText: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The text to be pronounced to the user or shown on the screen. Note: This is a legacy field, `fulfillment_messages` should be preferred.',
+        }),
+      intent: GoogleCloudDialogflowV2beta1IntentSchema.exactOptional().openapi({
+        description:
+          'The intent that matched the conversational query. Some, not all fields are filled in this message, including but not limited to: `name`, `display_name`, `end_interaction` and `is_fallback`.',
+      }),
+      intentDetectionConfidence: z
+        .float32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The intent detection confidence. Values range from 0.0 (completely uncertain) to 1.0 (completely certain). This value is for informational purpose only and is only used to help match the best intent within the classification threshold. This value may change for the same end-user expression at any time due to a model retraining or change in implementation. If there are `multiple knowledge_answers` messages, this value is set to the greatest `knowledgeAnswers.match_confidence` value in the list.',
+        }),
+      knowledgeAnswers: GoogleCloudDialogflowV2beta1KnowledgeAnswersSchema.exactOptional().openapi({
+        description:
+          'The result from Knowledge Connector (if any), ordered by decreasing `KnowledgeAnswers.match_confidence`.',
+      }),
+      languageCode: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The language that was triggered during intent detection. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language) for a list of the currently supported language codes.',
+        }),
+      outputContexts: z
+        .array(GoogleCloudDialogflowV2beta1ContextSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The collection of output contexts. If applicable, `output_contexts.parameters` contains entries with name `.original` containing the original parameter values before the query.',
+        }),
+      parameters: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            "The collection of extracted parameters. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: - MapKey type: string - MapKey value: parameter name - MapValue type: - If parameter's entity type is a composite entity: map - Else: depending on parameter value type, could be one of string, number, boolean, null, list or map - MapValue value: - If parameter's entity type is a composite entity: map from composite entity property names to property values - Else: parameter value",
+        }),
+      queryText: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The original conversational query text: - If natural language text was provided as input, `query_text` contains a copy of the input. - If natural language speech audio was provided as input, `query_text` contains the speech recognition result. If speech recognizer produced multiple alternatives, a particular one is picked. - If automatic spell correction is enabled, `query_text` will contain the corrected user input.',
+        }),
+      sentimentAnalysisResult:
+        GoogleCloudDialogflowV2beta1SentimentAnalysisResultSchema.exactOptional().openapi({
+          description:
+            'The sentiment analysis result, which depends on the `sentiment_analysis_request_config` specified in the request.',
+        }),
+      speechRecognitionConfidence: z
+        .float32()
+        .exactOptional()
+        .openapi({
+          description:
+            "The Speech recognition confidence between 0.0 and 1.0. A higher number indicates an estimated greater likelihood that the recognized words are correct. The default of 0.0 is a sentinel value indicating that confidence was not set. This field is not guaranteed to be accurate or set. In particular this field isn't set for StreamingDetectIntent since the streaming endpoint has separate confidence estimates per portion of the audio in StreamingRecognitionResult.",
+        }),
+      webhookPayload: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'If the query was fulfilled by a webhook call, this field is set to the value of the `payload` field returned in the webhook response.',
+        }),
+      webhookSource: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If the query was fulfilled by a webhook call, this field is set to the value of the `source` field returned in the webhook response.',
+        }),
+    })
+    .openapi({
+      description: 'Represents the result of conversational query or event processing.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowV2beta1QueryResult')
+
+const GoogleCloudDialogflowV2beta1OriginalDetectIntentRequestSchema = z
+  .object({
+    payload: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. This field is set to the value of the `QueryParameters.payload` field passed in the request. Some integrations that query a Dialogflow agent may provide additional information in the payload. In particular, for the Dialogflow Phone Gateway integration, this field has the form: { "telephony": { "caller_id": "+18558363987" } } Note: The caller ID field (`caller_id`) will be redacted for Trial Edition agents and populated with the caller ID in [E.164 format](https://en.wikipedia.org/wiki/E.164) for Essentials Edition agents.',
+      }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The source of this request, e.g., `google`, `facebook`, `slack`. It is set by Dialogflow-owned servers.',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The version of the protocol used for this request. This field is AoG-specific.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents the contents of the original request that was passed to the `[Streaming]DetectIntent` call.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2beta1OriginalDetectIntentRequest')
+
+type GoogleCloudDialogflowV2beta1WebhookRequestType = {
+  alternativeQueryResults?: z.infer<typeof GoogleCloudDialogflowV2beta1QueryResultSchema>[]
+  originalDetectIntentRequest?: z.infer<
+    typeof GoogleCloudDialogflowV2beta1OriginalDetectIntentRequestSchema
+  >
+  queryResult?: z.infer<typeof GoogleCloudDialogflowV2beta1QueryResultSchema>
+  responseId?: string
+  session?: string
+}
+
+const GoogleCloudDialogflowV2beta1EventInputSchema = z
+  .object({
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The language of this query. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language) for a list of the currently supported language codes. Note that queries in the same session do not necessarily need to specify the same language. This field is ignored when used in the context of a WebhookResponse.followup_event_input field, because the language was already defined in the originating detect intent request.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The unique identifier of the event.' }),
+    parameters: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          "The collection of parameters associated with the event. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: - MapKey type: string - MapKey value: parameter name - MapValue type: - If parameter's entity type is a composite entity: map - Else: depending on parameter value type, could be one of string, number, boolean, null, list or map - MapValue value: - If parameter's entity type is a composite entity: map from composite entity property names to property values - Else: parameter value",
+      }),
+  })
+  .openapi({
+    description:
+      'Events allow for matching intents by event name instead of the natural language input. For instance, input `` can trigger a personalized welcome response. The parameter `name` may be used by the agent in the response: `"Hello #welcome_event.name! What can I do for you today?"`.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2beta1EventInput')
+
+const GoogleCloudDialogflowV2beta1EntityTypeEntitySchema = z
+  .object({
+    synonyms: z
       .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'Optional. The collection of event names that trigger the intent. If the collection of input contexts is not empty, all of the contexts must be present in the active user session for an event to trigger this intent. Event names are limited to 150 characters.',
+          'Required. A collection of value synonyms. For example, if the entity type is *vegetable*, and `value` is *scallions*, a synonym could be *green onions*. For `KIND_LIST` entity types: * This collection must contain exactly one synonym equal to `value`.',
       }),
-    followupIntentInfo: z
-      .array(GoogleCloudDialogflowV2beta1IntentFollowupIntentInfoSchema)
+    value: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'Output only. Information about all followup intents that have this intent as a direct or indirect parent. We populate this field only in the output.',
-        readOnly: true,
+          'Required. The primary value associated with this entity entry. For example, if the entity type is *vegetable*, the value could be *scallions*. For `KIND_MAP` entity types: * A reference value to be used in place of synonyms. For `KIND_LIST` entity types: * A string that can contain references to other entity types (with or without aliases).',
       }),
-    inputContextNames: z
-      .array(z.string())
+  })
+  .openapi({ description: 'An **entity entry** for an associated entity type.', required: [] })
+  .openapi('GoogleCloudDialogflowV2beta1EntityTypeEntity')
+
+const GoogleCloudDialogflowV2beta1SessionEntityTypeSchema = z
+  .object({
+    entities: z
+      .array(GoogleCloudDialogflowV2beta1EntityTypeEntitySchema)
       .exactOptional()
       .openapi({
         description:
-          'Optional. The list of context names required for this intent to be triggered. Formats: - `projects//agent/sessions/-/contexts/` - `projects//locations//agent/sessions/-/contexts/`',
+          'Required. The collection of entities associated with this session entity type.',
       }),
-    isFallback: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Optional. Indicates whether this is a fallback intent.' }),
-    liveAgentHandoff: z
-      .boolean()
+    entityOverrideMode: z
+      .enum([
+        'ENTITY_OVERRIDE_MODE_UNSPECIFIED',
+        'ENTITY_OVERRIDE_MODE_OVERRIDE',
+        'ENTITY_OVERRIDE_MODE_SUPPLEMENT',
+      ])
       .exactOptional()
       .openapi({
         description:
-          'Optional. Indicates that a live agent should be brought in to handle the interaction with the user. In most cases, when you set this flag to true, you would also want to set end_interaction to true as well. Default is false.',
-      }),
-    messages: z
-      .array(GoogleCloudDialogflowV2beta1IntentMessageSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The collection of rich messages corresponding to the `Response` field in the Dialogflow console.',
-      }),
-    mlDisabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Indicates whether Machine Learning is disabled for the intent. Note: If `ml_disabled` setting is set to true, then this intent is not taken into account during inference in `ML ONLY` match mode. Also, auto-markup in the UI is turned off.',
-      }),
-    mlEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Indicates whether Machine Learning is enabled for the intent. Note: If `ml_enabled` setting is set to false, then this intent is not taken into account during inference in `ML ONLY` match mode. Also, auto-markup in the UI is turned off. DEPRECATED! Please use `ml_disabled` field instead. NOTE: If both `ml_enabled` and `ml_disabled` are either not set or false, then the default value is determined as follows: - Before April 15th, 2018 the default is: ml_enabled = false / ml_disabled = true. - After April 15th, 2018 the default is: ml_enabled = true / ml_disabled = false.',
+          'Required. Indicates whether the additional data should override or supplement the custom entity type definition.',
       }),
     name: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Optional. The unique identifier of this intent. Required for Intents.UpdateIntent and Intents.BatchUpdateIntents methods. Supported formats: - `projects//agent/intents/` - `projects//locations//agent/intents/`',
+          "Required. The unique identifier of this session entity type. Supported formats: - `projects//agent/sessions//entityTypes/` - `projects//locations//agent/sessions//entityTypes/` - `projects//agent/environments//users//sessions//entityTypes/` - `projects//locations//agent/environments/ /users//sessions//entityTypes/` If `Location ID` is not specified we assume default 'us' location. If `Environment ID` is not specified, we assume default 'draft' environment. If `User ID` is not specified, we assume default '-' user. `` must be the display name of an existing entity type in the same agent that will be overridden or supplemented.",
       }),
-    outputContexts: z
-      .array(GoogleCloudDialogflowV2beta1ContextSchema)
+  })
+  .openapi({
+    description:
+      'A session represents a conversation between a Dialogflow agent and an end-user. You can create special entities, called session entities, during a session. Session entities can extend or replace custom entity types and only exist during the session that they were created for. All session data, including session entities, is stored by Dialogflow for 20 minutes. For more information, see the [session entity guide](https://cloud.google.com/dialogflow/docs/entities-session).',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2beta1SessionEntityType')
+
+type GoogleCloudDialogflowV2beta1WebhookResponseType = {
+  endInteraction?: boolean
+  followupEventInput?: z.infer<typeof GoogleCloudDialogflowV2beta1EventInputSchema>
+  fulfillmentMessages?: z.infer<typeof GoogleCloudDialogflowV2beta1IntentMessageSchema>[]
+  fulfillmentText?: string
+  liveAgentHandoff?: boolean
+  outputContexts?: z.infer<typeof GoogleCloudDialogflowV2beta1ContextSchema>[]
+  payload?: { [key: string]: unknown }
+  sessionEntityTypes?: z.infer<typeof GoogleCloudDialogflowV2beta1SessionEntityTypeSchema>[]
+  source?: string
+}
+
+const GoogleCloudDialogflowCxV3TestErrorSchema = z
+  .object({
+    status: GoogleRpcStatusSchema.exactOptional().openapi({
+      description: 'The status associated with the test.',
+    }),
+    testCase: z.string().exactOptional().openapi({ description: 'The test case resource name.' }),
+    testTime: z
+      .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Optional. The collection of contexts that are activated when the intent is matched. Context messages in this collection should not set the parameters field. Setting the `lifespan_count` to 0 will reset the context when the intent is matched. Format: `projects//agent/sessions/-/contexts/`.',
-      }),
-    parameters: z
-      .array(GoogleCloudDialogflowV2beta1IntentParameterSchema)
+      .openapi({ description: 'The timestamp when the test was completed.' }),
+  })
+  .openapi({ description: 'Error info for running a test.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3TestError')
+
+const GoogleCloudDialogflowCxV3BatchRunTestCasesMetadataSchema = z
+  .object({
+    errors: z
+      .array(GoogleCloudDialogflowCxV3TestErrorSchema)
       .exactOptional()
-      .openapi({
-        description: 'Optional. The collection of parameters associated with the intent.',
-      }),
-    parentFollowupIntentName: z
+      .openapi({ description: 'The test errors.' }),
+  })
+  .openapi({
+    description: 'Metadata returned for the TestCases.BatchRunTestCases long running operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3BatchRunTestCasesMetadata')
+
+const GoogleCloudDialogflowCxV3BatchRunTestCasesResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3BatchRunTestCasesResponseType> =
+  z
+    .object({
+      results: z
+        .array(GoogleCloudDialogflowCxV3TestCaseResultSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The test case results. The detailed conversation turns are empty in this response.',
+        }),
+    })
+    .openapi({ description: 'The response message for TestCases.BatchRunTestCases.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3BatchRunTestCasesResponse')
+
+const GoogleCloudDialogflowCxV3ContinuousTestResultSchema = z
+  .object({
+    name: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Optional. The unique identifier of the parent intent in the chain of followup intents. You can set this field when creating an intent, for example with CreateIntent or BatchUpdateIntents, in order to make this intent a followup intent. It identifies the parent followup intent. Format: `projects//agent/intents/`.',
+          'The resource name for the continuous test result. Format: `projects//locations//agents//environments//continuousTestResults/`.',
       }),
-    priority: z
-      .int32()
+    result: z
+      .enum(['AGGREGATED_TEST_RESULT_UNSPECIFIED', 'PASSED', 'FAILED'])
       .exactOptional()
       .openapi({
         description:
-          'Optional. The priority of this intent. Higher numbers represent higher priorities. - If the supplied value is unspecified or 0, the service translates the value to 500,000, which corresponds to the `Normal` priority in the console. - If the supplied value is negative, the intent is ignored in runtime detect intent requests.',
+          'The result of this continuous test run, i.e. whether all the tests in this continuous test run pass or not.',
       }),
-    resetContexts: z
+    runTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the continuous testing run starts.' }),
+    testCaseResults: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of individual test case results names in this continuous test run.',
+      }),
+  })
+  .openapi({
+    description: 'Represents a result from running a test case in an agent environment.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3ContinuousTestResult')
+
+const GoogleCloudDialogflowCxV3TurnSignalsSchema = z
+  .object({
+    agentEscalated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether agent responded with LiveAgentHandoff fulfillment.' }),
+    dtmfUsed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether user was using DTMF input.' }),
+    failureReasons: z
+      .array(z.enum(['FAILURE_REASON_UNSPECIFIED', 'FAILED_INTENT', 'FAILED_WEBHOOK']))
+      .exactOptional()
+      .openapi({ description: 'Failure reasons of the turn.' }),
+    noMatch: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether NLU predicted NO_MATCH.' }),
+    noUserInput: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether user provided no input.' }),
+    reachedEndPage: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether turn resulted in End Session page.' }),
+    userEscalated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether user was specifically asking for a live agent.' }),
+    webhookStatuses: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Human-readable statuses of the webhooks triggered during this turn.',
+      }),
+  })
+  .openapi({
+    description:
+      'Collection of all signals that were extracted for a single turn of the conversation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3TurnSignals')
+
+const GoogleCloudDialogflowCxV3ConversationSignalsSchema = z
+  .object({
+    turnSignals: GoogleCloudDialogflowCxV3TurnSignalsSchema.exactOptional().openapi({
+      description: 'Required. Turn signals for the current turn.',
+    }),
+  })
+  .openapi({
+    description:
+      'This message is used to hold all the Conversation Signals data, which will be converted to JSON and exported to BigQuery.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3ConversationSignals')
+
+const GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema = z
+  .object({
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'DONE'])
+      .exactOptional()
+      .openapi({
+        description: 'Required. Output only. The current state of this operation.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Metadata in google::longrunning::Operation for Knowledge operations.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadata')
+
+const GoogleCloudDialogflowCxV3CreateDocumentOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
+        description: 'The generic information of the operation.',
+      }),
+  })
+  .openapi({ description: 'Metadata for CreateDocument operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3CreateDocumentOperationMetadata')
+
+const GoogleCloudDialogflowCxV3CreateVersionOperationMetadataSchema = z
+  .object({
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the created version. Format: `projects//locations//agents//flows//versions/`.',
+      }),
+  })
+  .openapi({
+    description: 'Metadata associated with the long running operation for Versions.CreateVersion.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3CreateVersionOperationMetadata')
+
+const GoogleCloudDialogflowCxV3DeleteDocumentOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
+        description: 'The generic information of the operation.',
+      }),
+  })
+  .openapi({ description: 'Metadata for DeleteDocument operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3DeleteDocumentOperationMetadata')
+
+const GoogleCloudDialogflowCxV3DeployFlowMetadataSchema = z
+  .object({
+    testErrors: z
+      .array(GoogleCloudDialogflowCxV3TestErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Errors of running deployment tests.' }),
+  })
+  .openapi({
+    description: 'Metadata returned for the Environments.DeployFlow long running operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3DeployFlowMetadata')
+
+const GoogleCloudDialogflowCxV3DeployFlowResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3DeployFlowResponseType> =
+  z
+    .object({
+      deployment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The name of the flow version Deployment. Format: `projects//locations//agents// environments//deployments/`.',
+        }),
+      environment: GoogleCloudDialogflowCxV3EnvironmentSchema.exactOptional().openapi({
+        description: 'The updated environment where the flow is deployed.',
+      }),
+    })
+    .openapi({ description: 'The response message for Environments.DeployFlow.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3DeployFlowResponse')
+
+const GoogleCloudDialogflowCxV3ExportAgentResponseSchema = z
+  .object({
+    agentContent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for agent.' }),
+    agentUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URI to a file containing the exported agent. This field is populated only if `agent_uri` is specified in ExportAgentRequest.',
+      }),
+  })
+  .openapi({ description: 'The response message for Agents.ExportAgent.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ExportAgentResponse')
+
+const GoogleCloudDialogflowCxV3ExportFlowResponseSchema = z
+  .object({
+    flowContent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for flow.' }),
+    flowUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URI to a file containing the exported flow. This field is populated only if `flow_uri` is specified in ExportFlowRequest.',
+      }),
+  })
+  .openapi({ description: 'The response message for Flows.ExportFlow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ExportFlowResponse')
+
+const GoogleCloudDialogflowCxV3ExportTestCasesMetadataSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Metadata returned for the TestCases.ExportTestCases long running operation. This message currently has no fields.',
+  })
+  .openapi('GoogleCloudDialogflowCxV3ExportTestCasesMetadata')
+
+const GoogleCloudDialogflowCxV3ExportTestCasesResponseSchema = z
+  .object({
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for test cases.' }),
+    gcsUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URI to a file containing the exported test cases. This field is populated only if `gcs_uri` is specified in ExportTestCasesRequest.',
+      }),
+  })
+  .openapi({ description: 'The response message for TestCases.ExportTestCases.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ExportTestCasesResponse')
+
+const GoogleCloudDialogflowCxV3ImportDocumentsOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
+        description: 'The generic information of the operation.',
+      }),
+  })
+  .openapi({ description: 'Metadata for ImportDocuments operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ImportDocumentsOperationMetadata')
+
+const GoogleCloudDialogflowCxV3ImportDocumentsResponseSchema = z
+  .object({
+    warnings: z
+      .array(GoogleRpcStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'Includes details about skipped documents or any other warnings.' }),
+  })
+  .openapi({ description: 'Response message for Documents.ImportDocuments.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ImportDocumentsResponse')
+
+const GoogleCloudDialogflowCxV3ImportFlowResponseSchema = z
+  .object({
+    flow: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the new flow. Format: `projects//locations//agents//flows/`.',
+      }),
+  })
+  .openapi({ description: 'The response message for Flows.ImportFlow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ImportFlowResponse')
+
+const GoogleCloudDialogflowCxV3ImportTestCasesMetadataSchema: z.ZodType<GoogleCloudDialogflowCxV3ImportTestCasesMetadataType> =
+  z
+    .object({
+      errors: z
+        .array(GoogleCloudDialogflowCxV3TestCaseErrorSchema)
+        .exactOptional()
+        .openapi({ description: 'Errors for failed test cases.' }),
+    })
+    .openapi({
+      description: 'Metadata returned for the TestCases.ImportTestCases long running operation.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3ImportTestCasesMetadata')
+
+const GoogleCloudDialogflowCxV3ImportTestCasesResponseSchema = z
+  .object({
+    names: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifiers of the new test cases. Format: `projects//locations//agents//testCases/`.',
+      }),
+  })
+  .openapi({ description: 'The response message for TestCases.ImportTestCases.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ImportTestCasesResponse')
+
+const GoogleCloudDialogflowCxV3PageInfoFormInfoParameterInfoSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present for WebhookRequest. Required for WebhookResponse. The human-readable name of the parameter, unique within the form. This field cannot be modified by the webhook.',
+      }),
+    justCollected: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Optional. Indicates whether to delete all contexts in the current session when this intent is matched.',
+          'Optional for WebhookRequest. Ignored for WebhookResponse. Indicates if the parameter value was just collected on the last conversation turn.',
       }),
-    rootFollowupIntentName: z
+    required: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional for both WebhookRequest and WebhookResponse. Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them. Required parameters must be filled before form filling concludes.',
+      }),
+    state: z
+      .enum(['PARAMETER_STATE_UNSPECIFIED', 'EMPTY', 'INVALID', 'FILLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present for WebhookRequest. Required for WebhookResponse. The state of the parameter. This field can be set to INVALID by the webhook to invalidate the parameter; other values set by the webhook will be ignored.',
+      }),
+    value: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional for both WebhookRequest and WebhookResponse. The value of the parameter. This field can be set by the webhook to change the parameter value.',
+      }),
+  })
+  .openapi({ description: 'Represents parameter information.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3PageInfoFormInfoParameterInfo')
+
+const GoogleCloudDialogflowCxV3PageInfoFormInfoSchema = z
+  .object({
+    parameterInfo: z
+      .array(GoogleCloudDialogflowCxV3PageInfoFormInfoParameterInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional for both WebhookRequest and WebhookResponse. The parameters contained in the form. Note that the webhook cannot add or remove any form parameter.',
+      }),
+  })
+  .openapi({ description: 'Represents form information.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3PageInfoFormInfo')
+
+const GoogleCloudDialogflowCxV3PageInfoSchema = z
+  .object({
+    currentPage: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Output only. The unique identifier of the root intent in the chain of followup intents. It identifies the correct followup intents chain for this intent. Format: `projects//agent/intents/`.',
-        readOnly: true,
+          'Always present for WebhookRequest. Ignored for WebhookResponse. The unique identifier of the current page. Format: `projects//locations//agents//flows//pages/`.',
       }),
-    trainingPhrases: z
-      .array(GoogleCloudDialogflowV2beta1IntentTrainingPhraseSchema)
+    displayName: z
+      .string()
       .exactOptional()
       .openapi({
-        description: 'Optional. The collection of examples that the agent is trained on.',
+        description:
+          'Always present for WebhookRequest. Ignored for WebhookResponse. The display name of the current page.',
       }),
-    webhookState: z
-      .enum([
-        'WEBHOOK_STATE_UNSPECIFIED',
-        'WEBHOOK_STATE_ENABLED',
-        'WEBHOOK_STATE_ENABLED_FOR_SLOT_FILLING',
-      ])
+    formInfo: GoogleCloudDialogflowCxV3PageInfoFormInfoSchema.exactOptional().openapi({
+      description:
+        'Optional for both WebhookRequest and WebhookResponse. Information about the form.',
+    }),
+  })
+  .openapi({
+    description: 'Represents page information communicated to and from the webhook.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3PageInfo')
+
+const GoogleCloudDialogflowCxV3ReloadDocumentOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
+        description: 'The generic information of the operation.',
+      }),
+  })
+  .openapi({ description: 'Metadata for ReloadDocument operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3ReloadDocumentOperationMetadata')
+
+const GoogleCloudDialogflowCxV3RunContinuousTestMetadataSchema = z
+  .object({
+    errors: z
+      .array(GoogleCloudDialogflowCxV3TestErrorSchema)
       .exactOptional()
-      .openapi({ description: 'Optional. Indicates whether webhooks are enabled for the intent.' }),
+      .openapi({ description: 'The test errors.' }),
+  })
+  .openapi({
+    description: 'Metadata returned for the Environments.RunContinuousTest long running operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3RunContinuousTestMetadata')
+
+const GoogleCloudDialogflowCxV3RunContinuousTestResponseSchema = z
+  .object({
+    continuousTestResult:
+      GoogleCloudDialogflowCxV3ContinuousTestResultSchema.exactOptional().openapi({
+        description: 'The result for a continuous test run.',
+      }),
+  })
+  .openapi({
+    description: 'The response message for Environments.RunContinuousTest.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3RunContinuousTestResponse')
+
+const GoogleCloudDialogflowCxV3RunTestCaseMetadataSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Metadata returned for the TestCases.RunTestCase long running operation. This message currently has no fields.',
+  })
+  .openapi('GoogleCloudDialogflowCxV3RunTestCaseMetadata')
+
+const GoogleCloudDialogflowCxV3RunTestCaseResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3RunTestCaseResponseType> =
+  z
+    .object({
+      result: GoogleCloudDialogflowCxV3TestCaseResultSchema.exactOptional().openapi({
+        description: 'The result.',
+      }),
+    })
+    .openapi({ description: 'The response message for TestCases.RunTestCase.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3RunTestCaseResponse')
+
+const GoogleCloudDialogflowCxV3SessionInfoSchema = z
+  .object({
+    parameters: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional for WebhookRequest. Optional for WebhookResponse. All parameters collected from forms and intents during the session. Parameters can be created, updated, or removed by the webhook. To remove a parameter from the session, the webhook should explicitly set the parameter value to null in WebhookResponse. The map is keyed by parameters' display names.",
+      }),
+    session: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present for WebhookRequest. Ignored for WebhookResponse. The unique identifier of the session. This field can be used by the webhook to identify a session. Format: `projects//locations//agents//sessions/` or `projects//locations//agents//environments//sessions/` if environment is specified.',
+      }),
+  })
+  .openapi({
+    description: 'Represents session information communicated to and from the webhook.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3SessionInfo')
+
+const GoogleCloudDialogflowCxV3UpdateDocumentOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3GenericKnowledgeOperationMetadataSchema.exactOptional().openapi({
+        description: 'The generic information of the operation.',
+      }),
+  })
+  .openapi({ description: 'Metadata for UpdateDocument operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3UpdateDocumentOperationMetadata')
+
+const GoogleCloudDialogflowCxV3WebhookRequestFulfillmentInfoSchema = z
+  .object({
+    tag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present. The value of the Fulfillment.tag field will be populated in this field by Dialogflow when the associated webhook is called. The tag is typically used by the webhook service to identify which fulfillment is being called, but it could be used for other purposes.',
+      }),
+  })
+  .openapi({
+    description: 'Represents fulfillment information communicated to the webhook.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3WebhookRequestFulfillmentInfo')
+
+const GoogleCloudDialogflowCxV3WebhookRequestIntentInfoIntentParameterValueSchema = z
+  .object({
+    originalValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Always present. Original text value extracted from user utterance.',
+      }),
+    resolvedValue: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present. Structured value for the parameter extracted from user utterance.',
+      }),
+  })
+  .openapi({ description: 'Represents a value for an intent parameter.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3WebhookRequestIntentInfoIntentParameterValue')
+
+const GoogleCloudDialogflowCxV3WebhookRequestIntentInfoSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The confidence of the matched intent. Values range from 0.0 (completely uncertain) to 1.0 (completely certain).',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Always present. The display name of the last matched intent.' }),
+    lastMatchedIntent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present. The unique identifier of the last matched intent. Format: `projects//locations//agents//intents/`.',
+      }),
+    parameters: z
+      .record(
+        z.string(),
+        GoogleCloudDialogflowCxV3WebhookRequestIntentInfoIntentParameterValueSchema,
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "Parameters identified as a result of intent matching. This is a map of the name of the identified parameter to the value of the parameter identified from the user's utterance. All parameters defined in the matched intent that are identified will be surfaced here.",
+      }),
+  })
+  .openapi({
+    description: 'Represents intent information communicated to the webhook.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3WebhookRequestIntentInfo')
+
+const GoogleCloudDialogflowCxV3WebhookRequestSentimentAnalysisResultSchema = z
+  .object({
+    magnitude: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'A non-negative number in the [0, +inf) range, which represents the absolute magnitude of sentiment, regardless of score (positive or negative).',
+      }),
+    score: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sentiment score between -1.0 (negative sentiment) and 1.0 (positive sentiment).',
+      }),
+  })
+  .openapi({ description: 'Represents the result of sentiment analysis.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3WebhookRequestSentimentAnalysisResult')
+
+const GoogleCloudDialogflowCxV3WebhookRequestSchema = z
+  .object({
+    detectIntentResponseId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present. The unique identifier of the DetectIntentResponse that will be returned to the API caller.',
+      }),
+    dtmfDigits: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If DTMF was provided as input, this field will contain the DTMF digits.',
+      }),
+    fulfillmentInfo:
+      GoogleCloudDialogflowCxV3WebhookRequestFulfillmentInfoSchema.exactOptional().openapi({
+        description:
+          'Always present. Information about the fulfillment that triggered this webhook call.',
+      }),
+    intentInfo: GoogleCloudDialogflowCxV3WebhookRequestIntentInfoSchema.exactOptional().openapi({
+      description: 'Information about the last matched intent.',
+    }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The language code specified in the original request.' }),
+    messages: z
+      .array(GoogleCloudDialogflowCxV3ResponseMessageSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of rich message responses to present to the user. Webhook can choose to append or replace this list in WebhookResponse.fulfillment_response;',
+      }),
+    pageInfo: GoogleCloudDialogflowCxV3PageInfoSchema.exactOptional().openapi({
+      description: 'Information about page status.',
+    }),
+    payload: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({ description: 'Custom data set in QueryParameters.payload.' }),
+    sentimentAnalysisResult:
+      GoogleCloudDialogflowCxV3WebhookRequestSentimentAnalysisResultSchema.exactOptional().openapi({
+        description:
+          'The sentiment analysis result of the current user request. The field is filled when sentiment analysis is configured to be enabled for the request.',
+      }),
+    sessionInfo: GoogleCloudDialogflowCxV3SessionInfoSchema.exactOptional().openapi({
+      description: 'Information about session status.',
+    }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If natural language text was provided as input, this field will contain a copy of the text.',
+      }),
+    transcript: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If natural language speech audio was provided as input, this field will contain the transcript for the audio.',
+      }),
+    triggerEvent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If an event was provided as input, this field will contain the name of the event.',
+      }),
+    triggerIntent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If an intent was provided as input, this field will contain a copy of the intent identifier. Format: `projects//locations//agents//intents/`.',
+      }),
   })
   .openapi({
     description:
-      "An intent categorizes an end-user's intention for one conversation turn. For each agent, you define many intents, where your combined intents can handle a complete conversation. When an end-user writes or says something, referred to as an end-user expression or end-user input, Dialogflow matches the end-user input to the best intent in your agent. Matching an intent is also known as intent classification. For more information, see the [intent guide](https://cloud.google.com/dialogflow/docs/intents-overview).",
+      'The request message for a webhook call. The request is sent as a JSON object and the field names will be presented in camel cases. You may see undocumented fields in an actual request. These fields are used internally by Dialogflow and should be ignored.',
     required: [],
   })
-  .openapi('GoogleCloudDialogflowV2beta1Intent')
+  .openapi('GoogleCloudDialogflowCxV3WebhookRequest')
 
-const GoogleCloudDialogflowV2beta1BatchUpdateIntentsResponseSchema = z
+const GoogleCloudDialogflowCxV3WebhookResponseFulfillmentResponseSchema = z
+  .object({
+    mergeBehavior: z
+      .enum(['MERGE_BEHAVIOR_UNSPECIFIED', 'APPEND', 'REPLACE'])
+      .exactOptional()
+      .openapi({ description: 'Merge behavior for `messages`.' }),
+    messages: z
+      .array(GoogleCloudDialogflowCxV3ResponseMessageSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of rich message responses to present to the user.' }),
+  })
+  .openapi({ description: 'Represents a fulfillment response to the user.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3WebhookResponseFulfillmentResponse')
+
+const GoogleCloudDialogflowCxV3WebhookResponseSchema = z
+  .object({
+    fulfillmentResponse:
+      GoogleCloudDialogflowCxV3WebhookResponseFulfillmentResponseSchema.exactOptional().openapi({
+        description:
+          'The fulfillment response to send to the user. This field can be omitted by the webhook if it does not intend to send any response to the user.',
+      }),
+    pageInfo: GoogleCloudDialogflowCxV3PageInfoSchema.exactOptional().openapi({
+      description:
+        'Information about page status. This field can be omitted by the webhook if it does not intend to modify page status.',
+    }),
+    payload: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({ description: 'Value to append directly to QueryResult.webhook_payloads.' }),
+    sessionInfo: GoogleCloudDialogflowCxV3SessionInfoSchema.exactOptional().openapi({
+      description:
+        'Information about session status. This field can be omitted by the webhook if it does not intend to modify session status.',
+    }),
+    targetFlow: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
+      }),
+    targetPage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
+      }),
+  })
+  .openapi({ description: 'The response message for a webhook call.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3WebhookResponse')
+
+const GoogleCloudDialogflowCxV3beta1GcsDestinationSchema = z
+  .object({
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The Google Cloud Storage URI for the exported objects. A URI is of the form: gs://bucket/object-name-or-prefix Whether a full object name, or just a prefix, its usage depends on the Dialogflow operation.',
+      }),
+  })
+  .openapi({
+    description:
+      'Google Cloud Storage location for a Dialogflow operation that writes or exports objects (e.g. exported agent or transcripts) outside of Dialogflow.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1GcsDestination')
+
+const GoogleCloudDialogflowCxV3beta1AdvancedSettingsLoggingSettingsSchema = z
+  .object({
+    enableInteractionLogging: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, DF Interaction logging is currently enabled.' }),
+    enableStackdriverLogging: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, StackDriver logging is currently enabled.' }),
+  })
+  .openapi({ description: 'Define behaviors on logging.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1AdvancedSettingsLoggingSettings')
+
+const GoogleCloudDialogflowCxV3beta1AdvancedSettingsSchema = z
+  .object({
+    audioExportGcsDestination:
+      GoogleCloudDialogflowCxV3beta1GcsDestinationSchema.exactOptional().openapi({
+        description:
+          'If present, incoming audio is exported by Dialogflow to the configured Google Cloud Storage destination. Exposed at the following levels: - Agent level - Flow level',
+      }),
+    loggingSettings:
+      GoogleCloudDialogflowCxV3beta1AdvancedSettingsLoggingSettingsSchema.exactOptional().openapi({
+        description:
+          'Settings for logging. Settings for Dialogflow History, Contact Center messages, StackDriver logs, and speech logging. Exposed at the following levels: - Agent level.',
+      }),
+  })
+  .openapi({
+    description:
+      'Hierarchical advanced settings for agent/flow/page/fulfillment/parameter. Settings exposed at lower level overrides the settings exposed at higher level. Overriding occurs at the sub-setting level. For example, the playback_interruption_settings at fulfillment level only overrides the playback_interruption_settings at the agent level, leaving other settings at the agent level unchanged. DTMF settings does not override each other. DTMF settings set at different levels define DTMF detections running in parallel. Hierarchy: Agent->Flow->Page->Fulfillment/Parameter.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1AdvancedSettings')
+
+const GoogleCloudDialogflowCxV3beta1SpeechToTextSettingsSchema = z
+  .object({
+    enableSpeechAdaptation: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to use speech adaptation for speech recognition.' }),
+  })
+  .openapi({ description: 'Settings related to speech recognition.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1SpeechToTextSettings')
+
+const GoogleCloudDialogflowCxV3beta1TextToSpeechSettingsSchema = z
+  .object({
+    synthesizeSpeechConfigs: z
+      .record(z.string(), GoogleCloudDialogflowCxV3beta1SynthesizeSpeechConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Configuration of how speech should be synthesized, mapping from language (https://dialogflow.com/docs/reference/language) to SynthesizeSpeechConfig.',
+      }),
+  })
+  .openapi({ description: 'Settings related to speech generating.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1TextToSpeechSettings')
+
+const GoogleCloudDialogflowCxV3beta1AgentSchema = z
+  .object({
+    advancedSettings: GoogleCloudDialogflowCxV3beta1AdvancedSettingsSchema.exactOptional().openapi({
+      description:
+        'Hierarchical advanced settings for this agent. The settings exposed at the lower level overrides the settings exposed at the higher level.',
+    }),
+    avatarUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URI of the agent's avatar. Avatars are used throughout the Dialogflow console and in the self-hosted [Web Demo](https://cloud.google.com/dialogflow/docs/integrations/web-demo) integration.",
+      }),
+    defaultLanguageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The default language of the agent as a language tag. See [Language Support](https://cloud.google.com/dialogflow/cx/docs/reference/language) for a list of the currently supported language codes. This field cannot be set by the Agents.UpdateAgent method.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description of the agent. The maximum length is 500 characters. If exceeded, the request is rejected.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The human-readable name of the agent, unique within the location.',
+      }),
+    enableSpellCorrection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if automatic spell correction is enabled in detect intent requests.',
+      }),
+    enableStackdriverLogging: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if stackdriver logging is enabled for the agent. Please use agent.advanced_settings instead.',
+      }),
+    locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the agent is locked for changes. If the agent is locked, modifications to the agent will be rejected except for RestoreAgent.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the agent. Required for the Agents.UpdateAgent method. Agents.CreateAgent populates the name automatically. Format: `projects//locations//agents/`.',
+      }),
+    securitySettings: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the SecuritySettings reference for the agent. Format: `projects//locations//securitySettings/`.',
+      }),
+    speechToTextSettings:
+      GoogleCloudDialogflowCxV3beta1SpeechToTextSettingsSchema.exactOptional().openapi({
+        description: 'Speech recognition related settings.',
+      }),
+    startFlow: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. Name of the start flow in this agent. A start flow will be automatically created when the agent is created, and can only be deleted by deleting the agent. Format: `projects//locations//agents//flows/`.',
+      }),
+    supportedLanguageCodes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of all languages supported by the agent (except for the `default_language_code`).',
+      }),
+    textToSpeechSettings:
+      GoogleCloudDialogflowCxV3beta1TextToSpeechSettingsSchema.exactOptional().openapi({
+        description:
+          'Settings on instructing the speech synthesizer on how to generate the output audio content.',
+      }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The time zone of the agent from the [time zone database](https://www.iana.org/time-zones), e.g., America/New_York, Europe/Paris.',
+      }),
+  })
+  .openapi({
+    description:
+      'Agents are best described as Natural Language Understanding (NLU) modules that transform user requests into actionable data. You can include agents in your app, product, or service to determine user intent and respond to the user in a natural way. After you create an agent, you can add Intents, Entity Types, Flows, Fulfillments, Webhooks, and so on to manage the conversation flows..',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1Agent')
+
+const GoogleCloudDialogflowCxV3beta1ResourceNameSchema = z
+  .object({
+    displayName: z.string().exactOptional().openapi({ description: 'Display name.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name.' }),
+  })
+  .openapi({ description: 'Resource name and display name.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ResourceName')
+
+const GoogleCloudDialogflowCxV3beta1ValidationMessageSchema = z
+  .object({
+    detail: z.string().exactOptional().openapi({ description: 'The message detail.' }),
+    resourceNames: z
+      .array(GoogleCloudDialogflowCxV3beta1ResourceNameSchema)
+      .exactOptional()
+      .openapi({ description: 'The resource names of the resources where the message is found.' }),
+    resourceType: z
+      .enum([
+        'RESOURCE_TYPE_UNSPECIFIED',
+        'AGENT',
+        'INTENT',
+        'INTENT_TRAINING_PHRASE',
+        'INTENT_PARAMETER',
+        'INTENTS',
+        'INTENT_TRAINING_PHRASES',
+        'ENTITY_TYPE',
+        'ENTITY_TYPES',
+        'WEBHOOK',
+        'FLOW',
+        'PAGE',
+        'PAGES',
+        'TRANSITION_ROUTE_GROUP',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the resources where the message is found.' }),
+    resources: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The names of the resources where the message is found.' }),
+    severity: z
+      .enum(['SEVERITY_UNSPECIFIED', 'INFO', 'WARNING', 'ERROR'])
+      .exactOptional()
+      .openapi({ description: 'Indicates the severity of the message.' }),
+  })
+  .openapi({ description: 'Agent/flow validation message.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ValidationMessage')
+
+const GoogleCloudDialogflowCxV3beta1FlowValidationResultSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the flow validation result. Format: `projects//locations//agents//flows//validationResult`.',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Last time the flow was validated.' }),
+    validationMessages: z
+      .array(GoogleCloudDialogflowCxV3beta1ValidationMessageSchema)
+      .exactOptional()
+      .openapi({ description: 'Contains all validation messages.' }),
+  })
+  .openapi({ description: 'The response message for Flows.GetFlowValidationResult.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1FlowValidationResult')
+
+const GoogleCloudDialogflowCxV3beta1AgentValidationResultSchema = z
+  .object({
+    flowValidationResults: z
+      .array(GoogleCloudDialogflowCxV3beta1FlowValidationResultSchema)
+      .exactOptional()
+      .openapi({ description: 'Contains all flow validation results.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the agent validation result. Format: `projects//locations//agents//validationResult`.',
+      }),
+  })
+  .openapi({
+    description: 'The response message for Agents.GetAgentValidationResult.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1AgentValidationResult')
+
+const GoogleCloudDialogflowCxV3beta1BatchDeleteTestCasesRequestSchema = z
+  .object({
+    names: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Format of test case names: `projects//locations/ /agents//testCases/`.',
+      }),
+  })
+  .openapi({ description: 'The request message for TestCases.BatchDeleteTestCases.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1BatchDeleteTestCasesRequest')
+
+const GoogleCloudDialogflowCxV3beta1TestErrorSchema = z
+  .object({
+    status: GoogleRpcStatusSchema.exactOptional().openapi({
+      description: 'The status associated with the test.',
+    }),
+    testCase: z.string().exactOptional().openapi({ description: 'The test case resource name.' }),
+    testTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timestamp when the test was completed.' }),
+  })
+  .openapi({ description: 'Error info for running a test.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1TestError')
+
+const GoogleCloudDialogflowCxV3beta1BatchRunTestCasesMetadataSchema = z
+  .object({
+    errors: z
+      .array(GoogleCloudDialogflowCxV3beta1TestErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'The test errors.' }),
+  })
+  .openapi({
+    description: 'Metadata returned for the TestCases.BatchRunTestCases long running operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1BatchRunTestCasesMetadata')
+
+const GoogleCloudDialogflowCxV3beta1BatchRunTestCasesRequestSchema = z
+  .object({
+    environment: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If not set, draft environment is assumed. Format: `projects//locations//agents//environments/`.',
+      }),
+    testCases: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Required. Format: `projects//locations//agents//testCases/`.' }),
+  })
+  .openapi({ description: 'The request message for TestCases.BatchRunTestCases.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1BatchRunTestCasesRequest')
+
+const GoogleCloudDialogflowCxV3beta1BatchRunTestCasesResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1BatchRunTestCasesResponseType> =
+  z
+    .object({
+      results: z
+        .array(GoogleCloudDialogflowCxV3beta1TestCaseResultSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The test case results. The detailed conversation turns are empty in this response.',
+        }),
+    })
+    .openapi({ description: 'The response message for TestCases.BatchRunTestCases.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1BatchRunTestCasesResponse')
+
+const GoogleCloudDialogflowCxV3beta1CalculateCoverageResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1CalculateCoverageResponseType> =
+  z
+    .object({
+      agent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The agent to calculate coverage for. Format: `projects//locations//agents/`.',
+        }),
+      intentCoverage: GoogleCloudDialogflowCxV3beta1IntentCoverageSchema.exactOptional().openapi({
+        description: 'Intent coverage.',
+      }),
+      routeGroupCoverage:
+        GoogleCloudDialogflowCxV3beta1TransitionRouteGroupCoverageSchema.exactOptional().openapi({
+          description: 'Transition route group coverage.',
+        }),
+      transitionCoverage:
+        GoogleCloudDialogflowCxV3beta1TransitionCoverageSchema.exactOptional().openapi({
+          description: 'Transition (excluding transition route groups) coverage.',
+        }),
+    })
+    .openapi({ description: 'The response message for TestCases.CalculateCoverage.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1CalculateCoverageResponse')
+
+const GoogleCloudDialogflowCxV3beta1ChangelogSchema = z
+  .object({
+    action: z.string().exactOptional().openapi({ description: 'The action of the change.' }),
+    createTime: z.string().exactOptional().openapi({ description: 'The timestamp of the change.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The affected resource display name of the change.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the changelog. Format: `projects//locations//agents//changelogs/`.',
+      }),
+    resource: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The affected resource name of the change.' }),
+    type: z.string().exactOptional().openapi({ description: 'The affected resource type.' }),
+    userEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Email address of the authenticated user.' }),
+  })
+  .openapi({ description: 'Changelogs represents a change made to a given agent.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1Changelog')
+
+const GoogleCloudDialogflowCxV3beta1CompareVersionsRequestSchema = z
+  .object({
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The language to compare the flow versions for. If not specified, the agent's default language is used. [Many languages](https://cloud.google.com/dialogflow/docs/reference/language) are supported. Note: languages must be enabled in the agent before they can be used.",
+      }),
+    targetVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the target flow version to compare with the base version. Use version ID `0` to indicate the draft version of the specified flow. Format: `projects//locations//agents//flows//versions/`.',
+      }),
+  })
+  .openapi({ description: 'The request message for Versions.CompareVersions.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1CompareVersionsRequest')
+
+const GoogleCloudDialogflowCxV3beta1CompareVersionsResponseSchema = z
+  .object({
+    baseVersionContentJson: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'JSON representation of the base version content.' }),
+    compareTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timestamp when the two version compares.' }),
+    targetVersionContentJson: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'JSON representation of the target version content.' }),
+  })
+  .openapi({ description: 'The response message for Versions.CompareVersions.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1CompareVersionsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ContinuousTestResultSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name for the continuous test result. Format: `projects//locations//agents//environments//continuousTestResults/`.',
+      }),
+    result: z
+      .enum(['AGGREGATED_TEST_RESULT_UNSPECIFIED', 'PASSED', 'FAILED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The result of this continuous test run, i.e. whether all the tests in this continuous test run pass or not.',
+      }),
+    runTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the continuous testing run starts.' }),
+    testCaseResults: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of individual test case results names in this continuous test run.',
+      }),
+  })
+  .openapi({
+    description: 'Represents a result from running a test case in an agent environment.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ContinuousTestResult')
+
+const GoogleCloudDialogflowCxV3beta1TurnSignalsSchema = z
+  .object({
+    agentEscalated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether agent responded with LiveAgentHandoff fulfillment.' }),
+    dtmfUsed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether user was using DTMF input.' }),
+    failureReasons: z
+      .array(z.enum(['FAILURE_REASON_UNSPECIFIED', 'FAILED_INTENT', 'FAILED_WEBHOOK']))
+      .exactOptional()
+      .openapi({ description: 'Failure reasons of the turn.' }),
+    noMatch: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether NLU predicted NO_MATCH.' }),
+    noUserInput: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether user provided no input.' }),
+    reachedEndPage: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether turn resulted in End Session page.' }),
+    userEscalated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether user was specifically asking for a live agent.' }),
+    webhookStatuses: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Human-readable statuses of the webhooks triggered during this turn.',
+      }),
+  })
+  .openapi({
+    description:
+      'Collection of all signals that were extracted for a single turn of the conversation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1TurnSignals')
+
+const GoogleCloudDialogflowCxV3beta1ConversationSignalsSchema = z
+  .object({
+    turnSignals: GoogleCloudDialogflowCxV3beta1TurnSignalsSchema.exactOptional().openapi({
+      description: 'Required. Turn signals for the current turn.',
+    }),
+  })
+  .openapi({
+    description:
+      'This message is used to hold all the Conversation Signals data, which will be converted to JSON and exported to BigQuery.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ConversationSignals')
+
+const GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema = z
+  .object({
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'DONE'])
+      .exactOptional()
+      .openapi({
+        description: 'Required. Output only. The current state of this operation.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Metadata in google::longrunning::Operation for Knowledge operations.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadata')
+
+const GoogleCloudDialogflowCxV3beta1CreateDocumentOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
+        { description: 'The generic information of the operation.' },
+      ),
+  })
+  .openapi({ description: 'Metadata for CreateDocument operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1CreateDocumentOperationMetadata')
+
+const GoogleCloudDialogflowCxV3beta1CreateVersionOperationMetadataSchema = z
+  .object({
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the created version. Format: `projects//locations//agents//flows//versions/`.',
+      }),
+  })
+  .openapi({
+    description: 'Metadata associated with the long running operation for Versions.CreateVersion.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1CreateVersionOperationMetadata')
+
+const GoogleCloudDialogflowCxV3beta1DeleteDocumentOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
+        { description: 'The generic information of the operation.' },
+      ),
+  })
+  .openapi({ description: 'Metadata for DeleteDocument operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1DeleteDocumentOperationMetadata')
+
+const GoogleCloudDialogflowCxV3beta1DeployFlowMetadataSchema = z
+  .object({
+    testErrors: z
+      .array(GoogleCloudDialogflowCxV3beta1TestErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Errors of running deployment tests.' }),
+  })
+  .openapi({
+    description: 'Metadata returned for the Environments.DeployFlow long running operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1DeployFlowMetadata')
+
+const GoogleCloudDialogflowCxV3beta1DeployFlowRequestSchema = z
+  .object({
+    flowVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The flow version to deploy. Format: `projects//locations//agents// flows//versions/`.',
+      }),
+  })
+  .openapi({ description: 'The request message for Environments.DeployFlow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1DeployFlowRequest')
+
+const GoogleCloudDialogflowCxV3beta1DeployFlowResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1DeployFlowResponseType> =
+  z
+    .object({
+      deployment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The name of the flow version deployment. Format: `projects//locations//agents// environments//deployments/`.',
+        }),
+      environment: GoogleCloudDialogflowCxV3beta1EnvironmentSchema.exactOptional().openapi({
+        description: 'The updated environment where the flow is deployed.',
+      }),
+    })
+    .openapi({ description: 'The response message for Environments.DeployFlow.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1DeployFlowResponse')
+
+const GoogleCloudDialogflowCxV3beta1DeploymentResultSchema = z
+  .object({
+    deploymentTestResults: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Results of test cases running before the deployment. Format: `projects//locations//agents//testCases//results/`.',
+      }),
+    experiment: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the experiment triggered by this deployment. Format: projects//locations//agents//environments//experiments/.',
+      }),
+  })
+  .openapi({ description: 'Result of the deployment.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1DeploymentResult')
+
+const GoogleCloudDialogflowCxV3beta1DeploymentSchema = z
+  .object({
+    endTime: z.string().exactOptional().openapi({ description: 'End time of this deployment.' }),
+    flowVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the flow version for this deployment. Format: projects//locations//agents//flows//versions/.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the deployment. Format: projects//locations//agents//environments//deployments/.',
+      }),
+    result: GoogleCloudDialogflowCxV3beta1DeploymentResultSchema.exactOptional().openapi({
+      description: 'Result of the deployment.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start time of this deployment.' }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'RUNNING', 'SUCCEEDED', 'FAILED'])
+      .exactOptional()
+      .openapi({ description: 'The current state of the deployment.' }),
+  })
+  .openapi({
+    description:
+      'Represents a deployment in an environment. A deployment happens when a flow version configured to be active in the environment. You can configure running pre-deployment steps, e.g. running validation test cases, experiment auto-rollout, etc.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1Deployment')
+
+const GoogleCloudDialogflowCxV3beta1DetectIntentRequestSchema = z
+  .object({
+    outputAudioConfig:
+      GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema.exactOptional().openapi({
+        description: 'Instructs the speech synthesizer how to generate the output audio.',
+      }),
+    queryInput: GoogleCloudDialogflowCxV3beta1QueryInputSchema.exactOptional().openapi({
+      description: 'Required. The input specification.',
+    }),
+    queryParams: GoogleCloudDialogflowCxV3beta1QueryParametersSchema.exactOptional().openapi({
+      description: 'The parameters of this query.',
+    }),
+  })
+  .openapi({ description: "The request to detect user's intent.", required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1DetectIntentRequest')
+
+const GoogleCloudDialogflowCxV3beta1DetectIntentResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1DetectIntentResponseType> =
+  z
+    .object({
+      allowCancellation: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the partial response can be cancelled when a later response arrives. e.g. if the agent specified some music as partial response, it can be cancelled.',
+        }),
+      outputAudio: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The audio data bytes encoded as specified in the request. Note: The output audio is generated based on the values of default platform text responses found in the `query_result.response_messages` field. If multiple default text responses exist, they will be concatenated when generating audio. If no default platform text responses exist, the generated audio content will be empty. In some scenarios, multiple output audio fields may be present in the response structure. In these cases, only the top-most-level audio output has content.',
+        }),
+      outputAudioConfig:
+        GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema.exactOptional().openapi({
+          description: 'The config used by the speech synthesizer to generate the output audio.',
+        }),
+      queryResult: GoogleCloudDialogflowCxV3beta1QueryResultSchema.exactOptional().openapi({
+        description: 'The result of the conversational query.',
+      }),
+      responseId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The unique identifier of the response. It can be used to locate a response in the training example set or for reporting issues.',
+        }),
+      responseType: z
+        .enum(['RESPONSE_TYPE_UNSPECIFIED', 'PARTIAL', 'FINAL'])
+        .exactOptional()
+        .openapi({ description: 'Response type.' }),
+    })
+    .openapi({ description: 'The message returned from the DetectIntent method.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1DetectIntentResponse')
+
+const GoogleCloudDialogflowCxV3beta1EntityTypeExcludedPhraseSchema = z
+  .object({
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The word or phrase to be excluded.' }),
+  })
+  .openapi({ description: 'An excluded entity phrase that should not be matched.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1EntityTypeExcludedPhrase')
+
+const GoogleCloudDialogflowCxV3beta1EntityTypeSchema = z
+  .object({
+    autoExpansionMode: z
+      .enum(['AUTO_EXPANSION_MODE_UNSPECIFIED', 'AUTO_EXPANSION_MODE_DEFAULT'])
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the entity type can be automatically expanded.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The human-readable name of the entity type, unique within the agent.',
+      }),
+    enableFuzzyExtraction: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enables fuzzy entity extraction during classification.' }),
+    entities: z
+      .array(GoogleCloudDialogflowCxV3beta1EntityTypeEntitySchema)
+      .exactOptional()
+      .openapi({
+        description: 'The collection of entity entries associated with the entity type.',
+      }),
+    excludedPhrases: z
+      .array(GoogleCloudDialogflowCxV3beta1EntityTypeExcludedPhraseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Collection of exceptional words and phrases that shouldn't be matched. For example, if you have a size entity type with entry `giant`(an adjective), you might consider adding `giants`(a noun) as an exclusion. If the kind of entity type is `KIND_MAP`, then the phrases specified by entities and excluded phrases should be mutually exclusive.",
+      }),
+    kind: z
+      .enum(['KIND_UNSPECIFIED', 'KIND_MAP', 'KIND_LIST', 'KIND_REGEXP'])
+      .exactOptional()
+      .openapi({ description: 'Required. Indicates the kind of entity type.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the entity type. Required for EntityTypes.UpdateEntityType. Format: `projects//locations//agents//entityTypes/`.',
+      }),
+    redact: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether parameters of the entity type should be redacted in log. If redaction is enabled, page parameters and intent parameters referring to the entity type will be replaced by parameter name during logging.',
+      }),
+  })
+  .openapi({
+    description:
+      'Entities are extracted from user input and represent parameters that are meaningful to your application. For example, a date range, a proper name such as a geographic location or landmark, and so on. Entities represent actionable data for your application. When you define an entity, you can also include synonyms that all map to that entity. For example, "soft drink", "soda", "pop", and so on. There are three types of entities: * **System** - entities that are defined by the Dialogflow API for common data types such as date, time, currency, and so on. A system entity is represented by the `EntityType` type. * **Custom** - entities that are defined by you that represent actionable data that is meaningful to your application. For example, you could define a `pizza.sauce` entity for red or white pizza sauce, a `pizza.cheese` entity for the different types of cheese on a pizza, a `pizza.topping` entity for different toppings, and so on. A custom entity is represented by the `EntityType` type. * **User** - entities that are built for an individual user such as favorites, preferences, playlists, and so on. A user entity is represented by the SessionEntityType type. For more information about entity types, see the [Dialogflow documentation](https://cloud.google.com/dialogflow/docs/entities-overview).',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1EntityType')
+
+const GoogleCloudDialogflowCxV3beta1ExportAgentRequestSchema = z
+  .object({
+    agentUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to export the agent to. The format of this URI must be `gs:///`. If left unspecified, the serialized agent is returned inline. Dialogflow performs a write operation for the Cloud Storage object on the caller's behalf, so your request authentication must have write permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
+      }),
+    dataFormat: z
+      .enum(['DATA_FORMAT_UNSPECIFIED', 'BLOB', 'JSON_PACKAGE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The data format of the exported agent. If not specified, `BLOB` is assumed.',
+      }),
+    environment: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Environment name. If not set, draft environment is assumed. Format: `projects//locations//agents//environments/`.',
+      }),
+  })
+  .openapi({ description: 'The request message for Agents.ExportAgent.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ExportAgentRequest')
+
+const GoogleCloudDialogflowCxV3beta1ExportAgentResponseSchema = z
+  .object({
+    agentContent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for agent.' }),
+    agentUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URI to a file containing the exported agent. This field is populated only if `agent_uri` is specified in ExportAgentRequest.',
+      }),
+  })
+  .openapi({ description: 'The response message for Agents.ExportAgent.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ExportAgentResponse')
+
+const GoogleCloudDialogflowCxV3beta1ExportFlowRequestSchema = z
+  .object({
+    flowUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to export the flow to. The format of this URI must be `gs:///`. If left unspecified, the serialized flow is returned inline. Dialogflow performs a write operation for the Cloud Storage object on the caller's behalf, so your request authentication must have write permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
+      }),
+    includeReferencedFlows: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Whether to export flows referenced by the specified flow.',
+      }),
+  })
+  .openapi({ description: 'The request message for Flows.ExportFlow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ExportFlowRequest')
+
+const GoogleCloudDialogflowCxV3beta1ExportFlowResponseSchema = z
+  .object({
+    flowContent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for flow.' }),
+    flowUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URI to a file containing the exported flow. This field is populated only if `flow_uri` is specified in ExportFlowRequest.',
+      }),
+  })
+  .openapi({ description: 'The response message for Flows.ExportFlow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ExportFlowResponse')
+
+const GoogleCloudDialogflowCxV3beta1ExportTestCasesMetadataSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Metadata returned for the TestCases.ExportTestCases long running operation. This message currently has no fields.',
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ExportTestCasesMetadata')
+
+const GoogleCloudDialogflowCxV3beta1ExportTestCasesRequestSchema = z
+  .object({
+    dataFormat: z
+      .enum(['DATA_FORMAT_UNSPECIFIED', 'BLOB', 'JSON'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The data format of the exported test cases. If not specified, `BLOB` is assumed.',
+      }),
+    filter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The filter expression used to filter exported test cases, see [API Filtering](https://aip.dev/160). The expression is case insensitive and supports the following syntax: name = [OR name = ] ... For example: * "name = t1 OR name = t2" matches the test case with the exact resource name "t1" or "t2".',
+      }),
+    gcsUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to export the test cases to. The format of this URI must be `gs:///`. If unspecified, the serialized test cases is returned inline. Dialogflow performs a write operation for the Cloud Storage object on the caller's behalf, so your request authentication must have write permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
+      }),
+  })
+  .openapi({ description: 'The request message for TestCases.ExportTestCases.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ExportTestCasesRequest')
+
+const GoogleCloudDialogflowCxV3beta1ExportTestCasesResponseSchema = z
+  .object({
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for test cases.' }),
+    gcsUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URI to a file containing the exported test cases. This field is populated only if `gcs_uri` is specified in ExportTestCasesRequest.',
+      }),
+  })
+  .openapi({ description: 'The response message for TestCases.ExportTestCases.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ExportTestCasesResponse')
+
+const GoogleCloudDialogflowCxV3beta1FulfillIntentRequestSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillIntentRequestType> =
+  z
+    .object({
+      match: GoogleCloudDialogflowCxV3beta1MatchSchema.exactOptional().openapi({
+        description: 'The matched intent/event to fulfill.',
+      }),
+      matchIntentRequest:
+        GoogleCloudDialogflowCxV3beta1MatchIntentRequestSchema.exactOptional().openapi({
+          description:
+            'Must be same as the corresponding MatchIntent request, otherwise the behavior is undefined.',
+        }),
+      outputAudioConfig:
+        GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema.exactOptional().openapi({
+          description: 'Instructs the speech synthesizer how to generate output audio.',
+        }),
+    })
+    .openapi({ description: 'Request of FulfillIntent', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1FulfillIntentRequest')
+
+const GoogleCloudDialogflowCxV3beta1FulfillIntentResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1FulfillIntentResponseType> =
+  z
+    .object({
+      outputAudio: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The audio data bytes encoded as specified in the request. Note: The output audio is generated based on the values of default platform text responses found in the `query_result.response_messages` field. If multiple default text responses exist, they will be concatenated when generating audio. If no default platform text responses exist, the generated audio content will be empty. In some scenarios, multiple output audio fields may be present in the response structure. In these cases, only the top-most-level audio output has content.',
+        }),
+      outputAudioConfig:
+        GoogleCloudDialogflowCxV3beta1OutputAudioConfigSchema.exactOptional().openapi({
+          description: 'The config used by the speech synthesizer to generate the output audio.',
+        }),
+      queryResult: GoogleCloudDialogflowCxV3beta1QueryResultSchema.exactOptional().openapi({
+        description: 'The result of the conversational query.',
+      }),
+      responseId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The unique identifier of the response. It can be used to locate a response in the training example set or for reporting issues.',
+        }),
+    })
+    .openapi({ description: 'Response of FulfillIntent', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1FulfillIntentResponse')
+
+const GoogleCloudDialogflowCxV3beta1ImportDocumentsOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
+        { description: 'The generic information of the operation.' },
+      ),
+  })
+  .openapi({ description: 'Metadata for ImportDocuments operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ImportDocumentsOperationMetadata')
+
+const GoogleCloudDialogflowCxV3beta1ImportDocumentsResponseSchema = z
+  .object({
+    warnings: z
+      .array(GoogleRpcStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'Includes details about skipped documents or any other warnings.' }),
+  })
+  .openapi({ description: 'Response message for Documents.ImportDocuments.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ImportDocumentsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ImportFlowRequestSchema = z
+  .object({
+    flowContent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for flow.' }),
+    flowUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to import flow from. The format of this URI must be `gs:///`. Dialogflow performs a read operation for the Cloud Storage object on the caller's behalf, so your request authentication must have read permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
+      }),
+    importOption: z
+      .enum(['IMPORT_OPTION_UNSPECIFIED', 'KEEP', 'FALLBACK'])
+      .exactOptional()
+      .openapi({ description: 'Flow import mode. If not specified, `KEEP` is assumed.' }),
+  })
+  .openapi({ description: 'The request message for Flows.ImportFlow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ImportFlowRequest')
+
+const GoogleCloudDialogflowCxV3beta1ImportFlowResponseSchema = z
+  .object({
+    flow: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the new flow. Format: `projects//locations//agents//flows/`.',
+      }),
+  })
+  .openapi({ description: 'The response message for Flows.ImportFlow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ImportFlowResponse')
+
+const GoogleCloudDialogflowCxV3beta1ImportTestCasesMetadataSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ImportTestCasesMetadataType> =
+  z
+    .object({
+      errors: z
+        .array(GoogleCloudDialogflowCxV3beta1TestCaseErrorSchema)
+        .exactOptional()
+        .openapi({ description: 'Errors for failed test cases.' }),
+    })
+    .openapi({
+      description: 'Metadata returned for the TestCases.ImportTestCases long running operation.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1ImportTestCasesMetadata')
+
+const GoogleCloudDialogflowCxV3beta1ImportTestCasesRequestSchema = z
+  .object({
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for test cases.' }),
+    gcsUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to import test cases from. The format of this URI must be `gs:///`. Dialogflow performs a read operation for the Cloud Storage object on the caller's behalf, so your request authentication must have read permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
+      }),
+  })
+  .openapi({ description: 'The request message for TestCases.ImportTestCases.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ImportTestCasesRequest')
+
+const GoogleCloudDialogflowCxV3beta1ImportTestCasesResponseSchema = z
+  .object({
+    names: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifiers of the new test cases. Format: `projects//locations//agents//testCases/`.',
+      }),
+  })
+  .openapi({ description: 'The response message for TestCases.ImportTestCases.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ImportTestCasesResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListAgentsResponseSchema = z
+  .object({
+    agents: z
+      .array(GoogleCloudDialogflowCxV3beta1AgentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of agents. There will be a maximum number of items returned based on the page_size field in the request.',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+  })
+  .openapi({ description: 'The response message for Agents.ListAgents.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListAgentsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListChangelogsResponseSchema = z
+  .object({
+    changelogs: z
+      .array(GoogleCloudDialogflowCxV3beta1ChangelogSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of changelogs. There will be a maximum number of items returned based on the page_size field in the request. The changelogs will be ordered by timestamp.',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+  })
+  .openapi({ description: 'The response message for Changelogs.ListChangelogs.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListChangelogsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListContinuousTestResultsResponseSchema = z
+  .object({
+    continuousTestResults: z
+      .array(GoogleCloudDialogflowCxV3beta1ContinuousTestResultSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of continuous test results.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+  })
+  .openapi({
+    description: 'The response message for Environments.ListTestCaseResults.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListContinuousTestResultsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListDeploymentsResponseSchema = z
+  .object({
+    deployments: z
+      .array(GoogleCloudDialogflowCxV3beta1DeploymentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The list of deployments. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+  })
+  .openapi({ description: 'The response message for Deployments.ListDeployments.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListDeploymentsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListEntityTypesResponseSchema = z
+  .object({
+    entityTypes: z
+      .array(GoogleCloudDialogflowCxV3beta1EntityTypeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of entity types. There will be a maximum number of items returned based on the page_size field in the request.',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+  })
+  .openapi({ description: 'The response message for EntityTypes.ListEntityTypes.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListEntityTypesResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListEnvironmentsResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ListEnvironmentsResponseType> =
+  z
+    .object({
+      environments: z
+        .array(GoogleCloudDialogflowCxV3beta1EnvironmentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "The list of environments. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+    })
+    .openapi({
+      description: 'The response message for Environments.ListEnvironments.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1ListEnvironmentsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListExperimentsResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ListExperimentsResponseType> =
+  z
+    .object({
+      experiments: z
+        .array(GoogleCloudDialogflowCxV3beta1ExperimentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "The list of experiments. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+    })
+    .openapi({ description: 'The response message for Experiments.ListExperiments.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1ListExperimentsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListFlowsResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ListFlowsResponseType> =
+  z
+    .object({
+      flows: z
+        .array(GoogleCloudDialogflowCxV3beta1FlowSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of flows. There will be a maximum number of items returned based on the page_size field in the request.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+    })
+    .openapi({ description: 'The response message for Flows.ListFlows.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1ListFlowsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListIntentsResponseSchema = z
   .object({
     intents: z
-      .array(GoogleCloudDialogflowV2beta1IntentSchema)
+      .array(GoogleCloudDialogflowCxV3beta1IntentSchema)
       .exactOptional()
-      .openapi({ description: 'The collection of updated or created intents.' }),
+      .openapi({
+        description:
+          'The list of intents. There will be a maximum number of items returned based on the page_size field in the request.',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
   })
-  .openapi({ description: 'The response message for Intents.BatchUpdateIntents.', required: [] })
-  .openapi('GoogleCloudDialogflowV2beta1BatchUpdateIntentsResponse')
+  .openapi({ description: 'The response message for Intents.ListIntents.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListIntentsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListPagesResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ListPagesResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+      pages: z
+        .array(GoogleCloudDialogflowCxV3beta1PageSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of pages. There will be a maximum number of items returned based on the page_size field in the request.',
+        }),
+    })
+    .openapi({ description: 'The response message for Pages.ListPages.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1ListPagesResponse')
+
+const GoogleCloudDialogflowCxV3beta1SecuritySettingsAudioExportSettingsSchema = z
+  .object({
+    audioExportPattern: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Filename pattern for exported audio.' }),
+    audioFormat: z
+      .enum(['AUDIO_FORMAT_UNSPECIFIED', 'MULAW', 'MP3', 'OGG'])
+      .exactOptional()
+      .openapi({
+        description: 'File format for exported audio file. Currently only in telephony recordings.',
+      }),
+    enableAudioRedaction: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enable audio redaction if it is true.' }),
+    gcsBucket: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud Storage bucket to export audio record to. Setting this field would grant the Storage Object Creator role to the Dialogflow Service Agent. API caller that tries to modify this field should have the permission of storage.buckets.setIamPolicy.',
+      }),
+  })
+  .openapi({ description: 'Settings for exporting audio.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1SecuritySettingsAudioExportSettings')
+
+const GoogleCloudDialogflowCxV3beta1SecuritySettingsInsightsExportSettingsSchema = z
+  .object({
+    enableInsightsExport: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If enabled, we will automatically exports conversations to Insights and Insights runs its analyzers.',
+      }),
+  })
+  .openapi({
+    description:
+      'Settings for exporting conversations to [Insights](https://cloud.google.com/contact-center/insights/docs).',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1SecuritySettingsInsightsExportSettings')
+
+const GoogleCloudDialogflowCxV3beta1SecuritySettingsSchema = z
+  .object({
+    audioExportSettings:
+      GoogleCloudDialogflowCxV3beta1SecuritySettingsAudioExportSettingsSchema.exactOptional().openapi(
+        {
+          description:
+            "Controls audio export settings for post-conversation analytics when ingesting audio to conversations via Participants.AnalyzeContent or Participants.StreamingAnalyzeContent. If retention_strategy is set to REMOVE_AFTER_CONVERSATION or audio_export_settings.gcs_bucket is empty, audio export is disabled. If audio export is enabled, audio is recorded and saved to audio_export_settings.gcs_bucket, subject to retention policy of audio_export_settings.gcs_bucket. This setting won't effect audio input for implicit sessions via Sessions.DetectIntent or Sessions.StreamingDetectIntent.",
+        },
+      ),
+    deidentifyTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "[DLP](https://cloud.google.com/dlp/docs) deidentify template name. Use this template to define de-identification configuration for the content. The `DLP De-identify Templates Reader` role is needed on the Dialogflow service identity service account (has the form `service-PROJECT_NUMBER@gcp-sa-dialogflow.iam.gserviceaccount.com`) for your agent's project. If empty, Dialogflow replaces sensitive info with `[redacted]` text. The template name will have one of the following formats: `projects//locations//deidentifyTemplates/` OR `organizations//locations//deidentifyTemplates/` Note: `deidentify_template` must be located in the same region as the `SecuritySettings`.",
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The human-readable name of the security settings, unique within the location.',
+      }),
+    insightsExportSettings:
+      GoogleCloudDialogflowCxV3beta1SecuritySettingsInsightsExportSettingsSchema.exactOptional().openapi(
+        {
+          description:
+            'Controls conversation exporting settings to Insights after conversation is completed. If retention_strategy is set to REMOVE_AFTER_CONVERSATION, Insights export is disabled no matter what you configure here.',
+        },
+      ),
+    inspectTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "[DLP](https://cloud.google.com/dlp/docs) inspect template name. Use this template to define inspect base settings. The `DLP Inspect Templates Reader` role is needed on the Dialogflow service identity service account (has the form `service-PROJECT_NUMBER@gcp-sa-dialogflow.iam.gserviceaccount.com`) for your agent's project. If empty, we use the default DLP inspect config. The template name will have one of the following formats: `projects//locations//inspectTemplates/` OR `organizations//locations//inspectTemplates/` Note: `inspect_template` must be located in the same region as the `SecuritySettings`.",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of the settings. Required for the SecuritySettingsService.UpdateSecuritySettings method. SecuritySettingsService.CreateSecuritySettings populates the name automatically. Format: `projects//locations//securitySettings/`.',
+      }),
+    purgeDataTypes: z
+      .array(z.enum(['PURGE_DATA_TYPE_UNSPECIFIED', 'DIALOGFLOW_HISTORY']))
+      .exactOptional()
+      .openapi({
+        description: 'List of types of data to remove when retention settings triggers purge.',
+      }),
+    redactionScope: z
+      .enum(['REDACTION_SCOPE_UNSPECIFIED', 'REDACT_DISK_STORAGE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the data for which Dialogflow applies redaction. Dialogflow does not redact data that it does not have access to – for example, Cloud logging.',
+      }),
+    redactionStrategy: z
+      .enum(['REDACTION_STRATEGY_UNSPECIFIED', 'REDACT_WITH_SERVICE'])
+      .exactOptional()
+      .openapi({ description: 'Strategy that defines how we do redaction.' }),
+    retentionWindowDays: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Retains data in interaction logging for the specified number of days. This does not apply to Cloud logging, which is owned by the user - not Dialogflow. User must set a value lower than Dialogflow's default 365d TTL (30 days for Agent Assist traffic), higher value will be ignored and use default. Setting a value higher than that has no effect. A missing value or setting to 0 also means we use default TTL.",
+      }),
+  })
+  .openapi({
+    description:
+      'Represents the settings related to security issues, such as data redaction and data retention. It may take hours for updates on the settings to propagate to all the related components and take effect.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1SecuritySettings')
+
+const GoogleCloudDialogflowCxV3beta1ListSecuritySettingsResponseSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+    securitySettings: z
+      .array(GoogleCloudDialogflowCxV3beta1SecuritySettingsSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of security settings.' }),
+  })
+  .openapi({
+    description: 'The response message for SecuritySettings.ListSecuritySettings.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListSecuritySettingsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListSessionEntityTypesResponseSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+    sessionEntityTypes: z
+      .array(GoogleCloudDialogflowCxV3beta1SessionEntityTypeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of session entity types. There will be a maximum number of items returned based on the page_size field in the request.',
+      }),
+  })
+  .openapi({
+    description: 'The response message for SessionEntityTypes.ListSessionEntityTypes.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListSessionEntityTypesResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListTestCaseResultsResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ListTestCaseResultsResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+      testCaseResults: z
+        .array(GoogleCloudDialogflowCxV3beta1TestCaseResultSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of test case results.' }),
+    })
+    .openapi({
+      description: 'The response message for TestCases.ListTestCaseResults.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1ListTestCaseResultsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListTestCasesResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ListTestCasesResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+      testCases: z
+        .array(GoogleCloudDialogflowCxV3beta1TestCaseSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of test cases. There will be a maximum number of items returned based on the page_size field in the request.',
+        }),
+    })
+    .openapi({ description: 'The response message for TestCases.ListTestCases.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1ListTestCasesResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListTransitionRouteGroupsResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1ListTransitionRouteGroupsResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+      transitionRouteGroups: z
+        .array(GoogleCloudDialogflowCxV3beta1TransitionRouteGroupSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "The list of transition route groups. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
+        }),
+    })
+    .openapi({
+      description: 'The response message for TransitionRouteGroups.ListTransitionRouteGroups.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1ListTransitionRouteGroupsResponse')
+
+const GoogleCloudDialogflowCxV3beta1VersionSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Create time of the version.', readOnly: true }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description of the version. The maximum length is 500 characters. If exceeded, the request is rejected.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The human-readable name of the version. Limit of 64 characters.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Format: projects//locations//agents//flows//versions/. Version ID is a self-increasing number generated by Dialogflow upon version creation.',
+      }),
+    nluSettings: GoogleCloudDialogflowCxV3beta1NluSettingsSchema.exactOptional().openapi({
+      description: 'Output only. The NLU settings of the flow at version creation.',
+      readOnly: true,
+    }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'RUNNING', 'SUCCEEDED', 'FAILED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The state of this version. This field is read-only and cannot be set by create and update methods.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Represents a version of a flow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1Version')
+
+const GoogleCloudDialogflowCxV3beta1ListVersionsResponseSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+    versions: z
+      .array(GoogleCloudDialogflowCxV3beta1VersionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "A list of versions. There will be a maximum number of items returned based on the page_size field in the request. The list may in some cases be empty or contain fewer entries than page_size even if this isn't the last page.",
+      }),
+  })
+  .openapi({ description: 'The response message for Versions.ListVersions.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListVersionsResponse')
+
+const GoogleCloudDialogflowCxV3beta1ListWebhooksResponseSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+      }),
+    webhooks: z
+      .array(GoogleCloudDialogflowCxV3beta1WebhookSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of webhooks. There will be a maximum number of items returned based on the page_size field in the request.',
+      }),
+  })
+  .openapi({ description: 'The response message for Webhooks.ListWebhooks.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ListWebhooksResponse')
+
+const GoogleCloudDialogflowCxV3beta1LoadVersionRequestSchema = z
+  .object({
+    allowOverrideAgentResources: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is used to prevent accidental overwrite of other agent resources, which can potentially impact other flow's behavior. If `allow_override_agent_resources` is false, conflicted agent-level resources will not be overridden (i.e. intents, entities, webhooks).",
+      }),
+  })
+  .openapi({ description: 'The request message for Versions.LoadVersion.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1LoadVersionRequest')
+
+const GoogleCloudDialogflowCxV3beta1LookupEnvironmentHistoryResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1LookupEnvironmentHistoryResponseType> =
+  z
+    .object({
+      environments: z
+        .array(GoogleCloudDialogflowCxV3beta1EnvironmentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Represents a list of snapshots for an environment. Time of the snapshots is stored in `update_time`.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+    })
+    .openapi({
+      description: 'The response message for Environments.LookupEnvironmentHistory.',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowCxV3beta1LookupEnvironmentHistoryResponse')
+
+const GoogleCloudDialogflowCxV3beta1MatchIntentResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1MatchIntentResponseType> =
+  z
+    .object({
+      currentPage: GoogleCloudDialogflowCxV3beta1PageSchema.exactOptional().openapi({
+        description:
+          'The current Page. Some, not all fields are filled in this message, including but not limited to `name` and `display_name`.',
+      }),
+      matches: z
+        .array(GoogleCloudDialogflowCxV3beta1MatchSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Match results, if more than one, ordered descendingly by the confidence we have that the particular intent matches the query.',
+        }),
+      text: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If natural language text was provided as input, this field will contain a copy of the text.',
+        }),
+      transcript: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If natural language speech audio was provided as input, this field will contain the transcript for the audio.',
+        }),
+      triggerEvent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If an event was provided as input, this field will contain a copy of the event name.',
+        }),
+      triggerIntent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'If an intent was provided as input, this field will contain a copy of the intent identifier. Format: `projects//locations//agents//intents/`.',
+        }),
+    })
+    .openapi({ description: 'Response of MatchIntent.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1MatchIntentResponse')
+
+const GoogleCloudDialogflowCxV3beta1PageInfoFormInfoParameterInfoSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present for WebhookRequest. Required for WebhookResponse. The human-readable name of the parameter, unique within the form. This field cannot be modified by the webhook.',
+      }),
+    justCollected: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional for WebhookRequest. Ignored for WebhookResponse. Indicates if the parameter value was just collected on the last conversation turn.',
+      }),
+    required: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional for both WebhookRequest and WebhookResponse. Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them. Required parameters must be filled before form filling concludes.',
+      }),
+    state: z
+      .enum(['PARAMETER_STATE_UNSPECIFIED', 'EMPTY', 'INVALID', 'FILLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present for WebhookRequest. Required for WebhookResponse. The state of the parameter. This field can be set to INVALID by the webhook to invalidate the parameter; other values set by the webhook will be ignored.',
+      }),
+    value: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional for both WebhookRequest and WebhookResponse. The value of the parameter. This field can be set by the webhook to change the parameter value.',
+      }),
+  })
+  .openapi({ description: 'Represents parameter information.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1PageInfoFormInfoParameterInfo')
+
+const GoogleCloudDialogflowCxV3beta1PageInfoFormInfoSchema = z
+  .object({
+    parameterInfo: z
+      .array(GoogleCloudDialogflowCxV3beta1PageInfoFormInfoParameterInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional for both WebhookRequest and WebhookResponse. The parameters contained in the form. Note that the webhook cannot add or remove any form parameter.',
+      }),
+  })
+  .openapi({ description: 'Represents form information.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1PageInfoFormInfo')
+
+const GoogleCloudDialogflowCxV3beta1PageInfoSchema = z
+  .object({
+    currentPage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present for WebhookRequest. Ignored for WebhookResponse. The unique identifier of the current page. Format: `projects//locations//agents//flows//pages/`.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present for WebhookRequest. Ignored for WebhookResponse. The display name of the current page.',
+      }),
+    formInfo: GoogleCloudDialogflowCxV3beta1PageInfoFormInfoSchema.exactOptional().openapi({
+      description:
+        'Optional for both WebhookRequest and WebhookResponse. Information about the form.',
+    }),
+  })
+  .openapi({
+    description: 'Represents page information communicated to and from the webhook.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1PageInfo')
+
+const GoogleCloudDialogflowCxV3beta1ReloadDocumentOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
+        { description: 'The generic information of the operation.' },
+      ),
+  })
+  .openapi({ description: 'Metadata for ReloadDocument operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ReloadDocumentOperationMetadata')
+
+const GoogleCloudDialogflowCxV3beta1RestoreAgentRequestSchema = z
+  .object({
+    agentContent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Uncompressed raw byte content for agent.' }),
+    agentUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to restore agent from. The format of this URI must be `gs:///`. Dialogflow performs a read operation for the Cloud Storage object on the caller's behalf, so your request authentication must have read permissions for the object. For more information, see [Dialogflow access control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).",
+      }),
+    restoreOption: z
+      .enum(['RESTORE_OPTION_UNSPECIFIED', 'KEEP', 'FALLBACK'])
+      .exactOptional()
+      .openapi({ description: 'Agent restore mode. If not specified, `KEEP` is assumed.' }),
+  })
+  .openapi({ description: 'The request message for Agents.RestoreAgent.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1RestoreAgentRequest')
+
+const GoogleCloudDialogflowCxV3beta1RunContinuousTestMetadataSchema = z
+  .object({
+    errors: z
+      .array(GoogleCloudDialogflowCxV3beta1TestErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'The test errors.' }),
+  })
+  .openapi({
+    description: 'Metadata returned for the Environments.RunContinuousTest long running operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1RunContinuousTestMetadata')
+
+const GoogleCloudDialogflowCxV3beta1RunContinuousTestRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Environments.RunContinuousTest.' })
+  .openapi('GoogleCloudDialogflowCxV3beta1RunContinuousTestRequest')
+
+const GoogleCloudDialogflowCxV3beta1RunContinuousTestResponseSchema = z
+  .object({
+    continuousTestResult:
+      GoogleCloudDialogflowCxV3beta1ContinuousTestResultSchema.exactOptional().openapi({
+        description: 'The result for a continuous test run.',
+      }),
+  })
+  .openapi({
+    description: 'The response message for Environments.RunContinuousTest.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1RunContinuousTestResponse')
+
+const GoogleCloudDialogflowCxV3beta1RunTestCaseMetadataSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Metadata returned for the TestCases.RunTestCase long running operation. This message currently has no fields.',
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1RunTestCaseMetadata')
+
+const GoogleCloudDialogflowCxV3beta1RunTestCaseRequestSchema = z
+  .object({
+    environment: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Environment name. If not set, draft environment is assumed. Format: `projects//locations//agents//environments/`.',
+      }),
+  })
+  .openapi({ description: 'The request message for TestCases.RunTestCase.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1RunTestCaseRequest')
+
+const GoogleCloudDialogflowCxV3beta1RunTestCaseResponseSchema: z.ZodType<GoogleCloudDialogflowCxV3beta1RunTestCaseResponseType> =
+  z
+    .object({
+      result: GoogleCloudDialogflowCxV3beta1TestCaseResultSchema.exactOptional().openapi({
+        description: 'The result.',
+      }),
+    })
+    .openapi({ description: 'The response message for TestCases.RunTestCase.', required: [] })
+    .openapi('GoogleCloudDialogflowCxV3beta1RunTestCaseResponse')
+
+const GoogleCloudDialogflowCxV3beta1SessionInfoSchema = z
+  .object({
+    parameters: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional for WebhookRequest. Optional for WebhookResponse. All parameters collected from forms and intents during the session. Parameters can be created, updated, or removed by the webhook. To remove a parameter from the session, the webhook should explicitly set the parameter value to null in WebhookResponse. The map is keyed by parameters' display names.",
+      }),
+    session: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present for WebhookRequest. Ignored for WebhookResponse. The unique identifier of the session. This field can be used by the webhook to identify a session. Format: `projects//locations//agents//sessions/` or `projects//locations//agents//environments//sessions/` if environment is specified.',
+      }),
+  })
+  .openapi({
+    description: 'Represents session information communicated to and from the webhook.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1SessionInfo')
+
+const GoogleCloudDialogflowCxV3beta1StartExperimentRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Experiments.StartExperiment.' })
+  .openapi('GoogleCloudDialogflowCxV3beta1StartExperimentRequest')
+
+const GoogleCloudDialogflowCxV3beta1StopExperimentRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Experiments.StopExperiment.' })
+  .openapi('GoogleCloudDialogflowCxV3beta1StopExperimentRequest')
+
+const GoogleCloudDialogflowCxV3beta1TrainFlowRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Flows.TrainFlow.' })
+  .openapi('GoogleCloudDialogflowCxV3beta1TrainFlowRequest')
+
+const GoogleCloudDialogflowCxV3beta1UpdateDocumentOperationMetadataSchema = z
+  .object({
+    genericMetadata:
+      GoogleCloudDialogflowCxV3beta1GenericKnowledgeOperationMetadataSchema.exactOptional().openapi(
+        { description: 'The generic information of the operation.' },
+      ),
+  })
+  .openapi({ description: 'Metadata for UpdateDocument operation.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1UpdateDocumentOperationMetadata')
+
+const GoogleCloudDialogflowCxV3beta1ValidateAgentRequestSchema = z
+  .object({
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "If not specified, the agent's default language is used." }),
+  })
+  .openapi({ description: 'The request message for Agents.ValidateAgent.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ValidateAgentRequest')
+
+const GoogleCloudDialogflowCxV3beta1ValidateFlowRequestSchema = z
+  .object({
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "If not specified, the agent's default language is used." }),
+  })
+  .openapi({ description: 'The request message for Flows.ValidateFlow.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1ValidateFlowRequest')
+
+const GoogleCloudDialogflowCxV3beta1WebhookRequestFulfillmentInfoSchema = z
+  .object({
+    tag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present. The value of the Fulfillment.tag field will be populated in this field by Dialogflow when the associated webhook is called. The tag is typically used by the webhook service to identify which fulfillment is being called, but it could be used for other purposes.',
+      }),
+  })
+  .openapi({
+    description: 'Represents fulfillment information communicated to the webhook.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequestFulfillmentInfo')
+
+const GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoIntentParameterValueSchema = z
+  .object({
+    originalValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Always present. Original text value extracted from user utterance.',
+      }),
+    resolvedValue: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present. Structured value for the parameter extracted from user utterance.',
+      }),
+  })
+  .openapi({ description: 'Represents a value for an intent parameter.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoIntentParameterValue')
+
+const GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The confidence of the matched intent. Values range from 0.0 (completely uncertain) to 1.0 (completely certain).',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Always present. The display name of the last matched intent.' }),
+    lastMatchedIntent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present. The unique identifier of the last matched intent. Format: `projects//locations//agents//intents/`.',
+      }),
+    parameters: z
+      .record(
+        z.string(),
+        GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoIntentParameterValueSchema,
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "Parameters identified as a result of intent matching. This is a map of the name of the identified parameter to the value of the parameter identified from the user's utterance. All parameters defined in the matched intent that are identified will be surfaced here.",
+      }),
+  })
+  .openapi({
+    description: 'Represents intent information communicated to the webhook.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfo')
+
+const GoogleCloudDialogflowCxV3beta1WebhookRequestSentimentAnalysisResultSchema = z
+  .object({
+    magnitude: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'A non-negative number in the [0, +inf) range, which represents the absolute magnitude of sentiment, regardless of score (positive or negative).',
+      }),
+    score: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sentiment score between -1.0 (negative sentiment) and 1.0 (positive sentiment).',
+      }),
+  })
+  .openapi({ description: 'Represents the result of sentiment analysis.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequestSentimentAnalysisResult')
+
+const GoogleCloudDialogflowCxV3beta1WebhookRequestSchema = z
+  .object({
+    detectIntentResponseId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always present. The unique identifier of the DetectIntentResponse that will be returned to the API caller.',
+      }),
+    dtmfDigits: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If DTMF was provided as input, this field will contain the DTMF digits.',
+      }),
+    fulfillmentInfo:
+      GoogleCloudDialogflowCxV3beta1WebhookRequestFulfillmentInfoSchema.exactOptional().openapi({
+        description:
+          'Always present. Information about the fulfillment that triggered this webhook call.',
+      }),
+    intentInfo:
+      GoogleCloudDialogflowCxV3beta1WebhookRequestIntentInfoSchema.exactOptional().openapi({
+        description: 'Information about the last matched intent.',
+      }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The language code specified in the original request.' }),
+    messages: z
+      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of rich message responses to present to the user. Webhook can choose to append or replace this list in WebhookResponse.fulfillment_response;',
+      }),
+    pageInfo: GoogleCloudDialogflowCxV3beta1PageInfoSchema.exactOptional().openapi({
+      description: 'Information about page status.',
+    }),
+    payload: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({ description: 'Custom data set in QueryParameters.payload.' }),
+    sentimentAnalysisResult:
+      GoogleCloudDialogflowCxV3beta1WebhookRequestSentimentAnalysisResultSchema.exactOptional().openapi(
+        {
+          description:
+            'The sentiment analysis result of the current user request. The field is filled when sentiment analysis is configured to be enabled for the request.',
+        },
+      ),
+    sessionInfo: GoogleCloudDialogflowCxV3beta1SessionInfoSchema.exactOptional().openapi({
+      description: 'Information about session status.',
+    }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If natural language text was provided as input, this field will contain a copy of the text.',
+      }),
+    transcript: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If natural language speech audio was provided as input, this field will contain the transcript for the audio.',
+      }),
+    triggerEvent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If an event was provided as input, this field will contain the name of the event.',
+      }),
+    triggerIntent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If an intent was provided as input, this field will contain a copy of the intent identifier. Format: `projects//locations//agents//intents/`.',
+      }),
+  })
+  .openapi({
+    description:
+      'The request message for a webhook call. The request is sent as a JSON object and the field names will be presented in camel cases. You may see undocumented fields in an actual request. These fields are used internally by Dialogflow and should be ignored.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowCxV3beta1WebhookRequest')
+
+const GoogleCloudDialogflowCxV3beta1WebhookResponseFulfillmentResponseSchema = z
+  .object({
+    mergeBehavior: z
+      .enum(['MERGE_BEHAVIOR_UNSPECIFIED', 'APPEND', 'REPLACE'])
+      .exactOptional()
+      .openapi({ description: 'Merge behavior for `messages`.' }),
+    messages: z
+      .array(GoogleCloudDialogflowCxV3beta1ResponseMessageSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of rich message responses to present to the user.' }),
+  })
+  .openapi({ description: 'Represents a fulfillment response to the user.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1WebhookResponseFulfillmentResponse')
+
+const GoogleCloudDialogflowCxV3beta1WebhookResponseSchema = z
+  .object({
+    fulfillmentResponse:
+      GoogleCloudDialogflowCxV3beta1WebhookResponseFulfillmentResponseSchema.exactOptional().openapi(
+        {
+          description:
+            'The fulfillment response to send to the user. This field can be omitted by the webhook if it does not intend to send any response to the user.',
+        },
+      ),
+    pageInfo: GoogleCloudDialogflowCxV3beta1PageInfoSchema.exactOptional().openapi({
+      description:
+        'Information about page status. This field can be omitted by the webhook if it does not intend to modify page status.',
+    }),
+    payload: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({ description: 'Value to append directly to QueryResult.webhook_payloads.' }),
+    sessionInfo: GoogleCloudDialogflowCxV3beta1SessionInfoSchema.exactOptional().openapi({
+      description:
+        'Information about session status. This field can be omitted by the webhook if it does not intend to modify session status.',
+    }),
+    targetFlow: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The target flow to transition to. Format: `projects//locations//agents//flows/`.',
+      }),
+    targetPage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The target page to transition to. Format: `projects//locations//agents//flows//pages/`.',
+      }),
+  })
+  .openapi({ description: 'The response message for a webhook call.', required: [] })
+  .openapi('GoogleCloudDialogflowCxV3beta1WebhookResponse')
+
+const GoogleCloudDialogflowV2AnnotatedMessagePartSchema = z
+  .object({
+    entityType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Dialogflow system entity type](https://cloud.google.com/dialogflow/docs/reference/system-entities) of this message part. If this is empty, Dialogflow could not annotate the phrase part with a system entity.',
+      }),
+    formattedValue: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Dialogflow system entity formatted value ](https://cloud.google.com/dialogflow/docs/reference/system-entities) of this message part. For example for a system entity of type `@sys.unit-currency`, this may contain: { "amount": 5, "currency": "USD" } ',
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A part of a message possibly annotated with an entity.' }),
+  })
+  .openapi({
+    description:
+      'Represents a part of a message possibly annotated with an entity. The part can be an entity or purely a part of the message between two entities or message start/end.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2AnnotatedMessagePart')
+
+const GoogleCloudDialogflowV2ArticleAnswerSchema = z
+  .object({
+    answerRecord: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of answer record, in the format of "projects//locations//answerRecords/"',
+      }),
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Article match confidence. The system's confidence score that this article is a good match for this conversation, as a value from 0.0 (completely uncertain) to 1.0 (completely certain).",
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A map that contains metadata about the answer and the document from which it originates.',
+      }),
+    snippets: z.array(z.string()).exactOptional().openapi({ description: 'Article snippets.' }),
+    title: z.string().exactOptional().openapi({ description: 'The article title.' }),
+    uri: z.string().exactOptional().openapi({ description: 'The article URI.' }),
+  })
+  .openapi({ description: 'Represents article answer.', required: [] })
+  .openapi('GoogleCloudDialogflowV2ArticleAnswer')
+
+const GoogleCloudDialogflowV2ArticleSuggestionModelMetadataSchema = z
+  .object({
+    trainingModelType: z
+      .enum(['MODEL_TYPE_UNSPECIFIED', 'SMART_REPLY_DUAL_ENCODER_MODEL', 'SMART_REPLY_BERT_MODEL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Type of the article suggestion model. If not provided, model_type is used.',
+      }),
+  })
+  .openapi({ description: 'Metadata for article suggestion models.', required: [] })
+  .openapi('GoogleCloudDialogflowV2ArticleSuggestionModelMetadata')
+
+const GoogleCloudDialogflowV2EntityTypeSchema = z
+  .object({
+    autoExpansionMode: z
+      .enum(['AUTO_EXPANSION_MODE_UNSPECIFIED', 'AUTO_EXPANSION_MODE_DEFAULT'])
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Indicates whether the entity type can be automatically expanded.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The name of the entity type.' }),
+    enableFuzzyExtraction: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Optional. Enables fuzzy entity extraction during classification.' }),
+    entities: z
+      .array(GoogleCloudDialogflowV2EntityTypeEntitySchema)
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The collection of entity entries associated with the entity type.',
+      }),
+    kind: z
+      .enum(['KIND_UNSPECIFIED', 'KIND_MAP', 'KIND_LIST', 'KIND_REGEXP'])
+      .exactOptional()
+      .openapi({ description: 'Required. Indicates the kind of entity type.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the entity type. Required for EntityTypes.UpdateEntityType and EntityTypes.BatchUpdateEntityTypes methods. Format: `projects//agent/entityTypes/`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Each intent parameter has a type, called the entity type, which dictates exactly how data from an end-user expression is extracted. Dialogflow provides predefined system entities that can match many common types of data. For example, there are system entities for matching dates, times, colors, email addresses, and so on. You can also create your own custom entities for matching custom data. For example, you could define a vegetable entity that can match the types of vegetables available for purchase with a grocery store agent. For more information, see the [Entity guide](https://cloud.google.com/dialogflow/docs/entities-overview).',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2EntityType')
+
+const GoogleCloudDialogflowV2BatchUpdateEntityTypesResponseSchema = z
+  .object({
+    entityTypes: z
+      .array(GoogleCloudDialogflowV2EntityTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'The collection of updated or created entity types.' }),
+  })
+  .openapi({
+    description: 'The response message for EntityTypes.BatchUpdateEntityTypes.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2BatchUpdateEntityTypesResponse')
+
+const GoogleCloudDialogflowV2BatchUpdateIntentsResponseSchema: z.ZodType<GoogleCloudDialogflowV2BatchUpdateIntentsResponseType> =
+  z
+    .object({
+      intents: z
+        .array(GoogleCloudDialogflowV2IntentSchema)
+        .exactOptional()
+        .openapi({ description: 'The collection of updated or created intents.' }),
+    })
+    .openapi({ description: 'The response message for Intents.BatchUpdateIntents.', required: [] })
+    .openapi('GoogleCloudDialogflowV2BatchUpdateIntentsResponse')
+
+const GoogleCloudDialogflowV2ClearSuggestionFeatureConfigOperationMetadataSchema = z
+  .object({
+    conversationProfile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation profile. Format: `projects//locations//conversationProfiles/`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp whe the request was created. The time is measured on server side.',
+      }),
+    participantRole: z
+      .enum(['ROLE_UNSPECIFIED', 'HUMAN_AGENT', 'AUTOMATED_AGENT', 'END_USER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The participant role to remove the suggestion feature config. Only HUMAN_AGENT or END_USER can be used.',
+      }),
+    suggestionFeatureType: z
+      .enum(['TYPE_UNSPECIFIED', 'ARTICLE_SUGGESTION', 'FAQ', 'SMART_REPLY'])
+      .exactOptional()
+      .openapi({ description: 'Required. The type of the suggestion feature to remove.' }),
+  })
+  .openapi({
+    description: 'Metadata for a ConversationProfile.ClearSuggestionFeatureConfig operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2ClearSuggestionFeatureConfigOperationMetadata')
+
+const GoogleCloudDialogflowV2MessageAnnotationSchema = z
+  .object({
+    containEntities: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the text message contains entities.' }),
+    parts: z
+      .array(GoogleCloudDialogflowV2AnnotatedMessagePartSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The collection of annotated message parts ordered by their position in the message. You can recover the annotated message by concatenating [AnnotatedMessagePart.text].',
+      }),
+  })
+  .openapi({ description: 'Represents the result of annotation for the message.', required: [] })
+  .openapi('GoogleCloudDialogflowV2MessageAnnotation')
+
+const GoogleCloudDialogflowV2MessageSchema = z
+  .object({
+    content: z.string().exactOptional().openapi({ description: 'Required. The message content.' }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the message was created in Contact Center AI.',
+        readOnly: true,
+      }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The message language. This should be a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag. Example: "en-US".',
+      }),
+    messageAnnotation: GoogleCloudDialogflowV2MessageAnnotationSchema.exactOptional().openapi({
+      description: 'Output only. The annotation for the message.',
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The unique identifier of the message. Format: `projects//locations//conversations//messages/`.',
+      }),
+    participant: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The participant that sends this message.',
+        readOnly: true,
+      }),
+    participantRole: z
+      .enum(['ROLE_UNSPECIFIED', 'HUMAN_AGENT', 'AUTOMATED_AGENT', 'END_USER'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The role of the participant.', readOnly: true }),
+    sendTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The time when the message was sent.' }),
+    sentimentAnalysis: GoogleCloudDialogflowV2SentimentAnalysisResultSchema.exactOptional().openapi(
+      {
+        description: 'Output only. The sentiment analysis result for the message.',
+        readOnly: true,
+      },
+    ),
+  })
+  .openapi({ description: 'Represents a message posted into a conversation.', required: [] })
+  .openapi('GoogleCloudDialogflowV2Message')
+
+const GoogleCloudDialogflowV2ConversationEventSchema = z
+  .object({
+    conversation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the conversation this notification refers to. Format: `projects//conversations/`.',
+      }),
+    errorStatus: GoogleRpcStatusSchema.exactOptional().openapi({
+      description:
+        'More detailed information about an error. Only set for type UNRECOVERABLE_ERROR_IN_PHONE_CALL.',
+    }),
+    newMessagePayload: GoogleCloudDialogflowV2MessageSchema.exactOptional().openapi({
+      description: 'Payload of NEW_MESSAGE event.',
+    }),
+    type: z
+      .enum([
+        'TYPE_UNSPECIFIED',
+        'CONVERSATION_STARTED',
+        'CONVERSATION_FINISHED',
+        'HUMAN_INTERVENTION_NEEDED',
+        'NEW_MESSAGE',
+        'UNRECOVERABLE_ERROR',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the event that this notification refers to.' }),
+  })
+  .openapi({
+    description:
+      'Represents a notification sent to Pub/Sub subscribers for conversation lifecycle events.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2ConversationEvent')
+
+const GoogleCloudDialogflowV2InputDatasetSchema = z
+  .object({
+    dataset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. ConversationDataset resource name. Format: `projects//locations//conversationDatasets/`',
+      }),
+  })
+  .openapi({
+    description: 'InputDataset used to create model or do evaluation. NextID:5',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2InputDataset')
+
+const GoogleCloudDialogflowV2SmartReplyModelMetadataSchema = z
+  .object({
+    trainingModelType: z
+      .enum(['MODEL_TYPE_UNSPECIFIED', 'SMART_REPLY_DUAL_ENCODER_MODEL', 'SMART_REPLY_BERT_MODEL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Type of the smart reply model. If not provided, model_type is used.',
+      }),
+  })
+  .openapi({ description: 'Metadata for smart reply models.', required: [] })
+  .openapi('GoogleCloudDialogflowV2SmartReplyModelMetadata')
+
+const GoogleCloudDialogflowV2ConversationModelSchema = z
+  .object({
+    articleSuggestionModelMetadata:
+      GoogleCloudDialogflowV2ArticleSuggestionModelMetadataSchema.exactOptional().openapi({
+        description: 'Metadata for article suggestion models.',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Creation time of this model.', readOnly: true }),
+    datasets: z
+      .array(GoogleCloudDialogflowV2InputDatasetSchema)
+      .exactOptional()
+      .openapi({ description: 'Required. Datasets used to create model.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The display name of the model. At most 64 bytes long.' }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Language code for the conversation model. If not specified, the language is en-US. Language at ConversationModel should be set for all non en-us languages. This should be a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag. Example: "en-US".',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ConversationModel resource name. Format: `projects//conversationModels/`',
+      }),
+    smartReplyModelMetadata:
+      GoogleCloudDialogflowV2SmartReplyModelMetadataSchema.exactOptional().openapi({
+        description: 'Metadata for smart reply models.',
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'CREATING',
+        'UNDEPLOYED',
+        'DEPLOYING',
+        'DEPLOYED',
+        'UNDEPLOYING',
+        'DELETING',
+        'FAILED',
+        'PENDING',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. State of the model. A model can only serve prediction requests after it gets deployed.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Represents a conversation model.', required: [] })
+  .openapi('GoogleCloudDialogflowV2ConversationModel')
+
+const GoogleCloudDialogflowV2CreateConversationDatasetOperationMetadataSchema = z
+  .object({
+    conversationDataset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation dataset that will be created. Format: `projects//locations//conversationDatasets/`',
+      }),
+  })
+  .openapi({ description: 'Metadata for ConversationDatasets.', required: [] })
+  .openapi('GoogleCloudDialogflowV2CreateConversationDatasetOperationMetadata')
+
+const GoogleCloudDialogflowV2CreateConversationModelEvaluationOperationMetadataSchema = z
+  .object({
+    conversationModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation model. Format: `projects//locations//conversationModels/`',
+      }),
+    conversationModelEvaluation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation model. Format: `projects//locations//conversationModels//evaluations/`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when the request to create conversation model was submitted. The time is measured on server side.',
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'INITIALIZING', 'RUNNING', 'CANCELLED', 'SUCCEEDED', 'FAILED'])
+      .exactOptional()
+      .openapi({ description: 'State of CreateConversationModel operation.' }),
+  })
+  .openapi({
+    description: 'Metadata for a ConversationModels.CreateConversationModelEvaluation operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2CreateConversationModelEvaluationOperationMetadata')
+
+const GoogleCloudDialogflowV2CreateConversationModelOperationMetadataSchema = z
+  .object({
+    conversationModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation model. Format: `projects//conversationModels/`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when the request to create conversation model is submitted. The time is measured on server side.',
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'SUCCEEDED',
+        'FAILED',
+        'CANCELLED',
+        'CANCELLING',
+        'TRAINING',
+      ])
+      .exactOptional()
+      .openapi({ description: 'State of CreateConversationModel operation.' }),
+  })
+  .openapi({
+    description: 'Metadata for a ConversationModels.CreateConversationModel operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2CreateConversationModelOperationMetadata')
+
+const GoogleCloudDialogflowV2DeleteConversationDatasetOperationMetadataSchema = z
+  .looseObject({})
+  .openapi({ description: 'Metadata for ConversationDatasets.' })
+  .openapi('GoogleCloudDialogflowV2DeleteConversationDatasetOperationMetadata')
+
+const GoogleCloudDialogflowV2DeleteConversationModelOperationMetadataSchema = z
+  .object({
+    conversationModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation model. Format: `projects//conversationModels/`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when delete conversation model request was created. The time is measured on server side.',
+      }),
+  })
+  .openapi({
+    description: 'Metadata for a ConversationModels.DeleteConversationModel operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2DeleteConversationModelOperationMetadata')
+
+const GoogleCloudDialogflowV2DeployConversationModelOperationMetadataSchema = z
+  .object({
+    conversationModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation model. Format: `projects//conversationModels/`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when request to deploy conversation model was submitted. The time is measured on server side.',
+      }),
+  })
+  .openapi({
+    description: 'Metadata for a ConversationModels.DeployConversationModel operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2DeployConversationModelOperationMetadata')
+
+const GoogleCloudDialogflowV2ExportAgentResponseSchema = z
+  .object({
+    agentContent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Zip compressed raw byte content for agent.' }),
+    agentUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URI to a file containing the exported agent. This field is populated only if `agent_uri` is specified in `ExportAgentRequest`.',
+      }),
+  })
+  .openapi({ description: 'The response message for Agents.ExportAgent.', required: [] })
+  .openapi('GoogleCloudDialogflowV2ExportAgentResponse')
+
+const GoogleCloudDialogflowV2GcsDestinationSchema = z
+  .object({
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Google Cloud Storage URIs for the output. A URI is of the form: gs://bucket/object-prefix-or-name Whether a prefix or name is used depends on the use case. The requesting user must have "write-permission" to the bucket.',
+      }),
+  })
+  .openapi({ description: 'Google Cloud Storage location for the output.', required: [] })
+  .openapi('GoogleCloudDialogflowV2GcsDestination')
+
+const GoogleCloudDialogflowV2ExportOperationMetadataSchema = z
+  .object({
+    exportedGcsDestination: GoogleCloudDialogflowV2GcsDestinationSchema.exactOptional().openapi({
+      description: 'Cloud Storage file path of the exported data.',
+    }),
+  })
+  .openapi({
+    description: 'Metadata related to the Export Data Operations (e.g. ExportDocument).',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2ExportOperationMetadata')
+
+const GoogleCloudDialogflowV2FaqAnswerSchema = z
+  .object({
+    answer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The piece of text from the `source` knowledge base document.' }),
+    answerRecord: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of answer record, in the format of "projects//locations//answerRecords/"',
+      }),
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The system's confidence score that this Knowledge answer is a good match for this conversational query, range from 0.0 (completely uncertain) to 1.0 (completely certain).",
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A map that contains metadata about the answer and the document from which it originates.',
+      }),
+    question: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The corresponding FAQ question.' }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates which Knowledge Document this answer was extracted from. Format: `projects//locations//agent/knowledgeBases//documents/`.',
+      }),
+  })
+  .openapi({ description: 'Represents answer from "frequently asked questions".', required: [] })
+  .openapi('GoogleCloudDialogflowV2FaqAnswer')
+
+const GoogleCloudDialogflowV2SuggestArticlesResponseSchema = z
+  .object({
+    articleAnswers: z
+      .array(GoogleCloudDialogflowV2ArticleAnswerSchema)
+      .exactOptional()
+      .openapi({ description: 'Articles ordered by score in descending order.' }),
+    contextSize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Number of messages prior to and including latest_message to compile the suggestion. It may be smaller than the SuggestArticlesRequest.context_size field in the request if there aren't that many messages in the conversation.",
+      }),
+    latestMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the latest conversation message used to compile suggestion for. Format: `projects//locations//conversations//messages/`.',
+      }),
+  })
+  .openapi({ description: 'The response message for Participants.SuggestArticles.', required: [] })
+  .openapi('GoogleCloudDialogflowV2SuggestArticlesResponse')
+
+const GoogleCloudDialogflowV2SuggestFaqAnswersResponseSchema = z
+  .object({
+    contextSize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Number of messages prior to and including latest_message to compile the suggestion. It may be smaller than the SuggestFaqAnswersRequest.context_size field in the request if there aren't that many messages in the conversation.",
+      }),
+    faqAnswers: z
+      .array(GoogleCloudDialogflowV2FaqAnswerSchema)
+      .exactOptional()
+      .openapi({ description: 'Answers extracted from FAQ documents.' }),
+    latestMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the latest conversation message used to compile suggestion for. Format: `projects//locations//conversations//messages/`.',
+      }),
+  })
+  .openapi({ description: 'The request message for Participants.SuggestFaqAnswers.', required: [] })
+  .openapi('GoogleCloudDialogflowV2SuggestFaqAnswersResponse')
+
+const GoogleCloudDialogflowV2SmartReplyAnswerSchema = z
+  .object({
+    answerRecord: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of answer record, in the format of "projects//locations//answerRecords/"',
+      }),
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Smart reply confidence. The system's confidence score that this reply is a good match for this conversation, as a value from 0.0 (completely uncertain) to 1.0 (completely certain).",
+      }),
+    reply: z.string().exactOptional().openapi({ description: 'The content of the reply.' }),
+  })
+  .openapi({ description: 'Represents a smart reply answer.', required: [] })
+  .openapi('GoogleCloudDialogflowV2SmartReplyAnswer')
+
+const GoogleCloudDialogflowV2SuggestSmartRepliesResponseSchema = z
+  .object({
+    contextSize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Number of messages prior to and including latest_message to compile the suggestion. It may be smaller than the SuggestSmartRepliesRequest.context_size field in the request if there aren't that many messages in the conversation.",
+      }),
+    latestMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the latest conversation message used to compile suggestion for. Format: `projects//locations//conversations//messages/`.',
+      }),
+    smartReplyAnswers: z
+      .array(GoogleCloudDialogflowV2SmartReplyAnswerSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Multiple reply options provided by smart reply service. The order is based on the rank of the model prediction. The maximum number of the returned replies is set in SmartReplyConfig.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'The response message for Participants.SuggestSmartReplies.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2SuggestSmartRepliesResponse')
+
+const GoogleCloudDialogflowV2SuggestionResultSchema = z
+  .object({
+    error: GoogleRpcStatusSchema.exactOptional().openapi({
+      description: 'Error status if the request failed.',
+    }),
+    suggestArticlesResponse:
+      GoogleCloudDialogflowV2SuggestArticlesResponseSchema.exactOptional().openapi({
+        description: 'SuggestArticlesResponse if request is for ARTICLE_SUGGESTION.',
+      }),
+    suggestFaqAnswersResponse:
+      GoogleCloudDialogflowV2SuggestFaqAnswersResponseSchema.exactOptional().openapi({
+        description: 'SuggestFaqAnswersResponse if request is for FAQ_ANSWER.',
+      }),
+    suggestSmartRepliesResponse:
+      GoogleCloudDialogflowV2SuggestSmartRepliesResponseSchema.exactOptional().openapi({
+        description: 'SuggestSmartRepliesResponse if request is for SMART_REPLY.',
+      }),
+  })
+  .openapi({
+    description:
+      'One response of different type of suggestion response which is used in the response of Participants.AnalyzeContent and Participants.AnalyzeContent, as well as HumanAgentAssistantEvent.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2SuggestionResult')
+
+const GoogleCloudDialogflowV2HumanAgentAssistantEventSchema = z
+  .object({
+    conversation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The conversation this notification refers to. Format: `projects//conversations/`.',
+      }),
+    participant: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The participant that the suggestion is compiled for. Format: `projects//conversations//participants/`. It will not be set in legacy workflow.',
+      }),
+    suggestionResults: z
+      .array(GoogleCloudDialogflowV2SuggestionResultSchema)
+      .exactOptional()
+      .openapi({ description: 'The suggestion results payload that this notification refers to.' }),
+  })
+  .openapi({
+    description:
+      'Represents a notification sent to Cloud Pub/Sub subscribers for human agent assistant events in a specific conversation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2HumanAgentAssistantEvent')
+
+const GoogleCloudDialogflowV2ImportConversationDataOperationMetadataSchema = z
+  .object({
+    conversationDataset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the imported conversation dataset. Format: `projects//locations//conversationDatasets/`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when import conversation data request was created. The time is measured on server side.',
+      }),
+    partialFailures: z
+      .array(GoogleRpcStatusSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Partial failures are failures that don't fail the whole long running operation, e.g. single files that couldn't be read.",
+      }),
+  })
+  .openapi({
+    description: 'Metadata for a ConversationDatasets.ImportConversationData operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2ImportConversationDataOperationMetadata')
+
+const GoogleCloudDialogflowV2ImportConversationDataOperationResponseSchema = z
+  .object({
+    conversationDataset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the imported conversation dataset. Format: `projects//locations//conversationDatasets/`',
+      }),
+    importCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of conversations imported successfully.' }),
+  })
+  .openapi({
+    description:
+      'Response used for ConversationDatasets.ImportConversationData long running operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2ImportConversationDataOperationResponse')
+
+const GoogleCloudDialogflowV2ImportDocumentsResponseSchema = z
+  .object({
+    warnings: z
+      .array(GoogleRpcStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'Includes details about skipped documents or any other warnings.' }),
+  })
+  .openapi({ description: 'Response message for Documents.ImportDocuments.', required: [] })
+  .openapi('GoogleCloudDialogflowV2ImportDocumentsResponse')
+
+const GoogleCloudDialogflowV2KnowledgeOperationMetadataSchema = z
+  .object({
+    exportOperationMetadata:
+      GoogleCloudDialogflowV2ExportOperationMetadataSchema.exactOptional().openapi({
+        description: 'Metadata for the Export Data Operation such as the destination of export.',
+      }),
+    knowledgeBase: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the knowledge base interacted with during the operation.',
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'DONE'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The current state of this operation.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Metadata in google::longrunning::Operation for Knowledge operations.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2KnowledgeOperationMetadata')
+
+const GoogleCloudDialogflowV2SetSuggestionFeatureConfigOperationMetadataSchema = z
+  .object({
+    conversationProfile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation profile. Format: `projects//locations//conversationProfiles/`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp whe the request was created. The time is measured on server side.',
+      }),
+    participantRole: z
+      .enum(['ROLE_UNSPECIFIED', 'HUMAN_AGENT', 'AUTOMATED_AGENT', 'END_USER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The participant role to add or update the suggestion feature config. Only HUMAN_AGENT or END_USER can be used.',
+      }),
+    suggestionFeatureType: z
+      .enum(['TYPE_UNSPECIFIED', 'ARTICLE_SUGGESTION', 'FAQ', 'SMART_REPLY'])
+      .exactOptional()
+      .openapi({ description: 'Required. The type of the suggestion feature to add or update.' }),
+  })
+  .openapi({
+    description: 'Metadata for a ConversationProfile.SetSuggestionFeatureConfig operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2SetSuggestionFeatureConfigOperationMetadata')
+
+const GoogleCloudDialogflowV2UndeployConversationModelOperationMetadataSchema = z
+  .object({
+    conversationModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the conversation model. Format: `projects//conversationModels/`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when the request to undeploy conversation model was submitted. The time is measured on server side.',
+      }),
+  })
+  .openapi({
+    description: 'Metadata for a ConversationModels.UndeployConversationModel operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2UndeployConversationModelOperationMetadata')
+
+const GoogleCloudDialogflowV2WebhookRequestSchema: z.ZodType<GoogleCloudDialogflowV2WebhookRequestType> =
+  z
+    .object({
+      originalDetectIntentRequest:
+        GoogleCloudDialogflowV2OriginalDetectIntentRequestSchema.exactOptional().openapi({
+          description:
+            'Optional. The contents of the original request that was passed to `[Streaming]DetectIntent` call.',
+        }),
+      queryResult: GoogleCloudDialogflowV2QueryResultSchema.exactOptional().openapi({
+        description:
+          'The result of the conversational query or event processing. Contains the same value as `[Streaming]DetectIntentResponse.query_result`.',
+      }),
+      responseId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of the response. Contains the same value as `[Streaming]DetectIntentResponse.response_id`.',
+        }),
+      session: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of detectIntent request session. Can be used to identify end-user inside webhook implementation. Format: `projects//agent/sessions/`, or `projects//agent/environments//users//sessions/`.',
+        }),
+    })
+    .openapi({ description: 'The request message for a webhook call.', required: [] })
+    .openapi('GoogleCloudDialogflowV2WebhookRequest')
+
+const GoogleCloudDialogflowV2WebhookResponseSchema: z.ZodType<GoogleCloudDialogflowV2WebhookResponseType> =
+  z
+    .object({
+      followupEventInput: GoogleCloudDialogflowV2EventInputSchema.exactOptional().openapi({
+        description:
+          'Optional. Invokes the supplied events. When this field is set, Dialogflow ignores the `fulfillment_text`, `fulfillment_messages`, and `payload` fields.',
+      }),
+      fulfillmentMessages: z
+        .array(GoogleCloudDialogflowV2IntentMessageSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The rich response messages intended for the end-user. When provided, Dialogflow uses this field to populate QueryResult.fulfillment_messages sent to the integration or API caller.',
+        }),
+      fulfillmentText: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The text response message intended for the end-user. It is recommended to use `fulfillment_messages.text.text[0]` instead. When provided, Dialogflow uses this field to populate QueryResult.fulfillment_text sent to the integration or API caller.',
+        }),
+      outputContexts: z
+        .array(GoogleCloudDialogflowV2ContextSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The collection of output contexts that will overwrite currently active contexts for the session and reset their lifespans. When provided, Dialogflow uses this field to populate QueryResult.output_contexts sent to the integration or API caller.',
+        }),
+      payload: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. This field can be used to pass custom data from your webhook to the integration or API caller. Arbitrary JSON objects are supported. When provided, Dialogflow uses this field to populate QueryResult.webhook_payload sent to the integration or API caller. This field is also used by the [Google Assistant integration](https://cloud.google.com/dialogflow/docs/integrations/aog) for rich response messages. See the format definition at [Google Assistant Dialogflow webhook format](https://developers.google.com/assistant/actions/build/json/dialogflow-webhook-json)',
+        }),
+      sessionEntityTypes: z
+        .array(GoogleCloudDialogflowV2SessionEntityTypeSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Additional session entity types to replace or extend developer entity types with. The entity synonyms apply to all languages and persist for the session. Setting this data from a webhook overwrites the session entity types that have been set using `detectIntent`, `streamingDetectIntent` or SessionEntityType management methods.',
+        }),
+      source: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. A custom field used to identify the webhook source. Arbitrary strings are supported. When provided, Dialogflow uses this field to populate QueryResult.webhook_source sent to the integration or API caller.',
+        }),
+    })
+    .openapi({
+      description:
+        'The response message for a webhook call. This response is validated by the Dialogflow server. If validation fails, an error will be returned in the QueryResult.diagnostic_info field. Setting JSON fields to an empty value with the wrong type is a common error. To avoid this error: - Use `""` for empty strings - Use `{}` or `null` for empty objects - Use `[]` or `null` for empty arrays For more information, see the [Protocol Buffers Language Guide](https://developers.google.com/protocol-buffers/docs/proto3#json).',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowV2WebhookResponse')
+
+const GoogleCloudDialogflowV2beta1AnnotatedMessagePartSchema = z
+  .object({
+    entityType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The [Dialogflow system entity type](https://cloud.google.com/dialogflow/docs/reference/system-entities) of this message part. If this is empty, Dialogflow could not annotate the phrase part with a system entity.',
+      }),
+    formattedValue: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The [Dialogflow system entity formatted value ](https://cloud.google.com/dialogflow/docs/reference/system-entities) of this message part. For example for a system entity of type `@sys.unit-currency`, this may contain: { "amount": 5, "currency": "USD" } ',
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. A part of a message possibly annotated with an entity.' }),
+  })
+  .openapi({
+    description:
+      'Represents a part of a message possibly annotated with an entity. The part can be an entity or purely a part of the message between two entities or message start/end.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2beta1AnnotatedMessagePart')
+
+const GoogleCloudDialogflowV2beta1ArticleAnswerSchema = z
+  .object({
+    answerRecord: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of answer record, in the format of "projects//locations//answerRecords/"',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A map that contains metadata about the answer and the document from which it originates.',
+      }),
+    snippets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Output only. Article snippets.' }),
+    title: z.string().exactOptional().openapi({ description: 'The article title.' }),
+    uri: z.string().exactOptional().openapi({ description: 'The article URI.' }),
+  })
+  .openapi({ description: 'Represents article answer.', required: [] })
+  .openapi('GoogleCloudDialogflowV2beta1ArticleAnswer')
+
+const GoogleCloudDialogflowV2beta1EntityTypeSchema = z
+  .object({
+    autoExpansionMode: z
+      .enum(['AUTO_EXPANSION_MODE_UNSPECIFIED', 'AUTO_EXPANSION_MODE_DEFAULT'])
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Indicates whether the entity type can be automatically expanded.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The name of the entity type.' }),
+    enableFuzzyExtraction: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Optional. Enables fuzzy entity extraction during classification.' }),
+    entities: z
+      .array(GoogleCloudDialogflowV2beta1EntityTypeEntitySchema)
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The collection of entity entries associated with the entity type.',
+      }),
+    kind: z
+      .enum(['KIND_UNSPECIFIED', 'KIND_MAP', 'KIND_LIST', 'KIND_REGEXP'])
+      .exactOptional()
+      .openapi({ description: 'Required. Indicates the kind of entity type.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the entity type. Required for EntityTypes.UpdateEntityType and EntityTypes.BatchUpdateEntityTypes methods. Supported formats: - `projects//agent/entityTypes/` - `projects//locations//agent/entityTypes/`',
+      }),
+  })
+  .openapi({
+    description:
+      'Each intent parameter has a type, called the entity type, which dictates exactly how data from an end-user expression is extracted. Dialogflow provides predefined system entities that can match many common types of data. For example, there are system entities for matching dates, times, colors, email addresses, and so on. You can also create your own custom entities for matching custom data. For example, you could define a vegetable entity that can match the types of vegetables available for purchase with a grocery store agent. For more information, see the [Entity guide](https://cloud.google.com/dialogflow/docs/entities-overview).',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2beta1EntityType')
+
+const GoogleCloudDialogflowV2beta1BatchUpdateEntityTypesResponseSchema = z
+  .object({
+    entityTypes: z
+      .array(GoogleCloudDialogflowV2beta1EntityTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'The collection of updated or created entity types.' }),
+  })
+  .openapi({
+    description: 'The response message for EntityTypes.BatchUpdateEntityTypes.',
+    required: [],
+  })
+  .openapi('GoogleCloudDialogflowV2beta1BatchUpdateEntityTypesResponse')
+
+const GoogleCloudDialogflowV2beta1BatchUpdateIntentsResponseSchema: z.ZodType<GoogleCloudDialogflowV2beta1BatchUpdateIntentsResponseType> =
+  z
+    .object({
+      intents: z
+        .array(GoogleCloudDialogflowV2beta1IntentSchema)
+        .exactOptional()
+        .openapi({ description: 'The collection of updated or created intents.' }),
+    })
+    .openapi({ description: 'The response message for Intents.BatchUpdateIntents.', required: [] })
+    .openapi('GoogleCloudDialogflowV2beta1BatchUpdateIntentsResponse')
 
 const GoogleCloudDialogflowV2beta1ClearSuggestionFeatureConfigOperationMetadataSchema = z
   .object({
@@ -9995,43 +10971,6 @@ const GoogleCloudDialogflowV2beta1MessageAnnotationSchema = z
   })
   .openapi({ description: 'Represents the result of annotation for the message.', required: [] })
   .openapi('GoogleCloudDialogflowV2beta1MessageAnnotation')
-
-const GoogleCloudDialogflowV2beta1SentimentSchema = z
-  .object({
-    magnitude: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'A non-negative number in the [0, +inf) range, which represents the absolute magnitude of sentiment, regardless of score (positive or negative).',
-      }),
-    score: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Sentiment score between -1.0 (negative sentiment) and 1.0 (positive sentiment).',
-      }),
-  })
-  .openapi({
-    description:
-      'The sentiment, such as positive/negative feeling or association, for a unit of analysis, such as the query text. See: https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values for how to interpret the result.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1Sentiment')
-
-const GoogleCloudDialogflowV2beta1SentimentAnalysisResultSchema = z
-  .object({
-    queryTextSentiment: GoogleCloudDialogflowV2beta1SentimentSchema.exactOptional().openapi({
-      description: 'The sentiment analysis result for `query_text`.',
-    }),
-  })
-  .openapi({
-    description:
-      "The result of sentiment analysis. Sentiment analysis inspects user input and identifies the prevailing subjective opinion, especially to determine a user's attitude as positive, negative, or neutral. For Participants.DetectIntent, it needs to be configured in DetectIntentRequest.query_params. For Participants.StreamingDetectIntent, it needs to be configured in StreamingDetectIntentRequest.query_params. And for Participants.AnalyzeContent and Participants.StreamingAnalyzeContent, it needs to be configured in ConversationProfile.human_agent_assistant_config",
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1SentimentAnalysisResult')
 
 const GoogleCloudDialogflowV2beta1MessageSchema = z
   .object({
@@ -10121,34 +11060,6 @@ const GoogleCloudDialogflowV2beta1ConversationEventSchema = z
     required: [],
   })
   .openapi('GoogleCloudDialogflowV2beta1ConversationEvent')
-
-const GoogleCloudDialogflowV2beta1EventInputSchema = z
-  .object({
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The language of this query. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language) for a list of the currently supported language codes. Note that queries in the same session do not necessarily need to specify the same language. This field is ignored when used in the context of a WebhookResponse.followup_event_input field, because the language was already defined in the originating detect intent request.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The unique identifier of the event.' }),
-    parameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          "The collection of parameters associated with the event. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: - MapKey type: string - MapKey value: parameter name - MapValue type: - If parameter's entity type is a composite entity: map - Else: depending on parameter value type, could be one of string, number, boolean, null, list or map - MapValue value: - If parameter's entity type is a composite entity: map from composite entity property names to property values - Else: parameter value",
-      }),
-  })
-  .openapi({
-    description:
-      'Events allow for matching intents by event name instead of the natural language input. For instance, input `` can trigger a personalized welcome response. The parameter `name` may be used by the agent in the response: `"Hello #welcome_event.name! What can I do for you today?"`.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1EventInput')
 
 const GoogleCloudDialogflowV2beta1ExportAgentResponseSchema = z
   .object({
@@ -10400,57 +11311,6 @@ const GoogleCloudDialogflowV2beta1ImportDocumentsResponseSchema = z
   .openapi({ description: 'Response message for Documents.ImportDocuments.', required: [] })
   .openapi('GoogleCloudDialogflowV2beta1ImportDocumentsResponse')
 
-const GoogleCloudDialogflowV2beta1KnowledgeAnswersAnswerSchema = z
-  .object({
-    answer: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The piece of text from the `source` knowledge base document that answers this conversational query.',
-      }),
-    faqQuestion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The corresponding FAQ question if the answer was extracted from a FAQ Document, empty otherwise.',
-      }),
-    matchConfidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The system's confidence score that this Knowledge answer is a good match for this conversational query. The range is from 0.0 (completely uncertain) to 1.0 (completely certain). Note: The confidence score is likely to vary somewhat (possibly even for identical requests), as the underlying model is under constant improvement. It may be deprecated in the future. We recommend using `match_confidence_level` which should be generally more stable.",
-      }),
-    matchConfidenceLevel: z
-      .enum(['MATCH_CONFIDENCE_LEVEL_UNSPECIFIED', 'LOW', 'MEDIUM', 'HIGH'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The system's confidence level that this knowledge answer is a good match for this conversational query. NOTE: The confidence level for a given `` pair may change without notice, as it depends on models that are constantly being improved. However, it will change less frequently than the confidence score below, and should be preferred for referencing the quality of an answer.",
-      }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates which Knowledge Document this answer was extracted from. Format: `projects//knowledgeBases//documents/`.',
-      }),
-  })
-  .openapi({ description: 'An answer from Knowledge Connector.', required: [] })
-  .openapi('GoogleCloudDialogflowV2beta1KnowledgeAnswersAnswer')
-
-const GoogleCloudDialogflowV2beta1KnowledgeAnswersSchema = z
-  .object({
-    answers: z
-      .array(GoogleCloudDialogflowV2beta1KnowledgeAnswersAnswerSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of answers from Knowledge Connector.' }),
-  })
-  .openapi({ description: 'Represents the result of querying a Knowledge base.', required: [] })
-  .openapi('GoogleCloudDialogflowV2beta1KnowledgeAnswers')
-
 const GoogleCloudDialogflowV2beta1KnowledgeOperationMetadataSchema = z
   .object({
     exportOperationMetadata:
@@ -10476,186 +11336,6 @@ const GoogleCloudDialogflowV2beta1KnowledgeOperationMetadataSchema = z
     required: [],
   })
   .openapi('GoogleCloudDialogflowV2beta1KnowledgeOperationMetadata')
-
-const GoogleCloudDialogflowV2beta1OriginalDetectIntentRequestSchema = z
-  .object({
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. This field is set to the value of the `QueryParameters.payload` field passed in the request. Some integrations that query a Dialogflow agent may provide additional information in the payload. In particular, for the Dialogflow Phone Gateway integration, this field has the form: { "telephony": { "caller_id": "+18558363987" } } Note: The caller ID field (`caller_id`) will be redacted for Trial Edition agents and populated with the caller ID in [E.164 format](https://en.wikipedia.org/wiki/E.164) for Essentials Edition agents.',
-      }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The source of this request, e.g., `google`, `facebook`, `slack`. It is set by Dialogflow-owned servers.',
-      }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The version of the protocol used for this request. This field is AoG-specific.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents the contents of the original request that was passed to the `[Streaming]DetectIntent` call.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1OriginalDetectIntentRequest')
-
-const GoogleCloudDialogflowV2beta1QueryResultSchema = z
-  .object({
-    action: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The action name from the matched intent.' }),
-    allRequiredParamsPresent: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field is set to: - `false` if the matched intent has required parameters and not all of the required parameter values have been collected. - `true` if all required parameter values have been collected, or if the matched intent doesn't contain any required parameters.",
-      }),
-    cancelsSlotFilling: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the conversational query triggers a cancellation for slot filling. For more information, see the [cancel slot filling documentation](https://cloud.google.com/dialogflow/es/docs/intents-actions-parameters#cancel).',
-      }),
-    diagnosticInfo: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Free-form diagnostic information for the associated detect intent request. The fields of this data can change without notice, so you should not write code that depends on its structure. The data may contain: - webhook call latency - webhook errors',
-      }),
-    fulfillmentMessages: z
-      .array(GoogleCloudDialogflowV2beta1IntentMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The collection of rich messages to present to the user.' }),
-    fulfillmentText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text to be pronounced to the user or shown on the screen. Note: This is a legacy field, `fulfillment_messages` should be preferred.',
-      }),
-    intent: GoogleCloudDialogflowV2beta1IntentSchema.exactOptional().openapi({
-      description:
-        'The intent that matched the conversational query. Some, not all fields are filled in this message, including but not limited to: `name`, `display_name`, `end_interaction` and `is_fallback`.',
-    }),
-    intentDetectionConfidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The intent detection confidence. Values range from 0.0 (completely uncertain) to 1.0 (completely certain). This value is for informational purpose only and is only used to help match the best intent within the classification threshold. This value may change for the same end-user expression at any time due to a model retraining or change in implementation. If there are `multiple knowledge_answers` messages, this value is set to the greatest `knowledgeAnswers.match_confidence` value in the list.',
-      }),
-    knowledgeAnswers: GoogleCloudDialogflowV2beta1KnowledgeAnswersSchema.exactOptional().openapi({
-      description:
-        'The result from Knowledge Connector (if any), ordered by decreasing `KnowledgeAnswers.match_confidence`.',
-    }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The language that was triggered during intent detection. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language) for a list of the currently supported language codes.',
-      }),
-    outputContexts: z
-      .array(GoogleCloudDialogflowV2beta1ContextSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The collection of output contexts. If applicable, `output_contexts.parameters` contains entries with name `.original` containing the original parameter values before the query.',
-      }),
-    parameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          "The collection of extracted parameters. Depending on your protocol or client library language, this is a map, associative array, symbol table, dictionary, or JSON object composed of a collection of (MapKey, MapValue) pairs: - MapKey type: string - MapKey value: parameter name - MapValue type: - If parameter's entity type is a composite entity: map - Else: depending on parameter value type, could be one of string, number, boolean, null, list or map - MapValue value: - If parameter's entity type is a composite entity: map from composite entity property names to property values - Else: parameter value",
-      }),
-    queryText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The original conversational query text: - If natural language text was provided as input, `query_text` contains a copy of the input. - If natural language speech audio was provided as input, `query_text` contains the speech recognition result. If speech recognizer produced multiple alternatives, a particular one is picked. - If automatic spell correction is enabled, `query_text` will contain the corrected user input.',
-      }),
-    sentimentAnalysisResult:
-      GoogleCloudDialogflowV2beta1SentimentAnalysisResultSchema.exactOptional().openapi({
-        description:
-          'The sentiment analysis result, which depends on the `sentiment_analysis_request_config` specified in the request.',
-      }),
-    speechRecognitionConfidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The Speech recognition confidence between 0.0 and 1.0. A higher number indicates an estimated greater likelihood that the recognized words are correct. The default of 0.0 is a sentinel value indicating that confidence was not set. This field is not guaranteed to be accurate or set. In particular this field isn't set for StreamingDetectIntent since the streaming endpoint has separate confidence estimates per portion of the audio in StreamingRecognitionResult.",
-      }),
-    webhookPayload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'If the query was fulfilled by a webhook call, this field is set to the value of the `payload` field returned in the webhook response.',
-      }),
-    webhookSource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the query was fulfilled by a webhook call, this field is set to the value of the `source` field returned in the webhook response.',
-      }),
-  })
-  .openapi({
-    description: 'Represents the result of conversational query or event processing.',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1QueryResult')
-
-const GoogleCloudDialogflowV2beta1SessionEntityTypeSchema = z
-  .object({
-    entities: z
-      .array(GoogleCloudDialogflowV2beta1EntityTypeEntitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The collection of entities associated with this session entity type.',
-      }),
-    entityOverrideMode: z
-      .enum([
-        'ENTITY_OVERRIDE_MODE_UNSPECIFIED',
-        'ENTITY_OVERRIDE_MODE_OVERRIDE',
-        'ENTITY_OVERRIDE_MODE_SUPPLEMENT',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Indicates whether the additional data should override or supplement the custom entity type definition.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. The unique identifier of this session entity type. Supported formats: - `projects//agent/sessions//entityTypes/` - `projects//locations//agent/sessions//entityTypes/` - `projects//agent/environments//users//sessions//entityTypes/` - `projects//locations//agent/environments/ /users//sessions//entityTypes/` If `Location ID` is not specified we assume default 'us' location. If `Environment ID` is not specified, we assume default 'draft' environment. If `User ID` is not specified, we assume default '-' user. `` must be the display name of an existing entity type in the same agent that will be overridden or supplemented.",
-      }),
-  })
-  .openapi({
-    description:
-      'A session represents a conversation between a Dialogflow agent and an end-user. You can create special entities, called session entities, during a session. Session entities can extend or replace custom entity types and only exist during the session that they were created for. All session data, including session entities, is stored by Dialogflow for 20 minutes. For more information, see the [session entity guide](https://cloud.google.com/dialogflow/docs/entities-session).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1SessionEntityType')
 
 const GoogleCloudDialogflowV2beta1SetSuggestionFeatureConfigOperationMetadataSchema = z
   .object({
@@ -10696,108 +11376,110 @@ const GoogleCloudDialogflowV2beta1SetSuggestionFeatureConfigOperationMetadataSch
   })
   .openapi('GoogleCloudDialogflowV2beta1SetSuggestionFeatureConfigOperationMetadata')
 
-const GoogleCloudDialogflowV2beta1WebhookRequestSchema = z
-  .object({
-    alternativeQueryResults: z
-      .array(GoogleCloudDialogflowV2beta1QueryResultSchema)
-      .exactOptional()
-      .openapi({ description: 'Alternative query results from KnowledgeService.' }),
-    originalDetectIntentRequest:
-      GoogleCloudDialogflowV2beta1OriginalDetectIntentRequestSchema.exactOptional().openapi({
+const GoogleCloudDialogflowV2beta1WebhookRequestSchema: z.ZodType<GoogleCloudDialogflowV2beta1WebhookRequestType> =
+  z
+    .object({
+      alternativeQueryResults: z
+        .array(GoogleCloudDialogflowV2beta1QueryResultSchema)
+        .exactOptional()
+        .openapi({ description: 'Alternative query results from KnowledgeService.' }),
+      originalDetectIntentRequest:
+        GoogleCloudDialogflowV2beta1OriginalDetectIntentRequestSchema.exactOptional().openapi({
+          description:
+            'Optional. The contents of the original request that was passed to `[Streaming]DetectIntent` call.',
+        }),
+      queryResult: GoogleCloudDialogflowV2beta1QueryResultSchema.exactOptional().openapi({
         description:
-          'Optional. The contents of the original request that was passed to `[Streaming]DetectIntent` call.',
+          'The result of the conversational query or event processing. Contains the same value as `[Streaming]DetectIntentResponse.query_result`.',
       }),
-    queryResult: GoogleCloudDialogflowV2beta1QueryResultSchema.exactOptional().openapi({
-      description:
-        'The result of the conversational query or event processing. Contains the same value as `[Streaming]DetectIntentResponse.query_result`.',
-    }),
-    responseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the response. Contains the same value as `[Streaming]DetectIntentResponse.response_id`.',
-      }),
-    session: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of detectIntent request session. Can be used to identify end-user inside webhook implementation. Supported formats: - `projects//agent/sessions/, - `projects//locations//agent/sessions/`, - `projects//agent/environments//users//sessions/`, - `projects//locations//agent/environments//users//sessions/`,',
-      }),
-  })
-  .openapi({ description: 'The request message for a webhook call.', required: [] })
-  .openapi('GoogleCloudDialogflowV2beta1WebhookRequest')
+      responseId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of the response. Contains the same value as `[Streaming]DetectIntentResponse.response_id`.',
+        }),
+      session: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier of detectIntent request session. Can be used to identify end-user inside webhook implementation. Supported formats: - `projects//agent/sessions/, - `projects//locations//agent/sessions/`, - `projects//agent/environments//users//sessions/`, - `projects//locations//agent/environments//users//sessions/`,',
+        }),
+    })
+    .openapi({ description: 'The request message for a webhook call.', required: [] })
+    .openapi('GoogleCloudDialogflowV2beta1WebhookRequest')
 
-const GoogleCloudDialogflowV2beta1WebhookResponseSchema = z
-  .object({
-    endInteraction: z
-      .boolean()
-      .exactOptional()
-      .openapi({
+const GoogleCloudDialogflowV2beta1WebhookResponseSchema: z.ZodType<GoogleCloudDialogflowV2beta1WebhookResponseType> =
+  z
+    .object({
+      endInteraction: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Indicates that this intent ends an interaction. Some integrations (e.g., Actions on Google or Dialogflow phone gateway) use this information to close interaction with an end user. Default is false.',
+        }),
+      followupEventInput: GoogleCloudDialogflowV2beta1EventInputSchema.exactOptional().openapi({
         description:
-          'Optional. Indicates that this intent ends an interaction. Some integrations (e.g., Actions on Google or Dialogflow phone gateway) use this information to close interaction with an end user. Default is false.',
+          'Optional. Invokes the supplied events. When this field is set, Dialogflow ignores the `fulfillment_text`, `fulfillment_messages`, and `payload` fields.',
       }),
-    followupEventInput: GoogleCloudDialogflowV2beta1EventInputSchema.exactOptional().openapi({
+      fulfillmentMessages: z
+        .array(GoogleCloudDialogflowV2beta1IntentMessageSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The rich response messages intended for the end-user. When provided, Dialogflow uses this field to populate QueryResult.fulfillment_messages sent to the integration or API caller.',
+        }),
+      fulfillmentText: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The text response message intended for the end-user. It is recommended to use `fulfillment_messages.text.text[0]` instead. When provided, Dialogflow uses this field to populate QueryResult.fulfillment_text sent to the integration or API caller.',
+        }),
+      liveAgentHandoff: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates that a live agent should be brought in to handle the interaction with the user. In most cases, when you set this flag to true, you would also want to set end_interaction to true as well. Default is false.',
+        }),
+      outputContexts: z
+        .array(GoogleCloudDialogflowV2beta1ContextSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The collection of output contexts that will overwrite currently active contexts for the session and reset their lifespans. When provided, Dialogflow uses this field to populate QueryResult.output_contexts sent to the integration or API caller.',
+        }),
+      payload: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. This field can be used to pass custom data from your webhook to the integration or API caller. Arbitrary JSON objects are supported. When provided, Dialogflow uses this field to populate QueryResult.webhook_payload sent to the integration or API caller. This field is also used by the [Google Assistant integration](https://cloud.google.com/dialogflow/docs/integrations/aog) for rich response messages. See the format definition at [Google Assistant Dialogflow webhook format](https://developers.google.com/assistant/actions/build/json/dialogflow-webhook-json)',
+        }),
+      sessionEntityTypes: z
+        .array(GoogleCloudDialogflowV2beta1SessionEntityTypeSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Additional session entity types to replace or extend developer entity types with. The entity synonyms apply to all languages and persist for the session. Setting this data from a webhook overwrites the session entity types that have been set using `detectIntent`, `streamingDetectIntent` or SessionEntityType management methods.',
+        }),
+      source: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. A custom field used to identify the webhook source. Arbitrary strings are supported. When provided, Dialogflow uses this field to populate QueryResult.webhook_source sent to the integration or API caller.',
+        }),
+    })
+    .openapi({
       description:
-        'Optional. Invokes the supplied events. When this field is set, Dialogflow ignores the `fulfillment_text`, `fulfillment_messages`, and `payload` fields.',
-    }),
-    fulfillmentMessages: z
-      .array(GoogleCloudDialogflowV2beta1IntentMessageSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The rich response messages intended for the end-user. When provided, Dialogflow uses this field to populate QueryResult.fulfillment_messages sent to the integration or API caller.',
-      }),
-    fulfillmentText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The text response message intended for the end-user. It is recommended to use `fulfillment_messages.text.text[0]` instead. When provided, Dialogflow uses this field to populate QueryResult.fulfillment_text sent to the integration or API caller.',
-      }),
-    liveAgentHandoff: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that a live agent should be brought in to handle the interaction with the user. In most cases, when you set this flag to true, you would also want to set end_interaction to true as well. Default is false.',
-      }),
-    outputContexts: z
-      .array(GoogleCloudDialogflowV2beta1ContextSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The collection of output contexts that will overwrite currently active contexts for the session and reset their lifespans. When provided, Dialogflow uses this field to populate QueryResult.output_contexts sent to the integration or API caller.',
-      }),
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. This field can be used to pass custom data from your webhook to the integration or API caller. Arbitrary JSON objects are supported. When provided, Dialogflow uses this field to populate QueryResult.webhook_payload sent to the integration or API caller. This field is also used by the [Google Assistant integration](https://cloud.google.com/dialogflow/docs/integrations/aog) for rich response messages. See the format definition at [Google Assistant Dialogflow webhook format](https://developers.google.com/assistant/actions/build/json/dialogflow-webhook-json)',
-      }),
-    sessionEntityTypes: z
-      .array(GoogleCloudDialogflowV2beta1SessionEntityTypeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Additional session entity types to replace or extend developer entity types with. The entity synonyms apply to all languages and persist for the session. Setting this data from a webhook overwrites the session entity types that have been set using `detectIntent`, `streamingDetectIntent` or SessionEntityType management methods.',
-      }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A custom field used to identify the webhook source. Arbitrary strings are supported. When provided, Dialogflow uses this field to populate QueryResult.webhook_source sent to the integration or API caller.',
-      }),
-  })
-  .openapi({
-    description:
-      'The response message for a webhook call. This response is validated by the Dialogflow server. If validation fails, an error will be returned in the QueryResult.diagnostic_info field. Setting JSON fields to an empty value with the wrong type is a common error. To avoid this error: - Use `""` for empty strings - Use `{}` or `null` for empty objects - Use `[]` or `null` for empty arrays For more information, see the [Protocol Buffers Language Guide](https://developers.google.com/protocol-buffers/docs/proto3#json).',
-    required: [],
-  })
-  .openapi('GoogleCloudDialogflowV2beta1WebhookResponse')
+        'The response message for a webhook call. This response is validated by the Dialogflow server. If validation fails, an error will be returned in the QueryResult.diagnostic_info field. Setting JSON fields to an empty value with the wrong type is a common error. To avoid this error: - Use `""` for empty strings - Use `{}` or `null` for empty objects - Use `[]` or `null` for empty arrays For more information, see the [Protocol Buffers Language Guide](https://developers.google.com/protocol-buffers/docs/proto3#json).',
+      required: [],
+    })
+    .openapi('GoogleCloudDialogflowV2beta1WebhookResponse')
 
 const GoogleCloudDialogflowV3alpha1TurnSignalsSchema = z
   .object({
@@ -11075,7 +11757,7 @@ const GoogleLongrunningListOperationsResponseSchema = z
   .openapi('GoogleLongrunningListOperationsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

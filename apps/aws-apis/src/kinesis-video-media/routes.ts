@@ -4,14 +4,10 @@ const PayloadSchema = z.string().openapi('Payload')
 
 const GetMediaOutputSchema = z
   .object({
-    Payload: PayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The payload Kinesis Video Streams returns is a sequence of chunks from the specified stream. For information about the chunks, see . The chunks that Kinesis Video Streams returns in the <code>GetMedia</code> call also include the following additional Matroska (MKV) tags: </p> <ul> <li> <p>AWS_KINESISVIDEO_CONTINUATION_TOKEN (UTF-8 string) - In the event your <code>GetMedia</code> call terminates, you can use this continuation token in your next request to get the next chunk where the last request terminated.</p> </li> <li> <p>AWS_KINESISVIDEO_MILLIS_BEHIND_NOW (UTF-8 string) - Client applications can use this tag value to determine how far behind the chunk returned in the response is from the latest chunk on the stream. </p> </li> <li> <p>AWS_KINESISVIDEO_FRAGMENT_NUMBER - Fragment number returned in the chunk.</p> </li> <li> <p>AWS_KINESISVIDEO_SERVER_TIMESTAMP - Server timestamp of the fragment.</p> </li> <li> <p>AWS_KINESISVIDEO_PRODUCER_TIMESTAMP - Producer timestamp of the fragment.</p> </li> </ul> <p>The following tags will be present if an error occurs:</p> <ul> <li> <p>AWS_KINESISVIDEO_ERROR_CODE - String description of an error that caused GetMedia to stop.</p> </li> <li> <p>AWS_KINESISVIDEO_ERROR_ID: Integer code of the error.</p> </li> </ul> <p>The error codes are as follows:</p> <ul> <li> <p>3002 - Error writing to the stream</p> </li> <li> <p>4000 - Requested fragment is not found</p> </li> <li> <p>4500 - Access denied for the stream's KMS key</p> </li> <li> <p>4501 - Stream's KMS key is disabled</p> </li> <li> <p>4502 - Validation error on the stream's KMS key</p> </li> <li> <p>4503 - KMS key specified in the stream is unavailable</p> </li> <li> <p>4504 - Invalid usage of the KMS key specified in the stream</p> </li> <li> <p>4505 - Invalid state of the KMS key specified in the stream</p> </li> <li> <p>4506 - Unable to find the KMS key specified in the stream</p> </li> <li> <p>5000 - Internal error</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Payload: PayloadSchema.exactOptional().openapi({
+      description:
+        "<p> The payload Kinesis Video Streams returns is a sequence of chunks from the specified stream. For information about the chunks, see . The chunks that Kinesis Video Streams returns in the <code>GetMedia</code> call also include the following additional Matroska (MKV) tags: </p> <ul> <li> <p>AWS_KINESISVIDEO_CONTINUATION_TOKEN (UTF-8 string) - In the event your <code>GetMedia</code> call terminates, you can use this continuation token in your next request to get the next chunk where the last request terminated.</p> </li> <li> <p>AWS_KINESISVIDEO_MILLIS_BEHIND_NOW (UTF-8 string) - Client applications can use this tag value to determine how far behind the chunk returned in the response is from the latest chunk on the stream. </p> </li> <li> <p>AWS_KINESISVIDEO_FRAGMENT_NUMBER - Fragment number returned in the chunk.</p> </li> <li> <p>AWS_KINESISVIDEO_SERVER_TIMESTAMP - Server timestamp of the fragment.</p> </li> <li> <p>AWS_KINESISVIDEO_PRODUCER_TIMESTAMP - Producer timestamp of the fragment.</p> </li> </ul> <p>The following tags will be present if an error occurs:</p> <ul> <li> <p>AWS_KINESISVIDEO_ERROR_CODE - String description of an error that caused GetMedia to stop.</p> </li> <li> <p>AWS_KINESISVIDEO_ERROR_ID: Integer code of the error.</p> </li> </ul> <p>The error codes are as follows:</p> <ul> <li> <p>3002 - Error writing to the stream</p> </li> <li> <p>4000 - Requested fragment is not found</p> </li> <li> <p>4500 - Access denied for the stream's KMS key</p> </li> <li> <p>4501 - Stream's KMS key is disabled</p> </li> <li> <p>4502 - Validation error on the stream's KMS key</p> </li> <li> <p>4503 - KMS key specified in the stream is unavailable</p> </li> <li> <p>4504 - Invalid usage of the KMS key specified in the stream</p> </li> <li> <p>4505 - Invalid state of the KMS key specified in the stream</p> </li> <li> <p>4506 - Unable to find the KMS key specified in the stream</p> </li> <li> <p>5000 - Internal error</p> </li> </ul>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMediaOutput')
@@ -78,38 +74,22 @@ const ResourceARNSchema = z
 
 const StartSelectorSchema = z
   .object({
-    StartSelectorType: StartSelectorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Identifies the fragment on the Kinesis video stream where you want to start getting the data from.</p> <ul> <li> <p>NOW - Start with the latest chunk on the stream.</p> </li> <li> <p>EARLIEST - Start with earliest available chunk on the stream.</p> </li> <li> <p>FRAGMENT_NUMBER - Start with the chunk after a specific fragment. You must also specify the <code>AfterFragmentNumber</code> parameter.</p> </li> <li> <p>PRODUCER_TIMESTAMP or SERVER_TIMESTAMP - Start with the chunk containing a fragment with the specified producer or server timestamp. You specify the timestamp by adding <code>StartTimestamp</code>.</p> </li> <li> <p> CONTINUATION_TOKEN - Read using the specified continuation token. </p> </li> </ul> <note> <p>If you choose the NOW, EARLIEST, or CONTINUATION_TOKEN as the <code>startSelectorType</code>, you don't provide any additional information in the <code>startSelector</code>.</p> </note>",
-        }),
-    ),
-    AfterFragmentNumber: FragmentNumberStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the fragment number from where you want the <code>GetMedia</code> API to start returning the fragments. ',
-        }),
-    ).exactOptional(),
-    StartTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp value. This value is required if you choose the PRODUCER_TIMESTAMP or the SERVER_TIMESTAMP as the <code>startSelectorType</code>. The <code>GetMedia</code> API then starts with the chunk containing the fragment that has the specified timestamp.',
-        }),
-    ).exactOptional(),
-    ContinuationToken: ContinuationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Continuation token that Kinesis Video Streams returned in the previous <code>GetMedia</code> response. The <code>GetMedia</code> API then starts with the chunk identified by the continuation token.',
-        }),
-    ).exactOptional(),
+    StartSelectorType: StartSelectorTypeSchema.openapi({
+      description:
+        "<p>Identifies the fragment on the Kinesis video stream where you want to start getting the data from.</p> <ul> <li> <p>NOW - Start with the latest chunk on the stream.</p> </li> <li> <p>EARLIEST - Start with earliest available chunk on the stream.</p> </li> <li> <p>FRAGMENT_NUMBER - Start with the chunk after a specific fragment. You must also specify the <code>AfterFragmentNumber</code> parameter.</p> </li> <li> <p>PRODUCER_TIMESTAMP or SERVER_TIMESTAMP - Start with the chunk containing a fragment with the specified producer or server timestamp. You specify the timestamp by adding <code>StartTimestamp</code>.</p> </li> <li> <p> CONTINUATION_TOKEN - Read using the specified continuation token. </p> </li> </ul> <note> <p>If you choose the NOW, EARLIEST, or CONTINUATION_TOKEN as the <code>startSelectorType</code>, you don't provide any additional information in the <code>startSelector</code>.</p> </note>",
+    }),
+    AfterFragmentNumber: FragmentNumberStringSchema.exactOptional().openapi({
+      description:
+        'Specifies the fragment number from where you want the <code>GetMedia</code> API to start returning the fragments. ',
+    }),
+    StartTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'A timestamp value. This value is required if you choose the PRODUCER_TIMESTAMP or the SERVER_TIMESTAMP as the <code>startSelectorType</code>. The <code>GetMedia</code> API then starts with the chunk containing the fragment that has the specified timestamp.',
+    }),
+    ContinuationToken: ContinuationTokenSchema.exactOptional().openapi({
+      description:
+        'Continuation token that Kinesis Video Streams returned in the previous <code>GetMedia</code> response. The <code>GetMedia</code> API then starts with the chunk identified by the continuation token.',
+    }),
   })
   .openapi({
     required: ['StartSelectorType'],
@@ -120,29 +100,17 @@ const StartSelectorSchema = z
 
 const GetMediaInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Kinesis video stream name from where you want to get the media content. If you don't specify the <code>streamName</code>, you must specify the <code>streamARN</code>.",
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN of the stream from where you want to get the media content. If you don't specify the <code>streamARN</code>, you must specify the <code>streamName</code>.",
-        }),
-    ).exactOptional(),
-    StartSelector: StartSelectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifies the starting chunk to get from the specified stream. ',
-        }),
-    ),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        "The Kinesis video stream name from where you want to get the media content. If you don't specify the <code>streamName</code>, you must specify the <code>streamARN</code>.",
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        "The ARN of the stream from where you want to get the media content. If you don't specify the <code>streamARN</code>, you must specify the <code>streamName</code>.",
+    }),
+    StartSelector: StartSelectorSchema.openapi({
+      description: 'Identifies the starting chunk to get from the specified stream. ',
+    }),
   })
   .openapi({ required: ['StartSelector'], title: 'GetMediaInput' })
   .openapi('GetMediaInput')
@@ -262,38 +230,22 @@ export const postGetMediaRoute = createRoute({
                 }),
               StartSelector: z
                 .object({
-                  StartSelectorType: StartSelectorTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>Identifies the fragment on the Kinesis video stream where you want to start getting the data from.</p> <ul> <li> <p>NOW - Start with the latest chunk on the stream.</p> </li> <li> <p>EARLIEST - Start with earliest available chunk on the stream.</p> </li> <li> <p>FRAGMENT_NUMBER - Start with the chunk after a specific fragment. You must also specify the <code>AfterFragmentNumber</code> parameter.</p> </li> <li> <p>PRODUCER_TIMESTAMP or SERVER_TIMESTAMP - Start with the chunk containing a fragment with the specified producer or server timestamp. You specify the timestamp by adding <code>StartTimestamp</code>.</p> </li> <li> <p> CONTINUATION_TOKEN - Read using the specified continuation token. </p> </li> </ul> <note> <p>If you choose the NOW, EARLIEST, or CONTINUATION_TOKEN as the <code>startSelectorType</code>, you don't provide any additional information in the <code>startSelector</code>.</p> </note>",
-                      }),
-                  ).exactOptional(),
-                  AfterFragmentNumber: FragmentNumberStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the fragment number from where you want the <code>GetMedia</code> API to start returning the fragments. ',
-                      }),
-                  ).exactOptional(),
-                  StartTimestamp: TimestampSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A timestamp value. This value is required if you choose the PRODUCER_TIMESTAMP or the SERVER_TIMESTAMP as the <code>startSelectorType</code>. The <code>GetMedia</code> API then starts with the chunk containing the fragment that has the specified timestamp.',
-                      }),
-                  ).exactOptional(),
-                  ContinuationToken: ContinuationTokenSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Continuation token that Kinesis Video Streams returned in the previous <code>GetMedia</code> response. The <code>GetMedia</code> API then starts with the chunk identified by the continuation token.',
-                      }),
-                  ).exactOptional(),
+                  StartSelectorType: StartSelectorTypeSchema.exactOptional().openapi({
+                    description:
+                      "<p>Identifies the fragment on the Kinesis video stream where you want to start getting the data from.</p> <ul> <li> <p>NOW - Start with the latest chunk on the stream.</p> </li> <li> <p>EARLIEST - Start with earliest available chunk on the stream.</p> </li> <li> <p>FRAGMENT_NUMBER - Start with the chunk after a specific fragment. You must also specify the <code>AfterFragmentNumber</code> parameter.</p> </li> <li> <p>PRODUCER_TIMESTAMP or SERVER_TIMESTAMP - Start with the chunk containing a fragment with the specified producer or server timestamp. You specify the timestamp by adding <code>StartTimestamp</code>.</p> </li> <li> <p> CONTINUATION_TOKEN - Read using the specified continuation token. </p> </li> </ul> <note> <p>If you choose the NOW, EARLIEST, or CONTINUATION_TOKEN as the <code>startSelectorType</code>, you don't provide any additional information in the <code>startSelector</code>.</p> </note>",
+                  }),
+                  AfterFragmentNumber: FragmentNumberStringSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the fragment number from where you want the <code>GetMedia</code> API to start returning the fragments. ',
+                  }),
+                  StartTimestamp: TimestampSchema.exactOptional().openapi({
+                    description:
+                      'A timestamp value. This value is required if you choose the PRODUCER_TIMESTAMP or the SERVER_TIMESTAMP as the <code>startSelectorType</code>. The <code>GetMedia</code> API then starts with the chunk containing the fragment that has the specified timestamp.',
+                  }),
+                  ContinuationToken: ContinuationTokenSchema.exactOptional().openapi({
+                    description:
+                      'Continuation token that Kinesis Video Streams returned in the previous <code>GetMedia</code> response. The <code>GetMedia</code> API then starts with the chunk identified by the continuation token.',
+                  }),
                 })
                 .openapi({
                   description:

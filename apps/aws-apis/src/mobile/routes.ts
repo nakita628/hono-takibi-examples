@@ -92,17 +92,15 @@ const ProjectDetailsSchema = z
     projectId: ProjectIdSchema.exactOptional(),
     region: ProjectRegionSchema.exactOptional(),
     state: ProjectStateSchema.exactOptional(),
-    createdDate: DateSchema.and(
-      z.any().openapi({ description: ' Date the project was created. ' }),
-    ).exactOptional(),
-    lastUpdatedDate: DateSchema.and(
-      z.any().openapi({ description: ' Date of the last modification of the project. ' }),
-    ).exactOptional(),
-    consoleUrl: ConsoleUrlSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Website URL for this project in the AWS Mobile Hub console. ' }),
-    ).exactOptional(),
+    createdDate: DateSchema.exactOptional().openapi({
+      description: ' Date the project was created. ',
+    }),
+    lastUpdatedDate: DateSchema.exactOptional().openapi({
+      description: ' Date of the last modification of the project. ',
+    }),
+    consoleUrl: ConsoleUrlSchema.exactOptional().openapi({
+      description: ' Website URL for this project in the AWS Mobile Hub console. ',
+    }),
     resources: ResourcesSchema.exactOptional(),
   })
   .openapi({ description: ' Detailed information about an AWS Mobile Hub project. ', required: [] })
@@ -110,13 +108,9 @@ const ProjectDetailsSchema = z
 
 const CreateProjectResultSchema = z
   .object({
-    details: ProjectDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Detailed information about the created AWS Mobile Hub project. ',
-        }),
-    ).exactOptional(),
+    details: ProjectDetailsSchema.exactOptional().openapi({
+      description: ' Detailed information about the created AWS Mobile Hub project. ',
+    }),
   })
   .openapi({
     description: ' Result structure used in response to a request to create a project. ',
@@ -189,17 +183,13 @@ const LimitExceededExceptionSchema = z
 
 const DeleteProjectResultSchema = z
   .object({
-    deletedResources: ResourcesSchema.and(
-      z.any().openapi({ description: ' Resources which were deleted. ' }),
-    ).exactOptional(),
-    orphanedResources: ResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Resources which were not deleted, due to a risk of losing potentially important data or files. ',
-        }),
-    ).exactOptional(),
+    deletedResources: ResourcesSchema.exactOptional().openapi({
+      description: ' Resources which were deleted. ',
+    }),
+    orphanedResources: ResourcesSchema.exactOptional().openapi({
+      description:
+        ' Resources which were not deleted, due to a risk of losing potentially important data or files. ',
+    }),
   })
   .openapi({
     description: ' Result structure used in response to request to delete a project. ',
@@ -256,9 +246,9 @@ const BundleDetailsSchema = z
 
 const DescribeBundleResultSchema = z
   .object({
-    details: BundleDetailsSchema.and(
-      z.any().openapi({ description: ' The details of the bundle. ' }),
-    ).exactOptional(),
+    details: BundleDetailsSchema.exactOptional().openapi({
+      description: ' The details of the bundle. ',
+    }),
   })
   .openapi({ description: ' Result structure contains the details of the bundle. ', required: [] })
   .openapi('DescribeBundleResult')
@@ -278,14 +268,10 @@ const DownloadUrlSchema = z
 
 const ExportBundleResultSchema = z
   .object({
-    downloadUrl: DownloadUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' URL which contains the custom-generated SDK and tool packages used to integrate the client mobile app or web app with the AWS resources created by the AWS Mobile Hub project. ',
-        }),
-    ).exactOptional(),
+    downloadUrl: DownloadUrlSchema.exactOptional().openapi({
+      description:
+        ' URL which contains the custom-generated SDK and tool packages used to integrate the client mobile app or web app with the AWS resources created by the AWS Mobile Hub project. ',
+    }),
   })
   .openapi({
     description:
@@ -312,30 +298,17 @@ const SnapshotIdSchema = z
 
 const ExportProjectResultSchema = z
   .object({
-    downloadUrl: DownloadUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' URL which can be used to download the exported project configuation file(s). ',
-        }),
-    ).exactOptional(),
-    shareUrl: ShareUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' URL which can be shared to allow other AWS users to create their own project in AWS Mobile Hub with the same configuration as the specified project. This URL pertains to a snapshot in time of the project configuration that is created when this API is called. If you want to share additional changes to your project configuration, then you will need to create and share a new snapshot by calling this method again. ',
-        }),
-    ).exactOptional(),
-    snapshotId: SnapshotIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Unique identifier for the exported snapshot of the project configuration. This snapshot identifier is included in the share URL. ',
-        }),
-    ).exactOptional(),
+    downloadUrl: DownloadUrlSchema.exactOptional().openapi({
+      description: ' URL which can be used to download the exported project configuation file(s). ',
+    }),
+    shareUrl: ShareUrlSchema.exactOptional().openapi({
+      description:
+        ' URL which can be shared to allow other AWS users to create their own project in AWS Mobile Hub with the same configuration as the specified project. This URL pertains to a snapshot in time of the project configuration that is created when this API is called. If you want to share additional changes to your project configuration, then you will need to create and share a new snapshot by calling this method again. ',
+    }),
+    snapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description:
+        ' Unique identifier for the exported snapshot of the project configuration. This snapshot identifier is included in the share URL. ',
+    }),
   })
   .openapi({
     description: ' Result structure used for requests to export project configuration details. ',
@@ -358,17 +331,11 @@ const NextTokenSchema = z
 
 const ListBundlesResultSchema = z
   .object({
-    bundleList: BundleListSchema.and(
-      z.any().openapi({ description: ' A list of bundles. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Pagination token. If non-null pagination token is returned in a result, then pass its value in another request to fetch more entries. ',
-        }),
-    ).exactOptional(),
+    bundleList: BundleListSchema.exactOptional().openapi({ description: ' A list of bundles. ' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' Pagination token. If non-null pagination token is returned in a result, then pass its value in another request to fetch more entries. ',
+    }),
   })
   .openapi({
     description: ' Result structure contains a list of all available bundles with details. ',
@@ -378,12 +345,10 @@ const ListBundlesResultSchema = z
 
 const ProjectSummarySchema = z
   .object({
-    name: ProjectNameSchema.and(
-      z.any().openapi({ description: ' Name of the project. ' }),
-    ).exactOptional(),
-    projectId: ProjectIdSchema.and(
-      z.any().openapi({ description: ' Unique project identifier. ' }),
-    ).exactOptional(),
+    name: ProjectNameSchema.exactOptional().openapi({ description: ' Name of the project. ' }),
+    projectId: ProjectIdSchema.exactOptional().openapi({
+      description: ' Unique project identifier. ',
+    }),
   })
   .openapi({ description: ' Summary information about an AWS Mobile Hub project. ', required: [] })
   .openapi('ProjectSummary')
@@ -406,13 +371,9 @@ const ListProjectsResultSchema = z
 
 const UpdateProjectResultSchema = z
   .object({
-    details: ProjectDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Detailed information about the updated AWS Mobile Hub project. ',
-        }),
-    ).exactOptional(),
+    details: ProjectDetailsSchema.exactOptional().openapi({
+      description: ' Detailed information about the updated AWS Mobile Hub project. ',
+    }),
   })
   .openapi({
     description: ' Result structure used for requests to updated project configuration. ',
@@ -442,14 +403,10 @@ const ContentsSchema = z
 
 const CreateProjectRequestSchema = z
   .object({
-    contents: ContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' ZIP or YAML file which contains configuration settings to be used when creating the project. This may be the contents of the file downloaded from the URL provided in an export project operation. ',
-        }),
-    ).exactOptional(),
+    contents: ContentsSchema.exactOptional().openapi({
+      description:
+        ' ZIP or YAML file which contains configuration settings to be used when creating the project. This may be the contents of the file downloaded from the URL provided in an export project operation. ',
+    }),
   })
   .openapi({
     title: 'CreateProjectRequest',
@@ -459,7 +416,7 @@ const CreateProjectRequestSchema = z
   .openapi('CreateProjectRequest')
 
 const DeleteProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteProjectRequest',
     description: ' Request structure used to request a project be deleted. ',
@@ -467,7 +424,7 @@ const DeleteProjectRequestSchema = z
   .openapi('DeleteProjectRequest')
 
 const DescribeBundleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeBundleRequest',
     description: ' Request structure to request the details of a specific bundle. ',
@@ -475,7 +432,7 @@ const DescribeBundleRequestSchema = z
   .openapi('DescribeBundleRequest')
 
 const DescribeProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeProjectRequest',
     description: ' Request structure used to request details about a project. ',
@@ -483,7 +440,7 @@ const DescribeProjectRequestSchema = z
   .openapi('DescribeProjectRequest')
 
 const ExportBundleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ExportBundleRequest',
     description:
@@ -492,7 +449,7 @@ const ExportBundleRequestSchema = z
   .openapi('ExportBundleRequest')
 
 const ExportProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ExportProjectRequest',
     description: ' Request structure used in requests to export project configuration details. ',
@@ -505,7 +462,7 @@ const MaxResultsSchema = z
   .openapi('MaxResults')
 
 const ListBundlesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListBundlesRequest',
     description: ' Request structure to request all available bundles. ',
@@ -513,7 +470,7 @@ const ListBundlesRequestSchema = z
   .openapi('ListBundlesRequest')
 
 const ListProjectsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListProjectsRequest',
     description: ' Request structure used to request projects list in AWS Mobile Hub. ',
@@ -522,14 +479,10 @@ const ListProjectsRequestSchema = z
 
 const UpdateProjectRequestSchema = z
   .object({
-    contents: ContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' ZIP or YAML file which contains project configuration to be updated. This should be the contents of the file downloaded from the URL provided in an export project operation. ',
-        }),
-    ).exactOptional(),
+    contents: ContentsSchema.exactOptional().openapi({
+      description:
+        ' ZIP or YAML file which contains project configuration to be updated. This should be the contents of the file downloaded from the URL provided in an export project operation. ',
+    }),
   })
   .openapi({
     title: 'UpdateProjectRequest',

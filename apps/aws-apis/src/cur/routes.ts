@@ -25,14 +25,10 @@ const ReportNameSchema = z
 
 const DeleteReportDefinitionRequestSchema = z
   .object({
-    ReportName: ReportNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the report that you want to delete. The name must be unique, is case sensitive, and can't include spaces.",
-        }),
-    ).exactOptional(),
+    ReportName: ReportNameSchema.exactOptional().openapi({
+      description:
+        "The name of the report that you want to delete. The name must be unique, is case sensitive, and can't include spaces.",
+    }),
   })
   .openapi({
     title: 'DeleteReportDefinitionRequest',
@@ -150,49 +146,29 @@ const ReportDefinitionSchema = z
     TimeUnit: TimeUnitSchema,
     Format: ReportFormatSchema,
     Compression: CompressionFormatSchema,
-    AdditionalSchemaElements: SchemaElementListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of strings that indicate additional content that Amazon Web Services includes in the report, such as individual resource IDs. ',
-        }),
-    ),
+    AdditionalSchemaElements: SchemaElementListSchema.openapi({
+      description:
+        'A list of strings that indicate additional content that Amazon Web Services includes in the report, such as individual resource IDs. ',
+    }),
     S3Bucket: S3BucketSchema,
     S3Prefix: S3PrefixSchema,
     S3Region: AWSRegionSchema,
-    AdditionalArtifacts: AdditionalArtifactListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of manifests that you want Amazon Web Services to create for this report.',
-        }),
-    ).exactOptional(),
-    RefreshClosedReports: RefreshClosedReportsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether you want Amazon Web Services to update your reports after they have been finalized if Amazon Web Services detects charges related to previous months. These charges can include refunds, credits, or support fees.',
-        }),
-    ).exactOptional(),
-    ReportVersioning: ReportVersioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether you want Amazon Web Services to overwrite the previous version of each report or to deliver the report in addition to the previous versions.',
-        }),
-    ).exactOptional(),
-    BillingViewArn: BillingViewArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon resource name of the billing view. You can get this value by using the billing view service public APIs. ',
-        }),
-    ).exactOptional(),
+    AdditionalArtifacts: AdditionalArtifactListSchema.exactOptional().openapi({
+      description:
+        'A list of manifests that you want Amazon Web Services to create for this report.',
+    }),
+    RefreshClosedReports: RefreshClosedReportsSchema.exactOptional().openapi({
+      description:
+        'Whether you want Amazon Web Services to update your reports after they have been finalized if Amazon Web Services detects charges related to previous months. These charges can include refunds, credits, or support fees.',
+    }),
+    ReportVersioning: ReportVersioningSchema.exactOptional().openapi({
+      description:
+        'Whether you want Amazon Web Services to overwrite the previous version of each report or to deliver the report in addition to the previous versions.',
+    }),
+    BillingViewArn: BillingViewArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon resource name of the billing view. You can get this value by using the billing view service public APIs. ',
+    }),
   })
   .openapi({
     required: [
@@ -224,11 +200,9 @@ const GenericStringSchema = z
 
 const DescribeReportDefinitionsResponseSchema = z
   .object({
-    ReportDefinitions: ReportDefinitionListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of AWS Cost and Usage reports owned by the account.' }),
-    ).exactOptional(),
+    ReportDefinitions: ReportDefinitionListSchema.exactOptional().openapi({
+      description: 'A list of AWS Cost and Usage reports owned by the account.',
+    }),
     NextToken: GenericStringSchema.exactOptional(),
   })
   .openapi({
@@ -282,7 +256,9 @@ const DescribeReportDefinitionsRequestSchema = z
   })
   .openapi('DescribeReportDefinitionsRequest')
 
-const ModifyReportDefinitionResponseSchema = z.object({}).openapi('ModifyReportDefinitionResponse')
+const ModifyReportDefinitionResponseSchema = z
+  .looseObject({})
+  .openapi('ModifyReportDefinitionResponse')
 
 const ModifyReportDefinitionRequestSchema = z
   .object({ ReportName: ReportNameSchema, ReportDefinition: ReportDefinitionSchema })
@@ -290,7 +266,7 @@ const ModifyReportDefinitionRequestSchema = z
   .openapi('ModifyReportDefinitionRequest')
 
 const PutReportDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.',
@@ -299,14 +275,10 @@ const PutReportDefinitionResponseSchema = z
 
 const PutReportDefinitionRequestSchema = z
   .object({
-    ReportDefinition: ReportDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the output of the PutReportDefinition operation. The content consists of the detailed metadata and data file information. ',
-        }),
-    ),
+    ReportDefinition: ReportDefinitionSchema.openapi({
+      description:
+        'Represents the output of the PutReportDefinition operation. The content consists of the detailed metadata and data file information. ',
+    }),
   })
   .openapi({
     required: ['ReportDefinition'],

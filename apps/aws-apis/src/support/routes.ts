@@ -1,22 +1,177 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CaseIdSchema = z.string().openapi('CaseId')
+
+const DisplayIdSchema = z.string().openapi('DisplayId')
+
+const SubjectSchema = z.string().openapi('Subject')
+
+const StatusSchema = z.string().openapi('Status')
+
+const ServiceCodeSchema = z.string().openapi('ServiceCode')
+
+const CategoryCodeSchema = z.string().openapi('CategoryCode')
+
+const SeverityCodeSchema = z.string().openapi('SeverityCode')
+
+const SubmittedBySchema = z.string().openapi('SubmittedBy')
+
+const TimeCreatedSchema = z.string().openapi('TimeCreated')
+
+const CommunicationBodySchema = z.string().min(1).max(8000).openapi('CommunicationBody')
+
+const AttachmentIdSchema = z.string().openapi('AttachmentId')
+
+const FileNameSchema = z.string().openapi('FileName')
+
+const AttachmentDetailsSchema = z
+  .object({
+    attachmentId: AttachmentIdSchema.exactOptional().openapi({
+      description: 'The ID of the attachment.',
+    }),
+    fileName: FileNameSchema.exactOptional().openapi({
+      description: 'The file name of the attachment.',
+    }),
+  })
+  .openapi({
+    description:
+      'The file name and ID of an attachment to a case communication. You can use the ID to retrieve the attachment with the <a>DescribeAttachment</a> operation.',
+    required: [],
+  })
+  .openapi('AttachmentDetails')
+
+const AttachmentSetSchema = z.array(AttachmentDetailsSchema).openapi('AttachmentSet')
+
+const CommunicationSchema = z
+  .object({
+    caseId: CaseIdSchema.exactOptional().openapi({
+      description:
+        'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
+    }),
+    body: CommunicationBodySchema.exactOptional().openapi({
+      description:
+        'The text of the communication between the customer and Amazon Web Services Support.',
+    }),
+    submittedBy: SubmittedBySchema.exactOptional().openapi({
+      description:
+        'The identity of the account that submitted, or responded to, the support case. Customer entries include the role or IAM user as well as the email address. For example, "AdminRole (Role) &lt;janedoe@example.com&gt;. Entries from the Amazon Web Services Support team display "Amazon Web Services," and don\'t show an email address. ',
+    }),
+    timeCreated: TimeCreatedSchema.exactOptional().openapi({
+      description: 'The time the communication was created.',
+    }),
+    attachmentSet: AttachmentSetSchema.exactOptional().openapi({
+      description: 'Information about the attachments to the case communication.',
+    }),
+  })
+  .openapi({
+    description:
+      'A communication associated with a support case. The communication consists of the case ID, the message body, attachment information, the submitter of the communication, and the date and time of the communication.',
+    required: [],
+  })
+  .openapi('Communication')
+
+const CommunicationListSchema = z.array(CommunicationSchema).openapi('CommunicationList')
+
+const NextTokenSchema = z.string().openapi('NextToken')
+
+const RecentCaseCommunicationsSchema = z
+  .object({
+    communications: CommunicationListSchema.exactOptional().openapi({
+      description: 'The five most recent communications associated with the case.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A resumption point for pagination.',
+    }),
+  })
+  .openapi({
+    description: 'The five most recent communications associated with the case.',
+    required: [],
+  })
+  .openapi('RecentCaseCommunications')
+
+const CcEmailAddressSchema = z.string().openapi('CcEmailAddress')
+
+const CcEmailAddressListSchema = z
+  .array(CcEmailAddressSchema)
+  .min(0)
+  .max(10)
+  .openapi('CcEmailAddressList')
+
+const LanguageSchema = z.string().openapi('Language')
+
+const CaseDetailsSchema = z
+  .object({
+    caseId: CaseIdSchema.exactOptional().openapi({
+      description:
+        'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
+    }),
+    displayId: DisplayIdSchema.exactOptional().openapi({
+      description:
+        'The ID displayed for the case in the Amazon Web Services Support Center. This is a numeric string.',
+    }),
+    subject: SubjectSchema.exactOptional().openapi({
+      description: 'The subject line for the case in the Amazon Web Services Support Center.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the case.</p> <p>Valid values:</p> <ul> <li> <p> <code>opened</code> </p> </li> <li> <p> <code>pending-customer-action</code> </p> </li> <li> <p> <code>reopened</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> <li> <p> <code>unassigned</code> </p> </li> <li> <p> <code>work-in-progress</code> </p> </li> </ul>',
+    }),
+    serviceCode: ServiceCodeSchema.exactOptional().openapi({
+      description:
+        'The code for the Amazon Web Services service. You can get a list of codes and the corresponding service names by calling <a>DescribeServices</a>.',
+    }),
+    categoryCode: CategoryCodeSchema.exactOptional().openapi({
+      description: 'The category of problem for the support case.',
+    }),
+    severityCode: SeverityCodeSchema.exactOptional().openapi({
+      description:
+        'The code for the severity level returned by the call to <a>DescribeSeverityLevels</a>.',
+    }),
+    submittedBy: SubmittedBySchema.exactOptional().openapi({
+      description: 'The email address of the account that submitted the case.',
+    }),
+    timeCreated: TimeCreatedSchema.exactOptional().openapi({
+      description: 'The time that the case was created in the Amazon Web Services Support Center.',
+    }),
+    recentCommunications: RecentCaseCommunicationsSchema.exactOptional().openapi({
+      description:
+        'The five most recent communications between you and Amazon Web Services Support Center, including the IDs of any attachments to the communications. Also includes a <code>nextToken</code> that you can use to retrieve earlier communications.',
+    }),
+    ccEmailAddresses: CcEmailAddressListSchema.exactOptional().openapi({
+      description: 'The email addresses that receive copies of communication about the case.',
+    }),
+    language: LanguageSchema.exactOptional().openapi({
+      description:
+        'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>A JSON-formatted object that contains the metadata for a support case. It is contained in the response from a <a>DescribeCases</a> request. <b>CaseDetails</b> contains the following fields:</p> <ul> <li> <p> <b>caseId</b> - The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i>.</p> </li> <li> <p> <b>categoryCode</b> - The category of problem for the support case. Corresponds to the <code>CategoryCode</code> values returned by a call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>displayId</b> - The identifier for the case on pages in the Amazon Web Services Support Center.</p> </li> <li> <p> <b>language</b> - The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p> </li> <li> <p> <b>nextToken</b> - A resumption point for pagination.</p> </li> <li> <p> <b>recentCommunications</b> - One or more <a>Communication</a> objects. Fields of these objects are <code>attachments</code>, <code>body</code>, <code>caseId</code>, <code>submittedBy</code>, and <code>timeCreated</code>.</p> </li> <li> <p> <b>serviceCode</b> - The identifier for the Amazon Web Services service that corresponds to the service code defined in the call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>severityCode</b> - The severity code assigned to the case. Contains one of the values returned by the call to <a>DescribeSeverityLevels</a>. The possible values are: <code>low</code>, <code>normal</code>, <code>high</code>, <code>urgent</code>, and <code>critical</code>.</p> </li> <li> <p> <b>status</b> - The status of the case in the Amazon Web Services Support Center. Valid values:</p> <ul> <li> <p> <code>opened</code> </p> </li> <li> <p> <code>pending-customer-action</code> </p> </li> <li> <p> <code>reopened</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> <li> <p> <code>unassigned</code> </p> </li> <li> <p> <code>work-in-progress</code> </p> </li> </ul> </li> <li> <p> <b>subject</b> - The subject line of the case.</p> </li> <li> <p> <b>submittedBy</b> - The email address of the account that submitted the case.</p> </li> <li> <p> <b>timeCreated</b> - The time the case was created, in ISO-8601 format.</p> </li> </ul>',
+    required: [],
+  })
+  .openapi('CaseDetails')
+
+const CaseListSchema = z.array(CaseDetailsSchema).openapi('CaseList')
+
+type DescribeCasesResponseType = {
+  cases?: z.infer<typeof CaseListSchema> & unknown
+  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+}
+
 const AttachmentSetIdSchema = z.string().openapi('AttachmentSetId')
 
 const ExpiryTimeSchema = z.string().openapi('ExpiryTime')
 
 const AddAttachmentsToSetResponseSchema = z
   .object({
-    attachmentSetId: AttachmentSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the attachment set. If an <code>attachmentSetId</code> was not specified, a new attachment set is created, and the ID of the set is returned in the response. If an <code>attachmentSetId</code> was specified, the attachments are added to the specified set, if it exists.',
-        }),
-    ).exactOptional(),
-    expiryTime: ExpiryTimeSchema.and(
-      z.any().openapi({ description: 'The time and date when the attachment set expires.' }),
-    ).exactOptional(),
+    attachmentSetId: AttachmentSetIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the attachment set. If an <code>attachmentSetId</code> was not specified, a new attachment set is created, and the ID of the set is returned in the response. If an <code>attachmentSetId</code> was specified, the attachments are added to the specified set, if it exists.',
+    }),
+    expiryTime: ExpiryTimeSchema.exactOptional().openapi({
+      description: 'The time and date when the attachment set expires.',
+    }),
   })
   .openapi({
     description:
@@ -25,18 +180,16 @@ const AddAttachmentsToSetResponseSchema = z
   })
   .openapi('AddAttachmentsToSetResponse')
 
-const FileNameSchema = z.string().openapi('FileName')
-
 const DataSchema = z.string().openapi('Data')
 
 const AttachmentSchema = z
   .object({
-    fileName: FileNameSchema.and(
-      z.any().openapi({ description: 'The name of the attachment file.' }),
-    ).exactOptional(),
-    data: DataSchema.and(
-      z.any().openapi({ description: 'The content of the attachment file.' }),
-    ).exactOptional(),
+    fileName: FileNameSchema.exactOptional().openapi({
+      description: 'The name of the attachment file.',
+    }),
+    data: DataSchema.exactOptional().openapi({
+      description: 'The content of the attachment file.',
+    }),
   })
   .openapi({
     description:
@@ -49,22 +202,14 @@ const AttachmentsSchema = z.array(AttachmentSchema).openapi('Attachments')
 
 const AddAttachmentsToSetRequestSchema = z
   .object({
-    attachmentSetId: AttachmentSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the attachment set. If an <code>attachmentSetId</code> is not specified, a new attachment set is created, and the ID of the set is returned in the response. If an <code>attachmentSetId</code> is specified, the attachments are added to the specified set, if it exists.',
-        }),
-    ).exactOptional(),
-    attachments: AttachmentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more attachments to add to the set. You can add up to three attachments per set. The size limit is 5 MB per attachment.</p> <p>In the <code>Attachment</code> object, use the <code>data</code> parameter to specify the contents of the attachment file. In the previous request syntax, the value for <code>data</code> appear as <code>blob</code>, which is represented as a base64-encoded string. The value for <code>fileName</code> is the name of the attachment, such as <code>troubleshoot-screenshot.png</code>.</p>',
-        }),
-    ),
+    attachmentSetId: AttachmentSetIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the attachment set. If an <code>attachmentSetId</code> is not specified, a new attachment set is created, and the ID of the set is returned in the response. If an <code>attachmentSetId</code> is specified, the attachments are added to the specified set, if it exists.',
+    }),
+    attachments: AttachmentsSchema.openapi({
+      description:
+        '<p>One or more attachments to add to the set. You can add up to three attachments per set. The size limit is 5 MB per attachment.</p> <p>In the <code>Attachment</code> object, use the <code>data</code> parameter to specify the contents of the attachment file. In the previous request syntax, the value for <code>data</code> appear as <code>blob</code>, which is represented as a base64-encoded string. The value for <code>fileName</code> is the name of the attachment, such as <code>troubleshoot-screenshot.png</code>.</p>',
+    }),
   })
   .openapi({ required: ['attachments'], title: 'AddAttachmentsToSetRequest' })
   .openapi('AddAttachmentsToSetRequest')
@@ -83,14 +228,9 @@ const ResultSchema = z.boolean().openapi('Result')
 
 const AddCommunicationToCaseResponseSchema = z
   .object({
-    result: ResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if <a>AddCommunicationToCase</a> succeeds. Otherwise, returns an error.',
-        }),
-    ).exactOptional(),
+    result: ResultSchema.exactOptional().openapi({
+      description: 'True if <a>AddCommunicationToCase</a> succeeds. Otherwise, returns an error.',
+    }),
   })
   .openapi({
     description: 'The result of the <a>AddCommunicationToCase</a> operation.',
@@ -98,49 +238,23 @@ const AddCommunicationToCaseResponseSchema = z
   })
   .openapi('AddCommunicationToCaseResponse')
 
-const CaseIdSchema = z.string().openapi('CaseId')
-
-const CommunicationBodySchema = z.string().min(1).max(8000).openapi('CommunicationBody')
-
-const CcEmailAddressSchema = z.string().openapi('CcEmailAddress')
-
-const CcEmailAddressListSchema = z
-  .array(CcEmailAddressSchema)
-  .min(0)
-  .max(10)
-  .openapi('CcEmailAddressList')
-
 const AddCommunicationToCaseRequestSchema = z
   .object({
-    caseId: CaseIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
-        }),
-    ).exactOptional(),
-    communicationBody: CommunicationBodySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The body of an email communication to add to the support case.' }),
-    ),
-    ccEmailAddresses: CcEmailAddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email addresses in the CC line of an email to be added to the support case.',
-        }),
-    ).exactOptional(),
-    attachmentSetId: AttachmentSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of a set of one or more attachments for the communication to add to the case. Create the set by calling <a>AddAttachmentsToSet</a> ',
-        }),
-    ).exactOptional(),
+    caseId: CaseIdSchema.exactOptional().openapi({
+      description:
+        'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
+    }),
+    communicationBody: CommunicationBodySchema.openapi({
+      description: 'The body of an email communication to add to the support case.',
+    }),
+    ccEmailAddresses: CcEmailAddressListSchema.exactOptional().openapi({
+      description:
+        'The email addresses in the CC line of an email to be added to the support case.',
+    }),
+    attachmentSetId: AttachmentSetIdSchema.exactOptional().openapi({
+      description:
+        'The ID of a set of one or more attachments for the communication to add to the case. Create the set by calling <a>AddAttachmentsToSet</a> ',
+    }),
   })
   .openapi({ required: ['communicationBody'], title: 'AddCommunicationToCaseRequest' })
   .openapi('AddCommunicationToCaseRequest')
@@ -149,14 +263,10 @@ const CaseIdNotFoundSchema = z.any().openapi('CaseIdNotFound')
 
 const CreateCaseResponseSchema = z
   .object({
-    caseId: CaseIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support case ID requested or returned in the call. The case ID is an alphanumeric string in the following format: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
-        }),
-    ).exactOptional(),
+    caseId: CaseIdSchema.exactOptional().openapi({
+      description:
+        'The support case ID requested or returned in the call. The case ID is an alphanumeric string in the following format: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
+    }),
   })
   .openapi({
     description:
@@ -165,92 +275,46 @@ const CreateCaseResponseSchema = z
   })
   .openapi('CreateCaseResponse')
 
-const SubjectSchema = z.string().openapi('Subject')
-
-const ServiceCodeSchema = z.string().openapi('ServiceCode')
-
-const SeverityCodeSchema = z.string().openapi('SeverityCode')
-
-const CategoryCodeSchema = z.string().openapi('CategoryCode')
-
-const LanguageSchema = z.string().openapi('Language')
-
 const IssueTypeSchema = z.string().openapi('IssueType')
 
 const CreateCaseRequestSchema = z
   .object({
-    subject: SubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The title of the support case. The title appears in the <b>Subject</b> field on the Amazon Web Services Support Center <a href="https://console.aws.amazon.com/support/home#/case/create">Create Case</a> page.',
-        }),
-    ),
-    serviceCode: ServiceCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code for the Amazon Web Services service. You can use the <a>DescribeServices</a> operation to get the possible <code>serviceCode</code> values.',
-        }),
-    ).exactOptional(),
-    severityCode: SeverityCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that indicates the urgency of the case. This value determines the response time according to your service level agreement with Amazon Web Services Support. You can use the <a>DescribeSeverityLevels</a> operation to get the possible values for <code>severityCode</code>. </p> <p>For more information, see <a>SeverityLevel</a> and <a href="https://docs.aws.amazon.com/awssupport/latest/user/getting-started.html#choosing-severity">Choosing a Severity</a> in the <i>Amazon Web Services Support User Guide</i>.</p> <note> <p>The availability of severity levels depends on the support plan for the Amazon Web Services account.</p> </note>',
-        }),
-    ).exactOptional(),
-    categoryCode: CategoryCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The category of problem for the support case. You also use the <a>DescribeServices</a> operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.',
-        }),
-    ).exactOptional(),
-    communicationBody: CommunicationBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The communication body text that describes the issue. This text appears in the <b>Description</b> field on the Amazon Web Services Support Center <a href="https://console.aws.amazon.com/support/home#/case/create">Create Case</a> page.',
-        }),
-    ),
-    ccEmailAddresses: CcEmailAddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of email addresses that Amazon Web Services Support copies on case correspondence. Amazon Web Services Support identifies the account that creates the case when you specify your Amazon Web Services credentials in an HTTP POST method or use the <a href="http://aws.amazon.com/tools/">Amazon Web Services SDKs</a>. ',
-        }),
-    ).exactOptional(),
-    language: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
-        }),
-    ).exactOptional(),
-    issueType: IssueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The type of issue for the case. You can specify <code>customer-service</code> or <code>technical</code>. If you don't specify a value, the default is <code>technical</code>.",
-        }),
-    ).exactOptional(),
-    attachmentSetId: AttachmentSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of a set of one or more attachments for the case. Create the set by using the <a>AddAttachmentsToSet</a> operation.',
-        }),
-    ).exactOptional(),
+    subject: SubjectSchema.openapi({
+      description:
+        'The title of the support case. The title appears in the <b>Subject</b> field on the Amazon Web Services Support Center <a href="https://console.aws.amazon.com/support/home#/case/create">Create Case</a> page.',
+    }),
+    serviceCode: ServiceCodeSchema.exactOptional().openapi({
+      description:
+        'The code for the Amazon Web Services service. You can use the <a>DescribeServices</a> operation to get the possible <code>serviceCode</code> values.',
+    }),
+    severityCode: SeverityCodeSchema.exactOptional().openapi({
+      description:
+        '<p>A value that indicates the urgency of the case. This value determines the response time according to your service level agreement with Amazon Web Services Support. You can use the <a>DescribeSeverityLevels</a> operation to get the possible values for <code>severityCode</code>. </p> <p>For more information, see <a>SeverityLevel</a> and <a href="https://docs.aws.amazon.com/awssupport/latest/user/getting-started.html#choosing-severity">Choosing a Severity</a> in the <i>Amazon Web Services Support User Guide</i>.</p> <note> <p>The availability of severity levels depends on the support plan for the Amazon Web Services account.</p> </note>',
+    }),
+    categoryCode: CategoryCodeSchema.exactOptional().openapi({
+      description:
+        'The category of problem for the support case. You also use the <a>DescribeServices</a> operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.',
+    }),
+    communicationBody: CommunicationBodySchema.openapi({
+      description:
+        'The communication body text that describes the issue. This text appears in the <b>Description</b> field on the Amazon Web Services Support Center <a href="https://console.aws.amazon.com/support/home#/case/create">Create Case</a> page.',
+    }),
+    ccEmailAddresses: CcEmailAddressListSchema.exactOptional().openapi({
+      description:
+        'A list of email addresses that Amazon Web Services Support copies on case correspondence. Amazon Web Services Support identifies the account that creates the case when you specify your Amazon Web Services credentials in an HTTP POST method or use the <a href="http://aws.amazon.com/tools/">Amazon Web Services SDKs</a>. ',
+    }),
+    language: LanguageSchema.exactOptional().openapi({
+      description:
+        'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
+    }),
+    issueType: IssueTypeSchema.exactOptional().openapi({
+      description:
+        "The type of issue for the case. You can specify <code>customer-service</code> or <code>technical</code>. If you don't specify a value, the default is <code>technical</code>.",
+    }),
+    attachmentSetId: AttachmentSetIdSchema.exactOptional().openapi({
+      description:
+        'The ID of a set of one or more attachments for the case. Create the set by using the <a>AddAttachmentsToSet</a> operation.',
+    }),
   })
   .openapi({ required: ['subject', 'communicationBody'], title: 'CreateCaseRequest' })
   .openapi('CreateCaseRequest')
@@ -259,14 +323,10 @@ const CaseCreationLimitExceededSchema = z.any().openapi('CaseCreationLimitExceed
 
 const DescribeAttachmentResponseSchema = z
   .object({
-    attachment: AttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This object includes the attachment content and file name.</p> <p>In the previous response syntax, the value for the <code>data</code> parameter appears as <code>blob</code>, which is represented as a base64-encoded string. The value for <code>fileName</code> is the name of the attachment, such as <code>troubleshoot-screenshot.png</code>.</p>',
-        }),
-    ).exactOptional(),
+    attachment: AttachmentSchema.exactOptional().openapi({
+      description:
+        '<p>This object includes the attachment content and file name.</p> <p>In the previous response syntax, the value for the <code>data</code> parameter appears as <code>blob</code>, which is represented as a base64-encoded string. The value for <code>fileName</code> is the name of the attachment, such as <code>troubleshoot-screenshot.png</code>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -275,18 +335,12 @@ const DescribeAttachmentResponseSchema = z
   })
   .openapi('DescribeAttachmentResponse')
 
-const AttachmentIdSchema = z.string().openapi('AttachmentId')
-
 const DescribeAttachmentRequestSchema = z
   .object({
-    attachmentId: AttachmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the attachment to return. Attachment IDs are returned by the <a>DescribeCommunications</a> operation.',
-        }),
-    ),
+    attachmentId: AttachmentIdSchema.openapi({
+      description:
+        'The ID of the attachment to return. Attachment IDs are returned by the <a>DescribeCommunications</a> operation.',
+    }),
   })
   .openapi({ required: ['attachmentId'], title: 'DescribeAttachmentRequest' })
   .openapi('DescribeAttachmentRequest')
@@ -295,199 +349,14 @@ const DescribeAttachmentLimitExceededSchema = z.any().openapi('DescribeAttachmen
 
 const AttachmentIdNotFoundSchema = z.any().openapi('AttachmentIdNotFound')
 
-const DisplayIdSchema = z.string().openapi('DisplayId')
-
-const StatusSchema = z.string().openapi('Status')
-
-const SubmittedBySchema = z.string().openapi('SubmittedBy')
-
-const TimeCreatedSchema = z.string().openapi('TimeCreated')
-
-const AttachmentDetailsSchema = z
+const DescribeCasesResponseSchema: z.ZodType<DescribeCasesResponseType> = z
   .object({
-    attachmentId: AttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the attachment.' }),
-    ).exactOptional(),
-    fileName: FileNameSchema.and(
-      z.any().openapi({ description: 'The file name of the attachment.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The file name and ID of an attachment to a case communication. You can use the ID to retrieve the attachment with the <a>DescribeAttachment</a> operation.',
-    required: [],
-  })
-  .openapi('AttachmentDetails')
-
-const AttachmentSetSchema = z.array(AttachmentDetailsSchema).openapi('AttachmentSet')
-
-const CommunicationSchema = z
-  .object({
-    caseId: CaseIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
-        }),
-    ).exactOptional(),
-    body: CommunicationBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text of the communication between the customer and Amazon Web Services Support.',
-        }),
-    ).exactOptional(),
-    submittedBy: SubmittedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity of the account that submitted, or responded to, the support case. Customer entries include the role or IAM user as well as the email address. For example, "AdminRole (Role) &lt;janedoe@example.com&gt;. Entries from the Amazon Web Services Support team display "Amazon Web Services," and don\'t show an email address. ',
-        }),
-    ).exactOptional(),
-    timeCreated: TimeCreatedSchema.and(
-      z.any().openapi({ description: 'The time the communication was created.' }),
-    ).exactOptional(),
-    attachmentSet: AttachmentSetSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the attachments to the case communication.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A communication associated with a support case. The communication consists of the case ID, the message body, attachment information, the submitter of the communication, and the date and time of the communication.',
-    required: [],
-  })
-  .openapi('Communication')
-
-const CommunicationListSchema = z.array(CommunicationSchema).openapi('CommunicationList')
-
-const NextTokenSchema = z.string().openapi('NextToken')
-
-const RecentCaseCommunicationsSchema = z
-  .object({
-    communications: CommunicationListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The five most recent communications associated with the case.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A resumption point for pagination.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The five most recent communications associated with the case.',
-    required: [],
-  })
-  .openapi('RecentCaseCommunications')
-
-const CaseDetailsSchema = z
-  .object({
-    caseId: CaseIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
-        }),
-    ).exactOptional(),
-    displayId: DisplayIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID displayed for the case in the Amazon Web Services Support Center. This is a numeric string.',
-        }),
-    ).exactOptional(),
-    subject: SubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The subject line for the case in the Amazon Web Services Support Center.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the case.</p> <p>Valid values:</p> <ul> <li> <p> <code>opened</code> </p> </li> <li> <p> <code>pending-customer-action</code> </p> </li> <li> <p> <code>reopened</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> <li> <p> <code>unassigned</code> </p> </li> <li> <p> <code>work-in-progress</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    serviceCode: ServiceCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code for the Amazon Web Services service. You can get a list of codes and the corresponding service names by calling <a>DescribeServices</a>.',
-        }),
-    ).exactOptional(),
-    categoryCode: CategoryCodeSchema.and(
-      z.any().openapi({ description: 'The category of problem for the support case.' }),
-    ).exactOptional(),
-    severityCode: SeverityCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code for the severity level returned by the call to <a>DescribeSeverityLevels</a>.',
-        }),
-    ).exactOptional(),
-    submittedBy: SubmittedBySchema.and(
-      z.any().openapi({ description: 'The email address of the account that submitted the case.' }),
-    ).exactOptional(),
-    timeCreated: TimeCreatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the case was created in the Amazon Web Services Support Center.',
-        }),
-    ).exactOptional(),
-    recentCommunications: RecentCaseCommunicationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The five most recent communications between you and Amazon Web Services Support Center, including the IDs of any attachments to the communications. Also includes a <code>nextToken</code> that you can use to retrieve earlier communications.',
-        }),
-    ).exactOptional(),
-    ccEmailAddresses: CcEmailAddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email addresses that receive copies of communication about the case.',
-        }),
-    ).exactOptional(),
-    language: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>A JSON-formatted object that contains the metadata for a support case. It is contained in the response from a <a>DescribeCases</a> request. <b>CaseDetails</b> contains the following fields:</p> <ul> <li> <p> <b>caseId</b> - The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i>.</p> </li> <li> <p> <b>categoryCode</b> - The category of problem for the support case. Corresponds to the <code>CategoryCode</code> values returned by a call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>displayId</b> - The identifier for the case on pages in the Amazon Web Services Support Center.</p> </li> <li> <p> <b>language</b> - The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p> </li> <li> <p> <b>nextToken</b> - A resumption point for pagination.</p> </li> <li> <p> <b>recentCommunications</b> - One or more <a>Communication</a> objects. Fields of these objects are <code>attachments</code>, <code>body</code>, <code>caseId</code>, <code>submittedBy</code>, and <code>timeCreated</code>.</p> </li> <li> <p> <b>serviceCode</b> - The identifier for the Amazon Web Services service that corresponds to the service code defined in the call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>severityCode</b> - The severity code assigned to the case. Contains one of the values returned by the call to <a>DescribeSeverityLevels</a>. The possible values are: <code>low</code>, <code>normal</code>, <code>high</code>, <code>urgent</code>, and <code>critical</code>.</p> </li> <li> <p> <b>status</b> - The status of the case in the Amazon Web Services Support Center. Valid values:</p> <ul> <li> <p> <code>opened</code> </p> </li> <li> <p> <code>pending-customer-action</code> </p> </li> <li> <p> <code>reopened</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> <li> <p> <code>unassigned</code> </p> </li> <li> <p> <code>work-in-progress</code> </p> </li> </ul> </li> <li> <p> <b>subject</b> - The subject line of the case.</p> </li> <li> <p> <b>submittedBy</b> - The email address of the account that submitted the case.</p> </li> <li> <p> <b>timeCreated</b> - The time the case was created, in ISO-8601 format.</p> </li> </ul>',
-    required: [],
-  })
-  .openapi('CaseDetails')
-
-const CaseListSchema = z.array(CaseDetailsSchema).openapi('CaseList')
-
-const DescribeCasesResponseSchema = z
-  .object({
-    cases: CaseListSchema.and(
-      z.any().openapi({ description: 'The details for the cases that match the request.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A resumption point for pagination.' }),
-    ).exactOptional(),
+    cases: CaseListSchema.exactOptional().openapi({
+      description: 'The details for the cases that match the request.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A resumption point for pagination.',
+    }),
   })
   .openapi({
     description:
@@ -510,82 +379,52 @@ const IncludeCommunicationsSchema = z.boolean().openapi('IncludeCommunications')
 
 const DescribeCasesRequestSchema = z
   .object({
-    caseIdList: CaseIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of ID numbers of the support cases you want returned. The maximum number of cases is 100.',
-        }),
-    ).exactOptional(),
-    displayId: DisplayIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID displayed for a case in the Amazon Web Services Support Center user interface.',
-        }),
-    ).exactOptional(),
-    afterTime: AfterTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start date for a filtered date search on support case communications. Case communications are available for 12 months after creation.',
-        }),
-    ).exactOptional(),
-    beforeTime: BeforeTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end date for a filtered date search on support case communications. Case communications are available for 12 months after creation.',
-        }),
-    ).exactOptional(),
-    includeResolvedCases: IncludeResolvedCasesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether to include resolved support cases in the <code>DescribeCases</code> response. By default, resolved cases aren't included.",
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A resumption point for pagination.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to return before paginating.' }),
-    ).exactOptional(),
-    language: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
-        }),
-    ).exactOptional(),
-    includeCommunications: IncludeCommunicationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to include communications in the <code>DescribeCases</code> response. By default, communications are included.',
-        }),
-    ).exactOptional(),
+    caseIdList: CaseIdListSchema.exactOptional().openapi({
+      description:
+        'A list of ID numbers of the support cases you want returned. The maximum number of cases is 100.',
+    }),
+    displayId: DisplayIdSchema.exactOptional().openapi({
+      description:
+        'The ID displayed for a case in the Amazon Web Services Support Center user interface.',
+    }),
+    afterTime: AfterTimeSchema.exactOptional().openapi({
+      description:
+        'The start date for a filtered date search on support case communications. Case communications are available for 12 months after creation.',
+    }),
+    beforeTime: BeforeTimeSchema.exactOptional().openapi({
+      description:
+        'The end date for a filtered date search on support case communications. Case communications are available for 12 months after creation.',
+    }),
+    includeResolvedCases: IncludeResolvedCasesSchema.exactOptional().openapi({
+      description:
+        "Specifies whether to include resolved support cases in the <code>DescribeCases</code> response. By default, resolved cases aren't included.",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A resumption point for pagination.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return before paginating.',
+    }),
+    language: LanguageSchema.exactOptional().openapi({
+      description:
+        'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
+    }),
+    includeCommunications: IncludeCommunicationsSchema.exactOptional().openapi({
+      description:
+        'Specifies whether to include communications in the <code>DescribeCases</code> response. By default, communications are included.',
+    }),
   })
   .openapi({ title: 'DescribeCasesRequest', required: [] })
   .openapi('DescribeCasesRequest')
 
 const DescribeCommunicationsResponseSchema = z
   .object({
-    communications: CommunicationListSchema.and(
-      z.any().openapi({ description: 'The communications for the case.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A resumption point for pagination.' }),
-    ).exactOptional(),
+    communications: CommunicationListSchema.exactOptional().openapi({
+      description: 'The communications for the case.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A resumption point for pagination.',
+    }),
   })
   .openapi({
     description: 'The communications returned by the <a>DescribeCommunications</a> operation.',
@@ -595,38 +434,24 @@ const DescribeCommunicationsResponseSchema = z
 
 const DescribeCommunicationsRequestSchema = z
   .object({
-    caseId: CaseIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
-        }),
-    ),
-    beforeTime: BeforeTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end date for a filtered date search on support case communications. Case communications are available for 12 months after creation.',
-        }),
-    ).exactOptional(),
-    afterTime: AfterTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start date for a filtered date search on support case communications. Case communications are available for 12 months after creation.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A resumption point for pagination.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to return before paginating.' }),
-    ).exactOptional(),
+    caseId: CaseIdSchema.openapi({
+      description:
+        'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
+    }),
+    beforeTime: BeforeTimeSchema.exactOptional().openapi({
+      description:
+        'The end date for a filtered date search on support case communications. Case communications are available for 12 months after creation.',
+    }),
+    afterTime: AfterTimeSchema.exactOptional().openapi({
+      description:
+        'The start date for a filtered date search on support case communications. Case communications are available for 12 months after creation.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A resumption point for pagination.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return before paginating.',
+    }),
   })
   .openapi({ required: ['caseId'], title: 'DescribeCommunicationsRequest' })
   .openapi('DescribeCommunicationsRequest')
@@ -637,12 +462,12 @@ const CategoryNameSchema = z.string().openapi('CategoryName')
 
 const CategorySchema = z
   .object({
-    code: CategoryCodeSchema.and(
-      z.any().openapi({ description: 'The category code for the support case.' }),
-    ).exactOptional(),
-    name: CategoryNameSchema.and(
-      z.any().openapi({ description: 'The category name for the support case.' }),
-    ).exactOptional(),
+    code: CategoryCodeSchema.exactOptional().openapi({
+      description: 'The category code for the support case.',
+    }),
+    name: CategoryNameSchema.exactOptional().openapi({
+      description: 'The category name for the support case.',
+    }),
   })
   .openapi({
     description:
@@ -655,30 +480,18 @@ const CategoryListSchema = z.array(CategorySchema).openapi('CategoryList')
 
 const ServiceSchema = z
   .object({
-    code: ServiceCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code for an Amazon Web Services service returned by the <a>DescribeServices</a> response. The <code>name</code> element contains the corresponding friendly name.',
-        }),
-    ).exactOptional(),
-    name: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The friendly name for an Amazon Web Services service. The <code>code</code> element contains the corresponding code.',
-        }),
-    ).exactOptional(),
-    categories: CategoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of categories that describe the type of support issue a case describes. Categories consist of a category name and a category code. Category names and codes are passed to Amazon Web Services Support when you call <a>CreateCase</a>.',
-        }),
-    ).exactOptional(),
+    code: ServiceCodeSchema.exactOptional().openapi({
+      description:
+        'The code for an Amazon Web Services service returned by the <a>DescribeServices</a> response. The <code>name</code> element contains the corresponding friendly name.',
+    }),
+    name: ServiceNameSchema.exactOptional().openapi({
+      description:
+        'The friendly name for an Amazon Web Services service. The <code>code</code> element contains the corresponding code.',
+    }),
+    categories: CategoryListSchema.exactOptional().openapi({
+      description:
+        'A list of categories that describe the type of support issue a case describes. Categories consist of a category name and a category code. Category names and codes are passed to Amazon Web Services Support when you call <a>CreateCase</a>.',
+    }),
   })
   .openapi({
     description:
@@ -691,9 +504,9 @@ const ServiceListSchema = z.array(ServiceSchema).openapi('ServiceList')
 
 const DescribeServicesResponseSchema = z
   .object({
-    services: ServiceListSchema.and(
-      z.any().openapi({ description: 'A JSON-formatted list of Amazon Web Services services.' }),
-    ).exactOptional(),
+    services: ServiceListSchema.exactOptional().openapi({
+      description: 'A JSON-formatted list of Amazon Web Services services.',
+    }),
   })
   .openapi({
     description:
@@ -706,22 +519,14 @@ const ServiceCodeListSchema = z.array(ServiceCodeSchema).min(0).max(100).openapi
 
 const DescribeServicesRequestSchema = z
   .object({
-    serviceCodeList: ServiceCodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON-formatted list of service codes available for Amazon Web Services services.',
-        }),
-    ).exactOptional(),
-    language: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
-        }),
-    ).exactOptional(),
+    serviceCodeList: ServiceCodeListSchema.exactOptional().openapi({
+      description:
+        'A JSON-formatted list of service codes available for Amazon Web Services services.',
+    }),
+    language: LanguageSchema.exactOptional().openapi({
+      description:
+        'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
+    }),
   })
   .openapi({ title: 'DescribeServicesRequest', required: [] })
   .openapi('DescribeServicesRequest')
@@ -732,22 +537,14 @@ const SeverityLevelNameSchema = z.string().openapi('SeverityLevelName')
 
 const SeverityLevelSchema = z
   .object({
-    code: SeverityLevelCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The code for case severity level.</p> <p>Valid values: <code>low</code> | <code>normal</code> | <code>high</code> | <code>urgent</code> | <code>critical</code> </p>',
-        }),
-    ).exactOptional(),
-    name: SeverityLevelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the severity level that corresponds to the severity level code.</p> <note> <p>The values returned by the API are different from the values that appear in the Amazon Web Services Support Center. For example, the API uses the code <code>low</code>, but the name appears as General guidance in Support Center. </p> <p>The following are the API code names and how they appear in the console:</p> <ul> <li> <p> <code>low</code> - General guidance</p> </li> <li> <p> <code>normal</code> - System impaired</p> </li> <li> <p> <code>high</code> - Production system impaired</p> </li> <li> <p> <code>urgent</code> - Production system down</p> </li> <li> <p> <code>critical</code> - Business-critical system down</p> </li> </ul> </note> <p>For more information, see <a href="https://docs.aws.amazon.com/awssupport/latest/user/case-management.html#choosing-severity">Choosing a severity</a> in the <i>Amazon Web Services Support User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    code: SeverityLevelCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The code for case severity level.</p> <p>Valid values: <code>low</code> | <code>normal</code> | <code>high</code> | <code>urgent</code> | <code>critical</code> </p>',
+    }),
+    name: SeverityLevelNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the severity level that corresponds to the severity level code.</p> <note> <p>The values returned by the API are different from the values that appear in the Amazon Web Services Support Center. For example, the API uses the code <code>low</code>, but the name appears as General guidance in Support Center. </p> <p>The following are the API code names and how they appear in the console:</p> <ul> <li> <p> <code>low</code> - General guidance</p> </li> <li> <p> <code>normal</code> - System impaired</p> </li> <li> <p> <code>high</code> - Production system impaired</p> </li> <li> <p> <code>urgent</code> - Production system down</p> </li> <li> <p> <code>critical</code> - Business-critical system down</p> </li> </ul> </note> <p>For more information, see <a href="https://docs.aws.amazon.com/awssupport/latest/user/case-management.html#choosing-severity">Choosing a severity</a> in the <i>Amazon Web Services Support User Guide</i>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -760,14 +557,10 @@ const SeverityLevelsListSchema = z.array(SeverityLevelSchema).openapi('SeverityL
 
 const DescribeSeverityLevelsResponseSchema = z
   .object({
-    severityLevels: SeverityLevelsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The available severity levels for the support case. Available severity levels are defined by your service level agreement with Amazon Web Services.',
-        }),
-    ).exactOptional(),
+    severityLevels: SeverityLevelsListSchema.exactOptional().openapi({
+      description:
+        'The available severity levels for the support case. Available severity levels are defined by your service level agreement with Amazon Web Services.',
+    }),
   })
   .openapi({
     description:
@@ -778,14 +571,10 @@ const DescribeSeverityLevelsResponseSchema = z
 
 const DescribeSeverityLevelsRequestSchema = z
   .object({
-    language: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
-        }),
-    ).exactOptional(),
+    language: LanguageSchema.exactOptional().openapi({
+      description:
+        'The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English ("en") and Japanese ("ja"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.',
+    }),
   })
   .openapi({ title: 'DescribeSeverityLevelsRequest', required: [] })
   .openapi('DescribeSeverityLevelsRequest')
@@ -796,25 +585,17 @@ const LongSchema = z.int().openapi('Long')
 
 const TrustedAdvisorCheckRefreshStatusSchema = z
   .object({
-    checkId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the Trusted Advisor check.' }),
-    ),
-    status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Trusted Advisor check for which a refresh has been requested: </p> <ul> <li> <p> <code>none</code> - The check is not refreshed or the non-success status exceeds the timeout</p> </li> <li> <p> <code>enqueued</code> - The check refresh requests has entered the refresh queue</p> </li> <li> <p> <code>processing</code> - The check refresh request is picked up by the rule processing engine</p> </li> <li> <p> <code>success</code> - The check is successfully refreshed</p> </li> <li> <p> <code>abandoned</code> - The check refresh has failed</p> </li> </ul>',
-        }),
-    ),
-    millisUntilNextRefreshable: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time, in milliseconds, until the Trusted Advisor check is eligible for refresh.',
-        }),
-    ),
+    checkId: StringSchema.openapi({
+      description: 'The unique identifier for the Trusted Advisor check.',
+    }),
+    status: StringSchema.openapi({
+      description:
+        '<p>The status of the Trusted Advisor check for which a refresh has been requested: </p> <ul> <li> <p> <code>none</code> - The check is not refreshed or the non-success status exceeds the timeout</p> </li> <li> <p> <code>enqueued</code> - The check refresh requests has entered the refresh queue</p> </li> <li> <p> <code>processing</code> - The check refresh request is picked up by the rule processing engine</p> </li> <li> <p> <code>success</code> - The check is successfully refreshed</p> </li> <li> <p> <code>abandoned</code> - The check refresh has failed</p> </li> </ul>',
+    }),
+    millisUntilNextRefreshable: LongSchema.openapi({
+      description:
+        'The amount of time, in milliseconds, until the Trusted Advisor check is eligible for refresh.',
+    }),
   })
   .openapi({
     required: ['checkId', 'status', 'millisUntilNextRefreshable'],
@@ -828,11 +609,9 @@ const TrustedAdvisorCheckRefreshStatusListSchema = z
 
 const DescribeTrustedAdvisorCheckRefreshStatusesResponseSchema = z
   .object({
-    statuses: TrustedAdvisorCheckRefreshStatusListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The refresh status of the specified Trusted Advisor checks.' }),
-    ),
+    statuses: TrustedAdvisorCheckRefreshStatusListSchema.openapi({
+      description: 'The refresh status of the specified Trusted Advisor checks.',
+    }),
   })
   .openapi({
     required: ['statuses'],
@@ -845,52 +624,32 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const DescribeTrustedAdvisorCheckRefreshStatusesRequestSchema = z
   .object({
-    checkIds: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IDs of the Trusted Advisor checks to get the status.</p> <note> <p>If you specify the check ID of a check that is automatically refreshed, you might see an <code>InvalidParameterValue</code> error.</p> </note>',
-        }),
-    ),
+    checkIds: StringListSchema.openapi({
+      description:
+        '<p>The IDs of the Trusted Advisor checks to get the status.</p> <note> <p>If you specify the check ID of a check that is automatically refreshed, you might see an <code>InvalidParameterValue</code> error.</p> </note>',
+    }),
   })
   .openapi({ required: ['checkIds'], title: 'DescribeTrustedAdvisorCheckRefreshStatusesRequest' })
   .openapi('DescribeTrustedAdvisorCheckRefreshStatusesRequest')
 
 const TrustedAdvisorResourcesSummarySchema = z
   .object({
-    resourcesProcessed: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon Web Services resources that were analyzed by the Trusted Advisor check.',
-        }),
-    ),
-    resourcesFlagged: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon Web Services resources that were flagged (listed) by the Trusted Advisor check.',
-        }),
-    ),
-    resourcesIgnored: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon Web Services resources ignored by Trusted Advisor because information was unavailable.',
-        }),
-    ),
-    resourcesSuppressed: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon Web Services resources ignored by Trusted Advisor because they were marked as suppressed by the user.',
-        }),
-    ),
+    resourcesProcessed: LongSchema.openapi({
+      description:
+        'The number of Amazon Web Services resources that were analyzed by the Trusted Advisor check.',
+    }),
+    resourcesFlagged: LongSchema.openapi({
+      description:
+        'The number of Amazon Web Services resources that were flagged (listed) by the Trusted Advisor check.',
+    }),
+    resourcesIgnored: LongSchema.openapi({
+      description:
+        'The number of Amazon Web Services resources ignored by Trusted Advisor because information was unavailable.',
+    }),
+    resourcesSuppressed: LongSchema.openapi({
+      description:
+        'The number of Amazon Web Services resources ignored by Trusted Advisor because they were marked as suppressed by the user.',
+    }),
   })
   .openapi({
     required: ['resourcesProcessed', 'resourcesFlagged', 'resourcesIgnored', 'resourcesSuppressed'],
@@ -903,22 +662,14 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const TrustedAdvisorCostOptimizingSummarySchema = z
   .object({
-    estimatedMonthlySavings: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated monthly savings that might be realized if the recommended operations are taken.',
-        }),
-    ),
-    estimatedPercentMonthlySavings: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated percentage of savings that might be realized if the recommended operations are taken.',
-        }),
-    ),
+    estimatedMonthlySavings: DoubleSchema.openapi({
+      description:
+        'The estimated monthly savings that might be realized if the recommended operations are taken.',
+    }),
+    estimatedPercentMonthlySavings: DoubleSchema.openapi({
+      description:
+        'The estimated percentage of savings that might be realized if the recommended operations are taken.',
+    }),
   })
   .openapi({
     required: ['estimatedMonthlySavings', 'estimatedPercentMonthlySavings'],
@@ -929,14 +680,10 @@ const TrustedAdvisorCostOptimizingSummarySchema = z
 
 const TrustedAdvisorCategorySpecificSummarySchema = z
   .object({
-    costOptimizing: TrustedAdvisorCostOptimizingSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The summary information about cost savings for a Trusted Advisor check that is in the Cost Optimizing category.',
-        }),
-    ).exactOptional(),
+    costOptimizing: TrustedAdvisorCostOptimizingSummarySchema.exactOptional().openapi({
+      description:
+        'The summary information about cost savings for a Trusted Advisor check that is in the Cost Optimizing category.',
+    }),
   })
   .openapi({
     description:
@@ -949,40 +696,23 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const TrustedAdvisorResourceDetailSchema = z
   .object({
-    status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status code for the resource identified in the Trusted Advisor check.',
-        }),
-    ),
-    region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region in which the identified resource is located.',
-        }),
-    ).exactOptional(),
-    resourceId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the identified resource.' }),
-    ),
-    isSuppressed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the Amazon Web Services resource was ignored by Trusted Advisor because it was marked as suppressed by the user.',
-        }),
-    ).exactOptional(),
-    metadata: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information about the identified resource. The exact metadata and its order can be obtained by inspecting the <a>TrustedAdvisorCheckDescription</a> object returned by the call to <a>DescribeTrustedAdvisorChecks</a>. <b>Metadata</b> contains all the data that is shown in the Excel download, even in those cases where the UI shows just summary data.',
-        }),
-    ),
+    status: StringSchema.openapi({
+      description: 'The status code for the resource identified in the Trusted Advisor check.',
+    }),
+    region: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region in which the identified resource is located.',
+    }),
+    resourceId: StringSchema.openapi({
+      description: 'The unique identifier for the identified resource.',
+    }),
+    isSuppressed: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the Amazon Web Services resource was ignored by Trusted Advisor because it was marked as suppressed by the user.',
+    }),
+    metadata: StringListSchema.openapi({
+      description:
+        'Additional information about the identified resource. The exact metadata and its order can be obtained by inspecting the <a>TrustedAdvisorCheckDescription</a> object returned by the call to <a>DescribeTrustedAdvisorChecks</a>. <b>Metadata</b> contains all the data that is shown in the Excel download, even in those cases where the UI shows just summary data.',
+    }),
   })
   .openapi({
     required: ['status', 'resourceId', 'metadata'],
@@ -996,34 +726,22 @@ const TrustedAdvisorResourceDetailListSchema = z
 
 const TrustedAdvisorCheckResultSchema = z
   .object({
-    checkId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the Trusted Advisor check.' }),
-    ),
-    timestamp: StringSchema.and(
-      z.any().openapi({ description: 'The time of the last refresh of the check.' }),
-    ),
-    status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alert status of the check: "ok" (green), "warning" (yellow), "error" (red), or "not_available".',
-        }),
-    ),
+    checkId: StringSchema.openapi({
+      description: 'The unique identifier for the Trusted Advisor check.',
+    }),
+    timestamp: StringSchema.openapi({ description: 'The time of the last refresh of the check.' }),
+    status: StringSchema.openapi({
+      description:
+        'The alert status of the check: "ok" (green), "warning" (yellow), "error" (red), or "not_available".',
+    }),
     resourcesSummary: TrustedAdvisorResourcesSummarySchema,
-    categorySpecificSummary: TrustedAdvisorCategorySpecificSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Summary information that relates to the category of the check. Cost Optimizing is the only category that is currently supported.',
-        }),
-    ),
-    flaggedResources: TrustedAdvisorResourceDetailListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The details about each resource listed in the check result.' }),
-    ),
+    categorySpecificSummary: TrustedAdvisorCategorySpecificSummarySchema.openapi({
+      description:
+        'Summary information that relates to the category of the check. Cost Optimizing is the only category that is currently supported.',
+    }),
+    flaggedResources: TrustedAdvisorResourceDetailListSchema.openapi({
+      description: 'The details about each resource listed in the check result.',
+    }),
   })
   .openapi({
     required: [
@@ -1041,9 +759,9 @@ const TrustedAdvisorCheckResultSchema = z
 
 const DescribeTrustedAdvisorCheckResultResponseSchema = z
   .object({
-    result: TrustedAdvisorCheckResultSchema.and(
-      z.any().openapi({ description: 'The detailed results of the Trusted Advisor check.' }),
-    ).exactOptional(),
+    result: TrustedAdvisorCheckResultSchema.exactOptional().openapi({
+      description: 'The detailed results of the Trusted Advisor check.',
+    }),
   })
   .openapi({
     description:
@@ -1054,17 +772,13 @@ const DescribeTrustedAdvisorCheckResultResponseSchema = z
 
 const DescribeTrustedAdvisorCheckResultRequestSchema = z
   .object({
-    checkId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the Trusted Advisor check.' }),
-    ),
-    language: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ISO 639-1 code for the language that you want your check results to appear in.</p> <p>The Amazon Web Services Support API currently supports the following languages for Trusted Advisor:</p> <ul> <li> <p>Chinese, Simplified - <code>zh</code> </p> </li> <li> <p>Chinese, Traditional - <code>zh_TW</code> </p> </li> <li> <p>English - <code>en</code> </p> </li> <li> <p>French - <code>fr</code> </p> </li> <li> <p>German - <code>de</code> </p> </li> <li> <p>Indonesian - <code>id</code> </p> </li> <li> <p>Italian - <code>it</code> </p> </li> <li> <p>Japanese - <code>ja</code> </p> </li> <li> <p>Korean - <code>ko</code> </p> </li> <li> <p>Portuguese, Brazilian - <code>pt_BR</code> </p> </li> <li> <p>Spanish - <code>es</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    checkId: StringSchema.openapi({
+      description: 'The unique identifier for the Trusted Advisor check.',
+    }),
+    language: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The ISO 639-1 code for the language that you want your check results to appear in.</p> <p>The Amazon Web Services Support API currently supports the following languages for Trusted Advisor:</p> <ul> <li> <p>Chinese, Simplified - <code>zh</code> </p> </li> <li> <p>Chinese, Traditional - <code>zh_TW</code> </p> </li> <li> <p>English - <code>en</code> </p> </li> <li> <p>French - <code>fr</code> </p> </li> <li> <p>German - <code>de</code> </p> </li> <li> <p>Indonesian - <code>id</code> </p> </li> <li> <p>Italian - <code>it</code> </p> </li> <li> <p>Japanese - <code>ja</code> </p> </li> <li> <p>Korean - <code>ko</code> </p> </li> <li> <p>Portuguese, Brazilian - <code>pt_BR</code> </p> </li> <li> <p>Spanish - <code>es</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['checkId'],
@@ -1075,36 +789,22 @@ const DescribeTrustedAdvisorCheckResultRequestSchema = z
 
 const TrustedAdvisorCheckSummarySchema = z
   .object({
-    checkId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the Trusted Advisor check.' }),
-    ),
-    timestamp: StringSchema.and(
-      z.any().openapi({ description: 'The time of the last refresh of the check.' }),
-    ),
-    status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alert status of the check: "ok" (green), "warning" (yellow), "error" (red), or "not_available".',
-        }),
-    ),
-    hasFlaggedResources: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether the Trusted Advisor check has flagged resources.',
-        }),
-    ).exactOptional(),
+    checkId: StringSchema.openapi({
+      description: 'The unique identifier for the Trusted Advisor check.',
+    }),
+    timestamp: StringSchema.openapi({ description: 'The time of the last refresh of the check.' }),
+    status: StringSchema.openapi({
+      description:
+        'The alert status of the check: "ok" (green), "warning" (yellow), "error" (red), or "not_available".',
+    }),
+    hasFlaggedResources: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the Trusted Advisor check has flagged resources.',
+    }),
     resourcesSummary: TrustedAdvisorResourcesSummarySchema,
-    categorySpecificSummary: TrustedAdvisorCategorySpecificSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Summary information that relates to the category of the check. Cost Optimizing is the only category that is currently supported.',
-        }),
-    ),
+    categorySpecificSummary: TrustedAdvisorCategorySpecificSummarySchema.openapi({
+      description:
+        'Summary information that relates to the category of the check. Cost Optimizing is the only category that is currently supported.',
+    }),
   })
   .openapi({
     required: ['checkId', 'timestamp', 'status', 'resourcesSummary', 'categorySpecificSummary'],
@@ -1119,13 +819,9 @@ const TrustedAdvisorCheckSummaryListSchema = z
 
 const DescribeTrustedAdvisorCheckSummariesResponseSchema = z
   .object({
-    summaries: TrustedAdvisorCheckSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The summary information for the requested Trusted Advisor checks.',
-        }),
-    ),
+    summaries: TrustedAdvisorCheckSummaryListSchema.openapi({
+      description: 'The summary information for the requested Trusted Advisor checks.',
+    }),
   })
   .openapi({
     required: ['summaries'],
@@ -1136,40 +832,26 @@ const DescribeTrustedAdvisorCheckSummariesResponseSchema = z
 
 const DescribeTrustedAdvisorCheckSummariesRequestSchema = z
   .object({
-    checkIds: StringListSchema.and(
-      z.any().openapi({ description: 'The IDs of the Trusted Advisor checks.' }),
-    ),
+    checkIds: StringListSchema.openapi({ description: 'The IDs of the Trusted Advisor checks.' }),
   })
   .openapi({ required: ['checkIds'], title: 'DescribeTrustedAdvisorCheckSummariesRequest' })
   .openapi('DescribeTrustedAdvisorCheckSummariesRequest')
 
 const TrustedAdvisorCheckDescriptionSchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the Trusted Advisor check.' }),
-    ),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The display name for the Trusted Advisor check.' }),
-    ),
-    description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the Trusted Advisor check, which includes the alert criteria and recommended operations (contains HTML markup).',
-        }),
-    ),
-    category: StringSchema.and(
-      z.any().openapi({ description: 'The category of the Trusted Advisor check.' }),
-    ),
-    metadata: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The column headings for the data returned by the Trusted Advisor check. The order of the headings corresponds to the order of the data in the <b>Metadata</b> element of the <a>TrustedAdvisorResourceDetail</a> for the check. <b>Metadata</b> contains all the data that is shown in the Excel download, even in those cases where the UI shows just summary data. ',
-        }),
-    ),
+    id: StringSchema.openapi({
+      description: 'The unique identifier for the Trusted Advisor check.',
+    }),
+    name: StringSchema.openapi({ description: 'The display name for the Trusted Advisor check.' }),
+    description: StringSchema.openapi({
+      description:
+        'The description of the Trusted Advisor check, which includes the alert criteria and recommended operations (contains HTML markup).',
+    }),
+    category: StringSchema.openapi({ description: 'The category of the Trusted Advisor check.' }),
+    metadata: StringListSchema.openapi({
+      description:
+        'The column headings for the data returned by the Trusted Advisor check. The order of the headings corresponds to the order of the data in the <b>Metadata</b> element of the <a>TrustedAdvisorResourceDetail</a> for the check. <b>Metadata</b> contains all the data that is shown in the Excel download, even in those cases where the UI shows just summary data. ',
+    }),
   })
   .openapi({
     required: ['id', 'name', 'description', 'category', 'metadata'],
@@ -1183,9 +865,9 @@ const TrustedAdvisorCheckListSchema = z
 
 const DescribeTrustedAdvisorChecksResponseSchema = z
   .object({
-    checks: TrustedAdvisorCheckListSchema.and(
-      z.any().openapi({ description: 'Information about all available Trusted Advisor checks.' }),
-    ),
+    checks: TrustedAdvisorCheckListSchema.openapi({
+      description: 'Information about all available Trusted Advisor checks.',
+    }),
   })
   .openapi({
     required: ['checks'],
@@ -1196,28 +878,20 @@ const DescribeTrustedAdvisorChecksResponseSchema = z
 
 const DescribeTrustedAdvisorChecksRequestSchema = z
   .object({
-    language: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ISO 639-1 code for the language that you want your checks to appear in.</p> <p>The Amazon Web Services Support API currently supports the following languages for Trusted Advisor:</p> <ul> <li> <p>Chinese, Simplified - <code>zh</code> </p> </li> <li> <p>Chinese, Traditional - <code>zh_TW</code> </p> </li> <li> <p>English - <code>en</code> </p> </li> <li> <p>French - <code>fr</code> </p> </li> <li> <p>German - <code>de</code> </p> </li> <li> <p>Indonesian - <code>id</code> </p> </li> <li> <p>Italian - <code>it</code> </p> </li> <li> <p>Japanese - <code>ja</code> </p> </li> <li> <p>Korean - <code>ko</code> </p> </li> <li> <p>Portuguese, Brazilian - <code>pt_BR</code> </p> </li> <li> <p>Spanish - <code>es</code> </p> </li> </ul>',
-        }),
-    ),
+    language: StringSchema.openapi({
+      description:
+        '<p>The ISO 639-1 code for the language that you want your checks to appear in.</p> <p>The Amazon Web Services Support API currently supports the following languages for Trusted Advisor:</p> <ul> <li> <p>Chinese, Simplified - <code>zh</code> </p> </li> <li> <p>Chinese, Traditional - <code>zh_TW</code> </p> </li> <li> <p>English - <code>en</code> </p> </li> <li> <p>French - <code>fr</code> </p> </li> <li> <p>German - <code>de</code> </p> </li> <li> <p>Indonesian - <code>id</code> </p> </li> <li> <p>Italian - <code>it</code> </p> </li> <li> <p>Japanese - <code>ja</code> </p> </li> <li> <p>Korean - <code>ko</code> </p> </li> <li> <p>Portuguese, Brazilian - <code>pt_BR</code> </p> </li> <li> <p>Spanish - <code>es</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['language'], title: 'DescribeTrustedAdvisorChecksRequest' })
   .openapi('DescribeTrustedAdvisorChecksRequest')
 
 const RefreshTrustedAdvisorCheckResponseSchema = z
   .object({
-    status: TrustedAdvisorCheckRefreshStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current refresh status for a check, including the amount of time until the check is eligible for refresh.',
-        }),
-    ),
+    status: TrustedAdvisorCheckRefreshStatusSchema.openapi({
+      description:
+        'The current refresh status for a check, including the amount of time until the check is eligible for refresh.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -1227,14 +901,10 @@ const RefreshTrustedAdvisorCheckResponseSchema = z
 
 const RefreshTrustedAdvisorCheckRequestSchema = z
   .object({
-    checkId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the Trusted Advisor check to refresh.</p> <note> <p>Specifying the check ID of a check that is automatically refreshed causes an <code>InvalidParameterValue</code> error.</p> </note>',
-        }),
-    ),
+    checkId: StringSchema.openapi({
+      description:
+        '<p>The unique identifier for the Trusted Advisor check to refresh.</p> <note> <p>Specifying the check ID of a check that is automatically refreshed causes an <code>InvalidParameterValue</code> error.</p> </note>',
+    }),
   })
   .openapi({
     required: ['checkId'],
@@ -1247,20 +917,12 @@ const CaseStatusSchema = z.string().openapi('CaseStatus')
 
 const ResolveCaseResponseSchema = z
   .object({
-    initialCaseStatus: CaseStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the case when the <a>ResolveCase</a> request was sent.',
-        }),
-    ).exactOptional(),
-    finalCaseStatus: CaseStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the case after the <a>ResolveCase</a> request was processed.',
-        }),
-    ).exactOptional(),
+    initialCaseStatus: CaseStatusSchema.exactOptional().openapi({
+      description: 'The status of the case when the <a>ResolveCase</a> request was sent.',
+    }),
+    finalCaseStatus: CaseStatusSchema.exactOptional().openapi({
+      description: 'The status of the case after the <a>ResolveCase</a> request was processed.',
+    }),
   })
   .openapi({
     description: 'The status of the case returned by the <a>ResolveCase</a> operation.',
@@ -1270,14 +932,10 @@ const ResolveCaseResponseSchema = z
 
 const ResolveCaseRequestSchema = z
   .object({
-    caseId: CaseIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
-        }),
-    ).exactOptional(),
+    caseId: CaseIdSchema.exactOptional().openapi({
+      description:
+        'The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> ',
+    }),
   })
   .openapi({ title: 'ResolveCaseRequest', required: [] })
   .openapi('ResolveCaseRequest')

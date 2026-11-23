@@ -333,7 +333,7 @@ export const postOcsV2PhpAppsAppstoreApiV1AppsDisableRoute = createRoute({
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.object({}) })
+                .object({ meta: OCSMetaSchema, data: z.looseObject({}) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -413,7 +413,7 @@ export const postOcsV2PhpAppsAppstoreApiV1AppsUninstallRoute = createRoute({
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.object({}) })
+                .object({ meta: OCSMetaSchema, data: z.looseObject({}) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -493,7 +493,7 @@ export const postOcsV2PhpAppsAppstoreApiV1AppsUpdateRoute = createRoute({
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.object({}) })
+                .object({ meta: OCSMetaSchema, data: z.looseObject({}) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -573,7 +573,7 @@ export const postOcsV2PhpAppsAppstoreApiV1BundlesEnableRoute = createRoute({
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.object({}) })
+                .object({ meta: OCSMetaSchema, data: z.looseObject({}) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),

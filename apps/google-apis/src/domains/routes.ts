@@ -555,7 +555,7 @@ const DomainSchema = z
   .openapi('Domain')
 
 const ExportRegistrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the `ExportRegistration` method.' })
   .openapi('ExportRegistrationRequest')
 
@@ -1037,7 +1037,7 @@ const RegisterParametersSchema = z
   .openapi('RegisterParameters')
 
 const ResetAuthorizationCodeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the `ResetAuthorizationCode` method.' })
   .openapi('ResetAuthorizationCodeRequest')
 

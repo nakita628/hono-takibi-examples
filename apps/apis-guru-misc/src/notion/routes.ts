@@ -154,155 +154,110 @@ export const getV1BlocksIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '67d58148ef562544-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Thu, 12 Aug 2021 00:14:42 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"1ae-RFHXdRIvpQZuh0kRKb9XuWbFwzo"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_browser_id=e557ec39-01fc-4a4e-84a1-0a6b1ab4a579; Domain=www.notion.so; Path=/; Expires=Sun, 20 Apr 2053 02:01:22 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '67d58148ef562544-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Thu, 12 Aug 2021 00:14:42 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"1ae-RFHXdRIvpQZuh0kRKb9XuWbFwzo"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_browser_id=e557ec39-01fc-4a4e-84a1-0a6b1ab4a579; Domain=www.notion.so; Path=/; Expires=Sun, 20 Apr 2053 02:01:22 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -486,155 +441,110 @@ export const deleteV1BlocksIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '6e2c1dcfdbf0255c-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Thu, 24 Feb 2022 22:26:40 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"258-nR8cSrr3A4mS1zWlKjaHASxX/tQ"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Fri, 25 Feb 2022 22:26:36 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '6e2c1dcfdbf0255c-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Thu, 24 Feb 2022 22:26:40 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"258-nR8cSrr3A4mS1zWlKjaHASxX/tQ"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Fri, 25 Feb 2022 22:26:36 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -832,155 +742,110 @@ export const patchV1BlocksIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '67d57e86ea672544-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Thu, 12 Aug 2021 00:12:49 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"1ae-RFHXdRIvpQZuh0kRKb9XuWbFwzo"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_browser_id=72dd4057-624e-4aa3-80c6-ab911ed059b7; Domain=www.notion.so; Path=/; Expires=Sun, 20 Apr 2053 01:59:29 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '67d57e86ea672544-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Thu, 12 Aug 2021 00:12:49 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"1ae-RFHXdRIvpQZuh0kRKb9XuWbFwzo"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_browser_id=72dd4057-624e-4aa3-80c6-ab911ed059b7; Domain=www.notion.so; Path=/; Expires=Sun, 20 Apr 2053 01:59:29 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com https://client-registry.mutinycdn.com https://client.mutinycdn.com/ https://user-data.mutinycdn.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io https://user-data.mutinycdn.com https://api-v2.mutinyhq.io https://api.statuspage.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -1154,7 +1019,7 @@ export const getV1BlocksIdChildrenRoute = createRoute({
                         .exactOptional()
                         .openapi({ required: [] }),
                       type: z.string().exactOptional().openapi({ example: 'unsupported' }),
-                      unsupported: z.object({}).exactOptional(),
+                      unsupported: z.looseObject({}).exactOptional(),
                     })
                     .openapi({ required: [] }),
                 )
@@ -3155,161 +3020,114 @@ export const getV1BlocksIdChildrenRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '647435237cce6dc4-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://embed.typeform.com https://admin.typeform.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Wed, 28 Apr 2021 23:53:00 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"65f3-d0AArGizyGsk597xfjWN7976xCc"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_browser_id=a1b1f1dd-7731-4a2b-b968-10b475e3b526; Domain=www.notion.so; Path=/; Expires=Sun, 05 Jan 2053 01:39:40 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://embed.typeform.com https://admin.typeform.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://embed.typeform.com https://admin.typeform.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
-        'cf-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '09bc7f8a2a00006dc41a11e000000001' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '647435237cce6dc4-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://embed.typeform.com https://admin.typeform.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Wed, 28 Apr 2021 23:53:00 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"65f3-d0AArGizyGsk597xfjWN7976xCc"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_browser_id=a1b1f1dd-7731-4a2b-b968-10b475e3b526; Domain=www.notion.so; Path=/; Expires=Sun, 05 Jan 2053 01:39:40 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://embed.typeform.com https://admin.typeform.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://embed.typeform.com https://admin.typeform.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com/v3 https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
+        'cf-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '09bc7f8a2a00006dc41a11e000000001' }),
       }),
     },
   },
@@ -3546,161 +3364,114 @@ export const patchV1BlocksIdChildrenRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '64e177c41a820231-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Wed, 12 May 2021 06:07:37 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"105-p1Ka6kLp+wkCMX+oZhcjZAtwEtc"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_browser_id=0724819e-ad9a-4b7f-b50e-e5c75d6763dd; Domain=www.notion.so; Path=/; Expires=Sat, 18 Jan 2053 07:54:17 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
-        'cf-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '0a00c92e8d00000231bf82c000000001' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '64e177c41a820231-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Wed, 12 May 2021 06:07:37 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"105-p1Ka6kLp+wkCMX+oZhcjZAtwEtc"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_browser_id=0724819e-ad9a-4b7f-b50e-e5c75d6763dd; Domain=www.notion.so; Path=/; Expires=Sat, 18 Jan 2053 07:54:17 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
+        'cf-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '0a00c92e8d00000231bf82c000000001' }),
       }),
     },
   },
@@ -3755,7 +3526,7 @@ export const getV1CommentsRoute = createRoute({
         }),
     }),
     body: {
-      content: { 'application/x-www-form-urlencoded': { schema: z.object({}), example: {} } },
+      content: { 'application/x-www-form-urlencoded': { schema: z.looseObject({}), example: {} } },
     },
   },
   responses: {
@@ -3765,7 +3536,7 @@ export const getV1CommentsRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              comment: z.object({}).exactOptional(),
+              comment: z.looseObject({}).exactOptional(),
               has_more: z.boolean().exactOptional().openapi({ example: false }),
               next_cursor: z.any().nullable().exactOptional().openapi({ example: null }),
               object: z.string().exactOptional().openapi({ example: 'list' }),
@@ -4073,103 +3844,70 @@ export const getV1CommentsRoute = createRoute({
         },
       },
       headers: z.object({
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '704' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://www.google.com https://www.gstatic.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://static.zdassets.com https://api.smooch.io\t https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://api-v2.mutinyhq.io https://client-registry.mutinycdn.com https://client.mutinycdn.com https://user-data.mutinycdn.com http://localhost:3003 http://0.0.0.0:3003;connect-src 'self' http://localhost:3001 ws://localhost:3001 ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-local-snapshots-2.s3.us-west-2.amazonaws.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so http://localhost:3000 https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io https://uploads.intercomcdn.com wss://nexus-websocket-a.intercom.io https://ekr.zdassets.com https://ekr.zendesk.com\t https://makenotion.zendesk.com\t https://api.smooch.io\t wss://api.smooch.io\t https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://www.googleadservices.com https://googleads.g.doubleclick.net https://region1.google-analytics.com https://region1.analytics.google.com https://www.google-analytics.com https://api-v2.mutinyhq.io https://client-registry.mutinycdn.com https://client.mutinycdn.com https://user-data.mutinycdn.com https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com https://statsigapi.net http://localhost:3003 ws://localhost:3003 ws://*.pages.local.notion.co:3003 http://0.0.0.0:3003 ws://0.0.0.0:3003;font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com http://localhost:3003 http://0.0.0.0:3003;img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com https://region1.google-analytics.com https://region1.analytics.google.com http://localhost:3003 http://0.0.0.0:3003;style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com http://localhost:3003 http://0.0.0.0:3003;frame-src https: http:;media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Fri, 15 Jul 2022 16:58:23 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"2c0-mVXaT7TnMaE5ytatx672v7KLMB0"',
-            }),
-        },
-        'Keep-Alive': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'timeout=5' }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-Permitted-Cross-Domain-Policies': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'none' }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '0' }),
-        },
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '704' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://www.google.com https://www.gstatic.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://static.zdassets.com https://api.smooch.io\t https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://api-v2.mutinyhq.io https://client-registry.mutinycdn.com https://client.mutinycdn.com https://user-data.mutinycdn.com http://localhost:3003 http://0.0.0.0:3003;connect-src 'self' http://localhost:3001 ws://localhost:3001 ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-local-snapshots-2.s3.us-west-2.amazonaws.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so http://localhost:3000 https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io https://uploads.intercomcdn.com wss://nexus-websocket-a.intercom.io https://ekr.zdassets.com https://ekr.zendesk.com\t https://makenotion.zendesk.com\t https://api.smooch.io\t wss://api.smooch.io\t https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://www.googleadservices.com https://googleads.g.doubleclick.net https://region1.google-analytics.com https://region1.analytics.google.com https://www.google-analytics.com https://api-v2.mutinyhq.io https://client-registry.mutinycdn.com https://client.mutinycdn.com https://user-data.mutinycdn.com https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com https://statsigapi.net http://localhost:3003 ws://localhost:3003 ws://*.pages.local.notion.co:3003 http://0.0.0.0:3003 ws://0.0.0.0:3003;font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com http://localhost:3003 http://0.0.0.0:3003;img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com https://region1.google-analytics.com https://region1.analytics.google.com http://localhost:3003 http://0.0.0.0:3003;style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com http://localhost:3003 http://0.0.0.0:3003;frame-src https: http:;media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Fri, 15 Jul 2022 16:58:23 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"2c0-mVXaT7TnMaE5ytatx672v7KLMB0"' }),
+        'Keep-Alive': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'timeout=5' }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-Permitted-Cross-Domain-Policies': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'none' }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '0' }),
       }),
     },
   },
@@ -4342,7 +4080,7 @@ export const getV1DatabasesIdRoute = createRoute({
                       id: z.string().exactOptional().openapi({ example: 'VVMi' }),
                       name: z.string().exactOptional().openapi({ example: 'Link' }),
                       type: z.string().exactOptional().openapi({ example: 'url' }),
-                      url: z.object({}).exactOptional(),
+                      url: z.looseObject({}).exactOptional(),
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
@@ -4350,7 +4088,7 @@ export const getV1DatabasesIdRoute = createRoute({
                     .object({
                       id: z.string().exactOptional().openapi({ example: 'title' }),
                       name: z.string().exactOptional().openapi({ example: 'Name' }),
-                      title: z.object({}).exactOptional(),
+                      title: z.looseObject({}).exactOptional(),
                       type: z.string().exactOptional().openapi({ example: 'title' }),
                     })
                     .exactOptional()
@@ -4428,7 +4166,7 @@ export const getV1DatabasesIdRoute = createRoute({
                     .openapi({ required: [] }),
                   'Publishing/Release Date': z
                     .object({
-                      date: z.object({}).exactOptional(),
+                      date: z.looseObject({}).exactOptional(),
                       id: z.string().exactOptional().openapi({ example: '%3Fex%2B' }),
                       name: z
                         .string()
@@ -4440,7 +4178,7 @@ export const getV1DatabasesIdRoute = createRoute({
                     .openapi({ required: [] }),
                   Read: z
                     .object({
-                      checkbox: z.object({}).exactOptional(),
+                      checkbox: z.looseObject({}).exactOptional(),
                       id: z.string().exactOptional().openapi({ example: '_MWJ' }),
                       name: z.string().exactOptional().openapi({ example: 'Read' }),
                       type: z.string().exactOptional().openapi({ example: 'checkbox' }),
@@ -4569,7 +4307,7 @@ export const getV1DatabasesIdRoute = createRoute({
                     .object({
                       id: z.string().exactOptional().openapi({ example: '%3F%5C25' }),
                       name: z.string().exactOptional().openapi({ example: 'Summary' }),
-                      rich_text: z.object({}).exactOptional(),
+                      rich_text: z.looseObject({}).exactOptional(),
                       type: z.string().exactOptional().openapi({ example: 'rich_text' }),
                     })
                     .exactOptional()
@@ -4955,155 +4693,110 @@ export const getV1DatabasesIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '6e57ad7a19c482ab-IAD' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Wed, 02 Mar 2022 05:19:28 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"110f-R5+JLAgaiYySC0RHfDR5I4HPYWU"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Thu, 03 Mar 2022 05:19:28 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '6e57ad7a19c482ab-IAD' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Wed, 02 Mar 2022 05:19:28 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"110f-R5+JLAgaiYySC0RHfDR5I4HPYWU"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Thu, 03 Mar 2022 05:19:28 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -5144,7 +4837,7 @@ export const patchV1DatabasesIdRoute = createRoute({
               properties: z
                 .object({
                   'Wine Pairing': z
-                    .object({ rich_text: z.object({}).exactOptional() })
+                    .object({ rich_text: z.looseObject({}).exactOptional() })
                     .exactOptional()
                     .openapi({ required: [] }),
                 })
@@ -5317,7 +5010,7 @@ export const patchV1DatabasesIdRoute = createRoute({
                       id: z.string().exactOptional().openapi({ example: 'VVMi' }),
                       name: z.string().exactOptional().openapi({ example: 'Link' }),
                       type: z.string().exactOptional().openapi({ example: 'url' }),
-                      url: z.object({}).exactOptional(),
+                      url: z.looseObject({}).exactOptional(),
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
@@ -5325,7 +5018,7 @@ export const patchV1DatabasesIdRoute = createRoute({
                     .object({
                       id: z.string().exactOptional().openapi({ example: 'title' }),
                       name: z.string().exactOptional().openapi({ example: 'Name' }),
-                      title: z.object({}).exactOptional(),
+                      title: z.looseObject({}).exactOptional(),
                       type: z.string().exactOptional().openapi({ example: 'title' }),
                     })
                     .exactOptional()
@@ -5403,7 +5096,7 @@ export const patchV1DatabasesIdRoute = createRoute({
                     .openapi({ required: [] }),
                   'Publishing/Release Date': z
                     .object({
-                      date: z.object({}).exactOptional(),
+                      date: z.looseObject({}).exactOptional(),
                       id: z.string().exactOptional().openapi({ example: '?ex+' }),
                       name: z
                         .string()
@@ -5415,7 +5108,7 @@ export const patchV1DatabasesIdRoute = createRoute({
                     .openapi({ required: [] }),
                   Read: z
                     .object({
-                      checkbox: z.object({}).exactOptional(),
+                      checkbox: z.looseObject({}).exactOptional(),
                       id: z.string().exactOptional().openapi({ example: '_MWJ' }),
                       name: z.string().exactOptional().openapi({ example: 'Read' }),
                       type: z.string().exactOptional().openapi({ example: 'checkbox' }),
@@ -5544,7 +5237,7 @@ export const patchV1DatabasesIdRoute = createRoute({
                     .object({
                       id: z.string().exactOptional().openapi({ example: '?\\25' }),
                       name: z.string().exactOptional().openapi({ example: 'Summary' }),
-                      rich_text: z.object({}).exactOptional(),
+                      rich_text: z.looseObject({}).exactOptional(),
                       type: z.string().exactOptional().openapi({ example: 'rich_text' }),
                     })
                     .exactOptional()
@@ -5614,7 +5307,7 @@ export const patchV1DatabasesIdRoute = createRoute({
                     .object({
                       id: z.string().exactOptional().openapi({ example: 'Y=H]' }),
                       name: z.string().exactOptional().openapi({ example: 'Wine Pairing' }),
-                      rich_text: z.object({}).exactOptional(),
+                      rich_text: z.looseObject({}).exactOptional(),
                       type: z.string().exactOptional().openapi({ example: 'rich_text' }),
                     })
                     .exactOptional()
@@ -5945,155 +5638,110 @@ export const patchV1DatabasesIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '6e2c03133bd697c3-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Thu, 24 Feb 2022 22:08:21 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"1154-yKzD7frwaV985/9YIfi9OFRzhEo"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Fri, 25 Feb 2022 22:08:21 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '6e2c03133bd697c3-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Thu, 24 Feb 2022 22:08:21 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"1154-yKzD7frwaV985/9YIfi9OFRzhEo"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Fri, 25 Feb 2022 22:08:21 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -7000,155 +6648,110 @@ export const postV1DatabasesIdQueryRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '6e2bf9a5cc0997c3-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Thu, 24 Feb 2022 22:01:55 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"11ab-v3g73NeM0tFp3bR3wDOJq0jJD9E"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Fri, 25 Feb 2022 22:01:54 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '6e2bf9a5cc0997c3-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Thu, 24 Feb 2022 22:01:55 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"11ab-v3g73NeM0tFp3bR3wDOJq0jJD9E"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Fri, 25 Feb 2022 22:01:54 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -7387,155 +6990,110 @@ export const getV1PagesIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '6e57b658a8f97fb2-IAD' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Wed, 02 Mar 2022 05:25:32 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"325-KCHYnqvQMvtdpRRceV9twM7idU8"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Thu, 03 Mar 2022 05:25:32 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '6e57b658a8f97fb2-IAD' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Wed, 02 Mar 2022 05:25:32 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"325-KCHYnqvQMvtdpRRceV9twM7idU8"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Thu, 03 Mar 2022 05:25:32 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -8065,161 +7623,114 @@ export const patchV1PagesIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '64e173ce6ca20231-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Wed, 12 May 2021 06:04:55 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"7d8-jG4gaWNQPTIf72vp10FvF9p/N3Q"',
-            }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_browser_id=64874c87-50ce-4a41-af6f-3ecf1626325e; Domain=www.notion.so; Path=/; Expires=Sat, 18 Jan 2053 07:51:35 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
-        'cf-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '0a00c6b50400000231ecbbc000000001' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '64e173ce6ca20231-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Wed, 12 May 2021 06:04:55 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"7d8-jG4gaWNQPTIf72vp10FvF9p/N3Q"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_browser_id=64874c87-50ce-4a41-af6f-3ecf1626325e; Domain=www.notion.so; Path=/; Expires=Sat, 18 Jan 2053 07:51:35 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://api.amplitude.com https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://platform.twitter.com https://cdn.syndication.twimg.com https://www.googletagmanager.com https://x.clearbitjs.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://api.amplitude.com https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://api.segment.io https://api.pgncs.notion.so https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://api.unsplash.com https://boards-api.greenhouse.io; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
+        'cf-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '0a00c6b50400000231ecbbc000000001' }),
       }),
     },
   },
@@ -8290,152 +7801,110 @@ export const getV1PagesPageIdPropertiesPropertyIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '6e57bef43f860627-IAD' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Wed, 02 Mar 2022 05:31:24 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'W/"9b-jhhW07EAsEXZSfnBY3CcGFH2Moo"' }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Thu, 03 Mar 2022 05:31:24 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '6e57bef43f860627-IAD' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Wed, 02 Mar 2022 05:31:24 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"9b-jhhW07EAsEXZSfnBY3CcGFH2Moo"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Thu, 03 Mar 2022 05:31:24 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -8477,7 +7946,7 @@ export const getV1UsersIdRoute = createRoute({
         }),
     }),
     body: {
-      content: { 'application/x-www-form-urlencoded': { schema: z.object({}), example: {} } },
+      content: { 'application/x-www-form-urlencoded': { schema: z.looseObject({}), example: {} } },
     },
   },
   responses: {
@@ -8516,152 +7985,110 @@ export const getV1UsersIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '6e2be42d784c97c3-SJC' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        'Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Thu, 24 Feb 2022 21:47:15 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'W/"9b-qoibMBKquYk09T0oogqvLGu9qu4"' }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        'Referrer-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'same-origin' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Fri, 25 Feb 2022 21:47:15 GMT; Secure',
-            }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Content-Security-Policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-WebKit-CSP': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
-            }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '6e2be42d784c97c3-SJC' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        'Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Thu, 24 Feb 2022 21:47:15 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'W/"9b-qoibMBKquYk09T0oogqvLGu9qu4"' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        'Referrer-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'same-origin' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'notion_check_cookie_consent=false; Domain=www.notion.so; Path=/; Expires=Fri, 25 Feb 2022 21:47:15 GMT; Secure',
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=5184000; includeSubDomains' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Content-Security-Policy': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-WebKit-CSP': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gist.github.com https://apis.google.com https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://widget.intercom.io https://js.intercomcdn.com https://logs-01.loggly.com https://cdn.segment.com https://analytics.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://embed.typeform.com https://admin.typeform.com https://public.profitwell.com js.sentry-cdn.com https://js.chilipiper.com https://platform.twitter.com https://cdn.syndication.twimg.com; connect-src 'self' https://msgstore.www.notion.so wss://msgstore.www.notion.so ws://localhost:* ws://127.0.0.1:* https://notion-emojis.s3-us-west-2.amazonaws.com https://s3-us-west-2.amazonaws.com https://s3.us-west-2.amazonaws.com https://notion-production-snapshots-2.s3.us-west-2.amazonaws.com https: http: https://cdn.amplitude.com https://api.amplitude.com https://hkfxbbdzib.notion.so https://api.embed.ly https://js.intercomcdn.com https://api-iam.intercom.io wss://nexus-websocket-a.intercom.io https://logs-01.loggly.com https://cdn.segment.com https://api.segment.io https://analytics.pgncs.notion.so https://api.pgncs.notion.so https://o324374.ingest.sentry.io https://checkout.stripe.com https://js.stripe.com https://cdn.contentful.com https://preview.contentful.com https://images.ctfassets.net https://www2.profitwell.com https://tracking.chilipiper.com https://api.chilipiper.com https://api.unsplash.com https://boards-api.greenhouse.io https://api.statuspage.io https://pgncd.notion.so https://api.statsig.com; font-src 'self' data: https://cdnjs.cloudflare.com https://js.intercomcdn.com; img-src 'self' data: blob: https: https://platform.twitter.com https://syndication.twitter.com https://pbs.twimg.com https://ton.twimg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://github.githubassets.com https://js.chilipiper.com https://platform.twitter.com https://ton.twimg.com; frame-src https: http:; media-src https: http:",
+          }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },

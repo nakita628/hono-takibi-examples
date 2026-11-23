@@ -95,7 +95,7 @@ const IoK8sApiResourceV1CapacityRequirementsSchema = z
       .exactOptional()
       .openapi({
         description:
-          'requests represent individual device resource requests for distinct resources, all of which must be provided by the device.\n\nThis value is used as an additional filtering condition against the available capacity on the device. This is semantically equivalent to a CEL selector with `device.capacity[<domain>].<name>.compareTo(quantity(<request quantity>)) >= 0`. For example, device.capacity[\'test-driver.cdi.k8s.io\'].counters.compareTo(quantity(\'2\')) >= 0.\n\nThe domain prefix can be omitted, in which case it defaults to the driver of the device under evaluation. For example, "bandwidth: 1Gi" is equivalent to "<driver>/bandwidth: 1Gi" for a device published by driver "<driver>", regardless of which other, differently-domained "bandwidth" capacities that device might also have. To request one of those, the domain must be given explicitly, for example "example.com/bandwidth". Requesting the same driver capacity with and without the driver name as domain, for example "bandwidth: 1Gi" and "<driver>/bandwidth: 2Gi", is ambiguous and causes scheduling to fail with an error. For the sake of consistency there\'s no exception for such a conflict where the value is the same - that is still an error.\n\nWhen a requestPolicy is defined, the requested amount is adjusted upward to the nearest valid value based on the policy. If the requested amount cannot be adjusted to a valid value—because it exceeds what the requestPolicy allows— the device is considered ineligible for allocation.\n\nFor any capacity that is not explicitly requested: - If no requestPolicy is set, the default consumed capacity is equal to the full device capacity\n  (i.e., the whole device is claimed).\n- If a requestPolicy is set, the default consumed capacity is determined according to that policy.\n\nIf the device allows multiple allocation, the aggregated amount across all requests must not exceed the capacity value. The consumed capacity, which may be adjusted based on the requestPolicy if defined, is recorded in the resource claim\'s status.devices[*].consumedCapacity field.\n\nRequests may have at most 32 entries. The values must not be negative.',
+          'requests represent individual device capacity requests for distinct resources. Each requested name must be defined as a device capacity and/or a shared capacity (referenced by a device through consumesCounters).\n\nFor a per-device capacity, this value is used as an additional filtering condition against the available capacity on the device. This is semantically equivalent to a CEL selector with `device.capacity[<domain>].<name>.compareTo(quantity(<request quantity>)) >= 0`. For example, device.capacity[\'test-driver.cdi.k8s.io\'].counters.compareTo(quantity(\'2\')) >= 0.\n\nWith DRASharedConsumableCapacity enabled, a requested capacity may be provided as a shared capacity instead of a per-device capacity. If it is defined as both, the request must be satisfied by both independently.\n\nThe domain prefix can be omitted, in which case it defaults to the driver of the device under evaluation. For example, "bandwidth: 1Gi" is equivalent to "<driver>/bandwidth: 1Gi" for a device published by driver "<driver>", regardless of which other, differently-domained "bandwidth" capacities that device might also have. To request one of those, the domain must be given explicitly, for example "example.com/bandwidth". Requesting the same driver capacity with and without the driver name as domain, for example "bandwidth: 1Gi" and "<driver>/bandwidth: 2Gi", is ambiguous and causes scheduling to fail with an error. For the sake of consistency there\'s no exception for such a conflict where the value is the same - that is still an error.\n\nWhen a requestPolicy is defined, the requested amount is adjusted upward to the nearest valid value based on the policy. If the requested amount cannot be adjusted to a valid value—because it exceeds what the requestPolicy allows— the device is considered ineligible for allocation.\n\nFor any capacity that is not explicitly requested: - If no requestPolicy is set, the default consumed capacity is equal to the full device capacity\n  (i.e., the whole device is claimed).\n- If a requestPolicy is set, the default consumed capacity is determined according to that policy.\n\nIf the device allows multiple allocation, the aggregated amount across all requests must not exceed the capacity value. The consumed capacity, which may be adjusted based on the requestPolicy if defined, is recorded in the resource claim\'s status.devices[*].consumedCapacity field.\n\nRequests may have at most 32 entries. The values must not be negative.',
       }),
   })
   .openapi({
@@ -719,6 +719,29 @@ const IoK8sApiResourceV1DeviceAllocationConfigurationSchema = z
   })
   .openapi('IoK8sApiResourceV1DeviceAllocationConfiguration')
 
+const IoK8sApiResourceV1CounterSetConsumptionSchema = z
+  .object({
+    counterSet: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'counterSet identifies a counter set in the pool named by the containing allocation result.',
+      }),
+    counters: z
+      .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
+      .openapi({
+        description:
+          "counters records this allocation's resolved quantity for each counter in the set. The map contains at most 32 counters; each quantity must be non-negative.",
+      }),
+  })
+  .openapi({
+    description:
+      'CounterSetConsumption records one allocation\'s resolved valueFrom consumption from one counter set. The containing DeviceRequestAllocationResult identifies the allocated device and its pool.\n\nFor example, two allocations sharing a device may consume 2Gi and 3Gi from a "memory" counter. Each result records only its own amount; together they consume 5Gi. Releasing the first allocation leaves 3Gi charged. If the device also consumes one fixed "slots" counter, that charge is accounted for separately from current ResourceSlices. With unchanged slice definitions, the fixed charge remains until the last non-admin allocation is released.',
+    required: ['counterSet', 'counters'],
+  })
+  .openapi('IoK8sApiResourceV1CounterSetConsumption')
+
 const IoK8sApiResourceV1DeviceRequestAllocationResultSchema = z
   .object({
     adminAccess: z
@@ -750,6 +773,15 @@ const IoK8sApiResourceV1DeviceRequestAllocationResultSchema = z
       .openapi({
         description:
           "consumedCapacity tracks the amount of capacity consumed per device as part of the claim request. The consumed amount may differ from the requested amount: it is rounded up to the nearest valid value based on the device’s requestPolicy if applicable (i.e., may not be less than the requested amount).\n\nThe total consumed capacity for each device must not exceed the DeviceCapacity's Value.\n\nThis field is populated only for devices that allow multiple allocations. All capacity entries are included, even if the consumed amount is zero. The domain prefix in the capacity name may be omitted if it is the same as the driver name.\n\nConsumedCapacity may have at most 32 entries. The values must not be negative.",
+      }),
+    consumedCounters: z
+      .array(IoK8sApiResourceV1CounterSetConsumptionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "consumedCounters records resolved valueFrom consumption for the single device identified by this allocation result, grouped by counter set in that device's pool. Each result records only its own request-dependent amounts. The scheduler sums these amounts across non-admin allocation results, including multiple shares of the same device. Releasing one allocation releases its recorded amounts without changing those of other allocations.\n\nQuantities are resolved at allocation time from the matching claim capacity requests, including consumptionPolicy rounding. They may therefore be greater than the requested amounts. If the claim omits a mapped capacity request, consumption uses the shared counter's policy default, or its full value when no default is defined. All resolved valueFrom counters are included, even when their quantity is zero.\n\nThe recorded amounts and counter set references remain authoritative if ResourceSlice mappings, defaults, or policies change. A mapping change does not move an existing allocation's consumption to a different counter set. DRA drivers can use these amounts without access to ResourceSlices.\n\nFixed counter consumption is not recorded here. The scheduler determines fixed consumption from current ResourceSlices, including consumptionPolicy rounding, and counts it once per (driver, pool, device) with at least one non-admin allocation. If the device definition is missing, its fixed consumption is not counted. Current fixed consumption is added to the recorded request-dependent consumption; changing a counter from valueFrom to value does not replace the recorded amounts.\n\nCurrent counter values still define the total budget. Reducing a counter below its recorded consumption prevents further counter consumption; existing allocation results are not changed. Recorded amounts are still counted if the allocated device is no longer present in current ResourceSlices. Amounts that refer to a missing counter set or counter are ignored.\n\nResourceSlice updates do not resize or revoke existing allocations. Drivers must ensure that updates remain compatible with existing allocations, or arrange for affected allocations to be released first.\n\nThis field is populated only for non-admin allocations when DRASharedConsumableCapacity is enabled. An absent field means that no request-dependent consumption was recorded, including for allocations made before the feature was enabled. If this field is absent, the scheduler counts this allocation's request-dependent counter consumption as zero. It does not reconstruct that consumption from the device's current valueFrom mappings.\n\nThe list contains at most 2 counter sets (the maximum a device may consume in a ResourceSlice), keyed by counter set name. Its order has no correspondence to the order of counter sets or devices in ResourceSlices.",
+        'x-kubernetes-list-map-keys': ['counterSet'],
+        'x-kubernetes-list-type': 'map',
       }),
     device: z
       .string()
@@ -1346,7 +1378,8 @@ const IoK8sApiResourceV1DeviceAttributeSchema = z
       .array(z.boolean())
       .exactOptional()
       .openapi({
-        description: 'bools is a non-empty list of true/false values.',
+        description:
+          'bools is a non-empty list of true/false values.\n\nThis is a beta field and requires enabling the DRAListTypeAttributes feature gate (enabled by default).',
         'x-kubernetes-list-type': 'atomic',
       }),
     int: z
@@ -1378,7 +1411,7 @@ const IoK8sApiResourceV1DeviceAttributeSchema = z
       .exactOptional()
       .openapi({
         description:
-          'ints is a non-empty list of numbers.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
+          'ints is a non-empty list of numbers.\n\nThis is a beta field and requires enabling the DRAListTypeAttributes feature gate (enabled by default).',
         'x-kubernetes-list-type': 'atomic',
       }),
     string: z
@@ -1390,7 +1423,7 @@ const IoK8sApiResourceV1DeviceAttributeSchema = z
       .exactOptional()
       .openapi({
         description:
-          'strings is a non-empty list of strings. Each string must not be longer than 64 characters.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
+          'strings is a non-empty list of strings. Each string must not be longer than 64 characters.\n\nThis is a beta field and requires enabling the DRAListTypeAttributes feature gate (enabled by default).',
         'x-kubernetes-list-type': 'atomic',
       }),
     version: z
@@ -1405,7 +1438,7 @@ const IoK8sApiResourceV1DeviceAttributeSchema = z
       .exactOptional()
       .openapi({
         description:
-          'versions is a non-empty list of semantic versions according to semver.org spec 2.0.0. Each version string must not be longer than 64 characters.\n\nThis is an alpha field and requires enabling the DRAListTypeAttributes feature gate.',
+          'versions is a non-empty list of semantic versions according to semver.org spec 2.0.0. Each version string must not be longer than 64 characters.\n\nThis is a beta field and requires enabling the DRAListTypeAttributes feature gate (enabled by default).',
         'x-kubernetes-list-type': 'atomic',
       }),
   })
@@ -1455,7 +1488,7 @@ const IoK8sApiResourceV1CapacityRequestPolicySchema = z
   })
   .openapi({
     description:
-      'CapacityRequestPolicy defines how requests consume device capacity.\n\nMust not set more than one ValidRequestValues.',
+      "CapacityRequestPolicy defines how requests consume device capacity and how devices consume counters.\n\nIt is used by DeviceCapacity.RequestPolicy and Counter.ConsumptionPolicy. For counter consumption, capacity means the available counter value, and a request means the device's required counter amount. Both use the same default selection, rounding and range arithmetic, including the DRAFractionalCapacityRange feature gate and the rules described by CapacityRequestPolicyRange.\n\nMust not set more than one ValidRequestValues.",
     required: [],
   })
   .openapi('IoK8sApiResourceV1CapacityRequestPolicy')
@@ -1477,17 +1510,39 @@ const IoK8sApiResourceV1DeviceCapacitySchema = z
   })
   .openapi('IoK8sApiResourceV1DeviceCapacity')
 
-const IoK8sApiResourceV1CounterSchema = z
+const IoK8sApiResourceV1CounterValueFromSchema = z
   .object({
-    value: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
-      description: 'value defines how much of a certain device counter is available.',
+    capacityName: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "capacityName is the name of a capacity that can be requested in a ResourceClaim. The counter value then defines a capacity that is shared between devices, in contrast to the per-device capacity defined in the device's capacity map. Typically a capacity is either shared or per-device, but it is also valid to use the same capacity name in both places. Requests then need to be satisfied by both.\n\nIf this name has no domain prefix, the driver name from the ResourceSlice is used as the domain when matching against capacity requests.",
+      }),
+  })
+  .openapi({
+    description:
+      'CounterValueFrom looks up the requested capacity value in a ResourceClaim via the capacity name.',
+    required: ['capacityName'],
+  })
+  .openapi('IoK8sApiResourceV1CounterValueFrom')
+
+const IoK8sApiResourceV1CounterRequirementSchema = z
+  .object({
+    value: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'value defines the statically consumed amount.\n\nExactly one of value or valueFrom must be specified.',
+    }),
+    valueFrom: IoK8sApiResourceV1CounterValueFromSchema.exactOptional().openapi({
+      description:
+        'valueFrom looks up the requested capacity value in a ResourceClaim via the capacity name. That value is then consumed from the counter instead of using a static value defined by the driver.\n\nExactly one of value or valueFrom must be specified.',
     }),
   })
   .openapi({
-    description: 'Counter describes a quantity associated with a device.',
-    required: ['value'],
+    description: 'CounterRequirement describes how much of a counter a device consumes.',
+    required: [],
   })
-  .openapi('IoK8sApiResourceV1Counter')
+  .openapi('IoK8sApiResourceV1CounterRequirement')
 
 const IoK8sApiResourceV1DeviceCounterConsumptionSchema = z
   .object({
@@ -1507,7 +1562,7 @@ const IoK8sApiResourceV1DeviceCounterConsumptionSchema = z
           'counterSet is the name of the set from which the counters defined will be consumed.',
       }),
     counters: z
-      .record(z.string(), IoK8sApiResourceV1CounterSchema)
+      .record(z.string(), IoK8sApiResourceV1CounterRequirementSchema)
       .openapi({
         description:
           'counters defines the counters that will be consumed by the device.\n\nThe maximum number of counters is 32.',
@@ -1540,7 +1595,7 @@ const IoK8sApiResourceV1NodeAllocatableMappingSchema = z
   })
   .openapi({
     description:
-      'NodeAllocatableMapping defines how a DRA allocation directly translates into a node allocatable resource quantity. The mapping can be derived from either the count of allocated devices (via deviceMultiplier) or the specific capacity consumed (via capacityKey and capacityMultiplier). These options are mutually exclusive. Kubelet adds this mapped resource quantity from claim to both requests and limits at the pod-level cgroup, and to limits at the container-level cgroup for each container referencing the claim.',
+      "NodeAllocatableMapping defines how a DRA allocation directly translates into a node allocatable resource quantity. The mapping can be derived from either the count of allocated devices (via deviceMultiplier) or the specific capacity consumed (via capacityKey and capacityMultiplier). These options are mutually exclusive. The scheduler records the mapped quantity in the pod's `status.extraNodeAllocatableResources`: once in the requests and limits of the pod level entry, and in the limits of the container entry of each container referencing the claim, so that each of these containers can use all of it while the pod level entry caps their total usage.",
     required: [],
   })
   .openapi('IoK8sApiResourceV1NodeAllocatableMapping')
@@ -1549,7 +1604,7 @@ const IoK8sApiResourceV1NodeAllocatableOverheadSchema = z
   .object({
     perContainer: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
       description:
-        "perContainer is applied per container reference to the claim. This models overhead scaling linearly with the number of containers actively using the device. When both PerPod and PerContainer are specified, the total overhead allocated for each pod referencing the claim is computed as: Quantity = PerPod + (PerContainer * NumReferences) Kubelet accounts for this overhead in cgroups: - Pod-level cgroup (requests and limits): Kubelet adds PerPod + (PerContainer * NumReferences). - Container-level cgroup (limits only): Kubelet adds PerPod + PerContainer for each referencing container. This allows any single container to access the pod-level overhead, while the parent cgroup caps the total usage to account for PerPod exactly once. PerContainer overhead of a claim referenced by a non-restartable init container is counted towards the pod's peak resource calculation (see Pod `spec.initContainers`), not for the pod's entire duration.",
+        "perContainer is applied per container reference to the claim. This models overhead scaling linearly with the number of containers actively using the device. When both PerPod and PerContainer are specified, the total overhead allocated for each pod referencing the claim is computed as: Quantity = PerPod + (PerContainer * NumReferences) The scheduler records this overhead in the pod's `status.extraNodeAllocatableResources`: - The pod level entry (requests and limits) gets PerPod + (PerContainer * NumReferences).\n  PerContainer of a non-restartable init container counts towards the pod's peak resource\n  calculation (see Pod `spec.initContainers`), not for the pod's entire duration.\n- The container entry of each referencing container gets PerContainer in its requests,\n  and PerPod + PerContainer in its limits.\nThis allows any single container to use the pod level overhead, while the pod level entry caps the total usage to account for PerPod exactly once.",
     }),
     perPod: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
       description:
@@ -1558,7 +1613,7 @@ const IoK8sApiResourceV1NodeAllocatableOverheadSchema = z
   })
   .openapi({
     description:
-      'NodeAllocatableOverhead defines auxiliary resource overheads incurred when allocating a device. Overheads can be specified as a fixed cost per pod referencing the claim, a variable cost per container reference, or both. Kubelet accounts for this overhead by adding it to both the pod-level and container-level cgroups of referencing containers.',
+      "NodeAllocatableOverhead defines auxiliary resource overheads incurred when allocating a device. Overheads can be specified as a fixed cost per pod referencing the claim, a variable cost per container reference, or both. The scheduler records the overhead in the pod's `status.extraNodeAllocatableResources`, as described for perContainer.",
     required: [],
   })
   .openapi('IoK8sApiResourceV1NodeAllocatableOverhead')
@@ -1688,7 +1743,7 @@ const IoK8sApiResourceV1DeviceSchema = z
       .exactOptional()
       .openapi({
         description:
-          'nodeAllocatableResources defines the mapping of node resources that are managed by the DRA driver exposing this device. This includes resources currently reported in v1.Node `status.allocatable` that are not extended resources (see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources). Examples include "cpu", "memory", "ephemeral-storage", and hugepages. In addition to standard requests made through the Pod `spec`, these resources can also be requested through claims and allocated by the DRA driver. For example, a CPU DRA driver might allocate exclusive CPUs or auxiliary node memory dependencies of an accelerator device. The keys of this map are the node-allocatable resource names (e.g., "cpu", "memory"). Extended resource names are not permitted as keys.',
+          'nodeAllocatableResources defines the mapping of node resources that are managed by the DRA driver exposing this device. This includes resources currently reported in v1.Node `status.allocatable` that are not extended resources (see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources). Examples include "cpu", "memory", "ephemeral-storage", and hugepages. In addition to standard requests made through the Pod `spec`, these resources can also be requested through claims and allocated by the DRA driver. For example, a CPU DRA driver might allocate exclusive CPUs or auxiliary node memory dependencies of an accelerator device. When the device is allocated for a pod\'s claim, the scheduler records these resources in the pod\'s `status.extraNodeAllocatableResources`, as described for mapping and overhead. The keys of this map are the node-allocatable resource names (e.g., "cpu", "memory"). Extended resource names are not permitted as keys.',
       }),
     nodeName: z
       .string()
@@ -1768,6 +1823,22 @@ const IoK8sApiResourceV1ResourcePoolSchema = z
     required: ['name', 'generation', 'resourceSliceCount'],
   })
   .openapi('IoK8sApiResourceV1ResourcePool')
+
+const IoK8sApiResourceV1CounterSchema = z
+  .object({
+    consumptionPolicy: IoK8sApiResourceV1CapacityRequestPolicySchema.exactOptional().openapi({
+      description:
+        "consumptionPolicy defines how devices consume this counter. The consumed amount is rounded up according to the policy and must satisfy its limits.\n\nIf unset, devices can consume any amount up to the available counter value. If and only if the required amount is unspecified, then the policy default is used (if set) or the full counter value (if not set).\n\nFixed consumption of already allocated devices is resolved using the current policy and counted even if it violates the policy's limits.",
+    }),
+    value: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
+      description: 'value defines how much of a certain device counter is available.',
+    }),
+  })
+  .openapi({
+    description: 'Counter describes a quantity that is available in a counter set.',
+    required: ['value'],
+  })
+  .openapi('IoK8sApiResourceV1Counter')
 
 const IoK8sApiResourceV1CounterSetSchema = z
   .object({
@@ -1940,6 +2011,20 @@ const IoK8sApiResourceV1DeviceClassConfigurationSchema = z
   .openapi({ description: 'DeviceClassConfiguration is used in DeviceClass.', required: [] })
   .openapi('IoK8sApiResourceV1DeviceClassConfiguration')
 
+const IoK8sApiResourceV1ExtendedResourceRequestSchema = z
+  .object({
+    capacity: IoK8sApiResourceV1CapacityRequirementsSchema.exactOptional().openapi({
+      description:
+        'capacity defines the fixed capacity amounts that the scheduler requests on every ResourceClaim it synthesizes to satisfy the extended resource of this class.\n\nThe value is copied, unmodified, onto the capacity of each device request synthesized for this class, so it has the same semantics as DeviceRequest.capacity: it applies to each device allocation. A pod requesting more than one device through the extended resource gets that capacity once per device, not once per pod.\n\nThe devices selected by this class must advertise the referenced capacities. Otherwise the extended resource requests cannot be satisfied, the same way as with a selector that matches no devices.',
+    }),
+  })
+  .openapi({
+    description:
+      'ExtendedResourceRequest defines fields which the scheduler copies onto the device request it synthesizes for an extended resource.',
+    required: [],
+  })
+  .openapi('IoK8sApiResourceV1ExtendedResourceRequest')
+
 const IoK8sApiResourceV1DeviceClassSpecSchema = z
   .object({
     config: z
@@ -1950,17 +2035,17 @@ const IoK8sApiResourceV1DeviceClassSpecSchema = z
           'config defines configuration parameters that apply to each device that is claimed via this class. Some classses may potentially be satisfied by multiple drivers, so each instance of a vendor configuration applies to exactly one driver.\n\nThey are passed to the driver, but are not considered while allocating the claim.',
         'x-kubernetes-list-type': 'atomic',
       }),
-    extendedResourceCapacityRequests:
-      IoK8sApiResourceV1CapacityRequirementsSchema.exactOptional().openapi({
-        description:
-          'extendedResourceCapacityRequests defines the fixed capacity amounts that the scheduler requests on every ResourceClaim it synthesizes to satisfy the extended resource of this class.\n\nThe value is copied, unmodified, onto the capacity of each device request synthesized for this class, so it has the same semantics as DeviceRequest.capacity: it applies to each device allocation. A pod requesting more than one device through the extended resource gets that capacity once per device, not once per pod.\n\nThe devices selected by this class must advertise the referenced capacities. Otherwise the extended resource requests cannot be satisfied, the same way as with a selector that matches no devices.\n\nThis is an alpha field and requires enabling the DRAExtendedResourceCapacity feature gate, which depends on DRAConsumableCapacity.',
-      }),
     extendedResourceName: z
       .string()
       .exactOptional()
       .openapi({
         description:
           "extendedResourceName is the extended resource name for the devices of this class. The devices of this class can be used to satisfy a pod's extended resource requests. It has the same format as the name of a pod's extended resource. It should be unique among all the device classes in a cluster. If two device classes have the same name, then the class created later is picked to satisfy a pod's extended resource requests. If two classes are created at the same time, then the name of the class lexicographically sorted first is picked.",
+      }),
+    extendedResourceRequest:
+      IoK8sApiResourceV1ExtendedResourceRequestSchema.exactOptional().openapi({
+        description:
+          'extendedResourceRequest defines how the scheduler populates the device request of each ResourceClaim it synthesizes to satisfy the extended resource of this class.\n\nThis is an alpha field and requires enabling the DRAExtendedResourceCapacity feature gate, which depends on DRAConsumableCapacity.',
       }),
     selectors: z
       .array(IoK8sApiResourceV1DeviceSelectorSchema)

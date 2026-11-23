@@ -107,28 +107,19 @@ const ConditionSchema = z
 
 const CustomRuleSchema = z
   .object({
-    source: SourceSchema.and(
-      z.any().openapi({ description: ' The source pattern for a URL rewrite or redirect rule. ' }),
-    ),
-    target: TargetSchema.and(
-      z.any().openapi({ description: ' The target pattern for a URL rewrite or redirect rule. ' }),
-    ),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The status code for a URL rewrite or redirect rule. </p> <dl> <dt>200</dt> <dd> <p>Represents a 200 rewrite rule.</p> </dd> <dt>301</dt> <dd> <p>Represents a 301 (moved pemanently) redirect rule. This and all future requests should be directed to the target URL. </p> </dd> <dt>302</dt> <dd> <p>Represents a 302 temporary redirect rule.</p> </dd> <dt>404</dt> <dd> <p>Represents a 404 redirect rule.</p> </dd> <dt>404-200</dt> <dd> <p>Represents a 404 rewrite rule.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The condition for a URL rewrite or redirect rule, such as a country code. ',
-        }),
-    ).exactOptional(),
+    source: SourceSchema.openapi({
+      description: ' The source pattern for a URL rewrite or redirect rule. ',
+    }),
+    target: TargetSchema.openapi({
+      description: ' The target pattern for a URL rewrite or redirect rule. ',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p> The status code for a URL rewrite or redirect rule. </p> <dl> <dt>200</dt> <dd> <p>Represents a 200 rewrite rule.</p> </dd> <dt>301</dt> <dd> <p>Represents a 301 (moved pemanently) redirect rule. This and all future requests should be directed to the target URL. </p> </dd> <dt>302</dt> <dd> <p>Represents a 302 temporary redirect rule.</p> </dd> <dt>404</dt> <dd> <p>Represents a 404 redirect rule.</p> </dd> <dt>404-200</dt> <dd> <p>Represents a 404 rewrite rule.</p> </dd> </dl>',
+    }),
+    condition: ConditionSchema.exactOptional().openapi({
+      description: ' The condition for a URL rewrite or redirect rule, such as a country code. ',
+    }),
   })
   .openapi({
     required: ['source', 'target'],
@@ -151,18 +142,18 @@ const BranchNameSchema = z
 
 const ProductionBranchSchema = z
   .object({
-    lastDeployTime: LastDeployTimeSchema.and(
-      z.any().openapi({ description: ' The last deploy time of the production branch. ' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: ' The status of the production branch. ' }),
-    ).exactOptional(),
-    thumbnailUrl: ThumbnailUrlSchema.and(
-      z.any().openapi({ description: ' The thumbnail URL for the production branch. ' }),
-    ).exactOptional(),
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: ' The branch name for the production branch. ' }),
-    ).exactOptional(),
+    lastDeployTime: LastDeployTimeSchema.exactOptional().openapi({
+      description: ' The last deploy time of the production branch. ',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description: ' The status of the production branch. ',
+    }),
+    thumbnailUrl: ThumbnailUrlSchema.exactOptional().openapi({
+      description: ' The thumbnail URL for the production branch. ',
+    }),
+    branchName: BranchNameSchema.exactOptional().openapi({
+      description: ' The branch name for the production branch. ',
+    }),
   })
   .openapi({
     description: ' Describes the information about a production branch for an Amplify app. ',
@@ -222,52 +213,38 @@ const PullRequestEnvironmentNameSchema = z
 
 const AutoBranchCreationConfigSchema = z
   .object({
-    stage: StageSchema.and(
-      z.any().openapi({ description: ' Describes the current stage for the autocreated branch. ' }),
-    ).exactOptional(),
-    framework: FrameworkSchema.and(
-      z.any().openapi({ description: ' The framework for the autocreated branch. ' }),
-    ).exactOptional(),
-    enableAutoBuild: EnableAutoBuildSchema.and(
-      z.any().openapi({ description: ' Enables auto building for the autocreated branch. ' }),
-    ).exactOptional(),
-    environmentVariables: EnvironmentVariablesSchema.and(
-      z.any().openapi({ description: ' The environment variables for the autocreated branch. ' }),
-    ).exactOptional(),
-    basicAuthCredentials: BasicAuthCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The basic authorization credentials for the autocreated branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-        }),
-    ).exactOptional(),
-    enableBasicAuth: EnableBasicAuthSchema.and(
-      z.any().openapi({ description: ' Enables basic authorization for the autocreated branch. ' }),
-    ).exactOptional(),
-    enablePerformanceMode: EnablePerformanceModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
-        }),
-    ).exactOptional(),
-    buildSpec: BuildSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The build specification (build spec) for the autocreated branch. ',
-        }),
-    ).exactOptional(),
-    enablePullRequestPreview: EnablePullRequestPreviewSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Enables pull request previews for the autocreated branch. ' }),
-    ).exactOptional(),
-    pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.and(
-      z.any().openapi({ description: ' The Amplify environment name for the pull request. ' }),
-    ).exactOptional(),
+    stage: StageSchema.exactOptional().openapi({
+      description: ' Describes the current stage for the autocreated branch. ',
+    }),
+    framework: FrameworkSchema.exactOptional().openapi({
+      description: ' The framework for the autocreated branch. ',
+    }),
+    enableAutoBuild: EnableAutoBuildSchema.exactOptional().openapi({
+      description: ' Enables auto building for the autocreated branch. ',
+    }),
+    environmentVariables: EnvironmentVariablesSchema.exactOptional().openapi({
+      description: ' The environment variables for the autocreated branch. ',
+    }),
+    basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+      description:
+        ' The basic authorization credentials for the autocreated branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+    }),
+    enableBasicAuth: EnableBasicAuthSchema.exactOptional().openapi({
+      description: ' Enables basic authorization for the autocreated branch. ',
+    }),
+    enablePerformanceMode: EnablePerformanceModeSchema.exactOptional().openapi({
+      description:
+        '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
+    }),
+    buildSpec: BuildSpecSchema.exactOptional().openapi({
+      description: ' The build specification (build spec) for the autocreated branch. ',
+    }),
+    enablePullRequestPreview: EnablePullRequestPreviewSchema.exactOptional().openapi({
+      description: ' Enables pull request previews for the autocreated branch. ',
+    }),
+    pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.exactOptional().openapi({
+      description: ' The Amplify environment name for the pull request. ',
+    }),
   })
   .openapi({
     description: ' Describes the automated branch creation configuration. ',
@@ -281,126 +258,78 @@ const RepositoryCloneMethodSchema = z
 
 const AppSchema = z
   .object({
-    appId: AppIdSchema.and(z.any().openapi({ description: ' The unique ID of the Amplify app. ' })),
-    appArn: AppArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the Amplify app. ' }),
-    ),
-    name: NameSchema.and(z.any().openapi({ description: ' The name for the Amplify app. ' })),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tag for the Amplify app. ' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description for the Amplify app. ' }),
-    ),
-    repository: RepositorySchema.and(
-      z.any().openapi({ description: ' The Git repository for the Amplify app. ' }),
-    ),
-    platform: PlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The platform for the Amplify app. For a static app, set the platform type to <code>WEB</code>. For a dynamic server-side rendered (SSR) app, set the platform type to <code>WEB_COMPUTE</code>. For an app requiring Amplify Hosting's original SSR support only, set the platform type to <code>WEB_DYNAMIC</code>.",
-        }),
-    ),
-    createTime: CreateTimeSchema.and(
-      z.any().openapi({ description: ' Creates a date and time for the Amplify app. ' }),
-    ),
-    updateTime: UpdateTimeSchema.and(
-      z.any().openapi({ description: ' Updates the date and time for the Amplify app. ' }),
-    ),
-    iamServiceRoleArn: ServiceRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) of the Amplify app. ',
-        }),
-    ).exactOptional(),
-    environmentVariables: EnvironmentVariablesSchema.and(
-      z.any().openapi({ description: ' The environment variables for the Amplify app. ' }),
-    ),
-    defaultDomain: DefaultDomainSchema.and(
-      z.any().openapi({ description: ' The default domain for the Amplify app. ' }),
-    ),
-    enableBranchAutoBuild: EnableBranchAutoBuildSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Enables the auto-building of branches for the Amplify app. ' }),
-    ),
-    enableBranchAutoDeletion: EnableBranchAutoDeletionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Automatically disconnect a branch in the Amplify Console when you delete a branch from your Git repository. ',
-        }),
-    ).exactOptional(),
-    enableBasicAuth: EnableBasicAuthSchema.and(
-      z
-        .any()
-        .openapi({ description: " Enables basic authorization for the Amplify app's branches. " }),
-    ),
-    basicAuthCredentials: BasicAuthCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The basic authorization credentials for branches for the Amplify app. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-        }),
-    ).exactOptional(),
-    customRules: CustomRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Describes the custom redirect and rewrite rules for the Amplify app. ',
-        }),
-    ).exactOptional(),
-    productionBranch: ProductionBranchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Describes the information about a production branch of the Amplify app. ',
-        }),
-    ).exactOptional(),
-    buildSpec: BuildSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the content of the build specification (build spec) for the Amplify app. ',
-        }),
-    ).exactOptional(),
-    customHeaders: CustomHeadersSchema.and(
-      z.any().openapi({ description: 'Describes the custom HTTP headers for the Amplify app.' }),
-    ).exactOptional(),
-    enableAutoBranchCreation: EnableAutoBranchCreationSchema.and(
-      z.any().openapi({ description: ' Enables automated branch creation for the Amplify app. ' }),
-    ).exactOptional(),
-    autoBranchCreationPatterns: AutoBranchCreationPatternsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the automated branch creation glob patterns for the Amplify app. ',
-        }),
-    ).exactOptional(),
-    autoBranchCreationConfig: AutoBranchCreationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the automated branch creation configuration for the Amplify app. ',
-        }),
-    ).exactOptional(),
-    repositoryCloneMethod: RepositoryCloneMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>This is for internal use.</p> </note> <p>The Amplify service uses this parameter to specify the authentication protocol to use to access the Git repository for an Amplify app. Amplify specifies <code>TOKEN</code> for a GitHub repository, <code>SIGV4</code> for an Amazon Web Services CodeCommit repository, and <code>SSH</code> for GitLab and Bitbucket repositories.</p>',
-        }),
-    ).exactOptional(),
+    appId: AppIdSchema.openapi({ description: ' The unique ID of the Amplify app. ' }),
+    appArn: AppArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) of the Amplify app. ',
+    }),
+    name: NameSchema.openapi({ description: ' The name for the Amplify app. ' }),
+    tags: TagMapSchema.exactOptional().openapi({ description: ' The tag for the Amplify app. ' }),
+    description: DescriptionSchema.openapi({
+      description: ' The description for the Amplify app. ',
+    }),
+    repository: RepositorySchema.openapi({
+      description: ' The Git repository for the Amplify app. ',
+    }),
+    platform: PlatformSchema.openapi({
+      description:
+        " The platform for the Amplify app. For a static app, set the platform type to <code>WEB</code>. For a dynamic server-side rendered (SSR) app, set the platform type to <code>WEB_COMPUTE</code>. For an app requiring Amplify Hosting's original SSR support only, set the platform type to <code>WEB_DYNAMIC</code>.",
+    }),
+    createTime: CreateTimeSchema.openapi({
+      description: ' Creates a date and time for the Amplify app. ',
+    }),
+    updateTime: UpdateTimeSchema.openapi({
+      description: ' Updates the date and time for the Amplify app. ',
+    }),
+    iamServiceRoleArn: ServiceRoleArnSchema.exactOptional().openapi({
+      description:
+        ' The AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) of the Amplify app. ',
+    }),
+    environmentVariables: EnvironmentVariablesSchema.openapi({
+      description: ' The environment variables for the Amplify app. ',
+    }),
+    defaultDomain: DefaultDomainSchema.openapi({
+      description: ' The default domain for the Amplify app. ',
+    }),
+    enableBranchAutoBuild: EnableBranchAutoBuildSchema.openapi({
+      description: ' Enables the auto-building of branches for the Amplify app. ',
+    }),
+    enableBranchAutoDeletion: EnableBranchAutoDeletionSchema.exactOptional().openapi({
+      description:
+        ' Automatically disconnect a branch in the Amplify Console when you delete a branch from your Git repository. ',
+    }),
+    enableBasicAuth: EnableBasicAuthSchema.openapi({
+      description: " Enables basic authorization for the Amplify app's branches. ",
+    }),
+    basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+      description:
+        ' The basic authorization credentials for branches for the Amplify app. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+    }),
+    customRules: CustomRulesSchema.exactOptional().openapi({
+      description: ' Describes the custom redirect and rewrite rules for the Amplify app. ',
+    }),
+    productionBranch: ProductionBranchSchema.exactOptional().openapi({
+      description: ' Describes the information about a production branch of the Amplify app. ',
+    }),
+    buildSpec: BuildSpecSchema.exactOptional().openapi({
+      description:
+        ' Describes the content of the build specification (build spec) for the Amplify app. ',
+    }),
+    customHeaders: CustomHeadersSchema.exactOptional().openapi({
+      description: 'Describes the custom HTTP headers for the Amplify app.',
+    }),
+    enableAutoBranchCreation: EnableAutoBranchCreationSchema.exactOptional().openapi({
+      description: ' Enables automated branch creation for the Amplify app. ',
+    }),
+    autoBranchCreationPatterns: AutoBranchCreationPatternsSchema.exactOptional().openapi({
+      description: ' Describes the automated branch creation glob patterns for the Amplify app. ',
+    }),
+    autoBranchCreationConfig: AutoBranchCreationConfigSchema.exactOptional().openapi({
+      description: ' Describes the automated branch creation configuration for the Amplify app. ',
+    }),
+    repositoryCloneMethod: RepositoryCloneMethodSchema.exactOptional().openapi({
+      description:
+        '<note> <p>This is for internal use.</p> </note> <p>The Amplify service uses this parameter to specify the authentication protocol to use to access the Git repository for an Amplify app. Amplify specifies <code>TOKEN</code> for a GitHub repository, <code>SIGV4</code> for an Amazon Web Services CodeCommit repository, and <code>SSH</code> for GitLab and Bitbucket repositories.</p>',
+    }),
   })
   .openapi({
     required: [
@@ -467,45 +396,27 @@ const DeploymentArtifactsSchema = z
 
 const BackendEnvironmentSchema = z
   .object({
-    backendEnvironmentArn: BackendEnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. ',
-        }),
-    ),
-    environmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name for a backend environment that is part of an Amplify app. ',
-        }),
-    ),
-    stackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The AWS CloudFormation stack name of a backend environment. ' }),
-    ).exactOptional(),
-    deploymentArtifacts: DeploymentArtifactsSchema.and(
-      z.any().openapi({ description: ' The name of deployment artifacts. ' }),
-    ).exactOptional(),
-    createTime: CreateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The creation date and time for a backend environment that is part of an Amplify app. ',
-        }),
-    ),
-    updateTime: UpdateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The last updated date and time for a backend environment that is part of an Amplify app. ',
-        }),
-    ),
+    backendEnvironmentArn: BackendEnvironmentArnSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. ',
+    }),
+    environmentName: EnvironmentNameSchema.openapi({
+      description: ' The name for a backend environment that is part of an Amplify app. ',
+    }),
+    stackName: StackNameSchema.exactOptional().openapi({
+      description: ' The AWS CloudFormation stack name of a backend environment. ',
+    }),
+    deploymentArtifacts: DeploymentArtifactsSchema.exactOptional().openapi({
+      description: ' The name of deployment artifacts. ',
+    }),
+    createTime: CreateTimeSchema.openapi({
+      description:
+        ' The creation date and time for a backend environment that is part of an Amplify app. ',
+    }),
+    updateTime: UpdateTimeSchema.openapi({
+      description:
+        ' The last updated date and time for a backend environment that is part of an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['backendEnvironmentArn', 'environmentName', 'createTime', 'updateTime'],
@@ -515,9 +426,9 @@ const BackendEnvironmentSchema = z
 
 const CreateBackendEnvironmentResultSchema = z
   .object({
-    backendEnvironment: BackendEnvironmentSchema.and(
-      z.any().openapi({ description: ' Describes the backend environment for an Amplify app. ' }),
-    ),
+    backendEnvironment: BackendEnvironmentSchema.openapi({
+      description: ' Describes the backend environment for an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['backendEnvironment'],
@@ -563,162 +474,91 @@ const AssociatedResourcesSchema = z.array(AssociatedResourceSchema).openapi('Ass
 
 const BranchSchema = z
   .object({
-    branchArn: BranchArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) for a branch that is part of an Amplify app. ',
-        }),
-    ),
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: ' The name for the branch that is part of an Amplify app. ' }),
-    ),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The description for the branch that is part of an Amplify app. ',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tag for the branch of an Amplify app. ' }),
-    ).exactOptional(),
-    stage: StageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The current stage for the branch that is part of an Amplify app. ',
-        }),
-    ),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The display name for the branch. This is used as the default domain prefix. ',
-        }),
-    ),
-    enableNotification: EnableNotificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Enables notifications for a branch that is part of an Amplify app. ',
-        }),
-    ),
-    createTime: CreateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The creation date and time for a branch that is part of an Amplify app. ',
-        }),
-    ),
-    updateTime: UpdateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The last updated date and time for a branch that is part of an Amplify app. ',
-        }),
-    ),
-    environmentVariables: EnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The environment variables specific to a branch of an Amplify app. ',
-        }),
-    ),
-    enableAutoBuild: EnableAutoBuildSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Enables auto-building on push for a branch of an Amplify app. ',
-        }),
-    ),
-    customDomains: CustomDomainsSchema.and(
-      z.any().openapi({ description: ' The custom domains for a branch of an Amplify app. ' }),
-    ),
-    framework: FrameworkSchema.and(
-      z.any().openapi({ description: ' The framework for a branch of an Amplify app. ' }),
-    ),
-    activeJobId: ActiveJobIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The ID of the active job for a branch of an Amplify app. ' }),
-    ),
-    totalNumberOfJobs: TotalNumberOfJobsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The total number of jobs that are part of an Amplify app. ' }),
-    ),
-    enableBasicAuth: EnableBasicAuthSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Enables basic authorization for a branch of an Amplify app. ' }),
-    ),
-    enablePerformanceMode: EnablePerformanceModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
-        }),
-    ).exactOptional(),
-    thumbnailUrl: ThumbnailUrlSchema.and(
-      z.any().openapi({ description: ' The thumbnail URL for the branch of an Amplify app. ' }),
-    ).exactOptional(),
-    basicAuthCredentials: BasicAuthCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The basic authorization credentials for a branch of an Amplify app. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-        }),
-    ).exactOptional(),
-    buildSpec: BuildSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The build specification (build spec) content for the branch of an Amplify app. ',
-        }),
-    ).exactOptional(),
-    ttl: TTLSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The content Time to Live (TTL) for the website in seconds. ' }),
-    ),
-    associatedResources: AssociatedResourcesSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A list of custom resources that are linked to this branch. ' }),
-    ).exactOptional(),
-    enablePullRequestPreview: EnablePullRequestPreviewSchema.and(
-      z.any().openapi({ description: ' Enables pull request previews for the branch. ' }),
-    ),
-    pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.and(
-      z.any().openapi({ description: ' The Amplify environment name for the pull request. ' }),
-    ).exactOptional(),
-    destinationBranch: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The destination branch if the branch is a pull request branch. ',
-        }),
-    ).exactOptional(),
-    sourceBranch: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The source branch if the branch is a pull request branch. ' }),
-    ).exactOptional(),
-    backendEnvironmentArn: BackendEnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. ',
-        }),
-    ).exactOptional(),
+    branchArn: BranchArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) for a branch that is part of an Amplify app. ',
+    }),
+    branchName: BranchNameSchema.openapi({
+      description: ' The name for the branch that is part of an Amplify app. ',
+    }),
+    description: DescriptionSchema.openapi({
+      description: ' The description for the branch that is part of an Amplify app. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tag for the branch of an Amplify app. ',
+    }),
+    stage: StageSchema.openapi({
+      description: ' The current stage for the branch that is part of an Amplify app. ',
+    }),
+    displayName: DisplayNameSchema.openapi({
+      description: ' The display name for the branch. This is used as the default domain prefix. ',
+    }),
+    enableNotification: EnableNotificationSchema.openapi({
+      description: ' Enables notifications for a branch that is part of an Amplify app. ',
+    }),
+    createTime: CreateTimeSchema.openapi({
+      description: ' The creation date and time for a branch that is part of an Amplify app. ',
+    }),
+    updateTime: UpdateTimeSchema.openapi({
+      description: ' The last updated date and time for a branch that is part of an Amplify app. ',
+    }),
+    environmentVariables: EnvironmentVariablesSchema.openapi({
+      description: ' The environment variables specific to a branch of an Amplify app. ',
+    }),
+    enableAutoBuild: EnableAutoBuildSchema.openapi({
+      description: ' Enables auto-building on push for a branch of an Amplify app. ',
+    }),
+    customDomains: CustomDomainsSchema.openapi({
+      description: ' The custom domains for a branch of an Amplify app. ',
+    }),
+    framework: FrameworkSchema.openapi({
+      description: ' The framework for a branch of an Amplify app. ',
+    }),
+    activeJobId: ActiveJobIdSchema.openapi({
+      description: ' The ID of the active job for a branch of an Amplify app. ',
+    }),
+    totalNumberOfJobs: TotalNumberOfJobsSchema.openapi({
+      description: ' The total number of jobs that are part of an Amplify app. ',
+    }),
+    enableBasicAuth: EnableBasicAuthSchema.openapi({
+      description: ' Enables basic authorization for a branch of an Amplify app. ',
+    }),
+    enablePerformanceMode: EnablePerformanceModeSchema.exactOptional().openapi({
+      description:
+        '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
+    }),
+    thumbnailUrl: ThumbnailUrlSchema.exactOptional().openapi({
+      description: ' The thumbnail URL for the branch of an Amplify app. ',
+    }),
+    basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+      description:
+        ' The basic authorization credentials for a branch of an Amplify app. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+    }),
+    buildSpec: BuildSpecSchema.exactOptional().openapi({
+      description:
+        ' The build specification (build spec) content for the branch of an Amplify app. ',
+    }),
+    ttl: TTLSchema.openapi({
+      description: ' The content Time to Live (TTL) for the website in seconds. ',
+    }),
+    associatedResources: AssociatedResourcesSchema.exactOptional().openapi({
+      description: ' A list of custom resources that are linked to this branch. ',
+    }),
+    enablePullRequestPreview: EnablePullRequestPreviewSchema.openapi({
+      description: ' Enables pull request previews for the branch. ',
+    }),
+    pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.exactOptional().openapi({
+      description: ' The Amplify environment name for the pull request. ',
+    }),
+    destinationBranch: BranchNameSchema.exactOptional().openapi({
+      description: ' The destination branch if the branch is a pull request branch. ',
+    }),
+    sourceBranch: BranchNameSchema.exactOptional().openapi({
+      description: ' The source branch if the branch is a pull request branch. ',
+    }),
+    backendEnvironmentArn: BackendEnvironmentArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. ',
+    }),
   })
   .openapi({
     required: [
@@ -746,14 +586,10 @@ const BranchSchema = z
 
 const CreateBranchResultSchema = z
   .object({
-    branch: BranchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the branch for an Amplify app, which maps to a third-party repository branch. ',
-        }),
-    ),
+    branch: BranchSchema.openapi({
+      description:
+        ' Describes the branch for an Amplify app, which maps to a third-party repository branch. ',
+    }),
   })
   .openapi({
     required: ['branch'],
@@ -773,29 +609,17 @@ const FileUploadUrlsSchema = z.record(z.string(), UploadUrlSchema).openapi('File
 
 const CreateDeploymentResultSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The job ID for this deployment. will supply to start deployment api. ',
-        }),
-    ).exactOptional(),
-    fileUploadUrls: FileUploadUrlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' When the <code>fileMap</code> argument is provided in the request, <code>fileUploadUrls</code> will contain a map of file names to upload URLs. ',
-        }),
-    ),
-    zipUploadUrl: UploadUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' When the <code>fileMap</code> argument is not provided in the request, this <code>zipUploadUrl</code> is returned. ',
-        }),
-    ),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: ' The job ID for this deployment. will supply to start deployment api. ',
+    }),
+    fileUploadUrls: FileUploadUrlsSchema.openapi({
+      description:
+        ' When the <code>fileMap</code> argument is provided in the request, <code>fileUploadUrls</code> will contain a map of file names to upload URLs. ',
+    }),
+    zipUploadUrl: UploadUrlSchema.openapi({
+      description:
+        ' When the <code>fileMap</code> argument is not provided in the request, this <code>zipUploadUrl</code> is returned. ',
+    }),
   })
   .openapi({
     required: ['fileUploadUrls', 'zipUploadUrl'],
@@ -864,12 +688,10 @@ const DomainPrefixSchema = z
 
 const SubDomainSettingSchema = z
   .object({
-    prefix: DomainPrefixSchema.and(
-      z.any().openapi({ description: ' The prefix setting for the subdomain. ' }),
-    ),
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: ' The branch name setting for the subdomain. ' }),
-    ),
+    prefix: DomainPrefixSchema.openapi({ description: ' The prefix setting for the subdomain. ' }),
+    branchName: BranchNameSchema.openapi({
+      description: ' The branch name setting for the subdomain. ',
+    }),
   })
   .openapi({
     required: ['prefix', 'branchName'],
@@ -883,15 +705,11 @@ const DNSRecordSchema = z.string().max(1000).openapi('DNSRecord')
 
 const SubDomainSchema = z
   .object({
-    subDomainSetting: SubDomainSettingSchema.and(
-      z.any().openapi({ description: ' Describes the settings for the subdomain. ' }),
-    ),
-    verified: VerifiedSchema.and(
-      z.any().openapi({ description: ' The verified status of the subdomain ' }),
-    ),
-    dnsRecord: DNSRecordSchema.and(
-      z.any().openapi({ description: ' The DNS record for the subdomain. ' }),
-    ),
+    subDomainSetting: SubDomainSettingSchema.openapi({
+      description: ' Describes the settings for the subdomain. ',
+    }),
+    verified: VerifiedSchema.openapi({ description: ' The verified status of the subdomain ' }),
+    dnsRecord: DNSRecordSchema.openapi({ description: ' The DNS record for the subdomain. ' }),
   })
   .openapi({
     required: ['subDomainSetting', 'verified', 'dnsRecord'],
@@ -903,42 +721,33 @@ const SubDomainsSchema = z.array(SubDomainSchema).max(500).openapi('SubDomains')
 
 const DomainAssociationSchema = z
   .object({
-    domainAssociationArn: DomainAssociationArnSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The Amazon Resource Name (ARN) for the domain association. ' }),
-    ),
-    domainName: DomainNameSchema.and(z.any().openapi({ description: ' The name of the domain. ' })),
-    enableAutoSubDomain: EnableAutoSubDomainSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Enables the automated creation of subdomains for branches. ' }),
-    ),
-    autoSubDomainCreationPatterns: AutoSubDomainCreationPatternsSchema.and(
-      z.any().openapi({ description: ' Sets branch patterns for automatic subdomain creation. ' }),
-    ).exactOptional(),
-    autoSubDomainIAMRole: AutoSubDomainIAMRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The required AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) for automatically creating subdomains. ',
-        }),
-    ).exactOptional(),
-    domainStatus: DomainStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the domain association. ' }),
-    ),
-    statusReason: StatusReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The reason for the current status of the domain association. ' }),
-    ),
-    certificateVerificationDNSRecord: CertificateVerificationDNSRecordSchema.and(
-      z.any().openapi({ description: ' The DNS record for certificate verification. ' }),
-    ).exactOptional(),
-    subDomains: SubDomainsSchema.and(
-      z.any().openapi({ description: ' The subdomains for the domain association. ' }),
-    ),
+    domainAssociationArn: DomainAssociationArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) for the domain association. ',
+    }),
+    domainName: DomainNameSchema.openapi({ description: ' The name of the domain. ' }),
+    enableAutoSubDomain: EnableAutoSubDomainSchema.openapi({
+      description: ' Enables the automated creation of subdomains for branches. ',
+    }),
+    autoSubDomainCreationPatterns: AutoSubDomainCreationPatternsSchema.exactOptional().openapi({
+      description: ' Sets branch patterns for automatic subdomain creation. ',
+    }),
+    autoSubDomainIAMRole: AutoSubDomainIAMRoleSchema.exactOptional().openapi({
+      description:
+        ' The required AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) for automatically creating subdomains. ',
+    }),
+    domainStatus: DomainStatusSchema.openapi({
+      description: ' The current status of the domain association. ',
+    }),
+    statusReason: StatusReasonSchema.openapi({
+      description: ' The reason for the current status of the domain association. ',
+    }),
+    certificateVerificationDNSRecord:
+      CertificateVerificationDNSRecordSchema.exactOptional().openapi({
+        description: ' The DNS record for certificate verification. ',
+      }),
+    subDomains: SubDomainsSchema.openapi({
+      description: ' The subdomains for the domain association. ',
+    }),
   })
   .openapi({
     required: [
@@ -956,14 +765,10 @@ const DomainAssociationSchema = z
 
 const CreateDomainAssociationResultSchema = z
   .object({
-    domainAssociation: DomainAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the structure of a domain association, which associates a custom domain with an Amplify app. ',
-        }),
-    ),
+    domainAssociation: DomainAssociationSchema.openapi({
+      description:
+        ' Describes the structure of a domain association, which associates a custom domain with an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['domainAssociation'],
@@ -983,23 +788,21 @@ const WebhookUrlSchema = z.string().max(1000).openapi('WebhookUrl')
 
 const WebhookSchema = z
   .object({
-    webhookArn: WebhookArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) for the webhook. ' }),
-    ),
-    webhookId: WebhookIdSchema.and(z.any().openapi({ description: ' The ID of the webhook. ' })),
-    webhookUrl: WebhookUrlSchema.and(z.any().openapi({ description: ' The URL of the webhook. ' })),
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: ' The name for a branch that is part of an Amplify app. ' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description for a webhook. ' }),
-    ),
-    createTime: CreateTimeSchema.and(
-      z.any().openapi({ description: ' The create date and time for a webhook. ' }),
-    ),
-    updateTime: UpdateTimeSchema.and(
-      z.any().openapi({ description: ' Updates the date and time for a webhook. ' }),
-    ),
+    webhookArn: WebhookArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) for the webhook. ',
+    }),
+    webhookId: WebhookIdSchema.openapi({ description: ' The ID of the webhook. ' }),
+    webhookUrl: WebhookUrlSchema.openapi({ description: ' The URL of the webhook. ' }),
+    branchName: BranchNameSchema.openapi({
+      description: ' The name for a branch that is part of an Amplify app. ',
+    }),
+    description: DescriptionSchema.openapi({ description: ' The description for a webhook. ' }),
+    createTime: CreateTimeSchema.openapi({
+      description: ' The create date and time for a webhook. ',
+    }),
+    updateTime: UpdateTimeSchema.openapi({
+      description: ' Updates the date and time for a webhook. ',
+    }),
   })
   .openapi({
     required: [
@@ -1017,13 +820,9 @@ const WebhookSchema = z
 
 const CreateWebhookResultSchema = z
   .object({
-    webhook: WebhookSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Describes a webhook that connects repository events to an Amplify app. ',
-        }),
-    ),
+    webhook: WebhookSchema.openapi({
+      description: ' Describes a webhook that connects repository events to an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['webhook'],
@@ -1038,9 +837,9 @@ const DeleteAppResultSchema = z
 
 const DeleteBackendEnvironmentResultSchema = z
   .object({
-    backendEnvironment: BackendEnvironmentSchema.and(
-      z.any().openapi({ description: ' Describes the backend environment for an Amplify app. ' }),
-    ),
+    backendEnvironment: BackendEnvironmentSchema.openapi({
+      description: ' Describes the backend environment for an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['backendEnvironment'],
@@ -1050,14 +849,10 @@ const DeleteBackendEnvironmentResultSchema = z
 
 const DeleteBranchResultSchema = z
   .object({
-    branch: BranchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The branch for an Amplify app, which maps to a third-party repository branch. ',
-        }),
-    ),
+    branch: BranchSchema.openapi({
+      description:
+        ' The branch for an Amplify app, which maps to a third-party repository branch. ',
+    }),
   })
   .openapi({
     required: ['branch'],
@@ -1098,44 +893,26 @@ const JobTypeSchema = z.enum(['RELEASE', 'RETRY', 'MANUAL', 'WEB_HOOK']).openapi
 
 const JobSummarySchema = z
   .object({
-    jobArn: JobArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) for the job. ' }),
-    ),
-    jobId: JobIdSchema.and(z.any().openapi({ description: ' The unique ID for the job. ' })),
-    commitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The commit ID from a third-party repository provider for the job. ',
-        }),
-    ),
-    commitMessage: CommitMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The commit message from a third-party repository provider for the job. ',
-        }),
-    ),
-    commitTime: CommitTimeSchema.and(
-      z.any().openapi({ description: ' The commit date and time for the job. ' }),
-    ),
-    startTime: StartTimeSchema.and(
-      z.any().openapi({ description: ' The start date and time for the job. ' }),
-    ),
-    status: JobStatusSchema.and(
-      z.any().openapi({ description: ' The current status for the job. ' }),
-    ),
-    endTime: EndTimeSchema.and(
-      z.any().openapi({ description: ' The end date and time for the job. ' }),
-    ).exactOptional(),
-    jobType: JobTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type for the job. If the value is <code>RELEASE</code>, the job was manually released from its source by using the <code>StartJob</code> API. If the value is <code>RETRY</code>, the job was manually retried using the <code>StartJob</code> API. If the value is <code>WEB_HOOK</code>, the job was automatically triggered by webhooks. ',
-        }),
-    ),
+    jobArn: JobArnSchema.openapi({ description: ' The Amazon Resource Name (ARN) for the job. ' }),
+    jobId: JobIdSchema.openapi({ description: ' The unique ID for the job. ' }),
+    commitId: CommitIdSchema.openapi({
+      description: ' The commit ID from a third-party repository provider for the job. ',
+    }),
+    commitMessage: CommitMessageSchema.openapi({
+      description: ' The commit message from a third-party repository provider for the job. ',
+    }),
+    commitTime: CommitTimeSchema.openapi({
+      description: ' The commit date and time for the job. ',
+    }),
+    startTime: StartTimeSchema.openapi({ description: ' The start date and time for the job. ' }),
+    status: JobStatusSchema.openapi({ description: ' The current status for the job. ' }),
+    endTime: EndTimeSchema.exactOptional().openapi({
+      description: ' The end date and time for the job. ',
+    }),
+    jobType: JobTypeSchema.openapi({
+      description:
+        ' The type for the job. If the value is <code>RELEASE</code>, the job was manually released from its source by using the <code>StartJob</code> API. If the value is <code>RETRY</code>, the job was manually retried using the <code>StartJob</code> API. If the value is <code>WEB_HOOK</code>, the job was automatically triggered by webhooks. ',
+    }),
   })
   .openapi({
     required: [
@@ -1162,13 +939,9 @@ const DeleteJobResultSchema = z
 
 const DeleteWebhookResultSchema = z
   .object({
-    webhook: WebhookSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Describes a webhook that connects repository events to an Amplify app. ',
-        }),
-    ),
+    webhook: WebhookSchema.openapi({
+      description: ' Describes a webhook that connects repository events to an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['webhook'],
@@ -1180,9 +953,9 @@ const LogUrlSchema = z.string().max(1000).openapi('LogUrl')
 
 const GenerateAccessLogsResultSchema = z
   .object({
-    logUrl: LogUrlSchema.and(
-      z.any().openapi({ description: ' The pre-signed URL for the requested access logs. ' }),
-    ).exactOptional(),
+    logUrl: LogUrlSchema.exactOptional().openapi({
+      description: ' The pre-signed URL for the requested access logs. ',
+    }),
   })
   .openapi({
     description: ' The result structure for the generate access logs request. ',
@@ -1205,12 +978,10 @@ const ArtifactUrlSchema = z.string().max(1000).openapi('ArtifactUrl')
 
 const GetArtifactUrlResultSchema = z
   .object({
-    artifactId: ArtifactIdSchema.and(
-      z.any().openapi({ description: ' The unique ID for an artifact. ' }),
-    ),
-    artifactUrl: ArtifactUrlSchema.and(
-      z.any().openapi({ description: ' The presigned URL for the artifact. ' }),
-    ),
+    artifactId: ArtifactIdSchema.openapi({ description: ' The unique ID for an artifact. ' }),
+    artifactUrl: ArtifactUrlSchema.openapi({
+      description: ' The presigned URL for the artifact. ',
+    }),
   })
   .openapi({
     required: ['artifactId', 'artifactUrl'],
@@ -1220,9 +991,9 @@ const GetArtifactUrlResultSchema = z
 
 const GetBackendEnvironmentResultSchema = z
   .object({
-    backendEnvironment: BackendEnvironmentSchema.and(
-      z.any().openapi({ description: ' Describes the backend environment for an Amplify app. ' }),
-    ),
+    backendEnvironment: BackendEnvironmentSchema.openapi({
+      description: ' Describes the backend environment for an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['backendEnvironment'],
@@ -1237,14 +1008,10 @@ const GetBranchResultSchema = z
 
 const GetDomainAssociationResultSchema = z
   .object({
-    domainAssociation: DomainAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the structure of a domain association, which associates a custom domain with an Amplify app. ',
-        }),
-    ),
+    domainAssociation: DomainAssociationSchema.openapi({
+      description:
+        ' Describes the structure of a domain association, which associates a custom domain with an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['domainAssociation'],
@@ -1266,50 +1033,36 @@ const ContextSchema = z.string().openapi('Context')
 
 const StepSchema = z
   .object({
-    stepName: StepNameSchema.and(
-      z.any().openapi({ description: ' The name of the execution step. ' }),
-    ),
-    startTime: StartTimeSchema.and(
-      z.any().openapi({ description: ' The start date and time of the execution step. ' }),
-    ),
-    status: JobStatusSchema.and(
-      z.any().openapi({ description: ' The status of the execution step. ' }),
-    ),
-    endTime: EndTimeSchema.and(
-      z.any().openapi({ description: ' The end date and time of the execution step. ' }),
-    ),
-    logUrl: LogUrlSchema.and(
-      z.any().openapi({ description: ' The URL to the logs for the execution step. ' }),
-    ).exactOptional(),
-    artifactsUrl: ArtifactsUrlSchema.and(
-      z.any().openapi({ description: ' The URL to the artifact for the execution step. ' }),
-    ).exactOptional(),
-    testArtifactsUrl: TestArtifactsUrlSchema.and(
-      z.any().openapi({ description: ' The URL to the test artifact for the execution step. ' }),
-    ).exactOptional(),
-    testConfigUrl: TestConfigUrlSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The URL to the test configuration for the execution step. ' }),
-    ).exactOptional(),
-    screenshots: ScreenshotsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of screenshot URLs for the execution step, if relevant. ',
-        }),
-    ).exactOptional(),
-    statusReason: StatusReasonSchema.and(
-      z.any().openapi({ description: ' The reason for the current step status. ' }),
-    ).exactOptional(),
-    context: ContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The context for the current step. Includes a build image if the step is build. ',
-        }),
-    ).exactOptional(),
+    stepName: StepNameSchema.openapi({ description: ' The name of the execution step. ' }),
+    startTime: StartTimeSchema.openapi({
+      description: ' The start date and time of the execution step. ',
+    }),
+    status: JobStatusSchema.openapi({ description: ' The status of the execution step. ' }),
+    endTime: EndTimeSchema.openapi({
+      description: ' The end date and time of the execution step. ',
+    }),
+    logUrl: LogUrlSchema.exactOptional().openapi({
+      description: ' The URL to the logs for the execution step. ',
+    }),
+    artifactsUrl: ArtifactsUrlSchema.exactOptional().openapi({
+      description: ' The URL to the artifact for the execution step. ',
+    }),
+    testArtifactsUrl: TestArtifactsUrlSchema.exactOptional().openapi({
+      description: ' The URL to the test artifact for the execution step. ',
+    }),
+    testConfigUrl: TestConfigUrlSchema.exactOptional().openapi({
+      description: ' The URL to the test configuration for the execution step. ',
+    }),
+    screenshots: ScreenshotsSchema.exactOptional().openapi({
+      description: ' The list of screenshot URLs for the execution step, if relevant. ',
+    }),
+    statusReason: StatusReasonSchema.exactOptional().openapi({
+      description: ' The reason for the current step status. ',
+    }),
+    context: ContextSchema.exactOptional().openapi({
+      description:
+        ' The context for the current step. Includes a build image if the step is build. ',
+    }),
   })
   .openapi({
     required: ['stepName', 'startTime', 'status', 'endTime'],
@@ -1321,20 +1074,12 @@ const StepsSchema = z.array(StepSchema).openapi('Steps')
 
 const JobSchema = z
   .object({
-    summary: JobSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Describes the summary for an execution job for an Amplify app. ',
-        }),
-    ),
-    steps: StepsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The execution steps for an execution job, for an Amplify app. ',
-        }),
-    ),
+    summary: JobSummarySchema.openapi({
+      description: ' Describes the summary for an execution job for an Amplify app. ',
+    }),
+    steps: StepsSchema.openapi({
+      description: ' The execution steps for an execution job, for an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['summary', 'steps'],
@@ -1349,9 +1094,7 @@ const GetJobResultSchema = z
 
 const GetWebhookResultSchema = z
   .object({
-    webhook: WebhookSchema.and(
-      z.any().openapi({ description: ' Describes the structure of a webhook. ' }),
-    ),
+    webhook: WebhookSchema.openapi({ description: ' Describes the structure of a webhook. ' }),
   })
   .openapi({
     required: ['webhook'],
@@ -1369,15 +1112,11 @@ const NextTokenSchema = z
 
 const ListAppsResultSchema = z
   .object({
-    apps: AppsSchema.and(z.any().openapi({ description: ' A list of Amplify apps. ' })),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token. Set to null to start listing apps from start. If non-null, the pagination token is returned in a result. Pass its value in here to list more projects. ',
-        }),
-    ).exactOptional(),
+    apps: AppsSchema.openapi({ description: ' A list of Amplify apps. ' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token. Set to null to start listing apps from start. If non-null, the pagination token is returned in a result. Pass its value in here to list more projects. ',
+    }),
   })
   .openapi({
     required: ['apps'],
@@ -1389,12 +1128,10 @@ const ArtifactFileNameSchema = z.string().max(1000).openapi('ArtifactFileName')
 
 const ArtifactSchema = z
   .object({
-    artifactFileName: ArtifactFileNameSchema.and(
-      z.any().openapi({ description: ' The file name for the artifact. ' }),
-    ),
-    artifactId: ArtifactIdSchema.and(
-      z.any().openapi({ description: ' The unique ID for the artifact. ' }),
-    ),
+    artifactFileName: ArtifactFileNameSchema.openapi({
+      description: ' The file name for the artifact. ',
+    }),
+    artifactId: ArtifactIdSchema.openapi({ description: ' The unique ID for the artifact. ' }),
   })
   .openapi({
     required: ['artifactFileName', 'artifactId'],
@@ -1406,15 +1143,11 @@ const ArtifactsSchema = z.array(ArtifactSchema).openapi('Artifacts')
 
 const ListArtifactsResultSchema = z
   .object({
-    artifacts: ArtifactsSchema.and(z.any().openapi({ description: ' A list of artifacts. ' })),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries. ',
-        }),
-    ).exactOptional(),
+    artifacts: ArtifactsSchema.openapi({ description: ' A list of artifacts. ' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries. ',
+    }),
   })
   .openapi({
     required: ['artifacts'],
@@ -1426,17 +1159,13 @@ const BackendEnvironmentsSchema = z.array(BackendEnvironmentSchema).openapi('Bac
 
 const ListBackendEnvironmentsResultSchema = z
   .object({
-    backendEnvironments: BackendEnvironmentsSchema.and(
-      z.any().openapi({ description: ' The list of backend environments for an Amplify app. ' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries. ',
-        }),
-    ).exactOptional(),
+    backendEnvironments: BackendEnvironmentsSchema.openapi({
+      description: ' The list of backend environments for an Amplify app. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries. ',
+    }),
   })
   .openapi({
     required: ['backendEnvironments'],
@@ -1448,17 +1177,11 @@ const BranchesSchema = z.array(BranchSchema).max(255).openapi('Branches')
 
 const ListBranchesResultSchema = z
   .object({
-    branches: BranchesSchema.and(
-      z.any().openapi({ description: ' A list of branches for an Amplify app. ' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries. ',
-        }),
-    ).exactOptional(),
+    branches: BranchesSchema.openapi({ description: ' A list of branches for an Amplify app. ' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries. ',
+    }),
   })
   .openapi({
     required: ['branches'],
@@ -1473,17 +1196,13 @@ const DomainAssociationsSchema = z
 
 const ListDomainAssociationsResultSchema = z
   .object({
-    domainAssociations: DomainAssociationsSchema.and(
-      z.any().openapi({ description: ' A list of domain associations. ' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token. If non-null, a pagination token is returned in a result. Pass its value in another request to retrieve more entries. ',
-        }),
-    ).exactOptional(),
+    domainAssociations: DomainAssociationsSchema.openapi({
+      description: ' A list of domain associations. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token. If non-null, a pagination token is returned in a result. Pass its value in another request to retrieve more entries. ',
+    }),
   })
   .openapi({
     required: ['domainAssociations'],
@@ -1495,17 +1214,13 @@ const JobSummariesSchema = z.array(JobSummarySchema).openapi('JobSummaries')
 
 const ListJobsResultSchema = z
   .object({
-    jobSummaries: JobSummariesSchema.and(
-      z.any().openapi({ description: ' The result structure for the list job result request. ' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token. If non-null the pagination token is returned in a result. Pass its value in another request to retrieve more entries. ',
-        }),
-    ).exactOptional(),
+    jobSummaries: JobSummariesSchema.openapi({
+      description: ' The result structure for the list job result request. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token. If non-null the pagination token is returned in a result. Pass its value in another request to retrieve more entries. ',
+    }),
   })
   .openapi({
     required: ['jobSummaries'],
@@ -1515,13 +1230,9 @@ const ListJobsResultSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A list of tags for the specified The Amazon Resource Name (ARN). ',
-        }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' A list of tags for the specified The Amazon Resource Name (ARN). ',
+    }),
   })
   .openapi({ description: ' The response for the list tags for resource request. ', required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1532,15 +1243,11 @@ const WebhooksSchema = z.array(WebhookSchema).openapi('Webhooks')
 
 const ListWebhooksResultSchema = z
   .object({
-    webhooks: WebhooksSchema.and(z.any().openapi({ description: ' A list of webhooks. ' })),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token. If non-null, the pagination token is returned in a result. Pass its value in another request to retrieve more entries. ',
-        }),
-    ).exactOptional(),
+    webhooks: WebhooksSchema.openapi({ description: ' A list of webhooks. ' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token. If non-null, the pagination token is returned in a result. Pass its value in another request to retrieve more entries. ',
+    }),
   })
   .openapi({
     required: ['webhooks'],
@@ -1549,11 +1256,7 @@ const ListWebhooksResultSchema = z
   .openapi('ListWebhooksResult')
 
 const StartDeploymentResultSchema = z
-  .object({
-    jobSummary: JobSummarySchema.and(
-      z.any().openapi({ description: ' The summary for the job. ' }),
-    ),
-  })
+  .object({ jobSummary: JobSummarySchema.openapi({ description: ' The summary for the job. ' }) })
   .openapi({
     required: ['jobSummary'],
     description: ' The result structure for the start a deployment request. ',
@@ -1561,11 +1264,7 @@ const StartDeploymentResultSchema = z
   .openapi('StartDeploymentResult')
 
 const StartJobResultSchema = z
-  .object({
-    jobSummary: JobSummarySchema.and(
-      z.any().openapi({ description: ' The summary for the job. ' }),
-    ),
-  })
+  .object({ jobSummary: JobSummarySchema.openapi({ description: ' The summary for the job. ' }) })
   .openapi({
     required: ['jobSummary'],
     description: ' The result structure for the run job request. ',
@@ -1573,11 +1272,7 @@ const StartJobResultSchema = z
   .openapi('StartJobResult')
 
 const StopJobResultSchema = z
-  .object({
-    jobSummary: JobSummarySchema.and(
-      z.any().openapi({ description: ' The summary for the job. ' }),
-    ),
-  })
+  .object({ jobSummary: JobSummarySchema.openapi({ description: ' The summary for the job. ' }) })
   .openapi({
     required: ['jobSummary'],
     description: ' The result structure for the stop job request. ',
@@ -1585,12 +1280,12 @@ const StopJobResultSchema = z
   .openapi('StopJobResult')
 
 const TagResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: ' The response for the tag resource request. ' })
   .openapi('TagResourceResponse')
 
 const UntagResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: ' The response for the untag resource request. ' })
   .openapi('UntagResourceResponse')
 
@@ -1602,9 +1297,7 @@ const TagKeySchema = z
   .openapi('TagKey')
 
 const UpdateAppResultSchema = z
-  .object({
-    app: AppSchema.and(z.any().openapi({ description: ' Represents the updated Amplify app. ' })),
-  })
+  .object({ app: AppSchema.openapi({ description: ' Represents the updated Amplify app. ' }) })
   .openapi({
     required: ['app'],
     description: ' The result structure for an Amplify app update request. ',
@@ -1613,14 +1306,10 @@ const UpdateAppResultSchema = z
 
 const UpdateBranchResultSchema = z
   .object({
-    branch: BranchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The branch for an Amplify app, which maps to a third-party repository branch. ',
-        }),
-    ),
+    branch: BranchSchema.openapi({
+      description:
+        ' The branch for an Amplify app, which maps to a third-party repository branch. ',
+    }),
   })
   .openapi({
     required: ['branch'],
@@ -1630,14 +1319,10 @@ const UpdateBranchResultSchema = z
 
 const UpdateDomainAssociationResultSchema = z
   .object({
-    domainAssociation: DomainAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes a domain association, which associates a custom domain with an Amplify app. ',
-        }),
-    ),
+    domainAssociation: DomainAssociationSchema.openapi({
+      description:
+        ' Describes a domain association, which associates a custom domain with an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['domainAssociation'],
@@ -1647,13 +1332,9 @@ const UpdateDomainAssociationResultSchema = z
 
 const UpdateWebhookResultSchema = z
   .object({
-    webhook: WebhookSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Describes a webhook that connects repository events to an Amplify app. ',
-        }),
-    ),
+    webhook: WebhookSchema.openapi({
+      description: ' Describes a webhook that connects repository events to an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['webhook'],
@@ -1676,110 +1357,66 @@ const OauthTokenSchema = z
 
 const CreateAppRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: ' The name for an Amplify app. ' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description for an Amplify app. ' }),
-    ).exactOptional(),
-    repository: RepositorySchema.and(
-      z.any().openapi({ description: ' The repository for an Amplify app. ' }),
-    ).exactOptional(),
-    platform: PlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The platform for the Amplify app. For a static app, set the platform type to <code>WEB</code>. For a dynamic server-side rendered (SSR) app, set the platform type to <code>WEB_COMPUTE</code>. For an app requiring Amplify Hosting's original SSR support only, set the platform type to <code>WEB_DYNAMIC</code>.",
-        }),
-    ).exactOptional(),
-    iamServiceRoleArn: ServiceRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The AWS Identity and Access Management (IAM) service role for an Amplify app. ',
-        }),
-    ).exactOptional(),
-    oauthToken: OauthTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The OAuth token for a third-party source control system for an Amplify app. The OAuth token is used to create a webhook and a read-only deploy key using SSH cloning. The OAuth token is not stored.</p> <p>Use <code>oauthToken</code> for repository providers other than GitHub, such as Bitbucket or CodeCommit. To authorize access to GitHub as your repository provider, use <code>accessToken</code>.</p> <p>You must specify either <code>oauthToken</code> or <code>accessToken</code> when you create a new app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href="https://docs.aws.amazon.com/amplify/latest/UserGuide/setting-up-GitHub-access.html#migrating-to-github-app-auth">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>',
-        }),
-    ).exactOptional(),
-    accessToken: AccessTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The personal access token for a GitHub repository for an Amplify app. The personal access token is used to authorize access to a GitHub repository using the Amplify GitHub App. The token is not stored.</p> <p>Use <code>accessToken</code> for GitHub repositories only. To authorize access to a repository provider such as Bitbucket or CodeCommit, use <code>oauthToken</code>.</p> <p>You must specify either <code>accessToken</code> or <code>oauthToken</code> when you create a new app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href="https://docs.aws.amazon.com/amplify/latest/UserGuide/setting-up-GitHub-access.html#migrating-to-github-app-auth">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>',
-        }),
-    ).exactOptional(),
-    environmentVariables: EnvironmentVariablesSchema.and(
-      z.any().openapi({ description: ' The environment variables map for an Amplify app. ' }),
-    ).exactOptional(),
-    enableBranchAutoBuild: EnableBranchAutoBuildSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Enables the auto building of branches for an Amplify app. ' }),
-    ).exactOptional(),
-    enableBranchAutoDeletion: EnableBranchAutoDeletionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Automatically disconnects a branch in the Amplify Console when you delete a branch from your Git repository. ',
-        }),
-    ).exactOptional(),
-    enableBasicAuth: EnableBasicAuthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Enables basic authorization for an Amplify app. This will apply to all branches that are part of this app. ',
-        }),
-    ).exactOptional(),
-    basicAuthCredentials: BasicAuthCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The credentials for basic authorization for an Amplify app. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-        }),
-    ).exactOptional(),
-    customRules: CustomRulesSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The custom rewrite and redirect rules for an Amplify app. ' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tag for an Amplify app. ' }),
-    ).exactOptional(),
-    buildSpec: BuildSpecSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The build specification (build spec) for an Amplify app. ' }),
-    ).exactOptional(),
-    customHeaders: CustomHeadersSchema.and(
-      z.any().openapi({ description: 'The custom HTTP headers for an Amplify app.' }),
-    ).exactOptional(),
-    enableAutoBranchCreation: EnableAutoBranchCreationSchema.and(
-      z.any().openapi({ description: ' Enables automated branch creation for an Amplify app. ' }),
-    ).exactOptional(),
-    autoBranchCreationPatterns: AutoBranchCreationPatternsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The automated branch creation glob patterns for an Amplify app. ',
-        }),
-    ).exactOptional(),
-    autoBranchCreationConfig: AutoBranchCreationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The automated branch creation configuration for an Amplify app. ',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: ' The name for an Amplify app. ' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description for an Amplify app. ',
+    }),
+    repository: RepositorySchema.exactOptional().openapi({
+      description: ' The repository for an Amplify app. ',
+    }),
+    platform: PlatformSchema.exactOptional().openapi({
+      description:
+        " The platform for the Amplify app. For a static app, set the platform type to <code>WEB</code>. For a dynamic server-side rendered (SSR) app, set the platform type to <code>WEB_COMPUTE</code>. For an app requiring Amplify Hosting's original SSR support only, set the platform type to <code>WEB_DYNAMIC</code>.",
+    }),
+    iamServiceRoleArn: ServiceRoleArnSchema.exactOptional().openapi({
+      description:
+        ' The AWS Identity and Access Management (IAM) service role for an Amplify app. ',
+    }),
+    oauthToken: OauthTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The OAuth token for a third-party source control system for an Amplify app. The OAuth token is used to create a webhook and a read-only deploy key using SSH cloning. The OAuth token is not stored.</p> <p>Use <code>oauthToken</code> for repository providers other than GitHub, such as Bitbucket or CodeCommit. To authorize access to GitHub as your repository provider, use <code>accessToken</code>.</p> <p>You must specify either <code>oauthToken</code> or <code>accessToken</code> when you create a new app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href="https://docs.aws.amazon.com/amplify/latest/UserGuide/setting-up-GitHub-access.html#migrating-to-github-app-auth">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>',
+    }),
+    accessToken: AccessTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The personal access token for a GitHub repository for an Amplify app. The personal access token is used to authorize access to a GitHub repository using the Amplify GitHub App. The token is not stored.</p> <p>Use <code>accessToken</code> for GitHub repositories only. To authorize access to a repository provider such as Bitbucket or CodeCommit, use <code>oauthToken</code>.</p> <p>You must specify either <code>accessToken</code> or <code>oauthToken</code> when you create a new app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href="https://docs.aws.amazon.com/amplify/latest/UserGuide/setting-up-GitHub-access.html#migrating-to-github-app-auth">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>',
+    }),
+    environmentVariables: EnvironmentVariablesSchema.exactOptional().openapi({
+      description: ' The environment variables map for an Amplify app. ',
+    }),
+    enableBranchAutoBuild: EnableBranchAutoBuildSchema.exactOptional().openapi({
+      description: ' Enables the auto building of branches for an Amplify app. ',
+    }),
+    enableBranchAutoDeletion: EnableBranchAutoDeletionSchema.exactOptional().openapi({
+      description:
+        ' Automatically disconnects a branch in the Amplify Console when you delete a branch from your Git repository. ',
+    }),
+    enableBasicAuth: EnableBasicAuthSchema.exactOptional().openapi({
+      description:
+        ' Enables basic authorization for an Amplify app. This will apply to all branches that are part of this app. ',
+    }),
+    basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+      description:
+        ' The credentials for basic authorization for an Amplify app. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+    }),
+    customRules: CustomRulesSchema.exactOptional().openapi({
+      description: ' The custom rewrite and redirect rules for an Amplify app. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: ' The tag for an Amplify app. ' }),
+    buildSpec: BuildSpecSchema.exactOptional().openapi({
+      description: ' The build specification (build spec) for an Amplify app. ',
+    }),
+    customHeaders: CustomHeadersSchema.exactOptional().openapi({
+      description: 'The custom HTTP headers for an Amplify app.',
+    }),
+    enableAutoBranchCreation: EnableAutoBranchCreationSchema.exactOptional().openapi({
+      description: ' Enables automated branch creation for an Amplify app. ',
+    }),
+    autoBranchCreationPatterns: AutoBranchCreationPatternsSchema.exactOptional().openapi({
+      description: ' The automated branch creation glob patterns for an Amplify app. ',
+    }),
+    autoBranchCreationConfig: AutoBranchCreationConfigSchema.exactOptional().openapi({
+      description: ' The automated branch creation configuration for an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -1790,17 +1427,15 @@ const CreateAppRequestSchema = z
 
 const CreateBackendEnvironmentRequestSchema = z
   .object({
-    environmentName: EnvironmentNameSchema.and(
-      z.any().openapi({ description: ' The name for the backend environment. ' }),
-    ),
-    stackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The AWS CloudFormation stack name of a backend environment. ' }),
-    ).exactOptional(),
-    deploymentArtifacts: DeploymentArtifactsSchema.and(
-      z.any().openapi({ description: ' The name of deployment artifacts. ' }),
-    ).exactOptional(),
+    environmentName: EnvironmentNameSchema.openapi({
+      description: ' The name for the backend environment. ',
+    }),
+    stackName: StackNameSchema.exactOptional().openapi({
+      description: ' The AWS CloudFormation stack name of a backend environment. ',
+    }),
+    deploymentArtifacts: DeploymentArtifactsSchema.exactOptional().openapi({
+      description: ' The name of deployment artifacts. ',
+    }),
   })
   .openapi({
     required: ['environmentName'],
@@ -1811,79 +1446,56 @@ const CreateBackendEnvironmentRequestSchema = z
 
 const CreateBranchRequestSchema = z
   .object({
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: ' The name for the branch. ' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description for the branch. ' }),
-    ).exactOptional(),
-    stage: StageSchema.and(
-      z.any().openapi({ description: ' Describes the current stage for the branch. ' }),
-    ).exactOptional(),
-    framework: FrameworkSchema.and(
-      z.any().openapi({ description: ' The framework for the branch. ' }),
-    ).exactOptional(),
-    enableNotification: EnableNotificationSchema.and(
-      z.any().openapi({ description: ' Enables notifications for the branch. ' }),
-    ).exactOptional(),
-    enableAutoBuild: EnableAutoBuildSchema.and(
-      z.any().openapi({ description: ' Enables auto building for the branch. ' }),
-    ).exactOptional(),
-    environmentVariables: EnvironmentVariablesSchema.and(
-      z.any().openapi({ description: ' The environment variables for the branch. ' }),
-    ).exactOptional(),
-    basicAuthCredentials: BasicAuthCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The basic authorization credentials for the branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-        }),
-    ).exactOptional(),
-    enableBasicAuth: EnableBasicAuthSchema.and(
-      z.any().openapi({ description: ' Enables basic authorization for the branch. ' }),
-    ).exactOptional(),
-    enablePerformanceMode: EnablePerformanceModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tag for the branch. ' }),
-    ).exactOptional(),
-    buildSpec: BuildSpecSchema.and(
-      z.any().openapi({ description: ' The build specification (build spec) for the branch. ' }),
-    ).exactOptional(),
-    ttl: TTLSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The content Time To Live (TTL) for the website in seconds. ' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The display name for a branch. This is used as the default domain prefix. ',
-        }),
-    ).exactOptional(),
-    enablePullRequestPreview: EnablePullRequestPreviewSchema.and(
-      z.any().openapi({ description: ' Enables pull request previews for this branch. ' }),
-    ).exactOptional(),
-    pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.and(
-      z.any().openapi({ description: ' The Amplify environment name for the pull request. ' }),
-    ).exactOptional(),
-    backendEnvironmentArn: BackendEnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. ',
-        }),
-    ).exactOptional(),
+    branchName: BranchNameSchema.openapi({ description: ' The name for the branch. ' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description for the branch. ',
+    }),
+    stage: StageSchema.exactOptional().openapi({
+      description: ' Describes the current stage for the branch. ',
+    }),
+    framework: FrameworkSchema.exactOptional().openapi({
+      description: ' The framework for the branch. ',
+    }),
+    enableNotification: EnableNotificationSchema.exactOptional().openapi({
+      description: ' Enables notifications for the branch. ',
+    }),
+    enableAutoBuild: EnableAutoBuildSchema.exactOptional().openapi({
+      description: ' Enables auto building for the branch. ',
+    }),
+    environmentVariables: EnvironmentVariablesSchema.exactOptional().openapi({
+      description: ' The environment variables for the branch. ',
+    }),
+    basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+      description:
+        ' The basic authorization credentials for the branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+    }),
+    enableBasicAuth: EnableBasicAuthSchema.exactOptional().openapi({
+      description: ' Enables basic authorization for the branch. ',
+    }),
+    enablePerformanceMode: EnablePerformanceModeSchema.exactOptional().openapi({
+      description:
+        '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: ' The tag for the branch. ' }),
+    buildSpec: BuildSpecSchema.exactOptional().openapi({
+      description: ' The build specification (build spec) for the branch. ',
+    }),
+    ttl: TTLSchema.exactOptional().openapi({
+      description: ' The content Time To Live (TTL) for the website in seconds. ',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: ' The display name for a branch. This is used as the default domain prefix. ',
+    }),
+    enablePullRequestPreview: EnablePullRequestPreviewSchema.exactOptional().openapi({
+      description: ' Enables pull request previews for this branch. ',
+    }),
+    pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.exactOptional().openapi({
+      description: ' The Amplify environment name for the pull request. ',
+    }),
+    backendEnvironmentArn: BackendEnvironmentArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. ',
+    }),
   })
   .openapi({
     required: ['branchName'],
@@ -1896,14 +1508,10 @@ const FileMapSchema = z.record(z.string(), MD5HashSchema).openapi('FileMap')
 
 const CreateDeploymentRequestSchema = z
   .object({
-    fileMap: FileMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional file map that contains the file name as the key and the file content md5 hash as the value. If this argument is provided, the service will generate a unique upload URL per file. Otherwise, the service will only generate a single upload URL for the zipped files. ',
-        }),
-    ).exactOptional(),
+    fileMap: FileMapSchema.exactOptional().openapi({
+      description:
+        ' An optional file map that contains the file name as the key and the file content md5 hash as the value. If this argument is provided, the service will generate a unique upload URL per file. Otherwise, the service will only generate a single upload URL for the zipped files. ',
+    }),
   })
   .openapi({
     title: 'CreateDeploymentRequest',
@@ -1919,30 +1527,22 @@ const SubDomainSettingsSchema = z
 
 const CreateDomainAssociationRequestSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: ' The domain name for the domain association. ' }),
-    ),
-    enableAutoSubDomain: EnableAutoSubDomainSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Enables the automated creation of subdomains for branches. ' }),
-    ).exactOptional(),
-    subDomainSettings: SubDomainSettingsSchema.and(
-      z.any().openapi({ description: ' The setting for the subdomain. ' }),
-    ),
-    autoSubDomainCreationPatterns: AutoSubDomainCreationPatternsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Sets the branch patterns for automatic subdomain creation. ' }),
-    ).exactOptional(),
-    autoSubDomainIAMRole: AutoSubDomainIAMRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The required AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) for automatically creating subdomains. ',
-        }),
-    ).exactOptional(),
+    domainName: DomainNameSchema.openapi({
+      description: ' The domain name for the domain association. ',
+    }),
+    enableAutoSubDomain: EnableAutoSubDomainSchema.exactOptional().openapi({
+      description: ' Enables the automated creation of subdomains for branches. ',
+    }),
+    subDomainSettings: SubDomainSettingsSchema.openapi({
+      description: ' The setting for the subdomain. ',
+    }),
+    autoSubDomainCreationPatterns: AutoSubDomainCreationPatternsSchema.exactOptional().openapi({
+      description: ' Sets the branch patterns for automatic subdomain creation. ',
+    }),
+    autoSubDomainIAMRole: AutoSubDomainIAMRoleSchema.exactOptional().openapi({
+      description:
+        ' The required AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) for automatically creating subdomains. ',
+    }),
   })
   .openapi({
     required: ['domainName', 'subDomainSettings'],
@@ -1953,12 +1553,12 @@ const CreateDomainAssociationRequestSchema = z
 
 const CreateWebhookRequestSchema = z
   .object({
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: ' The name for a branch that is part of an Amplify app. ' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description for a webhook. ' }),
-    ).exactOptional(),
+    branchName: BranchNameSchema.openapi({
+      description: ' The name for a branch that is part of an Amplify app. ',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description for a webhook. ',
+    }),
   })
   .openapi({
     required: ['branchName'],
@@ -1968,7 +1568,7 @@ const CreateWebhookRequestSchema = z
   .openapi('CreateWebhookRequest')
 
 const DeleteAppRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteAppRequest',
     description: ' Describes the request structure for the delete app request. ',
@@ -1976,7 +1576,7 @@ const DeleteAppRequestSchema = z
   .openapi('DeleteAppRequest')
 
 const DeleteBackendEnvironmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteBackendEnvironmentRequest',
     description: ' The request structure for the delete backend environment request. ',
@@ -1984,7 +1584,7 @@ const DeleteBackendEnvironmentRequestSchema = z
   .openapi('DeleteBackendEnvironmentRequest')
 
 const DeleteBranchRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteBranchRequest',
     description: ' The request structure for the delete branch request. ',
@@ -1992,7 +1592,7 @@ const DeleteBranchRequestSchema = z
   .openapi('DeleteBranchRequest')
 
 const DeleteDomainAssociationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteDomainAssociationRequest',
     description: ' The request structure for the delete domain association request. ',
@@ -2000,7 +1600,7 @@ const DeleteDomainAssociationRequestSchema = z
   .openapi('DeleteDomainAssociationRequest')
 
 const DeleteJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteJobRequest',
     description: ' The request structure for the delete job request. ',
@@ -2008,7 +1608,7 @@ const DeleteJobRequestSchema = z
   .openapi('DeleteJobRequest')
 
 const DeleteWebhookRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteWebhookRequest',
     description: ' The request structure for the delete webhook request. ',
@@ -2029,23 +1629,15 @@ const FileNameSchema = z
 
 const GenerateAccessLogsRequestSchema = z
   .object({
-    startTime: StartTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time at which the logs should start. The time range specified is inclusive of the start time. ',
-        }),
-    ).exactOptional(),
-    endTime: EndTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time at which the logs should end. The time range specified is inclusive of the end time. ',
-        }),
-    ).exactOptional(),
-    domainName: DomainNameSchema.and(z.any().openapi({ description: ' The name of the domain. ' })),
+    startTime: StartTimeSchema.exactOptional().openapi({
+      description:
+        ' The time at which the logs should start. The time range specified is inclusive of the start time. ',
+    }),
+    endTime: EndTimeSchema.exactOptional().openapi({
+      description:
+        ' The time at which the logs should end. The time range specified is inclusive of the end time. ',
+    }),
+    domainName: DomainNameSchema.openapi({ description: ' The name of the domain. ' }),
   })
   .openapi({
     required: ['domainName'],
@@ -2055,7 +1647,7 @@ const GenerateAccessLogsRequestSchema = z
   .openapi('GenerateAccessLogsRequest')
 
 const GetAppRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetAppRequest',
     description: ' The request structure for the get app request. ',
@@ -2063,7 +1655,7 @@ const GetAppRequestSchema = z
   .openapi('GetAppRequest')
 
 const GetArtifactUrlRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetArtifactUrlRequest',
     description: ' Returns the request structure for the get artifact request. ',
@@ -2071,7 +1663,7 @@ const GetArtifactUrlRequestSchema = z
   .openapi('GetArtifactUrlRequest')
 
 const GetBackendEnvironmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetBackendEnvironmentRequest',
     description: ' The request structure for the get backend environment request. ',
@@ -2079,7 +1671,7 @@ const GetBackendEnvironmentRequestSchema = z
   .openapi('GetBackendEnvironmentRequest')
 
 const GetBranchRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetBranchRequest',
     description: ' The request structure for the get branch request. ',
@@ -2087,7 +1679,7 @@ const GetBranchRequestSchema = z
   .openapi('GetBranchRequest')
 
 const GetDomainAssociationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDomainAssociationRequest',
     description: ' The request structure for the get domain association request. ',
@@ -2095,7 +1687,7 @@ const GetDomainAssociationRequestSchema = z
   .openapi('GetDomainAssociationRequest')
 
 const GetJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetJobRequest',
     description: ' The request structure for the get job request. ',
@@ -2103,7 +1695,7 @@ const GetJobRequestSchema = z
   .openapi('GetJobRequest')
 
 const GetWebhookRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetWebhookRequest',
     description: ' The request structure for the get webhook request. ',
@@ -2119,7 +1711,7 @@ const JobReasonSchema = z
 const MaxResultsSchema = z.int().min(0).max(100).openapi('MaxResults')
 
 const ListAppsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListAppsRequest',
     description: ' The request structure for the list apps request. ',
@@ -2127,7 +1719,7 @@ const ListAppsRequestSchema = z
   .openapi('ListAppsRequest')
 
 const ListArtifactsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListArtifactsRequest',
     description: ' Describes the request structure for the list artifacts request. ',
@@ -2135,7 +1727,7 @@ const ListArtifactsRequestSchema = z
   .openapi('ListArtifactsRequest')
 
 const ListBackendEnvironmentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListBackendEnvironmentsRequest',
     description: ' The request structure for the list backend environments request. ',
@@ -2143,7 +1735,7 @@ const ListBackendEnvironmentsRequestSchema = z
   .openapi('ListBackendEnvironmentsRequest')
 
 const ListBranchesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListBranchesRequest',
     description: ' The request structure for the list branches request. ',
@@ -2151,7 +1743,7 @@ const ListBranchesRequestSchema = z
   .openapi('ListBranchesRequest')
 
 const ListDomainAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListDomainAssociationsRequest',
     description: ' The request structure for the list domain associations request. ',
@@ -2159,7 +1751,7 @@ const ListDomainAssociationsRequestSchema = z
   .openapi('ListDomainAssociationsRequest')
 
 const ListJobsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListJobsRequest',
     description: ' The request structure for the list jobs request. ',
@@ -2174,7 +1766,7 @@ const ResourceArnSchema = z
   .openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListTagsForResourceRequest',
     description: ' The request structure to use to list tags for a resource. ',
@@ -2182,7 +1774,7 @@ const ListTagsForResourceRequestSchema = z
   .openapi('ListTagsForResourceRequest')
 
 const ListWebhooksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListWebhooksRequest',
     description: ' The request structure for the list webhooks request. ',
@@ -2197,22 +1789,13 @@ const SourceUrlSchema = z
 
 const StartDeploymentRequestSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The job ID for this deployment, generated by the create deployment request. ',
-        }),
-    ).exactOptional(),
-    sourceUrl: SourceUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The source URL for this deployment, used when calling start deployment without create deployment. The source URL can be any HTTP GET URL that is publicly accessible and downloads a single .zip file. ',
-        }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: ' The job ID for this deployment, generated by the create deployment request. ',
+    }),
+    sourceUrl: SourceUrlSchema.exactOptional().openapi({
+      description:
+        ' The source URL for this deployment, used when calling start deployment without create deployment. The source URL can be any HTTP GET URL that is publicly accessible and downloads a single .zip file. ',
+    }),
   })
   .openapi({
     title: 'StartDeploymentRequest',
@@ -2223,42 +1806,26 @@ const StartDeploymentRequestSchema = z
 
 const StartJobRequestSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID for an existing job. This is required if the value of <code>jobType</code> is <code>RETRY</code>. ',
-        }),
-    ).exactOptional(),
-    jobType: JobTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the type for the job. The job type <code>RELEASE</code> starts a new job with the latest change from the specified branch. This value is available only for apps that are connected to a repository. The job type <code>RETRY</code> retries an existing job. If the job type value is <code>RETRY</code>, the <code>jobId</code> is also required. ',
-        }),
-    ),
-    jobReason: JobReasonSchema.and(
-      z.any().openapi({ description: ' A descriptive reason for starting this job. ' }),
-    ).exactOptional(),
-    commitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The commit ID from a third-party repository provider for the job. ',
-        }),
-    ).exactOptional(),
-    commitMessage: CommitMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The commit message from a third-party repository provider for the job. ',
-        }),
-    ).exactOptional(),
-    commitTime: CommitTimeSchema.and(
-      z.any().openapi({ description: ' The commit date and time for the job. ' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description:
+        ' The unique ID for an existing job. This is required if the value of <code>jobType</code> is <code>RETRY</code>. ',
+    }),
+    jobType: JobTypeSchema.openapi({
+      description:
+        ' Describes the type for the job. The job type <code>RELEASE</code> starts a new job with the latest change from the specified branch. This value is available only for apps that are connected to a repository. The job type <code>RETRY</code> retries an existing job. If the job type value is <code>RETRY</code>, the <code>jobId</code> is also required. ',
+    }),
+    jobReason: JobReasonSchema.exactOptional().openapi({
+      description: ' A descriptive reason for starting this job. ',
+    }),
+    commitId: CommitIdSchema.exactOptional().openapi({
+      description: ' The commit ID from a third-party repository provider for the job. ',
+    }),
+    commitMessage: CommitMessageSchema.exactOptional().openapi({
+      description: ' The commit message from a third-party repository provider for the job. ',
+    }),
+    commitTime: CommitTimeSchema.exactOptional().openapi({
+      description: ' The commit date and time for the job. ',
+    }),
   })
   .openapi({
     required: ['jobType'],
@@ -2268,7 +1835,7 @@ const StartJobRequestSchema = z
   .openapi('StartJobRequest')
 
 const StopJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'StopJobRequest',
     description: ' The request structure for the stop job request. ',
@@ -2278,11 +1845,7 @@ const StopJobRequestSchema = z
 const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
-  .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags used to tag the resource. ' }),
-    ),
-  })
+  .object({ tags: TagMapSchema.openapi({ description: ' The tags used to tag the resource. ' }) })
   .openapi({
     required: ['tags'],
     title: 'TagResourceRequest',
@@ -2293,7 +1856,7 @@ const TagResourceRequestSchema = z
 const ThumbnailNameSchema = z.string().max(256).openapi('ThumbnailName')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'UntagResourceRequest',
     description: ' The request structure for the untag resource request. ',
@@ -2302,103 +1865,64 @@ const UntagResourceRequestSchema = z
 
 const UpdateAppRequestSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: ' The name for an Amplify app. ' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description for an Amplify app. ' }),
-    ).exactOptional(),
-    platform: PlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The platform for the Amplify app. For a static app, set the platform type to <code>WEB</code>. For a dynamic server-side rendered (SSR) app, set the platform type to <code>WEB_COMPUTE</code>. For an app requiring Amplify Hosting's original SSR support only, set the platform type to <code>WEB_DYNAMIC</code>.",
-        }),
-    ).exactOptional(),
-    iamServiceRoleArn: ServiceRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The AWS Identity and Access Management (IAM) service role for an Amplify app. ',
-        }),
-    ).exactOptional(),
-    environmentVariables: EnvironmentVariablesSchema.and(
-      z.any().openapi({ description: ' The environment variables for an Amplify app. ' }),
-    ).exactOptional(),
-    enableBranchAutoBuild: EnableAutoBuildSchema.and(
-      z.any().openapi({ description: ' Enables branch auto-building for an Amplify app. ' }),
-    ).exactOptional(),
-    enableBranchAutoDeletion: EnableBranchAutoDeletionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Automatically disconnects a branch in the Amplify Console when you delete a branch from your Git repository. ',
-        }),
-    ).exactOptional(),
-    enableBasicAuth: EnableBasicAuthSchema.and(
-      z.any().openapi({ description: ' Enables basic authorization for an Amplify app. ' }),
-    ).exactOptional(),
-    basicAuthCredentials: BasicAuthCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The basic authorization credentials for an Amplify app. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-        }),
-    ).exactOptional(),
-    customRules: CustomRulesSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The custom redirect and rewrite rules for an Amplify app. ' }),
-    ).exactOptional(),
-    buildSpec: BuildSpecSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The build specification (build spec) for an Amplify app. ' }),
-    ).exactOptional(),
-    customHeaders: CustomHeadersSchema.and(
-      z.any().openapi({ description: 'The custom HTTP headers for an Amplify app.' }),
-    ).exactOptional(),
-    enableAutoBranchCreation: EnableAutoBranchCreationSchema.and(
-      z.any().openapi({ description: ' Enables automated branch creation for an Amplify app. ' }),
-    ).exactOptional(),
-    autoBranchCreationPatterns: AutoBranchCreationPatternsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the automated branch creation glob patterns for an Amplify app. ',
-        }),
-    ).exactOptional(),
-    autoBranchCreationConfig: AutoBranchCreationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The automated branch creation configuration for an Amplify app. ',
-        }),
-    ).exactOptional(),
-    repository: RepositorySchema.and(
-      z.any().openapi({ description: ' The name of the repository for an Amplify app ' }),
-    ).exactOptional(),
-    oauthToken: OauthTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The OAuth token for a third-party source control system for an Amplify app. The OAuth token is used to create a webhook and a read-only deploy key using SSH cloning. The OAuth token is not stored.</p> <p>Use <code>oauthToken</code> for repository providers other than GitHub, such as Bitbucket or CodeCommit.</p> <p>To authorize access to GitHub as your repository provider, use <code>accessToken</code>.</p> <p>You must specify either <code>oauthToken</code> or <code>accessToken</code> when you update an app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href="https://docs.aws.amazon.com/amplify/latest/UserGuide/setting-up-GitHub-access.html#migrating-to-github-app-auth">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>',
-        }),
-    ).exactOptional(),
-    accessToken: AccessTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The personal access token for a GitHub repository for an Amplify app. The personal access token is used to authorize access to a GitHub repository using the Amplify GitHub App. The token is not stored.</p> <p>Use <code>accessToken</code> for GitHub repositories only. To authorize access to a repository provider such as Bitbucket or CodeCommit, use <code>oauthToken</code>.</p> <p>You must specify either <code>accessToken</code> or <code>oauthToken</code> when you update an app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href="https://docs.aws.amazon.com/amplify/latest/UserGuide/setting-up-GitHub-access.html#migrating-to-github-app-auth">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: ' The name for an Amplify app. ' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description for an Amplify app. ',
+    }),
+    platform: PlatformSchema.exactOptional().openapi({
+      description:
+        " The platform for the Amplify app. For a static app, set the platform type to <code>WEB</code>. For a dynamic server-side rendered (SSR) app, set the platform type to <code>WEB_COMPUTE</code>. For an app requiring Amplify Hosting's original SSR support only, set the platform type to <code>WEB_DYNAMIC</code>.",
+    }),
+    iamServiceRoleArn: ServiceRoleArnSchema.exactOptional().openapi({
+      description:
+        ' The AWS Identity and Access Management (IAM) service role for an Amplify app. ',
+    }),
+    environmentVariables: EnvironmentVariablesSchema.exactOptional().openapi({
+      description: ' The environment variables for an Amplify app. ',
+    }),
+    enableBranchAutoBuild: EnableAutoBuildSchema.exactOptional().openapi({
+      description: ' Enables branch auto-building for an Amplify app. ',
+    }),
+    enableBranchAutoDeletion: EnableBranchAutoDeletionSchema.exactOptional().openapi({
+      description:
+        ' Automatically disconnects a branch in the Amplify Console when you delete a branch from your Git repository. ',
+    }),
+    enableBasicAuth: EnableBasicAuthSchema.exactOptional().openapi({
+      description: ' Enables basic authorization for an Amplify app. ',
+    }),
+    basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+      description:
+        ' The basic authorization credentials for an Amplify app. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+    }),
+    customRules: CustomRulesSchema.exactOptional().openapi({
+      description: ' The custom redirect and rewrite rules for an Amplify app. ',
+    }),
+    buildSpec: BuildSpecSchema.exactOptional().openapi({
+      description: ' The build specification (build spec) for an Amplify app. ',
+    }),
+    customHeaders: CustomHeadersSchema.exactOptional().openapi({
+      description: 'The custom HTTP headers for an Amplify app.',
+    }),
+    enableAutoBranchCreation: EnableAutoBranchCreationSchema.exactOptional().openapi({
+      description: ' Enables automated branch creation for an Amplify app. ',
+    }),
+    autoBranchCreationPatterns: AutoBranchCreationPatternsSchema.exactOptional().openapi({
+      description: ' Describes the automated branch creation glob patterns for an Amplify app. ',
+    }),
+    autoBranchCreationConfig: AutoBranchCreationConfigSchema.exactOptional().openapi({
+      description: ' The automated branch creation configuration for an Amplify app. ',
+    }),
+    repository: RepositorySchema.exactOptional().openapi({
+      description: ' The name of the repository for an Amplify app ',
+    }),
+    oauthToken: OauthTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The OAuth token for a third-party source control system for an Amplify app. The OAuth token is used to create a webhook and a read-only deploy key using SSH cloning. The OAuth token is not stored.</p> <p>Use <code>oauthToken</code> for repository providers other than GitHub, such as Bitbucket or CodeCommit.</p> <p>To authorize access to GitHub as your repository provider, use <code>accessToken</code>.</p> <p>You must specify either <code>oauthToken</code> or <code>accessToken</code> when you update an app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href="https://docs.aws.amazon.com/amplify/latest/UserGuide/setting-up-GitHub-access.html#migrating-to-github-app-auth">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>',
+    }),
+    accessToken: AccessTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The personal access token for a GitHub repository for an Amplify app. The personal access token is used to authorize access to a GitHub repository using the Amplify GitHub App. The token is not stored.</p> <p>Use <code>accessToken</code> for GitHub repositories only. To authorize access to a repository provider such as Bitbucket or CodeCommit, use <code>oauthToken</code>.</p> <p>You must specify either <code>accessToken</code> or <code>oauthToken</code> when you update an app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href="https://docs.aws.amazon.com/amplify/latest/UserGuide/setting-up-GitHub-access.html#migrating-to-github-app-auth">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>',
+    }),
   })
   .openapi({
     title: 'UpdateAppRequest',
@@ -2409,73 +1933,54 @@ const UpdateAppRequestSchema = z
 
 const UpdateBranchRequestSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description for the branch. ' }),
-    ).exactOptional(),
-    framework: FrameworkSchema.and(
-      z.any().openapi({ description: ' The framework for the branch. ' }),
-    ).exactOptional(),
-    stage: StageSchema.and(
-      z.any().openapi({ description: ' Describes the current stage for the branch. ' }),
-    ).exactOptional(),
-    enableNotification: EnableNotificationSchema.and(
-      z.any().openapi({ description: ' Enables notifications for the branch. ' }),
-    ).exactOptional(),
-    enableAutoBuild: EnableAutoBuildSchema.and(
-      z.any().openapi({ description: ' Enables auto building for the branch. ' }),
-    ).exactOptional(),
-    environmentVariables: EnvironmentVariablesSchema.and(
-      z.any().openapi({ description: ' The environment variables for the branch. ' }),
-    ).exactOptional(),
-    basicAuthCredentials: BasicAuthCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The basic authorization credentials for the branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-        }),
-    ).exactOptional(),
-    enableBasicAuth: EnableBasicAuthSchema.and(
-      z.any().openapi({ description: ' Enables basic authorization for the branch. ' }),
-    ).exactOptional(),
-    enablePerformanceMode: EnablePerformanceModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
-        }),
-    ).exactOptional(),
-    buildSpec: BuildSpecSchema.and(
-      z.any().openapi({ description: ' The build specification (build spec) for the branch. ' }),
-    ).exactOptional(),
-    ttl: TTLSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The content Time to Live (TTL) for the website in seconds. ' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The display name for a branch. This is used as the default domain prefix. ',
-        }),
-    ).exactOptional(),
-    enablePullRequestPreview: EnablePullRequestPreviewSchema.and(
-      z.any().openapi({ description: ' Enables pull request previews for this branch. ' }),
-    ).exactOptional(),
-    pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.and(
-      z.any().openapi({ description: ' The Amplify environment name for the pull request. ' }),
-    ).exactOptional(),
-    backendEnvironmentArn: BackendEnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. ',
-        }),
-    ).exactOptional(),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description for the branch. ',
+    }),
+    framework: FrameworkSchema.exactOptional().openapi({
+      description: ' The framework for the branch. ',
+    }),
+    stage: StageSchema.exactOptional().openapi({
+      description: ' Describes the current stage for the branch. ',
+    }),
+    enableNotification: EnableNotificationSchema.exactOptional().openapi({
+      description: ' Enables notifications for the branch. ',
+    }),
+    enableAutoBuild: EnableAutoBuildSchema.exactOptional().openapi({
+      description: ' Enables auto building for the branch. ',
+    }),
+    environmentVariables: EnvironmentVariablesSchema.exactOptional().openapi({
+      description: ' The environment variables for the branch. ',
+    }),
+    basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+      description:
+        ' The basic authorization credentials for the branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+    }),
+    enableBasicAuth: EnableBasicAuthSchema.exactOptional().openapi({
+      description: ' Enables basic authorization for the branch. ',
+    }),
+    enablePerformanceMode: EnablePerformanceModeSchema.exactOptional().openapi({
+      description:
+        '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
+    }),
+    buildSpec: BuildSpecSchema.exactOptional().openapi({
+      description: ' The build specification (build spec) for the branch. ',
+    }),
+    ttl: TTLSchema.exactOptional().openapi({
+      description: ' The content Time to Live (TTL) for the website in seconds. ',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: ' The display name for a branch. This is used as the default domain prefix. ',
+    }),
+    enablePullRequestPreview: EnablePullRequestPreviewSchema.exactOptional().openapi({
+      description: ' Enables pull request previews for this branch. ',
+    }),
+    pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.exactOptional().openapi({
+      description: ' The Amplify environment name for the pull request. ',
+    }),
+    backendEnvironmentArn: BackendEnvironmentArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. ',
+    }),
   })
   .openapi({
     title: 'UpdateBranchRequest',
@@ -2486,27 +1991,19 @@ const UpdateBranchRequestSchema = z
 
 const UpdateDomainAssociationRequestSchema = z
   .object({
-    enableAutoSubDomain: EnableAutoSubDomainSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Enables the automated creation of subdomains for branches. ' }),
-    ).exactOptional(),
-    subDomainSettings: SubDomainSettingsSchema.and(
-      z.any().openapi({ description: ' Describes the settings for the subdomain. ' }),
-    ).exactOptional(),
-    autoSubDomainCreationPatterns: AutoSubDomainCreationPatternsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Sets the branch patterns for automatic subdomain creation. ' }),
-    ).exactOptional(),
-    autoSubDomainIAMRole: AutoSubDomainIAMRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The required AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) for automatically creating subdomains. ',
-        }),
-    ).exactOptional(),
+    enableAutoSubDomain: EnableAutoSubDomainSchema.exactOptional().openapi({
+      description: ' Enables the automated creation of subdomains for branches. ',
+    }),
+    subDomainSettings: SubDomainSettingsSchema.exactOptional().openapi({
+      description: ' Describes the settings for the subdomain. ',
+    }),
+    autoSubDomainCreationPatterns: AutoSubDomainCreationPatternsSchema.exactOptional().openapi({
+      description: ' Sets the branch patterns for automatic subdomain creation. ',
+    }),
+    autoSubDomainIAMRole: AutoSubDomainIAMRoleSchema.exactOptional().openapi({
+      description:
+        ' The required AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) for automatically creating subdomains. ',
+    }),
   })
   .openapi({
     title: 'UpdateDomainAssociationRequest',
@@ -2517,12 +2014,12 @@ const UpdateDomainAssociationRequestSchema = z
 
 const UpdateWebhookRequestSchema = z
   .object({
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: ' The name for a branch that is part of an Amplify app. ' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description for a webhook. ' }),
-    ).exactOptional(),
+    branchName: BranchNameSchema.exactOptional().openapi({
+      description: ' The name for a branch that is part of an Amplify app. ',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description for a webhook. ',
+    }),
   })
   .openapi({
     title: 'UpdateWebhookRequest',
@@ -2826,75 +2323,40 @@ export const postAppsRoute = createRoute({
                 }),
               autoBranchCreationConfig: z
                 .object({
-                  stage: StageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Describes the current stage for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  framework: FrameworkSchema.and(
-                    z.any().openapi({ description: ' The framework for the autocreated branch. ' }),
-                  ).exactOptional(),
-                  enableAutoBuild: EnableAutoBuildSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Enables auto building for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  environmentVariables: EnvironmentVariablesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' The environment variables for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  basicAuthCredentials: BasicAuthCredentialsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The basic authorization credentials for the autocreated branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-                      }),
-                  ).exactOptional(),
-                  enableBasicAuth: EnableBasicAuthSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Enables basic authorization for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  enablePerformanceMode: EnablePerformanceModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
-                      }),
-                  ).exactOptional(),
-                  buildSpec: BuildSpecSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The build specification (build spec) for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  enablePullRequestPreview: EnablePullRequestPreviewSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Enables pull request previews for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' The Amplify environment name for the pull request. ',
-                      }),
-                  ).exactOptional(),
+                  stage: StageSchema.exactOptional().openapi({
+                    description: ' Describes the current stage for the autocreated branch. ',
+                  }),
+                  framework: FrameworkSchema.exactOptional().openapi({
+                    description: ' The framework for the autocreated branch. ',
+                  }),
+                  enableAutoBuild: EnableAutoBuildSchema.exactOptional().openapi({
+                    description: ' Enables auto building for the autocreated branch. ',
+                  }),
+                  environmentVariables: EnvironmentVariablesSchema.exactOptional().openapi({
+                    description: ' The environment variables for the autocreated branch. ',
+                  }),
+                  basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+                    description:
+                      ' The basic authorization credentials for the autocreated branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+                  }),
+                  enableBasicAuth: EnableBasicAuthSchema.exactOptional().openapi({
+                    description: ' Enables basic authorization for the autocreated branch. ',
+                  }),
+                  enablePerformanceMode: EnablePerformanceModeSchema.exactOptional().openapi({
+                    description:
+                      '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
+                  }),
+                  buildSpec: BuildSpecSchema.exactOptional().openapi({
+                    description:
+                      ' The build specification (build spec) for the autocreated branch. ',
+                  }),
+                  enablePullRequestPreview: EnablePullRequestPreviewSchema.exactOptional().openapi({
+                    description: ' Enables pull request previews for the autocreated branch. ',
+                  }),
+                  pullRequestEnvironmentName:
+                    PullRequestEnvironmentNameSchema.exactOptional().openapi({
+                      description: ' The Amplify environment name for the pull request. ',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4061,75 +3523,40 @@ export const postAppsAppIdRoute = createRoute({
                 }),
               autoBranchCreationConfig: z
                 .object({
-                  stage: StageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Describes the current stage for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  framework: FrameworkSchema.and(
-                    z.any().openapi({ description: ' The framework for the autocreated branch. ' }),
-                  ).exactOptional(),
-                  enableAutoBuild: EnableAutoBuildSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Enables auto building for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  environmentVariables: EnvironmentVariablesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' The environment variables for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  basicAuthCredentials: BasicAuthCredentialsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The basic authorization credentials for the autocreated branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
-                      }),
-                  ).exactOptional(),
-                  enableBasicAuth: EnableBasicAuthSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Enables basic authorization for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  enablePerformanceMode: EnablePerformanceModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
-                      }),
-                  ).exactOptional(),
-                  buildSpec: BuildSpecSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The build specification (build spec) for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  enablePullRequestPreview: EnablePullRequestPreviewSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Enables pull request previews for the autocreated branch. ',
-                      }),
-                  ).exactOptional(),
-                  pullRequestEnvironmentName: PullRequestEnvironmentNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' The Amplify environment name for the pull request. ',
-                      }),
-                  ).exactOptional(),
+                  stage: StageSchema.exactOptional().openapi({
+                    description: ' Describes the current stage for the autocreated branch. ',
+                  }),
+                  framework: FrameworkSchema.exactOptional().openapi({
+                    description: ' The framework for the autocreated branch. ',
+                  }),
+                  enableAutoBuild: EnableAutoBuildSchema.exactOptional().openapi({
+                    description: ' Enables auto building for the autocreated branch. ',
+                  }),
+                  environmentVariables: EnvironmentVariablesSchema.exactOptional().openapi({
+                    description: ' The environment variables for the autocreated branch. ',
+                  }),
+                  basicAuthCredentials: BasicAuthCredentialsSchema.exactOptional().openapi({
+                    description:
+                      ' The basic authorization credentials for the autocreated branch. You must base64-encode the authorization credentials and provide them in the format <code>user:password</code>.',
+                  }),
+                  enableBasicAuth: EnableBasicAuthSchema.exactOptional().openapi({
+                    description: ' Enables basic authorization for the autocreated branch. ',
+                  }),
+                  enablePerformanceMode: EnablePerformanceModeSchema.exactOptional().openapi({
+                    description:
+                      '<p>Enables performance mode for the branch.</p> <p>Performance mode optimizes for faster hosting performance by keeping content cached at the edge for a longer interval. When performance mode is enabled, hosting configuration or code changes can take up to 10 minutes to roll out. </p>',
+                  }),
+                  buildSpec: BuildSpecSchema.exactOptional().openapi({
+                    description:
+                      ' The build specification (build spec) for the autocreated branch. ',
+                  }),
+                  enablePullRequestPreview: EnablePullRequestPreviewSchema.exactOptional().openapi({
+                    description: ' Enables pull request previews for the autocreated branch. ',
+                  }),
+                  pullRequestEnvironmentName:
+                    PullRequestEnvironmentNameSchema.exactOptional().openapi({
+                      description: ' The Amplify environment name for the pull request. ',
+                    }),
                 })
                 .exactOptional()
                 .openapi({

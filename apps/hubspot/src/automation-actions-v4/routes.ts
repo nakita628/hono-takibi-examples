@@ -82,12 +82,17 @@ const DoubleFieldSchemaSchema = z
 
 const StringFieldSchemaSchema = z
   .object({
+    allowedObjectTypeIds: z
+      .array(z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({ example: null }),
     format: z
       .enum([
         'DATE',
         'DATE_TIME',
         'MONTH_AND_DAY',
         'OBJECT_COORDINATE',
+        'OBJECT_PROPERTY',
         'OBJECT_TYPE',
         'TIME',
         'URI',
@@ -126,7 +131,7 @@ const BooleanFieldSchemaSchema = z
 const ObjectFieldSchemaSchema = z
   .object({
     properties: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Contains the properties of the object.', example: null }),
     type: z
       .literal('OBJECT')
@@ -171,107 +176,6 @@ type ArrayFieldSchemaType = {
   type: 'ARRAY'
 }
 
-const ArrayFieldSchemaSchema: z.ZodType<ArrayFieldSchemaType> = z
-  .lazy(() =>
-    z
-      .object({
-        items: z
-          .xor([
-            IntegerFieldSchemaSchema,
-            LongFieldSchemaSchema,
-            DoubleFieldSchemaSchema,
-            StringFieldSchemaSchema,
-            BooleanFieldSchemaSchema,
-            ArrayFieldSchemaSchema,
-            ObjectFieldSchemaSchema,
-            UnknownFieldSchemaSchema,
-          ])
-          .openapi({
-            description:
-              'Defines the type of elements contained within the array, which can be an integer, long, double, string, boolean, another array, or an object.',
-            example: null,
-          }),
-        type: z
-          .literal('ARRAY')
-          .default('ARRAY')
-          .openapi({ description: "Specifies that the field is of type 'ARRAY'.", example: null }),
-      })
-      .openapi({
-        title: 'ARRAY',
-        required: ['items', 'type'],
-        example: null,
-        'x-hubspot-sub-type-impl': true,
-      }),
-  )
-  .openapi('ArrayFieldSchema')
-
-const CallbackCompletionBatchRequestSchema = z
-  .object({
-    callbackId: z
-      .string()
-      .openapi({ description: 'The unique identifier for the callback.', example: null }),
-    failureReasonType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Specifies the type of failure reason for the callback completion.',
-        example: null,
-      }),
-    outputFields: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({
-        description: 'Holds the output fields for the callback completion.',
-        example: null,
-      }),
-    typedOutputs: z
-      .object({})
-      .openapi({
-        description: 'Contains the typed outputs for the callback completion.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['callbackId', 'outputFields', 'typedOutputs'], example: null })
-  .openapi('CallbackCompletionBatchRequest')
-
-const BatchInputCallbackCompletionBatchRequestSchema = z
-  .object({
-    inputs: z
-      .array(CallbackCompletionBatchRequestSchema)
-      .openapi({
-        description:
-          'An array of CallbackCompletionBatchRequest objects, each representing a single callback completion request. This property is required.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['inputs'], example: null })
-  .openapi('BatchInputCallbackCompletionBatchRequest')
-
-const CallbackCompletionRequestSchema = z
-  .object({
-    failureReasonType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates the reason for the failure of a callback completion.',
-        example: null,
-      }),
-    outputFields: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'Contains the output fields associated with the callback, with each field represented as a key-value pair.',
-        example: null,
-      }),
-    typedOutputs: z
-      .object({})
-      .openapi({
-        description: 'Holds the typed outputs related to the callback, structured as an object.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['outputFields', 'typedOutputs'], example: null })
-  .openapi('CallbackCompletionRequest')
-
 const NextPageSchema = z
   .object({
     after: z
@@ -310,7 +214,7 @@ const ForwardPagingSchema = z
 const PublicExecutionTranslationRuleSchema = z
   .object({
     conditions: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .openapi({
         description: 'Defines the conditions that must be met for the execution rule to apply.',
         example: null,
@@ -648,6 +552,40 @@ const OptionSchema = z
     example: null,
   })
   .openapi('Option')
+
+const ArrayFieldSchemaSchema: z.ZodType<ArrayFieldSchemaType> = z
+  .lazy(() =>
+    z
+      .object({
+        items: z
+          .xor([
+            IntegerFieldSchemaSchema,
+            LongFieldSchemaSchema,
+            DoubleFieldSchemaSchema,
+            StringFieldSchemaSchema,
+            BooleanFieldSchemaSchema,
+            ArrayFieldSchemaSchema,
+            ObjectFieldSchemaSchema,
+            UnknownFieldSchemaSchema,
+          ])
+          .openapi({
+            description:
+              'Defines the type of elements contained within the array, which can be an integer, long, double, string, boolean, another array, or an object.',
+            example: null,
+          }),
+        type: z
+          .literal('ARRAY')
+          .default('ARRAY')
+          .openapi({ description: "Specifies that the field is of type 'ARRAY'.", example: null }),
+      })
+      .openapi({
+        title: 'ARRAY',
+        required: ['items', 'type'],
+        example: null,
+        'x-hubspot-sub-type-impl': true,
+      }),
+  )
+  .openapi('ArrayFieldSchema')
 
 const FieldTypeDefinitionSchema = z
   .object({
@@ -1061,34 +999,19 @@ const PublicActionDefinitionSchema = z
   })
   .openapi('PublicActionDefinition')
 
-const CollectionResponsePublicActionDefinitionForwardPagingSchema = z
-  .object({
-    paging: ForwardPagingSchema.exactOptional(),
-    results: z
-      .array(PublicActionDefinitionSchema)
-      .openapi({
-        description:
-          'An array of public action definitions, each represented by a PublicActionDefinition object.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results'], example: null })
-  .openapi('CollectionResponsePublicActionDefinitionForwardPaging')
+type CollectionResponsePublicActionDefinitionForwardPagingType = {
+  paging?: z.infer<typeof ForwardPagingSchema>
+  results: z.infer<typeof PublicActionDefinitionSchema>[]
+}
 
-const CollectionResponsePublicActionFunctionIdentifierNoPagingSchema = z
-  .object({
-    results: z
-      .array(PublicActionFunctionIdentifierSchema)
-      .openapi({
-        description:
-          'An array of PublicActionFunctionIdentifier objects, each representing a specific function associated with an automation action definition.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results'], example: null })
-  .openapi('CollectionResponsePublicActionFunctionIdentifierNoPaging')
+type PublicActionRevisionType = {
+  createdAt: string
+  definition: z.infer<typeof PublicActionDefinitionSchema>
+  id: string
+  revisionId: string
+}
 
-const PublicActionRevisionSchema = z
+const PublicActionRevisionSchema: z.ZodType<PublicActionRevisionType> = z
   .object({
     createdAt: z.iso
       .datetime({ offset: true })
@@ -1110,19 +1033,120 @@ const PublicActionRevisionSchema = z
   .openapi({ required: ['createdAt', 'definition', 'id', 'revisionId'], example: null })
   .openapi('PublicActionRevision')
 
-const CollectionResponsePublicActionRevisionForwardPagingSchema = z
+type CollectionResponsePublicActionRevisionForwardPagingType = {
+  paging?: z.infer<typeof ForwardPagingSchema>
+  results: z.infer<typeof PublicActionRevisionSchema>[]
+}
+
+const CallbackCompletionBatchRequestSchema = z
   .object({
-    paging: ForwardPagingSchema.exactOptional(),
-    results: z
-      .array(PublicActionRevisionSchema)
+    callbackId: z
+      .string()
+      .openapi({ description: 'The unique identifier for the callback.', example: null }),
+    failureReasonType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Specifies the type of failure reason for the callback completion.',
+        example: null,
+      }),
+    outputFields: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({
+        description: 'Holds the output fields for the callback completion.',
+        example: null,
+      }),
+    typedOutputs: z
+      .looseObject({})
+      .openapi({
+        description: 'Contains the typed outputs for the callback completion.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['callbackId', 'outputFields', 'typedOutputs'], example: null })
+  .openapi('CallbackCompletionBatchRequest')
+
+const BatchInputCallbackCompletionBatchRequestSchema = z
+  .object({
+    inputs: z
+      .array(CallbackCompletionBatchRequestSchema)
       .openapi({
         description:
-          'An array of PublicActionRevision objects, each representing a specific revision of a public action definition.',
+          'An array of CallbackCompletionBatchRequest objects, each representing a single callback completion request. This property is required.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['inputs'], example: null })
+  .openapi('BatchInputCallbackCompletionBatchRequest')
+
+const CallbackCompletionRequestSchema = z
+  .object({
+    failureReasonType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates the reason for the failure of a callback completion.',
+        example: null,
+      }),
+    outputFields: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'Contains the output fields associated with the callback, with each field represented as a key-value pair.',
+        example: null,
+      }),
+    typedOutputs: z
+      .looseObject({})
+      .openapi({
+        description: 'Holds the typed outputs related to the callback, structured as an object.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['outputFields', 'typedOutputs'], example: null })
+  .openapi('CallbackCompletionRequest')
+
+const CollectionResponsePublicActionDefinitionForwardPagingSchema: z.ZodType<CollectionResponsePublicActionDefinitionForwardPagingType> =
+  z
+    .object({
+      paging: ForwardPagingSchema.exactOptional(),
+      results: z
+        .array(PublicActionDefinitionSchema)
+        .openapi({
+          description:
+            'An array of public action definitions, each represented by a PublicActionDefinition object.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['results'], example: null })
+    .openapi('CollectionResponsePublicActionDefinitionForwardPaging')
+
+const CollectionResponsePublicActionFunctionIdentifierNoPagingSchema = z
+  .object({
+    results: z
+      .array(PublicActionFunctionIdentifierSchema)
+      .openapi({
+        description:
+          'An array of PublicActionFunctionIdentifier objects, each representing a specific function associated with an automation action definition.',
         example: null,
       }),
   })
   .openapi({ required: ['results'], example: null })
-  .openapi('CollectionResponsePublicActionRevisionForwardPaging')
+  .openapi('CollectionResponsePublicActionFunctionIdentifierNoPaging')
+
+const CollectionResponsePublicActionRevisionForwardPagingSchema: z.ZodType<CollectionResponsePublicActionRevisionForwardPagingType> =
+  z
+    .object({
+      paging: ForwardPagingSchema.exactOptional(),
+      results: z
+        .array(PublicActionRevisionSchema)
+        .openapi({
+          description:
+            'An array of PublicActionRevision objects, each representing a specific revision of a public action definition.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['results'], example: null })
+    .openapi('CollectionResponsePublicActionRevisionForwardPaging')
 
 const ErrorDetailSchema = z
   .object({
@@ -1450,14 +1474,21 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { automation: '' },
+      scopes: {
+        automation: '',
+        'workflows.delete': '',
+        'workflows.read': '',
+        'workflows.write': '',
+      },
     },
   },
+  'x-hubspot-app-availability': {
+    automation: { portal: ['public', 'private'], developer: false },
+    'workflows.delete': { user: ['public', 'private'], developer: false },
+    'workflows.read': { user: ['public', 'private'], developer: false },
+    'workflows.write': { user: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getAutomationActions202609AppIdRoute = createRoute({
   method: 'get',
@@ -1608,18 +1639,14 @@ export const postAutomationActions202609AppIdRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicActionDefinitionSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -2776,7 +2803,12 @@ export const postAutomationActionsCallbacks202609CompleteRoute = createRoute({
     },
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['automation'] }],
+  security: [
+    { oauth2: ['automation'] },
+    { oauth2: ['workflows.write'] },
+    { oauth2: ['workflows.delete'] },
+    { oauth2: ['workflows.read'] },
+  ],
 })
 
 export const postAutomationActionsCallbacks202609CallbackIdCompleteRoute = createRoute({
@@ -2809,5 +2841,10 @@ export const postAutomationActionsCallbacks202609CallbackIdCompleteRoute = creat
     },
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['automation'] }],
+  security: [
+    { oauth2: ['automation'] },
+    { oauth2: ['workflows.write'] },
+    { oauth2: ['workflows.delete'] },
+    { oauth2: ['workflows.read'] },
+  ],
 })

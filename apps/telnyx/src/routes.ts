@@ -17,6 +17,7 @@ const ExpressionSchema: z.ZodType<ExpressionType> = z
         description:
           'A node in a deterministic expression AST. Exactly one variant is selected by the `type` discriminator. Terminal variants (`number_literal`, `string_literal`, `bool_literal`, `variable`) bottom out the recursion; `arithmetic`, `bool_op`, and `comparison` nest further sub-expressions.\n\nExtracted into a single named schema so the recursive union is defined once (was previously inlined at every operand site).',
         discriminator: {
+          propertyName: 'type',
           mapping: {
             arithmetic: '#/components/schemas/ArithmeticExpression',
             bool_literal: '#/components/schemas/BooleanLiteralExpression',
@@ -26,7 +27,6 @@ const ExpressionSchema: z.ZodType<ExpressionType> = z
             string_literal: '#/components/schemas/StringLiteralExpression',
             variable: '#/components/schemas/DynamicVariableExpression',
           },
-          propertyName: 'type',
         },
       }),
   )
@@ -2126,7 +2126,7 @@ const InferenceEmbeddingVoiceSettingsSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Two-letter ISO 639-1 code of the language the voice speaks, for example `es`. Only applicable to Soniox and AssemblyAI voices, which speak every language of their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`. When unset, the voice speaks English.',
+          'Two-letter ISO 639-1 code of the language the voice speaks, for example `es`. Only applicable to Soniox voices, which speak every language of their model. When unset, the voice speaks English.',
       }),
     language_boost: z
       .union([
@@ -2459,7 +2459,7 @@ const TranscriptionSettingsConfigSchema = z
       .openapi({
         title: 'Interim Results',
         description:
-          'Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox streams interim (non-final) results in addition to finalized transcripts.',
+          'Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. When true, Soniox streams interim (non-final) results in addition to finalized transcripts.',
       }),
     enable_endpoint_detection: z
       .boolean()
@@ -2468,7 +2468,7 @@ const TranscriptionSettingsConfigSchema = z
       .openapi({
         title: 'Enable Endpoint Detection',
         description:
-          'Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox emits end-of-utterance events at the cadence configured by `max_endpoint_delay_ms`.',
+          'Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. When true, Soniox emits end-of-utterance events at the cadence configured by `max_endpoint_delay_ms`.',
       }),
     max_endpoint_delay_ms: z
       .int()
@@ -2478,7 +2478,7 @@ const TranscriptionSettingsConfigSchema = z
       .openapi({
         title: 'Max Endpoint Delay Ms',
         description:
-          'Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. Maximum silence (in milliseconds) before Soniox emits an end-of-utterance event. Only honored when `enable_endpoint_detection` is true.',
+          'Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. Maximum silence (in milliseconds) before Soniox emits an end-of-utterance event. Only honored when `enable_endpoint_detection` is true.',
       }),
     context: z
       .string()
@@ -2487,7 +2487,7 @@ const TranscriptionSettingsConfigSchema = z
       .openapi({
         title: 'Context',
         description:
-          'Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A comma-separated list of terms to boost for recognition during transcription, for staff names, building names, or other domain-specific vocabulary. This field may be templated with [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables) using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are resolved at call time before the value is sent to Soniox.',
+          'Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. A comma-separated list of terms to boost for recognition during transcription, for staff names, building names, or other domain-specific vocabulary. This field may be templated with [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables) using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are resolved at call time before the value is sent to Soniox.',
       }),
     language_hints: z
       .array(z.string())
@@ -2495,7 +2495,7 @@ const TranscriptionSettingsConfigSchema = z
       .openapi({
         title: 'Language Hints',
         description:
-          'Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A list of ISO 639-1 language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at once, overriding the single hint derived from `language`.',
+          'Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. A list of ISO 639-1 language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at once, overriding the single hint derived from `language`.',
       }),
   })
   .openapi({ title: 'TranscriptionSettingsConfig', required: [] })
@@ -2514,12 +2514,13 @@ const TranscriptionFallbackModelSchema = z
         'xai/grok-stt',
         'soniox/stt-rt-v4',
         'soniox/stt-rt-v5',
+        'soniox/stt-rt-v6',
         'humain/realtime',
         'reson8/turns',
       ])
       .openapi({
         description:
-          'The fallback model. It must be a streaming model other than `transcription.model` and the other fallbacks: `deepgram/flux`, `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.',
+          'The fallback model. It must be a streaming model other than `transcription.model` and the other fallbacks: `deepgram/flux`, `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `soniox/stt-rt-v6`, `humain/realtime`, or `reson8/turns`.',
       }),
     language: z
       .string()
@@ -2560,6 +2561,7 @@ const TranscriptionChallengerSchema = z
         'xai/grok-stt',
         'soniox/stt-rt-v4',
         'soniox/stt-rt-v5',
+        'soniox/stt-rt-v6',
         'nvidia/parakeet-v3',
         'omi-health/omi-med-stt-v1',
         'humain/realtime',
@@ -2571,7 +2573,7 @@ const TranscriptionChallengerSchema = z
       ])
       .openapi({
         description:
-          "The language booster's model. It must be the same kind of model as `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`, `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`, `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`, `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as `transcription.model` on a different `language`.",
+          "The language booster's model. It must be the same kind of model as `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`, `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `soniox/stt-rt-v6`, `humain/realtime`, `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`, `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as `transcription.model` on a different `language`.",
       }),
     language: z
       .string()
@@ -2622,6 +2624,7 @@ const TranscriptionSettingsSchema = z
         'xai/grok-stt',
         'soniox/stt-rt-v4',
         'soniox/stt-rt-v5',
+        'soniox/stt-rt-v6',
         'nvidia/parakeet-v3',
         'omi-health/omi-med-stt-v1',
         'humain/realtime',
@@ -2634,14 +2637,14 @@ const TranscriptionSettingsSchema = z
       .exactOptional()
       .openapi({
         description:
-          "The speech to text model to be used by the voice assistant. All Deepgram models are run on-premise.\n\n- `deepgram/flux` is optimized for turn-taking with multilingual language hints.\n- `deepgram/nova-3` is multilingual with automatic language detection.\n- `deepgram/nova-2` is Deepgram's previous-generation multilingual model.\n- `speechmatics/standard` is a Speechmatics model self-hosted by Telnyx; it supports a fixed set of language packs (including bilingual packs such as `ar_en`) and defaults to `en`.\n- `speechmatics/linden-1` (preview) is a vendor-hosted streaming model with no auto-detect; set `language` from Speechmatics' Realtime language list (defaults to `en`).\n- `azure/fast` is a multilingual Azure transcription model.\n- `assemblyai/universal-3-6-pro` (AssemblyAI Universal-3.6 Pro) is a multilingual streaming model with configurable turn detection. The legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming` are still accepted and run the same model.\n- `xai/grok-stt` is a multilingual Grok STT model.\n- `soniox/stt-rt-v4` and `soniox/stt-rt-v5` are multilingual streaming models with automatic language detection, configurable endpointing, term biasing (`context`), and `language_hints`.\n- `nvidia/parakeet-v3` is a multilingual transcription model with automatic language detection.\n- `omi-health/omi-med-stt-v1` is an English-only medical transcription model (Parakeet-based).\n- `humain/realtime` is a streaming model with native Arabic and Arabic/English code-switching support.\n- `reson8/turns` is a turn-based streaming model covering 10 European languages with automatic language detection.\n- `cohere/ar-stt` is a non-streaming Arabic and English transcription model.\n- `telnyx/basira` is a non-streaming Arabic transcription model.",
+          "The speech to text model to be used by the voice assistant. All Deepgram models are run on-premise.\n\n- `deepgram/flux` is optimized for turn-taking with multilingual language hints.\n- `deepgram/nova-3` is multilingual with automatic language detection.\n- `deepgram/nova-2` is Deepgram's previous-generation multilingual model.\n- `speechmatics/standard` is a Speechmatics model self-hosted by Telnyx; it supports a fixed set of language packs (including bilingual packs such as `ar_en`) and defaults to `en`.\n- `speechmatics/linden-1` (preview) is a vendor-hosted streaming model with no auto-detect; set `language` from Speechmatics' Realtime language list (defaults to `en`).\n- `azure/fast` is a multilingual Azure transcription model.\n- `assemblyai/universal-3-6-pro` (AssemblyAI Universal-3.6 Pro) is a multilingual streaming model with configurable turn detection. The legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming` are still accepted and run the same model.\n- `xai/grok-stt` is a multilingual Grok STT model.\n- `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, and `soniox/stt-rt-v6` are multilingual streaming models with automatic language detection, configurable endpointing, term biasing (`context`), and `language_hints`.\n- `nvidia/parakeet-v3` is a multilingual transcription model with automatic language detection.\n- `omi-health/omi-med-stt-v1` is an English-only medical transcription model (Parakeet-based).\n- `humain/realtime` is a streaming model with native Arabic and Arabic/English code-switching support.\n- `reson8/turns` is a turn-based streaming model covering 10 European languages with automatic language detection.\n- `cohere/ar-stt` is a non-streaming Arabic and English transcription model.\n- `telnyx/basira` is a non-streaming Arabic transcription model.",
       }),
     language: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          "The language of the audio to be transcribed. If not set, or if set to `auto`, supported models will automatically detect the language. For `deepgram/flux`, supported values are: `auto` (Telnyx language detection controls the language hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4` and `soniox/stt-rt-v5`, `auto` omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language; `settings.language_hints` can pin multiple languages at once instead. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side to code-switching). Unlike other models, `humain/realtime` does not fall back to `auto` when `language` is omitted — omitting it applies `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this model does not auto-detect and defaults to `ar` when `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics' Realtime language list (67 language codes, including `es-bilingual-en` for Spanish and English bilingual, and the spelling and script variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses the default spelling); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected with a 400.",
+          "The language of the audio to be transcribed. If not set, or if set to `auto`, supported models will automatically detect the language. For `deepgram/flux`, supported values are: `auto` (Telnyx language detection controls the language hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, and `soniox/stt-rt-v6`, `auto` omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language; `settings.language_hints` can pin multiple languages at once instead. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side to code-switching). Unlike other models, `humain/realtime` does not fall back to `auto` when `language` is omitted — omitting it applies `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this model does not auto-detect and defaults to `ar` when `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics' Realtime language list (67 language codes, including `es-bilingual-en` for Spanish and English bilingual, and the spelling and script variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses the default spelling); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected with a 400.",
       }),
     api_key_ref: z
       .string()
@@ -2995,7 +2998,7 @@ const PrivacySettingsSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Requires this assistant's conversations to be processed inside your organization's data-locality region, rather than only stored there, on every channel: for web chat, every model call of a turn; for voice, the call's model calls and the Telnyx-hosted speech services it uses; for SMS and WhatsApp, the model calls of each turn (how messages travel through carriers is not covered). Covered processing that cannot be handled in region fails rather than being served elsewhere. Enabling it requires a data-locality region with in-region inference (USA, EU, AUS, UAE; see [Inference regions](https://developers.telnyx.com/docs/inference/models/regions)), Telnyx-hosted models for the assistant, its fallback, and any conversation-flow node that overrides the model, and, when `insight_settings.model` is set, an insight model available in that region; the request is rejected otherwise. A voice call fails when it starts if its STT model or TTS voice is not self-hosted by Telnyx, if the assistant uses a speech-to-speech model, or if the call's media is anchored outside the region. Once enabled, send web chat requests and WebSocket or WebRTC conversations to your region's API hostname: one entering the platform in another region is refused rather than forwarded, because forwarding it would already have moved the content across the border. See [Data residency](https://developers.telnyx.com/docs/inference/data-residency#in-region-processing-for-ai-assistants). Defaults to false.",
+          "Requires this assistant's conversations to be processed inside your organization's data-locality region, rather than only stored there, on every channel: for web chat, every model call of a turn; for voice, the call's model calls and the Telnyx-hosted speech services it uses; for SMS and WhatsApp, the model calls of each turn (how messages travel through carriers is not covered). Covered processing that cannot be handled in region fails rather than being served elsewhere. Enabling it requires a data-locality region with in-region inference (USA, EU, AUS, UAE; see [Inference regions](https://developers.telnyx.com/docs/inference/models/regions)), models for the assistant, its fallback, and any conversation-flow node that overrides the model that are either Telnyx-hosted or a customer-provided `external_llm` endpoint (third-party model providers are refused), and, when `insight_settings.model` is set, an insight model available in that region; the request is rejected otherwise. A voice call fails when it starts if its STT model or TTS voice is not self-hosted by Telnyx, if the assistant uses a speech-to-speech model, or if the call's media is anchored outside the region. URLs Telnyx is configured to call — an `external_llm` endpoint, webhook tools, Voice API callbacks, or a recording storage destination — are followed as-is: Telnyx cannot verify where a customer-supplied URL processes requests, and keeping those steps in your region is your responsibility. Once enabled, send web chat requests and WebSocket or WebRTC conversations to your region's API hostname: one entering the platform in another region is refused rather than forwarded, because forwarding it would already have moved the content across the border. See [Data residency](https://developers.telnyx.com/docs/inference/data-residency#in-region-processing-for-ai-assistants). Defaults to false.",
       }),
   })
   .openapi({ required: [] })
@@ -3476,12 +3479,12 @@ const FlowEdgeSchema = z
         description:
           'Condition that gates the transition. Discriminated by `type`: `llm`, `expression`.',
         discriminator: {
+          propertyName: 'type',
           mapping: {
             expression: '#/components/schemas/ExpressionCondition',
             llm: '#/components/schemas/LLMCondition',
             default: '#/components/schemas/DefaultCondition',
           },
-          propertyName: 'type',
         },
         title: 'Condition',
       }),
@@ -3504,11 +3507,11 @@ const FlowEdgeSchema = z
         description:
           'Destination of the transition. Discriminated by `type`: `node` (jump to another node in this flow) or `assistant` (hand off to a different assistant).',
         discriminator: {
+          propertyName: 'type',
           mapping: {
             assistant: '#/components/schemas/AssistantTarget',
             node: '#/components/schemas/NodeTarget',
           },
-          propertyName: 'type',
         },
         title: 'Target',
       }),
@@ -3760,12 +3763,12 @@ const ConversationFlowSchema: z.ZodType<ConversationFlowType> = z
           .xor([FlowNodeSchema, ToolNodeSchema, SpeakNodeSchema])
           .openapi({
             discriminator: {
+              propertyName: 'type',
               mapping: {
                 prompt: '#/components/schemas/FlowNode',
                 speak: '#/components/schemas/SpeakNode',
                 tool: '#/components/schemas/ToolNode',
               },
-              propertyName: 'type',
             },
           }),
       )
@@ -4418,12 +4421,12 @@ const ConversationFlowReqSchema: z.ZodType<ConversationFlowReqType> = z
           .xor([FlowNodeReqSchema, ToolNodeReqSchema, SpeakNodeReqSchema])
           .openapi({
             discriminator: {
+              propertyName: 'type',
               mapping: {
                 prompt: '#/components/schemas/FlowNodeReq',
                 tool: '#/components/schemas/ToolNodeReq',
                 speak: '#/components/schemas/SpeakNodeReq',
               },
-              propertyName: 'type',
             },
           }),
       )
@@ -6792,7 +6795,7 @@ const AIAssistantAddMessagesRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'When `true`, the injected messages immediately trigger an assistant response/turn instead of waiting for the next natural turn or idle timeout. This may interrupt a user who is still speaking.',
+          "When `true`, the injected messages immediately trigger an assistant response/turn instead of waiting for the next natural turn or idle timeout. This may interrupt a user who is still speaking. How the turn starts depends on the last message in `messages`: if it is a `user` message, the assistant responds to that message as if the caller had said it, whether or not `trigger_response` is set. Any other last role (`system`, `developer`, `assistant`, `tool`) starts a turn with no new user input, as after a long silence. When `trigger_response` is not set, a payload that does not end in a `user` message is context only and does not start a turn. GPT Live models (`openai/gpt-live-*`) do not support a forced mid-session turn: injected `system`, `developer`, and `assistant` content is appended to the Live session's instructions and the model brings it into its next turn on its own; an injected `tool` record is not forwarded to the Live session, so it stays context only and never reaches the Live model. Any of `user`, `system`, `developer`, or `assistant` is the supported way to get content into the Live session.",
       }),
   })
   .openapi({
@@ -7068,6 +7071,7 @@ const TranscriptionConfigSchema = z
         'assemblyai/universal-streaming',
         'xai/grok-stt',
         'soniox/stt-rt-v4',
+        'soniox/stt-rt-v6',
         'nvidia/parakeet-v3',
         'omi-health/omi-med-stt-v1',
         'humain/realtime',
@@ -7083,7 +7087,7 @@ const TranscriptionConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          "The speech to text model to be used by the voice assistant. Supported models include:\n\n- `deepgram/flux` (or `flux`) for live streaming turn-taking.\n- `deepgram/nova-3` and `deepgram/nova-2` for live streaming transcription.\n- `speechmatics/standard` and `speechmatics/enhanced` for live streaming transcription.\n- `speechmatics/linden-1` (preview, vendor-hosted) for live streaming transcription; no auto-detect, so set `language` from Speechmatics' Realtime language list (defaults to `en`).\n- `assemblyai/universal-3-6-pro` (AssemblyAI Universal-3.6 Pro) for live streaming transcription. The legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming` are still accepted and run the same Universal-3.6 Pro model.\n- `xai/grok-stt` for live streaming transcription.\n- `soniox/stt-rt-v4` for live streaming multilingual transcription with automatic language detection.\n- `nvidia/parakeet-v3` for multilingual transcription with automatic language detection.\n- `omi-health/omi-med-stt-v1` for English-only medical transcription (Parakeet-based).\n- `humain/realtime` for live streaming transcription with native Arabic and Arabic/English code-switching support.\n- `reson8/turns` for live streaming turn-based transcription of 10 European languages with automatic language detection.\n- `cohere/ar-stt` for non-streaming Arabic and English transcription.\n- `azure/fast` and `azure/realtime`; Azure models require `region`, and unsupported regions require `api_key_ref`.\n- `google/latest_long` for non-streaming multilingual transcription.\n- `distil-whisper/distil-large-v2` for lower-latency English-only non-streaming transcription.\n- `openai/whisper-large-v3-turbo` for multilingual non-streaming transcription with automatic language detection.",
+          "The speech to text model to be used by the voice assistant. Supported models include:\n\n- `deepgram/flux` (or `flux`) for live streaming turn-taking.\n- `deepgram/nova-3` and `deepgram/nova-2` for live streaming transcription.\n- `speechmatics/standard` and `speechmatics/enhanced` for live streaming transcription.\n- `speechmatics/linden-1` (preview, vendor-hosted) for live streaming transcription; no auto-detect, so set `language` from Speechmatics' Realtime language list (defaults to `en`).\n- `assemblyai/universal-3-6-pro` (AssemblyAI Universal-3.6 Pro) for live streaming transcription. The legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming` are still accepted and run the same Universal-3.6 Pro model.\n- `xai/grok-stt` for live streaming transcription.\n- `soniox/stt-rt-v4` and `soniox/stt-rt-v6` for live streaming multilingual transcription with automatic language detection.\n- `nvidia/parakeet-v3` for multilingual transcription with automatic language detection.\n- `omi-health/omi-med-stt-v1` for English-only medical transcription (Parakeet-based).\n- `humain/realtime` for live streaming transcription with native Arabic and Arabic/English code-switching support.\n- `reson8/turns` for live streaming turn-based transcription of 10 European languages with automatic language detection.\n- `cohere/ar-stt` for non-streaming Arabic and English transcription.\n- `azure/fast` and `azure/realtime`; Azure models require `region`, and unsupported regions require `api_key_ref`.\n- `google/latest_long` for non-streaming multilingual transcription.\n- `distil-whisper/distil-large-v2` for lower-latency English-only non-streaming transcription.\n- `openai/whisper-large-v3-turbo` for multilingual non-streaming transcription with automatic language detection.",
         example: 'distil-whisper/distil-large-v2',
       }),
     language: z
@@ -7091,7 +7095,7 @@ const TranscriptionConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          "The language of the audio to be transcribed. If not set, or if set to `auto`, supported models will automatically detect the language. Supported and meaningful values depend on the selected transcription `model`. For `deepgram/flux`, supported values are: `auto` (Telnyx language detection controls the language hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`, `auto` omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language. For `assemblyai/universal-3-6-pro` (and its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `auto` (or unset) enables native multilingual code-switching; language codes (`en`, `es`, `de`, `fr`, `pt`, `it`, `tr`, `nl`, `sv`, `no`, `da`, `fi`, `hi`, `vi`, `ar`, `he`, `ja`, `zh`, `ur`, `ru`, `ko`, `ca`, `gl`, `ro`, `et`, `fa`, `yue`, `af`, `mr`, `zu`, `xh`, `nn`) bias the session to that language. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side to code-switching). Unlike other models, `humain/realtime` does not fall back to `auto` when `language` is omitted — omitting it applies `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this model does not auto-detect and defaults to `ar` when `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics' Realtime language list (see `SpeechmaticsTranscriptionLanguage`); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected (unlike `speechmatics/standard`, which defaults to `en`).",
+          "The language of the audio to be transcribed. If not set, or if set to `auto`, supported models will automatically detect the language. Supported and meaningful values depend on the selected transcription `model`. For `deepgram/flux`, supported values are: `auto` (Telnyx language detection controls the language hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4` and `soniox/stt-rt-v6`, `auto` omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language. For `assemblyai/universal-3-6-pro` (and its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `auto` (or unset) enables native multilingual code-switching; language codes (`en`, `es`, `de`, `fr`, `pt`, `it`, `tr`, `nl`, `sv`, `no`, `da`, `fi`, `hi`, `vi`, `ar`, `he`, `ja`, `zh`, `ur`, `ru`, `ko`, `ca`, `gl`, `ro`, `et`, `fa`, `yue`, `af`, `mr`, `zu`, `xh`, `nn`) bias the session to that language. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side to code-switching). Unlike other models, `humain/realtime` does not fall back to `auto` when `language` is omitted — omitting it applies `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this model does not auto-detect and defaults to `ar` when `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics' Realtime language list (see `SpeechmaticsTranscriptionLanguage`); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected (unlike `speechmatics/standard`, which defaults to `en`).",
       }),
   })
   .openapi({
@@ -8862,36 +8866,63 @@ const AgentEmailContactSchema = z
   .openapi({ required: ['address', 'label'] })
   .openapi('AgentEmailContact')
 
-const AgentBasicsConfigurationSchema = z
-  .union([
-    z.object({ phone_number: AgentPhoneContactSchema }).openapi({ required: ['phone_number'] }),
-    z.object({ website: AgentWebsiteContactSchema }).openapi({ required: ['website'] }),
-    z.object({ email: AgentEmailContactSchema }).openapi({ required: ['email'] }),
-  ])
-  .and(
-    z
-      .object({
-        description: z.string().min(1).max(100),
-        logo_url: HttpUrlSchema,
-        hero_url: HttpUrlSchema,
-        brand_color: z.string().regex(/^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/),
-        privacy_policy_url: HttpUrlSchema,
-        terms_and_conditions_url: HttpUrlSchema,
-        phone_number: z.xor([AgentPhoneContactSchema, z.null().nullable()]).exactOptional(),
-        website: z.xor([AgentWebsiteContactSchema, z.null().nullable()]).exactOptional(),
-        email: z.xor([AgentEmailContactSchema, z.null().nullable()]).exactOptional(),
-      })
-      .openapi({
-        required: [
-          'description',
-          'logo_url',
-          'hero_url',
-          'brand_color',
-          'privacy_policy_url',
-          'terms_and_conditions_url',
-        ],
-      }),
-  )
+const AgentBasicsConfigurationSchema = (() => {
+  const Schema = z
+    .union([
+      z.object({ phone_number: AgentPhoneContactSchema }).openapi({ required: ['phone_number'] }),
+      z.object({ website: AgentWebsiteContactSchema }).openapi({ required: ['website'] }),
+      z.object({ email: AgentEmailContactSchema }).openapi({ required: ['email'] }),
+    ])
+    .and(
+      z
+        .object({
+          description: z.string().min(1).max(100),
+          logo_url: HttpUrlSchema,
+          hero_url: HttpUrlSchema,
+          brand_color: z.string().regex(/^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/),
+          privacy_policy_url: HttpUrlSchema,
+          terms_and_conditions_url: HttpUrlSchema,
+          phone_number: z.xor([AgentPhoneContactSchema, z.null().nullable()]).exactOptional(),
+          website: z.xor([AgentWebsiteContactSchema, z.null().nullable()]).exactOptional(),
+          email: z.xor([AgentEmailContactSchema, z.null().nullable()]).exactOptional(),
+        })
+        .openapi({
+          required: [
+            'description',
+            'logo_url',
+            'hero_url',
+            'brand_color',
+            'privacy_policy_url',
+            'terms_and_conditions_url',
+          ],
+        }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'description',
+            'logo_url',
+            'hero_url',
+            'brand_color',
+            'privacy_policy_url',
+            'terms_and_conditions_url',
+            'phone_number',
+            'website',
+            'email',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description:
       'Basic agent identity and contact information. At least one complete phone, website, or email contact is required.',
@@ -9041,102 +9072,252 @@ const AgentConsentConfigurationSchema = z
         .union([
           z
             .union([
-              z.any().refine(
-                (val) =>
-                  !z
-                    .object({ call_to_action_url: z.any() })
-                    .openapi({ required: ['call_to_action_url'] })
-                    .safeParse(val).success,
-              ),
+              z
+                .any()
+                .refine(
+                  (val) =>
+                    !z
+                      .object({ call_to_action_url: z.any() })
+                      .openapi({ required: ['call_to_action_url'] })
+                      .safeParse(val).success,
+                )
+                .openapi({
+                  not: { properties: { call_to_action_url: {} }, required: ['call_to_action_url'] },
+                })
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'opt_in_methods')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                    if (Object.hasOwn(val, 'opt_in_methods')) {
+                      const Schema = z.unknown().superRefine((val, ctx) => {
+                        if (Array.isArray(val)) {
+                          {
+                            const m = val.filter(
+                              (i) =>
+                                z
+                                  .object({ method_type: z.literal('WEBSITE') })
+                                  .openapi({ required: ['method_type'] })
+                                  .safeParse(i).success,
+                            ).length
+                            if (m < 1) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        }
+                      })
+                      if (!Schema.safeParse(Reflect.get(val, 'opt_in_methods')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  }
+                }),
               z
                 .object({ call_to_action_url: z.null().nullable().exactOptional() })
-                .openapi({ required: [] }),
-              z.any().refine(
-                (val) =>
-                  !z
-                    .object({ call_to_action_media_url: z.any() })
-                    .openapi({ required: ['call_to_action_media_url'] })
-                    .safeParse(val).success,
-              ),
-              z
-                .object({ call_to_action_media_url: z.null().nullable().exactOptional() })
-                .openapi({ required: [] }),
-            ])
-            .and(
-              z
-                .object({
-                  opt_in_methods: z.unknown().superRefine((val, ctx) => {
-                    if (Array.isArray(val)) {
-                      {
-                        const m = val.filter(
-                          (i) =>
-                            z
-                              .object({ method_type: z.literal('WEBSITE') })
-                              .openapi({ required: ['method_type'] })
-                              .safeParse(i).success,
-                        ).length
-                        if (m < 1) {
-                          ctx.addIssue({ code: 'custom' })
+                .openapi({ required: [] })
+                .and(
+                  z
+                    .object({
+                      opt_in_methods: z.unknown().superRefine((val, ctx) => {
+                        if (Array.isArray(val)) {
+                          {
+                            const m = val.filter(
+                              (i) =>
+                                z
+                                  .object({ method_type: z.literal('WEBSITE') })
+                                  .openapi({ required: ['method_type'] })
+                                  .safeParse(i).success,
+                            ).length
+                            if (m < 1) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
                         }
+                      }),
+                    })
+                    .openapi({ required: ['opt_in_methods'] }),
+                ),
+              z
+                .any()
+                .refine(
+                  (val) =>
+                    !z
+                      .object({ call_to_action_media_url: z.any() })
+                      .openapi({ required: ['call_to_action_media_url'] })
+                      .safeParse(val).success,
+                )
+                .openapi({
+                  not: {
+                    properties: { call_to_action_media_url: {} },
+                    required: ['call_to_action_media_url'],
+                  },
+                })
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'opt_in_methods')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                    if (Object.hasOwn(val, 'opt_in_methods')) {
+                      const Schema = z.unknown().superRefine((val, ctx) => {
+                        if (Array.isArray(val)) {
+                          {
+                            const m = val.filter(
+                              (i) =>
+                                z
+                                  .object({ method_type: z.literal('WEBSITE') })
+                                  .openapi({ required: ['method_type'] })
+                                  .safeParse(i).success,
+                            ).length
+                            if (m < 1) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        }
+                      })
+                      if (!Schema.safeParse(Reflect.get(val, 'opt_in_methods')).success) {
+                        ctx.addIssue({ code: 'custom' })
                       }
                     }
-                  }),
-                })
-                .openapi({ required: ['opt_in_methods'] }),
-            )
+                  }
+                }),
+              z
+                .object({ call_to_action_media_url: z.null().nullable().exactOptional() })
+                .openapi({ required: [] })
+                .and(
+                  z
+                    .object({
+                      opt_in_methods: z.unknown().superRefine((val, ctx) => {
+                        if (Array.isArray(val)) {
+                          {
+                            const m = val.filter(
+                              (i) =>
+                                z
+                                  .object({ method_type: z.literal('WEBSITE') })
+                                  .openapi({ required: ['method_type'] })
+                                  .safeParse(i).success,
+                            ).length
+                            if (m < 1) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        }
+                      }),
+                    })
+                    .openapi({ required: ['opt_in_methods'] }),
+                ),
+            ])
             .openapi({ required: ['opt_in_methods'] }),
           z
             .union([
-              z.any().refine(
-                (val) =>
-                  !z
-                    .object({ call_to_action_media_url: z.any() })
-                    .openapi({ required: ['call_to_action_media_url'] })
-                    .safeParse(val).success,
-              ),
               z
-                .object({ call_to_action_media_url: z.null().nullable().exactOptional() })
-                .openapi({ required: [] }),
-            ])
-            .and(
-              z
-                .object({
-                  opt_in_methods: z.unknown().superRefine((val, ctx) => {
-                    if (Array.isArray(val)) {
-                      {
-                        const m = val.filter(
-                          (i) =>
-                            z
-                              .object({ method_type: z.literal('MOBILE_APP') })
-                              .openapi({ required: ['method_type'] })
-                              .safeParse(i).success,
-                        ).length
-                        if (m < 1) {
-                          ctx.addIssue({ code: 'custom' })
+                .any()
+                .refine(
+                  (val) =>
+                    !z
+                      .object({ call_to_action_media_url: z.any() })
+                      .openapi({ required: ['call_to_action_media_url'] })
+                      .safeParse(val).success,
+                )
+                .openapi({
+                  not: {
+                    properties: { call_to_action_media_url: {} },
+                    required: ['call_to_action_media_url'],
+                  },
+                })
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'opt_in_methods')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                    if (Object.hasOwn(val, 'opt_in_methods')) {
+                      const Schema = z.unknown().superRefine((val, ctx) => {
+                        if (Array.isArray(val)) {
+                          {
+                            const m = val.filter(
+                              (i) =>
+                                z
+                                  .object({ method_type: z.literal('MOBILE_APP') })
+                                  .openapi({ required: ['method_type'] })
+                                  .safeParse(i).success,
+                            ).length
+                            if (m < 1) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
                         }
+                      })
+                      if (!Schema.safeParse(Reflect.get(val, 'opt_in_methods')).success) {
+                        ctx.addIssue({ code: 'custom' })
                       }
                     }
-                  }),
-                })
-                .openapi({ required: ['opt_in_methods'] }),
-            )
+                  }
+                }),
+              z
+                .object({ call_to_action_media_url: z.null().nullable().exactOptional() })
+                .openapi({ required: [] })
+                .and(
+                  z
+                    .object({
+                      opt_in_methods: z.unknown().superRefine((val, ctx) => {
+                        if (Array.isArray(val)) {
+                          {
+                            const m = val.filter(
+                              (i) =>
+                                z
+                                  .object({ method_type: z.literal('MOBILE_APP') })
+                                  .openapi({ required: ['method_type'] })
+                                  .safeParse(i).success,
+                            ).length
+                            if (m < 1) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        }
+                      }),
+                    })
+                    .openapi({ required: ['opt_in_methods'] }),
+                ),
+            ])
             .openapi({ required: ['opt_in_methods'] }),
           z
             .union([
-              z.any().refine(
-                (val) =>
-                  !z
-                    .object({ double_opt_in_message: z.any() })
-                    .openapi({ required: ['double_opt_in_message'] })
-                    .safeParse(val).success,
-              ),
+              z
+                .any()
+                .refine(
+                  (val) =>
+                    !z
+                      .object({ double_opt_in_message: z.any() })
+                      .openapi({ required: ['double_opt_in_message'] })
+                      .safeParse(val).success,
+                )
+                .openapi({
+                  not: {
+                    properties: { double_opt_in_message: {} },
+                    required: ['double_opt_in_message'],
+                  },
+                })
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'double_opt_in')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                    if (Object.hasOwn(val, 'double_opt_in')) {
+                      const Schema = z.literal(true)
+                      if (!Schema.safeParse(Reflect.get(val, 'double_opt_in')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  }
+                }),
               z
                 .object({ double_opt_in_message: z.null().nullable().exactOptional() })
-                .openapi({ required: [] }),
+                .openapi({ required: [] })
+                .and(
+                  z
+                    .object({ double_opt_in: z.literal(true) })
+                    .openapi({ required: ['double_opt_in'] }),
+                ),
             ])
-            .and(
-              z.object({ double_opt_in: z.literal(true) }).openapi({ required: ['double_opt_in'] }),
-            )
             .openapi({ required: ['double_opt_in'] }),
         ])
         .safeParse(val).success,
@@ -9150,6 +9331,51 @@ const AgentConsentConfigurationSchema = z
       'help_response',
       'opt_out_response',
     ],
+    not: {
+      anyOf: [
+        {
+          properties: { opt_in_methods: {} },
+          required: ['opt_in_methods'],
+          anyOf: [
+            { not: { properties: { call_to_action_url: {} }, required: ['call_to_action_url'] } },
+            { properties: { call_to_action_url: { type: 'null' } } },
+            {
+              not: {
+                properties: { call_to_action_media_url: {} },
+                required: ['call_to_action_media_url'],
+              },
+            },
+            { properties: { call_to_action_media_url: { type: 'null' } } },
+          ],
+        },
+        {
+          properties: { opt_in_methods: {} },
+          required: ['opt_in_methods'],
+          anyOf: [
+            {
+              not: {
+                properties: { call_to_action_media_url: {} },
+                required: ['call_to_action_media_url'],
+              },
+            },
+            { properties: { call_to_action_media_url: { type: 'null' } } },
+          ],
+        },
+        {
+          properties: { double_opt_in: { const: true } },
+          required: ['double_opt_in'],
+          anyOf: [
+            {
+              not: {
+                properties: { double_opt_in_message: {} },
+                required: ['double_opt_in_message'],
+              },
+            },
+            { properties: { double_opt_in_message: { type: 'null' } } },
+          ],
+        },
+      ],
+    },
   })
   .openapi('AgentConsentConfiguration')
 
@@ -9226,6 +9452,1609 @@ const AgentCreateRequestSchema = z
     },
   })
   .openapi('AgentCreateRequest')
+
+const AgentGatewayStatusSchema = z
+  .enum(['pending', 'provisioning', 'ready', 'failed', 'deleting'])
+  .openapi({
+    description:
+      'Where the instance is in its lifecycle. `pending`: created and waiting to start. `provisioning`: starting. `ready`: running, with its `gateway_url` set. `failed`: did not start in time; delete it. `deleting`: being removed.',
+  })
+  .openapi('AgentGatewayStatus')
+
+const AgentGatewaySchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifies the instance.' }),
+    name: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'A label for people; `null` when none was given.' }),
+    engine: z.literal('litellm').openapi({ description: 'The gateway engine.' }),
+    engine_version: z.string().openapi({ description: 'The engine version the instance runs.' }),
+    status: AgentGatewayStatusSchema,
+    gateway_url: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({
+        description:
+          "The base URL of the instance's API, `http://<address>:4000`, where the address is the instance's peer address on the WireGuard Interface. Reachable only from hosts on the instance's *Network*, and every request to it carries a key from this API. `null` until the instance is `ready`.",
+      }),
+    wireguard_interface_id: z
+      .union([z.uuid(), z.null().nullable()])
+      .openapi({ description: 'The WireGuard Interface the instance joins as a peer.' }),
+    network_id: z
+      .union([z.uuid(), z.null().nullable()])
+      .openapi({
+        description:
+          'The [*Network*](https://developers.telnyx.com/docs/network/overview) the WireGuard Interface belongs to.',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the instance was created.' }),
+  })
+  .openapi({
+    description: 'An Agent Gateway instance on a WireGuard Interface.',
+    required: [
+      'id',
+      'name',
+      'engine',
+      'engine_version',
+      'status',
+      'gateway_url',
+      'wireguard_interface_id',
+      'network_id',
+      'created_at',
+    ],
+  })
+  .openapi('AgentGateway')
+
+const AgentGatewayShownAuthSchema = z
+  .object({ type: z.string().openapi({ description: "The method's `type`." }) })
+  .openapi({
+    description: "The server's outbound authentication method. Credentials are never returned.",
+    required: ['type'],
+  })
+  .openapi('AgentGatewayShownAuth')
+
+const AgentGatewayApiSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifies the API.' }),
+    name: z
+      .string()
+      .openapi({
+        description:
+          "A name for the API, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the API's tools with it and a hyphen.",
+      }),
+    spec_url: z.string().openapi({ description: "The URL of the API's OpenAPI description." }),
+    base_url: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          "Where the gateway sends the API's requests. `null` takes the description's first `servers` entry.",
+      }),
+    auth: AgentGatewayShownAuthSchema,
+    tools: z
+      .array(z.string())
+      .openapi({
+        description:
+          'The operations the API exposes as tools, by tool name. `[]` exposes every operation.',
+      }),
+    static_headers: z
+      .record(z.string(), z.string())
+      .openapi({ description: 'Headers sent on every request.' }),
+    forwarded_headers: z
+      .array(z.string())
+      .max(32)
+      .openapi({ description: "Headers copied from the agent's request, by name." }),
+    open_to_every_key: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description: '`true` lets every key on the instance use the server, granted or not.',
+      }),
+    created_at: z.iso.datetime({ offset: true }).nullable(),
+    updated_at: z.iso.datetime({ offset: true }).nullable(),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'spec_url',
+      'base_url',
+      'auth',
+      'tools',
+      'static_headers',
+      'forwarded_headers',
+      'open_to_every_key',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('AgentGatewayApi')
+
+const AgentGatewayNoAuthSchema = z
+  .object({ type: z.literal('none').exactOptional() })
+  .openapi({
+    title: 'No authentication',
+    description: 'The gateway sends no credential.',
+    required: [],
+  })
+  .openapi('AgentGatewayNoAuth')
+
+const AgentGatewayStaticAuthSchema = z
+  .object({
+    type: z
+      .enum(['api_key', 'bearer_token', 'basic', 'token', 'authorization'])
+      .openapi({
+        description:
+          'How the credential is sent: `api_key` as `X-API-Key: <value>`, `bearer_token` as `Authorization: Bearer <value>`, `basic` as `Authorization: Basic <base64 of value>` with `value` in the form `user:password`, `token` as `Authorization: token <value>`, and `authorization` as `Authorization: <value>`.',
+      }),
+    value: z.string().openapi({ writeOnly: true, description: 'The credential.' }),
+    header: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A header name that replaces `X-API-Key` or `Authorization`.' }),
+  })
+  .openapi({
+    title: 'API key',
+    required: ['type', 'value'],
+    description:
+      'A static credential the gateway sends on every request. Write-only: responses show its `type` only.',
+  })
+  .openapi('AgentGatewayStaticAuth')
+
+const AgentGatewayOAuthClientCredentialsSchema = z
+  .object({
+    type: z.literal('oauth_client_credentials'),
+    token_url: z.string().openapi({ description: "The OAuth provider's token endpoint." }),
+    client_id: z.string().openapi({ writeOnly: true }),
+    client_secret: z.string().openapi({ writeOnly: true }),
+    credentials_in: z
+      .enum(['body', 'basic'])
+      .default('body')
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether the client ID and secret go in the token request's body or as HTTP Basic authentication.",
+      }),
+    scopes: z.array(z.string()).exactOptional().openapi({ description: 'The scopes to request.' }),
+    audience: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The token's audience, sent in the token request." }),
+    resource: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The resource the token is for, sent in the token request.' }),
+  })
+  .openapi({
+    title: 'OAuth client credentials',
+    required: ['type', 'token_url', 'client_id', 'client_secret'],
+    description:
+      'The gateway gets its own access token with the `client_credentials` grant and sends it as a bearer token on every request, renewing it before it expires. The client ID and secret are write-only.',
+  })
+  .openapi('AgentGatewayOAuthClientCredentials')
+
+const AgentGatewayPassthroughAuthSchema = z
+  .object({ type: z.literal('passthrough').exactOptional() })
+  .openapi({
+    title: 'Token passthrough',
+    description:
+      "The gateway forwards the agent's own `Authorization` header to the server unchanged.",
+    required: [],
+  })
+  .openapi('AgentGatewayPassthroughAuth')
+
+const AgentGatewayApiCreateSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .regex(/^[A-Za-z0-9_.]{1,100}$/)
+      .openapi({
+        description:
+          "A name for the API, unique on the instance across MCP servers and APIs, regardless of case. Up to 100 letters, digits, `_`, and `.`. The gateway prefixes the API's tools with it and a hyphen.",
+      }),
+    spec_url: z
+      .string()
+      .openapi({
+        description:
+          "The URL of the API's OpenAPI description: OpenAPI 3.0, OpenAPI 3.1, or Swagger 2.0.",
+      }),
+    base_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Where the gateway sends the API's requests. Without it, the gateway takes the description's first `servers` entry.",
+      }),
+    auth: z
+      .xor([
+        AgentGatewayNoAuthSchema,
+        AgentGatewayStaticAuthSchema,
+        AgentGatewayOAuthClientCredentialsSchema,
+        AgentGatewayPassthroughAuthSchema,
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'How the gateway authenticates to the API. AWS Signature Version 4 is for MCP servers only. Replaced whole on an update.',
+      }),
+    tools: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The operations the API exposes as tools, by tool name. `[]` exposes every operation.',
+      }),
+    static_headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Headers sent on every request.' }),
+    forwarded_headers: z
+      .array(z.string())
+      .max(32)
+      .exactOptional()
+      .openapi({ description: "Headers copied from the agent's request, by name." }),
+    open_to_every_key: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: '`true` lets every key on the instance use the server, granted or not.',
+      }),
+  })
+  .openapi({ required: ['name', 'spec_url'] })
+  .openapi('AgentGatewayApiCreate')
+
+const AgentGatewayApiListResponseSchema = z
+  .object({ data: z.array(AgentGatewayApiSchema) })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayApiListResponse')
+
+const AgentGatewayApiResponseSchema = z
+  .object({ data: AgentGatewayApiSchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayApiResponse')
+
+const AgentGatewayApiUpdateSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .regex(/^[A-Za-z0-9_.]{1,100}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          "A name for the API, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the API's tools with it and a hyphen.",
+      }),
+    spec_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL of the API's OpenAPI description: OpenAPI 3.0, OpenAPI 3.1, or Swagger 2.0.",
+      }),
+    base_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Where the gateway sends the API's requests. Without it, the gateway takes the description's first `servers` entry.",
+      }),
+    auth: z
+      .xor([
+        AgentGatewayNoAuthSchema,
+        AgentGatewayStaticAuthSchema,
+        AgentGatewayOAuthClientCredentialsSchema,
+        AgentGatewayPassthroughAuthSchema,
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'How the gateway authenticates to the API. AWS Signature Version 4 is for MCP servers only. Replaced whole on an update.',
+      }),
+    tools: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The operations the API exposes as tools, by tool name. `[]` exposes every operation.',
+      }),
+    static_headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Headers sent on every request.' }),
+    forwarded_headers: z
+      .array(z.string())
+      .max(32)
+      .exactOptional()
+      .openapi({ description: "Headers copied from the agent's request, by name." }),
+    open_to_every_key: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: '`true` lets every key on the instance use the server, granted or not.',
+      }),
+  })
+  .openapi({
+    description:
+      'The fields to change. A field left out stays as it is, and `"base_url": null` clears the base URL.',
+    required: [],
+  })
+  .openapi('AgentGatewayApiUpdate')
+
+const AgentGatewayAwsSigV4AuthSchema = z
+  .object({
+    type: z.literal('aws_sigv4'),
+    region: z.string().openapi({ description: 'The AWS region to sign for.' }),
+    service: z
+      .string()
+      .default('bedrock-agentcore')
+      .exactOptional()
+      .openapi({ description: 'The AWS service to sign for.' }),
+    access_key_id: z.string().nullable().exactOptional().openapi({ writeOnly: true }),
+    secret_access_key: z.string().nullable().exactOptional().openapi({ writeOnly: true }),
+    session_token: z.string().nullable().exactOptional().openapi({ writeOnly: true }),
+    role_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The ARN of a role for the gateway to assume.' }),
+  })
+  .openapi({
+    title: 'AWS Signature Version 4',
+    required: ['type', 'region'],
+    description:
+      "The gateway signs each request with AWS Signature Version 4. Without keys or a role, it uses the instance's own AWS identity. Keys are write-only.",
+  })
+  .openapi('AgentGatewayAwsSigV4Auth')
+
+const AgentGatewayCreateSchema = z
+  .object({
+    name: z
+      .union([z.string().min(1).max(100), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'A label for people.' }),
+    wireguard_interface_id: z
+      .uuid()
+      .openapi({
+        description:
+          "One of the account's WireGuard Interfaces. The instance joins it as a peer, and the interface's other peers reach the instance.",
+      }),
+  })
+  .openapi({ required: ['wireguard_interface_id'] })
+  .openapi('AgentGatewayCreate')
+
+const AgentGatewayCreatedKeySchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description:
+          "Identifies the key. It is a 64-character hash the instance stores in place of the key's value.",
+      }),
+    name: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'A label for people; `null` when none was given.' }),
+    team_id: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'The team the key belongs to, if any.' }),
+    models: z
+      .array(z.string())
+      .openapi({
+        description: 'The models the key may use. Empty means every model the instance serves.',
+      }),
+    max_budget: z
+      .union([z.number(), z.null().nullable()])
+      .openapi({ description: 'The most the key may spend, in USD, until its budget resets.' }),
+    budget_resets_every: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: "How often the key's spend resets, such as `30d`." }),
+    budget_resets_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: "When the key's spend next resets." }),
+    spend: z
+      .number()
+      .openapi({ description: 'What the key has spent since its budget last reset, in USD.' }),
+    expires_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the key stops working; `null` when it does not expire.' }),
+    created_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the key was issued.' }),
+    blocked: z.boolean().openapi({ description: 'Whether the instance refuses the key.' }),
+    requests_per_minute: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: 'The most requests the key may make per minute.' }),
+    tokens_per_minute: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: 'The most tokens the key may use per minute.' }),
+    max_parallel_requests: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: 'The most requests the key may have in flight at once.' }),
+    key: z
+      .string()
+      .openapi({
+        description:
+          "The key's value, sent as `Authorization: Bearer <key>` to the instance. Shown only in this response.",
+      }),
+  })
+  .openapi({
+    description: 'A key that was just issued: the only response that carries its value.',
+    required: [
+      'id',
+      'name',
+      'team_id',
+      'models',
+      'max_budget',
+      'budget_resets_every',
+      'budget_resets_at',
+      'spend',
+      'expires_at',
+      'created_at',
+      'blocked',
+      'requests_per_minute',
+      'tokens_per_minute',
+      'max_parallel_requests',
+      'key',
+    ],
+  })
+  .openapi('AgentGatewayCreatedKey')
+
+const AgentGatewayCreatedKeyResponseSchema = z
+  .object({ data: AgentGatewayCreatedKeySchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayCreatedKeyResponse')
+
+const AgentGatewayGuardrailSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifies the guardrail.' }),
+    name: z.string().openapi({ description: 'What a request names in its `guardrails` field.' }),
+    modes: z
+      .array(
+        z.enum([
+          'before_request',
+          'during_request',
+          'after_request',
+          'logging_only',
+          'before_tool_request',
+          'during_tool_request',
+          'after_tool_request',
+        ]),
+      )
+      .openapi({ description: 'When the guardrail runs.' }),
+    always_on: z.boolean().openapi({ description: 'Whether it runs on every request.' }),
+    type: z.enum([
+      'content_filter',
+      'tool_permission',
+      'model_judge',
+      'custom_code',
+      'lakera',
+      'presidio',
+      'bedrock',
+      'azure_content_safety',
+    ]),
+    settings: z
+      .looseObject({})
+      .openapi({
+        description:
+          "The type's settings. `content_filter`: `patterns` (prebuilt patterns by name, such as `us_ssn` or `email`), `regexes`, `keywords`, and `categories` (such as `prompt_injection`), each with an `action` of `block` or `mask`. `tool_permission`: `rules` (`id`, `tool_name`, `tool_type`, `decision`, `argument_patterns`), a `default` decision, and `on_denied` (`block` or `rewrite`). `model_judge`: a `model` on the instance and weighted `criteria` (`name`, `description`, `weight`, the weights summing to 100). `custom_code`: `code` defining `apply_guardrail(inputs, request_data, input_type)`. `lakera`: `api_key`, `project_id`, `api_base`. `presidio`: `analyzer_url`, `anonymizer_url`, `entities` (entity name to `block` or `mask`), `language`. `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`, `endpoint`, `severity` (0 to 7). Provider secrets are write-only. Responses leave the secrets out.",
+      }),
+    created_at: z.iso.datetime({ offset: true }).nullable(),
+    updated_at: z.iso.datetime({ offset: true }).nullable(),
+  })
+  .openapi({
+    required: ['id', 'name', 'modes', 'always_on', 'type', 'settings', 'created_at', 'updated_at'],
+  })
+  .openapi('AgentGatewayGuardrail')
+
+const AgentGatewayGuardrailCreateSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .regex(/^[A-Za-z0-9_.-]{1,100}$/)
+      .openapi({
+        description:
+          'A name, unique on the instance. A request names it in its `guardrails` field.',
+      }),
+    modes: z
+      .array(
+        z.enum([
+          'before_request',
+          'during_request',
+          'after_request',
+          'logging_only',
+          'before_tool_request',
+          'during_tool_request',
+          'after_tool_request',
+        ]),
+      )
+      .min(1)
+      .openapi({ description: 'When the guardrail runs. Each type runs in some modes only.' }),
+    always_on: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          '`true` runs the guardrail on every request, and a request cannot turn it off. `false` runs it on the requests that name it.',
+      }),
+    type: z
+      .enum([
+        'content_filter',
+        'tool_permission',
+        'model_judge',
+        'custom_code',
+        'lakera',
+        'presidio',
+        'bedrock',
+        'azure_content_safety',
+      ])
+      .openapi({ description: 'The kind of check. It cannot change after create.' }),
+    settings: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          "The type's settings. `content_filter`: `patterns` (prebuilt patterns by `name`, such as `us_ssn` or `email`), `regexes` (each a `name`, which tags masked matches, and a `pattern`), `keywords` (each a `keyword`), and `categories` (each a `name`), each entry with an `action` of `block` or `mask`. `tool_permission`: `rules` (`id`, `tool_name`, `tool_type`, `decision`, `argument_patterns`), a `default` decision, and `on_denied` (`block` or `rewrite`). `model_judge`: a `model` on the instance and weighted `criteria` (`name`, `description`, `weight`, the weights summing to 100). `custom_code`: `code` defining `apply_guardrail(inputs, request_data, input_type)`. `lakera`: `api_key`, `project_id`, `api_base`. `presidio`: `analyzer_url`, `anonymizer_url`, `entities` (entity name to `block` or `mask`), `language`. `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`, `endpoint`, `severity` (0 to 7). Provider secrets are write-only.",
+      }),
+  })
+  .openapi({ required: ['name', 'modes', 'type'] })
+  .openapi('AgentGatewayGuardrailCreate')
+
+const AgentGatewayGuardrailListResponseSchema = z
+  .object({ data: z.array(AgentGatewayGuardrailSchema) })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayGuardrailListResponse')
+
+const AgentGatewayGuardrailResponseSchema = z
+  .object({ data: AgentGatewayGuardrailSchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayGuardrailResponse')
+
+const AgentGatewayGuardrailUpdateSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .regex(/^[A-Za-z0-9_.-]{1,100}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'A name, unique on the instance. A request names it in its `guardrails` field.',
+      }),
+    modes: z
+      .array(
+        z.enum([
+          'before_request',
+          'during_request',
+          'after_request',
+          'logging_only',
+          'before_tool_request',
+          'during_tool_request',
+          'after_tool_request',
+        ]),
+      )
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'When the guardrail runs. Each type runs in some modes only.' }),
+    always_on: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          '`true` runs the guardrail on every request, and a request cannot turn it off. `false` runs it on the requests that name it.',
+      }),
+    settings: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          "The type's settings. `content_filter`: `patterns` (prebuilt patterns by name, such as `us_ssn` or `email`), `regexes`, `keywords`, and `categories` (such as `prompt_injection`), each with an `action` of `block` or `mask`. `tool_permission`: `rules` (`id`, `tool_name`, `tool_type`, `decision`, `argument_patterns`), a `default` decision, and `on_denied` (`block` or `rewrite`). `model_judge`: a `model` on the instance and weighted `criteria` (`name`, `description`, `weight`, the weights summing to 100). `custom_code`: `code` defining `apply_guardrail(inputs, request_data, input_type)`. `lakera`: `api_key`, `project_id`, `api_base`. `presidio`: `analyzer_url`, `anonymizer_url`, `entities` (entity name to `block` or `mask`), `language`. `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`, `endpoint`, `severity` (0 to 7). Provider secrets are write-only.",
+      }),
+  })
+  .openapi({
+    description: 'The fields to change. `settings` is replaced whole, secrets included.',
+    required: [],
+  })
+  .openapi('AgentGatewayGuardrailUpdate')
+
+const AgentGatewayKeySchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description:
+          "Identifies the key. It is a 64-character hash the instance stores in place of the key's value.",
+      }),
+    name: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'A label for people; `null` when none was given.' }),
+    team_id: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'The team the key belongs to, if any.' }),
+    models: z
+      .array(z.string())
+      .openapi({
+        description: 'The models the key may use. Empty means every model the instance serves.',
+      }),
+    max_budget: z
+      .union([z.number(), z.null().nullable()])
+      .openapi({ description: 'The most the key may spend, in USD, until its budget resets.' }),
+    budget_resets_every: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: "How often the key's spend resets, such as `30d`." }),
+    budget_resets_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: "When the key's spend next resets." }),
+    spend: z
+      .number()
+      .openapi({ description: 'What the key has spent since its budget last reset, in USD.' }),
+    expires_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the key stops working; `null` when it does not expire.' }),
+    created_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the key was issued.' }),
+    blocked: z.boolean().openapi({ description: 'Whether the instance refuses the key.' }),
+    requests_per_minute: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: 'The most requests the key may make per minute.' }),
+    tokens_per_minute: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: 'The most tokens the key may use per minute.' }),
+    max_parallel_requests: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: 'The most requests the key may have in flight at once.' }),
+  })
+  .openapi({
+    description: 'A key on an instance, without its value.',
+    required: [
+      'id',
+      'name',
+      'team_id',
+      'models',
+      'max_budget',
+      'budget_resets_every',
+      'budget_resets_at',
+      'spend',
+      'expires_at',
+      'created_at',
+      'blocked',
+      'requests_per_minute',
+      'tokens_per_minute',
+      'max_parallel_requests',
+    ],
+  })
+  .openapi('AgentGatewayKey')
+
+const AgentGatewayKeyCreateSchema = z
+  .strictObject({
+    name: z
+      .union([z.string().min(1).max(100), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'A label for people, unique on the instance.' }),
+    models: z
+      .union([z.array(z.string().min(1).max(200)).max(100), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The models the key may use. Leave it out to allow every model.' }),
+    max_budget: z
+      .union([z.number().min(0), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The most the key may spend, in USD.' }),
+    budget_resets_every: z
+      .union([
+        z
+          .string()
+          .regex(/^[1-9][0-9]{0,6}[smhd]$/)
+          .openapi({ examples: ['30d'] }),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'How often the spend resets: a number and a unit, `s`, `m`, `h`, or `d`.',
+      }),
+    expires_in: z
+      .union([
+        z
+          .string()
+          .regex(/^[1-9][0-9]{0,6}[smhd]$/)
+          .openapi({ examples: ['30d'] }),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'How long until the key stops working: a number and a unit, `s`, `m`, `h`, or `d`.',
+      }),
+    team_id: z
+      .union([z.uuid(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "A team on the instance. The key shares the team's model list, budget, and rate limits.",
+      }),
+    requests_per_minute: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The most requests the key may make per minute.' }),
+    tokens_per_minute: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The most tokens the key may use per minute.' }),
+    max_parallel_requests: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The most requests the key may have in flight at once.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AgentGatewayKeyCreate')
+
+const AgentGatewayKeyListResponseSchema = z
+  .object({ data: z.array(AgentGatewayKeySchema) })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayKeyListResponse')
+
+const AgentGatewayKeyResponseSchema = z
+  .object({ data: AgentGatewayKeySchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayKeyResponse')
+
+const AgentGatewayKeyUpdateSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .min(1)
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'A label for people.' }),
+    models: z
+      .array(z.string().min(1).max(200))
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'The models the key may use. `[]` allows every model.' }),
+    max_budget: z
+      .union([z.number().min(0), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The most the key may spend, in USD.' }),
+    budget_resets_every: z
+      .union([
+        z
+          .string()
+          .regex(/^[1-9][0-9]{0,6}[smhd]$/)
+          .openapi({ examples: ['30d'] }),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({ description: 'How often the spend resets.' }),
+    expires_in: z
+      .union([
+        z
+          .string()
+          .regex(/^[1-9][0-9]{0,6}[smhd]$/)
+          .openapi({ examples: ['30d'] }),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({ description: 'How long from now until the key stops working.' }),
+    team_id: z
+      .union([z.uuid(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'Move the key to this team, or `null` to leave its team.' }),
+    blocked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: '`true` makes the instance refuse the key; `false` lets it through again.',
+      }),
+    requests_per_minute: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The most requests the key may make per minute.' }),
+    tokens_per_minute: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The most tokens the key may use per minute.' }),
+    max_parallel_requests: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The most requests the key may have in flight at once.' }),
+  })
+  .openapi({ description: 'A field left out stays as it is; `null` clears it.', required: [] })
+  .openapi('AgentGatewayKeyUpdate')
+
+const PageMetaSchema = z
+  .object({
+    total_results: z.int().openapi({ description: 'Results across every page.' }),
+    page_number: z.int().openapi({ description: 'The page returned, counting from 1.' }),
+    page_size: z.int().openapi({ description: 'Results per page.' }),
+    total_pages: z
+      .int()
+      .openapi({ description: 'Pages that can be requested; 0 when nothing matched.' }),
+  })
+  .openapi({ required: ['total_results', 'page_number', 'page_size', 'total_pages'] })
+  .openapi('PageMeta')
+
+const AgentGatewayListResponseSchema = z
+  .object({ data: z.array(AgentGatewaySchema), meta: PageMetaSchema })
+  .openapi({ required: ['data', 'meta'] })
+  .openapi('AgentGatewayListResponse')
+
+const AgentGatewayMcpServerSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifies the server.' }),
+    name: z
+      .string()
+      .openapi({
+        description:
+          "A name for the server, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the server's tools with it and a hyphen.",
+      }),
+    url: z.string().openapi({ description: "The server's MCP endpoint." }),
+    transport: z
+      .enum(['http', 'sse'])
+      .openapi({ description: '`http` for Streamable HTTP, or `sse` for Server-Sent Events.' }),
+    auth: AgentGatewayShownAuthSchema,
+    tools: z
+      .array(z.string())
+      .openapi({
+        description: 'The tools the server exposes to every key, by name. `[]` exposes every tool.',
+      }),
+    static_headers: z
+      .record(z.string(), z.string())
+      .openapi({ description: 'Headers sent on every request.' }),
+    forwarded_headers: z
+      .array(z.string())
+      .max(32)
+      .openapi({ description: "Headers copied from the agent's request, by name." }),
+    open_to_every_key: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description: '`true` lets every key on the instance use the server, granted or not.',
+      }),
+    created_at: z.iso.datetime({ offset: true }).nullable(),
+    updated_at: z.iso.datetime({ offset: true }).nullable(),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'url',
+      'transport',
+      'auth',
+      'tools',
+      'static_headers',
+      'forwarded_headers',
+      'open_to_every_key',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('AgentGatewayMcpServer')
+
+const AgentGatewayMcpServerCreateSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .regex(/^[A-Za-z0-9_.]{1,100}$/)
+      .openapi({
+        description:
+          "A name for the server, unique on the instance across MCP servers and APIs, regardless of case. Up to 100 letters, digits, `_`, and `.`. The gateway prefixes the server's tools with it and a hyphen.",
+      }),
+    url: z.string().openapi({ description: "The server's MCP endpoint, `http` or `https`." }),
+    transport: z
+      .enum(['http', 'sse'])
+      .default('http')
+      .exactOptional()
+      .openapi({ description: '`http` for Streamable HTTP, or `sse` for Server-Sent Events.' }),
+    auth: z
+      .xor([
+        AgentGatewayNoAuthSchema,
+        AgentGatewayStaticAuthSchema,
+        AgentGatewayOAuthClientCredentialsSchema,
+        AgentGatewayPassthroughAuthSchema,
+        AgentGatewayAwsSigV4AuthSchema,
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'How the gateway authenticates to the server. Replaced whole on an update; `{"type": "none"}` removes the credential.',
+      }),
+    tools: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The tools the server exposes to every key, by name. `[]` exposes every tool.',
+      }),
+    static_headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Headers sent on every request.' }),
+    forwarded_headers: z
+      .array(z.string())
+      .max(32)
+      .exactOptional()
+      .openapi({ description: "Headers copied from the agent's request, by name." }),
+    open_to_every_key: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: '`true` lets every key on the instance use the server, granted or not.',
+      }),
+  })
+  .openapi({ required: ['name', 'url'] })
+  .openapi('AgentGatewayMcpServerCreate')
+
+const AgentGatewayMcpServerListResponseSchema = z
+  .object({ data: z.array(AgentGatewayMcpServerSchema) })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayMcpServerListResponse')
+
+const AgentGatewayMcpServerResponseSchema = z
+  .object({ data: AgentGatewayMcpServerSchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayMcpServerResponse')
+
+const AgentGatewayMcpServerUpdateSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .regex(/^[A-Za-z0-9_.]{1,100}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          "A name for the server, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the server's tools with it and a hyphen.",
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The server's MCP endpoint, `http` or `https`." }),
+    transport: z
+      .enum(['http', 'sse'])
+      .default('http')
+      .exactOptional()
+      .openapi({ description: '`http` for Streamable HTTP, or `sse` for Server-Sent Events.' }),
+    auth: z
+      .xor([
+        AgentGatewayNoAuthSchema,
+        AgentGatewayStaticAuthSchema,
+        AgentGatewayOAuthClientCredentialsSchema,
+        AgentGatewayPassthroughAuthSchema,
+        AgentGatewayAwsSigV4AuthSchema,
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'How the gateway authenticates to the server. Replaced whole on an update; `{"type": "none"}` removes the credential.',
+      }),
+    tools: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The tools the server exposes to every key, by name. `[]` exposes every tool.',
+      }),
+    static_headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Headers sent on every request.' }),
+    forwarded_headers: z
+      .array(z.string())
+      .max(32)
+      .exactOptional()
+      .openapi({ description: "Headers copied from the agent's request, by name." }),
+    open_to_every_key: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: '`true` lets every key on the instance use the server, granted or not.',
+      }),
+  })
+  .openapi({ description: 'The fields to change. A field left out stays as it is.', required: [] })
+  .openapi('AgentGatewayMcpServerUpdate')
+
+const AgentGatewayModelPricingSchema = z
+  .object({
+    input: z.number().openapi({ description: 'USD per million input tokens.' }),
+    output: z.number().openapi({ description: 'USD per million output tokens.' }),
+    cached_input: z
+      .union([z.number(), z.null().nullable()])
+      .openapi({ description: 'USD per million cached input tokens.' }),
+    currency: z.string().openapi({ description: 'Always `USD`.' }),
+    unit: z.string().openapi({ description: 'Always `1M_tokens`.' }),
+  })
+  .openapi({
+    description: "A model's price in USD per million tokens.",
+    required: ['input', 'output', 'cached_input', 'currency', 'unit'],
+  })
+  .openapi('AgentGatewayModelPricing')
+
+const AgentGatewayModelSchema = z
+  .object({
+    id: z.uuid().openapi({ description: "The model's ID on the instance." }),
+    name: z.string().openapi({ description: 'The name a request uses, such as `GLM-5.3-Flash`.' }),
+    model: z
+      .string()
+      .openapi({
+        description: 'The Telnyx Inference model behind it, such as `zai-org/GLM-5.3-Flash`.',
+      }),
+    pricing: AgentGatewayModelPricingSchema,
+    priced_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the price was last set.' }),
+  })
+  .openapi({
+    description: 'A model an instance serves.',
+    required: ['id', 'name', 'model', 'pricing', 'priced_at'],
+  })
+  .openapi('AgentGatewayModel')
+
+const AgentGatewayModelListResponseSchema = z
+  .object({ data: z.array(AgentGatewayModelSchema) })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayModelListResponse')
+
+const AgentGatewayPolicyGuardrailsSchema = z
+  .object({
+    add: z
+      .array(z.string())
+      .default([])
+      .exactOptional()
+      .openapi({ description: "Guardrails the policy runs in addition to its base's." }),
+    remove: z
+      .array(z.string())
+      .default([])
+      .exactOptional()
+      .openapi({ description: 'Guardrails from its base that the policy does not run.' }),
+  })
+  .openapi({
+    description:
+      "The guardrails a policy adds to its base's, and the ones it removes from them, by name.",
+    required: [],
+  })
+  .openapi('AgentGatewayPolicyGuardrails')
+
+const AgentGatewayPolicyStepSchema = z
+  .object({
+    guardrail: z
+      .string()
+      .regex(/^[A-Za-z0-9_.-]{1,100}$/)
+      .openapi({ description: 'A guardrail on the instance, by name.' }),
+    on_pass: z
+      .enum(['next', 'allow', 'block', 'respond'])
+      .default('allow')
+      .exactOptional()
+      .openapi({
+        description:
+          'What happens when the guardrail passes. `next` goes on to the next step, `allow` allows the request, `block` blocks it, and `respond` answers with `message`.',
+      }),
+    on_fail: z
+      .enum(['next', 'allow', 'block', 'respond'])
+      .default('block')
+      .exactOptional()
+      .openapi({ description: 'What happens when the guardrail fails.' }),
+    on_error: z
+      .union([z.enum(['next', 'allow', 'block', 'respond']), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description: 'What happens when the guardrail errors. Left out, the same as `on_fail`.',
+      }),
+    message: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "The response that replaces the model's when an outcome is `respond`. Required with `respond`.",
+      }),
+    pass_data: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          "`true` hands the step's modified request, such as masked text, to the next step.",
+      }),
+  })
+  .openapi({
+    description:
+      'One pipeline step: a guardrail, and what happens when it passes, fails, or errors.',
+    required: ['guardrail'],
+  })
+  .openapi('AgentGatewayPolicyStep')
+
+const AgentGatewayPolicyPipelineSchema = z
+  .object({
+    hook: z
+      .enum(['before_request', 'after_request'])
+      .openapi({
+        description:
+          "`before_request` runs the steps on the request, and `after_request` on the model's response.",
+      }),
+    steps: z.array(AgentGatewayPolicyStepSchema),
+  })
+  .openapi({
+    description:
+      "Ordered steps that run in place of the policy's guardrails running independently.",
+    required: ['hook', 'steps'],
+  })
+  .openapi('AgentGatewayPolicyPipeline')
+
+const AgentGatewayPolicySchema = z
+  .object({
+    name: z
+      .string()
+      .regex(/^[A-Za-z0-9_.-]{1,100}$/)
+      .openapi({
+        description:
+          'A name, unique on the instance. A request names the policy in its `policies` field.',
+      }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'What the policy is for.' }),
+    base: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({
+        description:
+          "A policy this one builds on, by name. The policy starts with the base's guardrails.",
+      }),
+    guardrails: AgentGatewayPolicyGuardrailsSchema,
+    model: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({
+        description:
+          "A condition on the model, by name or regular expression. The policy's guardrails run only on requests for a matching model. `null` matches every model.",
+      }),
+    pipeline: z
+      .union([AgentGatewayPolicyPipelineSchema, z.null().nullable()])
+      .openapi({ description: 'Ordered steps, in place of the guardrails running independently.' }),
+    created_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({
+        description:
+          "When the policy's current version was created. An update creates a new version.",
+      }),
+    updated_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the policy last changed.' }),
+  })
+  .openapi({
+    description: 'A named set of guardrails.',
+    required: [
+      'name',
+      'description',
+      'base',
+      'guardrails',
+      'model',
+      'pipeline',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('AgentGatewayPolicy')
+
+const AgentGatewayPolicyAttachmentSchema = z
+  .object({
+    id: z.uuid().openapi({ description: "The attachment's ID." }),
+    policy: z.string().openapi({ description: 'The policy to apply, by name.' }),
+    models: z
+      .array(z.string())
+      .default([])
+      .openapi({
+        description:
+          'The models whose requests the policy applies to, by name. A name can use `*` as a wildcard. Empty applies the policy to every request.',
+      }),
+    priority: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: 'An attachment with a priority applies before the others.' }),
+    default: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description: '`true` applies the policy only to the requests no other attachment matches.',
+      }),
+    created_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the attachment was created.' }),
+    updated_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the attachment last changed.' }),
+  })
+  .openapi({
+    description: 'Where an instance applies a policy.',
+    required: ['id', 'policy', 'models', 'priority', 'default', 'created_at', 'updated_at'],
+  })
+  .openapi('AgentGatewayPolicyAttachment')
+
+const AgentGatewayPolicyAttachmentCreateSchema = z
+  .object({
+    policy: z.string().openapi({ description: 'The policy to apply, by name.' }),
+    models: z
+      .array(z.string())
+      .default([])
+      .exactOptional()
+      .openapi({
+        description:
+          'The models whose requests the policy applies to, by name. A name can use `*` as a wildcard. Empty applies the policy to every request.',
+      }),
+    priority: z
+      .union([z.int(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'An attachment with a priority applies before the others.' }),
+    default: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: '`true` applies the policy only to the requests no other attachment matches.',
+      }),
+  })
+  .openapi({ required: ['policy'] })
+  .openapi('AgentGatewayPolicyAttachmentCreate')
+
+const AgentGatewayPolicyAttachmentListResponseSchema = z
+  .object({ data: z.array(AgentGatewayPolicyAttachmentSchema) })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayPolicyAttachmentListResponse')
+
+const AgentGatewayPolicyAttachmentResponseSchema = z
+  .object({ data: AgentGatewayPolicyAttachmentSchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayPolicyAttachmentResponse')
+
+const AgentGatewayPolicyCreateSchema = z
+  .object({
+    name: z
+      .string()
+      .regex(/^[A-Za-z0-9_.-]{1,100}$/)
+      .openapi({
+        description:
+          'A name, unique on the instance. A request names the policy in its `policies` field.',
+      }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'What the policy is for.' }),
+    base: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "A policy this one builds on, by name. The policy starts with the base's guardrails.",
+      }),
+    guardrails: AgentGatewayPolicyGuardrailsSchema.exactOptional(),
+    model: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "A condition on the model, by name or regular expression. The policy's guardrails run only on requests for a matching model. `null` matches every model.",
+      }),
+    pipeline: z
+      .union([AgentGatewayPolicyPipelineSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'Ordered steps, in place of the guardrails running independently.' }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('AgentGatewayPolicyCreate')
+
+const AgentGatewayPolicyListResponseSchema = z
+  .object({ data: z.array(AgentGatewayPolicySchema) })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayPolicyListResponse')
+
+const AgentGatewayPolicyResponseSchema = z
+  .object({ data: AgentGatewayPolicySchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayPolicyResponse')
+
+const AgentGatewayPolicyUpdateSchema = z
+  .object({
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'What the policy is for.' }),
+    base: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "A policy this one builds on, by name. The policy starts with the base's guardrails.",
+      }),
+    guardrails: AgentGatewayPolicyGuardrailsSchema.exactOptional(),
+    model: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "A condition on the model, by name or regular expression. The policy's guardrails run only on requests for a matching model. `null` matches every model.",
+      }),
+    pipeline: z
+      .union([AgentGatewayPolicyPipelineSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'Ordered steps, in place of the guardrails running independently.' }),
+  })
+  .openapi({
+    description:
+      'A field left out stays as it is. `guardrails` and `pipeline` are replaced whole, and `model: null` removes the condition. The name cannot change.',
+    required: [],
+  })
+  .openapi('AgentGatewayPolicyUpdate')
+
+const AgentGatewayResponseSchema = z
+  .object({ data: AgentGatewaySchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayResponse')
+
+const AgentGatewayServerGrantSchema = z
+  .object({
+    id: z.uuid().openapi({ description: "An MCP server's or API's `id` on the instance." }),
+    tools: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The tools the grant covers, by name without the server prefix. `[]` covers every tool the server exposes.',
+      }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('AgentGatewayServerGrant')
+
+const AgentGatewaySpendLogSchema = z
+  .object({
+    id: z.string().openapi({ description: "The request's ID." }),
+    key_id: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'The key the request used.' }),
+    team_id: z.union([z.string(), z.null().nullable()]).openapi({ description: "The key's team." }),
+    model: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({
+        description:
+          "The Telnyx Inference model that answered, such as `zai-org/GLM-5.3-Flash`. For an MCP tool request, `MCP: ` and the tool's name.",
+      }),
+    operation: z
+      .string()
+      .openapi({
+        description:
+          'The request type. `acompletion` is a chat completion, `aresponses` a response, `anthropic_messages` a message, `call_mcp_tool` an MCP tool request, and `list_mcp_tools` an MCP tool list.',
+      }),
+    status: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: '`success` or `failure`.' }),
+    spend: z
+      .number()
+      .openapi({
+        description: 'What the request cost, in USD, with its tokens at Telnyx Inference prices.',
+      }),
+    prompt_tokens: z.int().openapi({ description: 'Input tokens.' }),
+    completion_tokens: z.int().openapi({ description: 'Output tokens, reasoning included.' }),
+    total_tokens: z.int().openapi({ description: 'Input and output tokens.' }),
+    started_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the request started.' }),
+    ended_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the request ended.' }),
+    duration_ms: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: 'How long the request took, in milliseconds.' }),
+  })
+  .openapi({
+    description: 'One request the instance served.',
+    required: [
+      'id',
+      'key_id',
+      'team_id',
+      'model',
+      'operation',
+      'status',
+      'spend',
+      'prompt_tokens',
+      'completion_tokens',
+      'total_tokens',
+      'started_at',
+      'ended_at',
+      'duration_ms',
+    ],
+  })
+  .openapi('AgentGatewaySpendLog')
+
+const AgentGatewaySpendLogPageMetaSchema = z
+  .object({
+    total_results: z.int().openapi({ description: 'Results across every page.' }),
+    page_number: z.int().openapi({ description: 'The page returned, counting from 1.' }),
+    page_size: z.int().openapi({ description: 'Results per page.' }),
+    total_pages: z
+      .int()
+      .openapi({ description: 'Pages that can be requested; 0 when nothing matched.' }),
+    total_results_capped: z
+      .boolean()
+      .openapi({
+        description:
+          '`true` when the window holds more than 10,000 rows. The two totals are then lower bounds: narrow the window, or page until a page comes back empty.',
+      }),
+  })
+  .openapi({
+    required: ['total_results', 'page_number', 'page_size', 'total_pages', 'total_results_capped'],
+  })
+  .openapi('AgentGatewaySpendLogPageMeta')
+
+const AgentGatewaySpendLogListResponseSchema = z
+  .object({ data: z.array(AgentGatewaySpendLogSchema), meta: AgentGatewaySpendLogPageMetaSchema })
+  .openapi({ required: ['data', 'meta'] })
+  .openapi('AgentGatewaySpendLogListResponse')
+
+const AgentGatewayTeamSchema = z
+  .object({
+    id: z.string().openapi({ description: 'Identifies the team.' }),
+    name: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: 'A label for people. Names need not be unique.' }),
+    models: z
+      .array(z.string())
+      .openapi({
+        description:
+          "The models the team's keys may use. Empty means every model the instance serves.",
+      }),
+    max_budget: z
+      .union([z.number(), z.null().nullable()])
+      .openapi({
+        description:
+          "The most the team's keys may spend together, in USD, until the budget resets.",
+      }),
+    budget_resets_every: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ description: "How often the team's spend resets, such as `30d`." }),
+    budget_resets_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: "When the team's spend next resets." }),
+    spend: z
+      .number()
+      .openapi({
+        description: "What the team's keys have spent since the budget last reset, in USD.",
+      }),
+    created_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ description: 'When the team was created.' }),
+    blocked: z
+      .boolean()
+      .openapi({ description: 'Whether the instance refuses every key in the team.' }),
+    requests_per_minute: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: "The most requests the team's keys may make per minute, together." }),
+    tokens_per_minute: z
+      .union([z.int(), z.null().nullable()])
+      .openapi({ description: "The most tokens the team's keys may use per minute, together." }),
+  })
+  .openapi({
+    description:
+      'A team on an instance: a model list, a budget, and rate limits that its keys share.',
+    required: [
+      'id',
+      'name',
+      'models',
+      'max_budget',
+      'budget_resets_every',
+      'budget_resets_at',
+      'spend',
+      'created_at',
+      'blocked',
+      'requests_per_minute',
+      'tokens_per_minute',
+    ],
+  })
+  .openapi('AgentGatewayTeam')
+
+const AgentGatewayTeamCreateSchema = z
+  .strictObject({
+    name: z.string().min(1).max(100).openapi({ description: 'A label for people.' }),
+    models: z
+      .union([z.array(z.string().min(1).max(200)).max(100), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description: "The models the team's keys may use. Leave it out to allow every model.",
+      }),
+    max_budget: z
+      .union([z.number().min(0), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: "The most the team's keys may spend together, in USD." }),
+    budget_resets_every: z
+      .union([
+        z
+          .string()
+          .regex(/^[1-9][0-9]{0,6}[smhd]$/)
+          .openapi({ examples: ['30d'] }),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'How often the spend resets: a number and a unit, `s`, `m`, `h`, or `d`.',
+      }),
+    requests_per_minute: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: "The most requests the team's keys may make per minute, together." }),
+    tokens_per_minute: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: "The most tokens the team's keys may use per minute, together." }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('AgentGatewayTeamCreate')
+
+const AgentGatewayTeamListResponseSchema = z
+  .object({ data: z.array(AgentGatewayTeamSchema) })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayTeamListResponse')
+
+const AgentGatewayTeamResponseSchema = z
+  .object({ data: AgentGatewayTeamSchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayTeamResponse')
+
+const AgentGatewayTeamUpdateSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .min(1)
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'A label for people.' }),
+    models: z
+      .array(z.string().min(1).max(200))
+      .max(100)
+      .exactOptional()
+      .openapi({ description: "The models the team's keys may use. `[]` allows every model." }),
+    max_budget: z
+      .union([z.number().min(0), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: "The most the team's keys may spend together, in USD." }),
+    budget_resets_every: z
+      .union([
+        z
+          .string()
+          .regex(/^[1-9][0-9]{0,6}[smhd]$/)
+          .openapi({ examples: ['30d'] }),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({ description: 'How often the spend resets.' }),
+    blocked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          '`true` makes the instance refuse every key in the team; `false` lets them through again.',
+      }),
+    requests_per_minute: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: "The most requests the team's keys may make per minute, together." }),
+    tokens_per_minute: z
+      .union([z.int().min(1).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: "The most tokens the team's keys may use per minute, together." }),
+  })
+  .openapi({ description: 'A field left out stays as it is; `null` clears it.', required: [] })
+  .openapi('AgentGatewayTeamUpdate')
+
+const AgentGatewayToolPermissionsSchema = z
+  .object({
+    servers: z
+      .array(AgentGatewayServerGrantSchema)
+      .openapi({ description: 'The servers granted, each with its tools. `[]` grants none.' }),
+  })
+  .openapi({ required: ['servers'] })
+  .openapi('AgentGatewayToolPermissions')
+
+const AgentGatewayToolPermissionsResponseSchema = z
+  .object({ data: AgentGatewayToolPermissionsSchema })
+  .openapi({ required: ['data'] })
+  .openapi('AgentGatewayToolPermissionsResponse')
 
 const AgentInputSchema = z
   .object({
@@ -9318,18 +11147,41 @@ const AgentInputSchema = z
   })
   .openapi('AgentInput')
 
-const AgentLaunchCampaignConfigurationSchema = AgentCampaignConfigurationSchema.and(
-  z
-    .object({
-      agent_overview: z.string().min(1).max(2000),
-      interactions: z.array(AgentInteractionSchema).min(1),
-      message_examples: z.array(z.string().min(1).max(2000)).min(3),
-      consent_settings: AgentConsentConfigurationSchema,
-    })
-    .openapi({
-      required: ['agent_overview', 'interactions', 'message_examples', 'consent_settings'],
-    }),
-).openapi('AgentLaunchCampaignConfiguration')
+const AgentLaunchCampaignConfigurationSchema = (() => {
+  const Schema = AgentCampaignConfigurationSchema.and(
+    z
+      .object({
+        agent_overview: z.string().min(1).max(2000),
+        interactions: z.array(AgentInteractionSchema).min(1),
+        message_examples: z.array(z.string().min(1).max(2000)).min(3),
+        consent_settings: AgentConsentConfigurationSchema,
+      })
+      .openapi({
+        required: ['agent_overview', 'interactions', 'message_examples', 'consent_settings'],
+      }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'company_overview',
+            'agent_overview',
+            'interactions',
+            'message_examples',
+            'consent_settings',
+            'additional_information',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('AgentLaunchCampaignConfiguration')
 
 const AgentLaunchRequestSchema = z
   .strictObject({
@@ -10146,13 +11998,6 @@ const SonioxVoiceSettingsSchema = z
   .openapi({ title: 'Soniox Voice Settings', required: ['type'] })
   .openapi('SonioxVoiceSettings')
 
-const AssemblyAIVoiceSettingsSchema = z
-  .object({
-    type: z.literal('assemblyai').openapi({ description: 'Voice settings provider type' }),
-  })
-  .openapi({ title: 'AssemblyAI Voice Settings', required: ['type'] })
-  .openapi('AssemblyAIVoiceSettings')
-
 const ConversationRelayStructuredProviderSchema = z
   .looseObject({})
   .openapi({
@@ -10237,7 +12082,6 @@ const ConversationRelayLanguageSchema = z
         InworldVoiceSettingsSchema,
         XAIVoiceSettingsSchema,
         SonioxVoiceSettingsSchema,
-        AssemblyAIVoiceSettingsSchema,
       ])
       .exactOptional()
       .openapi({
@@ -10254,7 +12098,6 @@ const ConversationRelayLanguageSchema = z
             inworld: '#/components/schemas/InworldVoiceSettings',
             xai: '#/components/schemas/XAIVoiceSettings',
             soniox: '#/components/schemas/SonioxVoiceSettings',
-            assemblyai: '#/components/schemas/AssemblyAIVoiceSettings',
           },
         },
       }),
@@ -10367,7 +12210,6 @@ const ConversationRelayEmbeddedConfigSchema = z
         InworldVoiceSettingsSchema,
         XAIVoiceSettingsSchema,
         SonioxVoiceSettingsSchema,
-        AssemblyAIVoiceSettingsSchema,
       ])
       .exactOptional()
       .openapi({
@@ -10384,7 +12226,6 @@ const ConversationRelayEmbeddedConfigSchema = z
             inworld: '#/components/schemas/InworldVoiceSettings',
             xai: '#/components/schemas/XAIVoiceSettings',
             soniox: '#/components/schemas/SonioxVoiceSettings',
-            assemblyai: '#/components/schemas/AssemblyAIVoiceSettings',
           },
         },
       }),
@@ -11750,7 +13591,7 @@ const TranscriptionEngineSonioxConfigSchema = z
       .literal('Soniox')
       .openapi({ description: 'Engine identifier for Soniox transcription service' }),
     transcription_model: z
-      .literal('soniox/stt-rt-v4')
+      .enum(['soniox/stt-rt-v4', 'soniox/stt-rt-v6'])
       .default('soniox/stt-rt-v4')
       .exactOptional()
       .openapi({ description: 'The model to use for transcription.' }),
@@ -12554,54 +14395,6 @@ const ArtifactContentSchema = z
   .strictObject({ text: z.string() })
   .openapi({ required: ['text'] })
   .openapi('ArtifactContent')
-
-const AssemblyAIProviderParamsSchema = z
-  .object({
-    voice_id: z
-      .string()
-      .openapi({
-        description:
-          'AssemblyAI voice from the [voices listing](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices), for example `aai-jane`.',
-      }),
-    model_id: z
-      .literal('assemblyai-tts-1')
-      .default('assemblyai-tts-1')
-      .exactOptional()
-      .openapi({ description: 'AssemblyAI model.' }),
-    language: z
-      .enum(['en', 'es', 'de', 'fr', 'it', 'pt'])
-      .default('en')
-      .exactOptional()
-      .openapi({
-        description:
-          'Two-letter ISO 639-1 code of the text. AssemblyAI does not detect the language.',
-      }),
-    audio_format: z
-      .enum(['mp3', 'wav', 'pcm_s16le', 'pcm_mulaw', 'pcm_alaw'])
-      .default('mp3')
-      .exactOptional()
-      .openapi({ description: 'Audio output format.' }),
-    sample_rate: z
-      .union([
-        z.literal(8000),
-        z.literal(16000),
-        z.literal(22050),
-        z.literal(24000),
-        z.literal(44100),
-        z.literal(48000),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Audio sample rate in Hz. Defaults to 24000, or 8000 for `pcm_mulaw` and `pcm_alaw`.',
-      }),
-  })
-  .openapi({
-    description:
-      'AssemblyAI provider-specific parameters. Every voice speaks all six supported languages; set `language` to the language of the text.',
-    required: ['voice_id'],
-  })
-  .openapi('AssemblyAIProviderParams')
 
 const AssignProfileToCampaignRequestSchema = z
   .object({
@@ -15182,65 +16975,92 @@ const BrandIdentifiersSchema = z
   })
   .openapi('BrandIdentifiers')
 
-const BrandCreateRequestSchema = z
-  .unknown()
-  .superRefine((val, ctx) => {
-    {
-      const ifOk = z
-        .object({ organization_type: z.literal('PUBLIC_PROFIT') })
-        .openapi({ required: ['organization_type'] })
-        .safeParse(val).success
-      if (ifOk) {
-        const Schema = z
-          .object({
-            identifiers: z
-              .object({ stock_symbol: BrandIdentifierSchema })
-              .exactOptional()
-              .openapi({ required: ['stock_symbol'] }),
-          })
-          .openapi({ required: [] })
-        if (!Schema.safeParse(val).success) {
-          ctx.addIssue({ code: 'custom' })
+const BrandCreateRequestSchema = (() => {
+  const Schema = z
+    .unknown()
+    .superRefine((val, ctx) => {
+      {
+        const ifOk = z
+          .object({ organization_type: z.literal('PUBLIC_PROFIT') })
+          .openapi({ required: ['organization_type'] })
+          .safeParse(val).success
+        if (ifOk) {
+          const Schema = z
+            .object({
+              identifiers: z
+                .object({ stock_symbol: BrandIdentifierSchema })
+                .exactOptional()
+                .openapi({ required: ['stock_symbol'] }),
+            })
+            .openapi({ required: [] })
+          if (!Schema.safeParse(val).success) {
+            ctx.addIssue({ code: 'custom' })
+          }
         }
       }
-    }
-  })
-  .and(
-    z
-      .object({
-        display_name: z.string().min(1).max(100),
-        legal_name: z.string().min(1).max(100),
-        legal_entity_type: BrandLegalEntityTypeSchema,
-        organization_type: BrandOrganizationTypeSchema,
-        website_url: HttpUrlSchema,
-        profile_id: z
-          .string()
-          .max(36)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'A Messaging Profile owned by the authenticated organization. Agents inherit this value when they do not provide their own profile.',
-          }),
-        identifiers: BrandIdentifiersSchema,
-        addresses: z
-          .record(z.string(), BrandAddressSchema)
-          .refine((val) => Object.keys(val).length >= 1),
-        contacts: BrandContactsSchema,
-      })
-      .openapi({
-        required: [
-          'display_name',
-          'legal_name',
-          'legal_entity_type',
-          'organization_type',
-          'website_url',
-          'identifiers',
-          'addresses',
-          'contacts',
-        ],
-      }),
-  )
+    })
+    .and(
+      z
+        .object({
+          display_name: z.string().min(1).max(100),
+          legal_name: z.string().min(1).max(100),
+          legal_entity_type: BrandLegalEntityTypeSchema,
+          organization_type: BrandOrganizationTypeSchema,
+          website_url: HttpUrlSchema,
+          profile_id: z
+            .string()
+            .max(36)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'A Messaging Profile owned by the authenticated organization. Agents inherit this value when they do not provide their own profile.',
+            }),
+          identifiers: BrandIdentifiersSchema,
+          addresses: z
+            .record(z.string(), BrandAddressSchema)
+            .refine((val) => Object.keys(val).length >= 1),
+          contacts: BrandContactsSchema,
+        })
+        .openapi({
+          required: [
+            'display_name',
+            'legal_name',
+            'legal_entity_type',
+            'organization_type',
+            'website_url',
+            'identifiers',
+            'addresses',
+            'contacts',
+          ],
+        }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'display_name',
+            'legal_name',
+            'legal_entity_type',
+            'organization_type',
+            'website_url',
+            'profile_id',
+            'identifiers',
+            'addresses',
+            'contacts',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     required: [
       'display_name',
@@ -16270,6 +18090,460 @@ const BulkSIMCardActionDetailedSchema = z
   })
   .openapi({ required: [] })
   .openapi('BulkSIMCardActionDetailed')
+
+const CalendarAssistantDefaultsSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .min(1)
+      .max(255)
+      .openapi({ description: 'Identifier of the assistant to attach.' }),
+    audio_gate: z
+      .enum(['half_duplex', 'full_duplex'])
+      .default('full_duplex')
+      .exactOptional()
+      .openapi({
+        description:
+          'Use full_duplex (default) to allow participants to interrupt, or half_duplex to pause listening while the assistant speaks. Full-duplex pricing depends on participant audio usage; see the Meeting pricing guide.',
+      }),
+    dynamic_variables: z
+      .record(z.string(), z.string())
+      .refine((val) => Object.keys(val).length <= 63)
+      .exactOptional()
+      .openapi({
+        description:
+          "Per-conversation values for the [dynamic variables](/docs/inference/ai-assistants/dynamic-variables) used in the Assistant's instructions, greeting, or tools. Delivered before the Assistant's first utterance, so they resolve for the opening line as well as the rest of the conversation. At most 63 entries; keys 1-128 characters; values must be strings. The map is budgeted in aggregate at 1,047,552 bytes (1023 KiB) rather than capped per value. `streaming_audio`, `ai_assistant_streaming_audio` and `meeting_session_id` are reserved and rejected with `400 invalid_request`.",
+      }),
+    leave_on_end: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Leave when the assistant conversation ends or fails. Defaults to false. Other leave-policy rules and explicit leave requests still apply.',
+      }),
+  })
+  .openapi({
+    title: 'CalendarAssistantDefaults',
+    description:
+      'Default assistant for future calendar-scheduled Google Meet and Teams sessions. The saved configuration must fit within 8 KiB. Use id, audio_gate, dynamic_variables, and leave_on_end; avatar is not accepted. audio_gate defaults to full_duplex.',
+    required: ['id'],
+  })
+  .openapi('CalendarAssistantDefaults')
+
+const CalendarAttendeeSchema = z
+  .strictObject({
+    email: z.union([z.string().openapi({ description: 'Email address.' }), z.null().nullable()]),
+    display_name: z.union([
+      z.string().openapi({ description: 'Display name.' }),
+      z.null().nullable(),
+    ]),
+    self: z.union([
+      z.boolean().openapi({ description: 'Whether this is the connected calendar user.' }),
+      z.null().nullable(),
+    ]),
+    response_status: z.union([
+      z.string().openapi({ description: 'Calendar RSVP status.' }),
+      z.null().nullable(),
+    ]),
+    optional: z.union([
+      z.boolean().openapi({ description: 'Whether attendance is optional.' }),
+      z.null().nullable(),
+    ]),
+  })
+  .openapi({ required: ['email', 'display_name', 'self', 'response_status', 'optional'] })
+  .openapi('CalendarAttendee')
+
+const MeetingSessionAssistantSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'Identifier of the assistant.' }),
+    audio_gate: z
+      .enum(['half_duplex', 'full_duplex'])
+      .openapi({ description: 'Audio gating strategy in force for the assistant call leg.' }),
+    dynamic_variables: z
+      .union([z.record(z.string(), z.string()), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Dynamic variables in individual-session responses; null when none were supplied. Omitted from session list items.',
+      }),
+    leave_on_end: z
+      .boolean()
+      .openapi({
+        description: "Whether the bot leaves when the Assistant's conversation ends or fails.",
+      }),
+  })
+  .openapi({ title: 'MeetingSessionAssistant', required: ['id', 'audio_gate', 'leave_on_end'] })
+  .openapi('MeetingSessionAssistant')
+
+const MeetingSessionRecordingDestinationSchema = z
+  .strictObject({
+    bucket: z
+      .string()
+      .regex(/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/)
+      .min(3)
+      .max(63)
+      .openapi({
+        description:
+          'Existing accessible bucket. Consecutive dots and IPv4-address names are rejected.',
+      }),
+    prefix: z
+      .string()
+      .regex(/^[A-Za-z0-9\/_.-]+$/)
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional object-key prefix. One trailing slash is normalized. Empty path segments, . and .. segments are rejected.',
+      }),
+  })
+  .openapi({
+    required: ['bucket'],
+    description:
+      'Customer-owned Telnyx Storage destination for recording exports. Uses the authenticated organization and user; do not supply credentials, region, organization ID or object key.',
+  })
+  .openapi('MeetingSessionRecordingDestination')
+
+const CalendarConnectionSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'Calendar connection ID.' }),
+    platform: z
+      .enum(['google_calendar', 'microsoft_outlook'])
+      .openapi({ description: 'Calendar provider: Google Calendar or Microsoft Outlook.' }),
+    platform_email: z.union([
+      z.string().openapi({ description: 'Connected calendar email address.' }),
+      z.null().nullable(),
+    ]),
+    status: z
+      .enum(['connected', 'disconnected', 'error'])
+      .openapi({ description: 'Connection status.' }),
+    status_detail: z.union([
+      z.string().openapi({ description: 'Additional connection status detail.' }),
+      z.null().nullable(),
+    ]),
+    auto_join_policy: z
+      .enum(['all_meetings', 'external_organizer_excluded', 'per_meeting'])
+      .openapi({
+        description:
+          'all_meetings joins eligible events; external_organizer_excluded requires the connected user to be the organizer; per_meeting requires an explicit opt-in.',
+      }),
+    bot_name: z.union([
+      z
+        .string()
+        .min(1)
+        .max(100)
+        .openapi({ description: 'Bot display name; null clears the override.' }),
+      z.null().nullable(),
+    ]),
+    default_barge_in: z.union([
+      z
+        .boolean()
+        .openapi({
+          description: 'Default manual speech interruption. Cannot be true with default_assistant.',
+        }),
+      z.null().nullable(),
+    ]),
+    default_summarize_on_end: z.union([
+      z
+        .boolean()
+        .openapi({
+          description: 'Generate a summary when each future session transcript finalizes.',
+        }),
+      z.null().nullable(),
+    ]),
+    default_voice: z.union([
+      z
+        .string()
+        .min(1)
+        .max(100)
+        .openapi({
+          description: 'Manual-speech voice; must be null when default_assistant is set.',
+        }),
+      z.null().nullable(),
+    ]),
+    default_assistant: z.union([MeetingSessionAssistantSchema, z.null().nullable()]),
+    default_recording: z.union([
+      z
+        .boolean()
+        .openapi({
+          description:
+            'Google Meet and Teams recording intent. When null, recording is enabled only if a destination is set. True requires default_recording_export; false cannot be combined with a destination.',
+        }),
+      z.null().nullable(),
+    ]),
+    default_recording_export: z.union([
+      MeetingSessionRecordingDestinationSchema,
+      z.null().nullable(),
+    ]),
+    default_webhook_url: z.union([
+      z
+        .url()
+        .max(2048)
+        .openapi({
+          description:
+            'HTTPS destination for future session webhooks. Null clears the default. A non-null update returns webhook_secret once; save it to verify signatures for sessions created with this default. Existing sessions retain their original signing secret.',
+        }),
+      z.null().nullable(),
+    ]),
+    created_at: z.iso.datetime({ offset: true }).openapi({ description: 'Creation time.' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ description: 'Last update time.' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'platform',
+      'platform_email',
+      'status',
+      'status_detail',
+      'auto_join_policy',
+      'bot_name',
+      'default_barge_in',
+      'default_summarize_on_end',
+      'default_voice',
+      'default_assistant',
+      'default_recording',
+      'default_recording_export',
+      'default_webhook_url',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('CalendarConnection')
+
+const CalendarConnectionListResponseSchema = z
+  .strictObject({ data: z.array(CalendarConnectionSchema) })
+  .openapi({ required: ['data'] })
+  .openapi('CalendarConnectionListResponse')
+
+const CalendarConnectionPendingSchema = z
+  .strictObject({
+    platform: z
+      .enum(['google_calendar', 'microsoft_outlook'])
+      .openapi({ description: 'Calendar provider: Google Calendar or Microsoft Outlook.' }),
+    status: z.literal('pending_oauth').openapi({ description: 'Authorization has not completed.' }),
+    oauth_url: z.url().openapi({ description: 'Open in a browser to authorize calendar access.' }),
+  })
+  .openapi({ required: ['platform', 'status', 'oauth_url'] })
+  .openapi('CalendarConnectionPending')
+
+const CalendarConnectionPendingResponseSchema = z
+  .strictObject({ data: CalendarConnectionPendingSchema })
+  .openapi({ required: ['data'] })
+  .openapi('CalendarConnectionPendingResponse')
+
+const CalendarConnectionResponseSchema = z
+  .strictObject({ data: CalendarConnectionSchema })
+  .openapi({ required: ['data'] })
+  .openapi('CalendarConnectionResponse')
+
+const CalendarConnectionUpdatedSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'Calendar connection ID.' }),
+    platform: z
+      .enum(['google_calendar', 'microsoft_outlook'])
+      .openapi({ description: 'Calendar provider: Google Calendar or Microsoft Outlook.' }),
+    platform_email: z.union([
+      z.string().openapi({ description: 'Connected calendar email address.' }),
+      z.null().nullable(),
+    ]),
+    status: z
+      .enum(['connected', 'disconnected', 'error'])
+      .openapi({ description: 'Connection status.' }),
+    status_detail: z.union([
+      z.string().openapi({ description: 'Additional connection status detail.' }),
+      z.null().nullable(),
+    ]),
+    auto_join_policy: z
+      .enum(['all_meetings', 'external_organizer_excluded', 'per_meeting'])
+      .openapi({
+        description:
+          'all_meetings joins eligible events; external_organizer_excluded requires the connected user to be the organizer; per_meeting requires an explicit opt-in.',
+      }),
+    bot_name: z.union([
+      z
+        .string()
+        .min(1)
+        .max(100)
+        .openapi({ description: 'Bot display name; null clears the override.' }),
+      z.null().nullable(),
+    ]),
+    default_barge_in: z.union([
+      z
+        .boolean()
+        .openapi({
+          description: 'Default manual speech interruption. Cannot be true with default_assistant.',
+        }),
+      z.null().nullable(),
+    ]),
+    default_summarize_on_end: z.union([
+      z
+        .boolean()
+        .openapi({
+          description: 'Generate a summary when each future session transcript finalizes.',
+        }),
+      z.null().nullable(),
+    ]),
+    default_voice: z.union([
+      z
+        .string()
+        .min(1)
+        .max(100)
+        .openapi({
+          description: 'Manual-speech voice; must be null when default_assistant is set.',
+        }),
+      z.null().nullable(),
+    ]),
+    default_assistant: z.union([MeetingSessionAssistantSchema, z.null().nullable()]),
+    default_recording: z.union([
+      z
+        .boolean()
+        .openapi({
+          description:
+            'Google Meet and Teams recording intent. When null, recording is enabled only if a destination is set. True requires default_recording_export; false cannot be combined with a destination.',
+        }),
+      z.null().nullable(),
+    ]),
+    default_recording_export: z.union([
+      MeetingSessionRecordingDestinationSchema,
+      z.null().nullable(),
+    ]),
+    default_webhook_url: z.union([
+      z
+        .url()
+        .max(2048)
+        .openapi({
+          description:
+            'HTTPS destination for future session webhooks. Null clears the default. A non-null update returns webhook_secret once; save it to verify signatures for sessions created with this default. Existing sessions retain their original signing secret.',
+        }),
+      z.null().nullable(),
+    ]),
+    created_at: z.iso.datetime({ offset: true }).openapi({ description: 'Creation time.' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ description: 'Last update time.' }),
+    webhook_secret: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returned only when PATCH supplies a non-null default_webhook_url. Not returned by list or retrieve. Save this secret to verify webhooks for future sessions.',
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'platform',
+      'platform_email',
+      'status',
+      'status_detail',
+      'auto_join_policy',
+      'bot_name',
+      'default_barge_in',
+      'default_summarize_on_end',
+      'default_voice',
+      'default_assistant',
+      'default_recording',
+      'default_recording_export',
+      'default_webhook_url',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('CalendarConnectionUpdated')
+
+const CalendarConnectionUpdatedResponseSchema = z
+  .strictObject({ data: CalendarConnectionUpdatedSchema })
+  .openapi({ required: ['data'] })
+  .openapi('CalendarConnectionUpdatedResponse')
+
+const CalendarPersonSchema = z
+  .strictObject({
+    email: z.union([z.string().openapi({ description: 'Email address.' }), z.null().nullable()]),
+    display_name: z.union([
+      z.string().openapi({ description: 'Display name.' }),
+      z.null().nullable(),
+    ]),
+    self: z.union([
+      z.boolean().openapi({ description: 'Whether this is the connected calendar user.' }),
+      z.null().nullable(),
+    ]),
+  })
+  .openapi({ required: ['email', 'display_name', 'self'] })
+  .openapi('CalendarPerson')
+
+const CalendarMeetingSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'Tracked calendar meeting ID.' }),
+    platform: z
+      .enum(['zoom', 'google_meet', 'teams', 'webex', 'unknown'])
+      .openapi({ description: 'Detected meeting platform.' }),
+    start_time: z.iso.datetime({ offset: true }).openapi({ description: 'Event start time.' }),
+    end_time: z.union([
+      z.iso.datetime({ offset: true }).openapi({ description: 'Event end time.' }),
+      z.null().nullable(),
+    ]),
+    organizer: z.union([CalendarPersonSchema, z.null().nullable()]),
+    attendees: z
+      .array(CalendarAttendeeSchema)
+      .openapi({
+        description: 'Calendar attendees; identity fields are cleared after the retention window.',
+      }),
+    is_external_organizer: z.union([
+      z
+        .boolean()
+        .openapi({ description: 'Whether the connected calendar user is not the organizer.' }),
+      z.null().nullable(),
+    ]),
+    bot_will_join: z
+      .boolean()
+      .openapi({ description: 'Effective policy decision, not proof that the bot has joined.' }),
+    bot_will_join_override: z.union([
+      z
+        .boolean()
+        .openapi({ description: 'Explicit override; null follows the connection policy.' }),
+      z.null().nullable(),
+    ]),
+    decision: z
+      .enum([
+        'pending',
+        'scheduled',
+        'skipped_policy',
+        'skipped_no_url',
+        'skipped_duplicate',
+        'skipped_unsupported',
+        'cancelled',
+      ])
+      .openapi({ description: 'Scheduling decision.' }),
+    session_id: z.union([
+      z.string().openapi({ description: 'Linked meeting session ID, or null until one exists.' }),
+      z.null().nullable(),
+    ]),
+  })
+  .openapi({
+    required: [
+      'id',
+      'platform',
+      'start_time',
+      'end_time',
+      'organizer',
+      'attendees',
+      'is_external_organizer',
+      'bot_will_join',
+      'bot_will_join_override',
+      'decision',
+      'session_id',
+    ],
+  })
+  .openapi('CalendarMeeting')
+
+const CalendarMeetingListResponseSchema = z
+  .strictObject({ data: z.array(CalendarMeetingSchema) })
+  .openapi({ required: ['data'] })
+  .openapi('CalendarMeetingListResponse')
+
+const CalendarMeetingResponseSchema = z
+  .strictObject({ data: CalendarMeetingSchema })
+  .openapi({ required: ['data'] })
+  .openapi('CalendarMeetingResponse')
 
 const CallSchema = z
   .object({
@@ -28590,7 +30864,6 @@ const ConferenceSpeakRequestSchema = z
         InworldVoiceSettingsSchema,
         XAIVoiceSettingsSchema,
         SonioxVoiceSettingsSchema,
-        AssemblyAIVoiceSettingsSchema,
       ])
       .exactOptional()
       .openapi({
@@ -28607,7 +30880,6 @@ const ConferenceSpeakRequestSchema = z
             inworld: '#/components/schemas/InworldVoiceSettings',
             xai: '#/components/schemas/XAIVoiceSettings',
             soniox: '#/components/schemas/SonioxVoiceSettings',
-            assemblyai: '#/components/schemas/AssemblyAIVoiceSettings',
           },
         },
       }),
@@ -29710,6 +31982,17 @@ const ConversationRelayStartRequestSchema = z
               ])
               .safeParse(val).success,
         )
+        .openapi({
+          not: {
+            anyOf: [
+              { properties: { url: { type: 'string' } }, required: ['url'] },
+              {
+                properties: { conversation_relay_url: { type: 'string' } },
+                required: ['conversation_relay_url'],
+              },
+            ],
+          },
+        })
         .safeParse(val).success
       if (ifOk) {
         const Schema = z
@@ -29769,7 +32052,6 @@ const ConversationRelayStartRequestSchema = z
             InworldVoiceSettingsSchema,
             XAIVoiceSettingsSchema,
             SonioxVoiceSettingsSchema,
-            AssemblyAIVoiceSettingsSchema,
           ])
           .exactOptional()
           .openapi({
@@ -29786,7 +32068,6 @@ const ConversationRelayStartRequestSchema = z
                 inworld: '#/components/schemas/InworldVoiceSettings',
                 xai: '#/components/schemas/XAIVoiceSettings',
                 soniox: '#/components/schemas/SonioxVoiceSettings',
-                assemblyai: '#/components/schemas/AssemblyAIVoiceSettings',
               },
             },
           }),
@@ -30599,6 +32880,15 @@ const CreateBrandSchema = z
     required: ['entityType', 'displayName', 'country', 'email', 'vertical'],
   })
   .openapi('CreateBrand')
+
+const CreateCalendarConnectionRequestSchema = z
+  .strictObject({
+    platform: z
+      .enum(['google_calendar', 'microsoft_outlook'])
+      .openapi({ description: 'Calendar provider: Google Calendar or Microsoft Outlook.' }),
+  })
+  .openapi({ required: ['platform'] })
+  .openapi('CreateCalendarConnectionRequest')
 
 const CreateCallControlApplicationRequestSchema = z
   .object({
@@ -32322,35 +34612,6 @@ const CreateFaxApplicationRequestSchema = z
   })
   .openapi('CreateFaxApplicationRequest')
 
-const CreateFineTuningJobRequestSchema = z
-  .object({
-    model: z.string().openapi({ description: 'The base model that is being fine-tuned.' }),
-    training_file: z
-      .string()
-      .openapi({ description: 'The storage bucket or object used for training.' }),
-    suffix: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Optional suffix to append to the fine tuned model's name." }),
-    hyperparameters: z
-      .object({
-        n_epochs: z
-          .int()
-          .min(1)
-          .max(10)
-          .default(3)
-          .exactOptional()
-          .openapi({
-            description:
-              "The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset. 'auto' decides the optimal number of epochs based on the size of the dataset. If setting the number manually, we support any number between 1 and 50 epochs.",
-          }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The hyperparameters used for the fine-tuning job.', required: [] }),
-  })
-  .openapi({ required: ['model', 'training_file'], title: 'CreateFineTuningJobRequest' })
-  .openapi('CreateFineTuningJobRequest')
-
 const FqdnConnectionTransportProtocolSchema = z
   .enum(['UDP', 'TCP', 'TLS'])
   .default('UDP')
@@ -32840,6 +35101,61 @@ const GenericPayConnectorConfigSchema = z
       .object({ auth_type: z.literal('none') })
       .openapi({ title: 'No processor authentication', required: ['auth_type'] }),
   ])
+  .and(
+    z
+      .object({
+        endpoint_url: z
+          .string()
+          .regex(/^https?:\/\/\S+/)
+          .openapi({
+            description:
+              'HTTP or HTTPS processor URL with a host. Use HTTPS to protect payment data in transit.',
+            example: 'https://processor.example.com/pay',
+          }),
+        auth_type: z
+          .enum(['none', 'basic', 'bearer'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Processor authentication, separate from the Telnyx API key. If omitted, validation requires basic credentials but no Basic Authorization header is added. Explicitly set basic or bearer to send its corresponding Authorization header, or none for no processor authentication.',
+          }),
+        username: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Nonblank string required for basic authentication. Returned in connector responses.',
+          }),
+        password: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Nonblank string required for basic authentication. Write-only; omitted from responses. Re-send when replacing a basic-auth config.',
+            writeOnly: true,
+          }),
+        token: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Nonblank string required for bearer authentication. Write-only; omitted from responses. Re-send when replacing a bearer-auth config.',
+            writeOnly: true,
+          }),
+        timeout: z
+          .int()
+          .min(1)
+          .max(4294967295)
+          .nullable()
+          .default(10000)
+          .exactOptional()
+          .openapi({
+            description:
+              'Processor HTTP timeout in milliseconds. Omitted or null uses 10000; null is removed before storage. Not the IVR digit-gather timeout.',
+          }),
+      })
+      .openapi({ required: ['endpoint_url'] }),
+  )
   .openapi({
     description:
       'Configuration for a generic connector. A config update replaces the complete object, not individual keys. Unknown config keys are discarded. Authentication credentials must be nonblank strings when required by the selected auth_type.',
@@ -33688,7 +36004,7 @@ const MeetingSessionCameraImageBase64SourceSchema = z
       .max(1835008)
       .openapi({
         description:
-          'Canonical plain RFC 4648 Base64 for a valid decoded JPEG. Data URIs, whitespace, and the URL-safe alphabet are rejected. The encoded value is limited to 1,835,008 characters and the decoded JPEG to 1,363,148 bytes. The JPEG is limited to 4,096 pixels per dimension, 4 megapixels, and 128 MB of decoder memory. The image bytes are not persisted, returned, or logged.',
+          'Canonical plain RFC 4648 Base64 for a valid decoded JPEG. Data URIs, whitespace, and the URL-safe alphabet are rejected. The encoded value is limited to 1,835,008 characters and the decoded JPEG to 1,363,148 bytes. The JPEG is limited to 4,096 pixels per dimension, 4 megapixels, and 128 MB of decoder memory. The image bytes are not returned in the session response.',
       }),
   })
   .openapi({
@@ -33714,7 +36030,7 @@ const MeetingSessionCameraImageUrlSourceSchema = z
       .max(2048)
       .openapi({
         description:
-          'Public HTTPS JPEG URL with at most 2,048 characters and no credentials, fragment, surrounding whitespace, raw control characters, or explicit non-default port. Signed queries are allowed but must be treated as credentials. Fetching is limited to public network destinations, a five-second timeout, no redirects, a 2xx image/jpeg response with identity or no content encoding, and a 1,363,148-byte limit enforced against both declared and streamed content. The service resolves the URL before bot creation and does not persist, return, or log the URL or image bytes.',
+          'Public HTTPS JPEG URL with at most 2,048 characters and no credentials, fragment, surrounding whitespace, raw control characters, or explicit non-default port. Signed queries are allowed but must be treated as credentials. Fetching is limited to public network destinations, a five-second timeout, no redirects, a 2xx image/jpeg response with identity or no content encoding, and a 1,363,148-byte limit enforced against both declared and streamed content. The service resolves the URL before bot creation and does not return the URL or image bytes in the session response.',
       }),
   })
   .openapi({
@@ -33729,7 +36045,7 @@ const MeetingSessionCameraImageSchema = z
   .openapi({
     title: 'MeetingSessionCameraImage',
     description:
-      "Write-only static camera-tile image for this session, not a native account or participant profile photo. Supply exactly one JPEG source. When effective, the image is used as the bot's static camera/video output; presentation varies by meeting platform and recording configuration and is not guaranteed in recordings. An effective Avatar or Assistant webpage output takes precedence, so this input is ignored and a URL source is not fetched.",
+      "Not supported for Google Meet and Teams joins (422 unsupported_capability). Write-only static camera-tile image for this session, not an account or participant profile photo. Supply exactly one JPEG source. When effective, the image is used as the bot's static camera/video output; presentation varies by meeting platform and recording configuration and is not guaranteed in recordings. An attached assistant or avatar takes precedence, so this input is ignored and a URL source is not fetched.",
     writeOnly: true,
   })
   .openapi('MeetingSessionCameraImage')
@@ -33747,7 +36063,7 @@ const MeetingSessionAssistantRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Audio gating strategy for the assistant call leg. `half_duplex` (default) sends the assistant a single mixed meeting stream and mutes it while the assistant speaks, so the assistant cannot hear itself and cannot be interrupted. `full_duplex` sends a separate stream per participant, which allows barge-in and removes self-hearing, and COSTS SIGNIFICANTLY MORE: per-participant streams multiply the per-minute cost by the number of participants.',
+          'Use half_duplex (default) to pause listening while the assistant speaks, or full_duplex to allow participants to interrupt. Full-duplex pricing depends on participant audio usage; see the Meeting pricing guide.',
       }),
     dynamic_variables: z
       .record(z.string(), z.string())
@@ -33755,7 +36071,7 @@ const MeetingSessionAssistantRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Per-conversation values for the [dynamic variables](/docs/inference/ai-assistants/dynamic-variables) used in the Assistant's instructions, greeting, or tools. Delivered before the Assistant's first utterance, so they resolve for the opening line as well as the rest of the conversation. At most 63 entries; keys 1-128 characters; values must be strings. The map is budgeted in aggregate at 1,047,552 bytes (1023 KiB) rather than capped per value. `streaming_audio`, `ai_assistant_streaming_audio` and `meeting_session_id` are reserved and rejected with `400 invalid_request` -- they toggle provider infrastructure or are set by the service rather than fill a prompt template.",
+          "Per-conversation values for the [dynamic variables](/docs/inference/ai-assistants/dynamic-variables) used in the Assistant's instructions, greeting, or tools. Delivered before the Assistant's first utterance, so they resolve for the opening line as well as the rest of the conversation. At most 63 entries; keys 1-128 characters; values must be strings. The map is budgeted in aggregate at 1,047,552 bytes (1023 KiB) rather than capped per value. `streaming_audio`, `ai_assistant_streaming_audio` and `meeting_session_id` are reserved and rejected with `400 invalid_request`.",
       }),
     leave_on_end: z
       .boolean()
@@ -33763,7 +36079,7 @@ const MeetingSessionAssistantRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Leave the meeting when the Assistant's conversation reaches a terminal state -- `ended` **or** `failed`. Off by default, which leaves the bot in the meeting after the Assistant stops. Fires once: a second terminal transition does not leave twice, and a leave the provider refuses is logged without changing how the session settles.",
+          'Leave when the assistant conversation ends or fails. Defaults to false. Other leave-policy rules and explicit leave requests still apply.',
       }),
     avatar: z
       .boolean()
@@ -33771,16 +36087,90 @@ const MeetingSessionAssistantRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Beta. Show the avatar configured on the assistant (its `avatar_settings`; see [AI Assistant avatars](/docs/inference/ai-assistants/avatars)) as the bot's camera, lip-synced to the assistant's own speech. The request carries no avatar ID or key: the assistant is read at creation and the request is rejected with 400 `invalid_request` if it has no Telnyx avatar configured. Supported on Google Meet, Zoom, Microsoft Teams and Webex; other platforms return 422 `unsupported_capability`. REST-only. Not echoed back on `assistant`; the session's top-level `avatar` and `avatar_state` fields report it instead. If the avatar fails, the session continues voice-only and `avatar_state` becomes `degraded`.",
+          "Beta. Show the avatar configured on the assistant (its `avatar_settings`; see [AI Assistant avatars](/docs/inference/ai-assistants/avatars)) as the bot's camera, lip-synced to the assistant's own speech. The request carries no avatar ID or key: the assistant is read at creation and the request is rejected with 400 `invalid_request` if it has no Telnyx avatar configured. Available for Google Meet, Zoom, and Teams sessions. REST-only. Not echoed back on `assistant`; the session's top-level `avatar` and `avatar_state` fields report it instead. If the avatar fails, the session continues voice-only and `avatar_state` becomes `degraded`.",
       }),
   })
   .openapi({
     title: 'MeetingSessionAssistantRequest',
     description:
-      "Attach a Telnyx AI Assistant to the session. Supply the Assistant's ID; the Meeting service connects it to the meeting directly. The Call Control connection, caller ID and loopback SIP URI previously required here have been removed and are now rejected as unknown fields.",
+      'Attach a Telnyx AI Assistant owned by the authenticated account. Supply its ID and optional conversation settings. Unknown fields are rejected.',
     required: ['id'],
   })
   .openapi('MeetingSessionAssistantRequest')
+
+const MeetingSessionLeavePolicySchema = z
+  .strictObject({
+    silence_seconds: z
+      .int()
+      .min(1)
+      .max(2147483647)
+      .default(600)
+      .exactOptional()
+      .openapi({
+        description: 'Continuous audio inactivity before departure after the silence grace period.',
+      }),
+    silence_grace_seconds: z
+      .int()
+      .min(1)
+      .max(2147483647)
+      .default(1200)
+      .exactOptional()
+      .openapi({
+        description:
+          'Seconds after joining before silence detection starts a fresh inactivity timer.',
+      }),
+    alone_seconds: z
+      .int()
+      .min(1)
+      .max(2147483647)
+      .default(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'Seconds alone after another participant has attended and left. Does not start just because the bot arrives first.',
+      }),
+    host_wait_seconds: z
+      .int()
+      .min(1)
+      .max(2147483647)
+      .default(600)
+      .exactOptional()
+      .openapi({ description: 'Seconds to wait for the host to start the meeting.' }),
+    lobby_wait_seconds: z
+      .int()
+      .min(1)
+      .max(2147483647)
+      .default(900)
+      .exactOptional()
+      .openapi({ description: 'Seconds to wait for lobby admission.' }),
+    max_duration_seconds: z
+      .int()
+      .min(1)
+      .max(2147483647)
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum seconds after joining. Null means no per-join duration limit; service safety limits still apply.',
+      }),
+    bot_name_keywords: z
+      .array(z.string().min(1).max(100))
+      .max(100)
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({
+        description:
+          'Case-insensitive names or phrases identifying other bots to exclude when deciding whether this bot is alone. Matching splits names on spaces, hyphens and underscores. Null or an empty array disables filtering.',
+      }),
+  })
+  .openapi({
+    description:
+      'Automatic departure settings for Google Meet and Teams. Omitted fields use the default behavior. Set at creation; cannot be changed later. Zoom ignores this policy.',
+    required: [],
+  })
+  .openapi('MeetingSessionLeavePolicy')
 
 const CreateMeetingSessionRequestSchema = z
   .strictObject({
@@ -33798,7 +36188,7 @@ const CreateMeetingSessionRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'ISO-8601 timestamp in the future at which the bot should join. If omitted, the bot joins immediately.',
+          'Future ISO-8601 join timestamp including timezone. Google Meet and Teams accept dates at most three years ahead. Omit for an immediate join. Assistant sessions created through this endpoint must join immediately.',
       }),
     voice: z
       .string()
@@ -33807,7 +36197,7 @@ const CreateMeetingSessionRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Session-default voice identifier used for `speak_on_enter` and ordinary speak actions. A voice supplied on an individual speak action overrides this default for that utterance.',
+          'Session-default voice identifier used for `speak_on_enter` and ordinary speak actions. A voice supplied on an individual speak action overrides this default for that utterance. With an assistant attached, its conversational voice remains configured on the assistant.',
       }),
     speak_on_enter: z
       .string()
@@ -33816,7 +36206,7 @@ const CreateMeetingSessionRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Text the bot speaks when it enters the meeting. **Not spoken when an `assistant` is attached**: the value is accepted and echoed back on the session, but the assistant owns the voice and the line is never delivered, with no event reporting the omission. Use `chat_on_enter` to announce an assistant-backed bot. Rejected with 400 `invalid_request` when `assistant.avatar` is `true`.',
+          'Text the bot speaks after joining. Available for sessions without a digital avatar. With an AI Assistant, the greeting waits until the assistant is connected. Rejected with 400 invalid_request when assistant.avatar is true.',
       }),
     chat_on_enter: z
       .string()
@@ -33825,7 +36215,7 @@ const CreateMeetingSessionRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "A message the bot posts to the meeting's chat as soon as it becomes active — typically a recording disclosure. Delivered at most once. Independent of `speak_on_enter`: both may be set, and the chat message posts first because it does not wait for text-to-speech or avatar startup. Rejected with 422 `unsupported_capability` on platforms without meeting chat.",
+          "A message the bot posts to the meeting's chat as soon as it becomes active — typically a recording disclosure. Delivered at most once. Independent of `speak_on_enter`: both may be set, and the chat message posts first because it does not wait for text-to-speech or avatar startup. Rejected with 422 `unsupported_capability` on platforms without meeting chat. For Google Meet and Teams, text must be nonblank, at most 4096 UTF-8 bytes, with no control characters except tabs and line breaks. Counts toward the 1000-chat-request session limit.",
       }),
     barge_in: z
       .boolean()
@@ -33862,35 +36252,41 @@ const CreateMeetingSessionRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Client-supplied idempotency key to safely retry creation requests without duplicating sessions. Lookup is scoped to the authenticated account and compares the key only; the request payload is not fingerprinted or compared.',
+          'Use a unique key per intended join and reuse the same key and request on retries. Reusing a key with a different join configuration or meeting URL can return 409 invalid_state. Always retry with the original request.',
       }),
     assistant: MeetingSessionAssistantRequestSchema.exactOptional(),
+    leave_policy: MeetingSessionLeavePolicySchema.exactOptional(),
+    recording: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Meet and Teams only. Defaults to true when recording_export is supplied and false otherwise. True requires recording_export.bucket; false cannot be combined with recording_export. Fixed at creation, with no pause/resume action. Zoom rejects recording, recording_view, and recording_export with 422 unsupported_capability; omit these fields for Zoom.',
+      }),
+    recording_view: z
+      .enum(['speaker_view', 'gallery_view', 'speaker_view_no_sidebar'])
+      .default('speaker_view')
+      .exactOptional()
+      .openapi({
+        description:
+          'Recording layout for Google Meet and Teams. Defaults to speaker_view. Accepted at creation only; does not enable recording by itself.',
+      }),
+    recording_export: MeetingSessionRecordingDestinationSchema.exactOptional(),
   })
   .openapi({
     title: 'CreateMeetingSessionRequest',
     description:
-      'Request body for creating a new meeting session.\n\nCross-field rules:\n- `assistant` cannot be combined with `join_at`; it is available only for sessions that join immediately.\n- `assistant` cannot be combined with `barge_in: true`.\n- `assistant.avatar: true` cannot be combined with `speak_on_enter`; the assistant greets through its avatar.\n- The `assistant` options, including `avatar`, take effect at session creation and cannot be modified later.\n- A digital avatar or Assistant webpage output takes precedence over `camera_image`; the static image is ignored and a URL source is not fetched.\n- The former top-level `avatar` object (bring-your-own-key avatar) has been removed and is rejected with 400 `invalid_request`; use `assistant.avatar` instead.',
+      'Request body for creating a new meeting session.\n\nCross-field rules:\n- `assistant` cannot be combined with `join_at`; it is available only for sessions that join immediately.\n- `assistant` cannot be combined with `barge_in: true`.\n- `assistant.avatar: true` cannot be combined with `speak_on_enter`; the assistant greets through its avatar.\n- The `assistant` options, including `avatar`, take effect at session creation and cannot be modified later.\n- An avatar takes precedence over `camera_image`; ordinary assistant sessions can use a static camera image.\n\nGoogle Meet and Teams recording requires a recording_export destination. Use join_at to schedule a meeting, or omit it to join now. Zoom recordings are enabled automatically; Zoom does not support recording, recording_view or recording_export, and ignores leave_policy. Digital avatars require avatar support.',
     required: ['meeting_url'],
     examples: [
       { meeting_url: 'https://zoom.us/j/1234567890', bot_name: 'Notetaker' },
       {
         meeting_url: 'https://meet.google.com/abc-defg-hij',
-        bot_name: 'Avatar Assistant',
-        assistant: {
-          id: 'asst_fake-uuid-1234',
-          audio_gate: 'full_duplex',
-          avatar: true,
-          leave_on_end: true,
-        },
-      },
-      {
-        meeting_url: 'https://teams.microsoft.com/l/meetup-join/example',
-        bot_name: 'Voice Assistant',
-        assistant: {
-          id: 'asst_fake-uuid-1234',
-          audio_gate: 'half_duplex',
-          dynamic_variables: { candidate_name: 'Ada Lovelace', role: 'Staff Engineer' },
-        },
+        bot_name: 'Notetaker',
+        idempotency_key: 'weekly-planning-2026-11-10',
+        recording: true,
+        recording_export: { bucket: 'meeting-recordings', prefix: 'weekly-planning' },
+        leave_policy: { alone_seconds: 300, max_duration_seconds: 7200 },
       },
     ],
   })
@@ -33918,10 +36314,38 @@ const MeetingSessionConfigSchema = z
     summarize_on_end: z
       .boolean()
       .openapi({ description: 'Whether a summary artifact is generated on session end.' }),
+    leave_policy: MeetingSessionLeavePolicySchema.exactOptional(),
+    recording: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Recording intent set at creation for Google Meet and Teams. Distinct from the top-level recording field, which reports current activity.',
+      }),
+    recording_view: z
+      .enum(['gallery_view', 'speaker_view_no_sidebar'])
+      .exactOptional()
+      .openapi({
+        description: 'Non-default recording layout. Omitted for the default speaker_view layout.',
+      }),
+    deepfake_detection: z
+      .strictObject({ audio: z.boolean(), video: z.boolean() })
+      .openapi({
+        required: ['audio', 'video'],
+        description:
+          'Detection settings. Enabling audio or video detection is currently unsupported.',
+      }),
   })
   .openapi({
     title: 'MeetingSessionConfig',
-    required: ['voice', 'speak_on_enter', 'barge_in', 'summarize_on_end', 'chat_on_enter'],
+    required: [
+      'voice',
+      'speak_on_enter',
+      'barge_in',
+      'summarize_on_end',
+      'chat_on_enter',
+      'deepfake_detection',
+    ],
   })
   .openapi('MeetingSessionConfig')
 
@@ -33940,35 +36364,28 @@ const MeetingSessionAvatarSchema = z
   })
   .openapi('MeetingSessionAvatar')
 
-const MeetingSessionAssistantSchema = z
+const MeetingSessionRecordingExportSchema = z
   .strictObject({
-    id: z.string().openapi({ description: 'Identifier of the assistant.' }),
-    audio_gate: z
-      .enum(['half_duplex', 'full_duplex'])
-      .openapi({ description: 'Audio gating strategy in force for the assistant call leg.' }),
-    dynamic_variables: z
-      .union([z.record(z.string(), z.string()), z.null().nullable()])
-      .openapi({
-        description:
-          'The dynamic variables in force for this session, or null when none were supplied.',
-      }),
-    leave_on_end: z
-      .boolean()
-      .openapi({
-        description: "Whether the bot leaves when the Assistant's conversation ends or fails.",
-      }),
+    type: z.literal('video'),
+    bucket: z.string(),
+    region: z.string(),
+    key: z.string(),
+    bytes: z.int().min(0).nullable(),
+    status: z.enum(['pending', 'exported', 'failed']),
+    exported_at: z.iso.datetime({ offset: true }).nullable(),
   })
   .openapi({
-    title: 'MeetingSessionAssistant',
-    required: ['id', 'audio_gate', 'dynamic_variables', 'leave_on_end'],
+    required: ['type', 'bucket', 'region', 'key', 'bytes', 'status', 'exported_at'],
+    description:
+      'Customer Storage recording reference. Pending is not downloadable; exported means upload was verified; failed is terminal. Download with ordinary Storage authorization. No presigned URL is returned.',
   })
-  .openapi('MeetingSessionAssistant')
+  .openapi('MeetingSessionRecordingExport')
 
 const MeetingSessionCreatedSchema = z
   .strictObject({
     id: z.string().openapi({ description: 'Unique identifier for the meeting session.' }),
     account_id: z.string().openapi({ description: 'Identifier of the owning account.' }),
-    provider: z.string().openapi({ description: 'Provider handling the meeting session.' }),
+    provider: z.literal('telnyx').openapi({ description: 'Always telnyx.' }),
     status: z
       .enum([
         'scheduled',
@@ -33987,7 +36404,10 @@ const MeetingSessionCreatedSchema = z
     status_detail: z
       .string()
       .nullable()
-      .openapi({ description: 'Additional human-readable detail about the status, or null.' }),
+      .openapi({
+        description:
+          'A machine-readable lifecycle reason, or null. Values include left_on_request, meeting_ended, everyone_left, no_one_joined, silence_timeout, max_duration_reached, admission_timeout, admission_denied, removed_from_meeting, recording_permission_denied, meeting_not_found, meeting_not_started, meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected, cancelled_calendar_event_deleted, cancelled_calendar_superseded, cancelled_policy, internal_error, and other. Treat this vocabulary as extensible.',
+      }),
     recording: z.boolean().openapi({ description: 'Whether the session is being recorded.' }),
     meeting_url: z.url().openapi({ description: 'The meeting URL the bot joins.' }),
     platform: z
@@ -34051,7 +36471,10 @@ const MeetingSessionCreatedSchema = z
     failure_reason: z
       .string()
       .nullable()
-      .openapi({ description: 'Human-readable failure reason if the session failed, or null.' }),
+      .openapi({
+        description:
+          'A machine-readable lifecycle reason, or null. Values include left_on_request, meeting_ended, everyone_left, no_one_joined, silence_timeout, max_duration_reached, admission_timeout, admission_denied, removed_from_meeting, recording_permission_denied, meeting_not_found, meeting_not_started, meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected, cancelled_calendar_event_deleted, cancelled_calendar_superseded, cancelled_policy, internal_error, and other. Treat this vocabulary as extensible.',
+      }),
     created_at: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Timestamp when the session was created.' }),
@@ -34080,6 +36503,20 @@ const MeetingSessionCreatedSchema = z
         readOnly: true,
         description:
           'Secret for validating webhook signatures. Returned only on the first successful create when `webhook_url` is configured. Never replayed, listed, or retrievable on subsequent requests.',
+      }),
+    recording_export: z
+      .union([MeetingSessionRecordingExportSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Included on Google Meet and Teams create/retrieve responses, omitted from lists and update/leave responses. Null when disabled or no export reference is available.',
+      }),
+    remote_state_observed_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional observation time on session list items. Retrieve the individual session when current state is required.',
       }),
   })
   .openapi({
@@ -34129,6 +36566,7 @@ const MeetingSessionCreatedSchema = z
           barge_in: false,
           summarize_on_end: false,
           chat_on_enter: null,
+          deepfake_detection: { audio: false, video: false },
         },
         avatar: null,
         avatar_state: null,
@@ -34161,6 +36599,7 @@ const MeetingSessionCreatedSchema = z
           barge_in: false,
           summarize_on_end: true,
           chat_on_enter: null,
+          deepfake_detection: { audio: false, video: false },
         },
         avatar: null,
         avatar_state: null,
@@ -39641,16 +42080,30 @@ const MediaStorageDetailRecordSchema = z
   .openapi({ required: ['record_type'] })
   .openapi('MediaStorageDetailRecord')
 
-const DetailRecordSchema = z
-  .xor([
-    MessageDetailRecordSchema.openapi({ title: 'Message' }),
-    ConferenceDetailRecordSchema.openapi({ title: 'Conference' }),
-    ConferenceParticipantDetailRecordSchema.openapi({ title: 'Conference Participant' }),
-    AmdDetailRecordSchema.openapi({ title: 'AMD' }),
-    VerifyDetailRecordSchema.openapi({ title: 'Verify 2FA' }),
-    SimCardUsageDetailRecordSchema.openapi({ title: 'Sim Card Usage' }),
-    MediaStorageDetailRecordSchema.openapi({ title: 'Media Storage' }),
-  ])
+const DetailRecordSchema = (() => {
+  const Schema = z
+    .xor([
+      MessageDetailRecordSchema.openapi({ title: 'Message' }),
+      ConferenceDetailRecordSchema.openapi({ title: 'Conference' }),
+      ConferenceParticipantDetailRecordSchema.openapi({ title: 'Conference Participant' }),
+      AmdDetailRecordSchema.openapi({ title: 'AMD' }),
+      VerifyDetailRecordSchema.openapi({ title: 'Verify 2FA' }),
+      SimCardUsageDetailRecordSchema.openapi({ title: 'Sim Card Usage' }),
+      MediaStorageDetailRecordSchema.openapi({ title: 'Media Storage' }),
+    ])
+    .and(z.looseObject({}).openapi({ required: ['record_type'] }))
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'record_type')) {
+          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description:
       'An object following one of the schemas published in https://developers.telnyx.com/docs/api/v2/detail-records',
@@ -45884,80 +48337,6 @@ const FinalFrameSchema = z
   })
   .openapi('FinalFrame')
 
-const FineTuningJobSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'The name of the fine-tuned model that is being created.' }),
-    created_at: z
-      .int()
-      .openapi({
-        description: 'The Unix timestamp (in seconds) for when the fine-tuning job was created.',
-      }),
-    finished_at: z
-      .int()
-      .nullable()
-      .openapi({
-        description:
-          'The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.',
-      }),
-    hyperparameters: z
-      .object({
-        n_epochs: z
-          .int()
-          .min(1)
-          .max(10)
-          .default(3)
-          .openapi({
-            description:
-              'The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.',
-          }),
-      })
-      .openapi({
-        description: 'The hyperparameters used for the fine-tuning job.',
-        required: ['n_epochs'],
-      }),
-    model: z.string().openapi({ description: 'The base model that is being fine-tuned.' }),
-    organization_id: z
-      .string()
-      .openapi({ description: 'The organization that owns the fine-tuning job.' }),
-    status: z
-      .enum(['queued', 'running', 'succeeded', 'failed', 'cancelled'])
-      .openapi({ description: 'The current status of the fine-tuning job.' }),
-    trained_tokens: z
-      .int()
-      .nullable()
-      .openapi({
-        description:
-          'The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.',
-      }),
-    training_file: z
-      .string()
-      .openapi({ description: 'The storage bucket or object used for training.' }),
-  })
-  .openapi({
-    title: 'FineTuningJob',
-    description:
-      'The `fine_tuning.job` object represents a fine-tuning job that has been created through the API.',
-    required: [
-      'created_at',
-      'finished_at',
-      'hyperparameters',
-      'id',
-      'model',
-      'organization_id',
-      'status',
-      'trained_tokens',
-      'training_file',
-    ],
-  })
-  .openapi('FineTuningJob')
-
-const FineTuningJobsListDataSchema = z
-  .object({ data: z.array(FineTuningJobSchema) })
-  .openapi({ required: ['data'], title: 'FineTuningJobListData' })
-  .openapi('FineTuningJobsListData')
-
 const GenericErrorSchema = z
   .object({
     code: z.string().exactOptional(),
@@ -47004,7 +49383,6 @@ const GatherUsingAIRequestSchema = z
         ResembleVoiceSettingsSchema,
         XAIVoiceSettingsSchema,
         SonioxVoiceSettingsSchema,
-        AssemblyAIVoiceSettingsSchema,
       ])
       .exactOptional()
       .openapi({
@@ -47019,7 +49397,6 @@ const GatherUsingAIRequestSchema = z
             resemble: '#/components/schemas/ResembleVoiceSettings',
             xai: '#/components/schemas/XAIVoiceSettings',
             soniox: '#/components/schemas/SonioxVoiceSettings',
-            assemblyai: '#/components/schemas/AssemblyAIVoiceSettings',
           },
         },
       }),
@@ -47313,7 +49690,6 @@ const GatherUsingSpeakRequestSchema = z
         InworldVoiceSettingsSchema,
         XAIVoiceSettingsSchema,
         SonioxVoiceSettingsSchema,
-        AssemblyAIVoiceSettingsSchema,
       ])
       .exactOptional()
       .openapi({
@@ -47330,7 +49706,6 @@ const GatherUsingSpeakRequestSchema = z
             inworld: '#/components/schemas/InworldVoiceSettings',
             xai: '#/components/schemas/XAIVoiceSettings',
             soniox: '#/components/schemas/SonioxVoiceSettings',
-            assemblyai: '#/components/schemas/AssemblyAIVoiceSettings',
           },
         },
       }),
@@ -47778,7 +50153,6 @@ const GenerateSpeechRequestSchema = z
         'xai',
         'humain',
         'soniox',
-        'assemblyai',
       ])
       .exactOptional()
       .openapi({ description: 'TTS provider. Required unless `voice` is provided.' }),
@@ -47821,7 +50195,6 @@ const GenerateSpeechRequestSchema = z
     xai: XAIProviderParamsSchema.exactOptional(),
     humain: HumainProviderParamsSchema.exactOptional(),
     soniox: SonioxProviderParamsSchema.exactOptional(),
-    assemblyai: AssemblyAIProviderParamsSchema.exactOptional(),
   })
   .openapi({ description: 'Request body for generating speech from text.', required: [] })
   .openapi('GenerateSpeechRequest')
@@ -50576,15 +52949,536 @@ const InitiateAICallResultSchema = z
 const InitiateCallRequestSchema = z
   .xor([
     z
-      .object({ Texml: z.never().exactOptional() })
+      .object({ Texml: z.never().exactOptional().openapi({ not: {} }) })
       .openapi({ title: 'With URL', required: ['Url'] }),
     z
-      .object({ Url: z.never().exactOptional() })
+      .object({ Url: z.never().exactOptional().openapi({ not: {} }) })
       .openapi({ title: 'With TeXML', required: ['Texml'] }),
     z
-      .object({ Url: z.never().exactOptional(), Texml: z.never().exactOptional() })
+      .object({
+        Url: z.never().exactOptional().openapi({ not: {} }),
+        Texml: z.never().exactOptional().openapi({ not: {} }),
+      })
       .openapi({ title: 'Application Default', required: [] }),
   ])
+  .and(
+    z
+      .object({
+        ApplicationSid: z
+          .string()
+          .openapi({
+            description:
+              'The ID of the TeXML Application that will handle the call, for example `1293384261075731499`. The `ApplicationSid` name is kept for Twilio API compatibility, but the value is the numeric ID of one of your TeXML Applications (see the TeXML Applications API or the Mission Control Portal), not a Twilio `AP...` SID. If `Url` and `Texml` are omitted, Telnyx fetches instructions from the XML Request URL configured on this application.',
+            example: '1293384261075731499',
+          }),
+        To: z
+          .string()
+          .openapi({
+            description:
+              'The phone number of the called party. Phone numbers are formatted with a `+` and country code.',
+            example: '+16175551212',
+          }),
+        From: z
+          .string()
+          .openapi({
+            description:
+              'The phone number of the party that initiated the call. Phone numbers are formatted with a `+` and country code.',
+            example: '+16175551212',
+          }),
+        CallerId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'To be used as the caller id name (SIP From Display Name) presented to the destination (`To` number). The string should have a maximum of 128 characters, containing only letters, numbers, spaces, and `-_~!.+` special characters. If ommited, the display name will be the same as the number in the `From` field.',
+            example: 'Info',
+          }),
+        Url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL from which Telnyx will retrieve the TeXML call instructions.',
+            example: 'https://www.example.com/instructions.xml',
+          }),
+        UrlMethod: z
+          .enum(['GET', 'POST'])
+          .default('POST')
+          .exactOptional()
+          .openapi({
+            description:
+              'HTTP request type used for `Url`. The default value is inherited from TeXML Application setting.',
+            example: 'GET',
+          }),
+        FallbackUrl: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A failover URL for which Telnyx will retrieve the TeXML call instructions if the `Url` is not responding.',
+            example: 'https://www.example.com/instructions-fallback.xml',
+          }),
+        StatusCallback: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'URL destination for Telnyx to send status callback events to for the call.',
+            example: 'https://www.example.com/callback',
+          }),
+        StatusCallbackMethod: z
+          .enum(['GET', 'POST'])
+          .default('POST')
+          .exactOptional()
+          .openapi({ description: 'HTTP request type used for `StatusCallback`.', example: 'GET' }),
+        StatusCallbackEvent: z
+          .string()
+          .default('completed')
+          .exactOptional()
+          .openapi({
+            description:
+              'The call events for which Telnyx should send a webhook. Multiple events can be defined when separated by a space.',
+            example: 'initiated answered',
+          }),
+        MachineDetection: z
+          .enum(['Enable', 'Disable', 'DetectMessageEnd'])
+          .default('Disable')
+          .exactOptional()
+          .openapi({ description: 'Enables Answering Machine Detection.', example: 'Enable' }),
+        DetectionMode: z
+          .enum(['Premium', 'Regular', 'PremiumCallScreening'])
+          .default('Regular')
+          .exactOptional()
+          .openapi({
+            description:
+              'Allows you to choose between Regular, Premium, and PremiumCallScreening detections. See https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection',
+            example: 'Premium',
+          }),
+        AsyncAmd: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              'Select whether to perform answering machine detection in the background. By default execution is blocked until Answering Machine Detection is completed.',
+            example: true,
+          }),
+        AsyncAmdStatusCallback: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL destination for Telnyx to send AMD callback events to for the call.',
+            example: 'https://www.example.com/callback',
+          }),
+        AsyncAmdStatusCallbackMethod: z
+          .enum(['GET', 'POST'])
+          .default('POST')
+          .exactOptional()
+          .openapi({
+            description:
+              'HTTP request type used for `AsyncAmdStatusCallback`. The default value is inherited from TeXML Application setting.',
+            example: 'GET',
+          }),
+        MachineDetectionTimeout: z
+          .int()
+          .min(500)
+          .max(60000)
+          .default(30000)
+          .exactOptional()
+          .openapi({
+            description: 'Maximum timeout threshold in milliseconds for overall detection.',
+            example: 5000,
+          }),
+        MachineDetectionPromptEndTimeout: z
+          .int()
+          .min(1000)
+          .max(120000)
+          .exactOptional()
+          .openapi({
+            description:
+              'Silence duration threshold after a call screening prompt before ending prompt detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.',
+            example: 5000,
+          }),
+        MachineDetectionSpeechThreshold: z
+          .int()
+          .default(3500)
+          .exactOptional()
+          .openapi({
+            description:
+              'Maximum threshold of a human greeting. If greeting longer than this value, considered machine. Ignored when `premium` detection is used.',
+            example: 2000,
+          }),
+        MachineDetectionSpeechEndThreshold: z
+          .int()
+          .default(800)
+          .exactOptional()
+          .openapi({
+            description:
+              'Silence duration threshold after a greeting message or voice for it be considered human. Ignored when `premium` detection is used.',
+            example: 2000,
+          }),
+        MachineDetectionSilenceTimeout: z
+          .int()
+          .default(3500)
+          .exactOptional()
+          .openapi({
+            description:
+              'If initial silence duration is greater than this value, consider it a machine. Ignored when `premium` detection is used.',
+            example: 2000,
+          }),
+        MachineDetectionBeepProfile: z
+          .enum(['both', 'freq_only'])
+          .default('both')
+          .exactOptional()
+          .openapi({
+            description:
+              'Selects which detectors must validate a beep. `both` requires the amplitude and frequency detectors to agree. `freq_only` uses the frequency detector alone, for beeps whose volume is too unsteady for the default profile. Only used when MachineDetection is enabled.',
+            example: 'freq_only',
+          }),
+        MachineDetectionBeepMinFrequency: z
+          .int32()
+          .min(200)
+          .max(4000)
+          .exactOptional()
+          .openapi({
+            description:
+              'Lowest frequency, in Hz, that a tone must reach to be treated as a beep. Raising it above 480 excludes North American ringback (440 + 480 Hz), which can otherwise be reported as a beep when the `freq_only` profile is in use. Only used when MachineDetection is enabled.',
+            example: 550,
+          }),
+        MachineDetectionBeepMaxFrequency: z
+          .int32()
+          .min(200)
+          .max(4000)
+          .exactOptional()
+          .openapi({
+            description:
+              'Highest frequency, in Hz, that a tone can reach and still be treated as a beep. Only used when MachineDetection is enabled.',
+            example: 2000,
+          }),
+        MachineDetectionBeepMinToneDuration: z
+          .int32()
+          .min(50)
+          .max(5000)
+          .exactOptional()
+          .openapi({
+            description:
+              'Shortest tone, in milliseconds, that can be treated as a beep. Raising it rejects brief tones such as call-progress blips. Only used when MachineDetection is enabled.',
+            example: 300,
+          }),
+        MachineDetectionBeepSpectralConfirmation: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'When enabled, a candidate beep must pass an additional spectral check before it is reported. Only used when MachineDetection is enabled.',
+            example: true,
+          }),
+        MachineDetectionBeepSpectralWindow: z
+          .int32()
+          .min(20)
+          .max(1000)
+          .exactOptional()
+          .openapi({
+            description:
+              'Length of the spectral confirmation window, in milliseconds. Only used when MachineDetection is enabled.',
+            example: 100,
+          }),
+        MachineDetectionBeepSpectralMinPurity: z
+          .number()
+          .min(0)
+          .max(1)
+          .exactOptional()
+          .openapi({
+            description:
+              'Minimum spectral purity, from 0 to 1, for a tone to be treated as a beep. Raising it rejects mixed tones such as ringback, which combines two frequencies. Only used when MachineDetection is enabled.',
+            example: 0.8,
+          }),
+        MachineDetectionBeepSpectralRejectFaxCng: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'When enabled, the fax CNG tone is rejected rather than reported as a beep. Only used when MachineDetection is enabled.',
+            example: true,
+          }),
+        CancelPlaybackOnMachineDetection: z
+          .boolean()
+          .default(true)
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to cancel ongoing playback on `machine` detection. Defaults to `true`.',
+            example: false,
+          }),
+        CancelPlaybackOnDetectMessageEnd: z
+          .boolean()
+          .default(true)
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to cancel ongoing playback on `greeting ended` detection. Defaults to `true`.',
+            example: false,
+          }),
+        DeepfakeDetection: z
+          .literal('Enable')
+          .exactOptional()
+          .openapi({
+            description:
+              'Enables Deepfake Detection on the dialed call. When enabled, audio from the remote party is analyzed to determine whether the voice is AI-generated. Results are delivered asynchronously via a callback.',
+            example: 'Enable',
+          }),
+        DeepfakeDetectionCallbackUrl: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'URL destination for Telnyx to send deepfake detection callback events to for the call.',
+            example: 'https://www.example.com/deepfake-callback',
+          }),
+        DeepfakeDetectionCallbackMethod: z
+          .enum(['GET', 'POST'])
+          .default('POST')
+          .exactOptional()
+          .openapi({
+            description: 'HTTP request type used for `DeepfakeDetectionCallbackUrl`.',
+            example: 'GET',
+          }),
+        PreferredCodecs: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The list of comma-separated codecs to be offered on a call.',
+            example: 'PCMA,PCMU',
+          }),
+        Record: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              "Whether to record the entire participant's call leg. Defaults to `false`.",
+            example: false,
+          }),
+        RecordingChannels: z
+          .enum(['mono', 'dual'])
+          .exactOptional()
+          .openapi({
+            description: 'The number of channels in the final recording. Defaults to `mono`.',
+            example: 'dual',
+          }),
+        RecordingStatusCallback: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL the recording callbacks will be sent to.',
+            example: 'https://example.com/recording_status_callback',
+          }),
+        RecordingStatusCallbackMethod: z
+          .enum(['GET', 'POST'])
+          .exactOptional()
+          .openapi({
+            description:
+              'HTTP request type used for `RecordingStatusCallback`. Defaults to `POST`.',
+            example: 'GET',
+          }),
+        RecordingStatusCallbackEvent: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The changes to the recording's state that should generate a call to `RecoridngStatusCallback`. Can be: `in-progress`, `completed` and `absent`. Separate multiple values with a space. Defaults to `completed`.",
+            example: 'in-progress completed absent',
+          }),
+        RecordingTimeout: z
+          .int()
+          .default(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that Telnyx will wait for the recording to be stopped if silence is detected. The timer only starts when the speech is detected. Please note that the transcription is used to detect silence and the related charge will be applied. The minimum value is 0. The default value is 0 (infinite)',
+            example: 5,
+          }),
+        RecordingTrack: z
+          .enum(['inbound', 'outbound', 'both'])
+          .exactOptional()
+          .openapi({
+            description: 'The audio track to record for the call. The default is `both`.',
+            example: 'inbound',
+          }),
+        SendRecordingUrl: SendRecordingUrlSchema.exactOptional(),
+        SipAuthPassword: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The password to use for SIP authentication.', example: '1234' }),
+        SipAuthUsername: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The username to use for SIP authentication.', example: 'user' }),
+        Trim: z
+          .enum(['trim-silence', 'do-not-trim'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to trim any leading and trailing silence from the recording. Defaults to `trim-silence`.',
+            example: 'trim-silence',
+          }),
+        CustomHeaders: z
+          .array(
+            z
+              .object({
+                name: z.string().openapi({ description: 'The name of the custom header' }),
+                value: z.string().openapi({ description: 'The value of the custom header' }),
+              })
+              .openapi({ required: ['name', 'value'] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "Custom HTTP headers to be sent with the call. Each header should be an object with 'name' and 'value' properties.",
+            example: [{ name: 'X-Custom-Header', value: 'custom-value' }],
+          }),
+        SipRegion: z
+          .enum(['US', 'Europe', 'Canada', 'Australia', 'Middle East'])
+          .default('US')
+          .exactOptional()
+          .openapi({
+            description: 'Defines the SIP region to be used for the call.',
+            example: 'Canada',
+          }),
+        MediaEncryption: z
+          .enum(['disabled', 'SRTP', 'DTLS'])
+          .default('disabled')
+          .exactOptional()
+          .openapi({
+            description:
+              'Defines whether media should be encrypted on the call. When set to `SRTP`, the call will use Secure Real-time Transport Protocol for media encryption. When set to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP destinations.',
+            example: 'disabled',
+          }),
+        SuperviseCallSid: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The call control ID of the existing call to supervise. When provided, the created leg will be added to the specified call in supervising mode. Status callbacks and action callbacks will NOT be sent for the supervising leg.',
+            example: 'v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg',
+          }),
+        SupervisingRole: z
+          .enum(['barge', 'whisper', 'monitor'])
+          .default('barge')
+          .exactOptional()
+          .openapi({
+            description:
+              'The supervising role for the new leg. Determines the audio behavior: barge (hear both sides), whisper (only hear supervisor), monitor (hear both sides but supervisor muted). Default: barge',
+            example: 'monitor',
+          }),
+        StreamUrl: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The destination WebSocket address where the call's media stream is delivered, for example `wss://www.example.com/websocket`. When set, a media stream is started on the outbound call. Required when any other `Stream*` parameter is set. Can't be combined with `SuperviseCallSid`.",
+            example: 'wss://www.example.com/websocket',
+          }),
+        StreamTrack: z
+          .enum(['inbound_track', 'outbound_track', 'both_tracks'])
+          .default('inbound_track')
+          .exactOptional()
+          .openapi({
+            description: 'Specifies which track should be streamed. Requires `StreamUrl`.',
+            example: 'both_tracks',
+          }),
+        StreamCodec: z
+          .enum(['PCMU', 'PCMA', 'G722', 'OPUS', 'AMR-WB', 'L16', 'default'])
+          .default('default')
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the codec to be used for the streamed audio. When set to `default` or when transcoding is not possible, the codec from the call will be used. Requires `StreamUrl`.',
+            example: 'PCMA',
+          }),
+        StreamBidirectionalMode: z
+          .enum(['mp3', 'rtp'])
+          .default('mp3')
+          .exactOptional()
+          .openapi({
+            description:
+              'Configures the method of bidirectional streaming: `mp3` or `rtp`. Requires `StreamUrl`.',
+            example: 'rtp',
+          }),
+        StreamBidirectionalCodec: z
+          .enum(['PCMU', 'PCMA', 'G722', 'OPUS', 'AMR-WB', 'L16'])
+          .default('PCMU')
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the codec for bidirectional streaming RTP payloads. Used only with `StreamBidirectionalMode=rtp`. Case sensitive. Requires `StreamUrl`.',
+            example: 'G722',
+          }),
+        StreamBidirectionalSamplingRate: z
+          .union([
+            z.literal(8000),
+            z.literal(16000),
+            z.literal(22050),
+            z.literal(24000),
+            z.literal(48000),
+          ])
+          .default(8000)
+          .exactOptional()
+          .openapi({
+            description:
+              'Audio sampling rate for bidirectional streaming, in Hz. Requires `StreamUrl`.',
+            example: 16000,
+          }),
+        StreamAuthToken: z
+          .string()
+          .max(4000)
+          .exactOptional()
+          .openapi({
+            description:
+              'An authentication token for the WebSocket server. It is sent as the `x-telnyx-streaming-auth-token` header of the WebSocket handshake and repeated as `connected.x-telnyx-streaming-auth-token` in the `connected` event. Maximum length is 4000 characters. Requires `StreamUrl`.',
+            example: 'your-auth-token',
+          }),
+        StreamEstablishBeforeCallOriginate: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              "Establishes the WebSocket connection before the destination is dialed, so no audio is missed while the connection is set up. If the WebSocket connection can't be established, the call is not placed and the request fails with a `422` error. `StreamUrl` is required when this is `true`.",
+            example: true,
+          }),
+        Timeout: z
+          .int()
+          .min(5)
+          .max(120)
+          .default(30)
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds to wait for the called party to answer the call before the call is canceled. The minimum value is 5 and the maximum value is 120. Default is 30 seconds.',
+            example: 60,
+            'x-stainless-param': 'timeout_seconds',
+          }),
+        TimeLimit: z
+          .int()
+          .min(30)
+          .max(14400)
+          .default(14400)
+          .exactOptional()
+          .openapi({
+            description:
+              'The maximum duration of the call in seconds. The minimum value is 30 and the maximum value is 14400 (4 hours). Default is 14400 seconds.',
+            example: 3600,
+          }),
+        Texml: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'TeXML to be used as instructions for the call. If provided, the call will execute these instructions instead of fetching from the Url.',
+            example: '<?xml version="1.0" encoding="UTF-8"?><Response><Say>Hello</Say></Response>',
+          }),
+      })
+      .openapi({ required: ['To', 'From', 'ApplicationSid'] }),
+  )
   .openapi({
     title: 'Initiate Call Request',
     required: ['To', 'From', 'ApplicationSid'],
@@ -53211,7 +56105,7 @@ const MeetingSessionSchema = z
   .strictObject({
     id: z.string().openapi({ description: 'Unique identifier for the meeting session.' }),
     account_id: z.string().openapi({ description: 'Identifier of the owning account.' }),
-    provider: z.string().openapi({ description: 'Provider handling the meeting session.' }),
+    provider: z.literal('telnyx').openapi({ description: 'Always telnyx.' }),
     status: z
       .enum([
         'scheduled',
@@ -53230,7 +56124,10 @@ const MeetingSessionSchema = z
     status_detail: z
       .string()
       .nullable()
-      .openapi({ description: 'Additional human-readable detail about the status, or null.' }),
+      .openapi({
+        description:
+          'A machine-readable lifecycle reason, or null. Values include left_on_request, meeting_ended, everyone_left, no_one_joined, silence_timeout, max_duration_reached, admission_timeout, admission_denied, removed_from_meeting, recording_permission_denied, meeting_not_found, meeting_not_started, meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected, cancelled_calendar_event_deleted, cancelled_calendar_superseded, cancelled_policy, internal_error, and other. Treat this vocabulary as extensible.',
+      }),
     recording: z.boolean().openapi({ description: 'Whether the session is being recorded.' }),
     meeting_url: z.url().openapi({ description: 'The meeting URL the bot joins.' }),
     platform: z
@@ -53294,7 +56191,10 @@ const MeetingSessionSchema = z
     failure_reason: z
       .string()
       .nullable()
-      .openapi({ description: 'Human-readable failure reason if the session failed, or null.' }),
+      .openapi({
+        description:
+          'A machine-readable lifecycle reason, or null. Values include left_on_request, meeting_ended, everyone_left, no_one_joined, silence_timeout, max_duration_reached, admission_timeout, admission_denied, removed_from_meeting, recording_permission_denied, meeting_not_found, meeting_not_started, meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected, cancelled_calendar_event_deleted, cancelled_calendar_superseded, cancelled_policy, internal_error, and other. Treat this vocabulary as extensible.',
+      }),
     created_at: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Timestamp when the session was created.' }),
@@ -53316,11 +56216,25 @@ const MeetingSessionSchema = z
     updated_at: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Timestamp of the last update to the session.' }),
+    recording_export: z
+      .union([MeetingSessionRecordingExportSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Included on Google Meet and Teams create/retrieve responses, omitted from lists and update/leave responses. Null when disabled or no export reference is available.',
+      }),
+    remote_state_observed_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional observation time on session list items. Retrieve the individual session when current state is required.',
+      }),
   })
   .openapi({
     title: 'MeetingSession',
     description:
-      'Represents a meeting session. All serializer fields are present and required; nullable fields use null when absent. No actor, provider-bot, idempotency, routing, key, or internal fields are exposed.',
+      'Represents a meeting session. Core serializer fields are required; platform-specific fields are optional. Nullable fields use null when absent. No actor, provider-bot, idempotency, routing, key, or internal fields are exposed.',
     required: [
       'id',
       'account_id',
@@ -53471,12 +56385,39 @@ const MeetingSessionRecordingMediaDeletionResponseSchema = z
   })
   .openapi('MeetingSessionRecordingMediaDeletionResponse')
 
+const MeetingSessionRecordingsResponseSchema = z
+  .object({
+    data: z
+      .array(
+        z
+          .object({
+            type: z.string(),
+            url: z.url(),
+            expires_at: z.iso.datetime({ offset: true }).nullable(),
+          })
+          .openapi({ required: ['type', 'url', 'expires_at'] }),
+      )
+      .openapi({
+        description:
+          'Temporary download URLs for recordings held by the Meeting service, including Zoom and existing Google Meet and Teams recordings. Empty for customer Storage exports; use recording_export instead. Choose the download method from these fields rather than the platform alone.',
+      }),
+    recording_export: z
+      .union([MeetingSessionRecordingExportSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Customer Storage export, or null while unavailable/disabled. Omitted for sessions without Storage export support.',
+      }),
+  })
+  .openapi({ required: ['data'] })
+  .openapi('MeetingSessionRecordingsResponse')
+
 const MeetingSessionResponseSchema = z
   .strictObject({ data: MeetingSessionSchema })
   .openapi({ required: ['data'] })
   .openapi('MeetingSessionResponse')
 
-const PageMetaSchema = z
+const AgentMemoryPageMetaSchema = z
   .object({
     page_number: z
       .int()
@@ -53504,10 +56445,13 @@ const PageMetaSchema = z
     description:
       "Where a listing's page sits in the whole.\n\nA page is a snapshot: the counts it reports and the order it is drawn in\nboth move as writes land, so paging through a busy namespace can repeat or\nmiss an entry at a page boundary.",
   })
-  .openapi('PageMeta')
+  .openapi('AgentMemoryPageMeta')
 
 const MemoryListResponseSchema = z
-  .object({ data: z.array(ListedMemorySchema).openapi({ title: 'Data' }), meta: PageMetaSchema })
+  .object({
+    data: z.array(ListedMemorySchema).openapi({ title: 'Data' }),
+    meta: AgentMemoryPageMetaSchema,
+  })
   .openapi({ required: ['data', 'meta'], title: 'MemoryListResponse' })
   .openapi('MemoryListResponse')
 
@@ -56026,7 +58970,7 @@ const ModelMetadataSchema = z
       .openapi({
         title: 'Is Fine Tunable',
         description:
-          'Whether the model can be used as a base for a fine-tuning job via `POST /v2/ai/fine_tuning/jobs`.',
+          'Whether the model can be used as a base for fine-tuning. Fine-tuning jobs are no longer served by the Telnyx API.',
       }),
     recommended_for_assistants: z
       .boolean()
@@ -56586,18 +59530,19 @@ const NetworkRouteCreateSchema = z
       .string()
       .openapi({
         description:
-          'The IPv4 subnet to route, such as a subnet behind the tunnel. It must be a canonical CIDR. Default, loopback, link-local, multicast, and shared address space (`100.64.0.0/10`) ranges are rejected. So are ranges that overlap the Tailscale Subnet Router ranges, `172.27.254.0/24` and `198.18.0.0/20`, or a subnet already on the Network.',
+          'The IPv4 subnet to route, such as a subnet behind a tunnel or a WireGuard peer. It must be a canonical CIDR. Default, loopback, link-local, multicast, and shared address space (`100.64.0.0/10`) ranges are rejected. So are ranges that overlap the Tailscale Subnet Router ranges, `172.27.254.0/24` and `198.18.0.0/20`, or a subnet already on the Network.',
         example: '10.20.0.0/16',
       }),
     next_hop: z
       .object({
         type: z
-          .literal('tunnel')
+          .enum(['tunnel', 'wireguard_peer'])
           .openapi({ description: 'The type of the next hop.', example: 'tunnel' }),
         id: z
           .uuid()
           .openapi({
-            description: 'The id of the tunnel.',
+            description:
+              "The id of the tunnel, or of a WireGuard peer on the Network's WireGuard Interface.",
             example: '62d438d2-8a51-4c5e-9d0c-1f6b2a7e4c39',
           }),
       })
@@ -63970,49 +66915,108 @@ const PortingEventMessagingChangedPayloadSchema = z
   .openapi({ required: [] })
   .openapi('PortingEventMessagingChangedPayload')
 
-const PortingOrdersExceptionTypeSchema = z
+const PortingOrderStatusDetailsSchema = z
   .object({
     code: z
       .enum([
         'ACCOUNT_NUMBER_MISMATCH',
+        'ACCOUNT_NUMBER_MISMATCH_OR_MISSING',
+        'ACCOUNT_NUMBER_REQUIRED',
+        'ALL_DATA_MISMATCH',
         'AUTH_PERSON_MISMATCH',
         'BTN_ATN_MISMATCH',
+        'DOCUMENT_BLOCKED',
         'ENTITY_NAME_MISMATCH',
         'FOC_EXPIRED',
         'FOC_REJECTED',
+        'INCORRECT_LOA_TEMPLATE',
+        'INCORRECT_LOSING_COMMUNICATION_PROVIDER',
+        'INCORRECT_PORT_TYPE',
+        'INVALID_OR_MISSING_INVOICE',
+        'INVALID_OR_MISSING_LOA',
+        'INVALID_SIGNATURE_ON_THE_LOA',
+        'J2_PASSCODE_PIN_INVALID',
+        'LOA_ILLEGIBLE',
         'LOCATION_MISMATCH',
+        'LOSING_CARRIER_OUTAGE',
         'LSR_PENDING',
         'MAIN_BTN_PORTING',
+        'MISSING_MANDATORY_REQUIREMENT',
+        'MISSING_NUMBER_DETAILS',
+        'NUMBER_HAS_ASSOCIATED_SERVICES',
+        'ORDER_REFLOW',
         'OSP_IRRESPONSIVE',
         'OTHER',
         'PASSCODE_PIN_INVALID',
         'PHONE_NUMBER_HAS_SPECIAL_FEATURE',
         'PHONE_NUMBER_MISMATCH',
         'PHONE_NUMBER_NOT_PORTABLE',
-        'PORT_TYPE_INCORRECT',
         'PORTING_ORDER_SPLIT_REQUIRED',
+        'PORT_TYPE_INCORRECT',
         'POSTAL_CODE_MISMATCH',
         'RATE_CENTER_NOT_PORTABLE',
+        'RESELLER_INVALID',
+        'STRANDED_SERVICES_NEED_NEW_BTN',
         'SV_CONFLICT',
         'SV_UNKNOWN_FAILURE',
+        'TNS_ON_MULTIPLE_ACCOUNTS',
+        'TN_BUILD_CONFLICT',
+        'TN_DISCONNECTED',
+        'UNAUTHORIZED_PERSON_SIGNATURE',
       ])
-      .exactOptional()
-      .openapi({ description: 'Identifier of an exception type', example: 'ENTITY_NAME_MISMATCH' }),
+      .openapi({
+        description: 'Identifier of the exception. Includes legacy codes persisted on older orders',
+        example: 'ENTITY_NAME_MISMATCH',
+      }),
     description: z
       .string()
-      .exactOptional()
       .openapi({
-        description: 'Description of an exception type',
+        description: 'Description of the exception',
         example: 'Entity name does not match that on the CSR',
       }),
+    remediation: z
+      .object({
+        action: z
+          .enum([
+            'update_order_fields',
+            'upload_document',
+            'create_orders',
+            'assign_foc_datetime',
+            'wait',
+            'external_action',
+            'contact_support',
+          ])
+          .openapi({
+            description: 'The type of remediation action to take',
+            example: 'update_order_fields',
+          }),
+        fields: z
+          .array(z.string())
+          .openapi({
+            description: 'Patchable field paths to correct, empty when no field update applies',
+            example: ['end_user.location.postal_code'],
+          }),
+        required_document: z
+          .enum(['loa', 'invoice', 'null'])
+          .nullable()
+          .openapi({ description: 'The document to (re)upload, when applicable' }),
+        retryable: z
+          .boolean()
+          .openapi({ description: 'Whether resubmission or polling alone can unblock the order' }),
+      })
+      .openapi({
+        description:
+          'Structured remediation steps so an agent can map the exception to a fix via the API alone',
+        required: ['action', 'fields', 'required_document', 'retryable'],
+      }),
   })
-  .openapi({ required: [] })
-  .openapi('PortingOrdersExceptionType')
+  .openapi({ required: ['code', 'description', 'remediation'] })
+  .openapi('PortingOrderStatusDetails')
 
 const PortingOrderStatusSchema = z
   .object({
     details: z
-      .array(PortingOrdersExceptionTypeSchema)
+      .array(PortingOrderStatusDetailsSchema)
       .exactOptional()
       .openapi({ description: "A list of 0 or more details about this porting order's status" }),
     value: z
@@ -65419,6 +68423,96 @@ const PortingOrdersCommentSchema = z
   .openapi({ required: [] })
   .openapi('PortingOrdersComment')
 
+const PortingOrdersExceptionTypeSchema = z
+  .object({
+    code: z
+      .enum([
+        'ACCOUNT_NUMBER_MISMATCH',
+        'ACCOUNT_NUMBER_MISMATCH_OR_MISSING',
+        'ACCOUNT_NUMBER_REQUIRED',
+        'ALL_DATA_MISMATCH',
+        'AUTH_PERSON_MISMATCH',
+        'BTN_ATN_MISMATCH',
+        'DOCUMENT_BLOCKED',
+        'ENTITY_NAME_MISMATCH',
+        'FOC_EXPIRED',
+        'FOC_REJECTED',
+        'INCORRECT_LOA_TEMPLATE',
+        'INCORRECT_LOSING_COMMUNICATION_PROVIDER',
+        'INCORRECT_PORT_TYPE',
+        'INVALID_OR_MISSING_INVOICE',
+        'INVALID_OR_MISSING_LOA',
+        'INVALID_SIGNATURE_ON_THE_LOA',
+        'J2_PASSCODE_PIN_INVALID',
+        'LOCATION_MISMATCH',
+        'LSR_PENDING',
+        'MAIN_BTN_PORTING',
+        'MISSING_MANDATORY_REQUIREMENT',
+        'MISSING_NUMBER_DETAILS',
+        'NUMBER_HAS_ASSOCIATED_SERVICES',
+        'ORDER_REFLOW',
+        'OSP_IRRESPONSIVE',
+        'OTHER',
+        'PASSCODE_PIN_INVALID',
+        'PHONE_NUMBER_MISMATCH',
+        'PHONE_NUMBER_NOT_PORTABLE',
+        'POSTAL_CODE_MISMATCH',
+        'RATE_CENTER_NOT_PORTABLE',
+        'RESELLER_INVALID',
+        'STRANDED_SERVICES_NEED_NEW_BTN',
+        'SV_CONFLICT',
+        'SV_UNKNOWN_FAILURE',
+        'TNS_ON_MULTIPLE_ACCOUNTS',
+        'TN_BUILD_CONFLICT',
+        'TN_DISCONNECTED',
+        'UNAUTHORIZED_PERSON_SIGNATURE',
+      ])
+      .openapi({ description: 'Identifier of an exception type', example: 'ENTITY_NAME_MISMATCH' }),
+    description: z
+      .string()
+      .openapi({
+        description: 'Description of an exception type',
+        example: 'Entity name does not match that on the CSR',
+      }),
+    remediation: z
+      .object({
+        action: z
+          .enum([
+            'update_order_fields',
+            'upload_document',
+            'create_orders',
+            'assign_foc_datetime',
+            'wait',
+            'external_action',
+            'contact_support',
+          ])
+          .openapi({
+            description: 'The type of remediation action to take',
+            example: 'update_order_fields',
+          }),
+        fields: z
+          .array(z.string())
+          .openapi({
+            description: 'Patchable field paths to correct, empty when no field update applies',
+            example: ['end_user.location.postal_code'],
+          }),
+        required_document: z
+          .enum(['loa', 'invoice', 'null'])
+          .nullable()
+          .openapi({ description: 'The document to (re)upload, when applicable' }),
+        retryable: z
+          .boolean()
+          .openapi({ description: 'Whether resubmission or polling alone can unblock the order' }),
+      })
+      .openapi({
+        description:
+          'Structured remediation steps so an agent can map the exception to a fix via the API alone',
+        required: ['action', 'fields', 'required_document', 'retryable'],
+      }),
+  })
+  .openapi({ required: ['code', 'description', 'remediation'] })
+  .openapi('PortingOrdersExceptionType')
+
 const PortingPhoneNumberBlockSchema = z
   .object({
     id: z
@@ -66791,7 +69885,10 @@ const ProfileSchema = z
   .openapi('Profile')
 
 const ProfileListResponseSchema = z
-  .object({ data: z.array(ProfileSchema).openapi({ title: 'Data' }), meta: PageMetaSchema })
+  .object({
+    data: z.array(ProfileSchema).openapi({ title: 'Data' }),
+    meta: AgentMemoryPageMetaSchema,
+  })
   .openapi({ required: ['data', 'meta'], title: 'ProfileListResponse' })
   .openapi('ProfileListResponse')
 
@@ -68530,11 +71627,41 @@ const ReleaseSchema = z
 
 const RemediationPerNumberResultsSchema = z
   .object({
-    remediated: z.array(z.string().openapi({ example: '+19493253498' })).exactOptional(),
-    not_flagged: z.array(z.string()).exactOptional(),
-    requires_review: z.array(z.string()).exactOptional(),
-    ineligible: z.array(z.string()).exactOptional(),
-    refused: z.array(z.string()).exactOptional(),
+    remediated: z
+      .array(z.string().openapi({ example: '+19493253498' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'The reputation partner approved redress (redress approved) or reported that the number had already been redressed recently (already recently redressed). This does not guarantee removal from every spam list.',
+      }),
+    not_flagged: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The reputation partner reported no prior spam label for the number (no prior spam label).',
+      }),
+    requires_review: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The number needs further review, or the partner response did not match a recognized outcome.',
+      }),
+    ineligible: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Numbers the reputation partner did not re-review because it had already reviewed them within the previous 60 days (already reviewed). The cooldown is measured from the partner's most recent review, not the API submission date. This array identifies the numbers but does not include their last-review or re-eligibility dates.",
+      }),
+    refused: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The reputation partner reviewed the number and declined the redress request (redress declined); the number remains flagged.',
+      }),
   })
   .openapi({
     description:
@@ -68571,7 +71698,11 @@ const RemediationRequestSchema = z
       }),
     phone_numbers_ineligible: z
       .int()
-      .openapi({ description: 'Numbers rejected before submission (e.g. cooldown).', example: 0 }),
+      .openapi({
+        description:
+          'Number of phone numbers the reputation partner did not re-review because it had reviewed them within the previous 60 days.',
+        example: 0,
+      }),
     call_purpose: z.string().openapi({ example: 'Appointment reminders for our dental clinic.' }),
     contact_email: z.email().nullable().exactOptional().openapi({ example: 'ops@example.com' }),
     webhook_url: z
@@ -71426,7 +74557,10 @@ const SendChatMeetingSessionRequestSchema = z
       .string()
       .min(1)
       .max(4000)
-      .openapi({ description: 'Chat message text to send in the meeting.' }),
+      .openapi({
+        description:
+          'Message text, 1–4000 characters. On Google Meet and Teams, also at most 4096 UTF-8 bytes and nonblank; control characters other than tab and line breaks are rejected. CRLF is normalized to LF.',
+      }),
   })
   .openapi({ title: 'SendChatMeetingSessionRequest', required: ['text'] })
   .openapi('SendChatMeetingSessionRequest')
@@ -72684,7 +75818,10 @@ const SourceListEnvelopeSchema = z
   .openapi('SourceListEnvelope')
 
 const SourceListResponseSchema = z
-  .object({ data: z.array(SourceSchema).openapi({ title: 'Data' }), meta: PageMetaSchema })
+  .object({
+    data: z.array(SourceSchema).openapi({ title: 'Data' }),
+    meta: AgentMemoryPageMetaSchema,
+  })
   .openapi({ required: ['data', 'meta'], title: 'SourceListResponse' })
   .openapi('SourceListResponse')
 
@@ -72743,7 +75880,12 @@ const SourceWithContentSchema = z
         description: 'When the source was last written; re-ingesting moves it.',
       }),
     content: z
-      .union([z.looseObject({}), z.union([z.array(z.any()), z.string(), z.number(), z.boolean()])])
+      .union([
+        z.looseObject({}).openapi({ title: 'Source Content Object' }),
+        z
+          .union([z.array(z.any()), z.string(), z.number(), z.boolean()])
+          .openapi({ title: 'Source Content Value' }),
+      ])
       .openapi({
         title: 'Content',
         description:
@@ -72837,7 +75979,6 @@ const SpeakRequestSchema = z
         InworldVoiceSettingsSchema,
         XAIVoiceSettingsSchema,
         SonioxVoiceSettingsSchema,
-        AssemblyAIVoiceSettingsSchema,
       ])
       .exactOptional()
       .openapi({
@@ -72854,7 +75995,6 @@ const SpeakRequestSchema = z
             inworld: '#/components/schemas/InworldVoiceSettings',
             xai: '#/components/schemas/XAIVoiceSettings',
             soniox: '#/components/schemas/SonioxVoiceSettings',
-            assemblyai: '#/components/schemas/AssemblyAIVoiceSettings',
           },
         },
       }),
@@ -76944,7 +80084,7 @@ const TelnyxErrorSchema = z
     title: z.string().exactOptional(),
     detail: z.string().exactOptional(),
     source: z
-      .object({ pointer: z.string().exactOptional() })
+      .object({ pointer: z.string().exactOptional(), parameter: z.string().exactOptional() })
       .exactOptional()
       .openapi({ required: [] }),
     meta: z.object({ url: z.string().exactOptional() }).exactOptional().openapi({ required: [] }),
@@ -77290,8 +80430,11 @@ const TestPersonalitySchema = z
       .exactOptional()
       .openapi({ description: 'Idle-timeout plan for messages during a call.' }),
     start_speaking_plan: z
-      .union([z.number(), z.looseObject({})])
-      .nullable()
+      .union([
+        z.number().openapi({ title: 'Start Speaking Plan Number' }),
+        z.looseObject({}).openapi({ title: 'Start Speaking Plan Object' }),
+        z.null().nullable(),
+      ])
       .exactOptional(),
     stop_speaking_plan: z.looseObject({}).nullable().exactOptional(),
     background_sound_volume: z.number().nullable().exactOptional(),
@@ -81603,10 +84746,21 @@ const TrafficPolicyProfileSchema = z
 
 const TranscriptSegmentSchema = z
   .strictObject({
-    seq: z.int(),
+    seq: z
+      .int()
+      .openapi({
+        description:
+          'Monotonic transcript append cursor. This is separate from the event-history cursor and does not establish conversational turn order.',
+      }),
     text: z.string(),
     confidence: z.number().min(0).max(1).nullable(),
-    speaker_label: z.string().nullable(),
+    speaker_label: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Recorded participant or bot label, or null when unavailable. Labels are attribution, not verified identity. Segments from concurrent speakers can finalize in a different order from the conversation.',
+      }),
     relative_ts: z.number().nullable(),
     occurred_at: z.iso.datetime({ offset: true }),
   })
@@ -83516,6 +86670,107 @@ const UpdateBrandSchema = z
     required: ['entityType', 'displayName', 'country', 'email', 'vertical'],
   })
   .openapi('UpdateBrand')
+
+const UpdateCalendarConnectionRequestSchema = z
+  .strictObject({
+    auto_join_policy: z
+      .enum(['all_meetings', 'external_organizer_excluded', 'per_meeting'])
+      .exactOptional()
+      .openapi({
+        description:
+          'all_meetings joins eligible events; external_organizer_excluded requires the connected user to be the organizer; per_meeting requires an explicit opt-in.',
+      }),
+    bot_name: z
+      .union([
+        z
+          .string()
+          .min(1)
+          .max(100)
+          .openapi({ description: 'Bot display name; null clears the override.' }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
+    default_barge_in: z
+      .union([
+        z
+          .boolean()
+          .openapi({
+            description:
+              'Default manual speech interruption. Cannot be true with default_assistant.',
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
+    default_summarize_on_end: z
+      .union([
+        z
+          .boolean()
+          .openapi({
+            description: 'Generate a summary when each future session transcript finalizes.',
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
+    default_voice: z
+      .union([
+        z
+          .string()
+          .min(1)
+          .max(100)
+          .openapi({
+            description: 'Manual-speech voice; must be null when default_assistant is set.',
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
+    default_assistant: z
+      .union([CalendarAssistantDefaultsSchema, z.null().nullable()])
+      .exactOptional(),
+    default_recording: z
+      .union([
+        z
+          .boolean()
+          .openapi({
+            description:
+              'Google Meet and Teams recording intent. When null, recording is enabled only if a destination is set. True requires default_recording_export; false cannot be combined with a destination.',
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
+    default_recording_export: z
+      .union([MeetingSessionRecordingDestinationSchema, z.null().nullable()])
+      .exactOptional(),
+    default_webhook_url: z
+      .union([
+        z
+          .url()
+          .max(2048)
+          .openapi({
+            description:
+              'HTTPS destination for future session webhooks. Null clears the default. A non-null update returns webhook_secret once; save it to verify signatures for sessions created with this default. Existing sessions retain their original signing secret.',
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .openapi({ required: [] })
+  .openapi('UpdateCalendarConnectionRequest')
+
+const UpdateCalendarMeetingRequestSchema = z
+  .strictObject({
+    bot_will_join: z.union([
+      z
+        .boolean()
+        .openapi({
+          description:
+            'True opts in, false opts out, null follows connection policy. A supported meeting URL is still required.',
+        }),
+      z.null().nullable(),
+    ]),
+  })
+  .openapi({ required: ['bot_will_join'] })
+  .openapi('UpdateCalendarMeetingRequest')
 
 const UpdateCallControlApplicationRequestSchema = z
   .object({
@@ -90890,6 +94145,20 @@ const X402TransactionResponseSchema = z
   .openapi({ required: [] })
   .openapi('X402TransactionResponse')
 
+const AgentMemoryTelnyxErrorSchema = z
+  .object({
+    code: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    detail: z.string().exactOptional(),
+    source: z
+      .object({ pointer: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    meta: z.object({ url: z.string().exactOptional() }).exactOptional().openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('AgentMemoryTelnyxError')
+
 const AiGatewayResourcesErrorSchema = z
   .strictObject({ errors: z.array(ErrorItemSchema).min(1) })
   .openapi({ required: ['errors'] })
@@ -93039,15 +96308,371 @@ const CallsInitiateAICallRequestSchema = z
 const CallsInitiateCallRequestSchema = z
   .xor([
     z
-      .object({ Texml: z.never().exactOptional() })
+      .object({ Texml: z.never().exactOptional().openapi({ not: {} }) })
       .openapi({ title: 'With URL', required: ['Url'] }),
     z
-      .object({ Url: z.never().exactOptional() })
+      .object({ Url: z.never().exactOptional().openapi({ not: {} }) })
       .openapi({ title: 'With TeXML', required: ['Texml'] }),
     z
-      .object({ Url: z.never().exactOptional(), Texml: z.never().exactOptional() })
+      .object({
+        Url: z.never().exactOptional().openapi({ not: {} }),
+        Texml: z.never().exactOptional().openapi({ not: {} }),
+      })
       .openapi({ title: 'Application Default', required: [] }),
   ])
+  .and(
+    z
+      .object({
+        ApplicationSid: z.string().openapi({ description: 'The ID of the TeXML Application.' }),
+        To: z
+          .string()
+          .openapi({
+            description:
+              'The phone number of the called party. Phone numbers are formatted with a `+` and country code.',
+            example: '+16175551212',
+          }),
+        From: z
+          .string()
+          .openapi({
+            description:
+              'The phone number of the party that initiated the call. Phone numbers are formatted with a `+` and country code.',
+            example: '+16175551212',
+          }),
+        CallerId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'To be used as the caller id name (SIP From Display Name) presented to the destination (`To` number). The string should have a maximum of 128 characters, containing only letters, numbers, spaces, and `-_~!.+` special characters. If ommited, the display name will be the same as the number in the `From` field.',
+            example: 'Info',
+          }),
+        Url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL from which Telnyx will retrieve the TeXML call instructions.',
+            example: 'https://www.example.com/instructions.xml',
+          }),
+        UrlMethod: z
+          .enum(['GET', 'POST'])
+          .default('POST')
+          .exactOptional()
+          .openapi({
+            description:
+              'HTTP request type used for `Url`. The default value is inherited from TeXML Application setting.',
+            example: 'GET',
+          }),
+        FallbackUrl: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A failover URL for which Telnyx will retrieve the TeXML call instructions if the `Url` is not responding.',
+            example: 'https://www.example.com/instructions-fallback.xml',
+          }),
+        StatusCallback: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'URL destination for Telnyx to send status callback events to for the call.',
+            example: 'https://www.example.com/callback',
+          }),
+        StatusCallbackMethod: z
+          .enum(['GET', 'POST'])
+          .default('POST')
+          .exactOptional()
+          .openapi({ description: 'HTTP request type used for `StatusCallback`.', example: 'GET' }),
+        StatusCallbackEvent: z
+          .string()
+          .default('completed')
+          .exactOptional()
+          .openapi({
+            description:
+              'The call events for which Telnyx should send a webhook. Multiple events can be defined when separated by a space.',
+            example: 'initiated answered',
+          }),
+        MachineDetection: z
+          .enum(['Enable', 'Disable', 'DetectMessageEnd'])
+          .default('Disable')
+          .exactOptional()
+          .openapi({ description: 'Enables Answering Machine Detection.', example: 'Enable' }),
+        DetectionMode: z
+          .enum(['Premium', 'Regular', 'PremiumCallScreening'])
+          .default('Regular')
+          .exactOptional()
+          .openapi({
+            description:
+              'Allows you to choose between Regular, Premium, and PremiumCallScreening detections. See https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection',
+            example: 'Premium',
+          }),
+        AsyncAmd: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              'Select whether to perform answering machine detection in the background. By default execution is blocked until Answering Machine Detection is completed.',
+            example: 'true',
+          }),
+        AsyncAmdStatusCallback: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL destination for Telnyx to send AMD callback events to for the call.',
+            example: 'https://www.example.com/callback',
+          }),
+        AsyncAmdStatusCallbackMethod: z
+          .enum(['GET', 'POST'])
+          .default('POST')
+          .exactOptional()
+          .openapi({
+            description:
+              'HTTP request type used for `AsyncAmdStatusCallback`. The default value is inherited from TeXML Application setting.',
+            example: 'GET',
+          }),
+        MachineDetectionTimeout: z
+          .int()
+          .default(30000)
+          .exactOptional()
+          .openapi({
+            description: 'Maximum timeout threshold in milliseconds for overall detection.',
+            example: '5000',
+          }),
+        MachineDetectionPromptEndTimeout: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Silence duration threshold after a call screening prompt before ending prompt detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.',
+            example: '5000',
+          }),
+        MachineDetectionSpeechThreshold: z
+          .int()
+          .default(3500)
+          .exactOptional()
+          .openapi({
+            description:
+              'Maximum threshold of a human greeting. If greeting longer than this value, considered machine. Ignored when `premium` detection is used.',
+            example: '2000',
+          }),
+        MachineDetectionSpeechEndThreshold: z
+          .int()
+          .default(800)
+          .exactOptional()
+          .openapi({
+            description:
+              'Silence duration threshold after a greeting message or voice for it be considered human. Ignored when `premium` detection is used.',
+            example: '2000',
+          }),
+        MachineDetectionSilenceTimeout: z
+          .int()
+          .default(3500)
+          .exactOptional()
+          .openapi({
+            description:
+              'If initial silence duration is greater than this value, consider it a machine. Ignored when `premium` detection is used.',
+            example: '2000',
+          }),
+        CancelPlaybackOnMachineDetection: z
+          .boolean()
+          .default(true)
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to cancel ongoing playback on `machine` detection. Defaults to `true`.',
+            example: 'false',
+          }),
+        CancelPlaybackOnDetectMessageEnd: z
+          .boolean()
+          .default(true)
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to cancel ongoing playback on `greeting ended` detection. Defaults to `true`.',
+            example: 'false',
+          }),
+        DeepfakeDetection: z
+          .literal('Enable')
+          .exactOptional()
+          .openapi({
+            description:
+              'Enables Deepfake Detection on the dialed call. When enabled, audio from the remote party is analyzed to determine whether the voice is AI-generated. Results are delivered asynchronously via a callback.',
+            example: 'Enable',
+          }),
+        DeepfakeDetectionCallbackUrl: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'URL destination for Telnyx to send deepfake detection callback events to for the call.',
+            example: 'https://www.example.com/deepfake-callback',
+          }),
+        DeepfakeDetectionCallbackMethod: z
+          .enum(['GET', 'POST'])
+          .default('POST')
+          .exactOptional()
+          .openapi({
+            description: 'HTTP request type used for `DeepfakeDetectionCallbackUrl`.',
+            example: 'GET',
+          }),
+        PreferredCodecs: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The list of comma-separated codecs to be offered on a call.',
+            example: 'PCMA,PCMU',
+          }),
+        Record: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              "Whether to record the entire participant's call leg. Defaults to `false`.",
+            example: 'false',
+          }),
+        RecordingChannels: z
+          .enum(['mono', 'dual'])
+          .exactOptional()
+          .openapi({
+            description: 'The number of channels in the final recording. Defaults to `mono`.',
+            example: 'dual',
+          }),
+        RecordingStatusCallback: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL the recording callbacks will be sent to.',
+            example: 'https://example.com/recording_status_callback',
+          }),
+        RecordingStatusCallbackMethod: z
+          .enum(['GET', 'POST'])
+          .exactOptional()
+          .openapi({
+            description:
+              'HTTP request type used for `RecordingStatusCallback`. Defaults to `POST`.',
+            example: 'GET',
+          }),
+        RecordingStatusCallbackEvent: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The changes to the recording's state that should generate a call to `RecoridngStatusCallback`. Can be: `in-progress`, `completed` and `absent`. Separate multiple values with a space. Defaults to `completed`.",
+            example: 'in-progress completed absent',
+          }),
+        RecordingTimeout: z
+          .int()
+          .default(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that Telnyx will wait for the recording to be stopped if silence is detected. The timer only starts when the speech is detected. Please note that the transcription is used to detect silence and the related charge will be applied. The minimum value is 0. The default value is 0 (infinite)',
+            example: '5',
+          }),
+        RecordingTrack: z
+          .enum(['inbound', 'outbound', 'both'])
+          .exactOptional()
+          .openapi({
+            description: 'The audio track to record for the call. The default is `both`.',
+            example: 'inbound',
+          }),
+        SendRecordingUrl: CallsSendRecordingUrlSchema.exactOptional(),
+        SipAuthPassword: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The password to use for SIP authentication.', example: '1234' }),
+        SipAuthUsername: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The username to use for SIP authentication.', example: 'user' }),
+        Trim: z
+          .enum(['trim-silence', 'do-not-trim'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to trim any leading and trailing silence from the recording. Defaults to `trim-silence`.',
+            example: 'trim-silence',
+          }),
+        CustomHeaders: z
+          .array(
+            z
+              .object({
+                name: z.string().openapi({ description: 'The name of the custom header' }),
+                value: z.string().openapi({ description: 'The value of the custom header' }),
+              })
+              .openapi({ required: ['name', 'value'] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "Custom HTTP headers to be sent with the call. Each header should be an object with 'name' and 'value' properties.",
+            example: [{ name: 'X-Custom-Header', value: 'custom-value' }],
+          }),
+        SipRegion: z
+          .enum(['US', 'Europe', 'Canada', 'Australia', 'Middle East'])
+          .default('US')
+          .exactOptional()
+          .openapi({
+            description: 'Defines the SIP region to be used for the call.',
+            example: 'Canada',
+          }),
+        MediaEncryption: z
+          .enum(['disabled', 'SRTP', 'DTLS'])
+          .default('disabled')
+          .exactOptional()
+          .openapi({
+            description:
+              'Defines whether media should be encrypted on the call. When set to `SRTP`, the call will use Secure Real-time Transport Protocol for media encryption. When set to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP destinations.',
+            example: 'disabled',
+          }),
+        SuperviseCallSid: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The call control ID of the existing call to supervise. When provided, the created leg will be added to the specified call in supervising mode. Status callbacks and action callbacks will NOT be sent for the supervising leg.',
+            example: 'v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg',
+          }),
+        SupervisingRole: z
+          .enum(['barge', 'whisper', 'monitor'])
+          .default('barge')
+          .exactOptional()
+          .openapi({
+            description:
+              'The supervising role for the new leg. Determines the audio behavior: barge (hear both sides), whisper (only hear supervisor), monitor (hear both sides but supervisor muted). Default: barge',
+            example: 'monitor',
+          }),
+        Timeout: z
+          .int()
+          .default(30)
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds to wait for the called party to answer the call before the call is canceled. The minimum value is 5 and the maximum value is 120. Default is 30 seconds.',
+            example: '60',
+            'x-stainless-param': 'timeout_seconds',
+          }),
+        TimeLimit: z
+          .int()
+          .default(14400)
+          .exactOptional()
+          .openapi({
+            description:
+              'The maximum duration of the call in seconds. The minimum value is 30 and the maximum value is 14400 (4 hours). Default is 14400 seconds.',
+            example: '3600',
+          }),
+        Texml: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'TeXML to be used as instructions for the call. If provided, the call will execute these instructions instead of fetching from the Url.',
+            example: '<?xml version="1.0" encoding="UTF-8"?><Response><Say>Hello</Say></Response>',
+          }),
+      })
+      .openapi({ required: ['To', 'From', 'ApplicationSid'] }),
+  )
   .openapi({
     title: 'Initiate Call Request',
     required: ['To', 'From', 'ApplicationSid'],
@@ -98583,7 +102208,7 @@ const SiprecSiprecErrorSchema = z
   .openapi({ required: ['code', 'title'] })
   .openapi('SiprecSiprecError')
 
-const SonioxModelsSchema = z.literal('soniox/stt-rt-v4').openapi('SonioxModels')
+const SonioxModelsSchema = z.enum(['soniox/stt-rt-v4', 'soniox/stt-rt-v6']).openapi('SonioxModels')
 
 const SpeechToTextErrorSchema = z
   .object({
@@ -100983,25 +104608,132 @@ const MeetingCreateProviderErrorResponse = {
   },
 }
 
-const MeetingReadAuthUnavailableResponse = {
-  description: 'Authentication is temporarily unavailable.',
+const MeetingCreateTooManyRequestsResponse = {
+  description:
+    'Meeting capacity is reached (capacity_exceeded), or authentication is overloaded (auth_overloaded). Honor Retry-After when present; otherwise back off. Retry the original create request with the same idempotency key.',
   content: {
     'application/json': {
       schema: MeetingSessionsErrorResponseSchema,
-      example: {
-        error: { code: 'auth_unavailable', message: 'authentication service unavailable' },
+      examples: {
+        capacity_exceeded: {
+          value: {
+            error: {
+              code: 'capacity_exceeded',
+              message: 'Meeting capacity is reached; retry later.',
+            },
+          },
+        },
+        auth_overloaded: {
+          value: {
+            error: { code: 'auth_overloaded', message: 'authentication temporarily overloaded' },
+          },
+        },
+      },
+    },
+  },
+  headers: z.object({
+    'Retry-After': z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'Seconds to wait, when supplied.', param: { required: false } }),
+  }),
+}
+
+const MeetingReadAuthUnavailableResponse = {
+  description:
+    'Authentication or session data is temporarily unavailable. Retry reads with backoff.',
+  content: {
+    'application/json': {
+      schema: MeetingSessionsErrorResponseSchema,
+      examples: {
+        authentication: {
+          value: {
+            error: { code: 'auth_unavailable', message: 'authentication service unavailable' },
+          },
+        },
+        session: {
+          value: {
+            error: { code: 'not_configured', message: 'Session data is temporarily unavailable.' },
+          },
+        },
+      },
+    },
+  },
+}
+
+const MeetingReadUnavailableResponse = {
+  description: 'Current meeting data could not be retrieved. Retry the read with backoff.',
+  content: {
+    'application/json': {
+      schema: MeetingSessionsErrorResponseSchema,
+      examples: {
+        provider_error: {
+          value: {
+            error: { code: 'provider_error', message: 'Meeting data is temporarily unavailable.' },
+          },
+        },
+      },
+    },
+  },
+}
+
+const MeetingScheduleConflictResponse = {
+  description:
+    'The session is no longer editable, the calendar controls it, or another edit remains pending.',
+  content: {
+    'application/json': {
+      schema: MeetingSessionsErrorResponseSchema,
+      examples: {
+        invalid_state: {
+          value: {
+            error: { code: 'invalid_state', message: 'only scheduled sessions can be updated' },
+          },
+        },
+        calendar_managed: {
+          value: {
+            error: {
+              code: 'calendar_managed',
+              message: 'edit the calendar event for this session',
+            },
+          },
+        },
+        edit_in_progress: {
+          value: {
+            error: {
+              code: 'edit_in_progress',
+              message: 'a previous schedule edit is still reconciling',
+            },
+          },
+        },
       },
     },
   },
 }
 
 const MeetingSendChatProviderErrorResponse = {
-  description: 'The meeting provider rejected native chat delivery.',
+  description:
+    'Chat failed or its delivery is uncertain. Each new action sends a new message. Check chat before retrying an unknown outcome.',
   content: {
     'application/json': {
       schema: MeetingSessionsErrorResponseSchema,
-      example: {
-        error: { code: 'provider_error', message: 'meeting provider rejected chat message' },
+      examples: {
+        chat_not_sent: {
+          value: { error: { code: 'chat_not_sent', message: 'Chat was not sent.' } },
+        },
+        chat_delivery_unknown: {
+          value: {
+            error: {
+              code: 'chat_delivery_unknown',
+              message: 'Chat delivery is uncertain; check meeting chat before retrying.',
+            },
+          },
+        },
+        provider_error: {
+          value: {
+            error: { code: 'provider_error', message: 'meeting provider rejected chat message' },
+          },
+        },
       },
     },
   },
@@ -109519,20 +113251,54 @@ const CallRecordingsPageConsolidatedParamsSchema = z
 const CallScriptingFilterConsolidatedParamsSchema = z
   .object({
     outbound_voice_profile_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        example: '1293384261075731499',
-        description: 'Identifies the associated outbound voice profile.',
-      }),
+      .xor([
+        z
+          .string()
+          .openapi({
+            example: '1293384261075731499',
+            description:
+              'If present, only applications associated with the given outbound voice profile will be returned. Matching is exact.',
+          }),
+        z
+          .object({
+            eq: z
+              .string()
+              .exactOptional()
+              .openapi({
+                example: '1293384261075731499',
+                description: 'Exact match for the associated outbound voice profile.',
+              }),
+          })
+          .openapi({ required: [] }),
+      ])
+      .exactOptional(),
     friendly_name: z
-      .string()
-      .default('null')
-      .exactOptional()
-      .openapi({
-        description:
-          'If present, applications with <code>friendly_name</code> containing the given value will be returned. Matching is not case-sensitive. Requires at least three characters.',
-      }),
+      .xor([
+        z
+          .string()
+          .openapi({
+            description:
+              'If present, applications with <code>friendly_name</code> exactly matching the given value will be returned. Matching is case-sensitive.',
+          }),
+        z
+          .object({
+            eq: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'Exact match for friendly_name. Matching is case-sensitive.',
+              }),
+            contains: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'If present, applications with <code>friendly_name</code> containing the given value will be returned. Matching is not case-sensitive.',
+              }),
+          })
+          .openapi({ required: [] }),
+      ])
+      .exactOptional(),
   })
   .exactOptional()
   .openapi({
@@ -109547,15 +113313,47 @@ const CallScriptingFilterConsolidatedParamsSchema = z
         type: 'object',
         properties: {
           outbound_voice_profile_id: {
-            type: 'string',
-            example: '1293384261075731499',
-            description: 'Identifies the associated outbound voice profile.',
+            oneOf: [
+              {
+                type: 'string',
+                example: '1293384261075731499',
+                description:
+                  'If present, only applications associated with the given outbound voice profile will be returned. Matching is exact.',
+              },
+              {
+                type: 'object',
+                properties: {
+                  eq: {
+                    type: 'string',
+                    example: '1293384261075731499',
+                    description: 'Exact match for the associated outbound voice profile.',
+                  },
+                },
+              },
+            ],
           },
           friendly_name: {
-            type: 'string',
-            default: 'null',
-            description:
-              'If present, applications with <code>friendly_name</code> containing the given value will be returned. Matching is not case-sensitive. Requires at least three characters.',
+            oneOf: [
+              {
+                type: 'string',
+                description:
+                  'If present, applications with <code>friendly_name</code> exactly matching the given value will be returned. Matching is case-sensitive.',
+              },
+              {
+                type: 'object',
+                properties: {
+                  eq: {
+                    type: 'string',
+                    description: 'Exact match for friendly_name. Matching is case-sensitive.',
+                  },
+                  contains: {
+                    type: 'string',
+                    description:
+                      'If present, applications with <code>friendly_name</code> containing the given value will be returned. Matching is not case-sensitive.',
+                  },
+                },
+              },
+            ],
           },
         },
       },
@@ -109576,7 +113374,7 @@ const CallScriptingPageConsolidatedParamsSchema = z
             : val,
         z.int().min(1).max(250),
       )
-      .default(250)
+      .default(100)
       .exactOptional()
       .openapi({ description: 'The size of the page' }),
     number: z
@@ -109609,7 +113407,7 @@ const CallScriptingPageConsolidatedParamsSchema = z
             type: 'integer',
             minimum: 1,
             maximum: 250,
-            default: 250,
+            default: 100,
             description: 'The size of the page',
           },
           number: {
@@ -111485,18 +115283,7 @@ const PronunciationDictIdParamsSchema = z
   })
 
 const ProviderParamsSchema = z
-  .enum([
-    'aws',
-    'telnyx',
-    'azure',
-    'elevenlabs',
-    'minimax',
-    'resemble',
-    'xai',
-    'humain',
-    'soniox',
-    'assemblyai',
-  ])
+  .enum(['aws', 'telnyx', 'azure', 'elevenlabs', 'minimax', 'resemble', 'xai', 'humain', 'soniox'])
   .default('telnyx')
   .exactOptional()
   .openapi({
@@ -111518,7 +115305,6 @@ const ProviderParamsSchema = z
           'xai',
           'humain',
           'soniox',
-          'assemblyai',
         ],
         default: 'telnyx',
       },
@@ -113743,7 +117529,13 @@ const WWWAuthenticateChallengeHeaderSchema = z
     param: { required: false },
   })
 
-const BearerAuthSecurityScheme = { type: 'http', scheme: 'bearer' }
+const BearerAuthSecurityScheme = {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'API key',
+  description:
+    'Telnyx API key supplied as `Authorization: Bearer <token>`. In production, auth may be validated by the API gateway and forwarded via Telnyx auth headers.',
+}
 
 const PaymentSecurityScheme = {
   type: 'apiKey',
@@ -113753,11 +117545,19 @@ const PaymentSecurityScheme = {
     'Machine Payment Protocol credential used on paid retries, sent as `Authorization: Payment ...`. Obtained by paying a challenge returned in the `WWW-Authenticate` header of a 402 response. This is not a Telnyx API key; initial challenge requests use standard bearer authentication instead.',
 }
 
+const AgentGatewayBearerAuthSecurityScheme = {
+  type: 'http',
+  scheme: 'bearer',
+  description: 'Telnyx API key',
+}
+
 const AgentMemoryBearerAuthSecurityScheme = {
   type: 'http',
   scheme: 'bearer',
   description: 'Telnyx API key',
 }
+
+const BearerAuth2SecurityScheme = { type: 'http', scheme: 'bearer' }
 
 const BrandedCallingBearerAuthSecurityScheme = {
   type: 'http',
@@ -117895,24 +121695,36 @@ export const postAddressesActionsValidateRoute = createRoute({
         'Address validation failed. A completed validation with an invalid result returns `data.result: invalid`, with normalized or suggested address fields in `data.suggested` when available, and a top-level `errors` array. Other validation errors can return only `errors`, without `data`. Check `errors` before accessing the optional validation result.',
       content: {
         'application/json': {
-          schema: ErrorsSchema.and(
-            z
-              .object({
-                data: ValidateAddressResultSchema.and(
-                  z
-                    .object({
-                      result: z.literal('invalid').exactOptional().openapi({ example: 'invalid' }),
-                    })
-                    .openapi({ required: [] }),
-                )
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Present when a validation result is available; omitted for errors that do not produce a validation result.',
-                  }),
-              })
-              .openapi({ required: [] }),
-          ).openapi({ title: 'Validate address failure response', required: ['errors'] }),
+          schema: ErrorsSchema.and(z.looseObject({}).openapi({ required: ['errors'] }))
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'errors')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .and(
+              z
+                .object({
+                  data: ValidateAddressResultSchema.and(
+                    z
+                      .object({
+                        result: z
+                          .literal('invalid')
+                          .exactOptional()
+                          .openapi({ example: 'invalid' }),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Present when a validation result is available; omitted for errors that do not produce a validation result.',
+                    }),
+                })
+                .openapi({ required: [] }),
+            )
+            .openapi({ title: 'Validate address failure response', required: ['errors'] }),
           examples: {
             invalid_result: {
               summary: 'Invalid result with errors',
@@ -118228,6 +122040,5468 @@ export const getAdvancedOrdersOrderIdRoute = createRoute({
   },
 })
 
+export const getAgentGatewaysRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways',
+  tags: ['Agent Gateways'],
+  summary: 'List Agent Gateways',
+  description: "Lists the account's Agent Gateway instances, newest first, one page at a time.",
+  operationId: 'ListAgentGateways',
+  request: {
+    query: z.object({
+      'page[number]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1),
+        )
+        .default(1)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page[number]',
+            in: 'query',
+            required: false,
+            description: 'The page to return, counting from 1.',
+            schema: { type: 'integer', minimum: 1, default: 1 },
+          },
+        }),
+      'page[size]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .default(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page[size]',
+            in: 'query',
+            required: false,
+            description: 'Results per page.',
+            schema: { type: 'integer', minimum: 1, maximum: 100, default: 50 },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'One page of instances',
+      content: {
+        'application/json': {
+          schema: AgentGatewayListResponseSchema,
+          example: {
+            data: [
+              {
+                id: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+                name: 'support-gw',
+                engine: 'litellm',
+                engine_version: 'v1.105.1',
+                status: 'ready',
+                gateway_url: 'http://172.27.0.3:4000',
+                wireguard_interface_id: 'c788eb40-a4c0-4bf5-8f84-976027960f8e',
+                network_id: '7ade8c3c-95a7-447b-92f2-c829f760159c',
+                created_at: '2026-10-21T19:32:48.377714Z',
+              },
+            ],
+            meta: { total_results: 1, page_number: 1, page_size: 50, total_pages: 1 },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Invalid paging parameters',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10033',
+                title: 'Value outside of range',
+                detail: 'Input should be greater than or equal to 1',
+                source: { parameter: 'page[size]' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10033' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAgentGatewaysRoute = createRoute({
+  method: 'post',
+  path: '/agent_gateways',
+  tags: ['Agent Gateways'],
+  summary: 'Create an Agent Gateway',
+  description:
+    "Creates an Agent Gateway instance on one of the account's WireGuard Interfaces. The instance starts `pending`, moves to `provisioning`, and then to `ready` or `failed`. It joins the WireGuard Interface as a peer named `agw-<instance id>`, and its `gateway_url` is set when it is `ready`.",
+  operationId: 'CreateAgentGateway',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayCreateSchema,
+          examples: {
+            instance: {
+              summary: 'An instance on a WireGuard Interface',
+              value: {
+                name: 'support-gw',
+                wireguard_interface_id: 'c788eb40-a4c0-4bf5-8f84-976027960f8e',
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The instance, `pending`',
+      content: {
+        'application/json': {
+          schema: AgentGatewayResponseSchema,
+          example: {
+            data: {
+              id: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+              name: 'support-gw',
+              engine: 'litellm',
+              engine_version: 'v1.105.1',
+              status: 'pending',
+              gateway_url: null,
+              wireguard_interface_id: 'c788eb40-a4c0-4bf5-8f84-976027960f8e',
+              network_id: '7ade8c3c-95a7-447b-92f2-c829f760159c',
+              created_at: '2026-10-21T19:32:48.377714Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'The WireGuard Interface does not exist or belongs to another account',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10013',
+                title: 'Missing association',
+                detail: 'One of the associated fields does not exist.',
+                source: { pointer: '/wireguard_interface_id' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10013' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Invalid request body',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10004',
+                title: 'Missing required parameter',
+                detail: 'Field required',
+                source: { pointer: '/wireguard_interface_id' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10004' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}',
+  tags: ['Agent Gateways'],
+  summary: 'Retrieve an Agent Gateway',
+  description: "Returns one of the account's Agent Gateway instances.",
+  operationId: 'GetAgentGateway',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The instance',
+      content: {
+        'application/json': {
+          schema: AgentGatewayResponseSchema,
+          example: {
+            data: {
+              id: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+              name: 'support-gw',
+              engine: 'litellm',
+              engine_version: 'v1.105.1',
+              status: 'ready',
+              gateway_url: 'http://172.27.0.3:4000',
+              wireguard_interface_id: 'c788eb40-a4c0-4bf5-8f84-976027960f8e',
+              network_id: '7ade8c3c-95a7-447b-92f2-c829f760159c',
+              created_at: '2026-10-21T19:32:48.377714Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAgentGatewaysInstanceIdRoute = createRoute({
+  method: 'delete',
+  path: '/agent_gateways/{instance_id}',
+  tags: ['Agent Gateways'],
+  summary: 'Delete an Agent Gateway',
+  description:
+    "Deletes an Agent Gateway instance in any status. The response shows it `deleting`; repeating the request answers the same until the instance is gone, and then `404`. The instance's engine and everything stored on it are removed.",
+  operationId: 'DeleteAgentGateway',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The instance, `deleting`',
+      content: {
+        'application/json': {
+          schema: AgentGatewayResponseSchema,
+          example: {
+            data: {
+              id: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+              name: 'support-gw',
+              engine: 'litellm',
+              engine_version: 'v1.105.1',
+              status: 'deleting',
+              gateway_url: 'http://172.27.0.3:4000',
+              wireguard_interface_id: 'c788eb40-a4c0-4bf5-8f84-976027960f8e',
+              network_id: '7ade8c3c-95a7-447b-92f2-c829f760159c',
+              created_at: '2026-10-21T19:32:48.377714Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdApisRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/apis',
+  tags: ['Agent Gateway APIs'],
+  summary: 'List APIs',
+  description:
+    'Lists the REST APIs the instance serves as tools, without their credentials. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'ListAgentGatewayApis',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The instance's APIs",
+      content: {
+        'application/json': {
+          schema: AgentGatewayApiListResponseSchema,
+          example: {
+            data: [
+              {
+                id: 'dbe53cc0-bf7e-4f7a-8d84-752d19890eb3',
+                name: 'petstore',
+                spec_url: 'https://petstore3.swagger.io/api/v3/openapi.json',
+                base_url: 'https://petstore3.swagger.io/api/v3',
+                auth: { type: 'none' },
+                tools: [],
+                static_headers: {},
+                forwarded_headers: [],
+                open_to_every_key: true,
+                created_at: '2026-10-28T17:07:27.083000Z',
+                updated_at: '2026-10-28T17:07:27.083000Z',
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAgentGatewaysInstanceIdApisRoute = createRoute({
+  method: 'post',
+  path: '/agent_gateways/{instance_id}/apis',
+  tags: ['Agent Gateway APIs'],
+  summary: 'Add an API',
+  description:
+    "Adds a REST API by its OpenAPI description. Each operation becomes a tool at `{gateway_url}/mcp`, named with the API's `name`, a hyphen, and the lowercased `operationId`. A description the gateway cannot fetch yields an API with no tools. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'CreateAgentGatewayApi',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayApiCreateSchema,
+          examples: {
+            public: {
+              summary: 'A public API',
+              value: {
+                name: 'petstore',
+                spec_url: 'https://petstore3.swagger.io/api/v3/openapi.json',
+                base_url: 'https://petstore3.swagger.io/api/v3',
+                open_to_every_key: true,
+              },
+            },
+            bearer: {
+              summary: 'A bearer token',
+              value: {
+                name: 'orders_api',
+                spec_url: 'https://example.com/orders/openapi.json',
+                auth: { type: 'bearer_token', value: 'example-orders-token' },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The added API',
+      content: {
+        'application/json': {
+          schema: AgentGatewayApiResponseSchema,
+          example: {
+            data: {
+              id: 'dbe53cc0-bf7e-4f7a-8d84-752d19890eb3',
+              name: 'petstore',
+              spec_url: 'https://petstore3.swagger.io/api/v3/openapi.json',
+              base_url: 'https://petstore3.swagger.io/api/v3',
+              auth: { type: 'none' },
+              tools: [],
+              static_headers: {},
+              forwarded_headers: [],
+              open_to_every_key: true,
+              created_at: '2026-10-28T17:07:27.083000Z',
+              updated_at: '2026-10-28T17:07:27.083000Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'A name the instance already uses',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10012',
+                title: 'Duplicate resource',
+                detail: 'Resource is a duplicate.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10012' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A field fails validation',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10032',
+                title: 'Invalid enumerated value',
+                detail:
+                  "Input tag does not match any of the expected tags: 'none', 'api_key', 'bearer_token', 'basic', 'token', 'authorization', 'oauth_client_credentials', 'passthrough'",
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10032' },
+                source: { pointer: '/auth' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAgentGatewaysInstanceIdApisApiIdRoute = createRoute({
+  method: 'delete',
+  path: '/agent_gateways/{instance_id}/apis/{api_id}',
+  tags: ['Agent Gateway APIs'],
+  summary: 'Delete an API',
+  description:
+    "Removes an API and returns it as it was. An MCP server's `id` answers `404`. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'DeleteAgentGatewayApi',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      api_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'api_id',
+            in: 'path',
+            required: true,
+            description: "The API's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'dbe53cc0-bf7e-4f7a-8d84-752d19890eb3',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The deleted API',
+      content: {
+        'application/json': {
+          schema: AgentGatewayApiResponseSchema,
+          example: {
+            data: {
+              id: 'dbe53cc0-bf7e-4f7a-8d84-752d19890eb3',
+              name: 'petstore',
+              spec_url: 'https://petstore3.swagger.io/api/v3/openapi.json',
+              base_url: 'https://petstore3.swagger.io/api/v3',
+              auth: { type: 'none' },
+              tools: [],
+              static_headers: {},
+              forwarded_headers: [],
+              open_to_every_key: true,
+              created_at: '2026-10-28T17:07:27.083000Z',
+              updated_at: '2026-10-28T17:07:27.083000Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const patchAgentGatewaysInstanceIdApisApiIdRoute = createRoute({
+  method: 'patch',
+  path: '/agent_gateways/{instance_id}/apis/{api_id}',
+  tags: ['Agent Gateway APIs'],
+  summary: 'Update an API',
+  description:
+    'Changes an API\'s settings. A field left out stays as it is, `"base_url": null` clears the base URL, and `auth` is replaced whole. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'UpdateAgentGatewayApi',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      api_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'api_id',
+            in: 'path',
+            required: true,
+            description: "The API's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'dbe53cc0-bf7e-4f7a-8d84-752d19890eb3',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayApiUpdateSchema,
+          examples: {
+            tools: {
+              summary: 'Expose two operations',
+              value: { tools: ['findpetsbystatus', 'getpetbyid'] },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The updated API',
+      content: {
+        'application/json': {
+          schema: AgentGatewayApiResponseSchema,
+          example: {
+            data: {
+              id: 'dbe53cc0-bf7e-4f7a-8d84-752d19890eb3',
+              name: 'petstore',
+              spec_url: 'https://petstore3.swagger.io/api/v3/openapi.json',
+              base_url: 'https://petstore3.swagger.io/api/v3',
+              auth: { type: 'none' },
+              tools: ['findpetsbystatus', 'getpetbyid'],
+              static_headers: {},
+              forwarded_headers: [],
+              open_to_every_key: true,
+              created_at: '2026-10-28T17:07:27.083000Z',
+              updated_at: '2026-10-28T17:07:27.083000Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'A name the instance already uses',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10012',
+                title: 'Duplicate resource',
+                detail: 'Resource is a duplicate.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10012' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A field fails validation',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: 'The value is invalid.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/spec_url' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdGuardrailsRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/guardrails',
+  tags: ['Agent Gateway Guardrails'],
+  summary: 'List guardrails',
+  description:
+    "Lists the instance's guardrails, without their secrets. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'ListAgentGatewayGuardrails',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The instance's guardrails",
+      content: {
+        'application/json': {
+          schema: AgentGatewayGuardrailListResponseSchema,
+          example: {
+            data: [
+              {
+                id: '9645e556-6532-4341-8cab-21b58cdef529',
+                name: 'mask-pii',
+                modes: ['before_request'],
+                always_on: false,
+                type: 'content_filter',
+                settings: {
+                  patterns: [
+                    { name: 'us_ssn', action: 'mask' },
+                    { name: 'email', action: 'mask' },
+                  ],
+                  regexes: [],
+                  keywords: [],
+                  categories: [],
+                },
+                created_at: '2026-10-28T17:07:48.905000Z',
+                updated_at: '2026-10-28T17:07:48.905000Z',
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAgentGatewaysInstanceIdGuardrailsRoute = createRoute({
+  method: 'post',
+  path: '/agent_gateways/{instance_id}/guardrails',
+  tags: ['Agent Gateway Guardrails'],
+  summary: 'Add a guardrail',
+  description:
+    'Adds a check the instance runs on model and tool requests. It runs on every request when `always_on`, and otherwise on the requests that name it in `guardrails`. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'CreateAgentGatewayGuardrail',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayGuardrailCreateSchema,
+          examples: {
+            mask: {
+              summary: 'Mask personal data',
+              value: {
+                name: 'mask-pii',
+                modes: ['before_request'],
+                type: 'content_filter',
+                settings: {
+                  patterns: [
+                    { name: 'us_ssn', action: 'mask' },
+                    { name: 'email', action: 'mask' },
+                  ],
+                },
+              },
+            },
+            code: {
+              summary: 'Custom code',
+              value: {
+                name: 'no-forbidden',
+                modes: ['before_request'],
+                type: 'custom_code',
+                settings: {
+                  code: 'def apply_guardrail(inputs, request_data, input_type):\n    for text in inputs["texts"]:\n        if "forbidden" in text.lower():\n            return block("The word forbidden is not allowed")\n    return allow()\n',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The added guardrail',
+      content: {
+        'application/json': {
+          schema: AgentGatewayGuardrailResponseSchema,
+          example: {
+            data: {
+              id: '9645e556-6532-4341-8cab-21b58cdef529',
+              name: 'mask-pii',
+              modes: ['before_request'],
+              always_on: false,
+              type: 'content_filter',
+              settings: {
+                patterns: [
+                  { name: 'us_ssn', action: 'mask' },
+                  { name: 'email', action: 'mask' },
+                ],
+                regexes: [],
+                keywords: [],
+                categories: [],
+              },
+              created_at: '2026-10-28T17:07:48.905000Z',
+              updated_at: '2026-10-28T17:07:48.905000Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'A name the instance already uses',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10012',
+                title: 'Duplicate resource',
+                detail: 'Resource is a duplicate.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10012' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A mode the type does not run in',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: 'The type does not run in one of these modes.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/modes' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAgentGatewaysInstanceIdGuardrailsGuardrailIdRoute = createRoute({
+  method: 'delete',
+  path: '/agent_gateways/{instance_id}/guardrails/{guardrail_id}',
+  tags: ['Agent Gateway Guardrails'],
+  summary: 'Delete a guardrail',
+  description:
+    'Removes a guardrail and returns it as it was. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'DeleteAgentGatewayGuardrail',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      guardrail_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'guardrail_id',
+            in: 'path',
+            required: true,
+            description: "The guardrail's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '9645e556-6532-4341-8cab-21b58cdef529',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The deleted guardrail',
+      content: {
+        'application/json': {
+          schema: AgentGatewayGuardrailResponseSchema,
+          example: {
+            data: {
+              id: '9645e556-6532-4341-8cab-21b58cdef529',
+              name: 'mask-pii',
+              modes: ['before_request'],
+              always_on: false,
+              type: 'content_filter',
+              settings: {
+                patterns: [
+                  { name: 'us_ssn', action: 'mask' },
+                  { name: 'email', action: 'mask' },
+                ],
+                regexes: [],
+                keywords: [],
+                categories: [],
+              },
+              created_at: '2026-10-28T17:07:48.905000Z',
+              updated_at: '2026-10-28T17:07:48.905000Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const patchAgentGatewaysInstanceIdGuardrailsGuardrailIdRoute = createRoute({
+  method: 'patch',
+  path: '/agent_gateways/{instance_id}/guardrails/{guardrail_id}',
+  tags: ['Agent Gateway Guardrails'],
+  summary: 'Update a guardrail',
+  description:
+    "Changes a guardrail's `name`, `modes`, `always_on`, or `settings`. `settings` is replaced whole, secrets included. The `type` cannot change. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'UpdateAgentGatewayGuardrail',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      guardrail_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'guardrail_id',
+            in: 'path',
+            required: true,
+            description: "The guardrail's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '9645e556-6532-4341-8cab-21b58cdef529',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayGuardrailUpdateSchema,
+          examples: { always_on: { summary: 'Run on every request', value: { always_on: true } } },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The updated guardrail',
+      content: {
+        'application/json': {
+          schema: AgentGatewayGuardrailResponseSchema,
+          example: {
+            data: {
+              id: '9645e556-6532-4341-8cab-21b58cdef529',
+              name: 'mask-pii',
+              modes: ['before_request'],
+              always_on: true,
+              type: 'content_filter',
+              settings: {
+                patterns: [
+                  { name: 'us_ssn', action: 'mask' },
+                  { name: 'email', action: 'mask' },
+                ],
+                regexes: [],
+                keywords: [],
+                categories: [],
+              },
+              created_at: '2026-10-28T17:07:48.905000Z',
+              updated_at: '2026-10-28T17:07:48.905000Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'A name the instance already uses',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10012',
+                title: 'Duplicate resource',
+                detail: 'Resource is a duplicate.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10012' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A field fails validation',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: 'The type does not run in one of these modes.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/modes' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdKeysRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/keys',
+  tags: ['Agent Gateway Keys'],
+  summary: 'List keys',
+  description:
+    "Lists the instance's keys, without their values. Returns the first 100. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'ListAgentGatewayKeys',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+    }),
+    query: z.object({
+      team_id: z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'team_id',
+            in: 'query',
+            required: false,
+            description: 'Only the keys of this team.',
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The instance's keys",
+      content: {
+        'application/json': {
+          schema: AgentGatewayKeyListResponseSchema,
+          example: {
+            data: [
+              {
+                id: '5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b',
+                name: 'support-agent',
+                team_id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+                models: ['GLM-5.3-Flash'],
+                max_budget: 20,
+                budget_resets_every: '30d',
+                budget_resets_at: '2026-11-20T19:40:00Z',
+                spend: 0,
+                expires_at: null,
+                created_at: '2026-10-21T19:40:00Z',
+                blocked: false,
+                requests_per_minute: 60,
+                tokens_per_minute: null,
+                max_parallel_requests: 4,
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAgentGatewaysInstanceIdKeysRoute = createRoute({
+  method: 'post',
+  path: '/agent_gateways/{instance_id}/keys',
+  tags: ['Agent Gateway Keys'],
+  summary: 'Create a key',
+  description:
+    "Issues a key on the instance. The key's value is in this response only. Every field is optional; a key without `models` may use every model the instance serves. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'CreateAgentGatewayKey',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayKeyCreateSchema,
+          examples: {
+            team_key: {
+              summary: 'A key in a team, with a budget and rate limits',
+              value: {
+                name: 'support-agent',
+                team_id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+                models: ['GLM-5.3-Flash'],
+                max_budget: 20,
+                budget_resets_every: '30d',
+                requests_per_minute: 60,
+                max_parallel_requests: 4,
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The key, with its value',
+      content: {
+        'application/json': {
+          schema: AgentGatewayCreatedKeyResponseSchema,
+          example: {
+            data: {
+              id: '5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b',
+              name: 'support-agent',
+              team_id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+              models: ['GLM-5.3-Flash'],
+              max_budget: 20,
+              budget_resets_every: '30d',
+              budget_resets_at: '2026-11-20T19:40:00Z',
+              spend: 0,
+              expires_at: null,
+              created_at: '2026-10-21T19:40:00Z',
+              blocked: false,
+              requests_per_minute: 60,
+              tokens_per_minute: null,
+              max_parallel_requests: 4,
+              key: 'sk-EXAMPLE-KEY-VALUE',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'The team does not exist',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10013',
+                title: 'Missing association',
+                detail: 'One of the associated fields does not exist.',
+                source: { pointer: '/team_id' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10013' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Invalid request body',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10033',
+                title: 'Value outside of range',
+                detail: 'Input should be greater than or equal to 0',
+                source: { pointer: '/max_budget' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10033' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAgentGatewaysInstanceIdKeysKeyIdRoute = createRoute({
+  method: 'delete',
+  path: '/agent_gateways/{instance_id}/keys/{key_id}',
+  tags: ['Agent Gateway Keys'],
+  summary: 'Delete a key',
+  description:
+    'Revokes a key and returns it as it was, without its value. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'DeleteAgentGatewayKey',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+      key_id: z
+        .string()
+        .regex(/^[0-9a-f]{64}$/)
+        .openapi({
+          param: {
+            name: 'key_id',
+            in: 'path',
+            required: true,
+            description:
+              "The key's `id`, a 64-character hash the instance stores in place of the key.",
+            schema: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+            example: '5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The revoked key',
+      content: {
+        'application/json': {
+          schema: AgentGatewayKeyResponseSchema,
+          example: {
+            data: {
+              id: '5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b',
+              name: 'support-agent',
+              team_id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+              models: ['GLM-5.3-Flash'],
+              max_budget: 20,
+              budget_resets_every: '30d',
+              budget_resets_at: '2026-11-20T19:40:00Z',
+              spend: 0,
+              expires_at: null,
+              created_at: '2026-10-21T19:40:00Z',
+              blocked: false,
+              requests_per_minute: 60,
+              tokens_per_minute: null,
+              max_parallel_requests: 4,
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const patchAgentGatewaysInstanceIdKeysKeyIdRoute = createRoute({
+  method: 'patch',
+  path: '/agent_gateways/{instance_id}/keys/{key_id}',
+  tags: ['Agent Gateway Keys'],
+  summary: 'Update a key',
+  description:
+    "Changes a key's settings without reissuing it. A field left out stays as it is, and `null` clears it. `models: []` lifts the model restriction. `expires_in` counts from now. Setting `blocked` to `true` makes the instance refuse the key with `401` while keeping its settings and spend; `false` lets it through again. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'UpdateAgentGatewayKey',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+      key_id: z
+        .string()
+        .regex(/^[0-9a-f]{64}$/)
+        .openapi({
+          param: {
+            name: 'key_id',
+            in: 'path',
+            required: true,
+            description:
+              "The key's `id`, a 64-character hash the instance stores in place of the key.",
+            schema: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+            example: '5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayKeyUpdateSchema,
+          examples: { block: { summary: 'Block a key', value: { blocked: true } } },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The updated key',
+      content: {
+        'application/json': {
+          schema: AgentGatewayKeyResponseSchema,
+          example: {
+            data: {
+              id: '5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b',
+              name: 'support-agent',
+              team_id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+              models: ['GLM-5.3-Flash'],
+              max_budget: 20,
+              budget_resets_every: '30d',
+              budget_resets_at: '2026-11-20T19:40:00Z',
+              spend: 0,
+              expires_at: null,
+              created_at: '2026-10-21T19:40:00Z',
+              blocked: true,
+              requests_per_minute: 60,
+              tokens_per_minute: null,
+              max_parallel_requests: 4,
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Invalid request body',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10033',
+                title: 'Value outside of range',
+                detail: 'Input should be greater than or equal to 1',
+                source: { pointer: '/requests_per_minute' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10033' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdKeysKeyIdToolPermissionsRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/keys/{key_id}/tool_permissions',
+  tags: ['Agent Gateway Tool Permissions'],
+  summary: "Retrieve a key's tool permissions",
+  description:
+    'Returns the MCP servers and APIs the key may use, and the tools within each. `servers: []` means none. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'GetAgentGatewayKeyToolPermissions',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      key_id: z
+        .string()
+        .regex(/^[0-9a-f]{64}$/)
+        .openapi({
+          param: {
+            name: 'key_id',
+            in: 'path',
+            required: true,
+            description:
+              "The key's `id`, a 64-character hash the instance stores in place of the key.",
+            schema: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+            example: 'f739ad190d29e2a5e658c3a486111953e6c18d746fd04374962ab150aae17757',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The grant',
+      content: {
+        'application/json': {
+          schema: AgentGatewayToolPermissionsResponseSchema,
+          example: {
+            data: {
+              servers: [{ id: '88d5a97b-4080-4855-8bac-a39811b1dc24', tools: ['get_order'] }],
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const putAgentGatewaysInstanceIdKeysKeyIdToolPermissionsRoute = createRoute({
+  method: 'put',
+  path: '/agent_gateways/{instance_id}/keys/{key_id}/tool_permissions',
+  tags: ['Agent Gateway Tool Permissions'],
+  summary: "Set a key's tool permissions",
+  description:
+    "Replaces the grant whole and returns it. Every server must be one of the instance's MCP servers or APIs, named once. A key reaches the servers granted to it or to its team, and the servers open to every key; when both grant, only the servers in both. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'SetAgentGatewayKeyToolPermissions',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      key_id: z
+        .string()
+        .regex(/^[0-9a-f]{64}$/)
+        .openapi({
+          param: {
+            name: 'key_id',
+            in: 'path',
+            required: true,
+            description:
+              "The key's `id`, a 64-character hash the instance stores in place of the key.",
+            schema: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+            example: 'f739ad190d29e2a5e658c3a486111953e6c18d746fd04374962ab150aae17757',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayToolPermissionsSchema,
+          examples: {
+            one_tool: {
+              summary: 'One tool of one server',
+              value: {
+                servers: [{ id: '88d5a97b-4080-4855-8bac-a39811b1dc24', tools: ['get_order'] }],
+              },
+            },
+            whole_server: {
+              summary: 'Every tool of one server',
+              value: { servers: [{ id: '88d5a97b-4080-4855-8bac-a39811b1dc24', tools: [] }] },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The grant',
+      content: {
+        'application/json': {
+          schema: AgentGatewayToolPermissionsResponseSchema,
+          example: {
+            data: {
+              servers: [{ id: '88d5a97b-4080-4855-8bac-a39811b1dc24', tools: ['get_order'] }],
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: "A server that is not one of the instance's",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10013',
+                title: 'Missing association',
+                detail: 'One of the associated fields does not exist.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10013' },
+                source: { pointer: '/servers/0/id' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A server named twice',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: 'The value is invalid.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/servers' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdMcpServersRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/mcp_servers',
+  tags: ['Agent Gateway MCP Servers'],
+  summary: 'List MCP servers',
+  description:
+    'Lists the MCP servers the instance serves at `{gateway_url}/mcp`, without their credentials. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'ListAgentGatewayMcpServers',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The instance's MCP servers",
+      content: {
+        'application/json': {
+          schema: AgentGatewayMcpServerListResponseSchema,
+          example: {
+            data: [
+              {
+                id: '88d5a97b-4080-4855-8bac-a39811b1dc24',
+                name: 'orders',
+                url: 'http://10.40.3.7:9000/mcp',
+                transport: 'http',
+                auth: { type: 'api_key' },
+                tools: [],
+                static_headers: { 'X-Env': 'prod' },
+                forwarded_headers: ['X-Request-Id'],
+                open_to_every_key: false,
+                created_at: '2026-10-28T16:50:43.184000Z',
+                updated_at: '2026-10-28T16:50:43.184000Z',
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAgentGatewaysInstanceIdMcpServersRoute = createRoute({
+  method: 'post',
+  path: '/agent_gateways/{instance_id}/mcp_servers',
+  tags: ['Agent Gateway MCP Servers'],
+  summary: 'Add an MCP server',
+  description:
+    "Adds an MCP server. The instance serves its tools at `{gateway_url}/mcp`, each named with the server's `name` and a hyphen, to the keys granted the server and, with `open_to_every_key`, to every key. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'CreateAgentGatewayMcpServer',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayMcpServerCreateSchema,
+          examples: {
+            api_key: {
+              summary: 'An API key',
+              value: {
+                name: 'orders',
+                url: 'http://10.40.3.7:9000/mcp',
+                auth: { type: 'api_key', value: 'example-orders-key' },
+                static_headers: { 'X-Env': 'prod' },
+                forwarded_headers: ['X-Request-Id'],
+              },
+            },
+            oauth: {
+              summary: 'OAuth client credentials',
+              value: {
+                name: 'crm',
+                url: 'https://crm.example.com/mcp',
+                auth: {
+                  type: 'oauth_client_credentials',
+                  token_url: 'https://auth.example.com/oauth/token',
+                  client_id: 'example-client',
+                  client_secret: 'example-client-secret',
+                  scopes: ['crm.read'],
+                },
+              },
+            },
+            aws: {
+              summary: 'AWS Signature Version 4',
+              value: {
+                name: 'agentcore',
+                url: 'https://example.bedrock-agentcore.us-east-1.amazonaws.com/mcp',
+                auth: { type: 'aws_sigv4', region: 'us-east-1' },
+              },
+            },
+            passthrough: {
+              summary: 'Token passthrough',
+              value: {
+                name: 'github',
+                url: 'https://api.githubcopilot.com/mcp/',
+                auth: { type: 'passthrough' },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The added MCP server',
+      content: {
+        'application/json': {
+          schema: AgentGatewayMcpServerResponseSchema,
+          example: {
+            data: {
+              id: '88d5a97b-4080-4855-8bac-a39811b1dc24',
+              name: 'orders',
+              url: 'http://10.40.3.7:9000/mcp',
+              transport: 'http',
+              auth: { type: 'api_key' },
+              tools: [],
+              static_headers: { 'X-Env': 'prod' },
+              forwarded_headers: ['X-Request-Id'],
+              open_to_every_key: false,
+              created_at: '2026-10-28T16:50:43.184000Z',
+              updated_at: '2026-10-28T16:50:43.184000Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'A name the instance already uses',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10012',
+                title: 'Duplicate resource',
+                detail: 'Resource is a duplicate.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10012' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A field fails validation',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: "String should match pattern '^[A-Za-z0-9_.]{1,100}$'",
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAgentGatewaysInstanceIdMcpServersServerIdRoute = createRoute({
+  method: 'delete',
+  path: '/agent_gateways/{instance_id}/mcp_servers/{server_id}',
+  tags: ['Agent Gateway MCP Servers'],
+  summary: 'Delete an MCP server',
+  description:
+    'Removes an MCP server and returns it as it was. Its `id` stays in the tool permissions that name it until they are next set. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'DeleteAgentGatewayMcpServer',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      server_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'server_id',
+            in: 'path',
+            required: true,
+            description: "The MCP server's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '88d5a97b-4080-4855-8bac-a39811b1dc24',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The deleted MCP server',
+      content: {
+        'application/json': {
+          schema: AgentGatewayMcpServerResponseSchema,
+          example: {
+            data: {
+              id: '88d5a97b-4080-4855-8bac-a39811b1dc24',
+              name: 'orders',
+              url: 'http://10.40.3.7:9000/mcp',
+              transport: 'http',
+              auth: { type: 'api_key' },
+              tools: [],
+              static_headers: { 'X-Env': 'prod' },
+              forwarded_headers: ['X-Request-Id'],
+              open_to_every_key: false,
+              created_at: '2026-10-28T16:50:43.184000Z',
+              updated_at: '2026-10-28T16:50:43.184000Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const patchAgentGatewaysInstanceIdMcpServersServerIdRoute = createRoute({
+  method: 'patch',
+  path: '/agent_gateways/{instance_id}/mcp_servers/{server_id}',
+  tags: ['Agent Gateway MCP Servers'],
+  summary: 'Update an MCP server',
+  description:
+    "Changes an MCP server's settings. A field left out stays as it is. `auth` is replaced whole, `tools: []` exposes every tool, and `static_headers: {}` clears the headers. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'UpdateAgentGatewayMcpServer',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      server_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'server_id',
+            in: 'path',
+            required: true,
+            description: "The MCP server's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '88d5a97b-4080-4855-8bac-a39811b1dc24',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayMcpServerUpdateSchema,
+          examples: {
+            tools: {
+              summary: 'Expose two tools',
+              value: { tools: ['get_order', 'create_ticket'] },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The updated MCP server',
+      content: {
+        'application/json': {
+          schema: AgentGatewayMcpServerResponseSchema,
+          example: {
+            data: {
+              id: '88d5a97b-4080-4855-8bac-a39811b1dc24',
+              name: 'orders',
+              url: 'http://10.40.3.7:9000/mcp',
+              transport: 'http',
+              auth: { type: 'api_key' },
+              tools: ['get_order', 'create_ticket'],
+              static_headers: { 'X-Env': 'prod' },
+              forwarded_headers: ['X-Request-Id'],
+              open_to_every_key: false,
+              created_at: '2026-10-28T16:50:43.184000Z',
+              updated_at: '2026-10-28T16:50:43.184000Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'A name the instance already uses',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10012',
+                title: 'Duplicate resource',
+                detail: 'Resource is a duplicate.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10012' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A field fails validation',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: 'The value is invalid.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/transport' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdModelsRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/models',
+  tags: ['Agent Gateways'],
+  summary: "List an Agent Gateway's models",
+  description:
+    'Lists the models the instance serves. Each has the name a request uses, the Telnyx Inference model behind it, and its price per million tokens.',
+  operationId: 'ListAgentGatewayModels',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The instance's models",
+      content: {
+        'application/json': {
+          schema: AgentGatewayModelListResponseSchema,
+          example: {
+            data: [
+              {
+                id: '4e416b40-84f1-46e4-9935-bb75079e4b08',
+                name: 'DeepSeek-V4.1-Flash',
+                model: 'deepseek-ai/DeepSeek-V4.1-Flash',
+                pricing: {
+                  input: 0.3,
+                  output: 1.2,
+                  cached_input: 0.006,
+                  currency: 'USD',
+                  unit: '1M_tokens',
+                },
+                priced_at: '2026-10-29T14:53:48.436741Z',
+              },
+              {
+                id: 'bc74a861-f8ed-4963-a15c-c7670811220a',
+                name: 'GLM-5.3',
+                model: 'zai-org/GLM-5.3',
+                pricing: {
+                  input: 1.25,
+                  output: 4,
+                  cached_input: 0.24,
+                  currency: 'USD',
+                  unit: '1M_tokens',
+                },
+                priced_at: '2026-10-29T14:53:48.684077Z',
+              },
+              {
+                id: '4384def6-12c6-47ae-b67b-9d153fd5a58d',
+                name: 'GLM-5.3-Flash',
+                model: 'zai-org/GLM-5.3-Flash',
+                pricing: {
+                  input: 0.135,
+                  output: 0.45,
+                  cached_input: 0.027,
+                  currency: 'USD',
+                  unit: '1M_tokens',
+                },
+                priced_at: '2026-10-29T14:53:48.862281Z',
+              },
+              {
+                id: '879ec00c-399a-4937-b9d3-362b2a4deaaf',
+                name: 'Qwen3.8-27B',
+                model: 'Qwen/Qwen3.8-27B',
+                pricing: {
+                  input: 0.4,
+                  output: 3,
+                  cached_input: 0.05,
+                  currency: 'USD',
+                  unit: '1M_tokens',
+                },
+                priced_at: '2026-10-29T14:53:49.168161Z',
+              },
+              {
+                id: '0adc4aae-1b3b-498f-ba75-9db64cbef0af',
+                name: 'Qwen3.8-27B-nothink',
+                model: 'Qwen/Qwen3.8-27B',
+                pricing: {
+                  input: 0.4,
+                  output: 3,
+                  cached_input: 0.05,
+                  currency: 'USD',
+                  unit: '1M_tokens',
+                },
+                priced_at: '2026-10-29T14:53:49.289731Z',
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdPoliciesRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/policies',
+  tags: ['Agent Gateway Policies'],
+  summary: 'List policies',
+  description: "Lists the instance's policies, each in its current version.",
+  operationId: 'ListAgentGatewayPolicies',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The instance's policies",
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyListResponseSchema,
+          example: {
+            data: [
+              {
+                name: 'baseline',
+                description: 'Mask personal data',
+                base: null,
+                guardrails: { add: ['mask-pii'], remove: [] },
+                model: null,
+                pipeline: null,
+                created_at: '2026-11-02T12:58:53.995000Z',
+                updated_at: '2026-11-02T12:58:53.995000Z',
+              },
+              {
+                name: 'strict',
+                description: null,
+                base: 'baseline',
+                guardrails: { add: ['no-forbidden'], remove: [] },
+                model: 'GLM-5.3.*',
+                pipeline: null,
+                created_at: '2026-11-02T12:58:54.285000Z',
+                updated_at: '2026-11-02T12:58:54.285000Z',
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAgentGatewaysInstanceIdPoliciesRoute = createRoute({
+  method: 'post',
+  path: '/agent_gateways/{instance_id}/policies',
+  tags: ['Agent Gateway Policies'],
+  summary: 'Create a policy',
+  description:
+    'Creates a named set of guardrails. It applies from the next request on, to the requests that name it in `policies` and to those its [attachments](https://developers.telnyx.com/api-reference/agent-gateway-policy-attachments/attach-a-policy) match.',
+  operationId: 'CreateAgentGatewayPolicy',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyCreateSchema,
+          examples: {
+            base: {
+              summary: 'A base policy',
+              value: {
+                name: 'baseline',
+                description: 'Mask personal data',
+                guardrails: { add: ['mask-pii'] },
+              },
+            },
+            inherit: {
+              summary: 'A policy that builds on it',
+              value: {
+                name: 'strict',
+                base: 'baseline',
+                guardrails: { add: ['no-forbidden'] },
+                model: 'GLM-5.3-Flash',
+              },
+            },
+            pipeline: {
+              summary: 'A pipeline',
+              value: {
+                name: 'piped',
+                pipeline: {
+                  hook: 'before_request',
+                  steps: [
+                    { guardrail: 'mask-pii', on_pass: 'next', on_fail: 'block' },
+                    { guardrail: 'no-forbidden', on_fail: 'respond', message: 'Not allowed.' },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The created policy',
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyResponseSchema,
+          example: {
+            data: {
+              name: 'baseline',
+              description: 'Mask personal data',
+              base: null,
+              guardrails: { add: ['mask-pii'], remove: [] },
+              model: null,
+              pipeline: null,
+              created_at: '2026-11-02T12:58:53.995000Z',
+              updated_at: '2026-11-02T12:58:53.995000Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'A name the instance already uses, or a base or guardrail it does not have',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10013',
+                title: 'Missing association',
+                detail: 'One of the associated fields does not exist.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10013' },
+                source: { pointer: '/base' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'An invalid name or pipeline',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: "String should match pattern '^[A-Za-z0-9_.-]{1,100}$'",
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdPoliciesNameRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/policies/{name}',
+  tags: ['Agent Gateway Policies'],
+  summary: 'Retrieve a policy',
+  description: 'Returns one policy, in its current version.',
+  operationId: 'RetrieveAgentGatewayPolicy',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      name: z
+        .string()
+        .openapi({
+          param: {
+            name: 'name',
+            in: 'path',
+            required: true,
+            description: "The policy's `name`.",
+            schema: { type: 'string' },
+            example: 'strict',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The policy',
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyResponseSchema,
+          example: {
+            data: {
+              name: 'strict',
+              description: null,
+              base: 'baseline',
+              guardrails: { add: ['no-forbidden'], remove: [] },
+              model: 'GLM-5.3.*',
+              pipeline: null,
+              created_at: '2026-11-02T12:58:54.285000Z',
+              updated_at: '2026-11-02T12:58:54.285000Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAgentGatewaysInstanceIdPoliciesNameRoute = createRoute({
+  method: 'delete',
+  path: '/agent_gateways/{instance_id}/policies/{name}',
+  tags: ['Agent Gateway Policies'],
+  summary: 'Delete a policy',
+  description:
+    'Deletes a policy and every version of it, and returns it as it was. A policy that an attachment names, or that another policy builds on, cannot be deleted.',
+  operationId: 'DeleteAgentGatewayPolicy',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      name: z
+        .string()
+        .openapi({
+          param: {
+            name: 'name',
+            in: 'path',
+            required: true,
+            description: "The policy's `name`.",
+            schema: { type: 'string' },
+            example: 'strict',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The deleted policy',
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyResponseSchema,
+          example: {
+            data: {
+              name: 'strict',
+              description: null,
+              base: 'baseline',
+              guardrails: { add: ['no-forbidden'], remove: [] },
+              model: 'GLM-5.3.*',
+              pipeline: null,
+              created_at: '2026-11-02T12:58:54.285000Z',
+              updated_at: '2026-11-02T12:58:54.285000Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'An attachment names the policy, or another policy builds on it',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10021',
+                title: 'Resource in use',
+                detail: 'The resource can not be removed as it is still in use.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10021' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const patchAgentGatewaysInstanceIdPoliciesNameRoute = createRoute({
+  method: 'patch',
+  path: '/agent_gateways/{instance_id}/policies/{name}',
+  tags: ['Agent Gateway Policies'],
+  summary: 'Update a policy',
+  description:
+    'Changes a policy, which publishes a new version of it. A field left out stays as it is; `guardrails` and `pipeline` are replaced whole, and `model: null` removes the condition.',
+  operationId: 'UpdateAgentGatewayPolicy',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      name: z
+        .string()
+        .openapi({
+          param: {
+            name: 'name',
+            in: 'path',
+            required: true,
+            description: "The policy's `name`.",
+            schema: { type: 'string' },
+            example: 'strict',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyUpdateSchema,
+          example: { description: 'Baseline plus a word check' },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The updated policy',
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyResponseSchema,
+          example: {
+            data: {
+              name: 'strict',
+              description: 'Baseline plus a word check',
+              base: 'baseline',
+              guardrails: { add: ['no-forbidden'], remove: [] },
+              model: 'GLM-5.3.*',
+              pipeline: null,
+              created_at: '2026-11-02T12:58:55.140000Z',
+              updated_at: '2026-11-02T12:58:55.178000Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A field the update cannot change',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: 'Extra inputs are not permitted',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/name' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdPolicyAttachmentsRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/policy_attachments',
+  tags: ['Agent Gateway Policy Attachments'],
+  summary: 'List policy attachments',
+  description: 'Lists where the instance applies each policy.',
+  operationId: 'ListAgentGatewayPolicyAttachments',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The instance's attachments",
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyAttachmentListResponseSchema,
+          example: {
+            data: [
+              {
+                id: '03244d7b-a1ba-4914-a77c-95edfc700ad5',
+                policy: 'baseline',
+                models: [],
+                priority: null,
+                default: true,
+                created_at: '2026-11-02T12:58:55.590000Z',
+                updated_at: '2026-11-02T12:58:55.590000Z',
+              },
+              {
+                id: '3394712f-2ad5-428a-8a3d-7a08d4b2906d',
+                policy: 'strict',
+                models: ['GLM-5.3*'],
+                priority: 10,
+                default: false,
+                created_at: '2026-11-02T12:58:55.388000Z',
+                updated_at: '2026-11-02T12:58:55.388000Z',
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAgentGatewaysInstanceIdPolicyAttachmentsRoute = createRoute({
+  method: 'post',
+  path: '/agent_gateways/{instance_id}/policy_attachments',
+  tags: ['Agent Gateway Policy Attachments'],
+  summary: 'Attach a policy',
+  description:
+    'Applies a policy to every request, or to the requests for the models named. It applies from the next request on.',
+  operationId: 'CreateAgentGatewayPolicyAttachment',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyAttachmentCreateSchema,
+          examples: {
+            models: {
+              summary: 'Some models, with a priority',
+              value: { policy: 'strict', models: ['GLM-5.3*'], priority: 10 },
+            },
+            default: { summary: 'The default', value: { policy: 'baseline', default: true } },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The attachment',
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyAttachmentResponseSchema,
+          example: {
+            data: {
+              id: '3394712f-2ad5-428a-8a3d-7a08d4b2906d',
+              policy: 'strict',
+              models: ['GLM-5.3*'],
+              priority: 10,
+              default: false,
+              created_at: '2026-11-02T12:58:55.388000Z',
+              updated_at: '2026-11-02T12:58:55.388000Z',
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'A policy the instance does not have',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10013',
+                title: 'Missing association',
+                detail: 'One of the associated fields does not exist.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10013' },
+                source: { pointer: '/policy' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAgentGatewaysInstanceIdPolicyAttachmentsAttachmentIdRoute = createRoute({
+  method: 'delete',
+  path: '/agent_gateways/{instance_id}/policy_attachments/{attachment_id}',
+  tags: ['Agent Gateway Policy Attachments'],
+  summary: 'Detach a policy',
+  description: 'Removes an attachment and returns it as it was. The policy stays.',
+  operationId: 'DeleteAgentGatewayPolicyAttachment',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      attachment_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'attachment_id',
+            in: 'path',
+            required: true,
+            description: "The attachment's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '3394712f-2ad5-428a-8a3d-7a08d4b2906d',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The removed attachment',
+      content: {
+        'application/json': {
+          schema: AgentGatewayPolicyAttachmentResponseSchema,
+          example: {
+            data: {
+              id: '3394712f-2ad5-428a-8a3d-7a08d4b2906d',
+              policy: 'strict',
+              models: ['GLM-5.3*'],
+              priority: 10,
+              default: false,
+              created_at: '2026-11-02T12:58:55.388000Z',
+              updated_at: '2026-11-02T12:58:55.388000Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdSpendLogsRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/spend_logs',
+  tags: ['Agent Gateway Spend Logs'],
+  summary: 'List spend logs',
+  description:
+    'Lists the requests the instance served with its keys, newest first, one page at a time. The window defaults to the last 24 hours and spans at most 31 days. A row appears a few seconds after its request. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'ListAgentGatewaySpendLogs',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+    }),
+    query: z.object({
+      'page[number]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1),
+        )
+        .default(1)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page[number]',
+            in: 'query',
+            required: false,
+            description: 'The page to return, counting from 1.',
+            schema: { type: 'integer', minimum: 1, default: 1 },
+          },
+        }),
+      'page[size]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .default(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page[size]',
+            in: 'query',
+            required: false,
+            description: 'Results per page.',
+            schema: { type: 'integer', minimum: 1, maximum: 100, default: 50 },
+          },
+        }),
+      start: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'start',
+            in: 'query',
+            required: false,
+            description:
+              "The window's start, an RFC 3339 timestamp with an offset. Defaults to 24 hours before `end`.",
+            schema: { type: 'string', format: 'date-time' },
+            example: '2026-10-21T00:00:00Z',
+          },
+        }),
+      end: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'end',
+            in: 'query',
+            required: false,
+            description: "The window's end, an RFC 3339 timestamp with an offset. Defaults to now.",
+            schema: { type: 'string', format: 'date-time' },
+            example: '2026-10-22T00:00:00Z',
+          },
+        }),
+      key_id: z
+        .string()
+        .regex(/^[0-9a-f]{64}$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'key_id',
+            in: 'query',
+            required: false,
+            description: 'Only the requests made with this key.',
+            schema: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+          },
+        }),
+      team_id: z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'team_id',
+            in: 'query',
+            required: false,
+            description: "Only the requests made with this team's keys.",
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'One page of spend logs',
+      content: {
+        'application/json': {
+          schema: AgentGatewaySpendLogListResponseSchema,
+          example: {
+            data: [
+              {
+                id: 'chatcmpl-1c0032cc-3d9f-439f-af62-b7f2b6623da4',
+                key_id: '5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b',
+                team_id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+                model: 'zai-org/GLM-5.3-Flash',
+                operation: 'acompletion',
+                status: 'success',
+                spend: 0.00027747,
+                prompt_tokens: 22,
+                completion_tokens: 610,
+                total_tokens: 632,
+                started_at: '2026-10-21T19:41:02.114000Z',
+                ended_at: '2026-10-21T19:41:04.879000Z',
+                duration_ms: 2765,
+              },
+            ],
+            meta: {
+              total_results: 1,
+              page_number: 1,
+              page_size: 50,
+              total_pages: 1,
+              total_results_capped: false,
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'The window is longer than 31 days',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10033',
+                title: 'Value outside of range',
+                detail: 'The value is outside of allowed range the start to 31 days after it',
+                source: { parameter: 'end' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10033' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdTeamsRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/teams',
+  tags: ['Agent Gateway Teams'],
+  summary: 'List teams',
+  description:
+    "Lists the instance's teams. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'ListAgentGatewayTeams',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The instance's teams",
+      content: {
+        'application/json': {
+          schema: AgentGatewayTeamListResponseSchema,
+          example: {
+            data: [
+              {
+                id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+                name: 'support',
+                models: ['GLM-5.3-Flash', 'Qwen3.8-27B-nothink'],
+                max_budget: 50,
+                budget_resets_every: '30d',
+                budget_resets_at: '2026-11-20T19:35:00Z',
+                spend: 0,
+                created_at: '2026-10-21T19:35:00Z',
+                blocked: false,
+                requests_per_minute: 120,
+                tokens_per_minute: null,
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAgentGatewaysInstanceIdTeamsRoute = createRoute({
+  method: 'post',
+  path: '/agent_gateways/{instance_id}/teams',
+  tags: ['Agent Gateway Teams'],
+  summary: 'Create a team',
+  description:
+    'Creates a team on the instance. A team is a model list, a budget, and rate limits that its keys share. Names need not be unique; the `id` identifies the team. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'CreateAgentGatewayTeam',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayTeamCreateSchema,
+          examples: {
+            team: {
+              summary: 'A team with two models and a monthly budget',
+              value: {
+                name: 'support',
+                models: ['GLM-5.3-Flash', 'Qwen3.8-27B-nothink'],
+                max_budget: 50,
+                budget_resets_every: '30d',
+                requests_per_minute: 120,
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The team',
+      content: {
+        'application/json': {
+          schema: AgentGatewayTeamResponseSchema,
+          example: {
+            data: {
+              id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+              name: 'support',
+              models: ['GLM-5.3-Flash', 'Qwen3.8-27B-nothink'],
+              max_budget: 50,
+              budget_resets_every: '30d',
+              budget_resets_at: '2026-11-20T19:35:00Z',
+              spend: 0,
+              created_at: '2026-10-21T19:35:00Z',
+              blocked: false,
+              requests_per_minute: 120,
+              tokens_per_minute: null,
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Invalid request body',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10004',
+                title: 'Missing required parameter',
+                detail: 'Field required',
+                source: { pointer: '/name' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10004' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAgentGatewaysInstanceIdTeamsTeamIdRoute = createRoute({
+  method: 'delete',
+  path: '/agent_gateways/{instance_id}/teams/{team_id}',
+  tags: ['Agent Gateway Teams'],
+  summary: 'Delete a team',
+  description:
+    'Deletes a team that has no keys and returns it. A team that still has keys answers `409`; delete or move its keys first. The instance must be `ready`; otherwise the request answers `409`.',
+  operationId: 'DeleteAgentGatewayTeam',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+      team_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'team_id',
+            in: 'path',
+            required: true,
+            description: "The team's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The deleted team',
+      content: {
+        'application/json': {
+          schema: AgentGatewayTeamResponseSchema,
+          example: {
+            data: {
+              id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+              name: 'support',
+              models: ['GLM-5.3-Flash', 'Qwen3.8-27B-nothink'],
+              max_budget: 50,
+              budget_resets_every: '30d',
+              budget_resets_at: '2026-11-20T19:35:00Z',
+              spend: 0,
+              created_at: '2026-10-21T19:35:00Z',
+              blocked: false,
+              requests_per_minute: 120,
+              tokens_per_minute: null,
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The team still has keys, or the instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10021',
+                title: 'Resource in use',
+                detail: 'The resource can not be removed as it is still in use.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10021' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const patchAgentGatewaysInstanceIdTeamsTeamIdRoute = createRoute({
+  method: 'patch',
+  path: '/agent_gateways/{instance_id}/teams/{team_id}',
+  tags: ['Agent Gateway Teams'],
+  summary: 'Update a team',
+  description:
+    "Changes a team's settings. A field left out stays as it is, and `null` clears it. `models: []` lifts the model restriction. Setting `blocked` to `true` makes the instance refuse every key in the team with `401`. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'UpdateAgentGatewayTeam',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'ecffdf4b-93ea-4a7b-8295-51dfd2077996',
+          },
+        }),
+      team_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'team_id',
+            in: 'path',
+            required: true,
+            description: "The team's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayTeamUpdateSchema,
+          examples: { budget: { summary: 'Raise the budget', value: { max_budget: 100 } } },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The updated team',
+      content: {
+        'application/json': {
+          schema: AgentGatewayTeamResponseSchema,
+          example: {
+            data: {
+              id: '0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e',
+              name: 'support',
+              models: ['GLM-5.3-Flash', 'Qwen3.8-27B-nothink'],
+              max_budget: 100,
+              budget_resets_every: '30d',
+              budget_resets_at: '2026-11-20T19:35:00Z',
+              spend: 0,
+              created_at: '2026-10-21T19:35:00Z',
+              blocked: false,
+              requests_per_minute: 120,
+              tokens_per_minute: null,
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Invalid request body',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10033',
+                title: 'Value outside of range',
+                detail: 'Input should be greater than or equal to 0',
+                source: { pointer: '/max_budget' },
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10033' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getAgentGatewaysInstanceIdTeamsTeamIdToolPermissionsRoute = createRoute({
+  method: 'get',
+  path: '/agent_gateways/{instance_id}/teams/{team_id}/tool_permissions',
+  tags: ['Agent Gateway Tool Permissions'],
+  summary: "Retrieve a team's tool permissions",
+  description:
+    "Returns the MCP servers and APIs the team's keys may use, and the tools within each. `servers: []` means none. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'GetAgentGatewayTeamToolPermissions',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      team_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'team_id',
+            in: 'path',
+            required: true,
+            description: "The team's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'd7b21324-a2bf-406c-ba49-c6ec4d23d476',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The grant',
+      content: {
+        'application/json': {
+          schema: AgentGatewayToolPermissionsResponseSchema,
+          example: {
+            data: {
+              servers: [{ id: '88d5a97b-4080-4855-8bac-a39811b1dc24', tools: ['get_order'] }],
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
+export const putAgentGatewaysInstanceIdTeamsTeamIdToolPermissionsRoute = createRoute({
+  method: 'put',
+  path: '/agent_gateways/{instance_id}/teams/{team_id}/tool_permissions',
+  tags: ['Agent Gateway Tool Permissions'],
+  summary: "Set a team's tool permissions",
+  description:
+    "Replaces the grant whole and returns it. Every server must be one of the instance's MCP servers or APIs, named once. A key reaches the servers granted to it or to its team, and the servers open to every key; when both grant, only the servers in both. The instance must be `ready`; otherwise the request answers `409`.",
+  operationId: 'SetAgentGatewayTeamToolPermissions',
+  request: {
+    params: z.object({
+      instance_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'instance_id',
+            in: 'path',
+            required: true,
+            description: "The Agent Gateway's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: '32ce035d-3165-4031-b1a7-a7c0c259590a',
+          },
+        }),
+      team_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'team_id',
+            in: 'path',
+            required: true,
+            description: "The team's `id`.",
+            schema: { type: 'string', format: 'uuid' },
+            example: 'd7b21324-a2bf-406c-ba49-c6ec4d23d476',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AgentGatewayToolPermissionsSchema,
+          examples: {
+            one_tool: {
+              summary: 'One tool of one server',
+              value: {
+                servers: [{ id: '88d5a97b-4080-4855-8bac-a39811b1dc24', tools: ['get_order'] }],
+              },
+            },
+            whole_server: {
+              summary: 'Every tool of one server',
+              value: { servers: [{ id: '88d5a97b-4080-4855-8bac-a39811b1dc24', tools: [] }] },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The grant',
+      content: {
+        'application/json': {
+          schema: AgentGatewayToolPermissionsResponseSchema,
+          example: {
+            data: {
+              servers: [{ id: '88d5a97b-4080-4855-8bac-a39811b1dc24', tools: ['get_order'] }],
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: "A server that is not one of the instance's",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10013',
+                title: 'Missing association',
+                detail: 'One of the associated fields does not exist.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10013' },
+                source: { pointer: '/servers/0/id' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10009' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not found',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10005',
+                title: 'Resource not found',
+                detail: 'The requested resource or URL could not be found.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10005' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    409: {
+      description: 'The instance is not `ready`',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99901',
+                title: 'Instance not ready',
+                detail: 'The instance is not ready; its engine is not running.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'A server named twice',
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Unprocessable Entity',
+                detail: 'The value is invalid.',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/servers' },
+              },
+            ],
+          },
+        },
+      },
+    },
+    502: {
+      description: "The instance's engine did not answer",
+      content: {
+        'application/json': {
+          schema: TelnyxErrorsSchema,
+          example: {
+            errors: [
+              {
+                code: '99903',
+                title: 'Engine unavailable',
+                detail: "The instance's engine did not answer; try again shortly.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+})
+
 export const postAiAnthropicV1MessagesRoute = createRoute({
   method: 'post',
   path: '/ai/anthropic/v1/messages',
@@ -118335,7 +127609,7 @@ export const postAiAssistantsRoute = createRoute({
     },
     400: {
       description:
-        "Bad Request / Validation Failed (10015). Invalid, duplicate, empty, malformed, or overlong Idempotency-Key headers are rejected by Edge with HTTP 400 and error code 10015. The assistant configuration is validated too: enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is not Telnyx-hosted, or when its `insight_settings.model` is not available in that region.",
+        "Bad Request / Validation Failed (10015). Invalid, duplicate, empty, malformed, or overlong Idempotency-Key headers are rejected by Edge with HTTP 400 and error code 10015. The assistant configuration is validated too: enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is a third-party model (a customer-provided `external_llm` endpoint is accepted), or when its `insight_settings.model` is not available in that region.",
       content: { 'application/json': { schema: InferenceEmbeddingErrorResponseSchema } },
     },
     409: IdempotencyConflictResponseResponse,
@@ -119773,7 +129047,7 @@ export const postAiAssistantsAssistantIdRoute = createRoute({
     },
     400: {
       description:
-        "Bad Request. The resulting assistant configuration was rejected. For example, enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is not Telnyx-hosted, or when its `insight_settings.model` is not available in that region. The response detail names the model and where it is configured. Validation runs against the merged result of the update, not only the fields sent.",
+        "Bad Request. The resulting assistant configuration was rejected. For example, enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is a third-party model (a customer-provided `external_llm` endpoint is accepted), or when its `insight_settings.model` is not available in that region. The response detail names the model and where it is configured. Validation runs against the merged result of the update, not only the fields sent.",
       content: { 'application/json': { schema: InferenceEmbeddingErrorResponseSchema } },
     },
     422: {
@@ -121491,7 +130765,7 @@ export const postAiAssistantsAssistantIdVersionsVersionIdRoute = createRoute({
     },
     400: {
       description:
-        "Bad Request. The resulting assistant configuration was rejected. For example, enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is not Telnyx-hosted, or when its `insight_settings.model` is not available in that region. The response detail names the model and where it is configured. Validation runs against the merged result of the update, not only the fields sent.",
+        "Bad Request. The resulting assistant configuration was rejected. For example, enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is a third-party model (a customer-provided `external_llm` endpoint is accepted), or when its `insight_settings.model` is not available in that region. The response detail names the model and where it is configured. Validation runs against the merged result of the update, not only the fields sent.",
       content: { 'application/json': { schema: InferenceEmbeddingErrorResponseSchema } },
     },
     422: {
@@ -125359,196 +134633,6 @@ export const getAiEmbeddingsTaskIdRoute = createRoute({
               status: 'queued',
               created_at: 'Created At',
             },
-          },
-        },
-      },
-    },
-    422: {
-      description: 'Validation Error',
-      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
-    },
-  },
-})
-
-export const getAiFineTuningJobsRoute = createRoute({
-  method: 'get',
-  path: '/ai/fine_tuning/jobs',
-  tags: ['Fine Tuning'],
-  summary: 'List fine tuning jobs',
-  description: 'Retrieve a list of all fine tuning jobs created by the user.',
-  operationId: 'get_finetuningjob_public_finetuning_get',
-  responses: {
-    200: {
-      description: 'Successful Response',
-      content: {
-        'application/json': {
-          schema: FineTuningJobsListDataSchema,
-          example: {
-            data: [
-              {
-                id: 'string',
-                created_at: 0,
-                hyperparameters: { n_epochs: 3 },
-                model: 'string',
-                organization_id: 'string',
-                status: 'queued',
-                training_file: 'string',
-                finished_at: null,
-                trained_tokens: null,
-              },
-            ],
-          },
-        },
-      },
-    },
-    422: {
-      description: 'Validation Error',
-      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
-    },
-  },
-})
-
-export const postAiFineTuningJobsRoute = createRoute({
-  method: 'post',
-  path: '/ai/fine_tuning/jobs',
-  tags: ['Fine Tuning'],
-  summary: 'Create a fine tuning job',
-  description:
-    'Creates a new fine-tuning job that trains a model on the provided dataset, and returns the created job.',
-  operationId: 'create_new_finetuningjob_public_finetuning_post',
-  request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: CreateFineTuningJobRequestSchema,
-          example: {
-            model: 'string',
-            training_file: 'string',
-            suffix: 'string',
-            hyperparameters: { n_epochs: 3 },
-          },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'Successful Response',
-      content: {
-        'application/json': {
-          schema: FineTuningJobSchema,
-          example: {
-            id: 'string',
-            created_at: 0,
-            hyperparameters: { n_epochs: 3 },
-            model: 'string',
-            organization_id: 'string',
-            status: 'queued',
-            training_file: 'string',
-            finished_at: null,
-            trained_tokens: null,
-          },
-        },
-      },
-    },
-    422: {
-      description: 'Validation Error',
-      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
-    },
-  },
-})
-
-export const getAiFineTuningJobsJobIdRoute = createRoute({
-  method: 'get',
-  path: '/ai/fine_tuning/jobs/{job_id}',
-  tags: ['Fine Tuning'],
-  summary: 'Get a fine tuning job',
-  description:
-    'Returns the details of a single fine-tuning job by its job_id, including its current status.',
-  operationId: 'get_finetuningjob_public_finetuning__job_id__get',
-  request: {
-    params: z.object({
-      job_id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'job_id',
-            in: 'path',
-            description: 'Unique identifier of the job.',
-            required: true,
-            schema: { type: 'string', title: 'Job Id' },
-          },
-          title: 'Job Id',
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Successful Response',
-      content: {
-        'application/json': {
-          schema: FineTuningJobSchema,
-          example: {
-            id: 'string',
-            created_at: 0,
-            hyperparameters: { n_epochs: 3 },
-            model: 'string',
-            organization_id: 'string',
-            status: 'queued',
-            training_file: 'string',
-            finished_at: null,
-            trained_tokens: null,
-          },
-        },
-      },
-    },
-    422: {
-      description: 'Validation Error',
-      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
-    },
-  },
-})
-
-export const postAiFineTuningJobsJobIdCancelRoute = createRoute({
-  method: 'post',
-  path: '/ai/fine_tuning/jobs/{job_id}/cancel',
-  tags: ['Fine Tuning'],
-  summary: 'Cancel a fine tuning job',
-  description: 'Cancels the specified in-progress fine-tuning job and returns the updated job.',
-  operationId: 'cancel_new_finetuningjob_public_finetuning_post',
-  request: {
-    params: z.object({
-      job_id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'job_id',
-            in: 'path',
-            description: 'Unique identifier of the job.',
-            required: true,
-            schema: { type: 'string', title: 'Job Id' },
-          },
-          title: 'Job Id',
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Successful Response',
-      content: {
-        'application/json': {
-          schema: FineTuningJobSchema,
-          example: {
-            id: 'string',
-            created_at: 0,
-            hyperparameters: { n_epochs: 3 },
-            model: 'string',
-            organization_id: 'string',
-            status: 'cancelled',
-            training_file: 'string',
-            finished_at: 1706033402,
-            trained_tokens: null,
           },
         },
       },
@@ -140934,6 +150018,479 @@ export const getBundlePricingUserBundlesUserBundleIdResourcesRoute = createRoute
     404: BundlePricingNotFoundErrorResponseResponse,
     default: BundlePricingGenericErrorResponseResponse,
   },
+})
+
+export const getCalendarConnectionsRoute = createRoute({
+  method: 'get',
+  path: '/calendar_connections',
+  tags: ['Meeting Calendar Connections'],
+  summary: 'List meeting calendar connections',
+  description:
+    'List only the authenticated connecting user’s calendar connections. Session resources created by those connections are shared within the organization.',
+  operationId: 'listMeetingCalendarConnections',
+  responses: {
+    200: {
+      description: 'Successful response.',
+      content: {
+        'application/json': {
+          schema: CalendarConnectionListResponseSchema,
+          example: {
+            data: [
+              {
+                id: 'calconn_example',
+                platform: 'google_calendar',
+                platform_email: 'organizer@example.com',
+                status: 'connected',
+                status_detail: null,
+                auto_join_policy: 'all_meetings',
+                bot_name: 'Notetaker',
+                default_barge_in: null,
+                default_summarize_on_end: null,
+                default_voice: null,
+                default_assistant: null,
+                default_recording: null,
+                default_recording_export: null,
+                default_webhook_url: null,
+                created_at: '2026-11-05T09:00:00Z',
+                updated_at: '2026-11-05T09:00:00Z',
+              },
+            ],
+          },
+        },
+      },
+    },
+    401: MeetingSessionsUnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+    500: MeetingSessionsInternalServerErrorResponse,
+    503: ServiceUnavailableResponse,
+  },
+  security: [{ bearerAuth2: [] }],
+})
+
+export const postCalendarConnectionsRoute = createRoute({
+  method: 'post',
+  path: '/calendar_connections',
+  tags: ['Meeting Calendar Connections'],
+  summary: 'Connect a meeting calendar',
+  description:
+    'Start Google Calendar or Microsoft Outlook OAuth. Open oauth_url in a browser. No connection exists until authorization succeeds. The resulting connection is owned by the connecting user.',
+  operationId: 'createMeetingCalendarConnection',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: CreateCalendarConnectionRequestSchema,
+          example: { platform: 'google_calendar' },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Successful response.',
+      content: {
+        'application/json': {
+          schema: CalendarConnectionPendingResponseSchema,
+          example: {
+            data: {
+              platform: 'google_calendar',
+              status: 'pending_oauth',
+              oauth_url: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=example',
+            },
+          },
+        },
+      },
+    },
+    400: MeetingSessionsBadRequestResponse,
+    401: MeetingSessionsUnauthorizedResponse,
+    403: ForbiddenResponse,
+    413: PayloadTooLargeResponse,
+    422: MeetingSessionsUnprocessableEntityResponse,
+    429: TooManyRequestsResponse,
+    500: MeetingSessionsInternalServerErrorResponse,
+    503: ServiceUnavailableResponse,
+  },
+  security: [{ bearerAuth2: [] }],
+})
+
+export const getCalendarConnectionsIdRoute = createRoute({
+  method: 'get',
+  path: '/calendar_connections/{id}',
+  tags: ['Meeting Calendar Connections'],
+  summary: 'Retrieve a meeting calendar connection',
+  description:
+    'Retrieve a calendar connection owned by the authenticated connecting user. Missing and foreign connections both return 404. Signing secrets are omitted.',
+  operationId: 'retrieveMeetingCalendarConnection',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Calendar connection ID.',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response.',
+      content: {
+        'application/json': {
+          schema: CalendarConnectionResponseSchema,
+          example: {
+            data: {
+              id: 'calconn_example',
+              platform: 'google_calendar',
+              platform_email: 'organizer@example.com',
+              status: 'connected',
+              status_detail: null,
+              auto_join_policy: 'all_meetings',
+              bot_name: 'Notetaker',
+              default_barge_in: null,
+              default_summarize_on_end: null,
+              default_voice: null,
+              default_assistant: null,
+              default_recording: null,
+              default_recording_export: null,
+              default_webhook_url: null,
+              created_at: '2026-11-05T09:00:00Z',
+              updated_at: '2026-11-05T09:00:00Z',
+            },
+          },
+        },
+      },
+    },
+    401: MeetingSessionsUnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: MeetingSessionsNotFoundResponse,
+    429: TooManyRequestsResponse,
+    500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
+    503: ServiceUnavailableResponse,
+  },
+  security: [{ bearerAuth2: [] }],
+})
+
+export const deleteCalendarConnectionsIdRoute = createRoute({
+  method: 'delete',
+  path: '/calendar_connections/{id}',
+  tags: ['Meeting Calendar Connections'],
+  summary: 'Disconnect a meeting calendar',
+  description:
+    'Disconnect the calendar, cancel future joins, and clear retained calendar identity fields. Previously created session records, transcripts, artifacts, and Storage objects remain. The response is the updated connection.',
+  operationId: 'disconnectMeetingCalendar',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Calendar connection ID.',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response.',
+      content: {
+        'application/json': {
+          schema: CalendarConnectionResponseSchema,
+          example: {
+            data: {
+              id: 'calconn_example',
+              platform: 'google_calendar',
+              platform_email: 'organizer@example.com',
+              status: 'disconnected',
+              status_detail: null,
+              auto_join_policy: 'all_meetings',
+              bot_name: 'Notetaker',
+              default_barge_in: null,
+              default_summarize_on_end: null,
+              default_voice: null,
+              default_assistant: null,
+              default_recording: null,
+              default_recording_export: null,
+              default_webhook_url: null,
+              created_at: '2026-11-05T09:00:00Z',
+              updated_at: '2026-11-05T09:00:00Z',
+            },
+          },
+        },
+      },
+    },
+    401: MeetingSessionsUnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: MeetingSessionsNotFoundResponse,
+    429: TooManyRequestsResponse,
+    500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
+    503: ServiceUnavailableResponse,
+  },
+  security: [{ bearerAuth2: [] }],
+})
+
+export const patchCalendarConnectionsIdRoute = createRoute({
+  method: 'patch',
+  path: '/calendar_connections/{id}',
+  tags: ['Meeting Calendar Connections'],
+  summary: 'Update a meeting calendar connection',
+  description:
+    'Update policy or defaults for future sessions. Supply at least one field. Existing sessions retain their configuration. Null clears nullable overrides. Assistant, recording, and webhook defaults apply to Google Meet and Teams. Assistant defaults require default_barge_in to be false or null and default_voice to be null. Recording=true requires a destination; false rejects one. A non-null default_webhook_url update returns webhook_secret once; save it to verify future session deliveries.',
+  operationId: 'updateMeetingCalendarConnection',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Calendar connection ID.',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: UpdateCalendarConnectionRequestSchema,
+          example: {
+            default_recording: true,
+            default_recording_export: { bucket: 'meeting-recordings' },
+            default_webhook_url: 'https://example.com/meeting-events',
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful response.',
+      content: {
+        'application/json': {
+          schema: CalendarConnectionUpdatedResponseSchema,
+          example: {
+            data: {
+              id: 'calconn_example',
+              platform: 'google_calendar',
+              platform_email: 'organizer@example.com',
+              status: 'connected',
+              status_detail: null,
+              auto_join_policy: 'all_meetings',
+              bot_name: 'Notetaker',
+              default_barge_in: null,
+              default_summarize_on_end: null,
+              default_voice: null,
+              default_assistant: null,
+              default_recording: true,
+              default_recording_export: { bucket: 'meeting-recordings' },
+              default_webhook_url: 'https://example.com/meeting-events',
+              created_at: '2026-11-05T09:00:00Z',
+              updated_at: '2026-11-05T09:00:00Z',
+              webhook_secret: 'whsec_example',
+            },
+          },
+        },
+      },
+    },
+    400: MeetingSessionsBadRequestResponse,
+    401: MeetingSessionsUnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: MeetingSessionsNotFoundResponse,
+    409: MeetingSessionsConflictResponse,
+    413: PayloadTooLargeResponse,
+    422: MeetingSessionsUnprocessableEntityResponse,
+    429: TooManyRequestsResponse,
+    500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
+    503: ServiceUnavailableResponse,
+  },
+  security: [{ bearerAuth2: [] }],
+})
+
+export const getCalendarConnectionsIdMeetingsRoute = createRoute({
+  method: 'get',
+  path: '/calendar_connections/{id}/meetings',
+  tags: ['Meeting Calendar Connections'],
+  summary: 'List calendar meetings',
+  description:
+    'List tracked meetings in a window. Defaults from now through seven days from now. from must not exceed to and the window must not exceed 31 days. bot_will_join is the effective policy decision; check session_id and the linked session status for actual attendance.',
+  operationId: 'listMeetingCalendarMeetings',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Calendar connection ID.',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    query: z.object({
+      from: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'from',
+            in: 'query',
+            description: 'Window start; defaults to now.',
+            schema: { type: 'string', format: 'date-time' },
+            required: false,
+          },
+        }),
+      to: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'to',
+            in: 'query',
+            description: 'Window end; defaults to seven days from now.',
+            schema: { type: 'string', format: 'date-time' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response.',
+      content: {
+        'application/json': {
+          schema: CalendarMeetingListResponseSchema,
+          example: {
+            data: [
+              {
+                id: 'calmtg_example',
+                platform: 'google_meet',
+                start_time: '2026-12-05T09:00:00Z',
+                end_time: '2026-12-05T09:30:00Z',
+                organizer: {
+                  email: 'organizer@example.com',
+                  display_name: 'Organizer',
+                  self: true,
+                },
+                attendees: [],
+                is_external_organizer: false,
+                bot_will_join: true,
+                bot_will_join_override: null,
+                decision: 'scheduled',
+                session_id: 'mtgsess_example',
+              },
+            ],
+          },
+        },
+      },
+    },
+    400: MeetingSessionsBadRequestResponse,
+    401: MeetingSessionsUnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: MeetingSessionsNotFoundResponse,
+    429: TooManyRequestsResponse,
+    500: MeetingSessionsInternalServerErrorResponse,
+    503: ServiceUnavailableResponse,
+  },
+  security: [{ bearerAuth2: [] }],
+})
+
+export const patchCalendarConnectionsIdMeetingsMeetingIdRoute = createRoute({
+  method: 'patch',
+  path: '/calendar_connections/{id}/meetings/{meeting_id}',
+  tags: ['Meeting Calendar Connections'],
+  summary: 'Update calendar meeting auto-join',
+  description:
+    'Set an individual meeting override: true opts in, false opts out, null follows the connection policy. A supported meeting link is required. Changes re-evaluate the meeting immediately; poll the linked session for its final lifecycle outcome.',
+  operationId: 'updateMeetingCalendarMeeting',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Calendar connection ID.',
+            schema: { type: 'string' },
+          },
+        }),
+      meeting_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'meeting_id',
+            in: 'path',
+            required: true,
+            description: 'Tracked meeting ID.',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: UpdateCalendarMeetingRequestSchema,
+          example: { bot_will_join: false },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful response.',
+      content: {
+        'application/json': {
+          schema: CalendarMeetingResponseSchema,
+          example: {
+            data: {
+              id: 'calmtg_example',
+              platform: 'google_meet',
+              start_time: '2026-12-05T09:00:00Z',
+              end_time: '2026-12-05T09:30:00Z',
+              organizer: { email: 'organizer@example.com', display_name: 'Organizer', self: true },
+              attendees: [],
+              is_external_organizer: false,
+              bot_will_join: false,
+              bot_will_join_override: false,
+              decision: 'skipped_policy',
+              session_id: 'mtgsess_example',
+            },
+          },
+        },
+      },
+    },
+    400: MeetingSessionsBadRequestResponse,
+    401: MeetingSessionsUnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: MeetingSessionsNotFoundResponse,
+    409: MeetingSessionsConflictResponse,
+    413: PayloadTooLargeResponse,
+    429: TooManyRequestsResponse,
+    500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
+    503: ServiceUnavailableResponse,
+  },
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getCallControlApplicationsRoute = createRoute({
@@ -169631,7 +179188,7 @@ export const postMachinePaymentsAccountCreditRoute = createRoute({
       },
     },
   },
-  security: [{ bearerAuth: [] }, { Payment: [] }],
+  security: [{ bearerAuth2: [] }, { Payment: [] }],
 })
 
 export const getManagedAccountsRoute = createRoute({
@@ -170442,12 +179999,122 @@ export const getMediaMediaNameDownloadRoute = createRoute({
   },
 })
 
+export const getMeetingBotCalendarOauthCallbackRoute = createRoute({
+  method: 'get',
+  path: '/meeting_bot/calendar/oauth_callback',
+  tags: ['Meeting Calendar Connections'],
+  summary: 'Complete meeting calendar authorization',
+  description:
+    'Browser redirect after calendar consent. Use the returned oauth_url rather than constructing this request. Verified state identifies the connecting user. Returns HTML for success, cancellation, or failure; no JSON error envelope or bearer token is used.',
+  operationId: 'completeMeetingCalendarAuthorization',
+  request: {
+    query: z.object({
+      code: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'code',
+            in: 'query',
+            description: 'Authorization code supplied by the calendar provider.',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      state: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'state',
+            in: 'query',
+            description: 'Unmodified signed state from the authorization URL.',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      error: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'error',
+            in: 'query',
+            description:
+              'Authorization error supplied by the calendar provider, such as access_denied.',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Calendar connected, or the user cancelled authorization.',
+      content: {
+        'text/html': {
+          schema: z.string(),
+          example: '<!doctype html><html><body><h1>Calendar connected</h1></body></html>',
+        },
+      },
+    },
+    400: {
+      description: 'Invalid, expired, or rejected authorization.',
+      content: {
+        'text/html': {
+          schema: z.string(),
+          example: '<!doctype html><html><body><h1>Invalid request</h1></body></html>',
+        },
+      },
+    },
+    409: {
+      description: 'This user already has a connection for this calendar platform.',
+      content: {
+        'text/html': {
+          schema: z.string(),
+          example: '<!doctype html><html><body><h1>Calendar already connected</h1></body></html>',
+        },
+      },
+    },
+    500: {
+      description: 'Unexpected connection failure.',
+      content: {
+        'text/html': {
+          schema: z.string(),
+          example: '<!doctype html><html><body><h1>Calendar connection failed</h1></body></html>',
+        },
+      },
+    },
+    502: {
+      description: 'Calendar authorization exchange failed.',
+      content: {
+        'text/html': {
+          schema: z.string(),
+          example: '<!doctype html><html><body><h1>Calendar connection failed</h1></body></html>',
+        },
+      },
+    },
+    503: {
+      description: 'Calendar connection is temporarily unavailable.',
+      content: {
+        'text/html': {
+          schema: z.string(),
+          example:
+            '<!doctype html><html><body><h1>Calendar connections unavailable</h1></body></html>',
+        },
+      },
+    },
+  },
+  security: [],
+})
+
 export const getMeetingSessionsRoute = createRoute({
   method: 'get',
   path: '/meeting_sessions',
   tags: ['Meeting Sessions'],
   summary: 'List meeting sessions',
-  description: 'Returns a list of meeting sessions, optionally filtered by status.',
+  description:
+    'Returns a list of meeting sessions, optionally filtered by status. List items omit assistant.dynamic_variables and recording_export. Some items include remote_state_observed_at; retrieve the individual session for current state.',
   operationId: 'listMeetingSessions',
   request: {
     query: z.object({
@@ -170514,6 +180181,7 @@ export const getMeetingSessionsRoute = createRoute({
                   barge_in: false,
                   summarize_on_end: true,
                   chat_on_enter: null,
+                  deepfake_detection: { audio: false, video: false },
                 },
                 avatar: null,
                 avatar_state: null,
@@ -170540,6 +180208,7 @@ export const getMeetingSessionsRoute = createRoute({
     403: ForbiddenResponse,
     429: TooManyRequestsResponse,
     500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
     503: MeetingReadAuthUnavailableResponse,
   },
 })
@@ -170550,7 +180219,7 @@ export const postMeetingSessionsRoute = createRoute({
   tags: ['Meeting Sessions'],
   summary: 'Create a meeting session',
   description:
-    'Creates a new meeting session. When an idempotency_key is supplied in the request body, replay lookup is scoped to the authenticated account and compares only the key; the request payload is not fingerprinted or compared. If a session with that key already exists for the account, the existing session is replayed (200); otherwise a new session is created (201). The session may enter asynchronous states (e.g. joining, waiting_for_admission) before becoming active. Optional `camera_image` input is write-only and applies only when no avatar or Assistant webpage output takes precedence. An ignored URL is not fetched. An effective URL source is resolved before bot creation; neither the source URL nor image bytes are persisted, returned, or logged. Treat signed URLs as credentials. With `assistant.avatar: true`, the assistant is read before the bot is created: an assistant without a Telnyx avatar configured is rejected with 400 `invalid_request` (message prefix `assistant_avatar_not_configured:`), an unknown assistant with 400 `invalid_request` (prefix `assistant_not_found:`), and a failed lookup with 503 `assistant_lookup_unavailable`; no bot is created in any of these cases.',
+    'Creates a meeting session and returns 201, or 200 for a replay. Use a unique `idempotency_key` per intended join and reuse the same key and request on retries. Reusing a key with a different join configuration or meeting URL can return 409 invalid_state. Always retry with the original request. The session can pass through joining and waiting_for_admission before active. Optional `camera_image` input is write-only and applies when no assistant avatar takes precedence. An ignored URL is not fetched. An effective URL source is resolved before bot creation; the source URL and image bytes are not returned in the session response. Treat signed URLs as credentials. With `assistant.avatar: true`, the assistant is read before the bot is created: an assistant without a Telnyx avatar configured is rejected with 400 `invalid_request` (message prefix `assistant_avatar_not_configured:`), an unknown assistant with 400 `invalid_request` (prefix `assistant_not_found:`), and a failed lookup with 503 `assistant_lookup_unavailable`; no bot is created in any of these cases.',
   operationId: 'createMeetingSession',
   request: {
     body: {
@@ -170571,9 +180240,23 @@ export const postMeetingSessionsRoute = createRoute({
     400: MeetingSessionsBadRequestResponse,
     401: MeetingSessionsUnauthorizedResponse,
     403: ForbiddenResponse,
+    409: {
+      description: 'The idempotency key belongs to a different or cancelled join.',
+      content: {
+        'application/json': {
+          schema: MeetingSessionsErrorResponseSchema,
+          example: {
+            error: {
+              code: 'invalid_state',
+              message: 'The idempotency key belongs to a different join',
+            },
+          },
+        },
+      },
+    },
     413: PayloadTooLargeResponse,
     422: MeetingSessionsUnprocessableEntityResponse,
-    429: TooManyRequestsResponse,
+    429: MeetingCreateTooManyRequestsResponse,
     500: MeetingSessionsInternalServerErrorResponse,
     502: MeetingCreateProviderErrorResponse,
     503: ServiceUnavailableResponse,
@@ -170612,6 +180295,7 @@ export const getMeetingSessionsIdRoute = createRoute({
                 barge_in: false,
                 summarize_on_end: true,
                 chat_on_enter: null,
+                deepfake_detection: { audio: false, video: false },
               },
               avatar: null,
               avatar_state: null,
@@ -170637,6 +180321,7 @@ export const getMeetingSessionsIdRoute = createRoute({
     404: MeetingSessionsNotFoundResponse,
     429: TooManyRequestsResponse,
     500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
     503: MeetingReadAuthUnavailableResponse,
   },
 })
@@ -170647,7 +180332,7 @@ export const deleteMeetingSessionsIdRoute = createRoute({
   tags: ['Meeting Sessions'],
   summary: 'Delete a meeting session',
   description:
-    'Stops a meeting session without deleting its persisted record. Scheduled bots are cancelled, while bots that are joining or active are asked to leave. The persisted meeting session record remains available.',
+    'Stops a meeting session without deleting its persisted record. Scheduled bots are cancelled, while bots that are joining or active are asked to leave. The persisted meeting session record remains available. A successful response can report leaving while departure is pending. Poll until ended, failed, or admission_denied. Exported Storage objects are unaffected.',
   operationId: 'deleteMeetingSession',
   request: { params: z.object({ id: MeetingSessionIdParamsSchema }) },
   responses: {
@@ -170673,6 +180358,7 @@ export const deleteMeetingSessionsIdRoute = createRoute({
                 barge_in: false,
                 summarize_on_end: true,
                 chat_on_enter: null,
+                deepfake_detection: { audio: false, video: false },
               },
               avatar: null,
               avatar_state: null,
@@ -170710,7 +180396,7 @@ export const patchMeetingSessionsIdRoute = createRoute({
   tags: ['Meeting Sessions'],
   summary: 'Update a meeting session',
   description:
-    'Updates mutable properties of a meeting session. Only sessions in the scheduled state can be updated; any other state returns 409 with the invalid_state error code. All request fields are optional, and an empty object is a valid no-op update.',
+    'Updates mutable properties of a meeting session. Only sessions in the scheduled state can be updated; any other state returns 409 with the invalid_state error code. All request fields are optional, and an empty object is a valid no-op update. Calendar-controlled Google Meet and Teams sessions return 409 calendar_managed; change the event instead. A conflicting pending edit returns 409 edit_in_progress. On a timeout or 503, read the session and retry the same changes.',
   operationId: 'updateMeetingSession',
   request: {
     params: z.object({ id: MeetingSessionIdParamsSchema }),
@@ -170747,6 +180433,7 @@ export const patchMeetingSessionsIdRoute = createRoute({
                 barge_in: false,
                 summarize_on_end: true,
                 chat_on_enter: null,
+                deepfake_detection: { audio: false, video: false },
               },
               avatar: null,
               avatar_state: null,
@@ -170771,7 +180458,7 @@ export const patchMeetingSessionsIdRoute = createRoute({
     401: MeetingSessionsUnauthorizedResponse,
     403: ForbiddenResponse,
     404: MeetingSessionsNotFoundResponse,
-    409: MeetingSessionsConflictResponse,
+    409: MeetingScheduleConflictResponse,
     413: PayloadTooLargeResponse,
     429: TooManyRequestsResponse,
     500: MeetingSessionsInternalServerErrorResponse,
@@ -170785,7 +180472,8 @@ export const postMeetingSessionsIdActionsSendChatRoute = createRoute({
   path: '/meeting_sessions/{id}/actions/send_chat',
   tags: ['Meeting Session Actions'],
   summary: 'Send chat in a meeting session',
-  description: 'Sends a chat message into a meeting session.',
+  description:
+    'Send chat as the bot in an active meeting. Returns 202 with data.accepted=true. Google Meet and Teams confirm sending before success; 502 chat_not_sent means not sent, while chat_delivery_unknown means delivery may have occurred. Inspect chat and chat.sent events before retrying an uncertain send. Each request is a new message and is not idempotent. Google Meet and Teams allow at most 1000 chat requests per session, including an entrance message; exceeding this returns 409 invalid_state.',
   operationId: 'sendChatMeetingSession',
   request: {
     params: z.object({ id: MeetingSessionIdParamsSchema }),
@@ -170824,7 +180512,7 @@ export const postMeetingSessionsIdActionsSpeakRoute = createRoute({
   tags: ['Meeting Session Actions'],
   summary: 'Speak in a meeting session',
   description:
-    "Sends audio / text-to-speech into a meeting session. With a Telnyx AI Assistant attached, the bot is a webpage-output bot: the speak audio routes through the assistant's output page rather than the bot mic and plays once the assistant is connected -- it is not refused. If that page cannot be reached, delivery fails with the 502 below, which may arrive without an error envelope, so branch on the status code before parsing a body. The assistant is designed to own the conversation, so prefer letting it speak or use `send_chat`. With a digital avatar (`assistant.avatar: true`), speak is refused with 409 `invalid_state` (message prefix `avatar_requires_assistant_speech:`): the avatar renders only the assistant's own speech.",
+    "Sends audio / text-to-speech into a meeting session. With a Telnyx AI Assistant attached, wait for the assistant to connect before requesting speech. If audio delivery fails, the response can be 502, which may arrive without an error envelope, so branch on the status code before parsing a body. The assistant is designed to own the conversation, so prefer letting it speak or use `send_chat`. With a digital avatar (`assistant.avatar: true`), speak is refused with 409 `invalid_state` (message prefix `avatar_requires_assistant_speech:`): the avatar renders only the assistant's own speech.",
   operationId: 'speakMeetingSession',
   request: {
     params: z.object({ id: MeetingSessionIdParamsSchema }),
@@ -170901,6 +180589,7 @@ export const getMeetingSessionsIdArtifactsRoute = createRoute({
     404: MeetingSessionsNotFoundResponse,
     429: TooManyRequestsResponse,
     500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
     503: MeetingReadAuthUnavailableResponse,
   },
 })
@@ -170911,7 +180600,7 @@ export const postMeetingSessionsIdArtifactsRoute = createRoute({
   tags: ['Meeting Session Artifacts'],
   summary: 'Create a meeting session artifact',
   description:
-    'Requests asynchronous generation of one artifact: `summary`, `action_items`, `decisions`, `topics`, `open_questions`, or `custom`. Each request produces one artifact. `custom` is answered from a `prompt` you supply, which is required for `custom` and rejected on the five named types. Generation requires transcript content and configured inference and currently reads at most the first 10,000 segments, so exceptionally long transcripts may produce incomplete artifacts or fail model limits. **Not idempotent, and every call is billed**: each request is a separate inference run, so a retry or a duplicate POST produces a second artifact and a second charge. Guard the call rather than relying on the service to collapse it. The automatic `summarize_on_end` attempt is billed on the same basis.',
+    'Requests asynchronous generation of one artifact: `summary`, `action_items`, `decisions`, `topics`, `open_questions`, or `custom`. Each request produces one artifact. `custom` is answered from a `prompt` you supply, which is required for `custom` and rejected on the five named types. Generation requires transcript content. Input is limited to 10,000 segments and 1,000,000 UTF-8 bytes including segment text, speaker labels, timestamps, and sequence numbers. An oversized transcript returns 409 invalid_state before an artifact is created; it is not silently truncated. Model context limits can still cause an accepted artifact to fail. **Not idempotent, and every call is billed**: each request is a separate inference run, so a retry or a duplicate POST produces a second artifact and a second charge. Guard the call rather than relying on the service to collapse it. The automatic `summarize_on_end` attempt is billed on the same basis.',
   operationId: 'createMeetingSessionArtifact',
   request: {
     params: z.object({ id: MeetingSessionIdParamsSchema }),
@@ -170962,6 +180651,7 @@ export const getMeetingSessionsIdArtifactsArtifactIdRoute = createRoute({
     404: MeetingSessionsNotFoundResponse,
     429: TooManyRequestsResponse,
     500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
     503: MeetingReadAuthUnavailableResponse,
   },
 })
@@ -171003,6 +180693,7 @@ export const getMeetingSessionsIdEventsRoute = createRoute({
     404: MeetingSessionsNotFoundResponse,
     429: TooManyRequestsResponse,
     500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
     503: MeetingReadAuthUnavailableResponse,
   },
 })
@@ -171013,7 +180704,7 @@ export const deleteMeetingSessionsIdRecordingMediaRoute = createRoute({
   tags: ['Meeting Session Data'],
   summary: 'Delete meeting session recording media',
   description:
-    'Irreversibly requests deletion of the aggregate recording media for the session. The operation retains the Telnyx-local Meeting session, transcript segments, events, artifacts, and usage records. It is separate from `DELETE /meeting_sessions/{id}`, which stops or cancels participation without deleting the persisted session. A missing/foreign session returns 404; a deletion request whose outcome is unknown returns 502.',
+    'Irreversibly requests deletion of the aggregate recording media for the session. The operation retains the Telnyx-local Meeting session, transcript segments, events, artifacts, and usage records. It is separate from `DELETE /meeting_sessions/{id}`, which stops or cancels participation without deleting the persisted session. A missing/foreign session returns 404; a deletion request whose outcome is unknown returns 502. Customer Storage exports do not support this operation (422 unsupported_capability); delete the exported object through Storage instead. Stopping a session does not delete an exported object.',
   operationId: 'deleteMeetingSessionRecordingMedia',
   request: { params: z.object({ id: MeetingSessionIdParamsSchema }) },
   responses: {
@@ -171034,7 +180725,94 @@ export const deleteMeetingSessionsIdRecordingMediaRoute = createRoute({
     502: RecordingMediaProviderErrorResponse,
     503: RecordingMediaAuthenticationUnavailableResponse,
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
+})
+
+export const getMeetingSessionsIdRecordingsRoute = createRoute({
+  method: 'get',
+  path: '/meeting_sessions/{id}/recordings',
+  tags: ['Meeting Session Data'],
+  summary: 'List meeting session recordings',
+  description:
+    'Retrieve recording export status. Customer Storage exports include recording_export with the bucket, region, key and pending/exported/failed status, or null when no reference is available. The data array is empty for these exports. Download or share the object using the Storage API once its status is exported. Zoom recordings and existing Google Meet or Teams recordings held by the Meeting service continue returning temporary download links in data through this same endpoint and session ID. Those recordings do not require Storage setup or migration. Refresh this endpoint when a link expires. Select the download method from the returned fields, not the platform alone.',
+  operationId: 'listMeetingSessionRecordings',
+  request: { params: z.object({ id: MeetingSessionIdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Recording results; a pending or empty result does not mean a file is ready.',
+      content: {
+        'application/json': {
+          schema: MeetingSessionRecordingsResponseSchema,
+          examples: {
+            exported: {
+              value: {
+                data: [],
+                recording_export: {
+                  type: 'video',
+                  bucket: 'meeting-recordings',
+                  region: 'us-central-1',
+                  key: 'weekly-planning/recording.mp4',
+                  bytes: 1048576,
+                  status: 'exported',
+                  exported_at: '2026-11-03T12:00:00Z',
+                },
+              },
+            },
+            pending: {
+              value: {
+                data: [],
+                recording_export: {
+                  type: 'video',
+                  bucket: 'meeting-recordings',
+                  region: 'us-central-1',
+                  key: 'weekly-planning/recording.mp4',
+                  bytes: null,
+                  status: 'pending',
+                  exported_at: null,
+                },
+              },
+            },
+            failed: {
+              value: {
+                data: [],
+                recording_export: {
+                  type: 'video',
+                  bucket: 'meeting-recordings',
+                  region: 'us-central-1',
+                  key: 'weekly-planning/recording.mp4',
+                  bytes: null,
+                  status: 'failed',
+                  exported_at: null,
+                },
+              },
+            },
+            disabled: { value: { data: [], recording_export: null } },
+            download: {
+              summary:
+                'Download links for Meeting-service recordings, including existing Google Meet and Teams recordings',
+              value: {
+                data: [
+                  {
+                    type: 'video_mixed',
+                    url: 'https://example.com/recording.mp4',
+                    expires_at: null,
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    401: MeetingSessionsUnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: RecordingMediaResourceNotFoundResponse,
+    429: TooManyRequestsResponse,
+    500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
+    503: MeetingReadAuthUnavailableResponse,
+  },
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getMeetingSessionsIdTranscriptRoute = createRoute({
@@ -171043,7 +180821,7 @@ export const getMeetingSessionsIdTranscriptRoute = createRoute({
   tags: ['Meeting Session Data'],
   summary: 'List meeting session transcript',
   description:
-    'Returns transcript segments ordered by ascending `seq`. Default `limit` is 100 and maximum is 1,000. Continue with `after=meta.next_after`. A long-poll timeout returns 200 with empty `data` and `meta.next_after: null`; retain the cursor supplied to that request because null is not a replacement cursor.',
+    'Returns transcript segments ordered by ascending seq. Default limit is 100, maximum 1000. Continue with after=meta.next_after. On an empty page, meta.next_after preserves a positive supplied after cursor, or is null when no positive cursor was supplied. wait_seconds holds an empty read for up to 25 seconds; a timeout still returns 200.',
   operationId: 'listMeetingSessionTranscript',
   request: {
     params: z.object({ id: MeetingSessionIdParamsSchema }),
@@ -171064,6 +180842,7 @@ export const getMeetingSessionsIdTranscriptRoute = createRoute({
     404: MeetingSessionsNotFoundResponse,
     429: TooManyRequestsResponse,
     500: MeetingSessionsInternalServerErrorResponse,
+    502: MeetingReadUnavailableResponse,
     503: MeetingReadAuthUnavailableResponse,
   },
 })
@@ -175211,6 +184990,75 @@ export const getMobileNetworkOperatorsRoute = createRoute({
   },
 })
 
+export const getMobilePhoneNumbersRoute = createRoute({
+  method: 'get',
+  path: '/mobile_phone_numbers',
+  tags: ['Mobile Phone Numbers'],
+  summary: 'List Mobile Phone Numbers',
+  description: 'Retrieve a paginated list of mobile phone numbers on your account.',
+  operationId: 'listMobilePhoneNumbers',
+  request: {
+    query: z.object({
+      'page[number]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page[number]',
+            in: 'query',
+            description: 'The page number to load',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+      'page[size]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page[size]',
+            in: 'query',
+            description: 'The size of the page',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              data: z.array(MobilePhoneNumberSchema).exactOptional(),
+              meta: MobilePhoneNumbersPaginationMetaSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    401: { description: 'Unauthorized' },
+  },
+})
+
 export const getMobilePhoneNumbersMessagingRoute = createRoute({
   method: 'get',
   path: '/mobile_phone_numbers/messaging',
@@ -175344,6 +185192,101 @@ export const getMobilePhoneNumbersMessagingRoute = createRoute({
       },
     },
     '4XX': MessagingGenericErrorResponse_0b38e7044bResponse,
+  },
+})
+
+export const getMobilePhoneNumbersIdRoute = createRoute({
+  method: 'get',
+  path: '/mobile_phone_numbers/{id}',
+  tags: ['Mobile Phone Numbers'],
+  summary: 'Retrieve a Mobile Phone Number',
+  description: 'Retrieve the details of a specific mobile phone number.',
+  operationId: 'retrieveMobilePhoneNumber',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The ID of the mobile phone number',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ data: MobilePhoneNumberSchema.exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    404: { description: 'Resource not found' },
+  },
+})
+
+export const patchMobilePhoneNumbersIdRoute = createRoute({
+  method: 'patch',
+  path: '/mobile_phone_numbers/{id}',
+  tags: ['Mobile Phone Numbers'],
+  summary: 'Update a Mobile Phone Number',
+  description: 'Update the settings of a specific mobile phone number.',
+  operationId: 'updateMobilePhoneNumber',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The ID of the mobile phone number',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: MobilePhoneNumberUpdateSchema,
+          example: {
+            noise_suppression: false,
+            inbound_call_screening: 'disabled',
+            caller_id_name_enabled: false,
+            tags: ['string'],
+            call_forwarding: { forwarding_type: 'always', call_forwarding_enabled: false },
+            cnam_listing: { cnam_listing_enabled: false },
+            call_recording: {
+              inbound_call_recording_enabled: false,
+              inbound_call_recording_channels: 'single',
+              inbound_call_recording_format: 'wav',
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ data: MobilePhoneNumberSchema.exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    422: { description: 'Unprocessable Entity' },
   },
 })
 
@@ -175687,6 +185630,294 @@ export const deleteMobilePushCredentialsPushCredentialIdRoute = createRoute({
       description: 'Unable to process request',
       content: { 'application/json': { schema: ErrorsSchema } },
     },
+  },
+})
+
+export const getMobileVoiceConnectionsRoute = createRoute({
+  method: 'get',
+  path: '/mobile_voice_connections',
+  tags: ['Mobile Voice Connections'],
+  summary: 'List Mobile Voice Connections',
+  description: 'Retrieve a paginated list of mobile voice connections on your account.',
+  operationId: 'listMobileVoiceConnections',
+  request: {
+    query: z.object({
+      'page[number]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page[number]',
+            in: 'query',
+            description: 'The page number to load',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+      'page[size]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page[size]',
+            in: 'query',
+            description: 'The size of the page',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+      'filter[connection_name][contains]': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'filter[connection_name][contains]',
+            in: 'query',
+            description: 'Filter by connection name containing the given string',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      sort: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'sort',
+            in: 'query',
+            description:
+              'Sort by field (e.g., created_at, connection_name, active). Prefix with - for descending order.',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              data: z.array(MobileVoiceConnectionSchema).exactOptional(),
+              meta: MobileVoiceConnectionsPaginationMetaSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    401: { description: 'Unauthorized' },
+  },
+})
+
+export const postMobileVoiceConnectionsRoute = createRoute({
+  method: 'post',
+  path: '/mobile_voice_connections',
+  tags: ['Mobile Voice Connections'],
+  summary: 'Create a Mobile Voice Connection',
+  description:
+    'Creates a new mobile voice connection with the provided configuration and returns the created connection.',
+  operationId: 'createMobileVoiceConnection',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: MobileVoiceConnectionCreateSchema,
+          example: {
+            active: true,
+            connection_name: 'Telnyx Mobile Voice IMS',
+            webhook_api_version: '2',
+            tags: ['string'],
+            outbound: { channel_limit: 0, outbound_voice_profile_id: 'string' },
+            inbound: { channel_limit: 0 },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ data: MobileVoiceConnectionSchema.exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    403: { description: 'Unauthorized or Limit Reached' },
+    422: { description: 'Unprocessable Entity' },
+  },
+})
+
+export const getMobileVoiceConnectionsIdRoute = createRoute({
+  method: 'get',
+  path: '/mobile_voice_connections/{id}',
+  tags: ['Mobile Voice Connections'],
+  summary: 'Retrieve a Mobile Voice Connection',
+  description: 'Retrieve the details of a specific mobile voice connection.',
+  operationId: 'retrieveMobileVoiceConnection',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The ID of the mobile voice connection',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ data: MobileVoiceConnectionSchema.exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    404: { description: 'Resource not found' },
+  },
+})
+
+export const deleteMobileVoiceConnectionsIdRoute = createRoute({
+  method: 'delete',
+  path: '/mobile_voice_connections/{id}',
+  tags: ['Mobile Voice Connections'],
+  summary: 'Delete a Mobile Voice Connection',
+  description: 'Delete a mobile voice connection from your account.',
+  operationId: 'deleteMobileVoiceConnection',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The ID of the mobile voice connection',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ data: MobileVoiceConnectionSchema.exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    404: { description: 'Resource not found' },
+  },
+})
+
+export const patchMobileVoiceConnectionsIdRoute = createRoute({
+  method: 'patch',
+  path: '/mobile_voice_connections/{id}',
+  tags: ['Mobile Voice Connections'],
+  summary: 'Update a Mobile Voice Connection',
+  description: 'Update the settings of a specific mobile voice connection.',
+  operationId: 'updateMobileVoiceConnection',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The ID of the mobile voice connection',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: MobileVoiceConnectionUpdateSchema,
+          example: {
+            active: false,
+            connection_name: 'string',
+            webhook_api_version: '1',
+            webhook_timeout_secs: 0,
+            tags: ['string'],
+            outbound: { channel_limit: 0, outbound_voice_profile_id: 'string' },
+            inbound: { channel_limit: 0 },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ data: MobileVoiceConnectionSchema.exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    404: { description: 'Resource not found' },
+    409: {
+      description:
+        'Conflict. Another update to this connection is still in progress. Wait and retry the request later.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              errors: z
+                .array(z.object({ detail: z.string().exactOptional() }).openapi({ required: [] }))
+                .exactOptional(),
+            })
+            .openapi({ required: [] }),
+          example: {
+            errors: [
+              {
+                detail:
+                  'A previous update to this connection is still in progress. Please try again later.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: { description: 'Unprocessable Entity' },
   },
 })
 
@@ -176261,7 +186492,7 @@ export const postNetworkRoutesRoute = createRoute({
   tags: ['Network Routes'],
   summary: 'Create a Network Route',
   description:
-    'Adds a route to a Network. Traffic on the Network to an address in `cidr` goes via `next_hop`. With a tunnel as the next hop, functions on the Network reach the CIDR through the tunnel without a redeploy. A Network holds each CIDR once.',
+    'Adds a route to a Network. Traffic on the Network to an address in `cidr` goes via `next_hop`. With a tunnel as the next hop, functions on the Network reach the CIDR through the tunnel without a redeploy. With a WireGuard peer as the next hop, the peer routes the CIDR as a subnet router. A Network holds each CIDR once.',
   operationId: 'CreateNetworkRoute',
   request: {
     body: {
@@ -182236,6 +192467,103 @@ export const patchPaymentAutoRechargePrefsRoute = createRoute({
     401: { description: 'Unauthorized' },
     404: { description: 'Resource not found' },
     422: { description: 'Bad request' },
+  },
+})
+
+export const postPaymentStoredPaymentTransactionsRoute = createRoute({
+  method: 'post',
+  path: '/payment/stored_payment_transactions',
+  tags: ['Stored Payment Transactions'],
+  summary: 'Create a stored payment transaction',
+  description: 'Create a transaction that charges a stored payment method on the account.',
+  operationId: 'createStoredPaymentTransaction',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: StoredPaymentTransactionRequestSchema,
+          example: { amount: '120.00' },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Stored payment transaction created successfully',
+      content: {
+        'application/json': {
+          schema: StoredPaymentTransactionResponseSchema,
+          example: {
+            data: {
+              id: 'de06811a-2e43-4561-af5a-7d0a26e20aaa',
+              record_type: 'transaction',
+              amount_cents: 12000,
+              processor_status: 'submitted_for_settlement',
+              amount_currency: 'USD',
+              created_at: '2026-02-25T10:00:00Z',
+              auto_recharge: false,
+              transaction_processing_type: 'stored_payment',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: StoredPaymentTransactionsErrorResponseSchema,
+          example: {
+            errors: [
+              {
+                code: '10009',
+                title: 'Authentication failed',
+                detail:
+                  'The required authentication headers were either invalid or not included in the request.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions',
+      content: {
+        'application/json': {
+          schema: StoredPaymentTransactionsErrorResponseSchema,
+          example: {
+            errors: [
+              {
+                code: '10010',
+                title: 'Authorization failed',
+                detail:
+                  'You do not have permission to perform the requested action on the specified resource or resources.',
+              },
+            ],
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable entity',
+      content: {
+        'application/json': {
+          schema: StoredPaymentTransactionsErrorResponseSchema,
+          example: {
+            errors: [
+              {
+                code: '10027',
+                title: 'Invalid amount format',
+                detail: 'Amount must include dollars and cents (e.g. "120.00").',
+                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
+                source: { pointer: '/' },
+              },
+            ],
+          },
+        },
+      },
+    },
   },
 })
 
@@ -210983,7 +221311,7 @@ export const getTextToSpeechSpeechRoute = createRoute({
   tags: ['Text To Speech Commands'],
   summary: 'Stream text to speech over WebSocket',
   description:
-    'Open a WebSocket connection to stream text and receive synthesized audio in real time. Authentication is provided via the standard `Authorization: Bearer <API_KEY>` header. Send JSON frames with text to synthesize; receive JSON frames containing base64-encoded audio chunks.\n\nSupported providers: `aws`, `telnyx`, `azure`, `minimax`, `resemble`, `elevenlabs`, `xai`, `humain`, `soniox`, `assemblyai`.\n\n**Connection flow:**\n1. Open WebSocket with query parameters specifying provider, voice, and model.\n2. Send an initial handshake message `{"text": " "}` (single space) with optional `voice_settings` to initialize the session.\n3. Send text messages as `{"text": "Hello world"}`.\n4. Receive audio chunks as JSON frames with base64-encoded audio.\n5. A final frame with `isFinal: true` indicates the end of audio for the current text.\n\nTo interrupt and restart synthesis mid-stream, send `{"force": true}` — the current worker is stopped and a new one is started.\n\n**Note:** The Telnyx `Ultra` model is not available over WebSocket. Use the HTTP POST `/text-to-speech/speech` endpoint instead.',
+    'Open a WebSocket connection to stream text and receive synthesized audio in real time. Authentication is provided via the standard `Authorization: Bearer <API_KEY>` header. Send JSON frames with text to synthesize; receive JSON frames containing base64-encoded audio chunks.\n\nSupported providers: `aws`, `telnyx`, `azure`, `minimax`, `resemble`, `elevenlabs`, `xai`, `humain`, `soniox`.\n\n**Connection flow:**\n1. Open WebSocket with query parameters specifying provider, voice, and model.\n2. Send an initial handshake message `{"text": " "}` (single space) with optional `voice_settings` to initialize the session.\n3. Send text messages as `{"text": "Hello world"}`.\n4. Receive audio chunks as JSON frames with base64-encoded audio.\n5. A final frame with `isFinal: true` indicates the end of audio for the current text.\n\nTo interrupt and restart synthesis mid-stream, send `{"force": true}` — the current worker is stopped and a new one is started.\n\n**Note:** The Telnyx `Ultra` model is not available over WebSocket. Use the HTTP POST `/text-to-speech/speech` endpoint instead.',
   operationId: 'TextToSpeechOverWs',
   request: {
     query: z.object({
@@ -211019,7 +221347,7 @@ export const postTextToSpeechSpeechRoute = createRoute({
   tags: ['Text To Speech Commands'],
   summary: 'Generate speech from text',
   description:
-    'Generate synthesized speech audio from text input. Returns audio in the requested format (binary audio stream, base64-encoded JSON, or an audio URL for later retrieval).\n\nAuthentication is provided via the standard `Authorization: Bearer <API_KEY>` header.\n\nThe `voice` parameter provides a convenient shorthand to specify provider, model, and voice in a single string (e.g. `Telnyx.Ultra.<voice_id>`). Alternatively, specify `provider` explicitly along with provider-specific parameters.\n\nSupported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `resemble`, `xai`, `humain`, `soniox`, `assemblyai`.\n\nThe Telnyx `Ultra` model supports 44 languages with emotion control, speed adjustment, and volume control. Use the `telnyx` provider-specific parameters to configure these features.',
+    'Generate synthesized speech audio from text input. Returns audio in the requested format (binary audio stream, base64-encoded JSON, or an audio URL for later retrieval).\n\nAuthentication is provided via the standard `Authorization: Bearer <API_KEY>` header.\n\nThe `voice` parameter provides a convenient shorthand to specify provider, model, and voice in a single string (e.g. `Telnyx.Ultra.<voice_id>`). Alternatively, specify `provider` explicitly along with provider-specific parameters.\n\nSupported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `resemble`, `xai`, `humain`, `soniox`.\n\nThe Telnyx `Ultra` model supports 44 languages with emotion control, speed adjustment, and volume control. Use the `telnyx` provider-specific parameters to configure these features.',
   operationId: 'generateSpeech',
   request: {
     body: {
@@ -211074,12 +221402,6 @@ export const postTextToSpeechSpeechRoute = createRoute({
               model_id: 'tts-rt-v2',
               language: 'en',
               speed: 1,
-              audio_format: 'mp3',
-            },
-            assemblyai: {
-              voice_id: 'aai-jane',
-              model_id: 'assemblyai-tts-1',
-              language: 'en',
               audio_format: 'mp3',
             },
           },
@@ -211165,7 +221487,6 @@ export const getTextToSpeechVoicesRoute = createRoute({
           'xai',
           'humain',
           'soniox',
-          'assemblyai',
         ])
         .exactOptional()
         .openapi({
@@ -211187,7 +221508,6 @@ export const getTextToSpeechVoicesRoute = createRoute({
                 'xai',
                 'humain',
                 'soniox',
-                'assemblyai',
               ],
             },
           },
@@ -214262,555 +224582,6 @@ export const getUserTagsRoute = createRoute({
       },
     },
     401: UnauthenticatedResponseResponse,
-  },
-})
-
-export const getV2MobilePhoneNumbersRoute = createRoute({
-  method: 'get',
-  path: '/v2/mobile_phone_numbers',
-  tags: ['Mobile Phone Numbers'],
-  summary: 'List Mobile Phone Numbers',
-  description: 'Retrieve a paginated list of mobile phone numbers on your account.',
-  operationId: 'listMobilePhoneNumbers',
-  request: {
-    query: z.object({
-      'page[number]': z
-        .preprocess(
-          (val) =>
-            typeof val === 'string' &&
-            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-              ? Number(val)
-              : val,
-          z.int(),
-        )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'page[number]',
-            in: 'query',
-            description: 'The page number to load',
-            schema: { type: 'integer' },
-            required: false,
-          },
-        }),
-      'page[size]': z
-        .preprocess(
-          (val) =>
-            typeof val === 'string' &&
-            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-              ? Number(val)
-              : val,
-          z.int(),
-        )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'page[size]',
-            in: 'query',
-            description: 'The size of the page',
-            schema: { type: 'integer' },
-            required: false,
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              data: z.array(MobilePhoneNumberSchema).exactOptional(),
-              meta: MobilePhoneNumbersPaginationMetaSchema.exactOptional(),
-            })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-    401: { description: 'Unauthorized' },
-  },
-})
-
-export const getV2MobilePhoneNumbersIdRoute = createRoute({
-  method: 'get',
-  path: '/v2/mobile_phone_numbers/{id}',
-  tags: ['Mobile Phone Numbers'],
-  summary: 'Retrieve a Mobile Phone Number',
-  description: 'Retrieve the details of a specific mobile phone number.',
-  operationId: 'retrieveMobilePhoneNumber',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'id',
-            in: 'path',
-            required: true,
-            description: 'The ID of the mobile phone number',
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: z
-            .object({ data: MobilePhoneNumberSchema.exactOptional() })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-    404: { description: 'Resource not found' },
-  },
-})
-
-export const patchV2MobilePhoneNumbersIdRoute = createRoute({
-  method: 'patch',
-  path: '/v2/mobile_phone_numbers/{id}',
-  tags: ['Mobile Phone Numbers'],
-  summary: 'Update a Mobile Phone Number',
-  description: 'Update the settings of a specific mobile phone number.',
-  operationId: 'updateMobilePhoneNumber',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'id',
-            in: 'path',
-            required: true,
-            description: 'The ID of the mobile phone number',
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-    body: {
-      content: {
-        'application/json': {
-          schema: MobilePhoneNumberUpdateSchema,
-          example: {
-            noise_suppression: false,
-            inbound_call_screening: 'disabled',
-            caller_id_name_enabled: false,
-            tags: ['string'],
-            call_forwarding: { forwarding_type: 'always', call_forwarding_enabled: false },
-            cnam_listing: { cnam_listing_enabled: false },
-            call_recording: {
-              inbound_call_recording_enabled: false,
-              inbound_call_recording_channels: 'single',
-              inbound_call_recording_format: 'wav',
-            },
-          },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: z
-            .object({ data: MobilePhoneNumberSchema.exactOptional() })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-    422: { description: 'Unprocessable Entity' },
-  },
-})
-
-export const getV2MobileVoiceConnectionsRoute = createRoute({
-  method: 'get',
-  path: '/v2/mobile_voice_connections',
-  tags: ['Mobile Voice Connections'],
-  summary: 'List Mobile Voice Connections',
-  description: 'Retrieve a paginated list of mobile voice connections on your account.',
-  operationId: 'listMobileVoiceConnections',
-  request: {
-    query: z.object({
-      'page[number]': z
-        .preprocess(
-          (val) =>
-            typeof val === 'string' &&
-            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-              ? Number(val)
-              : val,
-          z.int(),
-        )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'page[number]',
-            in: 'query',
-            description: 'The page number to load',
-            schema: { type: 'integer' },
-            required: false,
-          },
-        }),
-      'page[size]': z
-        .preprocess(
-          (val) =>
-            typeof val === 'string' &&
-            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-              ? Number(val)
-              : val,
-          z.int(),
-        )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'page[size]',
-            in: 'query',
-            description: 'The size of the page',
-            schema: { type: 'integer' },
-            required: false,
-          },
-        }),
-      'filter[connection_name][contains]': z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'filter[connection_name][contains]',
-            in: 'query',
-            description: 'Filter by connection name containing the given string',
-            schema: { type: 'string' },
-            required: false,
-          },
-        }),
-      sort: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'sort',
-            in: 'query',
-            description:
-              'Sort by field (e.g., created_at, connection_name, active). Prefix with - for descending order.',
-            schema: { type: 'string' },
-            required: false,
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              data: z.array(MobileVoiceConnectionSchema).exactOptional(),
-              meta: MobileVoiceConnectionsPaginationMetaSchema.exactOptional(),
-            })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-    401: { description: 'Unauthorized' },
-  },
-})
-
-export const postV2MobileVoiceConnectionsRoute = createRoute({
-  method: 'post',
-  path: '/v2/mobile_voice_connections',
-  tags: ['Mobile Voice Connections'],
-  summary: 'Create a Mobile Voice Connection',
-  description:
-    'Creates a new mobile voice connection with the provided configuration and returns the created connection.',
-  operationId: 'createMobileVoiceConnection',
-  request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: MobileVoiceConnectionCreateSchema,
-          example: {
-            active: true,
-            connection_name: 'Telnyx Mobile Voice IMS',
-            webhook_api_version: '2',
-            tags: ['string'],
-            outbound: { channel_limit: 0, outbound_voice_profile_id: 'string' },
-            inbound: { channel_limit: 0 },
-          },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    201: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: z
-            .object({ data: MobileVoiceConnectionSchema.exactOptional() })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-    403: { description: 'Unauthorized or Limit Reached' },
-    422: { description: 'Unprocessable Entity' },
-  },
-})
-
-export const getV2MobileVoiceConnectionsIdRoute = createRoute({
-  method: 'get',
-  path: '/v2/mobile_voice_connections/{id}',
-  tags: ['Mobile Voice Connections'],
-  summary: 'Retrieve a Mobile Voice Connection',
-  description: 'Retrieve the details of a specific mobile voice connection.',
-  operationId: 'retrieveMobileVoiceConnection',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'id',
-            in: 'path',
-            required: true,
-            description: 'The ID of the mobile voice connection',
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: z
-            .object({ data: MobileVoiceConnectionSchema.exactOptional() })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-    404: { description: 'Resource not found' },
-  },
-})
-
-export const deleteV2MobileVoiceConnectionsIdRoute = createRoute({
-  method: 'delete',
-  path: '/v2/mobile_voice_connections/{id}',
-  tags: ['Mobile Voice Connections'],
-  summary: 'Delete a Mobile Voice Connection',
-  description: 'Delete a mobile voice connection from your account.',
-  operationId: 'deleteMobileVoiceConnection',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'id',
-            in: 'path',
-            required: true,
-            description: 'The ID of the mobile voice connection',
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: z
-            .object({ data: MobileVoiceConnectionSchema.exactOptional() })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-    404: { description: 'Resource not found' },
-  },
-})
-
-export const patchV2MobileVoiceConnectionsIdRoute = createRoute({
-  method: 'patch',
-  path: '/v2/mobile_voice_connections/{id}',
-  tags: ['Mobile Voice Connections'],
-  summary: 'Update a Mobile Voice Connection',
-  description: 'Update the settings of a specific mobile voice connection.',
-  operationId: 'updateMobileVoiceConnection',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'id',
-            in: 'path',
-            required: true,
-            description: 'The ID of the mobile voice connection',
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-    body: {
-      content: {
-        'application/json': {
-          schema: MobileVoiceConnectionUpdateSchema,
-          example: {
-            active: false,
-            connection_name: 'string',
-            webhook_api_version: '1',
-            webhook_timeout_secs: 0,
-            tags: ['string'],
-            outbound: { channel_limit: 0, outbound_voice_profile_id: 'string' },
-            inbound: { channel_limit: 0 },
-          },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: z
-            .object({ data: MobileVoiceConnectionSchema.exactOptional() })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-    404: { description: 'Resource not found' },
-    409: {
-      description:
-        'Conflict. Another update to this connection is still in progress. Wait and retry the request later.',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              errors: z
-                .array(z.object({ detail: z.string().exactOptional() }).openapi({ required: [] }))
-                .exactOptional(),
-            })
-            .openapi({ required: [] }),
-          example: {
-            errors: [
-              {
-                detail:
-                  'A previous update to this connection is still in progress. Please try again later.',
-              },
-            ],
-          },
-        },
-      },
-    },
-    422: { description: 'Unprocessable Entity' },
-  },
-})
-
-export const postV2PaymentStoredPaymentTransactionsRoute = createRoute({
-  method: 'post',
-  path: '/v2/payment/stored_payment_transactions',
-  tags: ['Stored Payment Transactions'],
-  summary: 'Create a stored payment transaction',
-  description: 'Create a transaction that charges a stored payment method on the account.',
-  operationId: 'createStoredPaymentTransaction',
-  request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: StoredPaymentTransactionRequestSchema,
-          example: { amount: '120.00' },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'Stored payment transaction created successfully',
-      content: {
-        'application/json': {
-          schema: StoredPaymentTransactionResponseSchema,
-          example: {
-            data: {
-              id: 'de06811a-2e43-4561-af5a-7d0a26e20aaa',
-              record_type: 'transaction',
-              amount_cents: 12000,
-              processor_status: 'submitted_for_settlement',
-              amount_currency: 'USD',
-              created_at: '2026-02-25T10:00:00Z',
-              auto_recharge: false,
-              transaction_processing_type: 'stored_payment',
-            },
-          },
-        },
-      },
-    },
-    401: {
-      description: 'Unauthorized',
-      content: {
-        'application/json': {
-          schema: StoredPaymentTransactionsErrorResponseSchema,
-          example: {
-            errors: [
-              {
-                code: '10009',
-                title: 'Authentication failed',
-                detail:
-                  'The required authentication headers were either invalid or not included in the request.',
-              },
-            ],
-          },
-        },
-      },
-    },
-    403: {
-      description: 'Forbidden - insufficient permissions',
-      content: {
-        'application/json': {
-          schema: StoredPaymentTransactionsErrorResponseSchema,
-          example: {
-            errors: [
-              {
-                code: '10010',
-                title: 'Authorization failed',
-                detail:
-                  'You do not have permission to perform the requested action on the specified resource or resources.',
-              },
-            ],
-          },
-        },
-      },
-    },
-    422: {
-      description: 'Unprocessable entity',
-      content: {
-        'application/json': {
-          schema: StoredPaymentTransactionsErrorResponseSchema,
-          example: {
-            errors: [
-              {
-                code: '10027',
-                title: 'Invalid amount format',
-                detail: 'Amount must include dollars and cents (e.g. "120.00").',
-                meta: { url: 'https://developers.telnyx.com/docs/overview/errors/10027' },
-                source: { pointer: '/' },
-              },
-            ],
-          },
-        },
-      },
-    },
   },
 })
 
@@ -233173,6 +242944,181 @@ export const numberReputationNumberRemovedPostWebhook = {
   },
 }
 
+export const recordingExportFailedPostWebhook = {
+  method: 'post',
+  path: '/recordingExportFailed',
+  tags: ['Meeting Session Webhooks'],
+  summary: 'recording.export_failed',
+  description:
+    'Sent when a customer Storage recording export fails terminally. Uses the same signed envelope and retry contract as other meeting webhooks. Applies to recordings exported to customer Storage buckets.',
+  operationId: 'MeetingRecordingExportFailedWebhook',
+  request: {
+    headers: z.object({
+      'X-Meeting-Bot-Signature': z
+        .string()
+        .openapi({
+          param: {
+            name: 'X-Meeting-Bot-Signature',
+            in: 'header',
+            required: true,
+            description:
+              'Signature header `t=<unix-seconds>,v1=<hex>`. Compute HMAC-SHA256 with the webhook secret over the timestamp ASCII bytes, a literal `.` byte, and the exact raw request-body bytes; hex-encode and compare `v1` in constant time. Reject timestamps outside your accepted skew. No bearer token is sent.',
+            schema: { type: 'string' },
+            example: 't=1784297100,v1=5e8f...a3c1',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              id: z
+                .string()
+                .openapi({
+                  description: 'Unique event id; deduplicate deliveries on it.',
+                  example: 'whdel_9f2c...',
+                }),
+              event: z.literal('recording.export_failed').openapi({ description: 'Event type.' }),
+              version: z.string().openapi({ description: 'Envelope version.', example: '1' }),
+              occurred_at: z.iso
+                .datetime({ offset: true })
+                .openapi({ description: 'When the event occurred.' }),
+              data: z
+                .strictObject({
+                  session_id: z.string(),
+                  type: z.literal('video'),
+                  bucket: z.string(),
+                  region: z.string(),
+                  key: z.string(),
+                  reason: z.enum([
+                    'invalid_target',
+                    'invalid_media',
+                    'source_changed',
+                    'source_unavailable',
+                    'too_large',
+                    'storage_unavailable',
+                    'object_conflict',
+                    'verification_failed',
+                    'worker_lost',
+                    'internal_error',
+                  ]),
+                })
+                .openapi({ required: ['session_id', 'type', 'bucket', 'region', 'key', 'reason'] }),
+            })
+            .openapi({ required: ['id', 'event', 'version', 'occurred_at', 'data'] }),
+          example: {
+            id: 'whdel_9f2c...',
+            event: 'recording.export_failed',
+            version: '1',
+            occurred_at: '2026-06-16T09:06:00Z',
+            data: {
+              session_id: 'mtgsess_example',
+              type: 'video',
+              bucket: 'meeting-recordings',
+              region: 'us-central-1',
+              key: 'weekly-planning/recording.mp4',
+              reason: 'storage_unavailable',
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description:
+        'Return any 2xx status promptly to acknowledge the delivery; non-2xx responses and timeouts are retried.',
+    },
+  },
+  security: [],
+}
+
+export const recordingExportedPostWebhook = {
+  method: 'post',
+  path: '/recordingExported',
+  tags: ['Meeting Session Webhooks'],
+  summary: 'recording.exported',
+  description:
+    'Sent after a customer Storage recording export is verified. Uses the same signed envelope and retry contract as other meeting webhooks. Applies to recordings exported to customer Storage buckets.',
+  operationId: 'MeetingRecordingExportedWebhook',
+  request: {
+    headers: z.object({
+      'X-Meeting-Bot-Signature': z
+        .string()
+        .openapi({
+          param: {
+            name: 'X-Meeting-Bot-Signature',
+            in: 'header',
+            required: true,
+            description:
+              'Signature header `t=<unix-seconds>,v1=<hex>`. Compute HMAC-SHA256 with the webhook secret over the timestamp ASCII bytes, a literal `.` byte, and the exact raw request-body bytes; hex-encode and compare `v1` in constant time. Reject timestamps outside your accepted skew. No bearer token is sent.',
+            schema: { type: 'string' },
+            example: 't=1784297100,v1=5e8f...a3c1',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              id: z
+                .string()
+                .openapi({
+                  description: 'Unique event id; deduplicate deliveries on it.',
+                  example: 'whdel_9f2c...',
+                }),
+              event: z.literal('recording.exported').openapi({ description: 'Event type.' }),
+              version: z.string().openapi({ description: 'Envelope version.', example: '1' }),
+              occurred_at: z.iso
+                .datetime({ offset: true })
+                .openapi({ description: 'When the event occurred.' }),
+              data: z
+                .strictObject({
+                  session_id: z.string(),
+                  type: z.literal('video'),
+                  bucket: z.string(),
+                  region: z.string(),
+                  key: z.string(),
+                  bytes: z.int().min(1),
+                  sha256: z.string().regex(/^[0-9a-f]{64}$/),
+                })
+                .openapi({
+                  required: ['session_id', 'type', 'bucket', 'region', 'key', 'bytes', 'sha256'],
+                }),
+            })
+            .openapi({ required: ['id', 'event', 'version', 'occurred_at', 'data'] }),
+          example: {
+            id: 'whdel_9f2c...',
+            event: 'recording.exported',
+            version: '1',
+            occurred_at: '2026-06-16T09:06:00Z',
+            data: {
+              session_id: 'mtgsess_example',
+              type: 'video',
+              bucket: 'meeting-recordings',
+              region: 'us-central-1',
+              key: 'weekly-planning/recording.mp4',
+              bytes: 1048576,
+              sha256: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description:
+        'Return any 2xx status promptly to acknowledge the delivery; non-2xx responses and timeouts are retried.',
+    },
+  },
+  security: [],
+}
+
 export const replacedLinkClickPostWebhook = {
   method: 'post',
   path: '/replacedLinkClick',
@@ -233312,6 +243258,19 @@ export const sessionStatusChangedPostWebhook = {
                     .openapi({
                       description: 'Whether the session is recording at this lifecycle edge.',
                     }),
+                  previous_status: z
+                    .enum([
+                      'scheduled',
+                      'joining',
+                      'waiting_for_admission',
+                      'active',
+                      'leaving',
+                      'ended',
+                      'failed',
+                      'admission_denied',
+                    ])
+                    .exactOptional()
+                    .openapi({ description: 'Previous lifecycle status, when supplied.' }),
                 })
                 .openapi({
                   description: 'Status transition details.',

@@ -61,25 +61,17 @@ const CognitoIdentityProviderTokenCheckSchema = z
 
 const CognitoIdentityProviderSchema = z
   .object({
-    ProviderName: CognitoIdentityProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The provider name for an Amazon Cognito user pool. For example, <code>cognito-idp.us-east-1.amazonaws.com/us-east-1_123456789</code>.',
-        }),
-    ).exactOptional(),
-    ClientId: CognitoIdentityProviderClientIdSchema.and(
-      z.any().openapi({ description: 'The client ID for the Amazon Cognito user pool.' }),
-    ).exactOptional(),
-    ServerSideTokenCheck: CognitoIdentityProviderTokenCheckSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>TRUE if server-side token validation is enabled for the identity provider’s token.</p> <p>Once you set <code>ServerSideTokenCheck</code> to TRUE for an identity pool, that identity pool will check with the integrated user pools to make sure that the user has not been globally signed out or deleted before the identity pool provides an OIDC token or AWS credentials for the user.</p> <p>If the user is signed out or deleted, the identity pool will return a 400 Not Authorized error.</p>',
-        }),
-    ).exactOptional(),
+    ProviderName: CognitoIdentityProviderNameSchema.exactOptional().openapi({
+      description:
+        'The provider name for an Amazon Cognito user pool. For example, <code>cognito-idp.us-east-1.amazonaws.com/us-east-1_123456789</code>.',
+    }),
+    ClientId: CognitoIdentityProviderClientIdSchema.exactOptional().openapi({
+      description: 'The client ID for the Amazon Cognito user pool.',
+    }),
+    ServerSideTokenCheck: CognitoIdentityProviderTokenCheckSchema.exactOptional().openapi({
+      description:
+        '<p>TRUE if server-side token validation is enabled for the identity provider’s token.</p> <p>Once you set <code>ServerSideTokenCheck</code> to TRUE for an identity pool, that identity pool will check with the integrated user pools to make sure that the user has not been globally signed out or deleted before the identity pool provides an OIDC token or AWS credentials for the user.</p> <p>If the user is signed out or deleted, the identity pool will return a 400 Not Authorized error.</p>',
+    }),
   })
   .openapi({
     description: 'A provider representing an Amazon Cognito user pool and its client ID.',
@@ -101,61 +93,37 @@ const IdentityPoolTagsTypeSchema = z
 
 const IdentityPoolSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
-    IdentityPoolName: IdentityPoolNameSchema.and(
-      z.any().openapi({ description: 'A string that you provide.' }),
-    ),
-    AllowUnauthenticatedIdentities: IdentityPoolUnauthenticatedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'TRUE if the identity pool supports unauthenticated logins.' }),
-    ),
-    AllowClassicFlow: ClassicFlowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables the Basic (Classic) authentication flow. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html">Identity Pools (Federated Identities) Authentication Flow</a> in the <i>Amazon Cognito Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    SupportedLoginProviders: IdentityProvidersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Optional key:value pairs mapping provider names to provider app IDs.',
-        }),
-    ).exactOptional(),
-    DeveloperProviderName: DeveloperProviderNameSchema.and(
-      z.any().openapi({ description: 'The "domain" by which Cognito will refer to your users.' }),
-    ).exactOptional(),
-    OpenIdConnectProviderARNs: OIDCProviderListSchema.and(
-      z.any().openapi({ description: 'The ARNs of the OpenID Connect providers.' }),
-    ).exactOptional(),
-    CognitoIdentityProviders: CognitoIdentityProviderListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list representing an Amazon Cognito user pool and its client ID.',
-        }),
-    ).exactOptional(),
-    SamlProviderARNs: SAMLProviderListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Amazon Resource Names (ARNs) of the SAML provider for your identity pool.',
-        }),
-    ).exactOptional(),
-    IdentityPoolTags: IdentityPoolTagsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags that are assigned to the identity pool. A tag is a label that you can apply to identity pools to categorize and manage them in different ways, such as by purpose, owner, environment, or other criteria.',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    IdentityPoolName: IdentityPoolNameSchema.openapi({ description: 'A string that you provide.' }),
+    AllowUnauthenticatedIdentities: IdentityPoolUnauthenticatedSchema.openapi({
+      description: 'TRUE if the identity pool supports unauthenticated logins.',
+    }),
+    AllowClassicFlow: ClassicFlowSchema.exactOptional().openapi({
+      description:
+        'Enables or disables the Basic (Classic) authentication flow. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html">Identity Pools (Federated Identities) Authentication Flow</a> in the <i>Amazon Cognito Developer Guide</i>.',
+    }),
+    SupportedLoginProviders: IdentityProvidersSchema.exactOptional().openapi({
+      description: 'Optional key:value pairs mapping provider names to provider app IDs.',
+    }),
+    DeveloperProviderName: DeveloperProviderNameSchema.exactOptional().openapi({
+      description: 'The "domain" by which Cognito will refer to your users.',
+    }),
+    OpenIdConnectProviderARNs: OIDCProviderListSchema.exactOptional().openapi({
+      description: 'The ARNs of the OpenID Connect providers.',
+    }),
+    CognitoIdentityProviders: CognitoIdentityProviderListSchema.exactOptional().openapi({
+      description: 'A list representing an Amazon Cognito user pool and its client ID.',
+    }),
+    SamlProviderARNs: SAMLProviderListSchema.exactOptional().openapi({
+      description:
+        'An array of Amazon Resource Names (ARNs) of the SAML provider for your identity pool.',
+    }),
+    IdentityPoolTags: IdentityPoolTagsTypeSchema.exactOptional().openapi({
+      description:
+        'The tags that are assigned to the identity pool. A tag is a label that you can apply to identity pools to categorize and manage them in different ways, such as by purpose, owner, environment, or other criteria.',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId', 'IdentityPoolName', 'AllowUnauthenticatedIdentities'],
@@ -166,65 +134,35 @@ const IdentityPoolSchema = z
 
 const CreateIdentityPoolInputSchema = z
   .object({
-    IdentityPoolName: IdentityPoolNameSchema.and(
-      z.any().openapi({ description: 'A string that you provide.' }),
-    ),
-    AllowUnauthenticatedIdentities: IdentityPoolUnauthenticatedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'TRUE if the identity pool supports unauthenticated logins.' }),
-    ),
-    AllowClassicFlow: ClassicFlowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables the Basic (Classic) authentication flow. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html">Identity Pools (Federated Identities) Authentication Flow</a> in the <i>Amazon Cognito Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    SupportedLoginProviders: IdentityProvidersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Optional key:value pairs mapping provider names to provider app IDs.',
-        }),
-    ).exactOptional(),
-    DeveloperProviderName: DeveloperProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The "domain" by which Cognito will refer to your users. This name acts as a placeholder that allows your backend and the Cognito service to communicate about the developer provider. For the <code>DeveloperProviderName</code>, you can use letters as well as period (<code>.</code>), underscore (<code>_</code>), and dash (<code>-</code>).</p> <p>Once you have set a developer provider name, you cannot change it. Please take care in setting this parameter.</p>',
-        }),
-    ).exactOptional(),
-    OpenIdConnectProviderARNs: OIDCProviderListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Names (ARN) of the OpenID Connect providers.',
-        }),
-    ).exactOptional(),
-    CognitoIdentityProviders: CognitoIdentityProviderListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of Amazon Cognito user pools and their client IDs.' }),
-    ).exactOptional(),
-    SamlProviderARNs: SAMLProviderListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Amazon Resource Names (ARNs) of the SAML provider for your identity pool.',
-        }),
-    ).exactOptional(),
-    IdentityPoolTags: IdentityPoolTagsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to assign to the identity pool. A tag is a label that you can apply to identity pools to categorize and manage them in different ways, such as by purpose, owner, environment, or other criteria.',
-        }),
-    ).exactOptional(),
+    IdentityPoolName: IdentityPoolNameSchema.openapi({ description: 'A string that you provide.' }),
+    AllowUnauthenticatedIdentities: IdentityPoolUnauthenticatedSchema.openapi({
+      description: 'TRUE if the identity pool supports unauthenticated logins.',
+    }),
+    AllowClassicFlow: ClassicFlowSchema.exactOptional().openapi({
+      description:
+        'Enables or disables the Basic (Classic) authentication flow. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html">Identity Pools (Federated Identities) Authentication Flow</a> in the <i>Amazon Cognito Developer Guide</i>.',
+    }),
+    SupportedLoginProviders: IdentityProvidersSchema.exactOptional().openapi({
+      description: 'Optional key:value pairs mapping provider names to provider app IDs.',
+    }),
+    DeveloperProviderName: DeveloperProviderNameSchema.exactOptional().openapi({
+      description:
+        '<p>The "domain" by which Cognito will refer to your users. This name acts as a placeholder that allows your backend and the Cognito service to communicate about the developer provider. For the <code>DeveloperProviderName</code>, you can use letters as well as period (<code>.</code>), underscore (<code>_</code>), and dash (<code>-</code>).</p> <p>Once you have set a developer provider name, you cannot change it. Please take care in setting this parameter.</p>',
+    }),
+    OpenIdConnectProviderARNs: OIDCProviderListSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Names (ARN) of the OpenID Connect providers.',
+    }),
+    CognitoIdentityProviders: CognitoIdentityProviderListSchema.exactOptional().openapi({
+      description: 'An array of Amazon Cognito user pools and their client IDs.',
+    }),
+    SamlProviderARNs: SAMLProviderListSchema.exactOptional().openapi({
+      description:
+        'An array of Amazon Resource Names (ARNs) of the SAML provider for your identity pool.',
+    }),
+    IdentityPoolTags: IdentityPoolTagsTypeSchema.exactOptional().openapi({
+      description:
+        'Tags to assign to the identity pool. A tag is a label that you can apply to identity pools to categorize and manage them in different ways, such as by purpose, owner, environment, or other criteria.',
+    }),
   })
   .openapi({
     required: ['IdentityPoolName', 'AllowUnauthenticatedIdentities'],
@@ -256,14 +194,12 @@ const ErrorCodeSchema = z.enum(['AccessDenied', 'InternalServerError']).openapi(
 
 const UnprocessedIdentityIdSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error code indicating the type of error that occurred.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code indicating the type of error that occurred.',
+    }),
   })
   .openapi({
     description:
@@ -279,14 +215,10 @@ const UnprocessedIdentityIdListSchema = z
 
 const DeleteIdentitiesResponseSchema = z
   .object({
-    UnprocessedIdentityIds: UnprocessedIdentityIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of UnprocessedIdentityId objects, each of which contains an ErrorCode and IdentityId.',
-        }),
-    ).exactOptional(),
+    UnprocessedIdentityIds: UnprocessedIdentityIdListSchema.exactOptional().openapi({
+      description:
+        'An array of UnprocessedIdentityId objects, each of which contains an ErrorCode and IdentityId.',
+    }),
   })
   .openapi({
     description: 'Returned in response to a successful <code>DeleteIdentities</code> operation.',
@@ -298,9 +230,9 @@ const IdentityIdListSchema = z.array(IdentityIdSchema).min(1).max(60).openapi('I
 
 const DeleteIdentitiesInputSchema = z
   .object({
-    IdentityIdsToDelete: IdentityIdListSchema.and(
-      z.any().openapi({ description: 'A list of 1-60 identities that you want to delete.' }),
-    ),
+    IdentityIdsToDelete: IdentityIdListSchema.openapi({
+      description: 'A list of 1-60 identities that you want to delete.',
+    }),
   })
   .openapi({
     required: ['IdentityIdsToDelete'],
@@ -311,9 +243,9 @@ const DeleteIdentitiesInputSchema = z
 
 const DeleteIdentityPoolInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId'],
@@ -332,27 +264,25 @@ const DateTypeSchema = z.iso.datetime({ offset: true }).openapi('DateType')
 
 const IdentityDescriptionSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
-    Logins: LoginsListSchema.and(
-      z.any().openapi({ description: 'The provider names.' }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'Date on which the identity was created.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'Date on which the identity was last modified.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    Logins: LoginsListSchema.exactOptional().openapi({ description: 'The provider names.' }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'Date on which the identity was created.',
+    }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'Date on which the identity was last modified.',
+    }),
   })
   .openapi({ description: 'A description of the identity.', required: [] })
   .openapi('IdentityDescription')
 
 const DescribeIdentityInputSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ),
+    IdentityId: IdentityIdSchema.openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
   })
   .openapi({
     required: ['IdentityId'],
@@ -363,9 +293,9 @@ const DescribeIdentityInputSchema = z
 
 const DescribeIdentityPoolInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId'],
@@ -382,30 +312,30 @@ const SessionTokenStringSchema = z.string().openapi('SessionTokenString')
 
 const CredentialsSchema = z
   .object({
-    AccessKeyId: AccessKeyStringSchema.and(
-      z.any().openapi({ description: 'The Access Key portion of the credentials.' }),
-    ).exactOptional(),
-    SecretKey: SecretKeyStringSchema.and(
-      z.any().openapi({ description: 'The Secret Access Key portion of the credentials' }),
-    ).exactOptional(),
-    SessionToken: SessionTokenStringSchema.and(
-      z.any().openapi({ description: 'The Session Token portion of the credentials' }),
-    ).exactOptional(),
-    Expiration: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date at which these credentials will expire.' }),
-    ).exactOptional(),
+    AccessKeyId: AccessKeyStringSchema.exactOptional().openapi({
+      description: 'The Access Key portion of the credentials.',
+    }),
+    SecretKey: SecretKeyStringSchema.exactOptional().openapi({
+      description: 'The Secret Access Key portion of the credentials',
+    }),
+    SessionToken: SessionTokenStringSchema.exactOptional().openapi({
+      description: 'The Session Token portion of the credentials',
+    }),
+    Expiration: DateTypeSchema.exactOptional().openapi({
+      description: 'The date at which these credentials will expire.',
+    }),
   })
   .openapi({ description: 'Credentials for the provided identity ID.', required: [] })
   .openapi('Credentials')
 
 const GetCredentialsForIdentityResponseSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
-    Credentials: CredentialsSchema.and(
-      z.any().openapi({ description: 'Credentials for the provided identity ID.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    Credentials: CredentialsSchema.exactOptional().openapi({
+      description: 'Credentials for the provided identity ID.',
+    }),
   })
   .openapi({
     description:
@@ -423,25 +353,17 @@ const LoginsMapSchema = z
 
 const GetCredentialsForIdentityInputSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ),
-    Logins: LoginsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A set of optional name-value pairs that map provider names to provider tokens. The name-value pair will follow the syntax "provider_name": "provider_user_identifier".</p> <p>Logins should not be specified when trying to get credentials for an unauthenticated identity.</p> <p>The Logins parameter is required when using identities associated with external identity providers such as Facebook. For examples of <code>Logins</code> maps, see the code examples in the <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/external-identity-providers.html">External Identity Providers</a> section of the Amazon Cognito Developer Guide.</p>',
-        }),
-    ).exactOptional(),
-    CustomRoleArn: ARNStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the role to be assumed when multiple roles were received in the token from the identity provider. For example, a SAML-based identity provider. This parameter is optional for identity providers that do not support role customization.',
-        }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    Logins: LoginsMapSchema.exactOptional().openapi({
+      description:
+        '<p>A set of optional name-value pairs that map provider names to provider tokens. The name-value pair will follow the syntax "provider_name": "provider_user_identifier".</p> <p>Logins should not be specified when trying to get credentials for an unauthenticated identity.</p> <p>The Logins parameter is required when using identities associated with external identity providers such as Facebook. For examples of <code>Logins</code> maps, see the code examples in the <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/external-identity-providers.html">External Identity Providers</a> section of the Amazon Cognito Developer Guide.</p>',
+    }),
+    CustomRoleArn: ARNStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the role to be assumed when multiple roles were received in the token from the identity provider. For example, a SAML-based identity provider. This parameter is optional for identity providers that do not support role customization.',
+    }),
   })
   .openapi({
     required: ['IdentityId'],
@@ -458,9 +380,9 @@ const ExternalServiceExceptionSchema = z.any().openapi('ExternalServiceException
 
 const GetIdResponseSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
   })
   .openapi({ description: 'Returned in response to a GetId request.', required: [] })
   .openapi('GetIdResponse')
@@ -469,20 +391,16 @@ const AccountIdSchema = z.string().regex(/\d+/).min(1).max(15).openapi('AccountI
 
 const GetIdInputSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'A standard AWS account ID (9+ digits).' }),
-    ).exactOptional(),
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
-    Logins: LoginsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A set of optional name-value pairs that map provider names to provider tokens. The available provider names for <code>Logins</code> are as follows:</p> <ul> <li> <p>Facebook: <code>graph.facebook.com</code> </p> </li> <li> <p>Amazon Cognito user pool: <code>cognito-idp.&lt;region&gt;.amazonaws.com/&lt;YOUR_USER_POOL_ID&gt;</code>, for example, <code>cognito-idp.us-east-1.amazonaws.com/us-east-1_123456789</code>. </p> </li> <li> <p>Google: <code>accounts.google.com</code> </p> </li> <li> <p>Amazon: <code>www.amazon.com</code> </p> </li> <li> <p>Twitter: <code>api.twitter.com</code> </p> </li> <li> <p>Digits: <code>www.digits.com</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'A standard AWS account ID (9+ digits).',
+    }),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    Logins: LoginsMapSchema.exactOptional().openapi({
+      description:
+        '<p>A set of optional name-value pairs that map provider names to provider tokens. The available provider names for <code>Logins</code> are as follows:</p> <ul> <li> <p>Facebook: <code>graph.facebook.com</code> </p> </li> <li> <p>Amazon Cognito user pool: <code>cognito-idp.&lt;region&gt;.amazonaws.com/&lt;YOUR_USER_POOL_ID&gt;</code>, for example, <code>cognito-idp.us-east-1.amazonaws.com/us-east-1_123456789</code>. </p> </li> <li> <p>Google: <code>accounts.google.com</code> </p> </li> <li> <p>Amazon: <code>www.amazon.com</code> </p> </li> <li> <p>Twitter: <code>api.twitter.com</code> </p> </li> <li> <p>Digits: <code>www.digits.com</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId'],
@@ -517,30 +435,18 @@ const ClaimValueSchema = z.string().min(1).max(128).openapi('ClaimValue')
 
 const MappingRuleSchema = z
   .object({
-    Claim: ClaimNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The claim name that must be present in the token, for example, "isAdmin" or "paid".',
-        }),
-    ),
-    MatchType: MappingRuleMatchTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The match condition that specifies how closely the claim value in the IdP token must match <code>Value</code>.',
-        }),
-    ),
-    Value: ClaimValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A brief string that the claim must match, for example, "paid" or "yes".',
-        }),
-    ),
-    RoleARN: ARNStringSchema.and(z.any().openapi({ description: 'The role ARN.' })),
+    Claim: ClaimNameSchema.openapi({
+      description:
+        'The claim name that must be present in the token, for example, "isAdmin" or "paid".',
+    }),
+    MatchType: MappingRuleMatchTypeSchema.openapi({
+      description:
+        'The match condition that specifies how closely the claim value in the IdP token must match <code>Value</code>.',
+    }),
+    Value: ClaimValueSchema.openapi({
+      description: 'A brief string that the claim must match, for example, "paid" or "yes".',
+    }),
+    RoleARN: ARNStringSchema.openapi({ description: 'The role ARN.' }),
   })
   .openapi({
     required: ['Claim', 'MatchType', 'Value', 'RoleARN'],
@@ -556,44 +462,28 @@ const MappingRulesListSchema = z
 
 const RulesConfigurationTypeSchema = z
   .object({
-    Rules: MappingRulesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of rules. You can specify up to 25 rules per identity provider.</p> <p>Rules are evaluated in order. The first one to match specifies the role.</p>',
-        }),
-    ),
+    Rules: MappingRulesListSchema.openapi({
+      description:
+        '<p>An array of rules. You can specify up to 25 rules per identity provider.</p> <p>Rules are evaluated in order. The first one to match specifies the role.</p>',
+    }),
   })
   .openapi({ required: ['Rules'], description: 'A container for rules.' })
   .openapi('RulesConfigurationType')
 
 const RoleMappingSchema = z
   .object({
-    Type: RoleMappingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role mapping type. Token will use <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims from the Cognito identity provider token to map groups to roles. Rules will attempt to match claims from the token to map to a role.',
-        }),
-    ),
-    AmbiguousRoleResolution: AmbiguousRoleResolutionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you specify Token or Rules as the <code>Type</code>, <code>AmbiguousRoleResolution</code> is required.</p> <p>Specifies the action to be taken if either no rules match the claim value for the <code>Rules</code> type, or there is no <code>cognito:preferred_role</code> claim and there are multiple <code>cognito:roles</code> matches for the <code>Token</code> type.</p>',
-        }),
-    ).exactOptional(),
-    RulesConfiguration: RulesConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rules to be used for mapping users to roles.</p> <p>If you specify Rules as the role mapping type, <code>RulesConfiguration</code> is required.</p>',
-        }),
-    ).exactOptional(),
+    Type: RoleMappingTypeSchema.openapi({
+      description:
+        'The role mapping type. Token will use <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims from the Cognito identity provider token to map groups to roles. Rules will attempt to match claims from the token to map to a role.',
+    }),
+    AmbiguousRoleResolution: AmbiguousRoleResolutionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>If you specify Token or Rules as the <code>Type</code>, <code>AmbiguousRoleResolution</code> is required.</p> <p>Specifies the action to be taken if either no rules match the claim value for the <code>Rules</code> type, or there is no <code>cognito:preferred_role</code> claim and there are multiple <code>cognito:roles</code> matches for the <code>Token</code> type.</p>',
+    }),
+    RulesConfiguration: RulesConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The rules to be used for mapping users to roles.</p> <p>If you specify Rules as the role mapping type, <code>RulesConfiguration</code> is required.</p>',
+    }),
   })
   .openapi({ required: ['Type'], description: 'A role mapping.' })
   .openapi('RoleMapping')
@@ -605,25 +495,17 @@ const RoleMappingMapSchema = z
 
 const GetIdentityPoolRolesResponseSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ).exactOptional(),
-    Roles: RolesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The map of roles associated with this pool. Currently only authenticated and unauthenticated roles are supported.',
-        }),
-    ).exactOptional(),
-    RoleMappings: RoleMappingMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How users for a specific identity provider are to mapped to roles. This is a String-to-<a>RoleMapping</a> object map. The string identifies the identity provider, for example, "graph.facebook.com" or "cognito-idp.us-east-1.amazonaws.com/us-east-1_abcdefghi:app_client_id".',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    Roles: RolesMapSchema.exactOptional().openapi({
+      description:
+        'The map of roles associated with this pool. Currently only authenticated and unauthenticated roles are supported.',
+    }),
+    RoleMappings: RoleMappingMapSchema.exactOptional().openapi({
+      description:
+        'How users for a specific identity provider are to mapped to roles. This is a String-to-<a>RoleMapping</a> object map. The string identifies the identity provider, for example, "graph.facebook.com" or "cognito-idp.us-east-1.amazonaws.com/us-east-1_abcdefghi:app_client_id".',
+    }),
   })
   .openapi({
     description:
@@ -634,9 +516,9 @@ const GetIdentityPoolRolesResponseSchema = z
 
 const GetIdentityPoolRolesInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId'],
@@ -649,17 +531,13 @@ const OIDCTokenSchema = z.string().openapi('OIDCToken')
 
 const GetOpenIdTokenResponseSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier in the format REGION:GUID. Note that the IdentityId returned may not match the one passed on input.',
-        }),
-    ).exactOptional(),
-    Token: OIDCTokenSchema.and(
-      z.any().openapi({ description: 'An OpenID token, valid for 10 minutes.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier in the format REGION:GUID. Note that the IdentityId returned may not match the one passed on input.',
+    }),
+    Token: OIDCTokenSchema.exactOptional().openapi({
+      description: 'An OpenID token, valid for 10 minutes.',
+    }),
   })
   .openapi({
     description: 'Returned in response to a successful GetOpenIdToken request.',
@@ -669,17 +547,13 @@ const GetOpenIdTokenResponseSchema = z
 
 const GetOpenIdTokenInputSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ),
-    Logins: LoginsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A set of optional name-value pairs that map provider names to provider tokens. When using graph.facebook.com and www.amazon.com, supply the access_token returned from the provider's authflow. For accounts.google.com, an Amazon Cognito user pool provider, or any other OpenID Connect provider, always include the <code>id_token</code>.",
-        }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    Logins: LoginsMapSchema.exactOptional().openapi({
+      description:
+        "A set of optional name-value pairs that map provider names to provider tokens. When using graph.facebook.com and www.amazon.com, supply the access_token returned from the provider's authflow. For accounts.google.com, an Amazon Cognito user pool provider, or any other OpenID Connect provider, always include the <code>id_token</code>.",
+    }),
   })
   .openapi({
     required: ['IdentityId'],
@@ -690,12 +564,10 @@ const GetOpenIdTokenInputSchema = z
 
 const GetOpenIdTokenForDeveloperIdentityResponseSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
-    Token: OIDCTokenSchema.and(
-      z.any().openapi({ description: 'An OpenID token.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    Token: OIDCTokenSchema.exactOptional().openapi({ description: 'An OpenID token.' }),
   })
   .openapi({
     description:
@@ -715,35 +587,23 @@ const TokenDurationSchema = z.int().min(1).max(86400).openapi('TokenDuration')
 
 const GetOpenIdTokenForDeveloperIdentityInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
-    Logins: LoginsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of optional name-value pairs that map provider names to provider tokens. Each name-value pair represents a user from a public provider or developer provider. If the user is from a developer provider, the name-value pair will follow the syntax <code>"developer_provider_name": "developer_user_identifier"</code>. The developer provider is the "domain" by which Cognito will refer to your users; you provided this domain while creating/updating the identity pool. The developer user identifier is an identifier from your backend that uniquely identifies a user. When you create an identity pool, you can specify the supported logins.',
-        }),
-    ),
-    PrincipalTags: PrincipalTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Use this operation to configure attribute mappings for custom providers. ',
-        }),
-    ).exactOptional(),
-    TokenDuration: TokenDurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The expiration time of the token, in seconds. You can specify a custom expiration time for the token so that you can cache it. If you don't provide an expiration time, the token is valid for 15 minutes. You can exchange the token with Amazon STS for temporary AWS credentials, which are valid for a maximum of one hour. The maximum token duration you can set is 24 hours. You should take care in setting the expiration time for a token, as there are significant security implications: an attacker could use a leaked token to access your AWS resources for the token's duration.</p> <note> <p>Please provide for a small grace period, usually no more than 5 minutes, to account for clock skew.</p> </note>",
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    Logins: LoginsMapSchema.openapi({
+      description:
+        'A set of optional name-value pairs that map provider names to provider tokens. Each name-value pair represents a user from a public provider or developer provider. If the user is from a developer provider, the name-value pair will follow the syntax <code>"developer_provider_name": "developer_user_identifier"</code>. The developer provider is the "domain" by which Cognito will refer to your users; you provided this domain while creating/updating the identity pool. The developer user identifier is an identifier from your backend that uniquely identifies a user. When you create an identity pool, you can specify the supported logins.',
+    }),
+    PrincipalTags: PrincipalTagsSchema.exactOptional().openapi({
+      description: 'Use this operation to configure attribute mappings for custom providers. ',
+    }),
+    TokenDuration: TokenDurationSchema.exactOptional().openapi({
+      description:
+        "<p>The expiration time of the token, in seconds. You can specify a custom expiration time for the token so that you can cache it. If you don't provide an expiration time, the token is valid for 15 minutes. You can exchange the token with Amazon STS for temporary AWS credentials, which are valid for a maximum of one hour. The maximum token duration you can set is 24 hours. You should take care in setting the expiration time for a token, as there are significant security implications: an attacker could use a leaked token to access your AWS resources for the token's duration.</p> <note> <p>Please provide for a small grace period, usually no more than 5 minutes, to account for clock skew.</p> </note>",
+    }),
   })
   .openapi({
     required: ['IdentityPoolId', 'Logins'],
@@ -760,45 +620,33 @@ const UseDefaultsSchema = z.boolean().openapi('UseDefaults')
 
 const GetPrincipalTagAttributeMapResponseSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use this operation to get the ID of the Identity Pool you setup attribute mappings for.',
-        }),
-    ).exactOptional(),
-    IdentityProviderName: IdentityProviderNameSchema.and(
-      z.any().openapi({ description: 'You can use this operation to get the provider name.' }),
-    ).exactOptional(),
-    UseDefaults: UseDefaultsSchema.and(
-      z.any().openapi({ description: 'You can use this operation to list ' }),
-    ).exactOptional(),
-    PrincipalTags: PrincipalTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use this operation to add principal tags. The <code>PrincipalTags</code>operation enables you to reference user attributes in your IAM permissions policy.',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description:
+        'You can use this operation to get the ID of the Identity Pool you setup attribute mappings for.',
+    }),
+    IdentityProviderName: IdentityProviderNameSchema.exactOptional().openapi({
+      description: 'You can use this operation to get the provider name.',
+    }),
+    UseDefaults: UseDefaultsSchema.exactOptional().openapi({
+      description: 'You can use this operation to list ',
+    }),
+    PrincipalTags: PrincipalTagsSchema.exactOptional().openapi({
+      description:
+        'You can use this operation to add principal tags. The <code>PrincipalTags</code>operation enables you to reference user attributes in your IAM permissions policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPrincipalTagAttributeMapResponse')
 
 const GetPrincipalTagAttributeMapInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use this operation to get the ID of the Identity Pool you setup attribute mappings for.',
-        }),
-    ),
-    IdentityProviderName: IdentityProviderNameSchema.and(
-      z.any().openapi({ description: 'You can use this operation to get the provider name.' }),
-    ),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description:
+        'You can use this operation to get the ID of the Identity Pool you setup attribute mappings for.',
+    }),
+    IdentityProviderName: IdentityProviderNameSchema.openapi({
+      description: 'You can use this operation to get the provider name.',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId', 'IdentityProviderName'],
@@ -812,19 +660,13 @@ const PaginationKeySchema = z.string().regex(/[\S]+/).min(1).max(65535).openapi(
 
 const ListIdentitiesResponseSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ).exactOptional(),
-    Identities: IdentitiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object containing a set of identities and associated mappings.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    Identities: IdentitiesListSchema.exactOptional().openapi({
+      description: 'An object containing a set of identities and associated mappings.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({ description: 'A pagination token.' }),
   })
   .openapi({ description: 'The response to a ListIdentities request.', required: [] })
   .openapi('ListIdentitiesResponse')
@@ -835,23 +677,17 @@ const HideDisabledSchema = z.boolean().openapi('HideDisabled')
 
 const ListIdentitiesInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
-    MaxResults: QueryLimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of identities to return.' }),
-    ),
-    NextToken: PaginationKeySchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
-    HideDisabled: HideDisabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional boolean parameter that allows you to hide disabled identities. If omitted, the ListIdentities API will include disabled identities in the response.',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    MaxResults: QueryLimitSchema.openapi({
+      description: 'The maximum number of identities to return.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({ description: 'A pagination token.' }),
+    HideDisabled: HideDisabledSchema.exactOptional().openapi({
+      description:
+        'An optional boolean parameter that allows you to hide disabled identities. If omitted, the ListIdentities API will include disabled identities in the response.',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId', 'MaxResults'],
@@ -862,12 +698,12 @@ const ListIdentitiesInputSchema = z
 
 const IdentityPoolShortDescriptionSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ).exactOptional(),
-    IdentityPoolName: IdentityPoolNameSchema.and(
-      z.any().openapi({ description: 'A string that you provide.' }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    IdentityPoolName: IdentityPoolNameSchema.exactOptional().openapi({
+      description: 'A string that you provide.',
+    }),
   })
   .openapi({ description: 'A description of the identity pool.', required: [] })
   .openapi('IdentityPoolShortDescription')
@@ -878,26 +714,20 @@ const IdentityPoolsListSchema = z
 
 const ListIdentityPoolsResponseSchema = z
   .object({
-    IdentityPools: IdentityPoolsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identity pools returned by the ListIdentityPools action.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    IdentityPools: IdentityPoolsListSchema.exactOptional().openapi({
+      description: 'The identity pools returned by the ListIdentityPools action.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({ description: 'A pagination token.' }),
   })
   .openapi({ description: 'The result of a successful ListIdentityPools action.', required: [] })
   .openapi('ListIdentityPoolsResponse')
 
 const ListIdentityPoolsInputSchema = z
   .object({
-    MaxResults: QueryLimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of identities to return.' }),
-    ),
-    NextToken: PaginationKeySchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    MaxResults: QueryLimitSchema.openapi({
+      description: 'The maximum number of identities to return.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({ description: 'A pagination token.' }),
   })
   .openapi({
     required: ['MaxResults'],
@@ -908,23 +738,19 @@ const ListIdentityPoolsInputSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: IdentityPoolTagsTypeSchema.and(
-      z.any().openapi({ description: 'The tags that are assigned to the identity pool.' }),
-    ).exactOptional(),
+    Tags: IdentityPoolTagsTypeSchema.exactOptional().openapi({
+      description: 'The tags that are assigned to the identity pool.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    ResourceArn: ARNStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the identity pool that the tags are assigned to.',
-        }),
-    ),
+    ResourceArn: ARNStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the identity pool that the tags are assigned to.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
@@ -937,25 +763,17 @@ const DeveloperUserIdentifierListSchema = z
 
 const LookupDeveloperIdentityResponseSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
-    DeveloperUserIdentifierList: DeveloperUserIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the list of developer user identifiers associated with an identity ID. Cognito supports the association of multiple developer user identifiers with an identity ID.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A pagination token. The first call you make will have <code>NextToken</code> set to null. After that the service will return <code>NextToken</code> values as needed. For example, let's say you make a request with <code>MaxResults</code> set to 10, and there are 20 matches in the database. The service will return a pagination token as a part of the response. This token can be used to call the API again and get results starting from the 11th match.",
-        }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    DeveloperUserIdentifierList: DeveloperUserIdentifierListSchema.exactOptional().openapi({
+      description:
+        'This is the list of developer user identifiers associated with an identity ID. Cognito supports the association of multiple developer user identifiers with an identity ID.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        "A pagination token. The first call you make will have <code>NextToken</code> set to null. After that the service will return <code>NextToken</code> values as needed. For example, let's say you make a request with <code>MaxResults</code> set to 10, and there are 20 matches in the database. The service will return a pagination token as a part of the response. This token can be used to call the API again and get results starting from the 11th match.",
+    }),
   })
   .openapi({
     description:
@@ -966,31 +784,23 @@ const LookupDeveloperIdentityResponseSchema = z
 
 const LookupDeveloperIdentityInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
-    DeveloperUserIdentifier: DeveloperUserIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique ID used by your backend authentication process to identify a user. Typically, a developer identity provider would issue many developer user identifiers, in keeping with the number of users.',
-        }),
-    ).exactOptional(),
-    MaxResults: QueryLimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of identities to return.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A pagination token. The first call you make will have <code>NextToken</code> set to null. After that the service will return <code>NextToken</code> values as needed. For example, let's say you make a request with <code>MaxResults</code> set to 10, and there are 20 matches in the database. The service will return a pagination token as a part of the response. This token can be used to call the API again and get results starting from the 11th match.",
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    DeveloperUserIdentifier: DeveloperUserIdentifierSchema.exactOptional().openapi({
+      description:
+        'A unique ID used by your backend authentication process to identify a user. Typically, a developer identity provider would issue many developer user identifiers, in keeping with the number of users.',
+    }),
+    MaxResults: QueryLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of identities to return.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        "A pagination token. The first call you make will have <code>NextToken</code> set to null. After that the service will return <code>NextToken</code> values as needed. For example, let's say you make a request with <code>MaxResults</code> set to 10, and there are 20 matches in the database. The service will return a pagination token as a part of the response. This token can be used to call the API again and get results starting from the 11th match.",
+    }),
   })
   .openapi({
     required: ['IdentityPoolId'],
@@ -1001,9 +811,9 @@ const LookupDeveloperIdentityInputSchema = z
 
 const MergeDeveloperIdentitiesResponseSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
   })
   .openapi({
     description:
@@ -1014,33 +824,21 @@ const MergeDeveloperIdentitiesResponseSchema = z
 
 const MergeDeveloperIdentitiesInputSchema = z
   .object({
-    SourceUserIdentifier: DeveloperUserIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'User identifier for the source user. The value should be a <code>DeveloperUserIdentifier</code>.',
-        }),
-    ),
-    DestinationUserIdentifier: DeveloperUserIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'User identifier for the destination user. The value should be a <code>DeveloperUserIdentifier</code>.',
-        }),
-    ),
-    DeveloperProviderName: DeveloperProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The "domain" by which Cognito will refer to your users. This is a (pseudo) domain name that you provide while creating an identity pool. This name acts as a placeholder that allows your backend and the Cognito service to communicate about the developer provider. For the <code>DeveloperProviderName</code>, you can use letters as well as period (.), underscore (_), and dash (-).',
-        }),
-    ),
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
+    SourceUserIdentifier: DeveloperUserIdentifierSchema.openapi({
+      description:
+        'User identifier for the source user. The value should be a <code>DeveloperUserIdentifier</code>.',
+    }),
+    DestinationUserIdentifier: DeveloperUserIdentifierSchema.openapi({
+      description:
+        'User identifier for the destination user. The value should be a <code>DeveloperUserIdentifier</code>.',
+    }),
+    DeveloperProviderName: DeveloperProviderNameSchema.openapi({
+      description:
+        'The "domain" by which Cognito will refer to your users. This is a (pseudo) domain name that you provide while creating an identity pool. This name acts as a placeholder that allows your backend and the Cognito service to communicate about the developer provider. For the <code>DeveloperProviderName</code>, you can use letters as well as period (.), underscore (_), and dash (-).',
+    }),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
   })
   .openapi({
     required: [
@@ -1056,25 +854,17 @@ const MergeDeveloperIdentitiesInputSchema = z
 
 const SetIdentityPoolRolesInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
-    Roles: RolesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The map of roles associated with this pool. For a given role, the key will be either "authenticated" or "unauthenticated" and the value will be the Role ARN.',
-        }),
-    ),
-    RoleMappings: RoleMappingMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>How users for a specific identity provider are to mapped to roles. This is a string to <a>RoleMapping</a> object map. The string identifies the identity provider, for example, "graph.facebook.com" or "cognito-idp.us-east-1.amazonaws.com/us-east-1_abcdefghi:app_client_id".</p> <p>Up to 25 rules can be specified per identity provider.</p>',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    Roles: RolesMapSchema.openapi({
+      description:
+        'The map of roles associated with this pool. For a given role, the key will be either "authenticated" or "unauthenticated" and the value will be the Role ARN.',
+    }),
+    RoleMappings: RoleMappingMapSchema.exactOptional().openapi({
+      description:
+        '<p>How users for a specific identity provider are to mapped to roles. This is a string to <a>RoleMapping</a> object map. The string identifies the identity provider, for example, "graph.facebook.com" or "cognito-idp.us-east-1.amazonaws.com/us-east-1_abcdefghi:app_client_id".</p> <p>Up to 25 rules can be specified per identity provider.</p>',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId', 'Roles'],
@@ -1087,59 +877,39 @@ const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModific
 
 const SetPrincipalTagAttributeMapResponseSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Identity Pool you want to set attribute mappings for.',
-        }),
-    ).exactOptional(),
-    IdentityProviderName: IdentityProviderNameSchema.and(
-      z.any().openapi({ description: 'The provider name you want to use for attribute mappings.' }),
-    ).exactOptional(),
-    UseDefaults: UseDefaultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use this operation to select default (username and clientID) attribute mappings.',
-        }),
-    ).exactOptional(),
-    PrincipalTags: PrincipalTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use this operation to add principal tags. The <code>PrincipalTags</code>operation enables you to reference user attributes in your IAM permissions policy.',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description: 'The ID of the Identity Pool you want to set attribute mappings for.',
+    }),
+    IdentityProviderName: IdentityProviderNameSchema.exactOptional().openapi({
+      description: 'The provider name you want to use for attribute mappings.',
+    }),
+    UseDefaults: UseDefaultsSchema.exactOptional().openapi({
+      description:
+        'You can use this operation to select default (username and clientID) attribute mappings.',
+    }),
+    PrincipalTags: PrincipalTagsSchema.exactOptional().openapi({
+      description:
+        'You can use this operation to add principal tags. The <code>PrincipalTags</code>operation enables you to reference user attributes in your IAM permissions policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SetPrincipalTagAttributeMapResponse')
 
 const SetPrincipalTagAttributeMapInputSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Identity Pool you want to set attribute mappings for.',
-        }),
-    ),
-    IdentityProviderName: IdentityProviderNameSchema.and(
-      z.any().openapi({ description: 'The provider name you want to use for attribute mappings.' }),
-    ),
-    UseDefaults: UseDefaultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use this operation to use default (username and clientID) attribute mappings.',
-        }),
-    ).exactOptional(),
-    PrincipalTags: PrincipalTagsSchema.and(
-      z.any().openapi({ description: 'You can use this operation to add principal tags.' }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'The ID of the Identity Pool you want to set attribute mappings for.',
+    }),
+    IdentityProviderName: IdentityProviderNameSchema.openapi({
+      description: 'The provider name you want to use for attribute mappings.',
+    }),
+    UseDefaults: UseDefaultsSchema.exactOptional().openapi({
+      description:
+        'You can use this operation to use default (username and clientID) attribute mappings.',
+    }),
+    PrincipalTags: PrincipalTagsSchema.exactOptional().openapi({
+      description: 'You can use this operation to add principal tags.',
+    }),
   })
   .openapi({
     required: ['IdentityPoolId', 'IdentityProviderName'],
@@ -1147,39 +917,34 @@ const SetPrincipalTagAttributeMapInputSchema = z
   })
   .openapi('SetPrincipalTagAttributeMapInput')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceInputSchema = z
   .object({
-    ResourceArn: ARNStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the identity pool.' }),
-    ),
-    Tags: IdentityPoolTagsTypeSchema.and(
-      z.any().openapi({ description: 'The tags to assign to the identity pool.' }),
-    ),
+    ResourceArn: ARNStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the identity pool.',
+    }),
+    Tags: IdentityPoolTagsTypeSchema.openapi({
+      description: 'The tags to assign to the identity pool.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
 const UnlinkDeveloperIdentityInputSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ),
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'An identity pool ID in the format REGION:GUID.' }),
-    ),
-    DeveloperProviderName: DeveloperProviderNameSchema.and(
-      z.any().openapi({ description: 'The "domain" by which Cognito will refer to your users.' }),
-    ),
-    DeveloperUserIdentifier: DeveloperUserIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique ID used by your backend authentication process to identify a user.',
-        }),
-    ),
+    IdentityId: IdentityIdSchema.openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    IdentityPoolId: IdentityPoolIdSchema.openapi({
+      description: 'An identity pool ID in the format REGION:GUID.',
+    }),
+    DeveloperProviderName: DeveloperProviderNameSchema.openapi({
+      description: 'The "domain" by which Cognito will refer to your users.',
+    }),
+    DeveloperUserIdentifier: DeveloperUserIdentifierSchema.openapi({
+      description: 'A unique ID used by your backend authentication process to identify a user.',
+    }),
   })
   .openapi({
     required: ['IdentityId', 'IdentityPoolId', 'DeveloperProviderName', 'DeveloperUserIdentifier'],
@@ -1190,20 +955,15 @@ const UnlinkDeveloperIdentityInputSchema = z
 
 const UnlinkIdentityInputSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier in the format REGION:GUID.' }),
-    ),
-    Logins: LoginsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of optional name-value pairs that map provider names to provider tokens.',
-        }),
-    ),
-    LoginsToRemove: LoginsListSchema.and(
-      z.any().openapi({ description: 'Provider names to unlink from this identity.' }),
-    ),
+    IdentityId: IdentityIdSchema.openapi({
+      description: 'A unique identifier in the format REGION:GUID.',
+    }),
+    Logins: LoginsMapSchema.openapi({
+      description: 'A set of optional name-value pairs that map provider names to provider tokens.',
+    }),
+    LoginsToRemove: LoginsListSchema.openapi({
+      description: 'Provider names to unlink from this identity.',
+    }),
   })
   .openapi({
     required: ['IdentityId', 'Logins', 'LoginsToRemove'],
@@ -1212,7 +972,7 @@ const UnlinkIdentityInputSchema = z
   })
   .openapi('UnlinkIdentityInput')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeysTypeSchema = z.string().min(1).max(128).openapi('TagKeysType')
 
@@ -1222,12 +982,12 @@ const IdentityPoolTagsListTypeSchema = z
 
 const UntagResourceInputSchema = z
   .object({
-    ResourceArn: ARNStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the identity pool.' }),
-    ),
-    TagKeys: IdentityPoolTagsListTypeSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to remove from the user pool.' }),
-    ),
+    ResourceArn: ARNStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the identity pool.',
+    }),
+    TagKeys: IdentityPoolTagsListTypeSchema.openapi({
+      description: 'The keys of the tags to remove from the user pool.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')

@@ -321,11 +321,14 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'cms.domains.read': { portal: ['public', 'private'], developer: true },
+    'cms.domains.write': { portal: ['public', 'private'], developer: false },
+    'cms.knowledge_base.settings.read': { portal: ['public', 'private'], developer: false },
+    'cms.knowledge_base.settings.write': { portal: ['public', 'private'], developer: false },
+    content: { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCmsDomains202609Route = createRoute({
   method: 'get',

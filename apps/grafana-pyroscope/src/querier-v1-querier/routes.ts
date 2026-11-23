@@ -1,5 +1,231 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const TypesV1LabelPairSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ examples: ['service_name'], title: 'name', description: 'Label name' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ examples: ['my_service'], title: 'value', description: 'Label value' }),
+  })
+  .openapi({ title: 'LabelPair', required: [] })
+  .openapi('TypesV1LabelPair')
+
+const TypesV1ExemplarSchema = z
+  .strictObject({
+    timestamp: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        examples: ['1730000023000'],
+        title: 'timestamp',
+        description: 'Milliseconds since epoch when the profile was captured.',
+      }),
+    profileId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        examples: ['7c9e6679-7425-40de-944b-e07fc1f90ae7'],
+        title: 'profile_id',
+        description: 'Unique identifier for the profile (UUID).',
+      }),
+    spanId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        examples: ['00f067aa0ba902b7'],
+        title: 'span_id',
+        description: 'Span ID if this profile was split by span during ingestion.',
+      }),
+    value: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        examples: ['2450000000'],
+        title: 'value',
+        description:
+          'Total sample value for this profile (e.g., CPU nanoseconds, bytes allocated).',
+      }),
+    labels: z
+      .array(TypesV1LabelPairSchema)
+      .exactOptional()
+      .openapi({
+        title: 'labels',
+        description:
+          'Labels specific to this exemplar (e.g., pod name, node name). When an exemplar\n label overlaps with the series label, it is not included here.',
+      }),
+    traceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        examples: ['4bf92f3577b34da6a3ce929d0e0e4736'],
+        title: 'trace_id',
+        description:
+          'Trace ID associated with the span, encoded as 32 lowercase hexadecimal characters.',
+      }),
+  })
+  .openapi({
+    title: 'Exemplar',
+    description:
+      'Exemplar represents metadata for an individual profile sample.\n Exemplars allow users to drill down from aggregated timeline views\n to specific profile instances.',
+    required: [],
+  })
+  .openapi('TypesV1Exemplar')
+
+const TypesV1HeatmapSlotSchema = z
+  .strictObject({
+    timestamp: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'timestamp',
+        description:
+          'Milliseconds unix timestamp of the right edge (x_max) of this slot.\n The slot covers the half-open interval (timestamp - step, timestamp].',
+      }),
+    yMin: z
+      .array(z.float64())
+      .exactOptional()
+      .openapi({ title: 'y_min', description: 'Minimum y value' }),
+    counts: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({ title: 'counts', description: 'How many matches' }),
+    exemplars: z
+      .array(TypesV1ExemplarSchema)
+      .exactOptional()
+      .openapi({ title: 'exemplars', description: 'Provide exemplars' }),
+  })
+  .openapi({ title: 'HeatmapSlot', required: [] })
+  .openapi('TypesV1HeatmapSlot')
+
+const TypesV1HeatmapSeriesSchema = z
+  .strictObject({
+    labels: z.array(TypesV1LabelPairSchema).exactOptional().openapi({ title: 'labels' }),
+    slots: z.array(TypesV1HeatmapSlotSchema).exactOptional().openapi({ title: 'slots' }),
+  })
+  .openapi({ title: 'HeatmapSeries', required: [] })
+  .openapi('TypesV1HeatmapSeries')
+
+type QuerierV1SelectHeatmapResponseType = { series?: z.infer<typeof TypesV1HeatmapSeriesSchema>[] }
+
+const TypesV1ProfileAnnotationSchema = z
+  .strictObject({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ title: 'key', description: 'Annotation key [hidden]' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ title: 'value', description: 'Annotation value [hidden]' }),
+  })
+  .openapi({
+    title: 'ProfileAnnotation',
+    description:
+      "Annotations provide additional metadata for a profile.\n\n The main differences between labels and annotations are:\n   - annotations cannot be used in query selectors\n   - annotation keys don't have to be unique\n\n Currently annotations are applied internally by distributors,\n any annotation passed via the push API will be dropped.",
+    required: [],
+  })
+  .openapi('TypesV1ProfileAnnotation')
+
+const TypesV1PointSchema = z
+  .strictObject({
+    value: z.float64().exactOptional().openapi({ title: 'value' }),
+    timestamp: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'timestamp',
+        description: 'Milliseconds unix timestamp',
+      }),
+    annotations: z
+      .array(TypesV1ProfileAnnotationSchema)
+      .exactOptional()
+      .openapi({ title: 'annotations' }),
+    exemplars: z
+      .array(TypesV1ExemplarSchema)
+      .exactOptional()
+      .openapi({
+        title: 'exemplars',
+        description:
+          'Exemplars are samples of individual profiles that contributed to this aggregated point',
+      }),
+  })
+  .openapi({ title: 'Point', required: [] })
+  .openapi('TypesV1Point')
+
+const TypesV1SeriesSchema = z
+  .strictObject({
+    labels: z.array(TypesV1LabelPairSchema).exactOptional().openapi({ title: 'labels' }),
+    points: z.array(TypesV1PointSchema).exactOptional().openapi({ title: 'points' }),
+  })
+  .openapi({ title: 'Series', required: [] })
+  .openapi('TypesV1Series')
+
+type QuerierV1SelectSeriesResponseType = { series?: z.infer<typeof TypesV1SeriesSchema>[] }
+
 const ConnectProtocolVersionSchema = z
   .literal(1)
   .openapi({
@@ -1816,20 +2042,6 @@ const QuerierV1QueryAnomaliesRequestSchema = z
   .openapi({ title: 'QueryAnomaliesRequest', required: [] })
   .openapi('QuerierV1QueryAnomaliesRequest')
 
-const TypesV1LabelPairSchema = z
-  .strictObject({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ examples: ['service_name'], title: 'name', description: 'Label name' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ examples: ['my_service'], title: 'value', description: 'Label value' }),
-  })
-  .openapi({ title: 'LabelPair', required: [] })
-  .openapi('TypesV1LabelPair')
-
 const QuerierV1StacktraceAnomalySchema = z
   .strictObject({
     profileId: z
@@ -2121,147 +2333,7 @@ const QuerierV1SelectHeatmapRequestSchema = z
   .openapi({ title: 'SelectHeatmapRequest', required: [] })
   .openapi('QuerierV1SelectHeatmapRequest')
 
-const TypesV1ExemplarSchema = z
-  .strictObject({
-    timestamp: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        examples: ['1730000023000'],
-        title: 'timestamp',
-        description: 'Milliseconds since epoch when the profile was captured.',
-      }),
-    profileId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        examples: ['7c9e6679-7425-40de-944b-e07fc1f90ae7'],
-        title: 'profile_id',
-        description: 'Unique identifier for the profile (UUID).',
-      }),
-    spanId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        examples: ['00f067aa0ba902b7'],
-        title: 'span_id',
-        description: 'Span ID if this profile was split by span during ingestion.',
-      }),
-    value: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        examples: ['2450000000'],
-        title: 'value',
-        description:
-          'Total sample value for this profile (e.g., CPU nanoseconds, bytes allocated).',
-      }),
-    labels: z
-      .array(TypesV1LabelPairSchema)
-      .exactOptional()
-      .openapi({
-        title: 'labels',
-        description:
-          'Labels specific to this exemplar (e.g., pod name, node name). When an exemplar\n label overlaps with the series label, it is not included here.',
-      }),
-    traceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        examples: ['4bf92f3577b34da6a3ce929d0e0e4736'],
-        title: 'trace_id',
-        description:
-          'Trace ID associated with the span, encoded as 32 lowercase hexadecimal characters.',
-      }),
-  })
-  .openapi({
-    title: 'Exemplar',
-    description:
-      'Exemplar represents metadata for an individual profile sample.\n Exemplars allow users to drill down from aggregated timeline views\n to specific profile instances.',
-    required: [],
-  })
-  .openapi('TypesV1Exemplar')
-
-const TypesV1HeatmapSlotSchema = z
-  .strictObject({
-    timestamp: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        title: 'timestamp',
-        description:
-          'Milliseconds unix timestamp of the right edge (x_max) of this slot.\n The slot covers the half-open interval (timestamp - step, timestamp].',
-      }),
-    yMin: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({ title: 'y_min', description: 'Minimum y value' }),
-    counts: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({ title: 'counts', description: 'How many matches' }),
-    exemplars: z
-      .array(TypesV1ExemplarSchema)
-      .exactOptional()
-      .openapi({ title: 'exemplars', description: 'Provide exemplars' }),
-  })
-  .openapi({ title: 'HeatmapSlot', required: [] })
-  .openapi('TypesV1HeatmapSlot')
-
-const TypesV1HeatmapSeriesSchema = z
-  .strictObject({
-    labels: z.array(TypesV1LabelPairSchema).exactOptional().openapi({ title: 'labels' }),
-    slots: z.array(TypesV1HeatmapSlotSchema).exactOptional().openapi({ title: 'slots' }),
-  })
-  .openapi({ title: 'HeatmapSeries', required: [] })
-  .openapi('TypesV1HeatmapSeries')
-
-const QuerierV1SelectHeatmapResponseSchema = z
+const QuerierV1SelectHeatmapResponseSchema: z.ZodType<QuerierV1SelectHeatmapResponseType> = z
   .strictObject({
     series: z.array(TypesV1HeatmapSeriesSchema).exactOptional().openapi({ title: 'series' }),
   })
@@ -2640,75 +2712,7 @@ const QuerierV1SelectSeriesRequestSchema = z
   .openapi({ title: 'SelectSeriesRequest', required: [] })
   .openapi('QuerierV1SelectSeriesRequest')
 
-const TypesV1ProfileAnnotationSchema = z
-  .strictObject({
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({ title: 'key', description: 'Annotation key [hidden]' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ title: 'value', description: 'Annotation value [hidden]' }),
-  })
-  .openapi({
-    title: 'ProfileAnnotation',
-    description:
-      "Annotations provide additional metadata for a profile.\n\n The main differences between labels and annotations are:\n   - annotations cannot be used in query selectors\n   - annotation keys don't have to be unique\n\n Currently annotations are applied internally by distributors,\n any annotation passed via the push API will be dropped.",
-    required: [],
-  })
-  .openapi('TypesV1ProfileAnnotation')
-
-const TypesV1PointSchema = z
-  .strictObject({
-    value: z.float64().exactOptional().openapi({ title: 'value' }),
-    timestamp: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        title: 'timestamp',
-        description: 'Milliseconds unix timestamp',
-      }),
-    annotations: z
-      .array(TypesV1ProfileAnnotationSchema)
-      .exactOptional()
-      .openapi({ title: 'annotations' }),
-    exemplars: z
-      .array(TypesV1ExemplarSchema)
-      .exactOptional()
-      .openapi({
-        title: 'exemplars',
-        description:
-          'Exemplars are samples of individual profiles that contributed to this aggregated point',
-      }),
-  })
-  .openapi({ title: 'Point', required: [] })
-  .openapi('TypesV1Point')
-
-const TypesV1SeriesSchema = z
-  .strictObject({
-    labels: z.array(TypesV1LabelPairSchema).exactOptional().openapi({ title: 'labels' }),
-    points: z.array(TypesV1PointSchema).exactOptional().openapi({ title: 'points' }),
-  })
-  .openapi({ title: 'Series', required: [] })
-  .openapi('TypesV1Series')
-
-const QuerierV1SelectSeriesResponseSchema = z
+const QuerierV1SelectSeriesResponseSchema: z.ZodType<QuerierV1SelectSeriesResponseType> = z
   .strictObject({
     series: z.array(TypesV1SeriesSchema).exactOptional().openapi({ title: 'series' }),
   })

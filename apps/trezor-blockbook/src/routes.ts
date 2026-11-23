@@ -1,17 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const LegacyObjectSchema = z
-  .looseObject({})
-  .openapi({
-    description: 'Legacy Bitcore Insight-compatible payload. Use API V2 for stable typed schemas.',
-  })
-  .openapi('LegacyObject')
-
-const ErrorResponseSchema = z
-  .object({ error: z.string().openapi({ description: 'Human-readable error message.' }) })
-  .openapi({ required: ['error'] })
-  .openapi('ErrorResponse')
-
 const AmountStringSchema = z
   .string()
   .regex(/^-?[0-9]+$/)
@@ -20,70 +8,6 @@ const AmountStringSchema = z
     examples: ['100000000', '17177839694340'],
   })
   .openapi('AmountString')
-
-const TokenStandardSchema = z
-  .enum([
-    '',
-    'XPUBAddress',
-    'ERC20',
-    'ERC721',
-    'ERC1155',
-    'BEP20',
-    'BEP721',
-    'BEP1155',
-    'TRC20',
-    'TRC721',
-    'TRC1155',
-  ])
-  .openapi({ description: 'Token standard name. Empty string means no token standard is known.' })
-  .openapi('TokenStandard')
-
-const BlockHashResponseSchema = z
-  .object({ blockHash: z.string() })
-  .openapi({ required: ['blockHash'] })
-  .openapi('BlockHashResponse')
-
-const ResultStringResponseSchema = z
-  .object({
-    result: z
-      .string()
-      .openapi({ description: 'Result string, usually a decimal amount in chain base currency.' }),
-  })
-  .openapi({ required: ['result'] })
-  .openapi('ResultStringResponse')
-
-const SendTransactionResponseSchema = z
-  .object({ result: z.string().openapi({ description: 'Broadcast transaction id/hash.' }) })
-  .openapi({ required: ['result'] })
-  .openapi('SendTransactionResponse')
-
-const AddressAliasSchema = z
-  .object({ Type: z.string().exactOptional(), Alias: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AddressAlias')
-
-const AddressAliasesSchema = z.record(z.string(), AddressAliasSchema).openapi('AddressAliases')
-
-const MultiTokenValueSchema = z
-  .object({ id: AmountStringSchema.exactOptional(), value: AmountStringSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('MultiTokenValue')
-
-const TokenTransferSchema = z
-  .object({
-    type: TokenStandardSchema.openapi({ deprecated: true }),
-    standard: TokenStandardSchema,
-    from: z.string(),
-    to: z.string(),
-    contract: z.string(),
-    name: z.string().exactOptional(),
-    symbol: z.string().exactOptional(),
-    decimals: z.int(),
-    value: AmountStringSchema.exactOptional(),
-    multiTokenValues: z.array(MultiTokenValueSchema).exactOptional(),
-  })
-  .openapi({ required: ['type', 'standard', 'from', 'to', 'contract', 'decimals'] })
-  .openapi('TokenTransfer')
 
 const VinSchema = z
   .object({
@@ -120,15 +44,55 @@ const VoutSchema = z
   .openapi({ required: ['n', 'addresses', 'isAddress'] })
   .openapi('Vout')
 
-const EthereumInternalTransferSchema = z
+const TxChainExtraDataSchema = z
   .object({
-    type: z.int(),
+    payloadType: z
+      .string()
+      .openapi({
+        description: 'Discriminator for normalized chain-specific payloads, for example tron.',
+      }),
+    payload: z.any().exactOptional(),
+  })
+  .openapi({ required: ['payloadType'] })
+  .openapi('TxChainExtraData')
+
+const TokenStandardSchema = z
+  .enum([
+    '',
+    'XPUBAddress',
+    'ERC20',
+    'ERC721',
+    'ERC1155',
+    'BEP20',
+    'BEP721',
+    'BEP1155',
+    'TRC20',
+    'TRC721',
+    'TRC1155',
+  ])
+  .openapi({ description: 'Token standard name. Empty string means no token standard is known.' })
+  .openapi('TokenStandard')
+
+const MultiTokenValueSchema = z
+  .object({ id: AmountStringSchema.exactOptional(), value: AmountStringSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('MultiTokenValue')
+
+const TokenTransferSchema = z
+  .object({
+    type: TokenStandardSchema.openapi({ deprecated: true }),
+    standard: TokenStandardSchema,
     from: z.string(),
     to: z.string(),
+    contract: z.string(),
+    name: z.string().exactOptional(),
+    symbol: z.string().exactOptional(),
+    decimals: z.int(),
     value: AmountStringSchema.exactOptional(),
+    multiTokenValues: z.array(MultiTokenValueSchema).exactOptional(),
   })
-  .openapi({ required: ['type', 'from', 'to'] })
-  .openapi('EthereumInternalTransfer')
+  .openapi({ required: ['type', 'standard', 'from', 'to', 'contract', 'decimals'] })
+  .openapi('TokenTransfer')
 
 const EthereumParsedInputParamSchema = z
   .object({ type: z.string(), values: z.array(z.string()).exactOptional() })
@@ -154,6 +118,16 @@ const EthereumParsedInputDataSchema = z
   })
   .openapi({ required: ['methodId', 'name'] })
   .openapi('EthereumParsedInputData')
+
+const EthereumInternalTransferSchema = z
+  .object({
+    type: z.int(),
+    from: z.string(),
+    to: z.string(),
+    value: AmountStringSchema.exactOptional(),
+  })
+  .openapi({ required: ['type', 'from', 'to'] })
+  .openapi('EthereumInternalTransfer')
 
 const EthereumSpecificSchema = z
   .object({
@@ -234,22 +208,12 @@ const EthereumSpecificSchema = z
   .openapi({ required: ['status', 'nonce'] })
   .openapi('EthereumSpecific')
 
-const TxChainExtraDataSchema = z
-  .object({
-    payloadType: z
-      .string()
-      .openapi({
-        description: 'Discriminator for normalized chain-specific payloads, for example tron.',
-      }),
-    payload: z.any().exactOptional(),
-  })
-  .openapi({ required: ['payloadType'] })
-  .openapi('TxChainExtraData')
+const AddressAliasSchema = z
+  .object({ Type: z.string().exactOptional(), Alias: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AddressAlias')
 
-const AccountChainExtraDataSchema = z
-  .object({ payloadType: z.string(), payload: z.any().exactOptional() })
-  .openapi({ required: ['payloadType'] })
-  .openapi('AccountChainExtraData')
+const AddressAliasesSchema = z.record(z.string(), AddressAliasSchema).openapi('AddressAliases')
 
 const TxSchema = z
   .object({
@@ -304,15 +268,39 @@ const TxSchema = z
   .openapi({ required: ['txid', 'vin', 'vout', 'blockHeight', 'confirmations', 'blockTime'] })
   .openapi('Tx')
 
-const FeeStatsSchema = z
+const TokenSchema = z
   .object({
-    txCount: z.int(),
-    totalFeesSat: AmountStringSchema.exactOptional(),
-    averageFeePerKb: z.number(),
-    decilesFeePerKb: z.array(z.number()),
+    type: TokenStandardSchema.openapi({ deprecated: true }),
+    standard: TokenStandardSchema,
+    name: z.string(),
+    path: z.string().exactOptional(),
+    contract: z.string().exactOptional(),
+    transfers: z.int(),
+    symbol: z.string().exactOptional(),
+    decimals: z.int(),
+    balance: AmountStringSchema.exactOptional(),
+    baseValue: z.number().exactOptional(),
+    secondaryValue: z.number().exactOptional(),
+    ids: z.array(AmountStringSchema).exactOptional(),
+    multiTokenValues: z.array(MultiTokenValueSchema).exactOptional(),
+    totalReceived: AmountStringSchema.exactOptional(),
+    totalSent: AmountStringSchema.exactOptional(),
+    protocols: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Indexed protocol identifiers such as erc4626.' }),
   })
-  .openapi({ required: ['txCount', 'averageFeePerKb', 'decilesFeePerKb'] })
-  .openapi('FeeStats')
+  .openapi({ required: ['type', 'standard', 'name', 'transfers', 'decimals'] })
+  .openapi('Token')
+
+const ContractInfoRatesSchema = z
+  .object({
+    baseRate: z.number().exactOptional(),
+    currency: z.string().exactOptional(),
+    secondaryRate: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ContractInfoRates')
 
 const Erc4626TokenMetadataSchema = z
   .object({
@@ -343,15 +331,6 @@ const ContractInfoProtocolsSchema = z
   .openapi({ required: [] })
   .openapi('ContractInfoProtocols')
 
-const ContractInfoRatesSchema = z
-  .object({
-    baseRate: z.number().exactOptional(),
-    currency: z.string().exactOptional(),
-    secondaryRate: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ContractInfoRates')
-
 const ContractInfoResultSchema = z
   .object({
     type: TokenStandardSchema.openapi({ deprecated: true }),
@@ -371,31 +350,6 @@ const ContractInfoResultSchema = z
   })
   .openapi('ContractInfoResult')
 
-const TokenSchema = z
-  .object({
-    type: TokenStandardSchema.openapi({ deprecated: true }),
-    standard: TokenStandardSchema,
-    name: z.string(),
-    path: z.string().exactOptional(),
-    contract: z.string().exactOptional(),
-    transfers: z.int(),
-    symbol: z.string().exactOptional(),
-    decimals: z.int(),
-    balance: AmountStringSchema.exactOptional(),
-    baseValue: z.number().exactOptional(),
-    secondaryValue: z.number().exactOptional(),
-    ids: z.array(AmountStringSchema).exactOptional(),
-    multiTokenValues: z.array(MultiTokenValueSchema).exactOptional(),
-    totalReceived: AmountStringSchema.exactOptional(),
-    totalSent: AmountStringSchema.exactOptional(),
-    protocols: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Indexed protocol identifiers such as erc4626.' }),
-  })
-  .openapi({ required: ['type', 'standard', 'name', 'transfers', 'decimals'] })
-  .openapi('Token')
-
 const StakingPoolSchema = z
   .object({
     contract: z.string(),
@@ -411,7 +365,154 @@ const StakingPoolSchema = z
   .openapi({ required: ['contract', 'name'] })
   .openapi('StakingPool')
 
-const AddressSchema = z
+const AccountChainExtraDataSchema = z
+  .object({ payloadType: z.string(), payload: z.any().exactOptional() })
+  .openapi({ required: ['payloadType'] })
+  .openapi('AccountChainExtraData')
+
+type AddressType = {
+  page?: number
+  totalPages?: number
+  itemsOnPage?: number
+  address: string
+  balance?: z.infer<typeof AmountStringSchema>
+  totalReceived?: z.infer<typeof AmountStringSchema>
+  totalSent?: z.infer<typeof AmountStringSchema>
+  unconfirmedBalance?: z.infer<typeof AmountStringSchema>
+  unconfirmedTxs: number
+  unconfirmedSending?: z.infer<typeof AmountStringSchema>
+  unconfirmedReceiving?: z.infer<typeof AmountStringSchema>
+  txs: number
+  addrTxCount?: number
+  nonTokenTxs?: number
+  internalTxs?: number
+  transactions?: z.infer<typeof TxSchema>[]
+  txids?: string[]
+  nonce?: string
+  confirmedNonce?: string
+  usedTokens?: number
+  tokens?: z.infer<typeof TokenSchema>[]
+  secondaryValue?: number
+  tokensBaseValue?: number
+  tokensSecondaryValue?: number
+  totalBaseValue?: number
+  totalSecondaryValue?: number
+  contractInfo?: z.infer<typeof ContractInfoResultSchema>
+  erc20Contract?: z.infer<typeof ContractInfoResultSchema>
+  addressAliases?: z.infer<typeof AddressAliasesSchema>
+  stakingPools?: z.infer<typeof StakingPoolSchema>[]
+  chainExtraData?: z.infer<typeof AccountChainExtraDataSchema>
+}
+
+type BlockType = {
+  page?: number
+  totalPages?: number
+  itemsOnPage?: number
+  hash: string
+  previousBlockHash?: string
+  nextBlockHash?: string
+  height: number
+  confirmations: number
+  size?: number
+  time?: bigint
+  version?: string | number
+  merkleRoot?: string
+  nonce?: string
+  bits?: string
+  difficulty?: string
+  tx?: string[]
+  txCount: number
+  txs?: z.infer<typeof TxSchema>[]
+  addressAliases?: z.infer<typeof AddressAliasesSchema>
+}
+
+const WsBackendInfoSchema = z
+  .object({
+    version: z.string().exactOptional(),
+    subversion: z.string().exactOptional(),
+    consensus_version: z.string().exactOptional(),
+    consensus: z.any().exactOptional().openapi({ description: 'Chain-specific consensus data.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('WsBackendInfo')
+
+const WsInfoResSchema = z
+  .object({
+    name: z.string(),
+    shortcut: z.string(),
+    network: z.string(),
+    decimals: z.int(),
+    version: z.string(),
+    bestHeight: z.int(),
+    bestHash: z.string(),
+    block0Hash: z.string(),
+    testnet: z.boolean(),
+    backend: WsBackendInfoSchema,
+  })
+  .openapi({
+    required: [
+      'name',
+      'shortcut',
+      'network',
+      'decimals',
+      'version',
+      'bestHeight',
+      'bestHash',
+      'block0Hash',
+      'testnet',
+      'backend',
+    ],
+  })
+  .openapi('WsInfoRes')
+
+const WsBlockHashResSchema = z
+  .object({ hash: z.string() })
+  .openapi({ required: ['hash'] })
+  .openapi('WsBlockHashRes')
+
+const BlockSchema: z.ZodType<BlockType> = z
+  .object({
+    page: z.int().exactOptional(),
+    totalPages: z.int().exactOptional(),
+    itemsOnPage: z.int().exactOptional(),
+    hash: z.string(),
+    previousBlockHash: z.string().exactOptional(),
+    nextBlockHash: z.string().exactOptional(),
+    height: z.int(),
+    confirmations: z.int().min(0),
+    size: z.int().exactOptional(),
+    time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    version: z.xor([z.string(), z.int()]).exactOptional(),
+    merkleRoot: z.string().exactOptional(),
+    nonce: z.string().exactOptional(),
+    bits: z.string().exactOptional(),
+    difficulty: z.string().exactOptional(),
+    tx: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Transaction ids when full transactions are not returned.' }),
+    txCount: z.int(),
+    txs: z
+      .array(TxSchema)
+      .exactOptional()
+      .openapi({ description: 'Full transaction details for this page.' }),
+    addressAliases: AddressAliasesSchema.exactOptional(),
+  })
+  .openapi({ required: ['hash', 'height', 'confirmations', 'txCount'] })
+  .openapi('Block')
+
+const AddressSchema: z.ZodType<AddressType> = z
   .object({
     page: z.int().exactOptional(),
     totalPages: z.int().exactOptional(),
@@ -463,6 +564,167 @@ const UtxoSchema = z
   .openapi({ required: ['txid', 'vout', 'confirmations'] })
   .openapi('Utxo')
 
+const Eip1559FeeSchema = z
+  .object({
+    maxFeePerGas: AmountStringSchema.exactOptional(),
+    maxPriorityFeePerGas: AmountStringSchema.exactOptional(),
+    minWaitTimeEstimate: z.number().exactOptional(),
+    maxWaitTimeEstimate: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Eip1559Fee')
+
+const Eip1559FeesSchema = z
+  .object({
+    baseFeePerGas: AmountStringSchema.exactOptional(),
+    low: Eip1559FeeSchema.exactOptional(),
+    medium: Eip1559FeeSchema.exactOptional(),
+    high: Eip1559FeeSchema.exactOptional(),
+    instant: Eip1559FeeSchema.exactOptional(),
+    networkCongestion: z.number().exactOptional(),
+    latestPriorityFeeRange: z.array(AmountStringSchema).exactOptional(),
+    historicalPriorityFeeRange: z.array(AmountStringSchema).exactOptional(),
+    historicalBaseFeeRange: z.array(AmountStringSchema).exactOptional(),
+    priorityFeeTrend: z.enum(['up', 'down']).exactOptional(),
+    baseFeeTrend: z.enum(['up', 'down']).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Eip1559Fees')
+
+const WsEstimateFeeResSchema = z
+  .object({
+    feePerTx: AmountStringSchema.exactOptional(),
+    feePerUnit: AmountStringSchema.exactOptional(),
+    feeLimit: AmountStringSchema.exactOptional(),
+    eip1559: Eip1559FeesSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('WsEstimateFeeRes')
+
+const ResultStringResponseSchema = z
+  .object({
+    result: z
+      .string()
+      .openapi({ description: 'Result string, usually a decimal amount in chain base currency.' }),
+  })
+  .openapi({ required: ['result'] })
+  .openapi('ResultStringResponse')
+
+const FiatTickerSchema = z
+  .object({
+    ts: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    rates: z.record(z.string(), z.number()),
+    error: z.string().exactOptional(),
+  })
+  .openapi({ required: ['rates'] })
+  .openapi('FiatTicker')
+
+const FiatTickersSchema = z
+  .object({ tickers: z.array(FiatTickerSchema) })
+  .openapi({ required: ['tickers'] })
+  .openapi('FiatTickers')
+
+const AvailableVsCurrenciesSchema = z
+  .object({
+    ts: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    available_currencies: z.array(z.string()),
+    error: z.string().exactOptional(),
+  })
+  .openapi({ required: ['available_currencies'] })
+  .openapi('AvailableVsCurrencies')
+
+const WsRpcCallResSchema = z
+  .object({ data: z.string() })
+  .openapi({ required: ['data'] })
+  .openapi('WsRpcCallRes')
+
+const MempoolTxidFilterEntriesSchema = z
+  .object({
+    entries: z.record(z.string(), z.string()).exactOptional(),
+    usedZeroedKey: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MempoolTxidFilterEntries')
+
+const WsErrorDataSchema = z
+  .object({ error: z.object({ message: z.string() }).openapi({ required: ['message'] }) })
+  .openapi({ required: ['error'] })
+  .openapi('WsErrorData')
+
+type WsResponseType = {
+  id: string
+  data:
+    | z.infer<typeof WsInfoResSchema>
+    | z.infer<typeof WsBlockHashResSchema>
+    | z.infer<typeof BlockSchema>
+    | z.infer<typeof AddressSchema>
+    | z.infer<typeof UtxoSchema>[]
+    | z.infer<typeof TxSchema>
+    | z.infer<typeof WsEstimateFeeResSchema>
+    | z.infer<typeof ResultStringResponseSchema>
+    | z.infer<typeof FiatTickerSchema>
+    | z.infer<typeof FiatTickersSchema>
+    | z.infer<typeof AvailableVsCurrenciesSchema>
+    | z.infer<typeof WsRpcCallResSchema>
+    | z.infer<typeof MempoolTxidFilterEntriesSchema>
+    | z.infer<typeof WsErrorDataSchema>
+    | { [key: string]: unknown }
+}
+
+const LegacyObjectSchema = z
+  .looseObject({})
+  .openapi({
+    description: 'Legacy Bitcore Insight-compatible payload. Use API V2 for stable typed schemas.',
+  })
+  .openapi('LegacyObject')
+
+const ErrorResponseSchema = z
+  .object({ error: z.string().openapi({ description: 'Human-readable error message.' }) })
+  .openapi({ required: ['error'] })
+  .openapi('ErrorResponse')
+
+const BlockHashResponseSchema = z
+  .object({ blockHash: z.string() })
+  .openapi({ required: ['blockHash'] })
+  .openapi('BlockHashResponse')
+
+const SendTransactionResponseSchema = z
+  .object({ result: z.string().openapi({ description: 'Broadcast transaction id/hash.' }) })
+  .openapi({ required: ['result'] })
+  .openapi('SendTransactionResponse')
+
+const FeeStatsSchema = z
+  .object({
+    txCount: z.int(),
+    totalFeesSat: AmountStringSchema.exactOptional(),
+    averageFeePerKb: z.number(),
+    decilesFeePerKb: z.array(z.number()),
+  })
+  .openapi({ required: ['txCount', 'averageFeePerKb', 'decilesFeePerKb'] })
+  .openapi('FeeStats')
+
 const BalanceHistorySchema = z
   .object({
     time: z
@@ -485,48 +747,6 @@ const BalanceHistorySchema = z
   })
   .openapi({ required: ['time', 'txs'] })
   .openapi('BalanceHistory')
-
-const BlockSchema = z
-  .object({
-    page: z.int().exactOptional(),
-    totalPages: z.int().exactOptional(),
-    itemsOnPage: z.int().exactOptional(),
-    hash: z.string(),
-    previousBlockHash: z.string().exactOptional(),
-    nextBlockHash: z.string().exactOptional(),
-    height: z.int(),
-    confirmations: z.int().min(0),
-    size: z.int().exactOptional(),
-    time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    version: z.xor([z.string(), z.int()]).exactOptional(),
-    merkleRoot: z.string().exactOptional(),
-    nonce: z.string().exactOptional(),
-    bits: z.string().exactOptional(),
-    difficulty: z.string().exactOptional(),
-    tx: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Transaction ids when full transactions are not returned.' }),
-    txCount: z.int(),
-    txs: z
-      .array(TxSchema)
-      .exactOptional()
-      .openapi({ description: 'Full transaction details for this page.' }),
-    addressAliases: AddressAliasesSchema.exactOptional(),
-  })
-  .openapi({ required: ['hash', 'height', 'confirmations', 'txCount'] })
-  .openapi('Block')
 
 const BlockRawSchema = z
   .object({ hex: z.string() })
@@ -698,46 +918,6 @@ const SystemInfoSchema = z
   })
   .openapi({ required: [] })
   .openapi('SystemInfo')
-
-const FiatTickerSchema = z
-  .object({
-    ts: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    rates: z.record(z.string(), z.number()),
-    error: z.string().exactOptional(),
-  })
-  .openapi({ required: ['rates'] })
-  .openapi('FiatTicker')
-
-const AvailableVsCurrenciesSchema = z
-  .object({
-    ts: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    available_currencies: z.array(z.string()),
-    error: z.string().exactOptional(),
-  })
-  .openapi({ required: ['available_currencies'] })
-  .openapi('AvailableVsCurrencies')
 
 const WsPrivatePendingSchema = z
   .object({
@@ -1061,7 +1241,7 @@ const WsRequestSchema = z
         WsFiatRatesForTimestampsReqSchema,
         WsFiatRatesTickersListReqSchema,
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'Empty parameter object for methods such as getInfo, ping, and unsubscribe methods.',
@@ -1073,111 +1253,7 @@ const WsRequestSchema = z
   .openapi({ required: ['id', 'method'] })
   .openapi('WsRequest')
 
-const WsBackendInfoSchema = z
-  .object({
-    version: z.string().exactOptional(),
-    subversion: z.string().exactOptional(),
-    consensus_version: z.string().exactOptional(),
-    consensus: z.any().exactOptional().openapi({ description: 'Chain-specific consensus data.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('WsBackendInfo')
-
-const WsInfoResSchema = z
-  .object({
-    name: z.string(),
-    shortcut: z.string(),
-    network: z.string(),
-    decimals: z.int(),
-    version: z.string(),
-    bestHeight: z.int(),
-    bestHash: z.string(),
-    block0Hash: z.string(),
-    testnet: z.boolean(),
-    backend: WsBackendInfoSchema,
-  })
-  .openapi({
-    required: [
-      'name',
-      'shortcut',
-      'network',
-      'decimals',
-      'version',
-      'bestHeight',
-      'bestHash',
-      'block0Hash',
-      'testnet',
-      'backend',
-    ],
-  })
-  .openapi('WsInfoRes')
-
-const WsBlockHashResSchema = z
-  .object({ hash: z.string() })
-  .openapi({ required: ['hash'] })
-  .openapi('WsBlockHashRes')
-
-const Eip1559FeeSchema = z
-  .object({
-    maxFeePerGas: AmountStringSchema.exactOptional(),
-    maxPriorityFeePerGas: AmountStringSchema.exactOptional(),
-    minWaitTimeEstimate: z.number().exactOptional(),
-    maxWaitTimeEstimate: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Eip1559Fee')
-
-const Eip1559FeesSchema = z
-  .object({
-    baseFeePerGas: AmountStringSchema.exactOptional(),
-    low: Eip1559FeeSchema.exactOptional(),
-    medium: Eip1559FeeSchema.exactOptional(),
-    high: Eip1559FeeSchema.exactOptional(),
-    instant: Eip1559FeeSchema.exactOptional(),
-    networkCongestion: z.number().exactOptional(),
-    latestPriorityFeeRange: z.array(AmountStringSchema).exactOptional(),
-    historicalPriorityFeeRange: z.array(AmountStringSchema).exactOptional(),
-    historicalBaseFeeRange: z.array(AmountStringSchema).exactOptional(),
-    priorityFeeTrend: z.enum(['up', 'down']).exactOptional(),
-    baseFeeTrend: z.enum(['up', 'down']).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Eip1559Fees')
-
-const WsEstimateFeeResSchema = z
-  .object({
-    feePerTx: AmountStringSchema.exactOptional(),
-    feePerUnit: AmountStringSchema.exactOptional(),
-    feeLimit: AmountStringSchema.exactOptional(),
-    eip1559: Eip1559FeesSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('WsEstimateFeeRes')
-
-const FiatTickersSchema = z
-  .object({ tickers: z.array(FiatTickerSchema) })
-  .openapi({ required: ['tickers'] })
-  .openapi('FiatTickers')
-
-const WsRpcCallResSchema = z
-  .object({ data: z.string() })
-  .openapi({ required: ['data'] })
-  .openapi('WsRpcCallRes')
-
-const MempoolTxidFilterEntriesSchema = z
-  .object({
-    entries: z.record(z.string(), z.string()).exactOptional(),
-    usedZeroedKey: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MempoolTxidFilterEntries')
-
-const WsErrorDataSchema = z
-  .object({ error: z.object({ message: z.string() }).openapi({ required: ['message'] }) })
-  .openapi({ required: ['error'] })
-  .openapi('WsErrorData')
-
-const WsResponseSchema = z
+const WsResponseSchema: z.ZodType<WsResponseType> = z
   .object({
     id: z.string(),
     data: z
@@ -1196,7 +1272,7 @@ const WsResponseSchema = z
         WsRpcCallResSchema,
         MempoolTxidFilterEntriesSchema,
         WsErrorDataSchema,
-        z.object({}),
+        z.looseObject({}),
       ])
       .openapi({ description: 'Method-specific result, or WsErrorData on failure.' }),
   })

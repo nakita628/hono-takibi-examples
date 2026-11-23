@@ -1,5 +1,340 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const GenericIdSchema = z
+  .object({ id: z.number().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('GenericId')
+
+const MessageSchema = z
+  .object({
+    id: z.number().exactOptional().openapi({ description: 'The ID of the message' }),
+    content: z.string().exactOptional().openapi({ description: 'The text content of the message' }),
+    account_id: z.number().exactOptional().openapi({ description: 'The ID of the account' }),
+    inbox_id: z.number().exactOptional().openapi({ description: 'The ID of the inbox' }),
+    conversation_id: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The ID of the conversation' }),
+    message_type: z
+      .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
+      .exactOptional()
+      .openapi({ description: 'The type of the message' }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time at which message was created' }),
+    updated_at: z
+      .union([z.int(), z.string()])
+      .exactOptional()
+      .openapi({ description: 'The time at which message was updated' }),
+    private: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The flags which shows whether the message is private or not' }),
+    status: z
+      .union([
+        z.literal('sent'),
+        z.literal('delivered'),
+        z.literal('read'),
+        z.literal('failed'),
+        z.literal(null),
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The status of the message' }),
+    source_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The source ID of the message' }),
+    content_type: z
+      .union([
+        z.literal('text'),
+        z.literal('input_text'),
+        z.literal('input_textarea'),
+        z.literal('input_email'),
+        z.literal('input_select'),
+        z.literal('cards'),
+        z.literal('form'),
+        z.literal('article'),
+        z.literal('incoming_email'),
+        z.literal('input_csat'),
+        z.literal('integrations'),
+        z.literal('sticker'),
+        z.literal('voice_call'),
+        z.literal(null),
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The type of the template message' }),
+    content_attributes: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The content attributes for each content_type' }),
+    sender_type: z
+      .union([
+        z.literal('Contact'),
+        z.literal('User'),
+        z.literal('AgentBot'),
+        z.literal('Captain::Assistant'),
+        z.literal(null),
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The type of the sender' }),
+    sender_id: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The ID of the sender' }),
+    external_source_ids: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The external source IDs of the message' }),
+    additional_attributes: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The additional attributes of the message' }),
+    processed_message_content: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The processed message content' }),
+    sentiment: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The sentiment of the message' }),
+    conversation: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The conversation object' }),
+    attachment: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The file object attached to the image' }),
+    sender: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'User/Agent/AgentBot object' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Message')
+
+const ConversationSchema = z
+  .object({
+    id: z.number().exactOptional().openapi({ description: 'ID of the conversation' }),
+    messages: z.array(MessageSchema).exactOptional(),
+    account_id: z.number().exactOptional().openapi({ description: 'Account Id' }),
+    uuid: z.string().exactOptional().openapi({ description: 'UUID of the conversation' }),
+    additional_attributes: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description: 'The object containing additional attributes related to the conversation',
+      }),
+    agent_last_seen_at: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The last activity at of the agent' }),
+    assignee_last_seen_at: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The last activity at of the assignee' }),
+    can_reply: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the conversation can be replied to' }),
+    contact_last_seen_at: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The last activity at of the contact' }),
+    custom_attributes: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'The object to save custom attributes for conversation, accepts custom attributes key and value',
+      }),
+    inbox_id: z.number().exactOptional().openapi({ description: 'ID of the inbox' }),
+    labels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The labels of the conversation' }),
+    muted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the conversation is muted' }),
+    snoozed_until: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The time at which the conversation will be unmuted' }),
+    status: z
+      .enum(['open', 'resolved', 'pending'])
+      .exactOptional()
+      .openapi({ description: 'The status of the conversation' }),
+    created_at: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The time at which conversation was created' }),
+    updated_at: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The time at which conversation was updated' }),
+    timestamp: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The time at which conversation was created' }),
+    first_reply_created_at: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The time at which the first reply was created' }),
+    unread_count: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The number of unread messages' }),
+    last_non_activity_message: z
+      .xor([MessageSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The last non activity message' }),
+    last_activity_at: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The last activity at of the conversation' }),
+    priority: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The priority of the conversation' }),
+    waiting_since: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The time at which the conversation was waiting' }),
+    sla_policy_id: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The ID of the SLA policy' }),
+    applied_sla: z.looseObject({}).exactOptional().openapi({ description: 'The applied SLA' }),
+    sla_events: z
+      .array(z.looseObject({}).openapi({ description: 'SLA event objects' }))
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Conversation')
+
+const UserSchema = z
+  .object({
+    id: z.number().exactOptional(),
+    access_token: z.string().exactOptional(),
+    account_id: z.number().exactOptional(),
+    available_name: z.string().exactOptional(),
+    avatar_url: z.string().exactOptional(),
+    confirmed: z.boolean().exactOptional(),
+    display_name: z.string().nullable().exactOptional(),
+    message_signature: z.string().nullable().exactOptional(),
+    email: z.string().exactOptional(),
+    hmac_identifier: z.string().exactOptional(),
+    inviter_id: z.number().nullable().exactOptional(),
+    name: z.string().exactOptional(),
+    provider: z.string().exactOptional(),
+    pubsub_token: z.string().exactOptional(),
+    role: z.enum(['agent', 'administrator']).exactOptional(),
+    ui_settings: z.looseObject({}).exactOptional(),
+    uid: z.string().exactOptional(),
+    type: z.string().nullable().exactOptional(),
+    custom_attributes: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Available for users who are created through platform APIs and has custom attributes associated.',
+      }),
+    accounts: z
+      .array(
+        z
+          .object({
+            id: z.number().exactOptional(),
+            name: z.string().exactOptional(),
+            status: z.string().exactOptional(),
+            active_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+            role: z.enum(['administrator', 'agent']).exactOptional(),
+            permissions: z.array(z.string()).exactOptional(),
+            availability: z.string().exactOptional(),
+            availability_status: z.string().exactOptional(),
+            auto_offline: z.boolean().exactOptional(),
+            custom_role_id: z.number().nullable().exactOptional(),
+            custom_role: z.looseObject({}).nullable().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('User')
+
+type ConversationListType = {
+  data?: {
+    meta?: {
+      mine_count?: number
+      unassigned_count?: number
+      assigned_count?: number
+      all_count?: number
+    }
+    payload?: (z.infer<typeof GenericIdSchema> &
+      z.infer<typeof ConversationSchema> & {
+        meta?: {
+          sender?: {
+            additional_attributes?: { [key: string]: unknown }
+            availability_status?: string
+            email?: string | null
+            id?: number
+            name?: string
+            phone_number?: string | null
+            blocked?: boolean
+            identifier?: string | null
+            thumbnail?: string | null
+            custom_attributes?: { [key: string]: unknown }
+            last_activity_at?: number
+            created_at?: number
+          }
+          channel?: string
+          assignee?: z.infer<typeof UserSchema>
+          hmac_verified?: boolean
+        }
+      })[]
+  }
+}
+
+type ContactConversationsResponseType = {
+  payload?: (z.infer<typeof ConversationSchema> & {
+    meta?: {
+      sender?: {
+        additional_attributes?: { [key: string]: unknown }
+        availability_status?: string
+        email?: string | null
+        id?: number
+        name?: string
+        phone_number?: string | null
+        blocked?: boolean
+        identifier?: string | null
+        thumbnail?: string | null
+        custom_attributes?: { [key: string]: unknown }
+        last_activity_at?: number
+        created_at?: number
+      }
+      channel?: string
+      assignee?: z.infer<typeof UserSchema>
+      hmac_verified?: boolean
+    }
+  })[]
+}
+
 const RequestErrorSchema = z
   .object({
     field: z.string().exactOptional(),
@@ -16,11 +351,6 @@ const BadRequestErrorSchema = z
   })
   .openapi({ title: 'data', required: [] })
   .openapi('BadRequestError')
-
-const GenericIdSchema = z
-  .object({ id: z.number().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('GenericId')
 
 const CannedResponseSchema = z
   .object({
@@ -308,7 +638,7 @@ const InboxSchema = z
       .exactOptional()
       .openapi({ description: 'The flag to enable CSAT survey' }),
     auto_assignment_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Configuration settings for auto assignment' }),
     out_of_office_message: z
@@ -552,7 +882,7 @@ const ArticleSchema = z
   .object({
     id: z.int().exactOptional(),
     content: z.string().exactOptional().openapi({ description: 'The text content.' }),
-    meta: z.object({}).exactOptional(),
+    meta: z.looseObject({}).exactOptional(),
     position: z.int().exactOptional(),
     status: z
       .union([z.literal('draft'), z.literal('published'), z.literal('archived')])
@@ -606,7 +936,7 @@ const ContactSchema = z
         z
           .object({
             additional_attributes: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'The object containing additional attributes related to the contact',
@@ -638,7 +968,7 @@ const ContactSchema = z
               .exactOptional()
               .openapi({ description: 'The thumbnail of the contact' }),
             custom_attributes: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'The custom attributes of the contact',
@@ -660,274 +990,6 @@ const ContactSchema = z
   })
   .openapi({ required: [] })
   .openapi('Contact')
-
-const MessageSchema = z
-  .object({
-    id: z.number().exactOptional().openapi({ description: 'The ID of the message' }),
-    content: z.string().exactOptional().openapi({ description: 'The text content of the message' }),
-    account_id: z.number().exactOptional().openapi({ description: 'The ID of the account' }),
-    inbox_id: z.number().exactOptional().openapi({ description: 'The ID of the inbox' }),
-    conversation_id: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The ID of the conversation' }),
-    message_type: z
-      .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
-      .exactOptional()
-      .openapi({ description: 'The type of the message' }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time at which message was created' }),
-    updated_at: z
-      .union([z.int(), z.string()])
-      .exactOptional()
-      .openapi({ description: 'The time at which message was updated' }),
-    private: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'The flags which shows whether the message is private or not' }),
-    status: z
-      .union([
-        z.literal('sent'),
-        z.literal('delivered'),
-        z.literal('read'),
-        z.literal('failed'),
-        z.literal(null),
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The status of the message' }),
-    source_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The source ID of the message' }),
-    content_type: z
-      .union([
-        z.literal('text'),
-        z.literal('input_text'),
-        z.literal('input_textarea'),
-        z.literal('input_email'),
-        z.literal('input_select'),
-        z.literal('cards'),
-        z.literal('form'),
-        z.literal('article'),
-        z.literal('incoming_email'),
-        z.literal('input_csat'),
-        z.literal('integrations'),
-        z.literal('sticker'),
-        z.literal('voice_call'),
-        z.literal(null),
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The type of the template message' }),
-    content_attributes: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'The content attributes for each content_type' }),
-    sender_type: z
-      .union([
-        z.literal('Contact'),
-        z.literal('User'),
-        z.literal('AgentBot'),
-        z.literal('Captain::Assistant'),
-        z.literal(null),
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The type of the sender' }),
-    sender_id: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The ID of the sender' }),
-    external_source_ids: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'The external source IDs of the message' }),
-    additional_attributes: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'The additional attributes of the message' }),
-    processed_message_content: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The processed message content' }),
-    sentiment: z
-      .object({})
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The sentiment of the message' }),
-    conversation: z
-      .object({})
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The conversation object' }),
-    attachment: z
-      .object({})
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The file object attached to the image' }),
-    sender: z.object({}).exactOptional().openapi({ description: 'User/Agent/AgentBot object' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Message')
-
-const ConversationSchema = z
-  .object({
-    id: z.number().exactOptional().openapi({ description: 'ID of the conversation' }),
-    messages: z.array(MessageSchema).exactOptional(),
-    account_id: z.number().exactOptional().openapi({ description: 'Account Id' }),
-    uuid: z.string().exactOptional().openapi({ description: 'UUID of the conversation' }),
-    additional_attributes: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description: 'The object containing additional attributes related to the conversation',
-      }),
-    agent_last_seen_at: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The last activity at of the agent' }),
-    assignee_last_seen_at: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The last activity at of the assignee' }),
-    can_reply: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the conversation can be replied to' }),
-    contact_last_seen_at: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The last activity at of the contact' }),
-    custom_attributes: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description:
-          'The object to save custom attributes for conversation, accepts custom attributes key and value',
-      }),
-    inbox_id: z.number().exactOptional().openapi({ description: 'ID of the inbox' }),
-    labels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The labels of the conversation' }),
-    muted: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the conversation is muted' }),
-    snoozed_until: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The time at which the conversation will be unmuted' }),
-    status: z
-      .enum(['open', 'resolved', 'pending'])
-      .exactOptional()
-      .openapi({ description: 'The status of the conversation' }),
-    created_at: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The time at which conversation was created' }),
-    updated_at: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The time at which conversation was updated' }),
-    timestamp: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The time at which conversation was created' }),
-    first_reply_created_at: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The time at which the first reply was created' }),
-    unread_count: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The number of unread messages' }),
-    last_non_activity_message: z
-      .xor([MessageSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'The last non activity message' }),
-    last_activity_at: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The last activity at of the conversation' }),
-    priority: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The priority of the conversation' }),
-    waiting_since: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The time at which the conversation was waiting' }),
-    sla_policy_id: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The ID of the SLA policy' }),
-    applied_sla: z.object({}).exactOptional().openapi({ description: 'The applied SLA' }),
-    sla_events: z.array(z.object({}).openapi({ description: 'SLA event objects' })).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Conversation')
-
-const UserSchema = z
-  .object({
-    id: z.number().exactOptional(),
-    access_token: z.string().exactOptional(),
-    account_id: z.number().exactOptional(),
-    available_name: z.string().exactOptional(),
-    avatar_url: z.string().exactOptional(),
-    confirmed: z.boolean().exactOptional(),
-    display_name: z.string().nullable().exactOptional(),
-    message_signature: z.string().nullable().exactOptional(),
-    email: z.string().exactOptional(),
-    hmac_identifier: z.string().exactOptional(),
-    inviter_id: z.number().nullable().exactOptional(),
-    name: z.string().exactOptional(),
-    provider: z.string().exactOptional(),
-    pubsub_token: z.string().exactOptional(),
-    role: z.enum(['agent', 'administrator']).exactOptional(),
-    ui_settings: z.object({}).exactOptional(),
-    uid: z.string().exactOptional(),
-    type: z.string().nullable().exactOptional(),
-    custom_attributes: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description:
-          'Available for users who are created through platform APIs and has custom attributes associated.',
-      }),
-    accounts: z
-      .array(
-        z
-          .object({
-            id: z.number().exactOptional(),
-            name: z.string().exactOptional(),
-            status: z.string().exactOptional(),
-            active_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-            role: z.enum(['administrator', 'agent']).exactOptional(),
-            permissions: z.array(z.string()).exactOptional(),
-            availability: z.string().exactOptional(),
-            availability_status: z.string().exactOptional(),
-            auto_offline: z.boolean().exactOptional(),
-            custom_role_id: z.number().nullable().exactOptional(),
-            custom_role: z.object({}).nullable().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('User')
 
 const AgentSchema = z
   .object({
@@ -1003,7 +1065,7 @@ const AgentBotSchema = z
       .openapi({ description: 'The webhook URL for the bot' }),
     bot_type: z.string().exactOptional().openapi({ description: 'The type of the bot' }),
     bot_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The configuration of the bot' }),
     account_id: z
@@ -1039,7 +1101,7 @@ const CustomFilterSchema = z
       .exactOptional()
       .openapi({ description: 'The description about the custom filter' }),
     query: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A query that needs to be saved as a custom filter' }),
     created_at: z.iso
@@ -1122,9 +1184,12 @@ const AccountDetailSchema = z
       .datetime({ offset: true })
       .exactOptional()
       .openapi({ description: 'The creation date of the account' }),
-    cache_keys: z.object({}).exactOptional().openapi({ description: 'Cache keys for the account' }),
+    cache_keys: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Cache keys for the account' }),
     features: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Enabled features for the account' }),
     settings: z
@@ -1305,7 +1370,7 @@ const IntegrationsAppSchema = z
       .exactOptional()
       .openapi({ description: 'Whether multiple hooks can be created for the integration' }),
     hooks: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'If there are any hooks created for this integration' }),
   })
@@ -1333,7 +1398,7 @@ const IntegrationsHookSchema = z
       .exactOptional()
       .openapi({ description: 'Whether its an account or inbox integration hook' }),
     settings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The associated settings for the integration' }),
   })
@@ -1354,7 +1419,7 @@ const AuditLogSchema = z
         description: 'The type of the audited object (e.g., Conversation, Contact, User)',
       }),
     auditable: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1386,7 +1451,7 @@ const AuditLogSchema = z
       .exactOptional()
       .openapi({ description: 'The action performed on the object' }),
     audited_changes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'JSON object containing the changes made to the audited object' }),
     version: z
@@ -1473,12 +1538,12 @@ const PublicContactRecordSchema = z
       .openapi({ description: 'Identifier of the contact' }),
     blocked: z.boolean().exactOptional().openapi({ description: 'Whether the contact is blocked' }),
     additional_attributes: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Additional attributes of the contact when present' }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Custom attributes of the contact when present' }),
@@ -1599,7 +1664,10 @@ const PublicMessageAttachmentSchema = z
         description:
           'Fallback title for location, fallback, and contact attachments when available',
       }),
-    meta: z.object({}).exactOptional().openapi({ description: 'Metadata for contact attachments' }),
+    meta: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Metadata for contact attachments' }),
     transcribed_text: z
       .string()
       .exactOptional()
@@ -1667,12 +1735,12 @@ const PublicMessageSenderSchema = z
       .exactOptional()
       .openapi({ description: 'Whether the sender is blocked when the sender is a contact' }),
     additional_attributes: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Additional attributes when the sender is a contact and available' }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Custom attributes when the sender is a contact and available' }),
@@ -1718,7 +1786,7 @@ const PublicMessageSchema = z
       .exactOptional()
       .openapi({ description: 'Content type of the message' }),
     content_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional content attributes of the message' }),
     created_at: z
@@ -1860,11 +1928,11 @@ const AccountCreateUpdatePayloadSchema = z
       .exactOptional()
       .openapi({ description: 'The status of the account', example: 'active' }),
     limits: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The limits of the account', example: {} }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The custom attributes of the account', example: {} }),
   })
@@ -2027,7 +2095,7 @@ const AgentBotCreateUpdatePayloadSchema = z
       .exactOptional()
       .openapi({ description: 'The type of the bot (0 for webhook)', example: 0 }),
     bot_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The configuration for the bot', example: {} }),
   })
@@ -2057,7 +2125,7 @@ const UserCreateUpdatePayloadSchema = z
         example: 'Password2!',
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Custom attributes you want to associate with the user',
@@ -2226,7 +2294,7 @@ const ContactCreatePayloadSchema = z
         example: '1234567890',
       }),
     additional_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2234,7 +2302,7 @@ const ContactCreatePayloadSchema = z
         example: { type: 'customer', age: 30 },
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2286,7 +2354,7 @@ const ContactUpdatePayloadSchema = z
         example: '1234567890',
       }),
     additional_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2294,7 +2362,7 @@ const ContactUpdatePayloadSchema = z
         example: { type: 'customer', age: 30 },
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2321,7 +2389,7 @@ const ConversationCreatePayloadSchema = z
       .exactOptional()
       .openapi({ description: 'Contact Id for which conversation is created', example: 1 }),
     additional_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Lets you specify attributes like browser information',
@@ -2333,7 +2401,7 @@ const ConversationCreatePayloadSchema = z
         },
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2382,7 +2450,7 @@ const ConversationCreatePayloadSchema = z
               .exactOptional()
               .openapi({ description: 'Language of the template', example: 'en_US' }),
             processed_params: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'The processed param values for template variables in template',
@@ -2425,12 +2493,47 @@ const ConversationMessageCreatePayloadSchema = z
       .exactOptional()
       .openapi({ description: 'Content type of the message', example: 'text' }),
     content_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
-          'Attributes based on the content type. For `input_select`, provide an `items` array with\n`title`, `value`, and optional `description`. WhatsApp list messages use `description`\nas the row subtitle when present.\n',
-        example: {},
+          'Attributes based on the content type. For `input_select`, provide an `items` array with\n`title`, `value`, and optional `description`. WhatsApp list messages use `description`\nas the row subtitle when present.\n\nFor replies, set `in_reply_to` to a Chatwoot message ID in this conversation,\nor `in_reply_to_external_id` to its `source_id`.\n',
+        example: {
+          items: [
+            {
+              title: 'Option 1',
+              value: 'option_1',
+              description: 'Optional WhatsApp list row subtitle',
+            },
+          ],
+        },
+      }),
+    source_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'External message ID, returned as `source_id`. Use it with\n`content_attributes.in_reply_to_external_id` to reference this message in a reply.\n',
+        example: 'external-message-123',
+      }),
+    sender_type: z
+      .literal('AgentBot')
+      .exactOptional()
+      .openapi({
+        description: 'Use `AgentBot` with `sender_id` to send an outgoing message as that bot.\n',
+        example: 'AgentBot',
+      }),
+    sender_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Agent bot ID when `sender_type` is `AgentBot`.', example: 1 }),
+    echo_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Client-generated ID returned in the response and real-time event to match an optimistic message.\n',
+        example: 'client-message-123',
       }),
     campaign_id: z
       .int()
@@ -2571,7 +2674,7 @@ const InboxCreateWebWidgetChannelPayloadSchema = z
         example: false,
       }),
     pre_chat_form_options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Pre-chat form configuration',
@@ -2647,7 +2750,7 @@ const InboxCreateApiChannelPayloadSchema = z
         example: false,
       }),
     additional_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Additional attributes stored on contacts created through the API channel',
@@ -2792,14 +2895,22 @@ const InboxCreateWhatsappChannelPayloadSchema = z
                 description: 'Business account ID for WhatsApp Cloud',
                 example: 'your-business-account-id',
               }),
+            app_secret: z
+              .string()
+              .openapi({
+                description:
+                  'App secret of your Meta app, from App settings > Basic. Used to verify incoming webhook signatures.',
+                example: 'your-app-secret',
+              }),
           })
           .openapi({
             description: 'WhatsApp Cloud provider configuration',
-            required: ['api_key', 'phone_number_id', 'business_account_id'],
+            required: ['api_key', 'phone_number_id', 'business_account_id', 'app_secret'],
             example: {
               api_key: 'your-api-key',
               phone_number_id: 'your-phone-number-id',
               business_account_id: 'your-business-account-id',
+              app_secret: 'your-app-secret',
             },
           }),
       })
@@ -2847,14 +2958,24 @@ const InboxCreateSmsChannelPayloadSchema = z
     type: z.literal('sms').openapi({ example: 'sms' }),
     phone_number: z.string().openapi({ description: 'SMS phone number', example: '+15551234567' }),
     provider_config: z
-      .object({})
-      .exactOptional()
+      .strictObject({
+        account_id: z.string().min(1),
+        application_id: z.string().min(1),
+        client_id: z.string().min(1),
+        client_secret: z.string().min(1).openapi({ writeOnly: true }),
+      })
       .openapi({
-        description: 'Provider-specific SMS configuration',
-        example: { account_id: 'your-account-id', application_id: 'your-application-id' },
+        description: 'Bandwidth OAuth configuration. New SMS inboxes require client credentials.',
+        required: ['account_id', 'application_id', 'client_id', 'client_secret'],
+        example: {
+          account_id: 'your-account-id',
+          application_id: 'your-application-id',
+          client_id: 'your-client-id',
+          client_secret: 'your-client-secret',
+        },
       }),
   })
-  .openapi({ title: 'SMS channel', required: ['type', 'phone_number'] })
+  .openapi({ title: 'SMS channel', required: ['type', 'phone_number', 'provider_config'] })
   .openapi('InboxCreateSmsChannelPayload')
 
 const InboxCreatePayloadSchema = z
@@ -3058,7 +3179,7 @@ const InboxUpdateWebWidgetChannelPayloadSchema = z
         example: false,
       }),
     pre_chat_form_options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Pre-chat form configuration',
@@ -3133,7 +3254,7 @@ const InboxUpdateApiChannelPayloadSchema = z
         example: false,
       }),
     additional_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Additional attributes stored on contacts created through the API channel',
@@ -3285,15 +3406,24 @@ const InboxUpdateWhatsappChannelPayloadSchema = z
             description: 'Business account ID for WhatsApp Cloud',
             example: 'your-business-account-id',
           }),
+        app_secret: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'App secret of your Meta app, used to verify incoming webhook signatures. Required for manually configured Cloud channels that already have one, when moving an embedded signup channel to manual setup, and when switching a channel to `whatsapp_cloud`. It cannot be removed once set.',
+            example: 'your-app-secret',
+          }),
       })
       .exactOptional()
       .openapi({
         description:
-          'WhatsApp provider configuration. Cloud channels use `api_key`, `phone_number_id`, and `business_account_id`; legacy 360dialog channels use `api_key`.',
+          'WhatsApp provider configuration. Cloud channels use `api_key`, `phone_number_id`, `business_account_id`, and `app_secret`; legacy 360dialog channels use `api_key`.',
         example: {
           api_key: 'your-api-key',
           phone_number_id: 'your-phone-number-id',
           business_account_id: 'your-business-account-id',
+          app_secret: 'your-app-secret',
         },
         required: [],
       }),
@@ -3308,7 +3438,7 @@ const InboxUpdateSmsChannelPayloadSchema = z
       .exactOptional()
       .openapi({ description: 'SMS phone number', example: '+15551234567' }),
     provider_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Provider-specific SMS configuration',
@@ -3560,7 +3690,7 @@ const CustomFilterCreateUpdatePayloadSchema = z
       .exactOptional()
       .openapi({ description: 'The description about the custom filter', example: 'conversation' }),
     query: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A query that needs to be saved as a custom filter', example: {} }),
   })
@@ -3622,7 +3752,7 @@ const IntegrationsHookCreatePayloadSchema = z
         example: 1,
       }),
     settings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The settings required by the integration', example: {} }),
   })
@@ -3639,7 +3769,7 @@ const IntegrationsHookUpdatePayloadSchema = z
         example: 1,
       }),
     settings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The settings required by the integration', example: {} }),
   })
@@ -3675,7 +3805,9 @@ const AutomationRuleCreateUpdatePayloadSchema = z
     active: z.boolean().exactOptional().openapi({ description: 'Enable/disable automation rule' }),
     actions: z
       .array(
-        z.object({}).openapi({ example: { action_name: 'add_label', action_params: ['support'] } }),
+        z
+          .looseObject({})
+          .openapi({ example: { action_name: 'add_label', action_params: ['support'] } }),
       )
       .exactOptional()
       .openapi({
@@ -3685,7 +3817,7 @@ const AutomationRuleCreateUpdatePayloadSchema = z
     conditions: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             example: {
               attribute_key: 'content',
@@ -3739,7 +3871,7 @@ const PortalCreateUpdatePayloadSchema = z
       .exactOptional()
       .openapi({ description: 'Status to check if portal is live', example: false }),
     config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Configuration about supporting locales',
@@ -3848,7 +3980,7 @@ const ArticleCreateUpdatePayloadSchema = z
       .exactOptional()
       .openapi({ description: 'The locale of the article', example: 'en' }),
     meta: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Use for search',
@@ -3896,7 +4028,7 @@ const PublicContactCreateUpdatePayloadSchema = z
         description: 'Send the form data with the avatar image binary or use the avatar_url',
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Custom attributes of the customer', example: {} }),
   })
@@ -3962,7 +4094,7 @@ const PublicMessageUpdatePayloadSchema = z
 const PublicConversationCreatePayloadSchema = z
   .object({
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Custom attributes of the conversation', example: {} }),
   })
@@ -3998,7 +4130,7 @@ const ContactConversationsSchema = z
               sender: z
                 .object({
                   additional_attributes: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'The additional attributes of the sender' }),
                   availability_status: z
@@ -4035,7 +4167,7 @@ const ContactConversationsSchema = z
                     .exactOptional()
                     .openapi({ description: 'Avatar URL of the contact' }),
                   custom_attributes: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'The custom attributes of the sender' }),
                   last_activity_at: z
@@ -4072,7 +4204,7 @@ const ContactLabelsSchema = z
   .openapi({ required: [] })
   .openapi('ContactLabels')
 
-const ConversationListSchema = z
+const ConversationListSchema: z.ZodType<ConversationListType> = z
   .object({
     data: z
       .object({
@@ -4095,7 +4227,7 @@ const ConversationListSchema = z
                       sender: z
                         .object({
                           additional_attributes: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ description: 'The additional attributes of the sender' }),
                           availability_status: z
@@ -4135,7 +4267,7 @@ const ConversationListSchema = z
                             .exactOptional()
                             .openapi({ description: 'Avatar URL of the contact' }),
                           custom_attributes: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ description: 'The custom attributes of the sender' }),
                           last_activity_at: z
@@ -4179,7 +4311,7 @@ const ConversationShowSchema = ConversationSchema.and(
           sender: z
             .object({
               additional_attributes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'The additional attributes of the sender' }),
               availability_status: z
@@ -4213,7 +4345,7 @@ const ConversationShowSchema = ConversationSchema.and(
                 .exactOptional()
                 .openapi({ description: 'Avatar URL of the contact' }),
               custom_attributes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'The custom attributes of the sender' }),
               last_activity_at: z
@@ -4242,7 +4374,7 @@ const ConversationShowSchema = ConversationSchema.and(
 
 const ConversationStatusToggleSchema = z
   .object({
-    meta: z.object({}).exactOptional(),
+    meta: z.looseObject({}).exactOptional(),
     payload: z
       .object({
         success: z.boolean().exactOptional(),
@@ -4693,7 +4825,7 @@ const ContactDetailSchema = z
         required: [],
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The custom attributes of the contact' }),
     email: z.string().exactOptional().openapi({ description: 'The email address of the contact' }),
@@ -4992,7 +5124,7 @@ const ContactListItemSchema = z
       .openapi({ description: 'The identifier of the contact' }),
     thumbnail: z.string().exactOptional().openapi({ description: 'The thumbnail of the contact' }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The custom attributes of the contact' }),
     last_activity_at: z
@@ -5053,7 +5185,7 @@ const ContactConversationMessageSchema = z
       .openapi({ description: 'Source ID of the message' }),
     content_type: z.string().exactOptional().openapi({ description: 'Type of the content' }),
     content_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Attributes of the content' }),
     sender_type: z
@@ -5063,11 +5195,11 @@ const ContactConversationMessageSchema = z
       .openapi({ description: 'Type of the sender' }),
     sender_id: z.int().nullable().exactOptional().openapi({ description: 'ID of the sender' }),
     external_source_ids: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'External source IDs' }),
     additional_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional attributes of the message' }),
     processed_message_content: z
@@ -5076,7 +5208,7 @@ const ContactConversationMessageSchema = z
       .exactOptional()
       .openapi({ description: 'Processed message content' }),
     sentiment: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Sentiment analysis of the message' }),
     conversation: z
@@ -5131,7 +5263,7 @@ const ContactConversationMessageSchema = z
   .openapi({ required: [] })
   .openapi('ContactConversationMessage')
 
-const ContactConversationsResponseSchema = z
+const ContactConversationsResponseSchema: z.ZodType<ContactConversationsResponseType> = z
   .object({
     payload: z
       .array(
@@ -5143,7 +5275,7 @@ const ContactConversationsResponseSchema = z
                   sender: z
                     .object({
                       additional_attributes: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({ description: 'The additional attributes of the sender' }),
                       availability_status: z
@@ -5180,7 +5312,7 @@ const ContactConversationsResponseSchema = z
                         .exactOptional()
                         .openapi({ description: 'Avatar URL of the contact' }),
                       custom_attributes: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({ description: 'The custom attributes of the sender' }),
                       last_activity_at: z
@@ -5467,7 +5599,7 @@ const CampaignFieldsSchema = z
 const CampaignCreatePayloadSchema = z
   .object({
     campaign: CampaignFieldsSchema.and(
-      z.object({}).openapi({ required: ['title', 'inbox_id', 'message'] }),
+      z.looseObject({}).openapi({ required: ['title', 'inbox_id', 'message'] }),
     )
       .and(
         z.union([
@@ -5480,14 +5612,14 @@ const CampaignCreatePayloadSchema = z
               required: ['trigger_rules'],
             }),
           z
-            .object({})
+            .looseObject({})
             .openapi({
               title: 'SMS campaign',
               description: 'For an SMS or Twilio SMS inbox, supply at least one audience label.',
               required: ['audience'],
             }),
           z
-            .object({})
+            .looseObject({})
             .openapi({
               title: 'WhatsApp campaign',
               description:
@@ -5860,6 +5992,20 @@ const PublicContactIdentifierParamsSchema = z
       schema: { type: 'string' },
       required: true,
       description: 'The source id of contact obtained on contact create',
+    },
+  })
+
+const PublicIdentifierHashParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'identifier_hash',
+      schema: { type: 'string' },
+      required: false,
+      description:
+        'HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.',
     },
   })
 
@@ -6519,6 +6665,7 @@ export const getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConver
         inbox_identifier: PublicInboxIdentifierParamsSchema,
         contact_identifier: PublicContactIdentifierParamsSchema,
       }),
+      query: z.object({ identifier_hash: PublicIdentifierHashParamsSchema }),
     },
     responses: {
       200: {
@@ -6552,6 +6699,7 @@ export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConve
         inbox_identifier: PublicInboxIdentifierParamsSchema,
         contact_identifier: PublicContactIdentifierParamsSchema,
       }),
+      query: z.object({ identifier_hash: PublicIdentifierHashParamsSchema }),
       body: {
         content: { 'application/json': { schema: PublicConversationCreatePayloadSchema } },
         required: true,
@@ -6584,6 +6732,7 @@ export const getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConver
         contact_identifier: PublicContactIdentifierParamsSchema,
         conversation_id: ConversationIdParamsSchema,
       }),
+      query: z.object({ identifier_hash: PublicIdentifierHashParamsSchema }),
     },
     responses: {
       200: {
@@ -6616,6 +6765,7 @@ export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConve
         contact_identifier: PublicContactIdentifierParamsSchema,
         conversation_id: ConversationIdParamsSchema,
       }),
+      query: z.object({ identifier_hash: PublicIdentifierHashParamsSchema }),
     },
     responses: {
       200: {
@@ -6649,6 +6799,7 @@ export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConve
         conversation_id: ConversationIdParamsSchema,
       }),
       query: z.object({
+        identifier_hash: PublicIdentifierHashParamsSchema,
         typing_status: z
           .string()
           .openapi({
@@ -6706,6 +6857,7 @@ export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConve
         contact_identifier: PublicContactIdentifierParamsSchema,
         conversation_id: ConversationIdParamsSchema,
       }),
+      query: z.object({ identifier_hash: PublicIdentifierHashParamsSchema }),
     },
     responses: {
       200: { description: 'Last seen updated successfully' },
@@ -6735,6 +6887,7 @@ export const getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConver
         contact_identifier: PublicContactIdentifierParamsSchema,
         conversation_id: ConversationIdParamsSchema,
       }),
+      query: z.object({ identifier_hash: PublicIdentifierHashParamsSchema }),
     },
     responses: {
       200: {
@@ -6767,6 +6920,7 @@ export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConve
         contact_identifier: PublicContactIdentifierParamsSchema,
         conversation_id: ConversationIdParamsSchema,
       }),
+      query: z.object({ identifier_hash: PublicIdentifierHashParamsSchema }),
       body: {
         content: { 'application/json': { schema: PublicMessageCreatePayloadSchema } },
         required: true,
@@ -6800,6 +6954,7 @@ export const patchPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConv
         conversation_id: ConversationIdParamsSchema,
         message_id: MessageIdParamsSchema,
       }),
+      query: z.object({ identifier_hash: PublicIdentifierHashParamsSchema }),
       body: {
         content: { 'application/json': { schema: PublicMessageUpdatePayloadSchema } },
         required: true,
@@ -8357,6 +8512,159 @@ export const getApiV1AccountsAccountIdContactsIdContactableInboxesRoute = create
   security: [{ userBearerAuth: [] }, { userApiKey: [] }],
 })
 
+export const postApiV1AccountsAccountIdDataExportsRoute = createRoute({
+  method: 'post',
+  path: '/api/v1/accounts/{account_id}/data_exports',
+  tags: ['Contacts'],
+  summary: 'Create Contact Export',
+  description:
+    'Create a tracked CSV export of contacts and queue it for background processing.\nRequires an administrator or a user with the `contact_manage` permission.\n\nSend export options only in the JSON request body. Query-string parameters are\nignored: they neither supply options nor override body values. An empty body\nuses the default columns and exports all resolved contacts in the account.\nUnknown body options and invalid option values return 422 without creating\nan export or queuing a job.\n',
+  operationId: 'contactExportCreate',
+  request: {
+    params: z.object({ account_id: AccountIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              column_names: z
+                .array(z.string())
+                .default(['id', 'name', 'email', 'phone_number', 'labels'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Contact column names to export. Omitted or empty uses the default columns.',
+                }),
+              payload: z
+                .array(
+                  z
+                    .strictObject({
+                      attribute_key: z.string(),
+                      attribute_model: z.string().nullable().exactOptional(),
+                      filter_operator: z.string(),
+                      query_operator: z.string().nullable().exactOptional(),
+                      custom_attribute_type: z.string().nullable().exactOptional(),
+                      values: z
+                        .array(z.union([z.string(), z.number(), z.boolean()]))
+                        .openapi({
+                          description:
+                            'Values must match the selected attribute and operator; text attributes require strings.',
+                        }),
+                      timezone: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description: 'IANA timezone for date filters. Omit to use UTC.',
+                        }),
+                    })
+                    .openapi({ required: ['attribute_key', 'filter_operator', 'values'] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Contact filters, using the same format as POST /contacts/filter. A non-empty payload takes precedence over label.',
+                }),
+              label: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'An existing account label to select contacts when payload is absent or empty. Empty selects all resolved contacts.',
+                }),
+              scope_name: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'Display name for the selection. Does not filter contacts.',
+                }),
+            })
+            .openapi({ required: [] }),
+          example: {
+            column_names: ['name', 'email', 'phone_number'],
+            payload: [
+              {
+                attribute_key: 'email',
+                filter_operator: 'contains',
+                values: ['example.com'],
+                query_operator: null,
+              },
+            ],
+            scope_name: 'Example customers',
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description:
+        'Export created and queued. The CSV becomes downloadable after processing completes.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z.int(),
+              name: z.string().openapi({ example: 'Contacts - 2026-11-09' }),
+              data_type: z.literal('contacts'),
+              status: z.enum(['pending', 'processing', 'completed', 'failed']),
+              export_options: z
+                .looseObject({})
+                .openapi({
+                  description:
+                    'Validated body options with default columns filled in and duplicate columns removed.',
+                }),
+              processed_records: z.int(),
+              total_records: z.int().nullable().exactOptional(),
+              error_message: z.string().nullable().exactOptional(),
+              initiated_by: z
+                .object({
+                  id: z.int().exactOptional(),
+                  name: z.string().exactOptional(),
+                  email: z.string().exactOptional(),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({ required: [] }),
+              created_at: z.iso.datetime({ offset: true }).exactOptional(),
+              updated_at: z.iso.datetime({ offset: true }).exactOptional(),
+              started_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+              completed_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+              artifacts_expired_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+              stalled: z.boolean().exactOptional(),
+              downloadable: z.boolean(),
+              can_rerun: z.boolean().exactOptional(),
+            })
+            .openapi({
+              required: [
+                'id',
+                'name',
+                'data_type',
+                'status',
+                'export_options',
+                'processed_records',
+                'downloadable',
+              ],
+            }),
+        },
+      },
+    },
+    401: { description: 'Authentication required or insufficient permission to export contacts.' },
+    422: {
+      description: 'Invalid export options. No export is created or queued.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z.string().openapi({ example: 'Unsupported export options: unexpected.' }),
+            })
+            .openapi({ required: ['message'] }),
+        },
+      },
+    },
+  },
+  security: [{ userBearerAuth: [] }, { userApiKey: [] }],
+})
+
 export const postApiV1AccountsAccountIdActionsContactMergeRoute = createRoute({
   method: 'post',
   path: '/api/v1/accounts/{account_id}/actions/contact_merge',
@@ -9507,7 +9815,7 @@ export const postApiV1AccountsAccountIdConversationsConversationIdToggleStatusRo
         'application/json': {
           schema: z
             .object({
-              meta: z.object({}).exactOptional(),
+              meta: z.looseObject({}).exactOptional(),
               payload: z
                 .object({
                   success: z.boolean().exactOptional(),
@@ -9713,7 +10021,7 @@ export const postApiV1AccountsAccountIdConversationsConversationIdCustomAttribut
             schema: z
               .object({
                 custom_attributes: z
-                  .object({})
+                  .looseObject({})
                   .openapi({
                     description: 'The custom attributes to be set for the conversation',
                     example: { order_id: '12345', previous_conversation: '67890' },
@@ -9741,7 +10049,7 @@ export const postApiV1AccountsAccountIdConversationsConversationIdCustomAttribut
             schema: z
               .object({
                 custom_attributes: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'The custom attributes of the conversation' }),
               })
@@ -9801,7 +10109,7 @@ export const postApiV1AccountsAccountIdConversationsConversationIdDestroyCustomA
             schema: z
               .object({
                 custom_attributes: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'The remaining custom attributes of the conversation' }),
               })
@@ -10202,6 +10510,7 @@ export const postApiV1AccountsAccountIdInboxesRoute = createRoute({
                     api_key: 'your-api-key',
                     phone_number_id: 'your-phone-number-id',
                     business_account_id: 'your-business-account-id',
+                    app_secret: 'your-app-secret',
                   },
                 },
               },
@@ -10219,8 +10528,8 @@ export const postApiV1AccountsAccountIdInboxesRoute = createRoute({
                   type: 'sms',
                   phone_number: '+15551234567',
                   provider_config: {
-                    api_key: 'your-api-key',
-                    api_secret: 'your-api-secret',
+                    client_id: 'your-client-id',
+                    client_secret: 'your-client-secret',
                     application_id: 'your-application-id',
                     account_id: 'your-account-id',
                   },
@@ -10423,6 +10732,7 @@ export const patchApiV1AccountsAccountIdInboxesIdRoute = createRoute({
                     api_key: 'your-api-key',
                     phone_number_id: 'your-phone-number-id',
                     business_account_id: 'your-business-account-id',
+                    app_secret: 'your-app-secret',
                   },
                 },
               },
@@ -11112,7 +11422,7 @@ export const getApiV1AccountsAccountIdConversationsConversationIdMessagesRoute =
               meta: z
                 .object({
                   labels: z.array(z.string()).exactOptional(),
-                  additional_attributes: z.object({}).exactOptional(),
+                  additional_attributes: z.looseObject({}).exactOptional(),
                   contact: ContactSchema.exactOptional(),
                   assignee: AgentSchema.exactOptional(),
                   agent_last_seen_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
@@ -11150,7 +11460,7 @@ export const postApiV1AccountsAccountIdConversationsConversationIdMessagesRoute 
   tags: ['Messages'],
   summary: 'Create New Message',
   description:
-    'Create a new message in the conversation.\n\nUse `application/json` for text messages and `multipart/form-data` when the\nmessage includes file attachments.\n\n### Multipart attachment request\n\nSend files with the `attachments[]` form field. `curl -F` sets the\n`multipart/form-data` content type and boundary automatically.\n\n```bash\ncurl -X POST "https://app.chatwoot.com/api/v1/accounts/{account_id}/conversations/{conversation_id}/messages" \\\n  -H "Authorization: Bearer <your-api-token>" \\\n  -F "content=Here is the screenshot" \\\n  -F "message_type=outgoing" \\\n  -F "private=false" \\\n  -F "attachments[]=@/path/to/screenshot.png"\n```\n\n## WhatsApp Template Messages\n\nFor WhatsApp channels, you can send structured template messages using the `template_params` field. \nTemplates must be pre-approved in WhatsApp Business Manager.\n\nBy default, `content` is treated as the already-rendered transcript text for\ncompatibility with existing API and mobile clients. To submit the original\ntemplate body instead, set `template_params.content_mode` to `raw_template`;\nChatwoot will substitute `processed_params.body` before saving the transcript.\n\n### Example Templates\n\n**Text with Image Header:**\n```json\n{\n  "content": "Hi your order 121212 is confirmed. Please wait for further updates",\n  "template_params": {\n    "name": "order_confirmation",\n    "category": "MARKETING",\n    "language": "en",\n    "processed_params": {\n      "body": {\n        "1": "121212"\n      },\n      "header": {\n        "media_url": "https://picsum.photos/200/300",\n        "media_type": "image"\n      }\n    }\n  }\n}\n```\n\n**Text with Copy Code Button:**\n```json\n{\n  "content": "Special offer! Get 30% off your next purchase. Use the code below",\n  "template_params": {\n    "name": "discount_coupon",\n    "category": "MARKETING",\n    "language": "en",\n    "processed_params": {\n      "body": {\n        "discount_percentage": "30"\n      },\n      "buttons": [{\n        "type": "copy_code",\n        "parameter": "SAVE20"\n      }]\n    }\n  }\n}\n```\n',
+    'Create a new message in the conversation.\n\nUse `application/json` for text messages and `multipart/form-data` when the\nmessage includes file attachments.\n\n### Multipart attachment request\n\nSend files with the `attachments[]` form field. `curl -F` sets the\n`multipart/form-data` content type and boundary automatically.\n\n```bash\ncurl -X POST "https://app.chatwoot.com/api/v1/accounts/{account_id}/conversations/{conversation_id}/messages" \\\n  -H "Authorization: Bearer <your-api-token>" \\\n  -F "content=Here is the screenshot" \\\n  -F "message_type=outgoing" \\\n  -F "private=false" \\\n  -F "attachments[]=@/path/to/screenshot.png"\n```\n\n### Replying to a message\n\nSet `content_attributes.in_reply_to` to a Chatwoot message ID in this conversation,\nor `content_attributes.in_reply_to_external_id` to its `source_id`.\nChatwoot resolves the other reference and displays the quoted message.\n\n```json\n{\n  "content": "Yes, that one is in stock",\n  "content_attributes": {\n    "in_reply_to_external_id": "external-message-123"\n  }\n}\n```\n\n## WhatsApp Template Messages\n\nFor WhatsApp channels, you can send structured template messages using the `template_params` field. \nTemplates must be pre-approved in WhatsApp Business Manager.\n\nBy default, `content` is treated as the already-rendered transcript text for\ncompatibility with existing API and mobile clients. To submit the original\ntemplate body instead, set `template_params.content_mode` to `raw_template`;\nChatwoot will substitute `processed_params.body` before saving the transcript.\n\n### Example Templates\n\n**Text with Image Header:**\n```json\n{\n  "content": "Hi your order 121212 is confirmed. Please wait for further updates",\n  "template_params": {\n    "name": "order_confirmation",\n    "category": "MARKETING",\n    "language": "en",\n    "processed_params": {\n      "body": {\n        "1": "121212"\n      },\n      "header": {\n        "media_url": "https://picsum.photos/200/300",\n        "media_type": "image"\n      }\n    }\n  }\n}\n```\n\n**Text with Copy Code Button:**\n```json\n{\n  "content": "Special offer! Get 30% off your next purchase. Use the code below",\n  "template_params": {\n    "name": "discount_coupon",\n    "category": "MARKETING",\n    "language": "en",\n    "processed_params": {\n      "body": {\n        "discount_percentage": "30"\n      },\n      "buttons": [{\n        "type": "copy_code",\n        "parameter": "SAVE20"\n      }]\n    }\n  }\n}\n```\n',
   operationId: 'create-a-new-message-in-a-conversation',
   request: {
     params: z.object({
@@ -11192,7 +11502,7 @@ export const postApiV1AccountsAccountIdConversationsConversationIdMessagesRoute 
                 .exactOptional()
                 .openapi({ description: 'Content type of the message', example: 'text' }),
               content_attributes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Attributes based on the content type', example: {} }),
               'attachments[]': z
@@ -11488,7 +11798,7 @@ export const putApiV1ProfileRoute = createRoute({
                   current_password: z.string().exactOptional(),
                   password: z.string().exactOptional(),
                   password_confirmation: z.string().exactOptional(),
-                  ui_settings: z.object({}).exactOptional(),
+                  ui_settings: z.looseObject({}).exactOptional(),
                 })
                 .openapi({ required: [] }),
             })
@@ -11508,7 +11818,7 @@ export const putApiV1ProfileRoute = createRoute({
                   password: z.string().exactOptional(),
                   password_confirmation: z.string().exactOptional(),
                   avatar: z.file().exactOptional().openapi({ type: 'string', format: 'binary' }),
-                  ui_settings: z.object({}).exactOptional(),
+                  ui_settings: z.looseObject({}).exactOptional(),
                 })
                 .openapi({ required: [] }),
             })
@@ -12041,7 +12351,10 @@ export const deleteApiV1AccountsAccountIdWebhooksWebhookIdRoute = createRoute({
   },
   responses: {
     200: { description: 'Success' },
-    401: { description: 'Unauthorized', content: { 'application/json': { schema: z.object({}) } } },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     404: {
       description: 'The webhook does not exist in the account',
       content: { 'application/json': { schema: BadRequestErrorSchema } },

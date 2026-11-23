@@ -86,7 +86,7 @@ const AuditConfigSchema = z
   .openapi('AuditConfig')
 
 const AutomaticSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A replication policy that replicates the Secret payload without any restrictions.',
@@ -156,17 +156,17 @@ const BindingSchema = z
   .openapi('Binding')
 
 const DestroySecretVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for SecretManagerService.DestroySecretVersion.' })
   .openapi('DestroySecretVersionRequest')
 
 const DisableSecretVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for SecretManagerService.DisableSecretVersion.' })
   .openapi('DisableSecretVersionRequest')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -174,7 +174,7 @@ const EmptySchema = z
   .openapi('Empty')
 
 const EnableSecretVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for SecretManagerService.EnableSecretVersion.' })
   .openapi('EnableSecretVersionRequest')
 

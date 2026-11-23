@@ -1,188 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const GoogleFirestoreAdminV1CreateDatabaseMetadataSchema = z
-  .object({})
-  .openapi({ description: 'Metadata related to the create database operation.' })
-  .openapi('GoogleFirestoreAdminV1CreateDatabaseMetadata')
-
-const GoogleFirestoreAdminV1DeleteDatabaseMetadataSchema = z
-  .object({})
-  .openapi({ description: 'Metadata related to the delete database operation.' })
-  .openapi('GoogleFirestoreAdminV1DeleteDatabaseMetadata')
-
-const GoogleFirestoreAdminV1ProgressSchema = z
-  .object({
-    completedWork: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The amount of work completed.' }),
-    estimatedWork: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The amount of work estimated.' }),
-  })
-  .openapi({
-    description:
-      'Describes the progress of the operation. Unit of work is generic and must be interpreted based on where Progress is used.',
-    required: [],
-  })
-  .openapi('GoogleFirestoreAdminV1Progress')
-
-const GoogleFirestoreAdminV1RestoreDatabaseMetadataSchema = z
-  .object({
-    backup: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the backup restoring from.' }),
-    database: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the database being restored to.' }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time the restore finished, unset for ongoing restores.' }),
-    operationState: z
-      .enum([
-        'OPERATION_STATE_UNSPECIFIED',
-        'INITIALIZING',
-        'PROCESSING',
-        'CANCELLING',
-        'FINALIZING',
-        'SUCCESSFUL',
-        'FAILED',
-        'CANCELLED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The operation state of the restore.' }),
-    progressPercentage: GoogleFirestoreAdminV1ProgressSchema.exactOptional().openapi({
-      description: 'How far along the restore is as an estimated percentage of remaining time.',
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time the restore was started.' }),
-  })
-  .openapi({
-    description: 'Metadata for the long-running operation from the RestoreDatabase request.',
-    required: [],
-  })
-  .openapi('GoogleFirestoreAdminV1RestoreDatabaseMetadata')
-
-const GoogleFirestoreAdminV1UpdateDatabaseMetadataSchema = z
-  .object({})
-  .openapi({ description: 'Metadata related to the update database operation.' })
-  .openapi('GoogleFirestoreAdminV1UpdateDatabaseMetadata')
-
-const GoogleFirestoreAdminV1beta2ProgressSchema = z
-  .object({
-    completedWork: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The amount of work completed.' }),
-    estimatedWork: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The amount of work estimated.' }),
-  })
-  .openapi({
-    description:
-      'Describes the progress of the operation. Unit of work is generic and must be interpreted based on where Progress is used.',
-    required: [],
-  })
-  .openapi('GoogleFirestoreAdminV1beta2Progress')
-
-const GoogleFirestoreAdminV1beta2ExportDocumentsMetadataSchema = z
-  .object({
-    collectionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Which collection ids are being exported.' }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time this operation completed. Will be unset if operation still in progress.',
-      }),
-    operationState: z
-      .enum([
-        'OPERATION_STATE_UNSPECIFIED',
-        'INITIALIZING',
-        'PROCESSING',
-        'CANCELLING',
-        'FINALIZING',
-        'SUCCESSFUL',
-        'FAILED',
-        'CANCELLED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The state of the export operation.' }),
-    outputUriPrefix: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Where the entities are being exported to.' }),
-    progressBytes: GoogleFirestoreAdminV1beta2ProgressSchema.exactOptional().openapi({
-      description: 'The progress, in bytes, of this operation.',
-    }),
-    progressDocuments: GoogleFirestoreAdminV1beta2ProgressSchema.exactOptional().openapi({
-      description: 'The progress, in documents, of this operation.',
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time this operation started.' }),
-  })
-  .openapi({
-    description:
-      'Metadata for google.longrunning.Operation results from FirestoreAdmin.ExportDocuments.',
-    required: [],
-  })
-  .openapi('GoogleFirestoreAdminV1beta2ExportDocumentsMetadata')
-
-const GoogleFirestoreAdminV1beta2ExportDocumentsRequestSchema = z
-  .object({
-    collectionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Which collection ids to export. Unspecified means all collections.',
-      }),
-    outputUriPrefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The output URI. Currently only supports Google Cloud Storage URIs of the form: `gs://BUCKET_NAME[/NAMESPACE_PATH]`, where `BUCKET_NAME` is the name of the Google Cloud Storage bucket and `NAMESPACE_PATH` is an optional Google Cloud Storage namespace path. When choosing a name, be sure to consider Google Cloud Storage naming guidelines: https://cloud.google.com/storage/docs/naming. If the URI is a bucket (without a namespace path), a prefix will be generated based on the start time.',
-      }),
-  })
-  .openapi({ description: 'The request for FirestoreAdmin.ExportDocuments.', required: [] })
-  .openapi('GoogleFirestoreAdminV1beta2ExportDocumentsRequest')
-
-const GoogleFirestoreAdminV1beta2ExportDocumentsResponseSchema = z
-  .object({
-    outputUriPrefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Location of the output files. This can be used to begin an import into Cloud Firestore (this project or another project) after the operation completes successfully.',
-      }),
-  })
-  .openapi({
-    description: 'Returned in the google.longrunning.Operation response field.',
-    required: [],
-  })
-  .openapi('GoogleFirestoreAdminV1beta2ExportDocumentsResponse')
-
 const GoogleFirestoreAdminV1beta2IndexFieldSchema = z
   .object({
     arrayConfig: z
@@ -297,6 +114,194 @@ const GoogleFirestoreAdminV1beta2FieldSchema = z
     required: [],
   })
   .openapi('GoogleFirestoreAdminV1beta2Field')
+
+type GoogleFirestoreAdminV1beta2ListFieldsResponseType = {
+  fields?: z.infer<typeof GoogleFirestoreAdminV1beta2FieldSchema>[]
+  nextPageToken?: string
+}
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const GoogleFirestoreAdminV1CreateDatabaseMetadataSchema = z
+  .looseObject({})
+  .openapi({ description: 'Metadata related to the create database operation.' })
+  .openapi('GoogleFirestoreAdminV1CreateDatabaseMetadata')
+
+const GoogleFirestoreAdminV1DeleteDatabaseMetadataSchema = z
+  .looseObject({})
+  .openapi({ description: 'Metadata related to the delete database operation.' })
+  .openapi('GoogleFirestoreAdminV1DeleteDatabaseMetadata')
+
+const GoogleFirestoreAdminV1ProgressSchema = z
+  .object({
+    completedWork: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The amount of work completed.' }),
+    estimatedWork: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The amount of work estimated.' }),
+  })
+  .openapi({
+    description:
+      'Describes the progress of the operation. Unit of work is generic and must be interpreted based on where Progress is used.',
+    required: [],
+  })
+  .openapi('GoogleFirestoreAdminV1Progress')
+
+const GoogleFirestoreAdminV1RestoreDatabaseMetadataSchema = z
+  .object({
+    backup: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the backup restoring from.' }),
+    database: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the database being restored to.' }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time the restore finished, unset for ongoing restores.' }),
+    operationState: z
+      .enum([
+        'OPERATION_STATE_UNSPECIFIED',
+        'INITIALIZING',
+        'PROCESSING',
+        'CANCELLING',
+        'FINALIZING',
+        'SUCCESSFUL',
+        'FAILED',
+        'CANCELLED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The operation state of the restore.' }),
+    progressPercentage: GoogleFirestoreAdminV1ProgressSchema.exactOptional().openapi({
+      description: 'How far along the restore is as an estimated percentage of remaining time.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time the restore was started.' }),
+  })
+  .openapi({
+    description: 'Metadata for the long-running operation from the RestoreDatabase request.',
+    required: [],
+  })
+  .openapi('GoogleFirestoreAdminV1RestoreDatabaseMetadata')
+
+const GoogleFirestoreAdminV1UpdateDatabaseMetadataSchema = z
+  .looseObject({})
+  .openapi({ description: 'Metadata related to the update database operation.' })
+  .openapi('GoogleFirestoreAdminV1UpdateDatabaseMetadata')
+
+const GoogleFirestoreAdminV1beta2ProgressSchema = z
+  .object({
+    completedWork: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The amount of work completed.' }),
+    estimatedWork: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The amount of work estimated.' }),
+  })
+  .openapi({
+    description:
+      'Describes the progress of the operation. Unit of work is generic and must be interpreted based on where Progress is used.',
+    required: [],
+  })
+  .openapi('GoogleFirestoreAdminV1beta2Progress')
+
+const GoogleFirestoreAdminV1beta2ExportDocumentsMetadataSchema = z
+  .object({
+    collectionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Which collection ids are being exported.' }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time this operation completed. Will be unset if operation still in progress.',
+      }),
+    operationState: z
+      .enum([
+        'OPERATION_STATE_UNSPECIFIED',
+        'INITIALIZING',
+        'PROCESSING',
+        'CANCELLING',
+        'FINALIZING',
+        'SUCCESSFUL',
+        'FAILED',
+        'CANCELLED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The state of the export operation.' }),
+    outputUriPrefix: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Where the entities are being exported to.' }),
+    progressBytes: GoogleFirestoreAdminV1beta2ProgressSchema.exactOptional().openapi({
+      description: 'The progress, in bytes, of this operation.',
+    }),
+    progressDocuments: GoogleFirestoreAdminV1beta2ProgressSchema.exactOptional().openapi({
+      description: 'The progress, in documents, of this operation.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time this operation started.' }),
+  })
+  .openapi({
+    description:
+      'Metadata for google.longrunning.Operation results from FirestoreAdmin.ExportDocuments.',
+    required: [],
+  })
+  .openapi('GoogleFirestoreAdminV1beta2ExportDocumentsMetadata')
+
+const GoogleFirestoreAdminV1beta2ExportDocumentsRequestSchema = z
+  .object({
+    collectionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Which collection ids to export. Unspecified means all collections.',
+      }),
+    outputUriPrefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The output URI. Currently only supports Google Cloud Storage URIs of the form: `gs://BUCKET_NAME[/NAMESPACE_PATH]`, where `BUCKET_NAME` is the name of the Google Cloud Storage bucket and `NAMESPACE_PATH` is an optional Google Cloud Storage namespace path. When choosing a name, be sure to consider Google Cloud Storage naming guidelines: https://cloud.google.com/storage/docs/naming. If the URI is a bucket (without a namespace path), a prefix will be generated based on the start time.',
+      }),
+  })
+  .openapi({ description: 'The request for FirestoreAdmin.ExportDocuments.', required: [] })
+  .openapi('GoogleFirestoreAdminV1beta2ExportDocumentsRequest')
+
+const GoogleFirestoreAdminV1beta2ExportDocumentsResponseSchema = z
+  .object({
+    outputUriPrefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Location of the output files. This can be used to begin an import into Cloud Firestore (this project or another project) after the operation completes successfully.',
+      }),
+  })
+  .openapi({
+    description: 'Returned in the google.longrunning.Operation response field.',
+    required: [],
+  })
+  .openapi('GoogleFirestoreAdminV1beta2ExportDocumentsResponse')
 
 const GoogleFirestoreAdminV1beta2IndexConfigDeltaSchema = z
   .object({
@@ -479,22 +484,23 @@ const GoogleFirestoreAdminV1beta2IndexOperationMetadataSchema = z
   })
   .openapi('GoogleFirestoreAdminV1beta2IndexOperationMetadata')
 
-const GoogleFirestoreAdminV1beta2ListFieldsResponseSchema = z
-  .object({
-    fields: z
-      .array(GoogleFirestoreAdminV1beta2FieldSchema)
-      .exactOptional()
-      .openapi({ description: 'The requested fields.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A page token that may be used to request another page of results. If blank, this is the last page.',
-      }),
-  })
-  .openapi({ description: 'The response for FirestoreAdmin.ListFields.', required: [] })
-  .openapi('GoogleFirestoreAdminV1beta2ListFieldsResponse')
+const GoogleFirestoreAdminV1beta2ListFieldsResponseSchema: z.ZodType<GoogleFirestoreAdminV1beta2ListFieldsResponseType> =
+  z
+    .object({
+      fields: z
+        .array(GoogleFirestoreAdminV1beta2FieldSchema)
+        .exactOptional()
+        .openapi({ description: 'The requested fields.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A page token that may be used to request another page of results. If blank, this is the last page.',
+        }),
+    })
+    .openapi({ description: 'The response for FirestoreAdmin.ListFields.', required: [] })
+    .openapi('GoogleFirestoreAdminV1beta2ListFieldsResponse')
 
 const GoogleFirestoreAdminV1beta2ListIndexesResponseSchema = z
   .object({

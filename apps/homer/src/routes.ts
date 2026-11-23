@@ -546,7 +546,26 @@ const MessageListResponseSchema = z
   .openapi('MessageListResponse')
 
 const MessageDecodedSchema = z
-  .object({ data: z.array(z.looseObject({})).exactOptional() })
+  .object({
+    data: z.array(z.looseObject({})).exactOptional(),
+    isup: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'ITU-T Q.763 decode of an application/isup SIP body, when the message is SIP-I.',
+      }),
+    shark: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description: 'tshark -T json dissection when coordinator.decoder_shark.active is true.',
+      }),
+    shark_error: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'tshark failure. The rest of the decode is still returned.' }),
+  })
   .openapi({ required: [] })
   .openapi('MessageDecoded')
 
@@ -3200,7 +3219,7 @@ export const postAgentsSubscriptionsRoute = createRoute({
   method: 'post',
   path: '/agents/subscriptions',
   tags: ['Agents'],
-  summary: 'Create agent subscription (Auth-Token)',
+  summary: 'Create agent subscription (admin)',
   operationId: 'agentSubscriptionsCreate',
   request: {
     body: { content: { 'application/json': { schema: AgentSubSchema } }, required: true },
@@ -3209,9 +3228,9 @@ export const postAgentsSubscriptionsRoute = createRoute({
     201: { description: 'Created', content: { 'application/json': { schema: IdResponseSchema } } },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     500: ServerErrorResponse,
   },
-  security: [{ authTokenHeader: [] }],
 })
 
 export const getAgentsSubscriptionsSubscriptionIdRoute = createRoute({
@@ -3237,7 +3256,7 @@ export const putAgentsSubscriptionsSubscriptionIdRoute = createRoute({
   method: 'put',
   path: '/agents/subscriptions/{subscriptionId}',
   tags: ['Agents'],
-  summary: 'Update agent subscription',
+  summary: 'Update agent subscription (admin)',
   operationId: 'agentSubscriptionsUpdate',
   request: {
     params: z.object({ subscriptionId: AgentSubIdParamsSchema }),
@@ -3247,6 +3266,7 @@ export const putAgentsSubscriptionsSubscriptionIdRoute = createRoute({
     200: { description: 'Updated', content: { 'application/json': { schema: IdResponseSchema } } },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     500: ServerErrorResponse,
   },
@@ -3256,12 +3276,13 @@ export const deleteAgentsSubscriptionsSubscriptionIdRoute = createRoute({
   method: 'delete',
   path: '/agents/subscriptions/{subscriptionId}',
   tags: ['Agents'],
-  summary: 'Delete agent subscription',
+  summary: 'Delete agent subscription (admin)',
   operationId: 'agentSubscriptionsDelete',
   request: { params: z.object({ subscriptionId: AgentSubIdParamsSchema }) },
   responses: {
     204: { description: 'Deleted' },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     500: ServerErrorResponse,
   },

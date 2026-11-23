@@ -4016,7 +4016,9 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01?comp
   "day_pattern": "normal_day",
   "schedule_pattern": "",
   "early_leaving_mins": 0,
+  "half_paid_holiday_mins": 0,
   "half_special_holiday_mins": 0,
+  "hourly_paid_holiday_mins": 0,
   "hourly_special_holiday_mins": 0,
   "is_absence": false,
   "is_editable": true,
@@ -4025,6 +4027,7 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01?comp
   "normal_work_clock_out_at": "1970-01-01T00:00:00Z",
   "normal_work_mins": 0,
   "note": "string",
+  "paid_holiday": 0,
   "paid_holidays": [
     {
       "type": "half",
@@ -4512,7 +4515,9 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01 \
   "day_pattern": "normal_day",
   "schedule_pattern": "",
   "early_leaving_mins": 0,
+  "half_paid_holiday_mins": 0,
   "half_special_holiday_mins": 0,
+  "hourly_paid_holiday_mins": 0,
   "hourly_special_holiday_mins": 0,
   "is_absence": false,
   "is_editable": true,
@@ -4521,6 +4526,7 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01 \
   "normal_work_clock_out_at": "1970-01-01T00:00:00Z",
   "normal_work_mins": 0,
   "note": "string",
+  "paid_holiday": 0,
   "paid_holidays": [
     {
       "type": "half",
@@ -4838,7 +4844,9 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1
       "day_pattern": "normal_day",
       "schedule_pattern": "",
       "early_leaving_mins": 0,
+      "half_paid_holiday_mins": 0,
       "half_special_holiday_mins": 0,
+      "hourly_paid_holiday_mins": 0,
       "hourly_special_holiday_mins": 0,
       "is_absence": false,
       "is_editable": true,
@@ -4847,6 +4855,7 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1
       "normal_work_clock_out_at": "1970-01-01T00:00:00Z",
       "normal_work_mins": 0,
       "note": "string",
+      "paid_holiday": 0,
       "paid_holidays": [
         {
           "type": "half",
@@ -5149,7 +5158,9 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
       "day_pattern": "normal_day",
       "schedule_pattern": "",
       "early_leaving_mins": 0,
+      "half_paid_holiday_mins": 0,
       "half_special_holiday_mins": 0,
+      "hourly_paid_holiday_mins": 0,
       "hourly_special_holiday_mins": 0,
       "is_absence": false,
       "is_editable": true,
@@ -5158,6 +5169,7 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
       "normal_work_clock_out_at": "1970-01-01T00:00:00Z",
       "normal_work_mins": 0,
       "note": "string",
+      "paid_holiday": 0,
       "paid_holidays": [
         {
           "type": "half",
@@ -7061,6 +7073,21 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tag_summaries/202
       },
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tag_summaries": [
+    {
+      "attendance_mins_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "input_unit_mins": 15,
+        "max_mins": 180,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "mins": 60
+    }
   ]
 }
 ```
@@ -7167,6 +7194,12 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tag_summaries/2021
         "attendance_tag_id": 1,
         "amount": 1
       }
+    ],
+    "employee_attendance_mins_tag_summaries": [
+      {
+        "attendance_tag_id": 1,
+        "mins": 60
+      }
     ]
   }'
 ```
@@ -7196,6 +7229,12 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tag_summaries/2021
       "attendance_tag_id": 1,
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tag_summaries": [
+    {
+      "attendance_tag_id": 1,
+      "mins": 60
+    }
   ]
 }
 ```
@@ -7209,7 +7248,8 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tag_summaries/2021
 |month|path|integer|true|勤怠タグサマリを更新したい月|
 |body|body|[ApiV1EmployeesAttendanceTagSummariesController.update_body](#schemaapiv1employeesattendancetagsummariescontroller.update_body)|false|none|
 |» company_id|body|integer(int32)|true|事業所ID|
-|» employee_attendance_tag_summaries|body|[[ApiV1EmployeesAttendanceTagSummaryUpdateRequestSerializer](#schemaapiv1employeesattendancetagsummaryupdaterequestserializer)]|true|更新対象の勤怠タグサマリのリスト|
+|» employee_attendance_tag_summaries|body|[[ApiV1EmployeesAttendanceTagSummaryUpdateRequestSerializer](#schemaapiv1employeesattendancetagsummaryupdaterequestserializer)]|false|更新対象の勤怠タグサマリのリスト|
+|» employee_attendance_mins_tag_summaries|body|[[ApiV1EmployeesAttendanceMinsTagSummaryUpdateRequestSerializer](#schemaapiv1employeesattendanceminstagsummaryupdaterequestserializer)]|false|更新対象の時間数タグサマリのリスト|
 
 > Example responses
 
@@ -7229,6 +7269,21 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tag_summaries/2021
         "is_employee_usable": true
       },
       "amount": 1
+    }
+  ],
+  "employee_attendance_mins_tag_summaries": [
+    {
+      "attendance_mins_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "input_unit_mins": 15,
+        "max_mins": 180,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "mins": 60
     }
   ]
 }
@@ -7358,6 +7413,18 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tags?company_id=1
       "name": "勤怠タグの名称",
       "description": "勤怠タグの備考",
       "max_amount": 1,
+      "published": true,
+      "is_employee_usable": true
+    }
+  ],
+  "employee_attendance_mins_tags": [
+    {
+      "id": 1,
+      "company_id": 1,
+      "name": "勤怠タグの名称",
+      "description": "勤怠タグの備考",
+      "input_unit_mins": 15,
+      "max_mins": 480,
       "published": true,
       "is_employee_usable": true
     }
@@ -7492,6 +7559,21 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tags/1970-01-01?c
       },
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tags": [
+    {
+      "attendance_mins_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "input_unit_mins": 15,
+        "max_mins": 480,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "mins": 60
+    }
   ]
 }
 ```
@@ -7598,6 +7680,12 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tags/1970-01-01 \
         "attendance_tag_id": 1,
         "amount": 1
       }
+    ],
+    "employee_attendance_mins_tags": [
+      {
+        "attendance_tag_id": 1,
+        "mins": 60
+      }
     ]
   }'
 ```
@@ -7623,6 +7711,12 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tags/1970-01-01 \
       "attendance_tag_id": 1,
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tags": [
+    {
+      "attendance_tag_id": 1,
+      "mins": 60
+    }
   ]
 }
 ```
@@ -7635,7 +7729,8 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tags/1970-01-01 \
 |date|path|string(date)|true|更新対象年月日(YYYY-MM-DD)(例:2018-08-01)|
 |body|body|[ApiV1EmployeesAttendanceTagsController.update_body](#schemaapiv1employeesattendancetagscontroller.update_body)|false|none|
 |» company_id|body|integer(int32)|true|事業所ID|
-|» employee_attendance_tags|body|[[ApiV1EmployeesAttendanceTagUpdateRequestSerializer](#schemaapiv1employeesattendancetagupdaterequestserializer)]|true|更新対象の勤怠タグのリスト|
+|» employee_attendance_tags|body|[[ApiV1EmployeesAttendanceTagUpdateRequestSerializer](#schemaapiv1employeesattendancetagupdaterequestserializer)]|false|更新対象の勤怠タグのリスト|
+|» employee_attendance_mins_tags|body|[[ApiV1EmployeesAttendanceMinsTagUpdateRequestSerializer](#schemaapiv1employeesattendanceminstagupdaterequestserializer)]|false|更新対象の勤怠時間数タグのリスト|
 
 > Example responses
 
@@ -7655,6 +7750,21 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tags/1970-01-01 \
         "is_employee_usable": true
       },
       "amount": 1
+    }
+  ],
+  "employee_attendance_mins_tags": [
+    {
+      "attendance_mins_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "input_unit_mins": 15,
+        "max_mins": 480,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "mins": 60
     }
   ]
 }
@@ -7731,20 +7841,12 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/attendance_tags/1970-01-01 \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|successful operation|Inline|
+|200|OK|successful operation|[ApiV1EmployeesAttendanceTagsController.update_response](#schemaapiv1employeesattendancetagscontroller.update_response)|
 |400|Bad Request||[error](#schemaerror)|
 |401|Unauthorized||[unauthorizedError](#schemaunauthorizederror)|
 |403|Forbidden||[accessDeniedError](#schemaaccessdeniederror)|
 |404|Not Found||[notfoundError](#schemanotfounderror)|
 |500|Internal Server Error||[internalServerError](#schemainternalservererror)|
-
-<h3 id="勤怠タグの更新-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|employee_attendance_tags|[[ApiV1EmployeesAssignedAttendanceTagSerializer](#schemaapiv1employeesassignedattendancetagserializer)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -9913,6 +10015,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/monthly_attendances \
         "update_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
     "current_step_id": 1,
     "current_round": 1
   }
@@ -10050,6 +10159,13 @@ curl 'https://api.freee.co.jp/hr/api/v1/approval_requests/monthly_attendances/1?
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -10226,6 +10342,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/monthly_attendances/1 \
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -10537,6 +10660,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/monthly_attendances/1/a
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -10979,6 +11109,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/work_times \
         "update_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
     "current_step_id": 1,
     "current_round": 1,
     "proxy_applicant_id": 1
@@ -11142,6 +11279,13 @@ curl 'https://api.freee.co.jp/hr/api/v1/approval_requests/work_times/1?company_i
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -11416,6 +11560,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/work_times/1 \
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -11753,6 +11904,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/work_times/1/actions \
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -12127,6 +12285,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/paid_holidays \
         "update_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
     "current_step_id": 1,
     "current_round": 1,
     "proxy_applicant_id": 1
@@ -12273,6 +12438,13 @@ curl 'https://api.freee.co.jp/hr/api/v1/approval_requests/paid_holidays/1?compan
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -12475,6 +12647,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/paid_holidays/1 \
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -12801,6 +12980,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/paid_holidays/1/actions
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -13174,6 +13360,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/special_holidays \
         "update_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
     "current_step_id": 1,
     "current_round": 1,
     "proxy_applicant_id": 1
@@ -13318,6 +13511,13 @@ curl 'https://api.freee.co.jp/hr/api/v1/approval_requests/special_holidays/1?com
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -13529,6 +13729,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/special_holidays/1 \
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -13853,6 +14060,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/special_holidays/1/acti
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -14229,6 +14443,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/overtime_works \
         "update_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
     "current_step_id": 1,
     "current_round": 1
   }
@@ -14370,6 +14591,13 @@ curl 'https://api.freee.co.jp/hr/api/v1/approval_requests/overtime_works/1?compa
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -14591,6 +14819,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/overtime_works/1 \
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -14906,6 +15141,13 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/overtime_works/1/action
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -19463,6 +19705,13 @@ bearer
       "update_at": "2022-06-08T09:46:46.000+09:00"
     }
   ],
+  "comments": [
+    {
+      "comment": "確認しました。",
+      "user_id": 1,
+      "posted_at": "2022-06-08T09:46:46.000+09:00"
+    }
+  ],
   "current_step_id": 1,
   "current_round": 1
 }
@@ -19485,6 +19734,7 @@ bearer
 |approval_flow_route_id|integer|true|none|申請経路ID|
 |approval_flow_route_name|string|true|none|申請経路名|
 |approval_flow_logs|[[ApiV1ApprovalFlowLogsParams](#schemaapiv1approvalflowlogsparams)]|true|none|承認履歴|
+|comments|[[ApiV1ApprovalFlowCommentsParams](#schemaapiv1approvalflowcommentsparams)]|true|none|申請についたコメント（投稿順）<br><br>申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。|
 |current_step_id|integer(int32) \| null|false|none|現在承認ステップID<br><br>申請を差戻した場合、nullになります。|
 |current_round|integer(int32)|true|none|現在のround。差戻し等により申請がstepの最初からやり直しになるとroundの値が増えます。|
 
@@ -19662,6 +19912,13 @@ bearer
       "update_at": "2022-06-08T09:46:46.000+09:00"
     }
   ],
+  "comments": [
+    {
+      "comment": "確認しました。",
+      "user_id": 1,
+      "posted_at": "2022-06-08T09:46:46.000+09:00"
+    }
+  ],
   "current_step_id": 1,
   "current_round": 1,
   "proxy_applicant_id": 1
@@ -19687,6 +19944,7 @@ bearer
 |approval_flow_route_id|integer|true|none|申請経路ID|
 |approval_flow_route_name|string|true|none|申請経路名|
 |approval_flow_logs|[[ApiV1ApprovalFlowLogsParams](#schemaapiv1approvalflowlogsparams)]|true|none|承認履歴|
+|comments|[[ApiV1ApprovalFlowCommentsParams](#schemaapiv1approvalflowcommentsparams)]|true|none|申請についたコメント（投稿順）<br><br>申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。|
 |current_step_id|integer(int32) \| null|false|none|現在承認ステップID<br><br>申請を差戻した場合、nullになります。|
 |current_round|integer(int32)|true|none|現在のround。差戻し等により申請がstepの最初からやり直しになるとroundの値が増えます。|
 |proxy_applicant_id|integer(int32) \| null|false|none|代理申請者のユーザーID|
@@ -19736,6 +19994,13 @@ bearer
       "update_at": "2022-06-08T09:46:46.000+09:00"
     }
   ],
+  "comments": [
+    {
+      "comment": "確認しました。",
+      "user_id": 1,
+      "posted_at": "2022-06-08T09:46:46.000+09:00"
+    }
+  ],
   "current_step_id": 1,
   "current_round": 1,
   "proxy_applicant_id": 1
@@ -19763,6 +20028,7 @@ bearer
 |approval_flow_route_id|integer|true|none|申請経路ID|
 |approval_flow_route_name|string|true|none|申請経路名|
 |approval_flow_logs|[[ApiV1ApprovalFlowLogsParams](#schemaapiv1approvalflowlogsparams)]|true|none|承認履歴|
+|comments|[[ApiV1ApprovalFlowCommentsParams](#schemaapiv1approvalflowcommentsparams)]|true|none|申請についたコメント（投稿順）<br><br>申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。|
 |current_step_id|integer(int32) \| null|false|none|現在承認ステップID<br><br>申請を差戻した場合、nullになります。|
 |current_round|integer(int32)|true|none|現在のround。差戻し等により申請がstepの最初からやり直しになるとroundの値が増えます。|
 |proxy_applicant_id|integer(int32) \| null|false|none|代理申請者のユーザーID|
@@ -19875,6 +20141,13 @@ bearer
       "update_at": "2022-06-08T09:46:46.000+09:00"
     }
   ],
+  "comments": [
+    {
+      "comment": "確認しました。",
+      "user_id": 1,
+      "posted_at": "2022-06-08T09:46:46.000+09:00"
+    }
+  ],
   "current_step_id": 1,
   "current_round": 1
 }
@@ -19901,6 +20174,7 @@ bearer
 |approval_flow_route_id|integer|true|none|申請経路ID|
 |approval_flow_route_name|string|true|none|申請経路名|
 |approval_flow_logs|[[ApiV1ApprovalFlowLogsParams](#schemaapiv1approvalflowlogsparams)]|true|none|承認履歴|
+|comments|[[ApiV1ApprovalFlowCommentsParams](#schemaapiv1approvalflowcommentsparams)]|true|none|申請についたコメント（投稿順）<br><br>申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。|
 |current_step_id|integer(int32) \| null|false|none|現在承認ステップID<br><br>申請を差戻した場合、nullになります。|
 |current_round|integer(int32)|true|none|現在のround。差戻し等により申請がstepの最初からやり直しになるとroundの値が増えます。|
 
@@ -19946,6 +20220,29 @@ bearer
 |action|approve|
 |action|cancel|
 |action|feedback|
+
+<h2 id="tocS_ApiV1ApprovalFlowCommentsParams">ApiV1ApprovalFlowCommentsParams</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1approvalflowcommentsparams"></a>
+<a id="schema_ApiV1ApprovalFlowCommentsParams"></a>
+<a id="tocSapiv1approvalflowcommentsparams"></a>
+<a id="tocsapiv1approvalflowcommentsparams"></a>
+
+```json
+{
+  "comment": "確認しました。",
+  "user_id": 1,
+  "posted_at": "2022-06-08T09:46:46.000+09:00"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|comment|string|true|none|コメント本文|
+|user_id|integer(int32) \| null|true|none|コメントを書いたユーザーのユーザーID<br><br>次の場合、nullになります。<br>- 従業員に紐付かない管理者が書いた<br>- 書いた従業員が削除されている<br>- 書いた従業員がユーザーアカウントに紐付いていない（招待の解除など）|
+|posted_at|string(date-time)|true|none|コメントを書いた日付時間|
 
 <h2 id="tocS_ApiV1EmployeeSerializer">ApiV1EmployeeSerializer</h2>
 <!-- backwards compatibility -->
@@ -21649,7 +21946,9 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       "day_pattern": "normal_day",
       "schedule_pattern": "",
       "early_leaving_mins": 0,
+      "half_paid_holiday_mins": 0,
       "half_special_holiday_mins": 0,
+      "hourly_paid_holiday_mins": 0,
       "hourly_special_holiday_mins": 0,
       "is_absence": false,
       "is_editable": true,
@@ -21658,6 +21957,7 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       "normal_work_clock_out_at": "1970-01-01T00:00:00Z",
       "normal_work_mins": 0,
       "note": "string",
+      "paid_holiday": 0,
       "paid_holidays": [
         {
           "type": "half",
@@ -21765,7 +22065,9 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
   "day_pattern": "normal_day",
   "schedule_pattern": "",
   "early_leaving_mins": 0,
+  "half_paid_holiday_mins": 0,
   "half_special_holiday_mins": 0,
+  "hourly_paid_holiday_mins": 0,
   "hourly_special_holiday_mins": 0,
   "is_absence": false,
   "is_editable": true,
@@ -21774,6 +22076,7 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
   "normal_work_clock_out_at": "1970-01-01T00:00:00Z",
   "normal_work_mins": 0,
   "note": "string",
+  "paid_holiday": 0,
   "paid_holidays": [
     {
       "type": "half",
@@ -21825,7 +22128,9 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |day_pattern|string|false|none|勤務パターン<br>- normal_day: 所定労働日<br>- prescribed_holiday: 所定休日<br>- legal_holiday: 法定休日|
 |schedule_pattern|string|false|none|スケジュールパターン<br>- substitute_holiday_work: 振替出勤<br>- substitute_holiday: 振替休日<br>- compensatory_holiday_work: 代休出勤<br>- compensatory_holiday: 代休<br>- special_holiday: 特別休暇|
 |early_leaving_mins|integer(int32)|false|none|早退分の時間（分単位）|
+|half_paid_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 有給休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
 |half_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
+|hourly_paid_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 有給休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
 |hourly_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
 |is_absence|boolean|false|none|欠勤かどうか|
 |is_editable|boolean|false|none|勤怠データが編集可能かどうか|
@@ -21834,6 +22139,7 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |normal_work_clock_out_at|string(date-time) \| null|false|none|所定労働終了時刻|
 |normal_work_mins|integer(int32)|false|none|所定労働時間|
 |note|string|false|none|勤怠メモ|
+|paid_holiday|number(float)|false|none|**Deprecated.** [deprecated] この日に対する有給取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_paid_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_paid_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください|
 |paid_holidays|[object]|false|none|**Deprecated.** [deprecated] 年次有給休暇の実績 ※ 削除予定のため holidays を参照してください|
 |holidays|[[ApiV1EmployeesWorkRecordHolidayResponse](#schemaapiv1employeesworkrecordholidayresponse)]|false|none|休暇の内訳（年次有給休暇、特別休暇、代休）。<br>full では mins と time_ranges を返しません。half では mins を返します。<br>morning_off、afternoon_off では mins を返さず、時間帯を持つ実績の場合は time_ranges を返します。<br>hourly は年休・特休のみで、mins を返し、時間帯を持つ実績の場合は time_ranges も返します。|
 |special_holiday|number(float)|false|none|**Deprecated.** [deprecated] この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください|
@@ -24717,6 +25023,13 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
         "update_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
     "current_step_id": 1,
     "current_round": 1
   }
@@ -24900,6 +25213,13 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       "update_at": "2022-06-08T09:46:46.000+09:00"
     }
   ],
+  "comments": [
+    {
+      "comment": "確認しました。",
+      "user_id": 1,
+      "posted_at": "2022-06-08T09:46:46.000+09:00"
+    }
+  ],
   "current_step_id": 1,
   "current_round": 1,
   "proxy_applicant_id": 1
@@ -24930,6 +25250,7 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |approval_flow_route_id|integer|true|none|申請経路ID|
 |approval_flow_route_name|string|true|none|申請経路名|
 |approval_flow_logs|[[ApiV1ApprovalFlowLogsParams](#schemaapiv1approvalflowlogsparams)]|true|none|承認履歴|
+|comments|[[ApiV1ApprovalFlowCommentsParams](#schemaapiv1approvalflowcommentsparams)]|true|none|申請についたコメント（投稿順）<br><br>申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。|
 |current_step_id|integer(int32) \| null|false|none|現在承認ステップID<br><br>申請を差戻した場合、nullになります。|
 |current_round|integer(int32)|true|none|現在のround。差戻し等により申請がstepの最初からやり直しになるとroundの値が増えます。|
 |proxy_applicant_id|integer(int32) \| null|false|none|代理申請者のユーザーID|
@@ -25025,6 +25346,13 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -25198,6 +25526,13 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
         "update_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
     "current_step_id": 1,
     "current_round": 1,
     "proxy_applicant_id": 1
@@ -25329,6 +25664,13 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
         "user_id": 1,
         "action": "approve",
         "update_at": "2022-06-08T09:46:46.000+09:00"
+      }
+    ],
+    "comments": [
+      {
+        "comment": "確認しました。",
+        "user_id": 1,
+        "posted_at": "2022-06-08T09:46:46.000+09:00"
       }
     ],
     "current_step_id": 1,
@@ -26608,7 +26950,7 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |withholding_tax_amount|integer|false|none|前職の源泉徴収額|
 |company_name|string|false|none|前職の社名|
 |company_address|string|false|none|前職の事業所住所|
-|retire_date|string(date)|false|none|前職の退職日 現在年-10年1月1日から現在年+5年12月31日まで登録可能|
+|retire_date|string(date) \| null|false|none|前職の退職日 現在年-10年1月1日から現在年+5年12月31日まで登録可能|
 
 <h2 id="tocS_ApiV1EmployeeYearendAdjustmentController.update_insurance_body">ApiV1EmployeeYearendAdjustmentController.update_insurance_body</h2>
 <!-- backwards compatibility -->
@@ -27269,6 +27611,101 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |attendance_tag|object|true|none|none|
 |amount|integer(int32)|true|none|勤怠タグ回数|
 
+<h2 id="tocS_ApiV1EmployeesAssignedAttendanceMinsTagSerializer">ApiV1EmployeesAssignedAttendanceMinsTagSerializer</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesassignedattendanceminstagserializer"></a>
+<a id="schema_ApiV1EmployeesAssignedAttendanceMinsTagSerializer"></a>
+<a id="tocSapiv1employeesassignedattendanceminstagserializer"></a>
+<a id="tocsapiv1employeesassignedattendanceminstagserializer"></a>
+
+```json
+{
+  "attendance_mins_tag": {
+    "id": 1,
+    "company_id": 1,
+    "name": "勤怠タグの名称",
+    "description": "勤怠タグの備考",
+    "input_unit_mins": 15,
+    "max_mins": 480,
+    "published": true,
+    "is_employee_usable": true
+  },
+  "mins": 60
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attendance_mins_tag|[ApiV1EmployeesAttendanceMinsTagSerializer](#schemaapiv1employeesattendanceminstagserializer)|true|none|none|
+|mins|integer(int32)|true|none|勤怠タグ時間数（分）|
+
+<h2 id="tocS_ApiV1EmployeesAttendanceMinsTagSerializer">ApiV1EmployeesAttendanceMinsTagSerializer</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesattendanceminstagserializer"></a>
+<a id="schema_ApiV1EmployeesAttendanceMinsTagSerializer"></a>
+<a id="tocSapiv1employeesattendanceminstagserializer"></a>
+<a id="tocsapiv1employeesattendanceminstagserializer"></a>
+
+```json
+{
+  "id": 1,
+  "company_id": 1,
+  "name": "勤怠タグの名称",
+  "description": "勤怠タグの備考",
+  "input_unit_mins": 15,
+  "max_mins": 480,
+  "published": true,
+  "is_employee_usable": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int32)|true|none|勤怠タグID|
+|company_id|integer(int32)|true|none|事業所ID|
+|name|string|true|none|勤怠タグ名称|
+|description|string|true|none|勤怠タグ備考|
+|input_unit_mins|integer(int32)|true|none|勤怠タグ時間数入力単位（分）|
+|max_mins|integer(int32)|true|none|勤怠タグ時間数上限（分）|
+|published|boolean|true|none|勤怠タグ公開ステータス|
+|is_employee_usable|boolean|true|none|対象従業員が利用可能かどうか|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|input_unit_mins|1|
+|input_unit_mins|5|
+|input_unit_mins|10|
+|input_unit_mins|15|
+|input_unit_mins|30|
+|input_unit_mins|60|
+
+<h2 id="tocS_ApiV1EmployeesAttendanceMinsTagUpdateRequestSerializer">ApiV1EmployeesAttendanceMinsTagUpdateRequestSerializer</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesattendanceminstagupdaterequestserializer"></a>
+<a id="schema_ApiV1EmployeesAttendanceMinsTagUpdateRequestSerializer"></a>
+<a id="tocSapiv1employeesattendanceminstagupdaterequestserializer"></a>
+<a id="tocsapiv1employeesattendanceminstagupdaterequestserializer"></a>
+
+```json
+{
+  "attendance_tag_id": 1,
+  "mins": 60
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attendance_tag_id|integer(int32)|true|none|勤怠タグID|
+|mins|integer(int32)|true|none|勤怠タグ時間数（分）|
+
 <h2 id="tocS_ApiV1EmployeesAttendanceTagsController.index_response">ApiV1EmployeesAttendanceTagsController.index_response</h2>
 <!-- backwards compatibility -->
 <a id="schemaapiv1employeesattendancetagscontroller.index_response"></a>
@@ -27288,6 +27725,18 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       "published": true,
       "is_employee_usable": true
     }
+  ],
+  "employee_attendance_mins_tags": [
+    {
+      "id": 1,
+      "company_id": 1,
+      "name": "勤怠タグの名称",
+      "description": "勤怠タグの備考",
+      "input_unit_mins": 15,
+      "max_mins": 480,
+      "published": true,
+      "is_employee_usable": true
+    }
   ]
 }
 ```
@@ -27297,6 +27746,7 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |employee_attendance_tags|[[ApiV1EmployeesAttendanceTagSerializer](#schemaapiv1employeesattendancetagserializer)]|false|none|none|
+|employee_attendance_mins_tags|[[ApiV1EmployeesAttendanceMinsTagSerializer](#schemaapiv1employeesattendanceminstagserializer)]|false|none|none|
 
 <h2 id="tocS_ApiV1EmployeesAttendanceTagsController.show_response">ApiV1EmployeesAttendanceTagsController.show_response</h2>
 <!-- backwards compatibility -->
@@ -27320,6 +27770,21 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       },
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tags": [
+    {
+      "attendance_mins_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "input_unit_mins": 15,
+        "max_mins": 480,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "mins": 60
+    }
   ]
 }
 ```
@@ -27329,6 +27794,7 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |employee_attendance_tags|[[ApiV1EmployeesAssignedAttendanceTagSerializer](#schemaapiv1employeesassignedattendancetagserializer)]|false|none|none|
+|employee_attendance_mins_tags|[[ApiV1EmployeesAssignedAttendanceMinsTagSerializer](#schemaapiv1employeesassignedattendanceminstagserializer)]|false|none|none|
 
 <h2 id="tocS_ApiV1EmployeesAttendanceTagsController.update_body">ApiV1EmployeesAttendanceTagsController.update_body</h2>
 <!-- backwards compatibility -->
@@ -27345,6 +27811,12 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       "attendance_tag_id": 1,
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tags": [
+    {
+      "attendance_tag_id": 1,
+      "mins": 60
+    }
   ]
 }
 ```
@@ -27354,7 +27826,56 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |company_id|integer(int32)|true|none|事業所ID|
-|employee_attendance_tags|[[ApiV1EmployeesAttendanceTagUpdateRequestSerializer](#schemaapiv1employeesattendancetagupdaterequestserializer)]|true|none|更新対象の勤怠タグのリスト|
+|employee_attendance_tags|[[ApiV1EmployeesAttendanceTagUpdateRequestSerializer](#schemaapiv1employeesattendancetagupdaterequestserializer)]|false|none|更新対象の勤怠タグのリスト|
+|employee_attendance_mins_tags|[[ApiV1EmployeesAttendanceMinsTagUpdateRequestSerializer](#schemaapiv1employeesattendanceminstagupdaterequestserializer)]|false|none|更新対象の勤怠時間数タグのリスト|
+
+<h2 id="tocS_ApiV1EmployeesAttendanceTagsController.update_response">ApiV1EmployeesAttendanceTagsController.update_response</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesattendancetagscontroller.update_response"></a>
+<a id="schema_ApiV1EmployeesAttendanceTagsController.update_response"></a>
+<a id="tocSapiv1employeesattendancetagscontroller.update_response"></a>
+<a id="tocsapiv1employeesattendancetagscontroller.update_response"></a>
+
+```json
+{
+  "employee_attendance_tags": [
+    {
+      "attendance_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "max_amount": 1,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "amount": 1
+    }
+  ],
+  "employee_attendance_mins_tags": [
+    {
+      "attendance_mins_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "input_unit_mins": 15,
+        "max_mins": 480,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "mins": 60
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|employee_attendance_tags|[[ApiV1EmployeesAssignedAttendanceTagSerializer](#schemaapiv1employeesassignedattendancetagserializer)]|false|none|none|
+|employee_attendance_mins_tags|[[ApiV1EmployeesAssignedAttendanceMinsTagSerializer](#schemaapiv1employeesassignedattendanceminstagserializer)]|false|none|none|
 
 <h2 id="tocS_ApiV1EmployeesAttendanceTagSerializer">ApiV1EmployeesAttendanceTagSerializer</h2>
 <!-- backwards compatibility -->
@@ -27430,6 +27951,21 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       },
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tag_summaries": [
+    {
+      "attendance_mins_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "input_unit_mins": 15,
+        "max_mins": 180,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "mins": 60
+    }
   ]
 }
 ```
@@ -27439,6 +27975,7 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |employee_attendance_tag_summaries|[[ApiV1EmployeesAttendanceTagSummary](#schemaapiv1employeesattendancetagsummary)]|false|none|none|
+|employee_attendance_mins_tag_summaries|[[ApiV1EmployeesAttendanceMinsTagSummary](#schemaapiv1employeesattendanceminstagsummary)]|false|none|none|
 
 <h2 id="tocS_ApiV1EmployeesAttendanceTagSummariesController.update_body">ApiV1EmployeesAttendanceTagSummariesController.update_body</h2>
 <!-- backwards compatibility -->
@@ -27455,6 +27992,12 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       "attendance_tag_id": 1,
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tag_summaries": [
+    {
+      "attendance_tag_id": 1,
+      "mins": 60
+    }
   ]
 }
 ```
@@ -27464,7 +28007,8 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |company_id|integer(int32)|true|none|事業所ID|
-|employee_attendance_tag_summaries|[[ApiV1EmployeesAttendanceTagSummaryUpdateRequestSerializer](#schemaapiv1employeesattendancetagsummaryupdaterequestserializer)]|true|none|更新対象の勤怠タグサマリのリスト|
+|employee_attendance_tag_summaries|[[ApiV1EmployeesAttendanceTagSummaryUpdateRequestSerializer](#schemaapiv1employeesattendancetagsummaryupdaterequestserializer)]|false|none|更新対象の勤怠タグサマリのリスト|
+|employee_attendance_mins_tag_summaries|[[ApiV1EmployeesAttendanceMinsTagSummaryUpdateRequestSerializer](#schemaapiv1employeesattendanceminstagsummaryupdaterequestserializer)]|false|none|更新対象の時間数タグサマリのリスト|
 
 <h2 id="tocS_ApiV1EmployeesAttendanceTagSummariesController.update_response">ApiV1EmployeesAttendanceTagSummariesController.update_response</h2>
 <!-- backwards compatibility -->
@@ -27488,6 +28032,21 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
       },
       "amount": 1
     }
+  ],
+  "employee_attendance_mins_tag_summaries": [
+    {
+      "attendance_mins_tag": {
+        "id": 1,
+        "company_id": 1,
+        "name": "勤怠タグの名称",
+        "description": "勤怠タグの備考",
+        "input_unit_mins": 15,
+        "max_mins": 180,
+        "published": true,
+        "is_employee_usable": true
+      },
+      "mins": 60
+    }
   ]
 }
 ```
@@ -27497,6 +28056,58 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |employee_attendance_tag_summaries|[[ApiV1EmployeesAttendanceTagSummary](#schemaapiv1employeesattendancetagsummary)]|false|none|none|
+|employee_attendance_mins_tag_summaries|[[ApiV1EmployeesAttendanceMinsTagSummary](#schemaapiv1employeesattendanceminstagsummary)]|false|none|none|
+
+<h2 id="tocS_ApiV1EmployeesAttendanceMinsTagSummary">ApiV1EmployeesAttendanceMinsTagSummary</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesattendanceminstagsummary"></a>
+<a id="schema_ApiV1EmployeesAttendanceMinsTagSummary"></a>
+<a id="tocSapiv1employeesattendanceminstagsummary"></a>
+<a id="tocsapiv1employeesattendanceminstagsummary"></a>
+
+```json
+{
+  "attendance_mins_tag": {
+    "id": 1,
+    "company_id": 1,
+    "name": "勤怠タグの名称",
+    "description": "勤怠タグの備考",
+    "input_unit_mins": 15,
+    "max_mins": 180,
+    "published": true,
+    "is_employee_usable": true
+  },
+  "mins": 60
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attendance_mins_tag|object|true|none|none|
+|mins|integer(int32)|true|none|勤怠タグ時間数（分）|
+
+<h2 id="tocS_ApiV1EmployeesAttendanceMinsTagSummaryUpdateRequestSerializer">ApiV1EmployeesAttendanceMinsTagSummaryUpdateRequestSerializer</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesattendanceminstagsummaryupdaterequestserializer"></a>
+<a id="schema_ApiV1EmployeesAttendanceMinsTagSummaryUpdateRequestSerializer"></a>
+<a id="tocSapiv1employeesattendanceminstagsummaryupdaterequestserializer"></a>
+<a id="tocsapiv1employeesattendanceminstagsummaryupdaterequestserializer"></a>
+
+```json
+{
+  "attendance_tag_id": 1,
+  "mins": 60
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attendance_tag_id|integer(int32)|true|none|勤怠タグID|
+|mins|integer(int32)|true|none|勤怠タグ時間数（分）|
 
 <h2 id="tocS_ApiV1EmployeesAttendanceTagSummary">ApiV1EmployeesAttendanceTagSummary</h2>
 <!-- backwards compatibility -->

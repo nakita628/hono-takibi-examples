@@ -61,131 +61,6 @@ type AppRestrictionsSchemaRestrictionType = {
   title?: string
 }
 
-const KeyedAppStateSchema = z
-  .object({
-    data: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional field intended for machine-readable data. For example, a number or JSON object. To prevent XSS, we recommend removing any HTML from the data before displaying it.',
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Key indicating what the app is providing a state for. The content of the key is set by the app's developer. To prevent XSS, we recommend removing any HTML from the key before displaying it. This field will always be present.",
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Free-form, human-readable message describing the app state. For example, an error message. To prevent XSS, we recommend removing any HTML from the message before displaying it.',
-      }),
-    severity: z
-      .enum(['severityUnknown', 'severityInfo', 'severityError'])
-      .exactOptional()
-      .openapi({ description: 'Severity of the app state. This field will always be present.' }),
-    stateTimestampMillis: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp of when the app set the state in milliseconds since epoch. This field will always be present.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a keyed app state containing a key, timestamp, severity level, optional description, and optional data.',
-    required: [],
-  })
-  .openapi('KeyedAppState')
-
-type AppStateType = { keyedAppState?: z.infer<typeof KeyedAppStateSchema>[]; packageName?: string }
-
-const ManagedPropertyBundleSchema: z.ZodType<ManagedPropertyBundleType> = z
-  .lazy(() =>
-    z
-      .object({
-        managedProperty: z
-          .array(ManagedPropertySchema)
-          .exactOptional()
-          .openapi({ description: 'The list of managed properties.' }),
-      })
-      .openapi({ description: 'A bundle of managed properties.', required: [] }),
-  )
-  .openapi('ManagedPropertyBundle')
-
-type ManagedPropertyType = {
-  key?: string
-  valueBool?: boolean
-  valueBundle?: z.infer<typeof ManagedPropertyBundleSchema>
-  valueBundleArray?: z.infer<typeof ManagedPropertyBundleSchema>[]
-  valueInteger?: number
-  valueString?: string
-  valueStringArray?: string[]
-}
-
-const ManagedPropertySchema: z.ZodType<ManagedPropertyType> = z
-  .lazy(() =>
-    z
-      .object({
-        key: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The unique key that identifies the property.' }),
-        valueBool: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'The boolean value - this will only be present if type of the property is bool.',
-          }),
-        valueBundle: ManagedPropertyBundleSchema.exactOptional().openapi({
-          description:
-            'The bundle of managed properties - this will only be present if type of the property is bundle.',
-        }),
-        valueBundleArray: z
-          .array(ManagedPropertyBundleSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of bundles of properties - this will only be present if type of the property is bundle_array.',
-          }),
-        valueInteger: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The integer value - this will only be present if type of the property is integer.',
-          }),
-        valueString: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The string value - this will only be present if type of the property is string, choice or hidden.',
-          }),
-        valueStringArray: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of string values - this will only be present if type of the property is multiselect.',
-          }),
-      })
-      .openapi({
-        description:
-          "A managed property of a managed configuration. The property must match one of the properties in the app restrictions schema of the product. Exactly one of the value fields must be populated, and it must match the property's type in the app restrictions schema.",
-        required: [],
-      }),
-  )
-  .openapi('ManagedProperty')
-
-type ManagedPropertyBundleType = { managedProperty?: z.infer<typeof ManagedPropertySchema>[] }
-
 const MaintenanceWindowSchema = z
   .object({
     durationMs: z
@@ -313,6 +188,62 @@ const ConfigurationVariablesSchema = z
   })
   .openapi('ConfigurationVariables')
 
+const ManagedPropertySchema: z.ZodType<ManagedPropertyType> = z
+  .lazy(() =>
+    z
+      .object({
+        key: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The unique key that identifies the property.' }),
+        valueBool: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'The boolean value - this will only be present if type of the property is bool.',
+          }),
+        valueBundle: ManagedPropertyBundleSchema.exactOptional().openapi({
+          description:
+            'The bundle of managed properties - this will only be present if type of the property is bundle.',
+        }),
+        valueBundleArray: z
+          .array(ManagedPropertyBundleSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The list of bundles of properties - this will only be present if type of the property is bundle_array.',
+          }),
+        valueInteger: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'The integer value - this will only be present if type of the property is integer.',
+          }),
+        valueString: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The string value - this will only be present if type of the property is string, choice or hidden.',
+          }),
+        valueStringArray: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The list of string values - this will only be present if type of the property is multiselect.',
+          }),
+      })
+      .openapi({
+        description:
+          "A managed property of a managed configuration. The property must match one of the properties in the app restrictions schema of the product. Exactly one of the value fields must be populated, and it must match the property's type in the app restrictions schema.",
+        required: [],
+      }),
+  )
+  .openapi('ManagedProperty')
+
 const ManagedConfigurationSchema = z
   .object({
     configurationVariables: ConfigurationVariablesSchema.exactOptional().openapi({
@@ -396,6 +327,843 @@ type PolicyType = {
   maintenanceWindow?: z.infer<typeof MaintenanceWindowSchema>
   productAvailabilityPolicy?: 'productAvailabilityPolicyUnspecified' | 'whitelist' | 'all'
   productPolicy?: z.infer<typeof ProductPolicySchema>[]
+}
+
+const PolicySchema: z.ZodType<PolicyType> = z
+  .object({
+    autoUpdatePolicy: z
+      .enum(['autoUpdatePolicyUnspecified', 'choiceToTheUser', 'never', 'wifiOnly', 'always'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Recommended alternative: autoUpdateMode which is set per app, provides greater flexibility around update frequency. When autoUpdateMode is set to AUTO_UPDATE_POSTPONED or AUTO_UPDATE_HIGH_PRIORITY, this field has no effect. "choiceToTheUser" allows the device\'s user to configure the app update policy. "always" enables auto updates. "never" disables auto updates. "wifiOnly" enables auto updates only when the device is connected to wifi.',
+      }),
+    deviceReportPolicy: z
+      .enum(['deviceReportPolicyUnspecified', 'deviceReportDisabled', 'deviceReportEnabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the device reports app states to the EMM. The default value is "deviceReportDisabled".',
+      }),
+    maintenanceWindow: MaintenanceWindowSchema.exactOptional().openapi({
+      description:
+        'The maintenance window defining when apps running in the foreground should be updated.',
+    }),
+    productAvailabilityPolicy: z
+      .enum(['productAvailabilityPolicyUnspecified', 'whitelist', 'all'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The availability granted to the device for the specified products. "all" gives the device access to all products, regardless of approval status. "all" does not enable automatic visibility of "alpha" or "beta" tracks. "whitelist" grants the device access the products specified in productPolicy[]. Only products that are approved or products that were previously approved (products with revoked approval) by the enterprise can be whitelisted. If no value is provided, the availability set at the user level is applied by default.',
+      }),
+    productPolicy: z
+      .array(ProductPolicySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of product policies. The productAvailabilityPolicy needs to be set to WHITELIST or ALL for the product policies to be applied.',
+      }),
+  })
+  .openapi({ description: 'The device policy for a given managed device.', required: [] })
+  .openapi('Policy')
+
+const KeyedAppStateSchema = z
+  .object({
+    data: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional field intended for machine-readable data. For example, a number or JSON object. To prevent XSS, we recommend removing any HTML from the data before displaying it.',
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Key indicating what the app is providing a state for. The content of the key is set by the app's developer. To prevent XSS, we recommend removing any HTML from the key before displaying it. This field will always be present.",
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Free-form, human-readable message describing the app state. For example, an error message. To prevent XSS, we recommend removing any HTML from the message before displaying it.',
+      }),
+    severity: z
+      .enum(['severityUnknown', 'severityInfo', 'severityError'])
+      .exactOptional()
+      .openapi({ description: 'Severity of the app state. This field will always be present.' }),
+    stateTimestampMillis: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp of when the app set the state in milliseconds since epoch. This field will always be present.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a keyed app state containing a key, timestamp, severity level, optional description, and optional data.',
+    required: [],
+  })
+  .openapi('KeyedAppState')
+
+const AppStateSchema = z
+  .object({
+    keyedAppState: z
+      .array(KeyedAppStateSchema)
+      .exactOptional()
+      .openapi({ description: 'List of keyed app states. This field will always be present.' }),
+    packageName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The package name of the app. This field will always be present.' }),
+  })
+  .openapi({ description: 'List of states set by the app.', required: [] })
+  .openapi('AppState')
+
+const DeviceReportSchema = z
+  .object({
+    appState: z
+      .array(AppStateSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "List of app states set by managed apps on the device. App states are defined by the app's developers. This field will always be present.",
+      }),
+    lastUpdatedTimestampMillis: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp of the last report update in milliseconds since epoch. This field will always be present.',
+      }),
+  })
+  .openapi({
+    description: 'Device report updated with the latest app states for managed apps on the device.',
+    required: [],
+  })
+  .openapi('DeviceReport')
+
+type DeviceType = {
+  androidId?: string
+  device?: string
+  latestBuildFingerprint?: string
+  maker?: string
+  managementType?: 'managedDevice' | 'managedProfile' | 'containerApp' | 'unmanagedProfile'
+  model?: string
+  policy?: z.infer<typeof PolicySchema>
+  product?: string
+  report?: z.infer<typeof DeviceReportSchema>
+  retailBrand?: string
+  sdkVersion?: number
+}
+
+const DeviceSchema: z.ZodType<DeviceType> = z
+  .object({
+    androidId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Google Play Services Android ID for the device encoded as a lowercase hex string. For example, "123456789abcdef0".',
+      }),
+    device: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The internal hardware codename of the device. This comes from android.os.Build.DEVICE. (field named "device" per logs/wireless/android/android_checkin.proto)',
+      }),
+    latestBuildFingerprint: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The build fingerprint of the device if known.' }),
+    maker: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The manufacturer of the device. This comes from android.os.Build.MANUFACTURER.',
+      }),
+    managementType: z
+      .enum(['managedDevice', 'managedProfile', 'containerApp', 'unmanagedProfile'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies the extent to which the device is controlled by a managed Google Play EMM in various deployment configurations. Possible values include: - "managedDevice", a device that has the EMM\'s device policy controller (DPC) as the device owner. - "managedProfile", a device that has a profile managed by the DPC (DPC is profile owner) in addition to a separate, personal profile that is unavailable to the DPC. - "containerApp", no longer used (deprecated). - "unmanagedProfile", a device that has been allowed (by the domain\'s admin, using the Admin Console to enable the privilege) to use managed Google Play, but the profile is itself not owned by a DPC. ',
+      }),
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The model name of the device. This comes from android.os.Build.MODEL.',
+      }),
+    policy: PolicySchema.exactOptional().openapi({
+      description: 'The policy enforced on the device.',
+    }),
+    product: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The product name of the device. This comes from android.os.Build.PRODUCT.',
+      }),
+    report: DeviceReportSchema.exactOptional().openapi({
+      description: 'The device report updated with the latest app states.',
+    }),
+    retailBrand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Retail brand for the device, if set. See https://developer.android.com/reference/android/os/Build.html#BRAND',
+      }),
+    sdkVersion: z.int32().exactOptional().openapi({ description: 'API compatibility version.' }),
+  })
+  .openapi({
+    description:
+      'A Devices resource represents a mobile device managed by the EMM and belonging to a specific enterprise user.',
+    required: [],
+  })
+  .openapi('Device')
+
+type DevicesListResponseType = { device?: z.infer<typeof DeviceSchema>[] }
+
+type ManagedConfigurationsForDeviceListResponseType = {
+  managedConfigurationForDevice?: z.infer<typeof ManagedConfigurationSchema>[]
+}
+
+type ManagedConfigurationsForUserListResponseType = {
+  managedConfigurationForUser?: z.infer<typeof ManagedConfigurationSchema>[]
+}
+
+const ManagedPropertyBundleSchema: z.ZodType<ManagedPropertyBundleType> = z
+  .lazy(() =>
+    z
+      .object({
+        managedProperty: z
+          .array(ManagedPropertySchema)
+          .exactOptional()
+          .openapi({ description: 'The list of managed properties.' }),
+      })
+      .openapi({ description: 'A bundle of managed properties.', required: [] }),
+  )
+  .openapi('ManagedPropertyBundle')
+
+type ManagedPropertyType = {
+  key?: string
+  valueBool?: boolean
+  valueBundle?: z.infer<typeof ManagedPropertyBundleSchema>
+  valueBundleArray?: z.infer<typeof ManagedPropertyBundleSchema>[]
+  valueInteger?: number
+  valueString?: string
+  valueStringArray?: string[]
+}
+
+type ManagedPropertyBundleType = { managedProperty?: z.infer<typeof ManagedPropertySchema>[] }
+
+const AppRestrictionsSchemaChangeEventSchema = z
+  .object({
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the product (e.g. "app:com.google.android.gm") for which the app restriction schema changed. This field will always be present.',
+      }),
+  })
+  .openapi({
+    description:
+      'An event generated when a new app version is uploaded to Google Play and its app restrictions schema changed. To fetch the app restrictions schema for an app, use Products.getAppRestrictionsSchema on the EMM API.',
+    required: [],
+  })
+  .openapi('AppRestrictionsSchemaChangeEvent')
+
+const AppUpdateEventSchema = z
+  .object({
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the product (e.g. "app:com.google.android.gm") that was updated. This field will always be present.',
+      }),
+  })
+  .openapi({
+    description:
+      'An event generated when a new version of an app is uploaded to Google Play. Notifications are sent for new public versions only: alpha, beta, or canary versions do not generate this event. To fetch up-to-date version history for an app, use Products.Get on the EMM API.',
+    required: [],
+  })
+  .openapi('AppUpdateEvent')
+
+const DeviceReportUpdateEventSchema = z
+  .object({
+    deviceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Android ID of the device. This field will always be present.' }),
+    report: DeviceReportSchema.exactOptional().openapi({
+      description:
+        'The device report updated with the latest app states. This field will always be present.',
+    }),
+    userId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the user. This field will always be present.' }),
+  })
+  .openapi({
+    description: 'An event generated when an updated device report is available.',
+    required: [],
+  })
+  .openapi('DeviceReportUpdateEvent')
+
+const InstallFailureEventSchema = z
+  .object({
+    deviceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Android ID of the device. This field will always be present.' }),
+    failureDetails: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Additional details on the failure if applicable.' }),
+    failureReason: z
+      .enum(['unknown', 'timeout'])
+      .exactOptional()
+      .openapi({
+        description: 'The reason for the installation failure. This field will always be present.',
+      }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the product (e.g. "app:com.google.android.gm") for which the install failure event occured. This field will always be present.',
+      }),
+    userId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the user. This field will always be present.' }),
+  })
+  .openapi({
+    description: 'An event generated when an app installation failed on a device',
+    required: [],
+  })
+  .openapi('InstallFailureEvent')
+
+const NewDeviceEventSchema = z
+  .object({
+    deviceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Android ID of the device. This field will always be present.' }),
+    dpcPackageName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Policy app on the device.' }),
+    managementType: z
+      .enum(['managedDevice', 'managedProfile'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies the extent to which the device is controlled by an Android EMM in various deployment configurations. Possible values include: - "managedDevice", a device where the DPC is set as device owner, - "managedProfile", a device where the DPC is set as profile owner. ',
+      }),
+    userId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the user. This field will always be present.' }),
+  })
+  .openapi({
+    description: 'An event generated when a new device is ready to be managed.',
+    required: [],
+  })
+  .openapi('NewDeviceEvent')
+
+const NewPermissionsEventSchema = z
+  .object({
+    approvedPermissions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The set of permissions that the enterprise admin has already approved for this application. Use Permissions.Get on the EMM API to retrieve details about these permissions.',
+      }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the product (e.g. "app:com.google.android.gm") for which new permissions were added. This field will always be present.',
+      }),
+    requestedPermissions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The set of permissions that the app is currently requesting. Use Permissions.Get on the EMM API to retrieve details about these permissions.',
+      }),
+  })
+  .openapi({
+    description: 'An event generated when new permissions are added to an app.',
+    required: [],
+  })
+  .openapi('NewPermissionsEvent')
+
+const ProductApprovalEventSchema = z
+  .object({
+    approved: z
+      .enum(['unknown', 'approved', 'unapproved'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the product was approved or unapproved. This field will always be present.',
+      }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the product (e.g. "app:com.google.android.gm") for which the approval status has changed. This field will always be present.',
+      }),
+  })
+  .openapi({
+    description: "An event generated when a product's approval status is changed.",
+    required: [],
+  })
+  .openapi('ProductApprovalEvent')
+
+const ProductAvailabilityChangeEventSchema = z
+  .object({
+    availabilityStatus: z
+      .enum(['unknown', 'available', 'removed', 'unpublished'])
+      .exactOptional()
+      .openapi({ description: 'The new state of the product. This field will always be present.' }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the product (e.g. "app:com.google.android.gm") for which the product availability changed. This field will always be present.',
+      }),
+  })
+  .openapi({
+    description: "An event generated whenever a product's availability changes.",
+    required: [],
+  })
+  .openapi('ProductAvailabilityChangeEvent')
+
+const NotificationSchema = z
+  .object({
+    appRestrictionsSchemaChangeEvent:
+      AppRestrictionsSchemaChangeEventSchema.exactOptional().openapi({
+        description: 'Notifications about new app restrictions schema changes.',
+      }),
+    appUpdateEvent: AppUpdateEventSchema.exactOptional().openapi({
+      description: 'Notifications about app updates.',
+    }),
+    deviceReportUpdateEvent: DeviceReportUpdateEventSchema.exactOptional().openapi({
+      description: 'Notifications about device report updates.',
+    }),
+    enterpriseId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the enterprise for which the notification is sent. This will always be present.',
+      }),
+    installFailureEvent: InstallFailureEventSchema.exactOptional().openapi({
+      description: 'Notifications about an app installation failure.',
+    }),
+    newDeviceEvent: NewDeviceEventSchema.exactOptional().openapi({
+      description: 'Notifications about new devices.',
+    }),
+    newPermissionsEvent: NewPermissionsEventSchema.exactOptional().openapi({
+      description: 'Notifications about new app permissions.',
+    }),
+    notificationType: z
+      .enum([
+        'unknown',
+        'testNotification',
+        'productApproval',
+        'installFailure',
+        'appUpdate',
+        'newPermissions',
+        'appRestricionsSchemaChange',
+        'productAvailabilityChange',
+        'newDevice',
+        'deviceReportUpdate',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Type of the notification.' }),
+    productApprovalEvent: ProductApprovalEventSchema.exactOptional().openapi({
+      description: "Notifications about changes to a product's approval status.",
+    }),
+    productAvailabilityChangeEvent: ProductAvailabilityChangeEventSchema.exactOptional().openapi({
+      description: 'Notifications about product availability changes.',
+    }),
+    timestampMillis: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the notification was published in milliseconds since 1970-01-01T00:00:00Z. This will always be present.',
+      }),
+  })
+  .openapi({ description: 'A notification of one event relating to an enterprise.', required: [] })
+  .openapi('Notification')
+
+type NotificationSetType = {
+  notification?: z.infer<typeof NotificationSchema>[]
+  notificationSetId?: string
+}
+
+const PageInfoSchema = z
+  .object({
+    resultPerPage: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of results returned in one page. ! The number of results included in the API response.',
+      }),
+    startIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Index of the first result returned in the current page.' }),
+    totalResults: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total number of results available on the backend ! The total number of results in the result set.',
+      }),
+  })
+  .openapi({
+    description:
+      'Information about the current page. List operations that supports paging return only one "page" of results. This protocol buffer message describes the page that has been returned.',
+    required: [],
+  })
+  .openapi('PageInfo')
+
+const AppRestrictionsSchemaRestrictionSchema: z.ZodType<AppRestrictionsSchemaRestrictionType> = z
+  .lazy(() =>
+    z
+      .object({
+        defaultValue:
+          AppRestrictionsSchemaRestrictionRestrictionValueSchema.exactOptional().openapi({
+            description:
+              'The default value of the restriction. bundle and bundleArray restrictions never have a default value.',
+          }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A longer description of the restriction, giving more detail of what it affects.',
+          }),
+        entry: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              "For choice or multiselect restrictions, the list of possible entries' human-readable names.",
+          }),
+        entryValue: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              "For choice or multiselect restrictions, the list of possible entries' machine-readable values. These values should be used in the configuration, either as a single string value for a choice restriction or in a stringArray for a multiselect restriction.",
+          }),
+        key: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The unique key that the product uses to identify the restriction, e.g. "com.google.android.gm.fieldname".',
+          }),
+        nestedRestriction: z
+          .array(AppRestrictionsSchemaRestrictionSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'For bundle or bundleArray restrictions, the list of nested restrictions. A bundle restriction is always nested within a bundleArray restriction, and a bundleArray restriction is at most two levels deep.',
+          }),
+        restrictionType: z
+          .enum([
+            'bool',
+            'string',
+            'integer',
+            'choice',
+            'multiselect',
+            'hidden',
+            'bundle',
+            'bundleArray',
+          ])
+          .exactOptional()
+          .openapi({ description: 'The type of the restriction.' }),
+        title: z.string().exactOptional().openapi({ description: 'The name of the restriction.' }),
+      })
+      .openapi({
+        description:
+          'A restriction in the App Restriction Schema represents a piece of configuration that may be pre-applied.',
+        required: [],
+      }),
+  )
+  .openapi('AppRestrictionsSchemaRestriction')
+
+const AppRestrictionsSchemaSchema = z
+  .object({
+    kind: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+    restrictions: z
+      .array(AppRestrictionsSchemaRestrictionSchema)
+      .exactOptional()
+      .openapi({ description: 'The set of restrictions that make up this schema.' }),
+  })
+  .openapi({
+    description:
+      'Represents the list of app restrictions available to be pre-configured for the product.',
+    required: [],
+  })
+  .openapi('AppRestrictionsSchema')
+
+const TrackInfoSchema = z
+  .object({
+    trackAlias: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A modifiable name for a track. This is the visible name in the play developer console.',
+      }),
+    trackId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unmodifiable, unique track identifier. This identifier is the releaseTrackId in the url of the play developer console page that displays the track information.',
+      }),
+  })
+  .openapi({ description: 'Id to name association of a track.', required: [] })
+  .openapi('TrackInfo')
+
+const AppVersionSchema = z
+  .object({
+    isProduction: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if this version is a production APK.' }),
+    track: z
+      .enum(['appTrackUnspecified', 'production', 'beta', 'alpha'])
+      .exactOptional()
+      .openapi({ description: 'Deprecated, use trackId instead.' }),
+    trackId: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Track ids that the app version is published in. Replaces the track field (deprecated), but doesn't include the production track (see isProduction instead).",
+      }),
+    versionCode: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Unique increasing identifier for the app version.' }),
+    versionString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The string used in the Play store by the app developer to identify the version. The string is not necessarily unique or localized (for example, the string could be "1.4").',
+      }),
+  })
+  .openapi({ description: 'This represents a single version of the app.', required: [] })
+  .openapi('AppVersion')
+
+const ProductPermissionSchema = z
+  .object({
+    permissionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An opaque string uniquely identifying the permission.' }),
+    state: z
+      .enum(['required', 'accepted'])
+      .exactOptional()
+      .openapi({ description: 'Whether the permission has been accepted or not.' }),
+  })
+  .openapi({
+    description:
+      'A product permissions resource represents the set of permissions required by a specific app and whether or not they have been accepted by an enterprise admin. The API can be used to read the set of permissions, and also to update the set to indicate that permissions have been accepted.',
+    required: [],
+  })
+  .openapi('ProductPermission')
+
+const ProductSigningCertificateSchema = z
+  .object({
+    certificateHashSha1: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The base64 urlsafe encoded SHA1 hash of the certificate. (This field is deprecated in favor of SHA2-256. It should not be used and may be removed at any time.)',
+      }),
+    certificateHashSha256: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The base64 urlsafe encoded SHA2-256 hash of the certificate.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductSigningCertificate')
+
+const ProductSchema = z
+  .object({
+    appRestrictionsSchema: AppRestrictionsSchemaSchema.exactOptional().openapi({
+      description: 'The app restriction schema',
+    }),
+    appTracks: z
+      .array(TrackInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'The tracks visible to the enterprise.' }),
+    appVersion: z
+      .array(AppVersionSchema)
+      .exactOptional()
+      .openapi({ description: 'App versions currently available for this product.' }),
+    authorName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the author of the product (for example, the app developer).',
+      }),
+    availableCountries: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The countries which this app is available in.' }),
+    availableTracks: z
+      .array(z.enum(['appTrackUnspecified', 'production', 'beta', 'alpha']))
+      .exactOptional()
+      .openapi({ description: 'Deprecated, use appTracks instead.' }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The app category (e.g. RACING, SOCIAL, etc.)' }),
+    contentRating: z
+      .enum(['ratingUnknown', 'all', 'preTeen', 'teen', 'mature'])
+      .exactOptional()
+      .openapi({ description: 'The content rating for this app.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The localized promotional description, if available.' }),
+    detailsUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the (consumer) Google Play details page for the product.',
+      }),
+    distributionChannel: z
+      .enum(['publicGoogleHosted', 'privateGoogleHosted', 'privateSelfHosted'])
+      .exactOptional()
+      .openapi({
+        description:
+          'How and to whom the package is made available. The value publicGoogleHosted means that the package is available through the Play store and not restricted to a specific enterprise. The value privateGoogleHosted means that the package is a private app (restricted to an enterprise) but hosted by Google. The value privateSelfHosted means that the package is a private app (restricted to an enterprise) and is privately hosted.',
+      }),
+    features: z
+      .array(z.enum(['featureUnknown', 'vpnApp']))
+      .exactOptional()
+      .openapi({ description: 'Noteworthy features (if any) of this product.' }),
+    iconUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A link to an image that can be used as an icon for the product. This image is suitable for use at up to 512px x 512px.',
+      }),
+    lastUpdatedTimestampMillis: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The approximate time (within 7 days) the app was last published, expressed in milliseconds since epoch.',
+      }),
+    minAndroidSdkVersion: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The minimum Android SDK necessary to run the app.' }),
+    permissions: z
+      .array(ProductPermissionSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of permissions required by the app.' }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string of the form *app:<package name>*. For example, app:com.google.android.gm represents the Gmail app.',
+      }),
+    productPricing: z
+      .enum(['unknown', 'free', 'freeWithInAppPurchase', 'paid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this product is free, free with in-app purchases, or paid. If the pricing is unknown, this means the product is not generally available anymore (even though it might still be available to people who own it).',
+      }),
+    recentChanges: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A description of the recent changes made to the app.' }),
+    requiresContainerApp: z.boolean().exactOptional().openapi({ description: 'Deprecated.' }),
+    screenshotUrls: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of screenshot links representing the app.' }),
+    signingCertificate: ProductSigningCertificateSchema.exactOptional().openapi({
+      description: 'The certificate used to sign this product.',
+    }),
+    smallIconUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A link to a smaller image that can be used as an icon for the product. This image is suitable for use at up to 128px x 128px.',
+      }),
+    title: z.string().exactOptional().openapi({ description: 'The name of the product.' }),
+    workDetailsUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A link to the managed Google Play details page for the product, for use by an Enterprise admin.',
+      }),
+  })
+  .openapi({
+    description:
+      'A Products resource represents an app in the Google Play store that is available to at least some users in the enterprise. (Some apps are restricted to a single enterprise, and no information about them is made available outside that enterprise.) The information provided for each product (localized name, icon, link to the full Google Play details page) is intended to allow a basic representation of the product within an EMM user interface.',
+    required: [],
+  })
+  .openapi('Product')
+
+const TokenPaginationSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Tokens to pass to the standard list field 'page_token'. Whenever available, tokens are preferred over manipulating start_index.",
+      }),
+    previousPageToken: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'Pagination information returned by a List operation when token pagination is enabled. List operations that supports paging return only one "page" of results. This protocol buffer message describes the page that has been returned. When using token pagination, clients should use the next/previous token to get another page of the result. The presence or absence of next/previous token indicates whether a next/previous page is available and provides a mean of accessing this page. ListRequest.page_token should be set to either next_page_token or previous_page_token to access another page.',
+    required: [],
+  })
+  .openapi('TokenPagination')
+
+type ProductsListResponseType = {
+  pageInfo?: z.infer<typeof PageInfoSchema>
+  product?: z.infer<typeof ProductSchema>[]
+  tokenPagination?: z.infer<typeof TokenPaginationSchema>
 }
 
 const AdministratorSchema = z
@@ -532,173 +1300,6 @@ const AdministratorWebTokenSpecSchema = z
   })
   .openapi('AdministratorWebTokenSpec')
 
-const AppRestrictionsSchemaRestrictionSchema: z.ZodType<AppRestrictionsSchemaRestrictionType> = z
-  .lazy(() =>
-    z
-      .object({
-        defaultValue:
-          AppRestrictionsSchemaRestrictionRestrictionValueSchema.exactOptional().openapi({
-            description:
-              'The default value of the restriction. bundle and bundleArray restrictions never have a default value.',
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A longer description of the restriction, giving more detail of what it affects.',
-          }),
-        entry: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              "For choice or multiselect restrictions, the list of possible entries' human-readable names.",
-          }),
-        entryValue: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              "For choice or multiselect restrictions, the list of possible entries' machine-readable values. These values should be used in the configuration, either as a single string value for a choice restriction or in a stringArray for a multiselect restriction.",
-          }),
-        key: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The unique key that the product uses to identify the restriction, e.g. "com.google.android.gm.fieldname".',
-          }),
-        nestedRestriction: z
-          .array(AppRestrictionsSchemaRestrictionSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'For bundle or bundleArray restrictions, the list of nested restrictions. A bundle restriction is always nested within a bundleArray restriction, and a bundleArray restriction is at most two levels deep.',
-          }),
-        restrictionType: z
-          .enum([
-            'bool',
-            'string',
-            'integer',
-            'choice',
-            'multiselect',
-            'hidden',
-            'bundle',
-            'bundleArray',
-          ])
-          .exactOptional()
-          .openapi({ description: 'The type of the restriction.' }),
-        title: z.string().exactOptional().openapi({ description: 'The name of the restriction.' }),
-      })
-      .openapi({
-        description:
-          'A restriction in the App Restriction Schema represents a piece of configuration that may be pre-applied.',
-        required: [],
-      }),
-  )
-  .openapi('AppRestrictionsSchemaRestriction')
-
-const AppRestrictionsSchemaSchema = z
-  .object({
-    kind: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-    restrictions: z
-      .array(AppRestrictionsSchemaRestrictionSchema)
-      .exactOptional()
-      .openapi({ description: 'The set of restrictions that make up this schema.' }),
-  })
-  .openapi({
-    description:
-      'Represents the list of app restrictions available to be pre-configured for the product.',
-    required: [],
-  })
-  .openapi('AppRestrictionsSchema')
-
-const AppRestrictionsSchemaChangeEventSchema = z
-  .object({
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the product (e.g. "app:com.google.android.gm") for which the app restriction schema changed. This field will always be present.',
-      }),
-  })
-  .openapi({
-    description:
-      'An event generated when a new app version is uploaded to Google Play and its app restrictions schema changed. To fetch the app restrictions schema for an app, use Products.getAppRestrictionsSchema on the EMM API.',
-    required: [],
-  })
-  .openapi('AppRestrictionsSchemaChangeEvent')
-
-const AppStateSchema: z.ZodType<AppStateType> = z
-  .lazy(() =>
-    z
-      .object({
-        keyedAppState: z
-          .array(KeyedAppStateSchema)
-          .exactOptional()
-          .openapi({ description: 'List of keyed app states. This field will always be present.' }),
-        packageName: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The package name of the app. This field will always be present.',
-          }),
-      })
-      .openapi({ description: 'List of states set by the app.', required: [] }),
-  )
-  .openapi('AppState')
-
-const AppUpdateEventSchema = z
-  .object({
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the product (e.g. "app:com.google.android.gm") that was updated. This field will always be present.',
-      }),
-  })
-  .openapi({
-    description:
-      'An event generated when a new version of an app is uploaded to Google Play. Notifications are sent for new public versions only: alpha, beta, or canary versions do not generate this event. To fetch up-to-date version history for an app, use Products.Get on the EMM API.',
-    required: [],
-  })
-  .openapi('AppUpdateEvent')
-
-const AppVersionSchema = z
-  .object({
-    isProduction: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if this version is a production APK.' }),
-    track: z
-      .enum(['appTrackUnspecified', 'production', 'beta', 'alpha'])
-      .exactOptional()
-      .openapi({ description: 'Deprecated, use trackId instead.' }),
-    trackId: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Track ids that the app version is published in. Replaces the track field (deprecated), but doesn't include the production track (see isProduction instead).",
-      }),
-    versionCode: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Unique increasing identifier for the app version.' }),
-    versionString: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The string used in the Play store by the app developer to identify the version. The string is not necessarily unique or localized (for example, the string could be "1.4").',
-      }),
-  })
-  .openapi({ description: 'This represents a single version of the app.', required: [] })
-  .openapi('AppVersion')
-
 const ApprovalUrlInfoSchema = z
   .object({
     approvalUrl: z
@@ -736,159 +1337,6 @@ const CreateEnrollmentTokenResponseSchema = z
   .openapi({ description: 'Response message for create enrollment token.', required: [] })
   .openapi('CreateEnrollmentTokenResponse')
 
-const PolicySchema: z.ZodType<PolicyType> = z
-  .lazy(() =>
-    z
-      .object({
-        autoUpdatePolicy: z
-          .enum(['autoUpdatePolicyUnspecified', 'choiceToTheUser', 'never', 'wifiOnly', 'always'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Recommended alternative: autoUpdateMode which is set per app, provides greater flexibility around update frequency. When autoUpdateMode is set to AUTO_UPDATE_POSTPONED or AUTO_UPDATE_HIGH_PRIORITY, this field has no effect. "choiceToTheUser" allows the device\'s user to configure the app update policy. "always" enables auto updates. "never" disables auto updates. "wifiOnly" enables auto updates only when the device is connected to wifi.',
-          }),
-        deviceReportPolicy: z
-          .enum(['deviceReportPolicyUnspecified', 'deviceReportDisabled', 'deviceReportEnabled'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the device reports app states to the EMM. The default value is "deviceReportDisabled".',
-          }),
-        maintenanceWindow: MaintenanceWindowSchema.exactOptional().openapi({
-          description:
-            'The maintenance window defining when apps running in the foreground should be updated.',
-        }),
-        productAvailabilityPolicy: z
-          .enum(['productAvailabilityPolicyUnspecified', 'whitelist', 'all'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The availability granted to the device for the specified products. "all" gives the device access to all products, regardless of approval status. "all" does not enable automatic visibility of "alpha" or "beta" tracks. "whitelist" grants the device access the products specified in productPolicy[]. Only products that are approved or products that were previously approved (products with revoked approval) by the enterprise can be whitelisted. If no value is provided, the availability set at the user level is applied by default.',
-          }),
-        productPolicy: z
-          .array(ProductPolicySchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of product policies. The productAvailabilityPolicy needs to be set to WHITELIST or ALL for the product policies to be applied.',
-          }),
-      })
-      .openapi({ description: 'The device policy for a given managed device.', required: [] }),
-  )
-  .openapi('Policy')
-
-const DeviceReportSchema = z
-  .object({
-    appState: z
-      .array(AppStateSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "List of app states set by managed apps on the device. App states are defined by the app's developers. This field will always be present.",
-      }),
-    lastUpdatedTimestampMillis: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp of the last report update in milliseconds since epoch. This field will always be present.',
-      }),
-  })
-  .openapi({
-    description: 'Device report updated with the latest app states for managed apps on the device.',
-    required: [],
-  })
-  .openapi('DeviceReport')
-
-const DeviceSchema = z
-  .object({
-    androidId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Google Play Services Android ID for the device encoded as a lowercase hex string. For example, "123456789abcdef0".',
-      }),
-    device: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The internal hardware codename of the device. This comes from android.os.Build.DEVICE. (field named "device" per logs/wireless/android/android_checkin.proto)',
-      }),
-    latestBuildFingerprint: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The build fingerprint of the device if known.' }),
-    maker: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The manufacturer of the device. This comes from android.os.Build.MANUFACTURER.',
-      }),
-    managementType: z
-      .enum(['managedDevice', 'managedProfile', 'containerApp', 'unmanagedProfile'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies the extent to which the device is controlled by a managed Google Play EMM in various deployment configurations. Possible values include: - "managedDevice", a device that has the EMM\'s device policy controller (DPC) as the device owner. - "managedProfile", a device that has a profile managed by the DPC (DPC is profile owner) in addition to a separate, personal profile that is unavailable to the DPC. - "containerApp", no longer used (deprecated). - "unmanagedProfile", a device that has been allowed (by the domain\'s admin, using the Admin Console to enable the privilege) to use managed Google Play, but the profile is itself not owned by a DPC. ',
-      }),
-    model: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The model name of the device. This comes from android.os.Build.MODEL.',
-      }),
-    policy: PolicySchema.exactOptional().openapi({
-      description: 'The policy enforced on the device.',
-    }),
-    product: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The product name of the device. This comes from android.os.Build.PRODUCT.',
-      }),
-    report: DeviceReportSchema.exactOptional().openapi({
-      description: 'The device report updated with the latest app states.',
-    }),
-    retailBrand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Retail brand for the device, if set. See https://developer.android.com/reference/android/os/Build.html#BRAND',
-      }),
-    sdkVersion: z.int32().exactOptional().openapi({ description: 'API compatibility version.' }),
-  })
-  .openapi({
-    description:
-      'A Devices resource represents a mobile device managed by the EMM and belonging to a specific enterprise user.',
-    required: [],
-  })
-  .openapi('Device')
-
-const DeviceReportUpdateEventSchema = z
-  .object({
-    deviceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Android ID of the device. This field will always be present.' }),
-    report: DeviceReportSchema.exactOptional().openapi({
-      description:
-        'The device report updated with the latest app states. This field will always be present.',
-    }),
-    userId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the user. This field will always be present.' }),
-  })
-  .openapi({
-    description: 'An event generated when an updated device report is available.',
-    required: [],
-  })
-  .openapi('DeviceReportUpdateEvent')
-
 const DeviceStateSchema = z
   .object({
     accountState: z
@@ -906,7 +1354,7 @@ const DeviceStateSchema = z
   })
   .openapi('DeviceState')
 
-const DevicesListResponseSchema = z
+const DevicesListResponseSchema: z.ZodType<DevicesListResponseType> = z
   .object({
     device: z.array(DeviceSchema).exactOptional().openapi({ description: 'A managed device.' }),
   })
@@ -1186,40 +1634,6 @@ const InstallSchema = z
   })
   .openapi('Install')
 
-const InstallFailureEventSchema = z
-  .object({
-    deviceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Android ID of the device. This field will always be present.' }),
-    failureDetails: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Additional details on the failure if applicable.' }),
-    failureReason: z
-      .enum(['unknown', 'timeout'])
-      .exactOptional()
-      .openapi({
-        description: 'The reason for the installation failure. This field will always be present.',
-      }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the product (e.g. "app:com.google.android.gm") for which the install failure event occured. This field will always be present.',
-      }),
-    userId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the user. This field will always be present.' }),
-  })
-  .openapi({
-    description: 'An event generated when an app installation failed on a device',
-    required: [],
-  })
-  .openapi('InstallFailureEvent')
-
 const InstallsListResponseSchema = z
   .object({
     install: z
@@ -1247,25 +1661,27 @@ const LocalizedTextSchema = z
   .openapi({ description: 'A localized string with its locale.', required: [] })
   .openapi('LocalizedText')
 
-const ManagedConfigurationsForDeviceListResponseSchema = z
-  .object({
-    managedConfigurationForDevice: z
-      .array(ManagedConfigurationSchema)
-      .exactOptional()
-      .openapi({ description: 'A managed configuration for an app on a specific device.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ManagedConfigurationsForDeviceListResponse')
+const ManagedConfigurationsForDeviceListResponseSchema: z.ZodType<ManagedConfigurationsForDeviceListResponseType> =
+  z
+    .object({
+      managedConfigurationForDevice: z
+        .array(ManagedConfigurationSchema)
+        .exactOptional()
+        .openapi({ description: 'A managed configuration for an app on a specific device.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('ManagedConfigurationsForDeviceListResponse')
 
-const ManagedConfigurationsForUserListResponseSchema = z
-  .object({
-    managedConfigurationForUser: z
-      .array(ManagedConfigurationSchema)
-      .exactOptional()
-      .openapi({ description: 'A managed configuration for an app for a specific user.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ManagedConfigurationsForUserListResponse')
+const ManagedConfigurationsForUserListResponseSchema: z.ZodType<ManagedConfigurationsForUserListResponseType> =
+  z
+    .object({
+      managedConfigurationForUser: z
+        .array(ManagedConfigurationSchema)
+        .exactOptional()
+        .openapi({ description: 'A managed configuration for an app for a specific user.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('ManagedConfigurationsForUserListResponse')
 
 const ManagedConfigurationsSettingsSchema = z
   .object({
@@ -1305,168 +1721,7 @@ const ManagedConfigurationsSettingsListResponseSchema = z
   .openapi({ required: [] })
   .openapi('ManagedConfigurationsSettingsListResponse')
 
-const NewDeviceEventSchema = z
-  .object({
-    deviceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Android ID of the device. This field will always be present.' }),
-    dpcPackageName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Policy app on the device.' }),
-    managementType: z
-      .enum(['managedDevice', 'managedProfile'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies the extent to which the device is controlled by an Android EMM in various deployment configurations. Possible values include: - "managedDevice", a device where the DPC is set as device owner, - "managedProfile", a device where the DPC is set as profile owner. ',
-      }),
-    userId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the user. This field will always be present.' }),
-  })
-  .openapi({
-    description: 'An event generated when a new device is ready to be managed.',
-    required: [],
-  })
-  .openapi('NewDeviceEvent')
-
-const NewPermissionsEventSchema = z
-  .object({
-    approvedPermissions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The set of permissions that the enterprise admin has already approved for this application. Use Permissions.Get on the EMM API to retrieve details about these permissions.',
-      }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the product (e.g. "app:com.google.android.gm") for which new permissions were added. This field will always be present.',
-      }),
-    requestedPermissions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The set of permissions that the app is currently requesting. Use Permissions.Get on the EMM API to retrieve details about these permissions.',
-      }),
-  })
-  .openapi({
-    description: 'An event generated when new permissions are added to an app.',
-    required: [],
-  })
-  .openapi('NewPermissionsEvent')
-
-const ProductApprovalEventSchema = z
-  .object({
-    approved: z
-      .enum(['unknown', 'approved', 'unapproved'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the product was approved or unapproved. This field will always be present.',
-      }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the product (e.g. "app:com.google.android.gm") for which the approval status has changed. This field will always be present.',
-      }),
-  })
-  .openapi({
-    description: "An event generated when a product's approval status is changed.",
-    required: [],
-  })
-  .openapi('ProductApprovalEvent')
-
-const ProductAvailabilityChangeEventSchema = z
-  .object({
-    availabilityStatus: z
-      .enum(['unknown', 'available', 'removed', 'unpublished'])
-      .exactOptional()
-      .openapi({ description: 'The new state of the product. This field will always be present.' }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the product (e.g. "app:com.google.android.gm") for which the product availability changed. This field will always be present.',
-      }),
-  })
-  .openapi({
-    description: "An event generated whenever a product's availability changes.",
-    required: [],
-  })
-  .openapi('ProductAvailabilityChangeEvent')
-
-const NotificationSchema = z
-  .object({
-    appRestrictionsSchemaChangeEvent:
-      AppRestrictionsSchemaChangeEventSchema.exactOptional().openapi({
-        description: 'Notifications about new app restrictions schema changes.',
-      }),
-    appUpdateEvent: AppUpdateEventSchema.exactOptional().openapi({
-      description: 'Notifications about app updates.',
-    }),
-    deviceReportUpdateEvent: DeviceReportUpdateEventSchema.exactOptional().openapi({
-      description: 'Notifications about device report updates.',
-    }),
-    enterpriseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the enterprise for which the notification is sent. This will always be present.',
-      }),
-    installFailureEvent: InstallFailureEventSchema.exactOptional().openapi({
-      description: 'Notifications about an app installation failure.',
-    }),
-    newDeviceEvent: NewDeviceEventSchema.exactOptional().openapi({
-      description: 'Notifications about new devices.',
-    }),
-    newPermissionsEvent: NewPermissionsEventSchema.exactOptional().openapi({
-      description: 'Notifications about new app permissions.',
-    }),
-    notificationType: z
-      .enum([
-        'unknown',
-        'testNotification',
-        'productApproval',
-        'installFailure',
-        'appUpdate',
-        'newPermissions',
-        'appRestricionsSchemaChange',
-        'productAvailabilityChange',
-        'newDevice',
-        'deviceReportUpdate',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Type of the notification.' }),
-    productApprovalEvent: ProductApprovalEventSchema.exactOptional().openapi({
-      description: "Notifications about changes to a product's approval status.",
-    }),
-    productAvailabilityChangeEvent: ProductAvailabilityChangeEventSchema.exactOptional().openapi({
-      description: 'Notifications about product availability changes.',
-    }),
-    timestampMillis: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the notification was published in milliseconds since 1970-01-01T00:00:00Z. This will always be present.',
-      }),
-  })
-  .openapi({ description: 'A notification of one event relating to an enterprise.', required: [] })
-  .openapi('Notification')
-
-const NotificationSetSchema = z
+const NotificationSetSchema: z.ZodType<NotificationSetType> = z
   .object({
     notification: z
       .array(NotificationSchema)
@@ -1489,34 +1744,6 @@ const NotificationSetSchema = z
   })
   .openapi('NotificationSet')
 
-const PageInfoSchema = z
-  .object({
-    resultPerPage: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum number of results returned in one page. ! The number of results included in the API response.',
-      }),
-    startIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Index of the first result returned in the current page.' }),
-    totalResults: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total number of results available on the backend ! The total number of results in the result set.',
-      }),
-  })
-  .openapi({
-    description:
-      'Information about the current page. List operations that supports paging return only one "page" of results. This protocol buffer message describes the page that has been returned.',
-    required: [],
-  })
-  .openapi('PageInfo')
-
 const PermissionSchema = z
   .object({
     description: z
@@ -1538,188 +1765,6 @@ const PermissionSchema = z
     required: [],
   })
   .openapi('Permission')
-
-const TrackInfoSchema = z
-  .object({
-    trackAlias: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A modifiable name for a track. This is the visible name in the play developer console.',
-      }),
-    trackId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unmodifiable, unique track identifier. This identifier is the releaseTrackId in the url of the play developer console page that displays the track information.',
-      }),
-  })
-  .openapi({ description: 'Id to name association of a track.', required: [] })
-  .openapi('TrackInfo')
-
-const ProductPermissionSchema = z
-  .object({
-    permissionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'An opaque string uniquely identifying the permission.' }),
-    state: z
-      .enum(['required', 'accepted'])
-      .exactOptional()
-      .openapi({ description: 'Whether the permission has been accepted or not.' }),
-  })
-  .openapi({
-    description:
-      'A product permissions resource represents the set of permissions required by a specific app and whether or not they have been accepted by an enterprise admin. The API can be used to read the set of permissions, and also to update the set to indicate that permissions have been accepted.',
-    required: [],
-  })
-  .openapi('ProductPermission')
-
-const ProductSigningCertificateSchema = z
-  .object({
-    certificateHashSha1: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The base64 urlsafe encoded SHA1 hash of the certificate. (This field is deprecated in favor of SHA2-256. It should not be used and may be removed at any time.)',
-      }),
-    certificateHashSha256: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The base64 urlsafe encoded SHA2-256 hash of the certificate.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductSigningCertificate')
-
-const ProductSchema = z
-  .object({
-    appRestrictionsSchema: AppRestrictionsSchemaSchema.exactOptional().openapi({
-      description: 'The app restriction schema',
-    }),
-    appTracks: z
-      .array(TrackInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'The tracks visible to the enterprise.' }),
-    appVersion: z
-      .array(AppVersionSchema)
-      .exactOptional()
-      .openapi({ description: 'App versions currently available for this product.' }),
-    authorName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the author of the product (for example, the app developer).',
-      }),
-    availableCountries: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The countries which this app is available in.' }),
-    availableTracks: z
-      .array(z.enum(['appTrackUnspecified', 'production', 'beta', 'alpha']))
-      .exactOptional()
-      .openapi({ description: 'Deprecated, use appTracks instead.' }),
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The app category (e.g. RACING, SOCIAL, etc.)' }),
-    contentRating: z
-      .enum(['ratingUnknown', 'all', 'preTeen', 'teen', 'mature'])
-      .exactOptional()
-      .openapi({ description: 'The content rating for this app.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The localized promotional description, if available.' }),
-    detailsUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A link to the (consumer) Google Play details page for the product.',
-      }),
-    distributionChannel: z
-      .enum(['publicGoogleHosted', 'privateGoogleHosted', 'privateSelfHosted'])
-      .exactOptional()
-      .openapi({
-        description:
-          'How and to whom the package is made available. The value publicGoogleHosted means that the package is available through the Play store and not restricted to a specific enterprise. The value privateGoogleHosted means that the package is a private app (restricted to an enterprise) but hosted by Google. The value privateSelfHosted means that the package is a private app (restricted to an enterprise) and is privately hosted.',
-      }),
-    features: z
-      .array(z.enum(['featureUnknown', 'vpnApp']))
-      .exactOptional()
-      .openapi({ description: 'Noteworthy features (if any) of this product.' }),
-    iconUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A link to an image that can be used as an icon for the product. This image is suitable for use at up to 512px x 512px.',
-      }),
-    lastUpdatedTimestampMillis: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The approximate time (within 7 days) the app was last published, expressed in milliseconds since epoch.',
-      }),
-    minAndroidSdkVersion: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The minimum Android SDK necessary to run the app.' }),
-    permissions: z
-      .array(ProductPermissionSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of permissions required by the app.' }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string of the form *app:<package name>*. For example, app:com.google.android.gm represents the Gmail app.',
-      }),
-    productPricing: z
-      .enum(['unknown', 'free', 'freeWithInAppPurchase', 'paid'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether this product is free, free with in-app purchases, or paid. If the pricing is unknown, this means the product is not generally available anymore (even though it might still be available to people who own it).',
-      }),
-    recentChanges: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A description of the recent changes made to the app.' }),
-    requiresContainerApp: z.boolean().exactOptional().openapi({ description: 'Deprecated.' }),
-    screenshotUrls: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of screenshot links representing the app.' }),
-    signingCertificate: ProductSigningCertificateSchema.exactOptional().openapi({
-      description: 'The certificate used to sign this product.',
-    }),
-    smallIconUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A link to a smaller image that can be used as an icon for the product. This image is suitable for use at up to 128px x 128px.',
-      }),
-    title: z.string().exactOptional().openapi({ description: 'The name of the product.' }),
-    workDetailsUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A link to the managed Google Play details page for the product, for use by an Enterprise admin.',
-      }),
-  })
-  .openapi({
-    description:
-      'A Products resource represents an app in the Google Play store that is available to at least some users in the enterprise. (Some apps are restricted to a single enterprise, and no information about them is made available outside that enterprise.) The information provided for each product (localized name, icon, link to the full Google Play details page) is intended to allow a basic representation of the product within an EMM user interface.',
-    required: [],
-  })
-  .openapi('Product')
 
 const ProductPermissionsSchema = z
   .object({
@@ -1820,25 +1865,7 @@ const ProductsGenerateApprovalUrlResponseSchema = z
   .openapi({ required: [] })
   .openapi('ProductsGenerateApprovalUrlResponse')
 
-const TokenPaginationSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Tokens to pass to the standard list field 'page_token'. Whenever available, tokens are preferred over manipulating start_index.",
-      }),
-    previousPageToken: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'Pagination information returned by a List operation when token pagination is enabled. List operations that supports paging return only one "page" of results. This protocol buffer message describes the page that has been returned. When using token pagination, clients should use the next/previous token to get another page of the result. The presence or absence of next/previous token indicates whether a next/previous page is available and provides a mean of accessing this page. ListRequest.page_token should be set to either next_page_token or previous_page_token to access another page.',
-    required: [],
-  })
-  .openapi('TokenPagination')
-
-const ProductsListResponseSchema = z
+const ProductsListResponseSchema: z.ZodType<ProductsListResponseType> = z
   .object({
     pageInfo: PageInfoSchema.exactOptional().openapi({
       description: 'General pagination information.',

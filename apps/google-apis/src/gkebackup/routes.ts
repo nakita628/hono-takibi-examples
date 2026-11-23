@@ -1,5 +1,400 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const GroupKindSchema = z
+  .object({
+    resourceGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group',
+      }),
+    resourceKind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind of a Kubernetes resource, e.g. "CustomResourceDefinition", "StorageClass", etc.',
+      }),
+  })
+  .openapi({
+    description:
+      'This is a direct map to the Kubernetes GroupKind type [GroupKind](https://godoc.org/k8s.io/apimachinery/pkg/runtime/schema#GroupKind) and is used for identifying specific "types" of resources to restore.',
+    required: [],
+  })
+  .openapi('GroupKind')
+
+const ClusterResourceRestoreScopeSchema = z
+  .object({
+    selectedGroupKinds: z
+      .array(GroupKindSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of cluster-scoped resource group kinds to restore from the backup. If specified, only the selected resources will be restored. Mutually exclusive to any other field in the message.',
+      }),
+  })
+  .openapi({
+    description:
+      'Defines the scope of cluster-scoped resources to restore. Some group kinds are not reasonable choices for a restore, and will cause an error if selected here. Any scope selection that would restore "all valid" resources automatically excludes these group kinds. - gkebackup.gke.io/BackupJob - gkebackup.gke.io/RestoreJob - metrics.k8s.io/NodeMetrics - migration.k8s.io/StorageState - migration.k8s.io/StorageVersionMigration - Node - snapshot.storage.k8s.io/VolumeSnapshotContent - storage.k8s.io/CSINode Some group kinds are driven by restore configuration elsewhere, and will cause an error if selected here. - Namespace - PersistentVolume',
+    required: [],
+  })
+  .openapi('ClusterResourceRestoreScope')
+
+const NamespacedNameSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the Kubernetes resource.' }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Namespace of the Kubernetes resource.' }),
+  })
+  .openapi({ description: 'A reference to a namespaced resource in Kubernetes.', required: [] })
+  .openapi('NamespacedName')
+
+const NamespacedNamesSchema = z
+  .object({
+    namespacedNames: z
+      .array(NamespacedNameSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of namespaced Kubernetes resources.' }),
+  })
+  .openapi({ description: 'A list of namespaced Kubernetes resources.', required: [] })
+  .openapi('NamespacedNames')
+
+const NamespacesSchema = z
+  .object({
+    namespaces: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of Kubernetes Namespaces' }),
+  })
+  .openapi({ description: 'A list of Kubernetes Namespaces', required: [] })
+  .openapi('Namespaces')
+
+const SubstitutionRuleSchema = z
+  .object({
+    newValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the new value to set for any fields that pass the filtering and selection criteria. To remove a value from a Kubernetes resource, either leave this field unspecified, or set it to the empty string ("").',
+      }),
+    originalValuePattern: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '(Filtering parameter) This is a [regular expression] (https://en.wikipedia.org/wiki/Regular_expression) that is compared against the fields matched by the target_json_path expression (and must also have passed the previous filters). Substitution will not be performed against fields whose value does not match this expression. If this field is NOT specified, then ALL fields matched by the target_json_path expression will undergo substitution. Note that an empty (e.g., "", rather than unspecified) value for this field will only match empty fields.',
+      }),
+    targetGroupKinds: z
+      .array(GroupKindSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          '(Filtering parameter) Any resource subject to substitution must belong to one of the listed "types". If this field is not provided, no type filtering will be performed (all resources of all types matching previous filtering parameters will be candidates for substitution).',
+      }),
+    targetJsonPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. This is a [JSONPath] (https://kubernetes.io/docs/reference/kubectl/jsonpath/) expression that matches specific fields of candidate resources and it operates as both a filtering parameter (resources that are not matched with this expression will not be candidates for substitution) as well as a field identifier (identifies exactly which fields out of the candidate resources will be modified).',
+      }),
+    targetNamespaces: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          '(Filtering parameter) Any resource subject to substitution must be contained within one of the listed Kubernetes Namespace in the Backup. If this field is not provided, no namespace filtering will be performed (all resources in all Namespaces, including all cluster-scoped resources, will be candidates for substitution). To mix cluster-scoped and namespaced resources in the same rule, use an empty string ("") as one of the target namespaces.',
+      }),
+  })
+  .openapi({
+    description:
+      'A transformation rule to be applied against Kubernetes resources as they are selected for restoration from a Backup. A rule contains both filtering logic (which resources are subject to substitution) and substitution logic.',
+    required: [],
+  })
+  .openapi('SubstitutionRule')
+
+const RestoreConfigSchema = z
+  .object({
+    allNamespaces: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restore all namespaced resources in the Backup if set to "True". Specifying this field to "False" is an error.',
+      }),
+    clusterResourceConflictPolicy: z
+      .enum([
+        'CLUSTER_RESOURCE_CONFLICT_POLICY_UNSPECIFIED',
+        'USE_EXISTING_VERSION',
+        'USE_BACKUP_VERSION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the behavior for handling the situation where cluster-scoped resources being restored already exist in the target cluster. This MUST be set to a value other than CLUSTER_RESOURCE_CONFLICT_POLICY_UNSPECIFIED if cluster_resource_restore_scope is not empty.',
+      }),
+    clusterResourceRestoreScope: ClusterResourceRestoreScopeSchema.exactOptional().openapi({
+      description:
+        'Identifies the cluster-scoped resources to restore from the Backup. Not specifying it means NO cluster resource will be restored.',
+    }),
+    namespacedResourceRestoreMode: z
+      .enum([
+        'NAMESPACED_RESOURCE_RESTORE_MODE_UNSPECIFIED',
+        'DELETE_AND_RESTORE',
+        'FAIL_ON_CONFLICT',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the behavior for handling the situation where sets of namespaced resources being restored already exist in the target cluster. This MUST be set to a value other than NAMESPACED_RESOURCE_RESTORE_MODE_UNSPECIFIED.',
+      }),
+    selectedApplications: NamespacedNamesSchema.exactOptional().openapi({
+      description:
+        'A list of selected ProtectedApplications to restore. The listed ProtectedApplications and all the resources to which they refer will be restored.',
+    }),
+    selectedNamespaces: NamespacesSchema.exactOptional().openapi({
+      description:
+        'A list of selected Namespaces to restore from the Backup. The listed Namespaces and all resources contained in them will be restored.',
+    }),
+    substitutionRules: z
+      .array(SubstitutionRuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of transformation rules to be applied against Kubernetes resources as they are selected for restoration from a Backup. Rules are executed in order defined - this order matters, as changes made by a rule may impact the filtering logic of subsequent rules. An empty list means no substitution will occur.',
+      }),
+    volumeDataRestorePolicy: z
+      .enum([
+        'VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED',
+        'RESTORE_VOLUME_DATA_FROM_BACKUP',
+        'REUSE_VOLUME_HANDLE_FROM_BACKUP',
+        'NO_VOLUME_DATA_RESTORATION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the mechanism to be used to restore volume data. Default: VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED (will be treated as NO_VOLUME_DATA_RESTORATION).',
+      }),
+  })
+  .openapi({ description: 'Configuration of a restore. Next id: 12', required: [] })
+  .openapi('RestoreConfig')
+
+const RestorePlanSchema = z
+  .object({
+    backupPlan: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. A reference to the BackupPlan from which Backups may be used as the source for Restores created via this RestorePlan. Format: `projects/*/locations/*/backupPlans/*`.',
+      }),
+    cluster: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. Immutable. The target cluster into which Restores created via this RestorePlan will restore data. NOTE: the cluster's region must be the same as the RestorePlan. Valid formats: - `projects/*/locations/*/clusters/*` - `projects/*/zones/*/clusters/*`",
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when this RestorePlan resource was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User specified descriptive string for this RestorePlan.' }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. `etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a restore from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform restore updates in order to avoid race conditions: An `etag` is returned in the response to `GetRestorePlan`, and systems are expected to put that etag in the request to `UpdateRestorePlan` or `DeleteRestorePlan` to ensure that their change will be applied to the same version of the resource.',
+        readOnly: true,
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'A set of custom labels supplied by user.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The full name of the RestorePlan resource. Format: `projects/*/locations/*/restorePlans/*`.',
+        readOnly: true,
+      }),
+    restoreConfig: RestoreConfigSchema.exactOptional().openapi({
+      description: 'Required. Configuration of Restores created via this RestorePlan.',
+    }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Server generated global unique identifier of [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) format.',
+        readOnly: true,
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when this RestorePlan resource was last updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'The configuration of a potential series of Restore operations to be performed against Backups belong to a particular BackupPlan. Next id: 13',
+    required: [],
+  })
+  .openapi('RestorePlan')
+
+type ListRestorePlansResponseType = {
+  nextPageToken?: string
+  restorePlans?: z.infer<typeof RestorePlanSchema>[]
+  unreachable?: string[]
+}
+
+const RestoreSchema = z
+  .object({
+    backup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. Immutable. A reference to the Backup used as the source from which this Restore will restore. Note that this Backup must be a sub-resource of the RestorePlan's backup_plan. Format: `projects/*/locations/*/backupPlans/*/backups/*`.",
+      }),
+    cluster: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The target cluster into which this Restore will restore data. Valid formats: - `projects/*/locations/*/clusters/*` - `projects/*/zones/*/clusters/*` Inherited from parent RestorePlan's cluster value.",
+        readOnly: true,
+      }),
+    completeTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp of when the restore operation completed.',
+        readOnly: true,
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when this Restore resource was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User specified descriptive string for this Restore.' }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. `etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a restore from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform restore updates in order to avoid race conditions: An `etag` is returned in the response to `GetRestore`, and systems are expected to put that etag in the request to `UpdateRestore` or `DeleteRestore` to ensure that their change will be applied to the same version of the resource.',
+        readOnly: true,
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'A set of custom labels supplied by user.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The full name of the Restore resource. Format: `projects/*/locations/*/restorePlans/*/restores/*`',
+        readOnly: true,
+      }),
+    resourcesExcludedCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of resources excluded during the restore execution.',
+        readOnly: true,
+      }),
+    resourcesFailedCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Number of resources that failed to be restored during the restore execution.',
+        readOnly: true,
+      }),
+    resourcesRestoredCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of resources restored during the restore execution.',
+        readOnly: true,
+      }),
+    restoreConfig: RestoreConfigSchema.exactOptional().openapi({
+      description:
+        "Output only. Configuration of the Restore. Inherited from parent RestorePlan's restore_config.",
+      readOnly: true,
+    }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATING', 'IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'DELETING'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The current state of the Restore.', readOnly: true }),
+    stateReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Human-readable description of why the Restore is in its current state.',
+        readOnly: true,
+      }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Server generated global unique identifier of [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) format.',
+        readOnly: true,
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when this Restore resource was last updated.',
+        readOnly: true,
+      }),
+    volumesRestoredCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of volumes restored during the restore execution.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Represents both a request to Restore some portion of a Backup into a target GKE cluster and a record of the restore operation itself. Next id: 18',
+    required: [],
+  })
+  .openapi('Restore')
+
+type ListRestoresResponseType = {
+  nextPageToken?: string
+  restores?: z.infer<typeof RestoreSchema>[]
+  unreachable?: string[]
+}
+
 const AuditLogConfigSchema = z
   .object({
     exemptedMembers: z
@@ -84,40 +479,6 @@ const EncryptionKeySchema = z
     required: [],
   })
   .openapi('EncryptionKey')
-
-const NamespacedNameSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the Kubernetes resource.' }),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Namespace of the Kubernetes resource.' }),
-  })
-  .openapi({ description: 'A reference to a namespaced resource in Kubernetes.', required: [] })
-  .openapi('NamespacedName')
-
-const NamespacedNamesSchema = z
-  .object({
-    namespacedNames: z
-      .array(NamespacedNameSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of namespaced Kubernetes resources.' }),
-  })
-  .openapi({ description: 'A list of namespaced Kubernetes resources.', required: [] })
-  .openapi('NamespacedNames')
-
-const NamespacesSchema = z
-  .object({
-    namespaces: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of Kubernetes Namespaces' }),
-  })
-  .openapi({ description: 'A list of Kubernetes Namespaces', required: [] })
-  .openapi('Namespaces')
 
 const BackupSchema = z
   .object({
@@ -548,49 +909,8 @@ const BindingSchema = z
   .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
   .openapi('Binding')
 
-const GroupKindSchema = z
-  .object({
-    resourceGroup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group',
-      }),
-    resourceKind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind of a Kubernetes resource, e.g. "CustomResourceDefinition", "StorageClass", etc.',
-      }),
-  })
-  .openapi({
-    description:
-      'This is a direct map to the Kubernetes GroupKind type [GroupKind](https://godoc.org/k8s.io/apimachinery/pkg/runtime/schema#GroupKind) and is used for identifying specific "types" of resources to restore.',
-    required: [],
-  })
-  .openapi('GroupKind')
-
-const ClusterResourceRestoreScopeSchema = z
-  .object({
-    selectedGroupKinds: z
-      .array(GroupKindSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of cluster-scoped resource group kinds to restore from the backup. If specified, only the selected resources will be restored. Mutually exclusive to any other field in the message.',
-      }),
-  })
-  .openapi({
-    description:
-      'Defines the scope of cluster-scoped resources to restore. Some group kinds are not reasonable choices for a restore, and will cause an error if selected here. Any scope selection that would restore "all valid" resources automatically excludes these group kinds. - gkebackup.gke.io/BackupJob - gkebackup.gke.io/RestoreJob - metrics.k8s.io/NodeMetrics - migration.k8s.io/StorageState - migration.k8s.io/StorageVersionMigration - Node - snapshot.storage.k8s.io/VolumeSnapshotContent - storage.k8s.io/CSINode Some group kinds are driven by restore configuration elsewhere, and will cause an error if selected here. - Namespace - PersistentVolume',
-    required: [],
-  })
-  .openapi('ClusterResourceRestoreScope')
-
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -598,7 +918,7 @@ const EmptySchema = z
   .openapi('Empty')
 
 const GoogleLongrunningCancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('GoogleLongrunningCancelOperationRequest')
 
@@ -814,191 +1134,7 @@ const ListLocationsResponseSchema = z
   .openapi({ description: 'The response message for Locations.ListLocations.', required: [] })
   .openapi('ListLocationsResponse')
 
-const SubstitutionRuleSchema = z
-  .object({
-    newValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is the new value to set for any fields that pass the filtering and selection criteria. To remove a value from a Kubernetes resource, either leave this field unspecified, or set it to the empty string ("").',
-      }),
-    originalValuePattern: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '(Filtering parameter) This is a [regular expression] (https://en.wikipedia.org/wiki/Regular_expression) that is compared against the fields matched by the target_json_path expression (and must also have passed the previous filters). Substitution will not be performed against fields whose value does not match this expression. If this field is NOT specified, then ALL fields matched by the target_json_path expression will undergo substitution. Note that an empty (e.g., "", rather than unspecified) value for this field will only match empty fields.',
-      }),
-    targetGroupKinds: z
-      .array(GroupKindSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          '(Filtering parameter) Any resource subject to substitution must belong to one of the listed "types". If this field is not provided, no type filtering will be performed (all resources of all types matching previous filtering parameters will be candidates for substitution).',
-      }),
-    targetJsonPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. This is a [JSONPath] (https://kubernetes.io/docs/reference/kubectl/jsonpath/) expression that matches specific fields of candidate resources and it operates as both a filtering parameter (resources that are not matched with this expression will not be candidates for substitution) as well as a field identifier (identifies exactly which fields out of the candidate resources will be modified).',
-      }),
-    targetNamespaces: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          '(Filtering parameter) Any resource subject to substitution must be contained within one of the listed Kubernetes Namespace in the Backup. If this field is not provided, no namespace filtering will be performed (all resources in all Namespaces, including all cluster-scoped resources, will be candidates for substitution). To mix cluster-scoped and namespaced resources in the same rule, use an empty string ("") as one of the target namespaces.',
-      }),
-  })
-  .openapi({
-    description:
-      'A transformation rule to be applied against Kubernetes resources as they are selected for restoration from a Backup. A rule contains both filtering logic (which resources are subject to substitution) and substitution logic.',
-    required: [],
-  })
-  .openapi('SubstitutionRule')
-
-const RestoreConfigSchema = z
-  .object({
-    allNamespaces: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Restore all namespaced resources in the Backup if set to "True". Specifying this field to "False" is an error.',
-      }),
-    clusterResourceConflictPolicy: z
-      .enum([
-        'CLUSTER_RESOURCE_CONFLICT_POLICY_UNSPECIFIED',
-        'USE_EXISTING_VERSION',
-        'USE_BACKUP_VERSION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the behavior for handling the situation where cluster-scoped resources being restored already exist in the target cluster. This MUST be set to a value other than CLUSTER_RESOURCE_CONFLICT_POLICY_UNSPECIFIED if cluster_resource_restore_scope is not empty.',
-      }),
-    clusterResourceRestoreScope: ClusterResourceRestoreScopeSchema.exactOptional().openapi({
-      description:
-        'Identifies the cluster-scoped resources to restore from the Backup. Not specifying it means NO cluster resource will be restored.',
-    }),
-    namespacedResourceRestoreMode: z
-      .enum([
-        'NAMESPACED_RESOURCE_RESTORE_MODE_UNSPECIFIED',
-        'DELETE_AND_RESTORE',
-        'FAIL_ON_CONFLICT',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the behavior for handling the situation where sets of namespaced resources being restored already exist in the target cluster. This MUST be set to a value other than NAMESPACED_RESOURCE_RESTORE_MODE_UNSPECIFIED.',
-      }),
-    selectedApplications: NamespacedNamesSchema.exactOptional().openapi({
-      description:
-        'A list of selected ProtectedApplications to restore. The listed ProtectedApplications and all the resources to which they refer will be restored.',
-    }),
-    selectedNamespaces: NamespacesSchema.exactOptional().openapi({
-      description:
-        'A list of selected Namespaces to restore from the Backup. The listed Namespaces and all resources contained in them will be restored.',
-    }),
-    substitutionRules: z
-      .array(SubstitutionRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of transformation rules to be applied against Kubernetes resources as they are selected for restoration from a Backup. Rules are executed in order defined - this order matters, as changes made by a rule may impact the filtering logic of subsequent rules. An empty list means no substitution will occur.',
-      }),
-    volumeDataRestorePolicy: z
-      .enum([
-        'VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED',
-        'RESTORE_VOLUME_DATA_FROM_BACKUP',
-        'REUSE_VOLUME_HANDLE_FROM_BACKUP',
-        'NO_VOLUME_DATA_RESTORATION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the mechanism to be used to restore volume data. Default: VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED (will be treated as NO_VOLUME_DATA_RESTORATION).',
-      }),
-  })
-  .openapi({ description: 'Configuration of a restore. Next id: 12', required: [] })
-  .openapi('RestoreConfig')
-
-const RestorePlanSchema = z
-  .object({
-    backupPlan: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. A reference to the BackupPlan from which Backups may be used as the source for Restores created via this RestorePlan. Format: `projects/*/locations/*/backupPlans/*`.',
-      }),
-    cluster: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. Immutable. The target cluster into which Restores created via this RestorePlan will restore data. NOTE: the cluster's region must be the same as the RestorePlan. Valid formats: - `projects/*/locations/*/clusters/*` - `projects/*/zones/*/clusters/*`",
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when this RestorePlan resource was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User specified descriptive string for this RestorePlan.' }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. `etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a restore from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform restore updates in order to avoid race conditions: An `etag` is returned in the response to `GetRestorePlan`, and systems are expected to put that etag in the request to `UpdateRestorePlan` or `DeleteRestorePlan` to ensure that their change will be applied to the same version of the resource.',
-        readOnly: true,
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'A set of custom labels supplied by user.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The full name of the RestorePlan resource. Format: `projects/*/locations/*/restorePlans/*`.',
-        readOnly: true,
-      }),
-    restoreConfig: RestoreConfigSchema.exactOptional().openapi({
-      description: 'Required. Configuration of Restores created via this RestorePlan.',
-    }),
-    uid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Server generated global unique identifier of [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) format.',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when this RestorePlan resource was last updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'The configuration of a potential series of Restore operations to be performed against Backups belong to a particular BackupPlan. Next id: 13',
-    required: [],
-  })
-  .openapi('RestorePlan')
-
-const ListRestorePlansResponseSchema = z
+const ListRestorePlansResponseSchema: z.ZodType<ListRestorePlansResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1019,131 +1155,7 @@ const ListRestorePlansResponseSchema = z
   .openapi({ description: 'Response message for ListRestorePlans.', required: [] })
   .openapi('ListRestorePlansResponse')
 
-const RestoreSchema = z
-  .object({
-    backup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. Immutable. A reference to the Backup used as the source from which this Restore will restore. Note that this Backup must be a sub-resource of the RestorePlan's backup_plan. Format: `projects/*/locations/*/backupPlans/*/backups/*`.",
-      }),
-    cluster: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The target cluster into which this Restore will restore data. Valid formats: - `projects/*/locations/*/clusters/*` - `projects/*/zones/*/clusters/*` Inherited from parent RestorePlan's cluster value.",
-        readOnly: true,
-      }),
-    completeTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp of when the restore operation completed.',
-        readOnly: true,
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when this Restore resource was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User specified descriptive string for this Restore.' }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. `etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a restore from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform restore updates in order to avoid race conditions: An `etag` is returned in the response to `GetRestore`, and systems are expected to put that etag in the request to `UpdateRestore` or `DeleteRestore` to ensure that their change will be applied to the same version of the resource.',
-        readOnly: true,
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'A set of custom labels supplied by user.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The full name of the Restore resource. Format: `projects/*/locations/*/restorePlans/*/restores/*`',
-        readOnly: true,
-      }),
-    resourcesExcludedCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Number of resources excluded during the restore execution.',
-        readOnly: true,
-      }),
-    resourcesFailedCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Number of resources that failed to be restored during the restore execution.',
-        readOnly: true,
-      }),
-    resourcesRestoredCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Number of resources restored during the restore execution.',
-        readOnly: true,
-      }),
-    restoreConfig: RestoreConfigSchema.exactOptional().openapi({
-      description:
-        "Output only. Configuration of the Restore. Inherited from parent RestorePlan's restore_config.",
-      readOnly: true,
-    }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATING', 'IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'DELETING'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The current state of the Restore.', readOnly: true }),
-    stateReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Human-readable description of why the Restore is in its current state.',
-        readOnly: true,
-      }),
-    uid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Server generated global unique identifier of [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) format.',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when this Restore resource was last updated.',
-        readOnly: true,
-      }),
-    volumesRestoredCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Number of volumes restored during the restore execution.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Represents both a request to Restore some portion of a Backup into a target GKE cluster and a record of the restore operation itself. Next id: 18',
-    required: [],
-  })
-  .openapi('Restore')
-
-const ListRestoresResponseSchema = z
+const ListRestoresResponseSchema: z.ZodType<ListRestoresResponseType> = z
   .object({
     nextPageToken: z
       .string()

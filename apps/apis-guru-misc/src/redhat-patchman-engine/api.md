@@ -10,7 +10,7 @@ Base URLs:
 
 * <a href="http://redhat.local">http://redhat.local</a>
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 License: <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a>
 

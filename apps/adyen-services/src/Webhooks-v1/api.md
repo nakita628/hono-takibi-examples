@@ -3763,6 +3763,13 @@ BasicAuth
   "paypalPhone": "string",
   "paypalProtectionEligibility": "string",
   "paypalRisk": "string",
+  "pix.endToEndId": "string",
+  "pix.originalAmountCurrency": "string",
+  "pix.originalAmountValue": "string",
+  "pix.payer.bankName": "string",
+  "pix.payer.isbp": "string",
+  "pix.payer.name": "string",
+  "pix.payer.taxId": "string",
   "platform": "string",
   "realtimeAccountUpdaterStatus": "string",
   "receipt.retrievalReferenceNumber": "string",
@@ -3982,6 +3989,13 @@ BasicAuth
 |paypalPhone|string|false|none|Related to PayPal.|
 |paypalProtectionEligibility|string|false|none|The eligibility for PayPal Seller Protection for this payment.<br><br>Example: Ineligible|
 |paypalRisk|string|false|none|Related to PayPal.|
+|pix.endToEndId|string|false|none|The unique end-to-end identifier of the Pix transaction.|
+|pix.originalAmountCurrency|string|false|none|The three-character ISO currency code of the original Pix transaction amount.|
+|pix.originalAmountValue|string|false|none|The original amount of the Pix transaction, in minor units.|
+|pix.payer.bankName|string|false|none|The name of the Pix payer's bank.|
+|pix.payer.isbp|string|false|none|The ISPB (Identificador do Sistema de Pagamentos Brasileiro) code of the Pix payer's bank.|
+|pix.payer.name|string|false|none|The full name of the Pix payer.|
+|pix.payer.taxId|string|false|none|The tax identification number (CPF or CNPJ) of the Pix payer.|
 |platform|string|false|none|none|
 |realtimeAccountUpdaterStatus|string|false|none|Real time Account Update status.|
 |receipt.retrievalReferenceNumber|string|false|none|none|
@@ -4225,6 +4239,13 @@ BasicAuth
           "paypalPhone": "string",
           "paypalProtectionEligibility": "string",
           "paypalRisk": "string",
+          "pix.endToEndId": "string",
+          "pix.originalAmountCurrency": "string",
+          "pix.originalAmountValue": "string",
+          "pix.payer.bankName": "string",
+          "pix.payer.isbp": "string",
+          "pix.payer.name": "string",
+          "pix.payer.taxId": "string",
           "platform": "string",
           "realtimeAccountUpdaterStatus": "string",
           "receipt.retrievalReferenceNumber": "string",
@@ -4479,6 +4500,13 @@ BasicAuth
     "paypalPhone": "string",
     "paypalProtectionEligibility": "string",
     "paypalRisk": "string",
+    "pix.endToEndId": "string",
+    "pix.originalAmountCurrency": "string",
+    "pix.originalAmountValue": "string",
+    "pix.payer.bankName": "string",
+    "pix.payer.isbp": "string",
+    "pix.payer.name": "string",
+    "pix.payer.taxId": "string",
     "platform": "string",
     "realtimeAccountUpdaterStatus": "string",
     "receipt.retrievalReferenceNumber": "string",
@@ -4748,6 +4776,13 @@ BasicAuth
     "paypalPhone": "string",
     "paypalProtectionEligibility": "string",
     "paypalRisk": "string",
+    "pix.endToEndId": "string",
+    "pix.originalAmountCurrency": "string",
+    "pix.originalAmountValue": "string",
+    "pix.payer.bankName": "string",
+    "pix.payer.isbp": "string",
+    "pix.payer.name": "string",
+    "pix.payer.taxId": "string",
     "platform": "string",
     "realtimeAccountUpdaterStatus": "string",
     "receipt.retrievalReferenceNumber": "string",
@@ -5018,6 +5053,13 @@ BasicAuth
       "paypalPhone": "string",
       "paypalProtectionEligibility": "string",
       "paypalRisk": "string",
+      "pix.endToEndId": "string",
+      "pix.originalAmountCurrency": "string",
+      "pix.originalAmountValue": "string",
+      "pix.payer.bankName": "string",
+      "pix.payer.isbp": "string",
+      "pix.payer.name": "string",
+      "pix.payer.taxId": "string",
       "platform": "string",
       "realtimeAccountUpdaterStatus": "string",
       "receipt.retrievalReferenceNumber": "string",
@@ -5888,6 +5930,13 @@ BasicAuth
   "merchantOrderReference": "string",
   "paymentLinkId": "string",
   "paymentMethodVariant": "string",
+  "pix.endToEndId": "string",
+  "pix.originalAmountCurrency": "string",
+  "pix.originalAmountValue": "string",
+  "pix.payer.bankName": "string",
+  "pix.payer.isbp": "string",
+  "pix.payer.name": "string",
+  "pix.payer.taxId": "string",
   "riskdata.<name>": "string",
   "shopperCountry": "string",
   "shopperSocialSecurityNumber": "string",
@@ -5958,6 +6007,13 @@ BasicAuth
 |merchantOrderReference|string|false|none|none|
 |paymentLinkId|string|false|none|none|
 |paymentMethodVariant|string|false|none|none|
+|pix.endToEndId|string|false|none|The unique end-to-end identifier of the Pix transaction.|
+|pix.originalAmountCurrency|string|false|none|The three-character ISO currency code of the original Pix transaction amount.|
+|pix.originalAmountValue|string|false|none|The original amount of the Pix transaction, in minor units.|
+|pix.payer.bankName|string|false|none|The name of the Pix payer's bank.|
+|pix.payer.isbp|string|false|none|The ISPB (Identificador do Sistema de Pagamentos Brasileiro) code of the Pix payer's bank.|
+|pix.payer.name|string|false|none|The full name of the Pix payer.|
+|pix.payer.taxId|string|false|none|The tax identification number (CPF or CNPJ) of the Pix payer.|
 |riskdata.<name>|string|false|none|Risk data in a dynamic format.|
 |shopperCountry|string|false|none|none|
 |shopperSocialSecurityNumber|string|false|none|none|
@@ -6046,6 +6102,13 @@ BasicAuth
           "merchantOrderReference": "string",
           "paymentLinkId": "string",
           "paymentMethodVariant": "string",
+          "pix.endToEndId": "string",
+          "pix.originalAmountCurrency": "string",
+          "pix.originalAmountValue": "string",
+          "pix.payer.bankName": "string",
+          "pix.payer.isbp": "string",
+          "pix.payer.name": "string",
+          "pix.payer.taxId": "string",
           "riskdata.<name>": "string",
           "shopperCountry": "string",
           "shopperSocialSecurityNumber": "string",
@@ -6146,6 +6209,13 @@ BasicAuth
     "merchantOrderReference": "string",
     "paymentLinkId": "string",
     "paymentMethodVariant": "string",
+    "pix.endToEndId": "string",
+    "pix.originalAmountCurrency": "string",
+    "pix.originalAmountValue": "string",
+    "pix.payer.bankName": "string",
+    "pix.payer.isbp": "string",
+    "pix.payer.name": "string",
+    "pix.payer.taxId": "string",
     "riskdata.<name>": "string",
     "shopperCountry": "string",
     "shopperSocialSecurityNumber": "string",
@@ -6300,6 +6370,13 @@ BasicAuth
     "merchantOrderReference": "string",
     "paymentLinkId": "string",
     "paymentMethodVariant": "string",
+    "pix.endToEndId": "string",
+    "pix.originalAmountCurrency": "string",
+    "pix.originalAmountValue": "string",
+    "pix.payer.bankName": "string",
+    "pix.payer.isbp": "string",
+    "pix.payer.name": "string",
+    "pix.payer.taxId": "string",
     "riskdata.<name>": "string",
     "shopperCountry": "string",
     "shopperSocialSecurityNumber": "string",
@@ -6455,6 +6532,13 @@ BasicAuth
       "merchantOrderReference": "string",
       "paymentLinkId": "string",
       "paymentMethodVariant": "string",
+      "pix.endToEndId": "string",
+      "pix.originalAmountCurrency": "string",
+      "pix.originalAmountValue": "string",
+      "pix.payer.bankName": "string",
+      "pix.payer.isbp": "string",
+      "pix.payer.name": "string",
+      "pix.payer.taxId": "string",
       "riskdata.<name>": "string",
       "shopperCountry": "string",
       "shopperSocialSecurityNumber": "string",
@@ -11582,13 +11666,10 @@ BasicAuth
   "authorisedAmountValue": "string",
   "avsResult": "string",
   "avsResultRaw": "string",
-  "bankAccountNumber": "string",
   "bankLocation": "string",
   "bankLocationId": "string",
-  "bankName": "string",
   "bankVerificationResult": "string",
   "bankVerificationResultRaw": "string",
-  "bic": "string",
   "billingAddress.city": "string",
   "billingAddress.houseNumberOrName": "string",
   "billingAddress.postalCode": "string",
@@ -11637,7 +11718,6 @@ BasicAuth
   "fundingSource": "string",
   "grossCurrency": "string",
   "grossValue": "string",
-  "iban": "string",
   "installments.value": "string",
   "interactionCounter": "string",
   "issuerComments.cardholderName": "string",
@@ -11662,7 +11742,6 @@ BasicAuth
   "nfc.uid": "string",
   "opi.transToken": "string",
   "ownerCity": "string",
-  "ownerName": "string",
   "payULatamTrazabilityCode": "string",
   "paymentLinkId": "string",
   "realtimeAccountUpdaterStatus": "string",
@@ -11719,13 +11798,10 @@ BasicAuth
 |authorisedAmountValue|string|false|none|The amount authorised for a dynamic zero auth request.|
 |avsResult|string|false|none|Address Verification Service result.|
 |avsResultRaw|string|false|none|Address Verification Service result raw.|
-|bankAccountNumber|string|false|none|The bank account number.|
 |bankLocation|string|false|none|The bank location.|
 |bankLocationId|string|false|none|The bank location ID.|
-|bankName|string|false|none|The bank name.|
 |bankVerificationResult|string|false|none|The bank verification result.|
 |bankVerificationResultRaw|string|false|none|The bank verification result raw.|
-|bic|string|false|none|Business Identifier Code.|
 |billingAddress.city|string|false|none|BillingAddress: county.|
 |billingAddress.houseNumberOrName|string|false|none|BillingAddress: house number or name.|
 |billingAddress.postalCode|string|false|none|BillingAddress: postal code.|
@@ -11774,7 +11850,6 @@ BasicAuth
 |fundingSource|string|false|none|Funding source.|
 |grossCurrency|string|false|none|Chargeback gross currency.|
 |grossValue|string|false|none|Chargeback gross value.|
-|iban|string|false|none|International Bank Account Number.|
 |installments.value|string|false|none|The number of installments that the payment amount should be charged with.<br><br>Example: 5<br>> Only relevant for card payments in countries that support installments.|
 |interactionCounter|string|false|none|3DS interaction counter.|
 |issuerComments.cardholderName|string|false|none|Card holder name.|
@@ -11796,7 +11871,6 @@ BasicAuth
 |nfc.uid|string|false|none|NFC related.|
 |opi.transToken|string|false|none|Trans token related to Oracle Opera.|
 |ownerCity|string|false|none|Owner city.|
-|ownerName|string|false|none|Owner name.|
 |payULatamTrazabilityCode|string|false|none|Related to PayU in LATAM.|
 |paymentLinkId|string|false|none|ID of the Checkout payment link.|
 |realtimeAccountUpdaterStatus|string|false|none|Real time Account Update status.|
@@ -11871,13 +11945,10 @@ BasicAuth
           "authorisedAmountValue": "string",
           "avsResult": "string",
           "avsResultRaw": "string",
-          "bankAccountNumber": "string",
           "bankLocation": "string",
           "bankLocationId": "string",
-          "bankName": "string",
           "bankVerificationResult": "string",
           "bankVerificationResultRaw": "string",
-          "bic": "string",
           "billingAddress.city": "string",
           "billingAddress.houseNumberOrName": "string",
           "billingAddress.postalCode": "string",
@@ -11926,7 +11997,6 @@ BasicAuth
           "fundingSource": "string",
           "grossCurrency": "string",
           "grossValue": "string",
-          "iban": "string",
           "installments.value": "string",
           "interactionCounter": "string",
           "issuerComments.cardholderName": "string",
@@ -11951,7 +12021,6 @@ BasicAuth
           "nfc.uid": "string",
           "opi.transToken": "string",
           "ownerCity": "string",
-          "ownerName": "string",
           "payULatamTrazabilityCode": "string",
           "paymentLinkId": "string",
           "realtimeAccountUpdaterStatus": "string",
@@ -12039,13 +12108,10 @@ BasicAuth
     "authorisedAmountValue": "string",
     "avsResult": "string",
     "avsResultRaw": "string",
-    "bankAccountNumber": "string",
     "bankLocation": "string",
     "bankLocationId": "string",
-    "bankName": "string",
     "bankVerificationResult": "string",
     "bankVerificationResultRaw": "string",
-    "bic": "string",
     "billingAddress.city": "string",
     "billingAddress.houseNumberOrName": "string",
     "billingAddress.postalCode": "string",
@@ -12094,7 +12160,6 @@ BasicAuth
     "fundingSource": "string",
     "grossCurrency": "string",
     "grossValue": "string",
-    "iban": "string",
     "installments.value": "string",
     "interactionCounter": "string",
     "issuerComments.cardholderName": "string",
@@ -12119,7 +12184,6 @@ BasicAuth
     "nfc.uid": "string",
     "opi.transToken": "string",
     "ownerCity": "string",
-    "ownerName": "string",
     "payULatamTrazabilityCode": "string",
     "paymentLinkId": "string",
     "realtimeAccountUpdaterStatus": "string",
@@ -12220,13 +12284,10 @@ BasicAuth
     "authorisedAmountValue": "string",
     "avsResult": "string",
     "avsResultRaw": "string",
-    "bankAccountNumber": "string",
     "bankLocation": "string",
     "bankLocationId": "string",
-    "bankName": "string",
     "bankVerificationResult": "string",
     "bankVerificationResultRaw": "string",
-    "bic": "string",
     "billingAddress.city": "string",
     "billingAddress.houseNumberOrName": "string",
     "billingAddress.postalCode": "string",
@@ -12275,7 +12336,6 @@ BasicAuth
     "fundingSource": "string",
     "grossCurrency": "string",
     "grossValue": "string",
-    "iban": "string",
     "installments.value": "string",
     "interactionCounter": "string",
     "issuerComments.cardholderName": "string",
@@ -12300,7 +12360,6 @@ BasicAuth
     "nfc.uid": "string",
     "opi.transToken": "string",
     "ownerCity": "string",
-    "ownerName": "string",
     "payULatamTrazabilityCode": "string",
     "paymentLinkId": "string",
     "realtimeAccountUpdaterStatus": "string",
@@ -12402,13 +12461,10 @@ BasicAuth
       "authorisedAmountValue": "string",
       "avsResult": "string",
       "avsResultRaw": "string",
-      "bankAccountNumber": "string",
       "bankLocation": "string",
       "bankLocationId": "string",
-      "bankName": "string",
       "bankVerificationResult": "string",
       "bankVerificationResultRaw": "string",
-      "bic": "string",
       "billingAddress.city": "string",
       "billingAddress.houseNumberOrName": "string",
       "billingAddress.postalCode": "string",
@@ -12457,7 +12513,6 @@ BasicAuth
       "fundingSource": "string",
       "grossCurrency": "string",
       "grossValue": "string",
-      "iban": "string",
       "installments.value": "string",
       "interactionCounter": "string",
       "issuerComments.cardholderName": "string",
@@ -12482,7 +12537,6 @@ BasicAuth
       "nfc.uid": "string",
       "opi.transToken": "string",
       "ownerCity": "string",
-      "ownerName": "string",
       "payULatamTrazabilityCode": "string",
       "paymentLinkId": "string",
       "realtimeAccountUpdaterStatus": "string",
@@ -13500,6 +13554,13 @@ BasicAuth
   "networkTxReference": "string",
   "paymentLinkId": "string",
   "paymentMethodVariant": "string",
+  "pix.endToEndId": "string",
+  "pix.originalAmountCurrency": "string",
+  "pix.originalAmountValue": "string",
+  "pix.payer.bankName": "string",
+  "pix.payer.isbp": "string",
+  "pix.payer.name": "string",
+  "pix.payer.taxId": "string",
   "refusalReasonRaw": "string",
   "shopperCountry": "string",
   "shopperIP": "string",
@@ -13558,6 +13619,13 @@ BasicAuth
 |networkTxReference|string|false|none|The network transaction reference from the scheme, when available.|
 |paymentLinkId|string|false|none|none|
 |paymentMethodVariant|string|false|none|none|
+|pix.endToEndId|string|false|none|The unique end-to-end identifier of the Pix transaction.|
+|pix.originalAmountCurrency|string|false|none|The three-character ISO currency code of the original Pix transaction amount.|
+|pix.originalAmountValue|string|false|none|The original amount of the Pix transaction, in minor units.|
+|pix.payer.bankName|string|false|none|The name of the Pix payer's bank.|
+|pix.payer.isbp|string|false|none|The ISPB (Identificador do Sistema de Pagamentos Brasileiro) code of the Pix payer's bank.|
+|pix.payer.name|string|false|none|The full name of the Pix payer.|
+|pix.payer.taxId|string|false|none|The tax identification number (CPF or CNPJ) of the Pix payer.|
 |refusalReasonRaw|string|false|none|none|
 |shopperCountry|string|false|none|none|
 |shopperIP|string|false|none|none|
@@ -13624,6 +13692,13 @@ BasicAuth
           "networkTxReference": "string",
           "paymentLinkId": "string",
           "paymentMethodVariant": "string",
+          "pix.endToEndId": "string",
+          "pix.originalAmountCurrency": "string",
+          "pix.originalAmountValue": "string",
+          "pix.payer.bankName": "string",
+          "pix.payer.isbp": "string",
+          "pix.payer.name": "string",
+          "pix.payer.taxId": "string",
           "refusalReasonRaw": "string",
           "shopperCountry": "string",
           "shopperIP": "string",
@@ -13712,6 +13787,13 @@ BasicAuth
     "networkTxReference": "string",
     "paymentLinkId": "string",
     "paymentMethodVariant": "string",
+    "pix.endToEndId": "string",
+    "pix.originalAmountCurrency": "string",
+    "pix.originalAmountValue": "string",
+    "pix.payer.bankName": "string",
+    "pix.payer.isbp": "string",
+    "pix.payer.name": "string",
+    "pix.payer.taxId": "string",
     "refusalReasonRaw": "string",
     "shopperCountry": "string",
     "shopperIP": "string",
@@ -13854,6 +13936,13 @@ BasicAuth
     "networkTxReference": "string",
     "paymentLinkId": "string",
     "paymentMethodVariant": "string",
+    "pix.endToEndId": "string",
+    "pix.originalAmountCurrency": "string",
+    "pix.originalAmountValue": "string",
+    "pix.payer.bankName": "string",
+    "pix.payer.isbp": "string",
+    "pix.payer.name": "string",
+    "pix.payer.taxId": "string",
     "refusalReasonRaw": "string",
     "shopperCountry": "string",
     "shopperIP": "string",
@@ -13997,6 +14086,13 @@ BasicAuth
       "networkTxReference": "string",
       "paymentLinkId": "string",
       "paymentMethodVariant": "string",
+      "pix.endToEndId": "string",
+      "pix.originalAmountCurrency": "string",
+      "pix.originalAmountValue": "string",
+      "pix.payer.bankName": "string",
+      "pix.payer.isbp": "string",
+      "pix.payer.name": "string",
+      "pix.payer.taxId": "string",
       "refusalReasonRaw": "string",
       "shopperCountry": "string",
       "shopperIP": "string",

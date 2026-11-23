@@ -1,48 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AnomalyNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9]*/)
-  .min(1)
-  .max(256)
-  .openapi('AnomalyName')
-
-const FloatSchema = z.float32().openapi('Float')
-
-const ColorSchema = z
-  .string()
-  .regex(/\#[a-zA-Z0-9]{6}/)
-  .length(7)
-  .openapi('Color')
-
-const PixelAnomalySchema = z
-  .object({
-    TotalPercentageArea: FloatSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The percentage area of the image that the anomaly type covers.' }),
-    ).exactOptional(),
-    Color: ColorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A hex color value for the mask that covers an anomaly type. Each anomaly type has a different mask color. The color maps to the color of the anomaly type used in the training dataset. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about the pixels in an anomaly mask. For more information, see <a>Anomaly</a>. <code>PixelAnomaly</code> is only returned by image segmentation models.',
-    required: [],
-  })
-  .openapi('PixelAnomaly')
-
-type AnomalyType = {
-  Name?: z.infer<typeof AnomalyNameSchema> & { [key: string]: unknown }
-  PixelAnomaly?: z.infer<typeof PixelAnomalySchema> & { [key: string]: unknown }
-}
-
 const DatasetTypeSchema = z
   .string()
   .regex(/train|test/)
@@ -71,22 +28,18 @@ const DatasetStatusMessageSchema = z.string().openapi('DatasetStatusMessage')
 
 const DatasetMetadataSchema = z
   .object({
-    DatasetType: DatasetTypeSchema.and(
-      z.any().openapi({ description: 'The type of the dataset.' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix timestamp for the date and time that the dataset was created. ',
-        }),
-    ).exactOptional(),
-    Status: DatasetStatusSchema.and(
-      z.any().openapi({ description: 'The status for the dataset.' }),
-    ).exactOptional(),
-    StatusMessage: DatasetStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message for the dataset.' }),
-    ).exactOptional(),
+    DatasetType: DatasetTypeSchema.exactOptional().openapi({
+      description: 'The type of the dataset.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The Unix timestamp for the date and time that the dataset was created. ',
+    }),
+    Status: DatasetStatusSchema.exactOptional().openapi({
+      description: 'The status for the dataset.',
+    }),
+    StatusMessage: DatasetStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message for the dataset.',
+    }),
   })
   .openapi({
     description:
@@ -97,9 +50,9 @@ const DatasetMetadataSchema = z
 
 const CreateDatasetResponseSchema = z
   .object({
-    DatasetMetadata: DatasetMetadataSchema.and(
-      z.any().openapi({ description: 'Information about the dataset.' }),
-    ).exactOptional(),
+    DatasetMetadata: DatasetMetadataSchema.exactOptional().openapi({
+      description: 'Information about the dataset.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetResponse')
@@ -122,17 +75,15 @@ const S3ObjectVersionSchema = z.string().regex(/.*/).min(1).max(1024).openapi('S
 
 const InputS3ObjectSchema = z
   .object({
-    Bucket: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket that contains the manifest.' }),
-    ),
-    Key: S3ObjectKeySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name and location of the manifest file withiin the bucket.' }),
-    ),
-    VersionId: S3ObjectVersionSchema.and(
-      z.any().openapi({ description: 'The version ID of the bucket.' }),
-    ).exactOptional(),
+    Bucket: S3BucketNameSchema.openapi({
+      description: 'The Amazon S3 bucket that contains the manifest.',
+    }),
+    Key: S3ObjectKeySchema.openapi({
+      description: 'The name and location of the manifest file withiin the bucket.',
+    }),
+    VersionId: S3ObjectVersionSchema.exactOptional().openapi({
+      description: 'The version ID of the bucket.',
+    }),
   })
   .openapi({
     required: ['Bucket', 'Key'],
@@ -142,9 +93,9 @@ const InputS3ObjectSchema = z
 
 const DatasetGroundTruthManifestSchema = z
   .object({
-    S3Object: InputS3ObjectSchema.and(
-      z.any().openapi({ description: 'The S3 bucket location for the manifest file.' }),
-    ).exactOptional(),
+    S3Object: InputS3ObjectSchema.exactOptional().openapi({
+      description: 'The S3 bucket location for the manifest file.',
+    }),
   })
   .openapi({
     description:
@@ -199,17 +150,19 @@ const ModelStatusSchema = z
 
 const ModelStatusMessageSchema = z.string().openapi('ModelStatusMessage')
 
+const FloatSchema = z.float32().openapi('Float')
+
 const ModelPerformanceSchema = z
   .object({
-    F1Score: FloatSchema.and(
-      z.any().openapi({ description: 'The overall F1 score metric for the trained model.' }),
-    ).exactOptional(),
-    Recall: FloatSchema.and(
-      z.any().openapi({ description: 'The overall recall metric value for the trained model. ' }),
-    ).exactOptional(),
-    Precision: FloatSchema.and(
-      z.any().openapi({ description: 'The overall precision metric value for the trained model.' }),
-    ).exactOptional(),
+    F1Score: FloatSchema.exactOptional().openapi({
+      description: 'The overall F1 score metric for the trained model.',
+    }),
+    Recall: FloatSchema.exactOptional().openapi({
+      description: 'The overall recall metric value for the trained model. ',
+    }),
+    Precision: FloatSchema.exactOptional().openapi({
+      description: 'The overall precision metric value for the trained model.',
+    }),
   })
   .openapi({
     description: 'Information about the evaluation performance of a trained model. ',
@@ -219,45 +172,35 @@ const ModelPerformanceSchema = z
 
 const ModelMetadataSchema = z
   .object({
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unix timestamp for the date and time that the model was created. ',
-        }),
-    ).exactOptional(),
-    ModelVersion: ModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the model.' }),
-    ).exactOptional(),
-    ModelArn: ModelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the model.' }),
-    ).exactOptional(),
-    Description: ModelDescriptionMessageSchema.and(
-      z.any().openapi({ description: 'The description for the model.' }),
-    ).exactOptional(),
-    Status: ModelStatusSchema.and(
-      z.any().openapi({ description: 'The status of the model.' }),
-    ).exactOptional(),
-    StatusMessage: ModelStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message for the model.' }),
-    ).exactOptional(),
-    Performance: ModelPerformanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Performance metrics for the model. Not available until training has successfully completed.',
-        }),
-    ).exactOptional(),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The unix timestamp for the date and time that the model was created. ',
+    }),
+    ModelVersion: ModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the model.',
+    }),
+    ModelArn: ModelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the model.',
+    }),
+    Description: ModelDescriptionMessageSchema.exactOptional().openapi({
+      description: 'The description for the model.',
+    }),
+    Status: ModelStatusSchema.exactOptional().openapi({ description: 'The status of the model.' }),
+    StatusMessage: ModelStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message for the model.',
+    }),
+    Performance: ModelPerformanceSchema.exactOptional().openapi({
+      description:
+        'Performance metrics for the model. Not available until training has successfully completed.',
+    }),
   })
   .openapi({ description: 'Describes an Amazon Lookout for Vision model.', required: [] })
   .openapi('ModelMetadata')
 
 const CreateModelResponseSchema = z
   .object({
-    ModelMetadata: ModelMetadataSchema.and(
-      z.any().openapi({ description: 'The response from a call to <code>CreateModel</code>.' }),
-    ).exactOptional(),
+    ModelMetadata: ModelMetadataSchema.exactOptional().openapi({
+      description: 'The response from a call to <code>CreateModel</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateModelResponse')
@@ -270,21 +213,13 @@ const S3KeyPrefixSchema = z
 
 const S3LocationSchema = z
   .object({
-    Bucket: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 bucket that contains the training or model packaging job output. If you are training a model, the bucket must in your AWS account. If you use an S3 bucket for a model packaging job, the S3 bucket must be in the same AWS Region and AWS account in which you use AWS IoT Greengrass.',
-        }),
-    ),
-    Prefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The path of the folder, within the S3 bucket, that contains the output.',
-        }),
-    ).exactOptional(),
+    Bucket: S3BucketNameSchema.openapi({
+      description:
+        'The S3 bucket that contains the training or model packaging job output. If you are training a model, the bucket must in your AWS account. If you use an S3 bucket for a model packaging job, the S3 bucket must be in the same AWS Region and AWS account in which you use AWS IoT Greengrass.',
+    }),
+    Prefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description: 'The path of the folder, within the S3 bucket, that contains the output.',
+    }),
   })
   .openapi({
     required: ['Bucket'],
@@ -309,16 +244,12 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The key of the tag that is attached to the specified model.' }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value of the tag that is attached to the specified model.' }),
-    ),
+    Key: TagKeySchema.openapi({
+      description: 'The key of the tag that is attached to the specified model.',
+    }),
+    Value: TagValueSchema.openapi({
+      description: 'The value of the tag that is attached to the specified model.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -338,54 +269,44 @@ const ProjectNameSchema = z
 
 const ProjectMetadataSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the project.' }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project.' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unix timestamp for the date and time that the project was created. ',
-        }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the project.',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description: 'The name of the project.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The unix timestamp for the date and time that the project was created. ',
+    }),
   })
   .openapi({ description: 'Metadata about an Amazon Lookout for Vision project.', required: [] })
   .openapi('ProjectMetadata')
 
 const CreateProjectResponseSchema = z
   .object({
-    ProjectMetadata: ProjectMetadataSchema.and(
-      z.any().openapi({ description: 'Information about the project.' }),
-    ).exactOptional(),
+    ProjectMetadata: ProjectMetadataSchema.exactOptional().openapi({
+      description: 'Information about the project.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProjectResponse')
 
-const DeleteDatasetResponseSchema = z.object({}).openapi('DeleteDatasetResponse')
+const DeleteDatasetResponseSchema = z.looseObject({}).openapi('DeleteDatasetResponse')
 
 const DeleteModelResponseSchema = z
   .object({
-    ModelArn: ModelArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the model that was deleted.' }),
-    ).exactOptional(),
+    ModelArn: ModelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the model that was deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteModelResponse')
 
 const DeleteProjectResponseSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the project that was deleted.',
-        }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the project that was deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteProjectResponse')
@@ -394,59 +315,46 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const DatasetImageStatsSchema = z
   .object({
-    Total: IntegerSchema.and(
-      z.any().openapi({ description: 'The total number of images in the dataset.' }),
-    ).exactOptional(),
-    Labeled: IntegerSchema.and(
-      z.any().openapi({ description: 'The total number of labeled images.' }),
-    ).exactOptional(),
-    Normal: IntegerSchema.and(
-      z.any().openapi({ description: 'The total number of images labeled as normal.' }),
-    ).exactOptional(),
-    Anomaly: IntegerSchema.and(
-      z.any().openapi({ description: 'the total number of images labeled as an anomaly.' }),
-    ).exactOptional(),
+    Total: IntegerSchema.exactOptional().openapi({
+      description: 'The total number of images in the dataset.',
+    }),
+    Labeled: IntegerSchema.exactOptional().openapi({
+      description: 'The total number of labeled images.',
+    }),
+    Normal: IntegerSchema.exactOptional().openapi({
+      description: 'The total number of images labeled as normal.',
+    }),
+    Anomaly: IntegerSchema.exactOptional().openapi({
+      description: 'the total number of images labeled as an anomaly.',
+    }),
   })
   .openapi({ description: 'Statistics about the images in a dataset.', required: [] })
   .openapi('DatasetImageStats')
 
 const DatasetDescriptionSchema = z
   .object({
-    ProjectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project that contains the dataset.' }),
-    ).exactOptional(),
-    DatasetType: DatasetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the dataset. The value <code>train</code> represents a training dataset or single dataset project. The value <code>test</code> represents a test dataset.',
-        }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix timestamp for the time and date that the dataset was created.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix timestamp for the date and time that the dataset was last updated.',
-        }),
-    ).exactOptional(),
-    Status: DatasetStatusSchema.and(
-      z.any().openapi({ description: 'The status of the dataset.' }),
-    ).exactOptional(),
-    StatusMessage: DatasetStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message for the dataset. ' }),
-    ).exactOptional(),
-    ImageStats: DatasetImageStatsSchema.and(
-      z.any().openapi({ description: 'Statistics about the images in a dataset.' }),
-    ).exactOptional(),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description: 'The name of the project that contains the dataset.',
+    }),
+    DatasetType: DatasetTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the dataset. The value <code>train</code> represents a training dataset or single dataset project. The value <code>test</code> represents a test dataset.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The Unix timestamp for the time and date that the dataset was created.',
+    }),
+    LastUpdatedTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The Unix timestamp for the date and time that the dataset was last updated.',
+    }),
+    Status: DatasetStatusSchema.exactOptional().openapi({
+      description: 'The status of the dataset.',
+    }),
+    StatusMessage: DatasetStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message for the dataset. ',
+    }),
+    ImageStats: DatasetImageStatsSchema.exactOptional().openapi({
+      description: 'Statistics about the images in a dataset.',
+    }),
   })
   .openapi({
     description: 'The description for a dataset. For more information, see <a>DescribeDataset</a>.',
@@ -456,18 +364,16 @@ const DatasetDescriptionSchema = z
 
 const DescribeDatasetResponseSchema = z
   .object({
-    DatasetDescription: DatasetDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the requested dataset. ' }),
-    ).exactOptional(),
+    DatasetDescription: DatasetDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the requested dataset. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetResponse')
 
 const OutputConfigSchema = z
   .object({
-    S3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The S3 location for the output.' }),
-    ),
+    S3Location: S3LocationSchema.openapi({ description: 'The S3 location for the output.' }),
   })
   .openapi({
     required: ['S3Location'],
@@ -477,12 +383,12 @@ const OutputConfigSchema = z
 
 const OutputS3ObjectSchema = z
   .object({
-    Bucket: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The bucket that contains the training output.' }),
-    ),
-    Key: S3ObjectKeySchema.and(
-      z.any().openapi({ description: 'The location of the training output in the bucket.' }),
-    ),
+    Bucket: S3BucketNameSchema.openapi({
+      description: 'The bucket that contains the training output.',
+    }),
+    Key: S3ObjectKeySchema.openapi({
+      description: 'The location of the training output in the bucket.',
+    }),
   })
   .openapi({
     required: ['Bucket', 'Key'],
@@ -501,97 +407,59 @@ const InferenceUnitsSchema = z.int().min(1).openapi('InferenceUnits')
 
 const ModelDescriptionSchema = z
   .object({
-    ModelVersion: ModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the model' }),
-    ).exactOptional(),
-    ModelArn: ModelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the model.' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unix timestamp for the date and time that the model was created. ',
-        }),
-    ).exactOptional(),
-    Description: ModelDescriptionMessageSchema.and(
-      z.any().openapi({ description: 'The description for the model.' }),
-    ).exactOptional(),
-    Status: ModelStatusSchema.and(
-      z.any().openapi({ description: 'The status of the model.' }),
-    ).exactOptional(),
-    StatusMessage: ModelStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message for the model.' }),
-    ).exactOptional(),
-    Performance: ModelPerformanceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Performance metrics for the model. Created during training.' }),
-    ).exactOptional(),
-    OutputConfig: OutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location where Amazon Lookout for Vision saves model training files.',
-        }),
-    ).exactOptional(),
-    EvaluationManifest: OutputS3ObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location where Amazon Lookout for Vision saves the manifest file that was used to test the trained model and generate the performance scores.',
-        }),
-    ).exactOptional(),
-    EvaluationResult: OutputS3ObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location where Amazon Lookout for Vision saves the performance metrics.',
-        }),
-    ).exactOptional(),
-    EvaluationEndTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unix timestamp for the date and time that the evaluation ended. ',
-        }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifer for the AWS Key Management Service (AWS KMS) key that was used to encrypt the model during training.',
-        }),
-    ).exactOptional(),
-    MinInferenceUnits: InferenceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of inference units used by the model. For more information, see <a>StartModel</a> ',
-        }),
-    ).exactOptional(),
-    MaxInferenceUnits: InferenceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of inference units Amazon Lookout for Vision uses to auto-scale the model. For more information, see <a>StartModel</a>.',
-        }),
-    ).exactOptional(),
+    ModelVersion: ModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the model',
+    }),
+    ModelArn: ModelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the model.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The unix timestamp for the date and time that the model was created. ',
+    }),
+    Description: ModelDescriptionMessageSchema.exactOptional().openapi({
+      description: 'The description for the model.',
+    }),
+    Status: ModelStatusSchema.exactOptional().openapi({ description: 'The status of the model.' }),
+    StatusMessage: ModelStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message for the model.',
+    }),
+    Performance: ModelPerformanceSchema.exactOptional().openapi({
+      description: 'Performance metrics for the model. Created during training.',
+    }),
+    OutputConfig: OutputConfigSchema.exactOptional().openapi({
+      description: 'The S3 location where Amazon Lookout for Vision saves model training files.',
+    }),
+    EvaluationManifest: OutputS3ObjectSchema.exactOptional().openapi({
+      description:
+        'The S3 location where Amazon Lookout for Vision saves the manifest file that was used to test the trained model and generate the performance scores.',
+    }),
+    EvaluationResult: OutputS3ObjectSchema.exactOptional().openapi({
+      description: 'The S3 location where Amazon Lookout for Vision saves the performance metrics.',
+    }),
+    EvaluationEndTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The unix timestamp for the date and time that the evaluation ended. ',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'The identifer for the AWS Key Management Service (AWS KMS) key that was used to encrypt the model during training.',
+    }),
+    MinInferenceUnits: InferenceUnitsSchema.exactOptional().openapi({
+      description:
+        'The minimum number of inference units used by the model. For more information, see <a>StartModel</a> ',
+    }),
+    MaxInferenceUnits: InferenceUnitsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of inference units Amazon Lookout for Vision uses to auto-scale the model. For more information, see <a>StartModel</a>.',
+    }),
   })
   .openapi({ description: 'Describes an Amazon Lookout for Vision model.', required: [] })
   .openapi('ModelDescription')
 
 const DescribeModelResponseSchema = z
   .object({
-    ModelDescription: ModelDescriptionSchema.and(
-      z.any().openapi({ description: 'Contains the description of the model.' }),
-    ).exactOptional(),
+    ModelDescription: ModelDescriptionSchema.exactOptional().openapi({
+      description: 'Contains the description of the model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeModelResponse')
@@ -615,30 +483,18 @@ const TargetPlatformAcceleratorSchema = z.literal('NVIDIA').openapi('TargetPlatf
 
 const TargetPlatformSchema = z
   .object({
-    Os: TargetPlatformOsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target operating system for the model. Linux is the only operating system that is currently supported. ',
-        }),
-    ),
-    Arch: TargetPlatformArchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target architecture for the model. The currently supported architectures are X86_64 (64-bit version of the x86 instruction set) and ARM_64 (ARMv8 64-bit CPU). ',
-        }),
-    ),
-    Accelerator: TargetPlatformAcceleratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The target accelerator for the model. Currently, Amazon Lookout for Vision only supports NVIDIA (Nvidia graphics processing unit) and CPU accelerators. If you specify NVIDIA as an accelerator, you must also specify the <code>gpu-code</code>, <code>trt-ver</code>, and <code>cuda-ver</code> compiler options. If you don't specify an accelerator, Lookout for Vision uses the CPU for compilation and we highly recommend that you use the <a>GreengrassConfiguration$CompilerOptions</a> field. For example, you can use the following compiler options for CPU: </p> <ul> <li> <p> <code>mcpu</code>: CPU micro-architecture. For example, <code>{'mcpu': 'skylake-avx512'}</code> </p> </li> <li> <p> <code>mattr</code>: CPU flags. For example, <code>{'mattr': ['+neon', '+vfpv4']}</code> </p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Os: TargetPlatformOsSchema.openapi({
+      description:
+        'The target operating system for the model. Linux is the only operating system that is currently supported. ',
+    }),
+    Arch: TargetPlatformArchSchema.openapi({
+      description:
+        'The target architecture for the model. The currently supported architectures are X86_64 (64-bit version of the x86 instruction set) and ARM_64 (ARMv8 64-bit CPU). ',
+    }),
+    Accelerator: TargetPlatformAcceleratorSchema.exactOptional().openapi({
+      description:
+        "<p>The target accelerator for the model. Currently, Amazon Lookout for Vision only supports NVIDIA (Nvidia graphics processing unit) and CPU accelerators. If you specify NVIDIA as an accelerator, you must also specify the <code>gpu-code</code>, <code>trt-ver</code>, and <code>cuda-ver</code> compiler options. If you don't specify an accelerator, Lookout for Vision uses the CPU for compilation and we highly recommend that you use the <a>GreengrassConfiguration$CompilerOptions</a> field. For example, you can use the following compiler options for CPU: </p> <ul> <li> <p> <code>mcpu</code>: CPU micro-architecture. For example, <code>{'mcpu': 'skylake-avx512'}</code> </p> </li> <li> <p> <code>mattr</code>: CPU flags. For example, <code>{'mattr': ['+neon', '+vfpv4']}</code> </p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['Os', 'Arch'],
@@ -671,60 +527,35 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const GreengrassConfigurationSchema = z
   .object({
-    CompilerOptions: CompilerOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Additional compiler options for the Greengrass component. Currently, only NVIDIA Graphics Processing Units (GPU) and CPU accelerators are supported. If you specify <code>TargetDevice</code>, don't specify <code>CompilerOptions</code>.</p> <p>For more information, see <i>Compiler options</i> in the Amazon Lookout for Vision Developer Guide. </p>",
-        }),
-    ).exactOptional(),
-    TargetDevice: TargetDeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The target device for the model. Currently the only supported value is <code>jetson_xavier</code>. If you specify <code>TargetDevice</code>, you can't specify <code>TargetPlatform</code>. ",
-        }),
-    ).exactOptional(),
-    TargetPlatform: TargetPlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The target platform for the model. If you specify <code>TargetPlatform</code>, you can't specify <code>TargetDevice</code>. ",
-        }),
-    ).exactOptional(),
-    S3OutputLocation: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An S3 location in which Lookout for Vision stores the component artifacts. ',
-        }),
-    ),
-    ComponentName: ComponentNameSchema.and(
-      z.any().openapi({ description: ' A name for the AWS IoT Greengrass component. ' }),
-    ),
-    ComponentVersion: ComponentVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A Version for the AWS IoT Greengrass component. If you don't provide a value, a default value of <code> <i>Model Version</i>.0.0</code> is used. ",
-        }),
-    ).exactOptional(),
-    ComponentDescription: ComponentDescriptionSchema.and(
-      z.any().openapi({ description: ' A description for the AWS IoT Greengrass component. ' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A set of tags (key-value pairs) that you want to attach to the AWS IoT Greengrass component. ',
-        }),
-    ).exactOptional(),
+    CompilerOptions: CompilerOptionsSchema.exactOptional().openapi({
+      description:
+        "<p>Additional compiler options for the Greengrass component. Currently, only NVIDIA Graphics Processing Units (GPU) and CPU accelerators are supported. If you specify <code>TargetDevice</code>, don't specify <code>CompilerOptions</code>.</p> <p>For more information, see <i>Compiler options</i> in the Amazon Lookout for Vision Developer Guide. </p>",
+    }),
+    TargetDevice: TargetDeviceSchema.exactOptional().openapi({
+      description:
+        "The target device for the model. Currently the only supported value is <code>jetson_xavier</code>. If you specify <code>TargetDevice</code>, you can't specify <code>TargetPlatform</code>. ",
+    }),
+    TargetPlatform: TargetPlatformSchema.exactOptional().openapi({
+      description:
+        "The target platform for the model. If you specify <code>TargetPlatform</code>, you can't specify <code>TargetDevice</code>. ",
+    }),
+    S3OutputLocation: S3LocationSchema.openapi({
+      description: ' An S3 location in which Lookout for Vision stores the component artifacts. ',
+    }),
+    ComponentName: ComponentNameSchema.openapi({
+      description: ' A name for the AWS IoT Greengrass component. ',
+    }),
+    ComponentVersion: ComponentVersionSchema.exactOptional().openapi({
+      description:
+        "A Version for the AWS IoT Greengrass component. If you don't provide a value, a default value of <code> <i>Model Version</i>.0.0</code> is used. ",
+    }),
+    ComponentDescription: ComponentDescriptionSchema.exactOptional().openapi({
+      description: ' A description for the AWS IoT Greengrass component. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        ' A set of tags (key-value pairs) that you want to attach to the AWS IoT Greengrass component. ',
+    }),
   })
   .openapi({
     required: ['S3OutputLocation', 'ComponentName'],
@@ -735,14 +566,10 @@ const GreengrassConfigurationSchema = z
 
 const ModelPackagingConfigurationSchema = z
   .object({
-    Greengrass: GreengrassConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration information for the AWS IoT Greengrass component in a model packaging job. ',
-        }),
-    ),
+    Greengrass: GreengrassConfigurationSchema.openapi({
+      description:
+        ' Configuration information for the AWS IoT Greengrass component in a model packaging job. ',
+    }),
   })
   .openapi({
     required: ['Greengrass'],
@@ -772,15 +599,15 @@ const ComponentVersionArnSchema = z
 
 const GreengrassOutputDetailsSchema = z
   .object({
-    ComponentVersionArn: ComponentVersionArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the component. ' }),
-    ).exactOptional(),
-    ComponentName: ComponentNameSchema.and(
-      z.any().openapi({ description: ' The name of the component. ' }),
-    ).exactOptional(),
-    ComponentVersion: ComponentVersionSchema.and(
-      z.any().openapi({ description: ' The version of the component. ' }),
-    ).exactOptional(),
+    ComponentVersionArn: ComponentVersionArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the component. ',
+    }),
+    ComponentName: ComponentNameSchema.exactOptional().openapi({
+      description: ' The name of the component. ',
+    }),
+    ComponentVersion: ComponentVersionSchema.exactOptional().openapi({
+      description: ' The version of the component. ',
+    }),
   })
   .openapi({
     description:
@@ -791,14 +618,9 @@ const GreengrassOutputDetailsSchema = z
 
 const ModelPackagingOutputDetailsSchema = z
   .object({
-    Greengrass: GreengrassOutputDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the AWS IoT Greengrass component in a model packaging job. ',
-        }),
-    ).exactOptional(),
+    Greengrass: GreengrassOutputDetailsSchema.exactOptional().openapi({
+      description: ' Information about the AWS IoT Greengrass component in a model packaging job. ',
+    }),
   })
   .openapi({
     description: ' Information about the output from a model packaging job. ',
@@ -814,70 +636,44 @@ const ModelPackagingStatusMessageSchema = z.string().openapi('ModelPackagingStat
 
 const ModelPackagingDescriptionSchema = z
   .object({
-    JobName: ModelPackagingJobNameSchema.and(
-      z.any().openapi({ description: ' The name of the model packaging job. ' }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the project that's associated with a model that's in the model package. ",
-        }),
-    ).exactOptional(),
-    ModelVersion: ModelVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the model used in the model packaging job. ' }),
-    ).exactOptional(),
-    ModelPackagingConfiguration: ModelPackagingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The configuration information used in the model packaging job. ',
-        }),
-    ).exactOptional(),
-    ModelPackagingJobDescription: ModelPackagingJobDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the model packaging job. ' }),
-    ).exactOptional(),
-    ModelPackagingMethod: ModelPackagingMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS service used to package the job. Currently Lookout for Vision can package jobs with AWS IoT Greengrass. ',
-        }),
-    ).exactOptional(),
-    ModelPackagingOutputDetails: ModelPackagingOutputDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the output of the model packaging job. For more information, see <a>DescribeModelPackagingJob</a>. ',
-        }),
-    ).exactOptional(),
-    Status: ModelPackagingJobStatusSchema.and(
-      z.any().openapi({ description: ' The status of the model packaging job. ' }),
-    ).exactOptional(),
-    StatusMessage: ModelPackagingStatusMessageSchema.and(
-      z.any().openapi({ description: ' The status message for the model packaging job. ' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Unix timestamp for the time and date that the model packaging job was created. ',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Unix timestamp for the time and date that the model packaging job was last updated. ',
-        }),
-    ).exactOptional(),
+    JobName: ModelPackagingJobNameSchema.exactOptional().openapi({
+      description: ' The name of the model packaging job. ',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description:
+        "The name of the project that's associated with a model that's in the model package. ",
+    }),
+    ModelVersion: ModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the model used in the model packaging job. ',
+    }),
+    ModelPackagingConfiguration: ModelPackagingConfigurationSchema.exactOptional().openapi({
+      description: ' The configuration information used in the model packaging job. ',
+    }),
+    ModelPackagingJobDescription: ModelPackagingJobDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the model packaging job. ',
+    }),
+    ModelPackagingMethod: ModelPackagingMethodSchema.exactOptional().openapi({
+      description:
+        'The AWS service used to package the job. Currently Lookout for Vision can package jobs with AWS IoT Greengrass. ',
+    }),
+    ModelPackagingOutputDetails: ModelPackagingOutputDetailsSchema.exactOptional().openapi({
+      description:
+        'Information about the output of the model packaging job. For more information, see <a>DescribeModelPackagingJob</a>. ',
+    }),
+    Status: ModelPackagingJobStatusSchema.exactOptional().openapi({
+      description: ' The status of the model packaging job. ',
+    }),
+    StatusMessage: ModelPackagingStatusMessageSchema.exactOptional().openapi({
+      description: ' The status message for the model packaging job. ',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description:
+        ' The Unix timestamp for the time and date that the model packaging job was created. ',
+    }),
+    LastUpdatedTimestamp: DateTimeSchema.exactOptional().openapi({
+      description:
+        ' The Unix timestamp for the time and date that the model packaging job was last updated. ',
+    }),
   })
   .openapi({
     description:
@@ -888,9 +684,9 @@ const ModelPackagingDescriptionSchema = z
 
 const DescribeModelPackagingJobResponseSchema = z
   .object({
-    ModelPackagingDescription: ModelPackagingDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the model packaging job. ' }),
-    ).exactOptional(),
+    ModelPackagingDescription: ModelPackagingDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the model packaging job. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeModelPackagingJobResponse')
@@ -899,22 +695,18 @@ const DatasetMetadataListSchema = z.array(DatasetMetadataSchema).openapi('Datase
 
 const ProjectDescriptionSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the project.' }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project.' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unix timestamp for the date and time that the project was created. ',
-        }),
-    ).exactOptional(),
-    Datasets: DatasetMetadataListSchema.and(
-      z.any().openapi({ description: 'A list of datasets in the project.' }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the project.',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description: 'The name of the project.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The unix timestamp for the date and time that the project was created. ',
+    }),
+    Datasets: DatasetMetadataListSchema.exactOptional().openapi({
+      description: 'A list of datasets in the project.',
+    }),
   })
   .openapi({
     description:
@@ -925,9 +717,9 @@ const ProjectDescriptionSchema = z
 
 const DescribeProjectResponseSchema = z
   .object({
-    ProjectDescription: ProjectDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the project.' }),
-    ).exactOptional(),
+    ProjectDescription: ProjectDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the project.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProjectResponse')
@@ -939,41 +731,58 @@ const ImageSourceTypeSchema = z
 
 const ImageSourceSchema = z
   .object({
-    Type: ImageSourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the image.' }),
-    ).exactOptional(),
+    Type: ImageSourceTypeSchema.exactOptional().openapi({ description: 'The type of the image.' }),
   })
   .openapi({ description: 'The source for an image.', required: [] })
   .openapi('ImageSource')
 
 const BooleanSchema = z.boolean().openapi('Boolean')
 
-const AnomalySchema: z.ZodType<AnomalyType> = z
-  .lazy(() =>
-    z
-      .object({
-        Name: AnomalyNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The name of an anomaly type found in an image. <code>Name</code> maps to an anomaly type in the training dataset, apart from the anomaly type <code>background</code>. The service automatically inserts the <code>background</code> anomaly type into the response from <code>DetectAnomalies</code>. ',
-            }),
-        ).exactOptional(),
-        PixelAnomaly: PixelAnomalySchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Information about the pixel mask that covers an anomaly type.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Information about an anomaly type found on an image by an image segmentation model. For more information, see <a>DetectAnomalies</a>.',
-        required: [],
-      }),
-  )
+const AnomalyNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9]*/)
+  .min(1)
+  .max(256)
+  .openapi('AnomalyName')
+
+const ColorSchema = z
+  .string()
+  .regex(/\#[a-zA-Z0-9]{6}/)
+  .length(7)
+  .openapi('Color')
+
+const PixelAnomalySchema = z
+  .object({
+    TotalPercentageArea: FloatSchema.exactOptional().openapi({
+      description: 'The percentage area of the image that the anomaly type covers.',
+    }),
+    Color: ColorSchema.exactOptional().openapi({
+      description:
+        'A hex color value for the mask that covers an anomaly type. Each anomaly type has a different mask color. The color maps to the color of the anomaly type used in the training dataset. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about the pixels in an anomaly mask. For more information, see <a>Anomaly</a>. <code>PixelAnomaly</code> is only returned by image segmentation models.',
+    required: [],
+  })
+  .openapi('PixelAnomaly')
+
+const AnomalySchema = z
+  .object({
+    Name: AnomalyNameSchema.exactOptional().openapi({
+      description:
+        'The name of an anomaly type found in an image. <code>Name</code> maps to an anomaly type in the training dataset, apart from the anomaly type <code>background</code>. The service automatically inserts the <code>background</code> anomaly type into the response from <code>DetectAnomalies</code>. ',
+    }),
+    PixelAnomaly: PixelAnomalySchema.exactOptional().openapi({
+      description: 'Information about the pixel mask that covers an anomaly type.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about an anomaly type found on an image by an image segmentation model. For more information, see <a>DetectAnomalies</a>.',
+    required: [],
+  })
   .openapi('Anomaly')
 
 const AnomalyListSchema = z.array(AnomalySchema).openapi('AnomalyList')
@@ -982,46 +791,26 @@ const AnomalyMaskSchema = z.string().min(1).max(5242880).openapi('AnomalyMask')
 
 const DetectAnomalyResultSchema = z
   .object({
-    Source: ImageSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source of the image that was analyzed. <code>direct</code> means that the images was supplied from the local computer. No other values are supported.',
-        }),
-    ).exactOptional(),
-    IsAnomalous: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if Amazon Lookout for Vision classifies the image as containing an anomaly, otherwise false.',
-        }),
-    ).exactOptional(),
-    Confidence: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Lookout for Vision has in the accuracy of the classification in <code>IsAnomalous</code>.',
-        }),
-    ).exactOptional(),
-    Anomalies: AnomalyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If the model is an image segmentation model, <code>Anomalies</code> contains a list of anomaly types found in the image. There is one entry for each type of anomaly found (even if multiple instances of an anomaly type exist on the image). The first element in the list is always an anomaly type representing the image background ('background') and shouldn't be considered an anomaly. Amazon Lookout for Vision automatically add the background anomaly type to the response, and you don't need to declare a background anomaly type in your dataset.</p> <p>If the list has one entry ('background'), no anomalies were found on the image.</p> <p/> <p>An image classification model doesn't return an <code>Anomalies</code> list. </p>",
-        }),
-    ).exactOptional(),
-    AnomalyMask: AnomalyMaskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If the model is an image segmentation model, <code>AnomalyMask</code> contains pixel masks that covers all anomaly types found on the image. Each anomaly type has a different mask color. To map a color to an anomaly type, see the <code>color</code> field of the <a>PixelAnomaly</a> object.</p> <p>An image classification model doesn't return an <code>Anomalies</code> list. </p>",
-        }),
-    ).exactOptional(),
+    Source: ImageSourceSchema.exactOptional().openapi({
+      description:
+        'The source of the image that was analyzed. <code>direct</code> means that the images was supplied from the local computer. No other values are supported.',
+    }),
+    IsAnomalous: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if Amazon Lookout for Vision classifies the image as containing an anomaly, otherwise false.',
+    }),
+    Confidence: FloatSchema.exactOptional().openapi({
+      description:
+        'The confidence that Lookout for Vision has in the accuracy of the classification in <code>IsAnomalous</code>.',
+    }),
+    Anomalies: AnomalyListSchema.exactOptional().openapi({
+      description:
+        "<p>If the model is an image segmentation model, <code>Anomalies</code> contains a list of anomaly types found in the image. There is one entry for each type of anomaly found (even if multiple instances of an anomaly type exist on the image). The first element in the list is always an anomaly type representing the image background ('background') and shouldn't be considered an anomaly. Amazon Lookout for Vision automatically add the background anomaly type to the response, and you don't need to declare a background anomaly type in your dataset.</p> <p>If the list has one entry ('background'), no anomalies were found on the image.</p> <p/> <p>An image classification model doesn't return an <code>Anomalies</code> list. </p>",
+    }),
+    AnomalyMask: AnomalyMaskSchema.exactOptional().openapi({
+      description:
+        "<p>If the model is an image segmentation model, <code>AnomalyMask</code> contains pixel masks that covers all anomaly types found on the image. Each anomaly type has a different mask color. To map a color to an anomaly type, see the <code>color</code> field of the <a>PixelAnomaly</a> object.</p> <p>An image classification model doesn't return an <code>Anomalies</code> list. </p>",
+    }),
   })
   .openapi({
     description:
@@ -1032,11 +821,9 @@ const DetectAnomalyResultSchema = z
 
 const DetectAnomaliesResponseSchema = z
   .object({
-    DetectAnomalyResult: DetectAnomalyResultSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The results of the <code>DetectAnomalies</code> operation.' }),
-    ).exactOptional(),
+    DetectAnomalyResult: DetectAnomalyResultSchema.exactOptional().openapi({
+      description: 'The results of the <code>DetectAnomalies</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectAnomaliesResponse')
@@ -1058,69 +845,49 @@ const PaginationTokenSchema = z
 
 const ListDatasetEntriesResponseSchema = z
   .object({
-    DatasetEntries: DatasetEntryListSchema.and(
-      z.any().openapi({ description: 'A list of the entries (JSON Lines) within the dataset.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set ofdataset entries.',
-        }),
-    ).exactOptional(),
+    DatasetEntries: DatasetEntryListSchema.exactOptional().openapi({
+      description: 'A list of the entries (JSON Lines) within the dataset.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set ofdataset entries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetEntriesResponse')
 
 const ModelPackagingJobMetadataSchema = z
   .object({
-    JobName: ModelPackagingJobNameSchema.and(
-      z.any().openapi({ description: ' The name of the model packaging job. ' }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The project that contains the model that is in the model package. ',
-        }),
-    ).exactOptional(),
-    ModelVersion: ModelVersionSchema.and(
-      z.any().openapi({ description: ' The version of the model that is in the model package. ' }),
-    ).exactOptional(),
-    ModelPackagingJobDescription: ModelPackagingJobDescriptionSchema.and(
-      z.any().openapi({ description: ' The description for the model packaging job. ' }),
-    ).exactOptional(),
-    ModelPackagingMethod: ModelPackagingMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The AWS service used to package the job. Currently Lookout for Vision can package jobs with AWS IoT Greengrass. ',
-        }),
-    ).exactOptional(),
-    Status: ModelPackagingJobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the model packaging job. ' }),
-    ).exactOptional(),
-    StatusMessage: ModelPackagingStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message for the model packaging job. ' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix timestamp for the time and date that the model packaging job was created.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix timestamp for the time and date that the model packaging job was last updated.',
-        }),
-    ).exactOptional(),
+    JobName: ModelPackagingJobNameSchema.exactOptional().openapi({
+      description: ' The name of the model packaging job. ',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description: ' The project that contains the model that is in the model package. ',
+    }),
+    ModelVersion: ModelVersionSchema.exactOptional().openapi({
+      description: ' The version of the model that is in the model package. ',
+    }),
+    ModelPackagingJobDescription: ModelPackagingJobDescriptionSchema.exactOptional().openapi({
+      description: ' The description for the model packaging job. ',
+    }),
+    ModelPackagingMethod: ModelPackagingMethodSchema.exactOptional().openapi({
+      description:
+        ' The AWS service used to package the job. Currently Lookout for Vision can package jobs with AWS IoT Greengrass. ',
+    }),
+    Status: ModelPackagingJobStatusSchema.exactOptional().openapi({
+      description: 'The status of the model packaging job. ',
+    }),
+    StatusMessage: ModelPackagingStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message for the model packaging job. ',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The Unix timestamp for the time and date that the model packaging job was created.',
+    }),
+    LastUpdatedTimestamp: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The Unix timestamp for the time and date that the model packaging job was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -1135,22 +902,14 @@ const ModelPackagingJobsListSchema = z
 
 const ListModelPackagingJobsResponseSchema = z
   .object({
-    ModelPackagingJobs: ModelPackagingJobsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of the model packaging jobs created for the specified Amazon Lookout for Vision project. ',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Lookout for Vision returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
+    ModelPackagingJobs: ModelPackagingJobsListSchema.exactOptional().openapi({
+      description:
+        ' A list of the model packaging jobs created for the specified Amazon Lookout for Vision project. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Lookout for Vision returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListModelPackagingJobsResponse')
@@ -1159,17 +918,13 @@ const ModelMetadataListSchema = z.array(ModelMetadataSchema).openapi('ModelMetad
 
 const ListModelsResponseSchema = z
   .object({
-    Models: ModelMetadataListSchema.and(
-      z.any().openapi({ description: 'A list of model versions in the specified project. ' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set of models. ',
-        }),
-    ).exactOptional(),
+    Models: ModelMetadataListSchema.exactOptional().openapi({
+      description: 'A list of model versions in the specified project. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set of models. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListModelsResponse')
@@ -1178,28 +933,22 @@ const ProjectMetadataListSchema = z.array(ProjectMetadataSchema).openapi('Projec
 
 const ListProjectsResponseSchema = z
   .object({
-    Projects: ProjectMetadataListSchema.and(
-      z.any().openapi({ description: 'A list of projects in your AWS account.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set of projects.',
-        }),
-    ).exactOptional(),
+    Projects: ProjectMetadataListSchema.exactOptional().openapi({
+      description: 'A list of projects in your AWS account.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set of projects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProjectsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A map of tag keys and values attached to the specified model.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A map of tag keys and values attached to the specified model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1210,45 +959,41 @@ const ModelHostingStatusSchema = z
 
 const StartModelResponseSchema = z
   .object({
-    Status: ModelHostingStatusSchema.and(
-      z.any().openapi({ description: 'The current running status of the model.' }),
-    ).exactOptional(),
+    Status: ModelHostingStatusSchema.exactOptional().openapi({
+      description: 'The current running status of the model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartModelResponse')
 
 const StartModelPackagingJobResponseSchema = z
   .object({
-    JobName: ModelPackagingJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job name for the model packaging job. If you don't supply a job name in the <code>JobName</code> input parameter, the service creates a job name for you. ",
-        }),
-    ).exactOptional(),
+    JobName: ModelPackagingJobNameSchema.exactOptional().openapi({
+      description:
+        "The job name for the model packaging job. If you don't supply a job name in the <code>JobName</code> input parameter, the service creates a job name for you. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartModelPackagingJobResponse')
 
 const StopModelResponseSchema = z
   .object({
-    Status: ModelHostingStatusSchema.and(
-      z.any().openapi({ description: 'The status of the model.' }),
-    ).exactOptional(),
+    Status: ModelHostingStatusSchema.exactOptional().openapi({
+      description: 'The status of the model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopModelResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateDatasetEntriesResponseSchema = z
   .object({
-    Status: DatasetStatusSchema.and(
-      z.any().openapi({ description: 'The status of the dataset update.' }),
-    ).exactOptional(),
+    Status: DatasetStatusSchema.exactOptional().openapi({
+      description: 'The status of the dataset update.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDatasetEntriesResponse')
@@ -1271,9 +1016,9 @@ const ContentTypeSchema = z.string().regex(/.*/).min(1).max(255).openapi('Conten
 
 const DatasetSourceSchema = z
   .object({
-    GroundTruthManifest: DatasetGroundTruthManifestSchema.and(
-      z.any().openapi({ description: 'Location information for the manifest file.' }),
-    ).exactOptional(),
+    GroundTruthManifest: DatasetGroundTruthManifestSchema.exactOptional().openapi({
+      description: 'Location information for the manifest file.',
+    }),
   })
   .openapi({
     description:
@@ -1284,70 +1029,46 @@ const DatasetSourceSchema = z
 
 const CreateDatasetRequestSchema = z
   .object({
-    DatasetType: DatasetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the dataset. Specify <code>train</code> for a training dataset. Specify <code>test</code> for a test dataset.',
-        }),
-    ),
-    DatasetSource: DatasetSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The location of the manifest file that Amazon Lookout for Vision uses to create the dataset.</p> <p>If you don't specify <code>DatasetSource</code>, an empty dataset is created and the operation synchronously returns. Later, you can add JSON Lines by calling <a>UpdateDatasetEntries</a>. </p> <p>If you specify a value for <code>DataSource</code>, the manifest at the S3 location is validated and used to create the dataset. The call to <code>CreateDataset</code> is asynchronous and might take a while to complete. To find out the current status, Check the value of <code>Status</code> returned in a call to <a>DescribeDataset</a>.</p>",
-        }),
-    ).exactOptional(),
+    DatasetType: DatasetTypeSchema.openapi({
+      description:
+        'The type of the dataset. Specify <code>train</code> for a training dataset. Specify <code>test</code> for a test dataset.',
+    }),
+    DatasetSource: DatasetSourceSchema.exactOptional().openapi({
+      description:
+        "<p>The location of the manifest file that Amazon Lookout for Vision uses to create the dataset.</p> <p>If you don't specify <code>DatasetSource</code>, an empty dataset is created and the operation synchronously returns. Later, you can add JSON Lines by calling <a>UpdateDatasetEntries</a>. </p> <p>If you specify a value for <code>DataSource</code>, the manifest at the S3 location is validated and used to create the dataset. The call to <code>CreateDataset</code> is asynchronous and might take a while to complete. To find out the current status, Check the value of <code>Status</code> returned in a call to <a>DescribeDataset</a>.</p>",
+    }),
   })
   .openapi({ required: ['DatasetType'], title: 'CreateDatasetRequest' })
   .openapi('CreateDatasetRequest')
 
 const CreateModelRequestSchema = z
   .object({
-    Description: ModelDescriptionMessageSchema.and(
-      z.any().openapi({ description: 'A description for the version of the model.' }),
-    ).exactOptional(),
-    OutputConfig: OutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The location where Amazon Lookout for Vision saves the training results.',
-        }),
-    ),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for your AWS KMS key. The key is used to encrypt training and test images copied into the service for model training. Your source images are unaffected. If this parameter is not specified, the copied images are encrypted by a key that AWS owns and manages.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A set of tags (key-value pairs) that you want to attach to the model.',
-        }),
-    ).exactOptional(),
+    Description: ModelDescriptionMessageSchema.exactOptional().openapi({
+      description: 'A description for the version of the model.',
+    }),
+    OutputConfig: OutputConfigSchema.openapi({
+      description: 'The location where Amazon Lookout for Vision saves the training results.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for your AWS KMS key. The key is used to encrypt training and test images copied into the service for model training. Your source images are unaffected. If this parameter is not specified, the copied images are encrypted by a key that AWS owns and manages.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A set of tags (key-value pairs) that you want to attach to the model.',
+    }),
   })
   .openapi({ required: ['OutputConfig'], title: 'CreateModelRequest' })
   .openapi('CreateModelRequest')
 
 const CreateProjectRequestSchema = z
-  .object({
-    ProjectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name for the project.' }),
-    ),
-  })
+  .object({ ProjectName: ProjectNameSchema.openapi({ description: 'The name for the project.' }) })
   .openapi({ required: ['ProjectName'], title: 'CreateProjectRequest' })
   .openapi('CreateProjectRequest')
 
 const DatasetChangesSchema = z.string().min(1).max(10485760).openapi('DatasetChanges')
 
 const DeleteDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDatasetRequest' })
   .openapi('DeleteDatasetRequest')
 
@@ -1359,32 +1080,32 @@ const ModelVersionNoLatestSchema = z
   .openapi('ModelVersionNoLatest')
 
 const DeleteModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteModelRequest' })
   .openapi('DeleteModelRequest')
 
 const DeleteProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProjectRequest' })
   .openapi('DeleteProjectRequest')
 
 const DescribeDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDatasetRequest' })
   .openapi('DescribeDatasetRequest')
 
 const DescribeModelPackagingJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeModelPackagingJobRequest' })
   .openapi('DescribeModelPackagingJobRequest')
 
 const DescribeModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeModelRequest' })
   .openapi('DescribeModelRequest')
 
 const DescribeProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeProjectRequest' })
   .openapi('DescribeProjectRequest')
 
@@ -1392,9 +1113,9 @@ const StreamSchema = z.string().openapi('Stream')
 
 const DetectAnomaliesRequestSchema = z
   .object({
-    Body: StreamSchema.and(
-      z.any().openapi({ description: 'The unencrypted image bytes that you want to analyze. ' }),
-    ),
+    Body: StreamSchema.openapi({
+      description: 'The unencrypted image bytes that you want to analyze. ',
+    }),
   })
   .openapi({ required: ['Body'], title: 'DetectAnomaliesRequest' })
   .openapi('DetectAnomaliesRequest')
@@ -1411,83 +1132,67 @@ const QueryStringSchema = z
   .openapi('QueryString')
 
 const ListDatasetEntriesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDatasetEntriesRequest' })
   .openapi('ListDatasetEntriesRequest')
 
 const ListModelPackagingJobsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListModelPackagingJobsRequest' })
   .openapi('ListModelPackagingJobsRequest')
 
 const ListModelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListModelsRequest' })
   .openapi('ListModelsRequest')
 
 const ListProjectsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProjectsRequest' })
   .openapi('ListProjectsRequest')
 
 const TagArnSchema = z.string().min(1).max(1011).openapi('TagArn')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const StartModelPackagingJobRequestSchema = z
   .object({
-    ModelVersion: ModelVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The version of the model within the project that you want to package. ',
-        }),
-    ),
-    JobName: ModelPackagingJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A name for the model packaging job. If you don't supply a value, the service creates a job name for you. ",
-        }),
-    ).exactOptional(),
-    Configuration: ModelPackagingConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for the model packaging job. ' }),
-    ),
-    Description: ModelPackagingJobDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the model packaging job. ' }),
-    ).exactOptional(),
+    ModelVersion: ModelVersionSchema.openapi({
+      description: ' The version of the model within the project that you want to package. ',
+    }),
+    JobName: ModelPackagingJobNameSchema.exactOptional().openapi({
+      description:
+        "A name for the model packaging job. If you don't supply a value, the service creates a job name for you. ",
+    }),
+    Configuration: ModelPackagingConfigurationSchema.openapi({
+      description: 'The configuration for the model packaging job. ',
+    }),
+    Description: ModelPackagingJobDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the model packaging job. ',
+    }),
   })
   .openapi({ required: ['ModelVersion', 'Configuration'], title: 'StartModelPackagingJobRequest' })
   .openapi('StartModelPackagingJobRequest')
 
 const StartModelRequestSchema = z
   .object({
-    MinInferenceUnits: InferenceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of inference units to use. A single inference unit represents 1 hour of processing. Use a higher number to increase the TPS throughput of your model. You are charged for the number of inference units that you use. ',
-        }),
-    ),
-    MaxInferenceUnits: InferenceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of inference units to use for auto-scaling the model. If you don't specify a value, Amazon Lookout for Vision doesn't auto-scale the model.",
-        }),
-    ).exactOptional(),
+    MinInferenceUnits: InferenceUnitsSchema.openapi({
+      description:
+        'The minimum number of inference units to use. A single inference unit represents 1 hour of processing. Use a higher number to increase the TPS throughput of your model. You are charged for the number of inference units that you use. ',
+    }),
+    MaxInferenceUnits: InferenceUnitsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of inference units to use for auto-scaling the model. If you don't specify a value, Amazon Lookout for Vision doesn't auto-scale the model.",
+    }),
   })
   .openapi({ required: ['MinInferenceUnits'], title: 'StartModelRequest' })
   .openapi('StartModelRequest')
 
 const StopModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopModelRequest' })
   .openapi('StopModelRequest')
 
@@ -1495,23 +1200,19 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The key-value tags to assign to the model.' }),
-    ),
+    Tags: TagListSchema.openapi({ description: 'The key-value tags to assign to the model.' }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDatasetEntriesRequestSchema = z
   .object({
-    Changes: DatasetChangesSchema.and(
-      z.any().openapi({ description: 'The entries to add to the dataset.' }),
-    ),
+    Changes: DatasetChangesSchema.openapi({ description: 'The entries to add to the dataset.' }),
   })
   .openapi({ required: ['Changes'], title: 'UpdateDatasetEntriesRequest' })
   .openapi('UpdateDatasetEntriesRequest')
@@ -1657,9 +1358,9 @@ export const post20201120ProjectsProjectNameDatasetsRoute = createRoute({
                 }),
               DatasetSource: z
                 .object({
-                  GroundTruthManifest: DatasetGroundTruthManifestSchema.and(
-                    z.any().openapi({ description: 'Location information for the manifest file.' }),
-                  ).exactOptional(),
+                  GroundTruthManifest: DatasetGroundTruthManifestSchema.exactOptional().openapi({
+                    description: 'Location information for the manifest file.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1910,9 +1611,9 @@ export const post20201120ProjectsProjectNameModelsRoute = createRoute({
                 .openapi({ description: 'A description for the version of the model.' }),
               OutputConfig: z
                 .object({
-                  S3Location: S3LocationSchema.and(
-                    z.any().openapi({ description: 'The S3 location for the output.' }),
-                  ).exactOptional(),
+                  S3Location: S3LocationSchema.exactOptional().openapi({
+                    description: 'The S3 location for the output.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3457,14 +3158,10 @@ export const post20201120ProjectsProjectNameModelpackagingjobsRoute = createRout
                 }),
               Configuration: z
                 .object({
-                  Greengrass: GreengrassConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Configuration information for the AWS IoT Greengrass component in a model packaging job. ',
-                      }),
-                  ).exactOptional(),
+                  Greengrass: GreengrassConfigurationSchema.exactOptional().openapi({
+                    description:
+                      ' Configuration information for the AWS IoT Greengrass component in a model packaging job. ',
+                  }),
                 })
                 .openapi({
                   description:

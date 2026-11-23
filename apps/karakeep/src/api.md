@@ -127,7 +127,8 @@ Retrieve a paginated list of all bookmarks for the authenticated user. Supports 
         {
           "id": "string",
           "assetType": "linkHtmlContent",
-          "fileName": "string"
+          "fileName": "string",
+          "size": 0
         }
       ]
     }
@@ -304,7 +305,8 @@ Create a new bookmark. The bookmark type (link, text, or asset) is determined by
     {
       "id": "string",
       "assetType": "linkHtmlContent",
-      "fileName": "string"
+      "fileName": "string",
+      "size": 0
     }
   ]
 }
@@ -364,7 +366,8 @@ Create a new bookmark. The bookmark type (link, text, or asset) is determined by
     {
       "id": "string",
       "assetType": "linkHtmlContent",
-      "fileName": "string"
+      "fileName": "string",
+      "size": 0
     }
   ]
 }
@@ -489,7 +492,8 @@ Search across all bookmarks using full-text, semantic, or hybrid ranking. Full-t
         {
           "id": "string",
           "assetType": "linkHtmlContent",
-          "fileName": "string"
+          "fileName": "string",
+          "size": 0
         }
       ]
     }
@@ -641,7 +645,8 @@ Retrieve a single bookmark by its ID, including its tags, content, and assets.
     {
       "id": "string",
       "assetType": "linkHtmlContent",
-      "fileName": "string"
+      "fileName": "string",
+      "size": 0
     }
   ]
 }
@@ -1406,6 +1411,8 @@ Retrieve all text highlights within the specified bookmark.
       "endOffset": 0,
       "color": "yellow",
       "text": "string",
+      "prefix": "string",
+      "suffix": "string",
       "note": "string",
       "id": "string",
       "userId": "string",
@@ -1510,7 +1517,8 @@ Attach a previously uploaded asset to a bookmark. The asset must be uploaded fir
 {
   "id": "string",
   "assetType": "linkHtmlContent",
-  "fileName": "string"
+  "fileName": "string",
+  "size": 0
 }
 ```
 
@@ -1540,6 +1548,7 @@ Status Code **201**
 |id|string|true|none|none|
 |assetType|string|true|none|none|
 |fileName|string \| null|false|none|none|
+|size|number \| null|false|none|none|
 
 #### Enumerated Values
 
@@ -2129,7 +2138,8 @@ Retrieve a paginated list of bookmarks within the specified list. For smart list
         {
           "id": "string",
           "assetType": "linkHtmlContent",
-          "fileName": "string"
+          "fileName": "string",
+          "size": 0
         }
       ]
     }
@@ -2694,7 +2704,8 @@ Retrieve a paginated list of all bookmarks that have the specified tag attached.
         {
           "id": "string",
           "assetType": "linkHtmlContent",
-          "fileName": "string"
+          "fileName": "string",
+          "size": 0
         }
       ]
     }
@@ -2765,10 +2776,16 @@ Retrieve a paginated list of all highlights across all bookmarks for the authent
       "endOffset": 0,
       "color": "yellow",
       "text": "string",
+      "prefix": "string",
+      "suffix": "string",
       "note": "string",
       "id": "string",
       "userId": "string",
-      "createdAt": "1970-01-01T00:00:00Z"
+      "createdAt": "1970-01-01T00:00:00Z",
+      "bookmark": {
+        "title": "string",
+        "url": "string"
+      }
     }
   ],
   "nextCursor": "string"
@@ -2805,6 +2822,8 @@ curl http://localhost:3000/api/v1/highlights \
     "endOffset": 0,
     "color": "yellow",
     "text": "string",
+    "prefix": "string",
+    "suffix": "string",
     "note": "string"
   }'
 ```
@@ -2822,6 +2841,8 @@ Create a new text highlight on a bookmark. Highlights are defined by character o
   "endOffset": 0,
   "color": "yellow",
   "text": "string",
+  "prefix": "string",
+  "suffix": "string",
   "note": "string"
 }
 ```
@@ -2836,6 +2857,8 @@ Create a new text highlight on a bookmark. Highlights are defined by character o
 |» endOffset|body|number|true|none|
 |» color|body|string|false|none|
 |» text|body|string \| null|true|none|
+|» prefix|body|string \| null|false|none|
+|» suffix|body|string \| null|false|none|
 |» note|body|string \| null|true|none|
 
 #### Enumerated Values
@@ -2858,6 +2881,8 @@ Create a new text highlight on a bookmark. Highlights are defined by character o
   "endOffset": 0,
   "color": "yellow",
   "text": "string",
+  "prefix": "string",
+  "suffix": "string",
   "note": "string",
   "id": "string",
   "userId": "string",
@@ -2930,6 +2955,8 @@ Retrieve a single highlight by its ID.
   "endOffset": 0,
   "color": "yellow",
   "text": "string",
+  "prefix": "string",
+  "suffix": "string",
   "note": "string",
   "id": "string",
   "userId": "string",
@@ -2993,6 +3020,8 @@ Delete a highlight by its ID.
   "endOffset": 0,
   "color": "yellow",
   "text": "string",
+  "prefix": "string",
+  "suffix": "string",
   "note": "string",
   "id": "string",
   "userId": "string",
@@ -3082,6 +3111,8 @@ Partially update a highlight. Supports changing the color or note.
   "endOffset": 0,
   "color": "yellow",
   "text": "string",
+  "prefix": "string",
+  "suffix": "string",
   "note": "string",
   "id": "string",
   "userId": "string",
@@ -4711,7 +4742,8 @@ The unique identifier of the feed.
         {
           "id": "string",
           "assetType": "linkHtmlContent",
-          "fileName": "string"
+          "fileName": "string",
+          "size": 0
         }
       ]
     }
@@ -4786,7 +4818,8 @@ The unique identifier of the feed.
     {
       "id": "string",
       "assetType": "linkHtmlContent",
-      "fileName": "string"
+      "fileName": "string",
+      "size": 0
     }
   ]
 }
@@ -4983,6 +5016,8 @@ Cursor from a previous response to fetch the next page.
   "endOffset": 0,
   "color": "yellow",
   "text": "string",
+  "prefix": "string",
+  "suffix": "string",
   "note": "string",
   "id": "string",
   "userId": "string",
@@ -4999,6 +5034,8 @@ Cursor from a previous response to fetch the next page.
 |endOffset|number|true|none|none|
 |color|string|false|none|none|
 |text|string \| null|true|none|none|
+|prefix|string \| null|true|none|none|
+|suffix|string \| null|true|none|none|
 |note|string \| null|true|none|none|
 |id|string|true|none|none|
 |userId|string|true|none|none|
@@ -5057,10 +5094,16 @@ Cursor from a previous response to fetch the next page.
       "endOffset": 0,
       "color": "yellow",
       "text": "string",
+      "prefix": "string",
+      "suffix": "string",
       "note": "string",
       "id": "string",
       "userId": "string",
-      "createdAt": "1970-01-01T00:00:00Z"
+      "createdAt": "1970-01-01T00:00:00Z",
+      "bookmark": {
+        "title": "string",
+        "url": "string"
+      }
     }
   ],
   "nextCursor": "string"
@@ -5071,8 +5114,61 @@ Cursor from a previous response to fetch the next page.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|highlights|[[Highlight](#schemahighlight)]|true|none|none|
+|highlights|[[HighlightWithBookmark](#schemahighlightwithbookmark)]|true|none|none|
 |nextCursor|string \| null|true|none|Cursor for the next page, or null if no more results.|
+
+<h2 id="tocS_HighlightWithBookmark">HighlightWithBookmark</h2>
+<!-- backwards compatibility -->
+<a id="schemahighlightwithbookmark"></a>
+<a id="schema_HighlightWithBookmark"></a>
+<a id="tocShighlightwithbookmark"></a>
+<a id="tocshighlightwithbookmark"></a>
+
+```json
+{
+  "bookmarkId": "string",
+  "startOffset": 0,
+  "endOffset": 0,
+  "color": "yellow",
+  "text": "string",
+  "prefix": "string",
+  "suffix": "string",
+  "note": "string",
+  "id": "string",
+  "userId": "string",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "bookmark": {
+    "title": "string",
+    "url": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bookmarkId|string|true|none|none|
+|startOffset|number|true|none|none|
+|endOffset|number|true|none|none|
+|color|string|false|none|none|
+|text|string \| null|true|none|none|
+|prefix|string \| null|true|none|none|
+|suffix|string \| null|true|none|none|
+|note|string \| null|true|none|none|
+|id|string|true|none|none|
+|userId|string|true|none|none|
+|createdAt|string(date-time)|true|none|none|
+|bookmark|object|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|color|yellow|
+|color|red|
+|color|green|
+|color|blue|
 
 <h2 id="tocS_UploadedAsset">UploadedAsset</h2>
 <!-- backwards compatibility -->

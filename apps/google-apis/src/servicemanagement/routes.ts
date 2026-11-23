@@ -37,25 +37,6 @@ type HttpRuleType = {
   selector?: string
 }
 
-type PageType = { content?: string; name?: string; subpages?: PageType[] }
-
-const AdviceSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Useful description for why this advice was applied and what actions should be taken to mitigate any implied risks.',
-      }),
-  })
-  .openapi({
-    description:
-      'Generated advice about this change, used for providing more information about how a change will affect the existing service.',
-    required: [],
-  })
-  .openapi('Advice')
-
 const OptionSchema = z
   .object({
     name: z
@@ -198,48 +179,6 @@ const ApiSchema = z
   })
   .openapi('Api')
 
-const AuditLogConfigSchema = z
-  .object({
-    exemptedMembers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
-  })
-  .openapi({
-    description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
-    required: [],
-  })
-  .openapi('AuditLogConfig')
-
-const AuditConfigSchema = z
-  .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
-    required: [],
-  })
-  .openapi('AuditConfig')
-
 const JwtLocationSchema = z
   .object({
     cookie: z
@@ -320,6 +259,23 @@ const AuthProviderSchema = z
   })
   .openapi('AuthProvider')
 
+const OAuthRequirementsSchema = z
+  .object({
+    canonicalScopes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of publicly documented OAuth scopes that are allowed access. An OAuth token containing any of these scopes will be accepted. Example: canonical_scopes: https://www.googleapis.com/auth/calendar, https://www.googleapis.com/auth/calendar.read',
+      }),
+  })
+  .openapi({
+    description:
+      'OAuth scopes are a way to define data and permissions on data. For example, there are scopes defined for "Read-only access to Google Calendar" and "Access to Cloud Platform". Users can consent to a scope for an application, giving it permission to access that data on their behalf. OAuth scope specifications should be fairly coarse grained; a user will need to see and understand the text description of what your scope means. In most cases: use one or at most two OAuth scopes for an entire family of products. If your product has multiple APIs, you should probably be sharing the OAuth scope across all of those APIs. When you need finer grained OAuth consent screens: talk with your product management about how developers will use them in practice. Please note that even though each of the canonical scopes is enough for a request to be accepted and passed to the backend, a request can still fail due to the backend requiring additional scopes or permissions.',
+    required: [],
+  })
+  .openapi('OAuthRequirements')
+
 const AuthRequirementSchema = z
   .object({
     audiences: z
@@ -342,23 +298,6 @@ const AuthRequirementSchema = z
     required: [],
   })
   .openapi('AuthRequirement')
-
-const OAuthRequirementsSchema = z
-  .object({
-    canonicalScopes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of publicly documented OAuth scopes that are allowed access. An OAuth token containing any of these scopes will be accepted. Example: canonical_scopes: https://www.googleapis.com/auth/calendar, https://www.googleapis.com/auth/calendar.read',
-      }),
-  })
-  .openapi({
-    description:
-      'OAuth scopes are a way to define data and permissions on data. For example, there are scopes defined for "Read-only access to Google Calendar" and "Access to Cloud Platform". Users can consent to a scope for an application, giving it permission to access that data on their behalf. OAuth scope specifications should be fairly coarse grained; a user will need to see and understand the text description of what your scope means. In most cases: use one or at most two OAuth scopes for an entire family of products. If your product has multiple APIs, you should probably be sharing the OAuth scope across all of those APIs. When you need finer grained OAuth consent screens: talk with your product management about how developers will use them in practice. Please note that even though each of the canonical scopes is enough for a request to be accepted and passed to the backend, a request can still fail due to the backend requiring additional scopes or permissions.',
-    required: [],
-  })
-  .openapi('OAuthRequirements')
 
 const AuthenticationRuleSchema = z
   .object({
@@ -543,376 +482,6 @@ const BillingSchema = z
   })
   .openapi('Billing')
 
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-    }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const ConfigChangeSchema = z
-  .object({
-    advices: z
-      .array(AdviceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Collection of advice provided for this change, useful for determining the possible impact of this change.',
-      }),
-    changeType: z
-      .enum(['CHANGE_TYPE_UNSPECIFIED', 'ADDED', 'REMOVED', 'MODIFIED'])
-      .exactOptional()
-      .openapi({ description: 'The type for this change, either ADDED, REMOVED, or MODIFIED.' }),
-    element: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Object hierarchy path to the change, with levels separated by a \'.\' character. For repeated fields, an applicable unique identifier field is used for the index (usually selector, name, or id). For maps, the term \'key\' is used. If the field has no unique identifier, the numeric index is used. Examples: - visibility.rules[selector=="google.LibraryService.ListBooks"].restriction - quota.metric_rules[selector=="google"].metric_costs[key=="reads"].value - logging.producer_destinations[0]',
-      }),
-    newValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Value of the changed object in the new Service configuration, in JSON format. This field will not be populated if ChangeType == REMOVED.',
-      }),
-    oldValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Value of the changed object in the old Service configuration, in JSON format. This field will not be populated if ChangeType == ADDED.',
-      }),
-  })
-  .openapi({
-    description:
-      'Output generated from semantically comparing two versions of a service configuration. Includes detailed information about a field that have changed with applicable advice about potential consequences for the change, such as backwards-incompatibility.',
-    required: [],
-  })
-  .openapi('ConfigChange')
-
-const ChangeReportSchema = z
-  .object({
-    configChanges: z
-      .array(ConfigChangeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "List of changes between two service configurations. The changes will be alphabetically sorted based on the identifier of each change. A ConfigChange identifier is a dot separated path to the configuration. Example: visibility.rules[selector='LibraryService.CreateBook'].restriction",
-      }),
-  })
-  .openapi({
-    description:
-      'Change report associated with a particular service configuration. It contains a list of ConfigChanges based on the comparison between two service configurations.',
-    required: [],
-  })
-  .openapi('ChangeReport')
-
-const CommonLanguageSettingsSchema = z
-  .object({
-    destinations: z
-      .array(z.enum(['CLIENT_LIBRARY_DESTINATION_UNSPECIFIED', 'GITHUB', 'PACKAGE_MANAGER']))
-      .exactOptional()
-      .openapi({
-        description: 'The destination where API teams want this client library to be published.',
-      }),
-    referenceDocsUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest',
-      }),
-  })
-  .openapi({ description: 'Required information for every language.', required: [] })
-  .openapi('CommonLanguageSettings')
-
-const CppSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for C++ client libraries.', required: [] })
-  .openapi('CppSettings')
-
-const DotnetSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-    forcedNamespaceAliases: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespaces which must be aliased in snippets due to a known (but non-generator-predictable) naming collision',
-      }),
-    handwrittenSignatures: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Method signatures (in the form "service.method(signature)") which are provided separately, so shouldn\'t be generated. Snippets *calling* these methods are still generated, however.',
-      }),
-    ignoredResources: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of full resource types to ignore during generation. This is typically used for API-specific Location resources, which should be handled by the generator as if they were actually the common Location resources. Example entry: "documentai.googleapis.com/Location"',
-      }),
-    renamedResources: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Map from full resource types to the effective short name for the resource. This is used when otherwise resource named from different services would cause naming collisions. Example entry: "datalabeling.googleapis.com/Dataset": "DataLabelingDataset"',
-      }),
-    renamedServices: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Map from original service names to renamed versions. This is used when the default generated types would cause a naming conflict. (Neither name is fully-qualified.) Example: Subscriber to SubscriberServiceApi.',
-      }),
-  })
-  .openapi({ description: 'Settings for Dotnet client libraries.', required: [] })
-  .openapi('DotnetSettings')
-
-const GoSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Go client libraries.', required: [] })
-  .openapi('GoSettings')
-
-const JavaSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-    libraryPackage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The package name to use in Java. Clobbers the java_package option set in the protobuf. This should be used **only** by APIs who have already set the language_settings.java.package_name" field in gapic.yaml. API teams should use the protobuf java_package option where possible. Example of a YAML configuration:: publishing: java_settings: library_package: com.google.cloud.pubsub.v1',
-      }),
-    serviceClassNames: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Configure the Java class name to use instead of the service\'s for its corresponding generated GAPIC client. Keys are fully-qualified service names as they appear in the protobuf (including the full the language_settings.java.interface_names" field in gapic.yaml. API teams should otherwise use the service name as it appears in the protobuf. Example of a YAML configuration:: publishing: java_settings: service_class_names: - google.pubsub.v1.Publisher: TopicAdmin - google.pubsub.v1.Subscriber: SubscriptionAdmin',
-      }),
-  })
-  .openapi({ description: 'Settings for Java client libraries.', required: [] })
-  .openapi('JavaSettings')
-
-const NodeSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Node client libraries.', required: [] })
-  .openapi('NodeSettings')
-
-const PhpSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Php client libraries.', required: [] })
-  .openapi('PhpSettings')
-
-const PythonSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Python client libraries.', required: [] })
-  .openapi('PythonSettings')
-
-const RubySettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Ruby client libraries.', required: [] })
-  .openapi('RubySettings')
-
-const ClientLibrarySettingsSchema = z
-  .object({
-    cppSettings: CppSettingsSchema.exactOptional().openapi({
-      description: 'Settings for C++ client libraries.',
-    }),
-    dotnetSettings: DotnetSettingsSchema.exactOptional().openapi({
-      description: 'Settings for .NET client libraries.',
-    }),
-    goSettings: GoSettingsSchema.exactOptional().openapi({
-      description: 'Settings for Go client libraries.',
-    }),
-    javaSettings: JavaSettingsSchema.exactOptional().openapi({
-      description: 'Settings for legacy Java features, supported in the Service YAML.',
-    }),
-    launchStage: z
-      .enum([
-        'LAUNCH_STAGE_UNSPECIFIED',
-        'UNIMPLEMENTED',
-        'PRELAUNCH',
-        'EARLY_ACCESS',
-        'ALPHA',
-        'BETA',
-        'GA',
-        'DEPRECATED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Launch stage of this version of the API.' }),
-    nodeSettings: NodeSettingsSchema.exactOptional().openapi({
-      description: 'Settings for Node client libraries.',
-    }),
-    phpSettings: PhpSettingsSchema.exactOptional().openapi({
-      description: 'Settings for PHP client libraries.',
-    }),
-    pythonSettings: PythonSettingsSchema.exactOptional().openapi({
-      description: 'Settings for Python client libraries.',
-    }),
-    restNumericEnums: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When using transport=rest, the client request will encode enums as numbers rather than strings.',
-      }),
-    rubySettings: RubySettingsSchema.exactOptional().openapi({
-      description: 'Settings for Ruby client libraries.',
-    }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Version of the API to apply these settings to. This is the full protobuf package for the API, ending in the version element. Examples: "google.cloud.speech.v1" and "google.spanner.admin.database.v1".',
-      }),
-  })
-  .openapi({
-    description: 'Details about how and where to publish client libraries.',
-    required: [],
-  })
-  .openapi('ClientLibrarySettings')
-
-const ConfigFileSchema = z
-  .object({
-    fileContents: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The bytes that constitute the file.' }),
-    filePath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The file name of the configuration file (full or relative path).' }),
-    fileType: z
-      .enum([
-        'FILE_TYPE_UNSPECIFIED',
-        'SERVICE_CONFIG_YAML',
-        'OPEN_API_JSON',
-        'OPEN_API_YAML',
-        'FILE_DESCRIPTOR_SET_PROTO',
-        'PROTO_FILE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of configuration file this represents.' }),
-  })
-  .openapi({ description: 'Generic specification of a source configuration file', required: [] })
-  .openapi('ConfigFile')
-
-const ConfigRefSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of a service config. It must have the following format: "services/{service name}/configs/{config id}".',
-      }),
-  })
-  .openapi({
-    description: 'Represents a service configuration with its name and id.',
-    required: [],
-  })
-  .openapi('ConfigRef')
-
-const ConfigSourceSchema = z
-  .object({
-    files: z
-      .array(ConfigFileSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Set of source configuration files that are used to generate a service configuration (`google.api.Service`).',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique ID for a specific instance of this message, typically assigned by the client for tracking purpose. If empty, the server may choose to generate one instead.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a source file which is used to generate the service configuration defined by `google.api.Service`.',
-    required: [],
-  })
-  .openapi('ConfigSource')
-
 const ContextRuleSchema = z
   .object({
     allowedRequestExtensions: z
@@ -1029,32 +598,6 @@ const CustomErrorSchema = z
   })
   .openapi('CustomError')
 
-const DeleteServiceStrategySchema = z
-  .object({})
-  .openapi({
-    description:
-      'Strategy used to delete a service. This strategy is a placeholder only used by the system generated rollout to delete a service.',
-  })
-  .openapi('DeleteServiceStrategy')
-
-const DiagnosticSchema = z
-  .object({
-    kind: z
-      .enum(['WARNING', 'ERROR'])
-      .exactOptional()
-      .openapi({ description: 'The kind of diagnostic information provided.' }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'File name and line number of the error or warning.' }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Message describing the error or warning.' }),
-  })
-  .openapi({ description: 'Represents a diagnostic message (error or warning)', required: [] })
-  .openapi('Diagnostic')
-
 const PageSchema: z.ZodType<PageType> = z
   .lazy(() =>
     z
@@ -1165,11 +708,6 @@ const DocumentationSchema = z
   })
   .openapi('Documentation')
 
-const EnableServiceResponseSchema = z
-  .object({})
-  .openapi({ description: 'Operation payload for EnableService method.' })
-  .openapi('EnableServiceResponse')
-
 const EndpointSchema = z
   .object({
     aliases: z
@@ -1244,176 +782,6 @@ const EnumSchema = z
   })
   .openapi({ description: 'Enum type definition.', required: [] })
   .openapi('Enum')
-
-const FieldSchema = z
-  .object({
-    cardinality: z
-      .enum([
-        'CARDINALITY_UNKNOWN',
-        'CARDINALITY_OPTIONAL',
-        'CARDINALITY_REQUIRED',
-        'CARDINALITY_REPEATED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The field cardinality.' }),
-    defaultValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The string value of the default value of this field. Proto2 syntax only.',
-      }),
-    jsonName: z.string().exactOptional().openapi({ description: 'The field JSON name.' }),
-    kind: z
-      .enum([
-        'TYPE_UNKNOWN',
-        'TYPE_DOUBLE',
-        'TYPE_FLOAT',
-        'TYPE_INT64',
-        'TYPE_UINT64',
-        'TYPE_INT32',
-        'TYPE_FIXED64',
-        'TYPE_FIXED32',
-        'TYPE_BOOL',
-        'TYPE_STRING',
-        'TYPE_GROUP',
-        'TYPE_MESSAGE',
-        'TYPE_BYTES',
-        'TYPE_UINT32',
-        'TYPE_ENUM',
-        'TYPE_SFIXED32',
-        'TYPE_SFIXED64',
-        'TYPE_SINT32',
-        'TYPE_SINT64',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The field type.' }),
-    name: z.string().exactOptional().openapi({ description: 'The field name.' }),
-    number: z.int32().exactOptional().openapi({ description: 'The field number.' }),
-    oneofIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list.',
-      }),
-    options: z
-      .array(OptionSchema)
-      .exactOptional()
-      .openapi({ description: 'The protocol buffer options.' }),
-    packed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to use alternative packed wire representation.' }),
-    typeUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The field type URL, without the scheme, for message or enumeration types. Example: `"type.googleapis.com/google.protobuf.Timestamp"`.',
-      }),
-  })
-  .openapi({ description: 'A single field of a message type.', required: [] })
-  .openapi('Field')
-
-const FlowErrorDetailsSchema = z
-  .object({
-    exceptionType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of exception (as a class name).' }),
-    flowStepId: z.string().exactOptional().openapi({ description: 'The step that failed.' }),
-  })
-  .openapi({
-    description:
-      'Encapsulation of flow-specific error details for debugging. Used as a details field on an error Status, not intended for external use.',
-    required: [],
-  })
-  .openapi('FlowErrorDetails')
-
-const GenerateConfigReportRequestSchema = z
-  .object({
-    newConfig: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Service configuration for which we want to generate the report. For this version of API, the supported types are google.api.servicemanagement.v1.ConfigRef, google.api.servicemanagement.v1.ConfigSource, and google.api.Service',
-      }),
-    oldConfig: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Service configuration against which the comparison will be done. For this version of API, the supported types are google.api.servicemanagement.v1.ConfigRef, google.api.servicemanagement.v1.ConfigSource, and google.api.Service',
-      }),
-  })
-  .openapi({ description: 'Request message for GenerateConfigReport method.', required: [] })
-  .openapi('GenerateConfigReportRequest')
-
-const GenerateConfigReportResponseSchema = z
-  .object({
-    changeReports: z
-      .array(ChangeReportSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'list of ChangeReport, each corresponding to comparison between two service configurations.',
-      }),
-    diagnostics: z
-      .array(DiagnosticSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Errors / Linter warnings associated with the service definition this report belongs to.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the service configuration this report belongs to.' }),
-    serviceName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the service this report belongs to.' }),
-  })
-  .openapi({ description: 'Response message for GenerateConfigReport method.', required: [] })
-  .openapi('GenerateConfigReportResponse')
-
-const GetPolicyOptionsSchema = z
-  .object({
-    requestedPolicyVersion: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The maximum policy version that will be used to format the policy. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for policies with any conditional role bindings must specify version 3. Policies with no conditional role bindings may specify any valid value or leave the field unset. The policy in the response might use the policy version that you specified, or it might use a lower policy version. For example, if you specify version 3, but the policy has no conditional role bindings, the response uses version 1. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-      }),
-  })
-  .openapi({ description: 'Encapsulates settings provided to GetIamPolicy.', required: [] })
-  .openapi('GetPolicyOptions')
-
-const GetIamPolicyRequestSchema = z
-  .object({
-    options: GetPolicyOptionsSchema.exactOptional().openapi({
-      description:
-        'OPTIONAL: A `GetPolicyOptions` object for specifying options to `GetIamPolicy`.',
-    }),
-  })
-  .openapi({ description: 'Request message for `GetIamPolicy` method.', required: [] })
-  .openapi('GetIamPolicyRequest')
 
 const HttpRuleSchema: z.ZodType<HttpRuleType> = z
   .lazy(() =>
@@ -1509,131 +877,6 @@ const HttpSchema = z
   })
   .openapi('Http')
 
-const LabelDescriptorSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A human-readable description for the label.' }),
-    key: z.string().exactOptional().openapi({ description: 'The label key.' }),
-    valueType: z
-      .enum(['STRING', 'BOOL', 'INT64'])
-      .exactOptional()
-      .openapi({ description: 'The type of data that can be assigned to the label.' }),
-  })
-  .openapi({ description: 'A description of a label.', required: [] })
-  .openapi('LabelDescriptor')
-
-const StatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('Status')
-
-const OperationSchema = z
-  .object({
-    done: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.',
-      }),
-    error: StatusSchema.exactOptional().openapi({
-      description: 'The error result of the operation in case of failure or cancellation.',
-    }),
-    metadata: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.',
-      }),
-    response: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The normal response of the operation in case of success. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.',
-      }),
-  })
-  .openapi({
-    description:
-      'This resource represents a long-running operation that is the result of a network API call.',
-    required: [],
-  })
-  .openapi('Operation')
-
-const ListOperationsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The standard List next-page token.' }),
-    operations: z
-      .array(OperationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A list of operations that matches the specified filter in the request.',
-      }),
-  })
-  .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
-  .openapi('ListOperationsResponse')
-
 const LoggingDestinationSchema = z
   .object({
     logs: z
@@ -1681,6 +924,21 @@ const LoggingSchema = z
     required: [],
   })
   .openapi('Logging')
+
+const LabelDescriptorSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A human-readable description for the label.' }),
+    key: z.string().exactOptional().openapi({ description: 'The label key.' }),
+    valueType: z
+      .enum(['STRING', 'BOOL', 'INT64'])
+      .exactOptional()
+      .openapi({ description: 'The type of data that can be assigned to the label.' }),
+  })
+  .openapi({ description: 'A description of a label.', required: [] })
+  .openapi('LabelDescriptor')
 
 const LogDescriptorSchema = z
   .object({
@@ -1954,6 +1212,190 @@ const MonitoringSchema = z
     required: [],
   })
   .openapi('Monitoring')
+
+const CommonLanguageSettingsSchema = z
+  .object({
+    destinations: z
+      .array(z.enum(['CLIENT_LIBRARY_DESTINATION_UNSPECIFIED', 'GITHUB', 'PACKAGE_MANAGER']))
+      .exactOptional()
+      .openapi({
+        description: 'The destination where API teams want this client library to be published.',
+      }),
+    referenceDocsUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest',
+      }),
+  })
+  .openapi({ description: 'Required information for every language.', required: [] })
+  .openapi('CommonLanguageSettings')
+
+const CppSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for C++ client libraries.', required: [] })
+  .openapi('CppSettings')
+
+const DotnetSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+    forcedNamespaceAliases: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespaces which must be aliased in snippets due to a known (but non-generator-predictable) naming collision',
+      }),
+    handwrittenSignatures: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Method signatures (in the form "service.method(signature)") which are provided separately, so shouldn\'t be generated. Snippets *calling* these methods are still generated, however.',
+      }),
+    ignoredResources: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of full resource types to ignore during generation. This is typically used for API-specific Location resources, which should be handled by the generator as if they were actually the common Location resources. Example entry: "documentai.googleapis.com/Location"',
+      }),
+    renamedResources: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Map from full resource types to the effective short name for the resource. This is used when otherwise resource named from different services would cause naming collisions. Example entry: "datalabeling.googleapis.com/Dataset": "DataLabelingDataset"',
+      }),
+    renamedServices: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Map from original service names to renamed versions. This is used when the default generated types would cause a naming conflict. (Neither name is fully-qualified.) Example: Subscriber to SubscriberServiceApi.',
+      }),
+  })
+  .openapi({ description: 'Settings for Dotnet client libraries.', required: [] })
+  .openapi('DotnetSettings')
+
+const GoSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Go client libraries.', required: [] })
+  .openapi('GoSettings')
+
+const JavaSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+    libraryPackage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The package name to use in Java. Clobbers the java_package option set in the protobuf. This should be used **only** by APIs who have already set the language_settings.java.package_name" field in gapic.yaml. API teams should use the protobuf java_package option where possible. Example of a YAML configuration:: publishing: java_settings: library_package: com.google.cloud.pubsub.v1',
+      }),
+    serviceClassNames: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Configure the Java class name to use instead of the service\'s for its corresponding generated GAPIC client. Keys are fully-qualified service names as they appear in the protobuf (including the full the language_settings.java.interface_names" field in gapic.yaml. API teams should otherwise use the service name as it appears in the protobuf. Example of a YAML configuration:: publishing: java_settings: service_class_names: - google.pubsub.v1.Publisher: TopicAdmin - google.pubsub.v1.Subscriber: SubscriptionAdmin',
+      }),
+  })
+  .openapi({ description: 'Settings for Java client libraries.', required: [] })
+  .openapi('JavaSettings')
+
+const NodeSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Node client libraries.', required: [] })
+  .openapi('NodeSettings')
+
+const PhpSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Php client libraries.', required: [] })
+  .openapi('PhpSettings')
+
+const PythonSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Python client libraries.', required: [] })
+  .openapi('PythonSettings')
+
+const RubySettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Ruby client libraries.', required: [] })
+  .openapi('RubySettings')
+
+const ClientLibrarySettingsSchema = z
+  .object({
+    cppSettings: CppSettingsSchema.exactOptional().openapi({
+      description: 'Settings for C++ client libraries.',
+    }),
+    dotnetSettings: DotnetSettingsSchema.exactOptional().openapi({
+      description: 'Settings for .NET client libraries.',
+    }),
+    goSettings: GoSettingsSchema.exactOptional().openapi({
+      description: 'Settings for Go client libraries.',
+    }),
+    javaSettings: JavaSettingsSchema.exactOptional().openapi({
+      description: 'Settings for legacy Java features, supported in the Service YAML.',
+    }),
+    launchStage: z
+      .enum([
+        'LAUNCH_STAGE_UNSPECIFIED',
+        'UNIMPLEMENTED',
+        'PRELAUNCH',
+        'EARLY_ACCESS',
+        'ALPHA',
+        'BETA',
+        'GA',
+        'DEPRECATED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Launch stage of this version of the API.' }),
+    nodeSettings: NodeSettingsSchema.exactOptional().openapi({
+      description: 'Settings for Node client libraries.',
+    }),
+    phpSettings: PhpSettingsSchema.exactOptional().openapi({
+      description: 'Settings for PHP client libraries.',
+    }),
+    pythonSettings: PythonSettingsSchema.exactOptional().openapi({
+      description: 'Settings for Python client libraries.',
+    }),
+    restNumericEnums: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When using transport=rest, the client request will encode enums as numbers rather than strings.',
+      }),
+    rubySettings: RubySettingsSchema.exactOptional().openapi({
+      description: 'Settings for Ruby client libraries.',
+    }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Version of the API to apply these settings to. This is the full protobuf package for the API, ending in the version element. Examples: "google.cloud.speech.v1" and "google.spanner.admin.database.v1".',
+      }),
+  })
+  .openapi({
+    description: 'Details about how and where to publish client libraries.',
+    required: [],
+  })
+  .openapi('ClientLibrarySettings')
 
 const LongRunningSchema = z
   .object({
@@ -2304,6 +1746,76 @@ const SystemParametersSchema = z
   })
   .openapi('SystemParameters')
 
+const FieldSchema = z
+  .object({
+    cardinality: z
+      .enum([
+        'CARDINALITY_UNKNOWN',
+        'CARDINALITY_OPTIONAL',
+        'CARDINALITY_REQUIRED',
+        'CARDINALITY_REPEATED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The field cardinality.' }),
+    defaultValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The string value of the default value of this field. Proto2 syntax only.',
+      }),
+    jsonName: z.string().exactOptional().openapi({ description: 'The field JSON name.' }),
+    kind: z
+      .enum([
+        'TYPE_UNKNOWN',
+        'TYPE_DOUBLE',
+        'TYPE_FLOAT',
+        'TYPE_INT64',
+        'TYPE_UINT64',
+        'TYPE_INT32',
+        'TYPE_FIXED64',
+        'TYPE_FIXED32',
+        'TYPE_BOOL',
+        'TYPE_STRING',
+        'TYPE_GROUP',
+        'TYPE_MESSAGE',
+        'TYPE_BYTES',
+        'TYPE_UINT32',
+        'TYPE_ENUM',
+        'TYPE_SFIXED32',
+        'TYPE_SFIXED64',
+        'TYPE_SINT32',
+        'TYPE_SINT64',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The field type.' }),
+    name: z.string().exactOptional().openapi({ description: 'The field name.' }),
+    number: z.int32().exactOptional().openapi({ description: 'The field number.' }),
+    oneofIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list.',
+      }),
+    options: z
+      .array(OptionSchema)
+      .exactOptional()
+      .openapi({ description: 'The protocol buffer options.' }),
+    packed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to use alternative packed wire representation.' }),
+    typeUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The field type URL, without the scheme, for message or enumeration types. Example: `"type.googleapis.com/google.protobuf.Timestamp"`.',
+      }),
+  })
+  .openapi({ description: 'A single field of a message type.', required: [] })
+  .openapi('Field')
+
 const TypeSchema = z
   .object({
     edition: z
@@ -2391,7 +1903,38 @@ const UsageSchema = z
   .openapi({ description: 'Configuration controlling usage of a service.', required: [] })
   .openapi('Usage')
 
-const ServiceSchema = z
+type ServiceType = {
+  apis?: z.infer<typeof ApiSchema>[]
+  authentication?: z.infer<typeof AuthenticationSchema>
+  backend?: z.infer<typeof BackendSchema>
+  billing?: z.infer<typeof BillingSchema>
+  configVersion?: number
+  context?: z.infer<typeof ContextSchema>
+  control?: z.infer<typeof ControlSchema>
+  customError?: z.infer<typeof CustomErrorSchema>
+  documentation?: z.infer<typeof DocumentationSchema>
+  endpoints?: z.infer<typeof EndpointSchema>[]
+  enums?: z.infer<typeof EnumSchema>[]
+  http?: z.infer<typeof HttpSchema>
+  id?: string
+  logging?: z.infer<typeof LoggingSchema>
+  logs?: z.infer<typeof LogDescriptorSchema>[]
+  metrics?: z.infer<typeof MetricDescriptorSchema>[]
+  monitoredResources?: z.infer<typeof MonitoredResourceDescriptorSchema>[]
+  monitoring?: z.infer<typeof MonitoringSchema>
+  name?: string
+  producerProjectId?: string
+  publishing?: z.infer<typeof PublishingSchema>
+  quota?: z.infer<typeof QuotaSchema>
+  sourceInfo?: z.infer<typeof SourceInfoSchema>
+  systemParameters?: z.infer<typeof SystemParametersSchema>
+  systemTypes?: z.infer<typeof TypeSchema>[]
+  title?: string
+  types?: z.infer<typeof TypeSchema>[]
+  usage?: z.infer<typeof UsageSchema>
+}
+
+const ServiceSchema: z.ZodType<ServiceType> = z
   .object({
     apis: z
       .array(ApiSchema)
@@ -2517,7 +2060,502 @@ const ServiceSchema = z
   })
   .openapi('Service')
 
-const ListServiceConfigsResponseSchema = z
+type ListServiceConfigsResponseType = {
+  nextPageToken?: string
+  serviceConfigs?: z.infer<typeof ServiceSchema>[]
+}
+
+type PageType = { content?: string; name?: string; subpages?: PageType[] }
+
+type SubmitConfigSourceResponseType = { serviceConfig?: z.infer<typeof ServiceSchema> }
+
+const AdviceSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Useful description for why this advice was applied and what actions should be taken to mitigate any implied risks.',
+      }),
+  })
+  .openapi({
+    description:
+      'Generated advice about this change, used for providing more information about how a change will affect the existing service.',
+    required: [],
+  })
+  .openapi('Advice')
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const ConfigChangeSchema = z
+  .object({
+    advices: z
+      .array(AdviceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Collection of advice provided for this change, useful for determining the possible impact of this change.',
+      }),
+    changeType: z
+      .enum(['CHANGE_TYPE_UNSPECIFIED', 'ADDED', 'REMOVED', 'MODIFIED'])
+      .exactOptional()
+      .openapi({ description: 'The type for this change, either ADDED, REMOVED, or MODIFIED.' }),
+    element: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Object hierarchy path to the change, with levels separated by a \'.\' character. For repeated fields, an applicable unique identifier field is used for the index (usually selector, name, or id). For maps, the term \'key\' is used. If the field has no unique identifier, the numeric index is used. Examples: - visibility.rules[selector=="google.LibraryService.ListBooks"].restriction - quota.metric_rules[selector=="google"].metric_costs[key=="reads"].value - logging.producer_destinations[0]',
+      }),
+    newValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value of the changed object in the new Service configuration, in JSON format. This field will not be populated if ChangeType == REMOVED.',
+      }),
+    oldValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value of the changed object in the old Service configuration, in JSON format. This field will not be populated if ChangeType == ADDED.',
+      }),
+  })
+  .openapi({
+    description:
+      'Output generated from semantically comparing two versions of a service configuration. Includes detailed information about a field that have changed with applicable advice about potential consequences for the change, such as backwards-incompatibility.',
+    required: [],
+  })
+  .openapi('ConfigChange')
+
+const ChangeReportSchema = z
+  .object({
+    configChanges: z
+      .array(ConfigChangeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "List of changes between two service configurations. The changes will be alphabetically sorted based on the identifier of each change. A ConfigChange identifier is a dot separated path to the configuration. Example: visibility.rules[selector='LibraryService.CreateBook'].restriction",
+      }),
+  })
+  .openapi({
+    description:
+      'Change report associated with a particular service configuration. It contains a list of ConfigChanges based on the comparison between two service configurations.',
+    required: [],
+  })
+  .openapi('ChangeReport')
+
+const ConfigFileSchema = z
+  .object({
+    fileContents: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bytes that constitute the file.' }),
+    filePath: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The file name of the configuration file (full or relative path).' }),
+    fileType: z
+      .enum([
+        'FILE_TYPE_UNSPECIFIED',
+        'SERVICE_CONFIG_YAML',
+        'OPEN_API_JSON',
+        'OPEN_API_YAML',
+        'FILE_DESCRIPTOR_SET_PROTO',
+        'PROTO_FILE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of configuration file this represents.' }),
+  })
+  .openapi({ description: 'Generic specification of a source configuration file', required: [] })
+  .openapi('ConfigFile')
+
+const ConfigRefSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of a service config. It must have the following format: "services/{service name}/configs/{config id}".',
+      }),
+  })
+  .openapi({
+    description: 'Represents a service configuration with its name and id.',
+    required: [],
+  })
+  .openapi('ConfigRef')
+
+const ConfigSourceSchema = z
+  .object({
+    files: z
+      .array(ConfigFileSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set of source configuration files that are used to generate a service configuration (`google.api.Service`).',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique ID for a specific instance of this message, typically assigned by the client for tracking purpose. If empty, the server may choose to generate one instead.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a source file which is used to generate the service configuration defined by `google.api.Service`.',
+    required: [],
+  })
+  .openapi('ConfigSource')
+
+const DeleteServiceStrategySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Strategy used to delete a service. This strategy is a placeholder only used by the system generated rollout to delete a service.',
+  })
+  .openapi('DeleteServiceStrategy')
+
+const DiagnosticSchema = z
+  .object({
+    kind: z
+      .enum(['WARNING', 'ERROR'])
+      .exactOptional()
+      .openapi({ description: 'The kind of diagnostic information provided.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'File name and line number of the error or warning.' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Message describing the error or warning.' }),
+  })
+  .openapi({ description: 'Represents a diagnostic message (error or warning)', required: [] })
+  .openapi('Diagnostic')
+
+const EnableServiceResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'Operation payload for EnableService method.' })
+  .openapi('EnableServiceResponse')
+
+const FlowErrorDetailsSchema = z
+  .object({
+    exceptionType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of exception (as a class name).' }),
+    flowStepId: z.string().exactOptional().openapi({ description: 'The step that failed.' }),
+  })
+  .openapi({
+    description:
+      'Encapsulation of flow-specific error details for debugging. Used as a details field on an error Status, not intended for external use.',
+    required: [],
+  })
+  .openapi('FlowErrorDetails')
+
+const GenerateConfigReportRequestSchema = z
+  .object({
+    newConfig: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Service configuration for which we want to generate the report. For this version of API, the supported types are google.api.servicemanagement.v1.ConfigRef, google.api.servicemanagement.v1.ConfigSource, and google.api.Service',
+      }),
+    oldConfig: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Service configuration against which the comparison will be done. For this version of API, the supported types are google.api.servicemanagement.v1.ConfigRef, google.api.servicemanagement.v1.ConfigSource, and google.api.Service',
+      }),
+  })
+  .openapi({ description: 'Request message for GenerateConfigReport method.', required: [] })
+  .openapi('GenerateConfigReportRequest')
+
+const GenerateConfigReportResponseSchema = z
+  .object({
+    changeReports: z
+      .array(ChangeReportSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'list of ChangeReport, each corresponding to comparison between two service configurations.',
+      }),
+    diagnostics: z
+      .array(DiagnosticSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Errors / Linter warnings associated with the service definition this report belongs to.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the service configuration this report belongs to.' }),
+    serviceName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the service this report belongs to.' }),
+  })
+  .openapi({ description: 'Response message for GenerateConfigReport method.', required: [] })
+  .openapi('GenerateConfigReportResponse')
+
+const GetPolicyOptionsSchema = z
+  .object({
+    requestedPolicyVersion: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum policy version that will be used to format the policy. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for policies with any conditional role bindings must specify version 3. Policies with no conditional role bindings may specify any valid value or leave the field unset. The policy in the response might use the policy version that you specified, or it might use a lower policy version. For example, if you specify version 3, but the policy has no conditional role bindings, the response uses version 1. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+      }),
+  })
+  .openapi({ description: 'Encapsulates settings provided to GetIamPolicy.', required: [] })
+  .openapi('GetPolicyOptions')
+
+const GetIamPolicyRequestSchema = z
+  .object({
+    options: GetPolicyOptionsSchema.exactOptional().openapi({
+      description:
+        'OPTIONAL: A `GetPolicyOptions` object for specifying options to `GetIamPolicy`.',
+    }),
+  })
+  .openapi({ description: 'Request message for `GetIamPolicy` method.', required: [] })
+  .openapi('GetIamPolicyRequest')
+
+const StatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('Status')
+
+const OperationSchema = z
+  .object({
+    done: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.',
+      }),
+    error: StatusSchema.exactOptional().openapi({
+      description: 'The error result of the operation in case of failure or cancellation.',
+    }),
+    metadata: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.',
+      }),
+    response: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The normal response of the operation in case of success. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.',
+      }),
+  })
+  .openapi({
+    description:
+      'This resource represents a long-running operation that is the result of a network API call.',
+    required: [],
+  })
+  .openapi('Operation')
+
+const ListOperationsResponseSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The standard List next-page token.' }),
+    operations: z
+      .array(OperationSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A list of operations that matches the specified filter in the request.',
+      }),
+  })
+  .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
+  .openapi('ListOperationsResponse')
+
+const ListServiceConfigsResponseSchema: z.ZodType<ListServiceConfigsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2812,7 +2850,7 @@ const SubmitConfigSourceRequestSchema = z
   .openapi({ description: 'Request message for SubmitConfigSource method.', required: [] })
   .openapi('SubmitConfigSourceRequest')
 
-const SubmitConfigSourceResponseSchema = z
+const SubmitConfigSourceResponseSchema: z.ZodType<SubmitConfigSourceResponseType> = z
   .object({
     serviceConfig: ServiceSchema.exactOptional().openapi({
       description: 'The generated service configuration.',

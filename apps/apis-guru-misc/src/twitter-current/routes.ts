@@ -1,218 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const RuleTagSchema = z
-  .string()
-  .openapi({
-    description: 'A tag meant for the labeling of user provided rules.',
-    example: 'Non-retweeted coffee Tweets',
-  })
-  .openapi('RuleTag')
-
-const RuleValueSchema = z
-  .string()
-  .openapi({ description: 'The filterlang value of the rule.', example: 'coffee -is:retweet' })
-  .openapi('RuleValue')
-
-const RuleNoIdSchema = z
-  .object({ tag: RuleTagSchema.exactOptional(), value: RuleValueSchema })
-  .openapi({ description: 'A user-provided stream filtering rule.', required: ['value'] })
-  .openapi('RuleNoId')
-
-const AddRulesRequestSchema = z
-  .object({ add: z.array(RuleNoIdSchema) })
-  .openapi({
-    description: 'A request to add a user-specified stream filtering rule.',
-    required: ['add'],
-  })
-  .openapi('AddRulesRequest')
-
-const RuleIdSchema = z
-  .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({ description: 'Unique identifier of this rule.', example: '120897978112909812' })
-  .openapi('RuleId')
-
-const DeleteRulesRequestSchema = z
-  .object({
-    delete: z
-      .object({
-        ids: z
-          .array(RuleIdSchema)
-          .exactOptional()
-          .openapi({ description: 'IDs of all deleted user-specified stream filtering rules.' }),
-        values: z
-          .array(RuleValueSchema)
-          .exactOptional()
-          .openapi({ description: 'Values of all deleted user-specified stream filtering rules.' }),
-      })
-      .openapi({
-        description: 'IDs and values of all deleted user-specified stream filtering rules.',
-        required: [],
-      }),
-  })
-  .openapi({
-    description: 'A response from deleting user-specified stream filtering rules.',
-    required: ['delete'],
-  })
-  .openapi('DeleteRulesRequest')
-
-const AddOrDeleteRulesRequestSchema = z
-  .xor([AddRulesRequestSchema, DeleteRulesRequestSchema])
-  .openapi('AddOrDeleteRulesRequest')
-
-const RuleSchema = z
-  .object({
-    id: RuleIdSchema.exactOptional(),
-    tag: RuleTagSchema.exactOptional(),
-    value: RuleValueSchema,
-  })
-  .openapi({ description: 'A user-provided stream filtering rule.', required: ['value'] })
-  .openapi('Rule')
-
-const ProblemSchema = z
-  .object({
-    detail: z.string().exactOptional(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.string(),
-  })
-  .openapi({
-    description:
-      'An HTTP Problem Details object, as defined in IETF RFC 7807 (https://tools.ietf.org/html/rfc7807).',
-    discriminator: {
-      mapping: {
-        'about:blank': '#/components/schemas/GenericProblem',
-        'https://api.twitter.com/2/problems/client-disconnected':
-          '#/components/schemas/ClientDisconnectedProblem',
-        'https://api.twitter.com/2/problems/client-forbidden':
-          '#/components/schemas/ClientForbiddenProblem',
-        'https://api.twitter.com/2/problems/conflict': '#/components/schemas/ConflictProblem',
-        'https://api.twitter.com/2/problems/disallowed-resource':
-          '#/components/schemas/DisallowedResourceProblem',
-        'https://api.twitter.com/2/problems/duplicate-rules':
-          '#/components/schemas/DuplicateRuleProblem',
-        'https://api.twitter.com/2/problems/invalid-request':
-          '#/components/schemas/InvalidRequestProblem',
-        'https://api.twitter.com/2/problems/invalid-rules':
-          '#/components/schemas/InvalidRuleProblem',
-        'https://api.twitter.com/2/problems/noncompliant-rules':
-          '#/components/schemas/NonCompliantRulesProblem',
-        'https://api.twitter.com/2/problems/not-authorized-for-field':
-          '#/components/schemas/FieldUnauthorizedProblem',
-        'https://api.twitter.com/2/problems/not-authorized-for-resource':
-          '#/components/schemas/ResourceUnauthorizedProblem',
-        'https://api.twitter.com/2/problems/oauth1-permissions':
-          '#/components/schemas/Oauth1PermissionsProblem',
-        'https://api.twitter.com/2/problems/operational-disconnect':
-          '#/components/schemas/OperationalDisconnectProblem',
-        'https://api.twitter.com/2/problems/resource-not-found':
-          '#/components/schemas/ResourceNotFoundProblem',
-        'https://api.twitter.com/2/problems/resource-unavailable':
-          '#/components/schemas/ResourceUnavailableProblem',
-        'https://api.twitter.com/2/problems/rule-cap': '#/components/schemas/RulesCapProblem',
-        'https://api.twitter.com/2/problems/streaming-connection':
-          '#/components/schemas/ConnectionExceptionProblem',
-        'https://api.twitter.com/2/problems/unsupported-authentication':
-          '#/components/schemas/UnsupportedAuthenticationProblem',
-        'https://api.twitter.com/2/problems/usage-capped':
-          '#/components/schemas/UsageCapExceededProblem',
-      },
-      propertyName: 'type',
-    },
-    required: ['type', 'title'],
-  })
-  .openapi('Problem')
-
-const NextTokenSchema = z
-  .string()
-  .min(1)
-  .openapi({ description: 'The next token.' })
-  .openapi('NextToken')
-
-const RulesRequestSummarySchema = z
-  .xor([
-    z
-      .object({
-        created: z
-          .int32()
-          .openapi({
-            description: 'Number of user-specified stream filtering rules that were created.',
-            example: 1,
-          }),
-        invalid: z
-          .int32()
-          .openapi({
-            description: 'Number of invalid user-specified stream filtering rules.',
-            example: 1,
-          }),
-        not_created: z
-          .int32()
-          .openapi({
-            description: 'Number of user-specified stream filtering rules that were not created.',
-            example: 1,
-          }),
-        valid: z
-          .int32()
-          .openapi({
-            description: 'Number of valid user-specified stream filtering rules.',
-            example: 1,
-          }),
-      })
-      .openapi({
-        description:
-          'A summary of the results of the addition of user-specified stream filtering rules.',
-        required: ['created', 'not_created', 'valid', 'invalid'],
-      }),
-    z
-      .object({
-        deleted: z
-          .int32()
-          .openapi({
-            description: 'Number of user-specified stream filtering rules that were deleted.',
-          }),
-        not_deleted: z
-          .int32()
-          .openapi({
-            description: 'Number of user-specified stream filtering rules that were not deleted.',
-          }),
-      })
-      .openapi({ required: ['deleted', 'not_deleted'] }),
-  ])
-  .openapi('RulesRequestSummary')
-
-const RulesResponseMetadataSchema = z
-  .object({
-    next_token: NextTokenSchema.exactOptional(),
-    result_count: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of Rules in result set.' }),
-    sent: z.string(),
-    summary: RulesRequestSummarySchema.exactOptional(),
-  })
-  .openapi({ required: ['sent'] })
-  .openapi('RulesResponseMetadata')
-
-const AddOrDeleteRulesResponseSchema = z
-  .object({
-    data: z
-      .array(RuleSchema)
-      .exactOptional()
-      .openapi({ description: 'All user-specified stream filtering rules that were created.' }),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    meta: RulesResponseMetadataSchema,
-  })
-  .openapi({
-    description: 'A response from modifying user-specified stream filtering rules.',
-    required: ['meta'],
-  })
-  .openapi('AddOrDeleteRulesResponse')
-
-const AggregateSchema = z
-  .int32()
-  .openapi({ description: 'The sum of results returned in this response.' })
-  .openapi('Aggregate')
-
 const MediaHeightSchema = z
   .int()
   .min(0)
@@ -240,525 +27,27 @@ const MediaSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'type',
       mapping: {
         animated_gif: '#/components/schemas/AnimatedGif',
         photo: '#/components/schemas/Photo',
         video: '#/components/schemas/Video',
       },
-      propertyName: 'type',
     },
     required: ['type'],
   })
   .openapi('Media')
 
-const VariantSchema = z
-  .object({
-    bit_rate: z.int().exactOptional().openapi({ description: 'The bit rate of the media.' }),
-    content_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The content type of the media.' }),
-    url: z.url().exactOptional().openapi({ description: 'The url to the media.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Variant')
-
-const VariantsSchema = z
-  .array(VariantSchema)
-  .openapi({ description: 'An array of all available variants of the media.' })
-  .openapi('Variants')
-
-const AnimatedGifSchema = MediaSchema.and(
-  z
-    .object({
-      preview_image_url: z.url().exactOptional(),
-      variants: VariantsSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('AnimatedGif')
-
-const BlockUserMutationResponseSchema = z
-  .object({
-    data: z
-      .object({ blocking: z.boolean().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BlockUserMutationResponse')
-
-const UserIdSchema = z
+const PlaceIdSchema = z
   .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({
-    description:
-      'Unique identifier of this User. This is returned as a string in order to avoid complications with languages and tools that cannot handle large integers.',
-    example: '2244994945',
-  })
-  .openapi('UserId')
-
-const BlockUserRequestSchema = z
-  .object({ target_user_id: UserIdSchema })
-  .openapi({ required: ['target_user_id'] })
-  .openapi('BlockUserRequest')
-
-const TweetIdSchema = z
-  .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({
-    description:
-      'Unique identifier of this Tweet. This is returned as a string in order to avoid complications with languages and tools that cannot handle large integers.',
-    example: '1346889436626259968',
-  })
-  .openapi('TweetId')
-
-const BookmarkAddRequestSchema = z
-  .object({ tweet_id: TweetIdSchema })
-  .openapi({ required: ['tweet_id'] })
-  .openapi('BookmarkAddRequest')
-
-const BookmarkMutationResponseSchema = z
-  .object({
-    data: z
-      .object({ bookmarked: z.boolean().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BookmarkMutationResponse')
-
-const EntityIndicesInclusiveExclusiveSchema = z
-  .object({
-    end: z
-      .int()
-      .min(0)
-      .openapi({
-        description:
-          'Index (zero-based) at which position this entity ends.  The index is exclusive.',
-        example: 61,
-      }),
-    start: z
-      .int()
-      .min(0)
-      .openapi({
-        description:
-          'Index (zero-based) at which position this entity starts.  The index is inclusive.',
-        example: 50,
-      }),
-  })
-  .openapi({
-    description:
-      'Represent a boundary range (start and end index) for a recognized entity (for example a hashtag or a mention). `start` must be smaller than `end`.  The start index is inclusive, the end index is exclusive.',
-    required: ['start', 'end'],
-  })
-  .openapi('EntityIndicesInclusiveExclusive')
-
-const CashtagFieldsSchema = z
-  .object({ tag: z.string().openapi({ example: 'TWTR' }) })
-  .openapi({
-    description:
-      'Represent the portion of text recognized as a Cashtag, and its start and end position within the text.',
-    required: ['tag'],
-  })
-  .openapi('CashtagFields')
-
-const CashtagEntitySchema =
-  EntityIndicesInclusiveExclusiveSchema.and(CashtagFieldsSchema).openapi('CashtagEntity')
-
-const ClientDisconnectedProblemSchema = ProblemSchema.openapi({
-  description: 'Your client has gone away.',
-}).openapi('ClientDisconnectedProblem')
-
-const ClientForbiddenProblemSchema = ProblemSchema.and(
-  z
-    .object({
-      reason: z.enum(['official-client-forbidden', 'client-not-enrolled']).exactOptional(),
-      registration_url: z.url().exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'A problem that indicates your client is forbidden from making this request.',
-  })
-  .openapi('ClientForbiddenProblem')
-
-const CreatedAtSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'Creation time of the compliance job.',
-    example: '2021-01-06T18:40:40.000Z',
-  })
-  .openapi('CreatedAt')
-
-const DownloadExpirationSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'Expiration time of the download URL.',
-    example: '2021-01-06T18:40:40.000Z',
-  })
-  .openapi('DownloadExpiration')
-
-const DownloadUrlSchema = z
-  .url()
-  .openapi({ description: 'URL from which the user will retrieve their compliance results.' })
-  .openapi('DownloadUrl')
-
-const JobIdSchema = z
-  .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({ description: 'Compliance Job ID.', example: '1372966999991541762' })
-  .openapi('JobId')
-
-const ComplianceJobNameSchema = z
-  .string()
-  .max(64)
-  .openapi({ description: 'User-provided name for a compliance job.', example: 'my-job' })
-  .openapi('ComplianceJobName')
-
-const ComplianceJobStatusSchema = z
-  .enum(['created', 'in_progress', 'failed', 'complete', 'expired'])
-  .openapi({ description: 'Status of a compliance job.' })
-  .openapi('ComplianceJobStatus')
-
-const ComplianceJobTypeSchema = z
-  .enum(['tweets', 'users'])
-  .openapi({ description: 'Type of compliance job to list.' })
-  .openapi('ComplianceJobType')
-
-const UploadExpirationSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'Expiration time of the upload URL.',
-    example: '2021-01-06T18:40:40.000Z',
-  })
-  .openapi('UploadExpiration')
-
-const UploadUrlSchema = z
-  .url()
-  .openapi({ description: 'URL to which the user will upload their Tweet or user IDs.' })
-  .openapi('UploadUrl')
-
-const ComplianceJobSchema = z
-  .object({
-    created_at: CreatedAtSchema,
-    download_expires_at: DownloadExpirationSchema,
-    download_url: DownloadUrlSchema,
-    id: JobIdSchema,
-    name: ComplianceJobNameSchema.exactOptional(),
-    status: ComplianceJobStatusSchema,
-    type: ComplianceJobTypeSchema,
-    upload_expires_at: UploadExpirationSchema,
-    upload_url: UploadUrlSchema,
-  })
-  .openapi({
-    required: [
-      'id',
-      'type',
-      'created_at',
-      'upload_url',
-      'download_url',
-      'upload_expires_at',
-      'download_expires_at',
-      'status',
-    ],
-  })
-  .openapi('ComplianceJob')
-
-const ConflictProblemSchema = ProblemSchema.openapi({
-  description: 'You cannot create a new job if one is already in progress.',
-}).openapi('ConflictProblem')
-
-const ConnectionExceptionProblemSchema = ProblemSchema.and(
-  z
-    .object({
-      connection_issue: z
-        .enum([
-          'TooManyConnections',
-          'ProvisioningSubscription',
-          'RuleConfigurationIssue',
-          'RulesInvalidIssue',
-        ])
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({ description: 'A problem that indicates something is wrong with the connection.' })
-  .openapi('ConnectionExceptionProblem')
-
-const ContextAnnotationDomainFieldsSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the context annotation domain.' }),
-    id: z
-      .string()
-      .regex(/^[0-9]{1,19}$/)
-      .openapi({ description: 'The unique id for a context annotation domain.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the context annotation domain.' }),
-  })
-  .openapi({
-    description: 'Represents the data for the context annotation domain.',
-    required: ['id'],
-  })
-  .openapi('ContextAnnotationDomainFields')
-
-const ContextAnnotationEntityFieldsSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the context annotation entity.' }),
-    id: z
-      .string()
-      .regex(/^[0-9]{1,19}$/)
-      .openapi({ description: 'The unique id for a context annotation entity.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the context annotation entity.' }),
-  })
-  .openapi({
-    description: 'Represents the data for the context annotation entity.',
-    required: ['id'],
-  })
-  .openapi('ContextAnnotationEntityFields')
-
-const ContextAnnotationSchema = z
-  .object({
-    domain: ContextAnnotationDomainFieldsSchema,
-    entity: ContextAnnotationEntityFieldsSchema,
-  })
-  .openapi({
-    description: 'Annotation inferred from the Tweet text.',
-    required: ['domain', 'entity'],
-  })
-  .openapi('ContextAnnotation')
+  .openapi({ description: 'The identifier for this place.', example: 'f7eb2fa2fea288b1' })
+  .openapi('PlaceId')
 
 const CountryCodeSchema = z
   .string()
   .regex(/^[A-Z]{2}$/)
   .openapi({ description: 'A two-letter ISO 3166-1 alpha-2 country code.', example: 'US' })
   .openapi('CountryCode')
-
-const MediaIdSchema = z
-  .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({ description: 'The unique identifier of this Media.', example: '1146654567674912769' })
-  .openapi('MediaId')
-
-const DmMediaAttachmentSchema = z
-  .object({ media_id: MediaIdSchema })
-  .openapi({ required: ['media_id'] })
-  .openapi('DmMediaAttachment')
-
-const DmAttachmentsSchema = z
-  .array(DmMediaAttachmentSchema)
-  .openapi({ description: 'Attachments to a DM Event.' })
-  .openapi('DmAttachments')
-
-const CreateAttachmentsMessageRequestSchema = z
-  .object({
-    attachments: DmAttachmentsSchema,
-    text: z.string().min(1).exactOptional().openapi({ description: 'Text of the message.' }),
-  })
-  .openapi({ required: ['attachments'] })
-  .openapi('CreateAttachmentsMessageRequest')
-
-const CreateComplianceJobRequestSchema = z
-  .object({
-    name: ComplianceJobNameSchema.exactOptional(),
-    resumable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, this endpoint will return a pre-signed URL with resumable uploads enabled.',
-      }),
-    type: z.enum(['tweets', 'users']).openapi({ description: 'Type of compliance job to list.' }),
-  })
-  .openapi({ description: 'A request to create a new batch compliance job.', required: ['type'] })
-  .openapi('CreateComplianceJobRequest')
-
-const CreateComplianceJobResponseSchema = z
-  .object({
-    data: ComplianceJobSchema.exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateComplianceJobResponse')
-
-const CreateTextMessageRequestSchema = z
-  .object({
-    attachments: DmAttachmentsSchema.exactOptional(),
-    text: z.string().min(1).openapi({ description: 'Text of the message.' }),
-  })
-  .openapi({ required: ['text'] })
-  .openapi('CreateTextMessageRequest')
-
-const CreateMessageRequestSchema = z
-  .union([CreateTextMessageRequestSchema, CreateAttachmentsMessageRequestSchema])
-  .openapi('CreateMessageRequest')
-
-const DmParticipantsSchema = z
-  .array(UserIdSchema)
-  .min(2)
-  .max(49)
-  .openapi({ description: 'Participants for the DM Conversation.' })
-  .openapi('DmParticipants')
-
-const CreateDmConversationRequestSchema = z
-  .strictObject({
-    conversation_type: z
-      .literal('Group')
-      .openapi({ description: 'The conversation type that is being created.' }),
-    message: CreateMessageRequestSchema,
-    participant_ids: DmParticipantsSchema,
-  })
-  .openapi({ required: ['conversation_type', 'participant_ids', 'message'] })
-  .openapi('CreateDmConversationRequest')
-
-const DmConversationIdSchema = z
-  .string()
-  .regex(/^([0-9]{1,19}-[0-9]{1,19}|[0-9]{15,19})$/)
-  .openapi({
-    description:
-      "Unique identifier of a DM conversation. This can either be a numeric string, or a pair of numeric strings separated by a '-' character in the case of one-on-one DM Conversations.",
-    example: '123123123-456456456',
-  })
-  .openapi('DmConversationId')
-
-const DmEventIdSchema = z
-  .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({ description: 'Unique identifier of a DM Event.', example: '1146654567674912769' })
-  .openapi('DmEventId')
-
-const CreateDmEventResponseSchema = z
-  .object({
-    data: z
-      .object({ dm_conversation_id: DmConversationIdSchema, dm_event_id: DmEventIdSchema })
-      .exactOptional()
-      .openapi({ required: ['dm_conversation_id', 'dm_event_id'] }),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateDmEventResponse')
-
-const DisallowedResourceProblemSchema = ProblemSchema.and(
-  z
-    .object({
-      resource_id: z.string(),
-      resource_type: z.enum(['user', 'tweet', 'media', 'list', 'space']),
-      section: z.enum(['data', 'includes']),
-    })
-    .openapi({ required: ['resource_id', 'resource_type', 'section'] }),
-)
-  .openapi({
-    description:
-      'A problem that indicates that the resource requested violates the precepts of this API.',
-  })
-  .openapi('DisallowedResourceProblem')
-
-const DmEventSchema = z
-  .object({
-    attachments: z
-      .object({
-        card_ids: z
-          .array(z.string())
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'A list of card IDs (if cards are attached).' }),
-        media_keys: z
-          .array(MediaKeySchema)
-          .min(1)
-          .exactOptional()
-          .openapi({
-            description:
-              'A list of Media Keys for each one of the media attachments (if media are attached).',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Specifies the type of attachments (if any) present in this DM.',
-        required: [],
-      }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional(),
-    dm_conversation_id: DmConversationIdSchema.exactOptional(),
-    event_type: z.string().openapi({ example: 'MessageCreate' }),
-    id: DmEventIdSchema,
-    participant_ids: z
-      .array(UserIdSchema)
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of participants for a ParticipantsJoin or ParticipantsLeave event_type.',
-      }),
-    referenced_tweets: z
-      .array(z.object({ id: TweetIdSchema }).openapi({ required: ['id'] }))
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'A list of Tweets this DM refers to.' }),
-    sender_id: UserIdSchema.exactOptional(),
-    text: z.string().exactOptional(),
-  })
-  .openapi({ required: ['id', 'event_type'] })
-  .openapi('DmEvent')
-
-const DuplicateRuleProblemSchema = ProblemSchema.and(
-  z
-    .object({ id: z.string().exactOptional(), value: z.string().exactOptional() })
-    .openapi({ required: [] }),
-)
-  .openapi({ description: 'The rule you have submitted is a duplicate.' })
-  .openapi('DuplicateRuleProblem')
-
-const EndSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({ description: 'The end time of the bucket.' })
-  .openapi('End')
-
-const EntityIndicesInclusiveInclusiveSchema = z
-  .object({
-    end: z
-      .int()
-      .min(0)
-      .openapi({
-        description:
-          'Index (zero-based) at which position this entity ends.  The index is inclusive.',
-        example: 61,
-      }),
-    start: z
-      .int()
-      .min(0)
-      .openapi({
-        description:
-          'Index (zero-based) at which position this entity starts.  The index is inclusive.',
-        example: 50,
-      }),
-  })
-  .openapi({
-    description:
-      'Represent a boundary range (start and end index) for a recognized entity (for example a hashtag or a mention). `start` must be smaller than `end`.  The start index is inclusive, the end index is inclusive.',
-    required: ['start', 'end'],
-  })
-  .openapi('EntityIndicesInclusiveInclusive')
-
-const ErrorSchema = z
-  .object({ code: z.int32(), message: z.string() })
-  .openapi({ required: ['code', 'message'] })
-  .openapi('Error')
-
-const PlaceIdSchema = z
-  .string()
-  .openapi({ description: 'The identifier for this place.', example: 'f7eb2fa2fea288b1' })
-  .openapi('PlaceId')
 
 const PositionSchema = z
   .array(z.number())
@@ -786,7 +75,7 @@ const GeoSchema = z
       .length(4)
       .openapi({ example: [-105.193475, 39.60973, -105.053164, 39.761974] }),
     geometry: PointSchema.exactOptional(),
-    properties: z.object({}),
+    properties: z.looseObject({}),
     type: z.literal('Feature'),
   })
   .openapi({ required: ['type', 'bbox', 'properties'] })
@@ -882,6 +171,143 @@ const TopicSchema = z
     required: ['id', 'name'],
   })
   .openapi('Topic')
+
+const UserIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({
+    description:
+      'Unique identifier of this User. This is returned as a string in order to avoid complications with languages and tools that cannot handle large integers.',
+    example: '2244994945',
+  })
+  .openapi('UserId')
+
+const ContextAnnotationDomainFieldsSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the context annotation domain.' }),
+    id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'The unique id for a context annotation domain.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the context annotation domain.' }),
+  })
+  .openapi({
+    description: 'Represents the data for the context annotation domain.',
+    required: ['id'],
+  })
+  .openapi('ContextAnnotationDomainFields')
+
+const ContextAnnotationEntityFieldsSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the context annotation entity.' }),
+    id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'The unique id for a context annotation entity.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the context annotation entity.' }),
+  })
+  .openapi({
+    description: 'Represents the data for the context annotation entity.',
+    required: ['id'],
+  })
+  .openapi('ContextAnnotationEntityFields')
+
+const ContextAnnotationSchema = z
+  .object({
+    domain: ContextAnnotationDomainFieldsSchema,
+    entity: ContextAnnotationEntityFieldsSchema,
+  })
+  .openapi({
+    description: 'Annotation inferred from the Tweet text.',
+    required: ['domain', 'entity'],
+  })
+  .openapi('ContextAnnotation')
+
+const TweetIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({
+    description:
+      'Unique identifier of this Tweet. This is returned as a string in order to avoid complications with languages and tools that cannot handle large integers.',
+    example: '1346889436626259968',
+  })
+  .openapi('TweetId')
+
+const EntityIndicesInclusiveInclusiveSchema = z
+  .object({
+    end: z
+      .int()
+      .min(0)
+      .openapi({
+        description:
+          'Index (zero-based) at which position this entity ends.  The index is inclusive.',
+        example: 61,
+      }),
+    start: z
+      .int()
+      .min(0)
+      .openapi({
+        description:
+          'Index (zero-based) at which position this entity starts.  The index is inclusive.',
+        example: 50,
+      }),
+  })
+  .openapi({
+    description:
+      'Represent a boundary range (start and end index) for a recognized entity (for example a hashtag or a mention). `start` must be smaller than `end`.  The start index is inclusive, the end index is inclusive.',
+    required: ['start', 'end'],
+  })
+  .openapi('EntityIndicesInclusiveInclusive')
+
+const EntityIndicesInclusiveExclusiveSchema = z
+  .object({
+    end: z
+      .int()
+      .min(0)
+      .openapi({
+        description:
+          'Index (zero-based) at which position this entity ends.  The index is exclusive.',
+        example: 61,
+      }),
+    start: z
+      .int()
+      .min(0)
+      .openapi({
+        description:
+          'Index (zero-based) at which position this entity starts.  The index is inclusive.',
+        example: 50,
+      }),
+  })
+  .openapi({
+    description:
+      'Represent a boundary range (start and end index) for a recognized entity (for example a hashtag or a mention). `start` must be smaller than `end`.  The start index is inclusive, the end index is exclusive.',
+    required: ['start', 'end'],
+  })
+  .openapi('EntityIndicesInclusiveExclusive')
+
+const CashtagFieldsSchema = z
+  .object({ tag: z.string().openapi({ example: 'TWTR' }) })
+  .openapi({
+    description:
+      'Represent the portion of text recognized as a Cashtag, and its start and end position within the text.',
+    required: ['tag'],
+  })
+  .openapi('CashtagFields')
+
+const CashtagEntitySchema =
+  EntityIndicesInclusiveExclusiveSchema.and(CashtagFieldsSchema).openapi('CashtagEntity')
 
 const HashtagFieldsSchema = z
   .object({
@@ -1398,7 +824,70 @@ const UserSchema = z
   })
   .openapi('User')
 
-const ExpansionsSchema = z
+type ExpansionsType = {
+  media?: z.infer<typeof MediaSchema>[]
+  places?: z.infer<typeof PlaceSchema>[]
+  polls?: z.infer<typeof PollSchema>[]
+  topics?: z.infer<typeof TopicSchema>[]
+  tweets?: z.infer<typeof TweetSchema>[]
+  users?: z.infer<typeof UserSchema>[]
+}
+
+const ProblemSchema = z
+  .object({
+    detail: z.string().exactOptional(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.string(),
+  })
+  .openapi({
+    description:
+      'An HTTP Problem Details object, as defined in IETF RFC 7807 (https://tools.ietf.org/html/rfc7807).',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        'about:blank': '#/components/schemas/GenericProblem',
+        'https://api.twitter.com/2/problems/client-disconnected':
+          '#/components/schemas/ClientDisconnectedProblem',
+        'https://api.twitter.com/2/problems/client-forbidden':
+          '#/components/schemas/ClientForbiddenProblem',
+        'https://api.twitter.com/2/problems/conflict': '#/components/schemas/ConflictProblem',
+        'https://api.twitter.com/2/problems/disallowed-resource':
+          '#/components/schemas/DisallowedResourceProblem',
+        'https://api.twitter.com/2/problems/duplicate-rules':
+          '#/components/schemas/DuplicateRuleProblem',
+        'https://api.twitter.com/2/problems/invalid-request':
+          '#/components/schemas/InvalidRequestProblem',
+        'https://api.twitter.com/2/problems/invalid-rules':
+          '#/components/schemas/InvalidRuleProblem',
+        'https://api.twitter.com/2/problems/noncompliant-rules':
+          '#/components/schemas/NonCompliantRulesProblem',
+        'https://api.twitter.com/2/problems/not-authorized-for-field':
+          '#/components/schemas/FieldUnauthorizedProblem',
+        'https://api.twitter.com/2/problems/not-authorized-for-resource':
+          '#/components/schemas/ResourceUnauthorizedProblem',
+        'https://api.twitter.com/2/problems/oauth1-permissions':
+          '#/components/schemas/Oauth1PermissionsProblem',
+        'https://api.twitter.com/2/problems/operational-disconnect':
+          '#/components/schemas/OperationalDisconnectProblem',
+        'https://api.twitter.com/2/problems/resource-not-found':
+          '#/components/schemas/ResourceNotFoundProblem',
+        'https://api.twitter.com/2/problems/resource-unavailable':
+          '#/components/schemas/ResourceUnavailableProblem',
+        'https://api.twitter.com/2/problems/rule-cap': '#/components/schemas/RulesCapProblem',
+        'https://api.twitter.com/2/problems/streaming-connection':
+          '#/components/schemas/ConnectionExceptionProblem',
+        'https://api.twitter.com/2/problems/unsupported-authentication':
+          '#/components/schemas/UnsupportedAuthenticationProblem',
+        'https://api.twitter.com/2/problems/usage-capped':
+          '#/components/schemas/UsageCapExceededProblem',
+      },
+    },
+    required: ['type', 'title'],
+  })
+  .openapi('Problem')
+
+const ExpansionsSchema: z.ZodType<ExpansionsType> = z
   .object({
     media: z.array(MediaSchema).min(1).exactOptional(),
     places: z.array(PlaceSchema).min(1).exactOptional(),
@@ -1410,71 +899,94 @@ const ExpansionsSchema = z
   .openapi({ required: [] })
   .openapi('Expansions')
 
-const FieldUnauthorizedProblemSchema = ProblemSchema.and(
-  z
-    .object({
-      field: z.string(),
-      resource_type: z.enum(['user', 'tweet', 'media', 'list', 'space']),
-      section: z.enum(['data', 'includes']),
-    })
-    .openapi({ required: ['resource_type', 'field', 'section'] }),
-)
+const RuleIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({ description: 'Unique identifier of this rule.', example: '120897978112909812' })
+  .openapi('RuleId')
+
+const RuleTagSchema = z
+  .string()
+  .openapi({
+    description: 'A tag meant for the labeling of user provided rules.',
+    example: 'Non-retweeted coffee Tweets',
+  })
+  .openapi('RuleTag')
+
+type FilteredStreamingTweetResponseType = {
+  data?: z.infer<typeof TweetSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  matching_rules?: { id: z.infer<typeof RuleIdSchema>; tag?: z.infer<typeof RuleTagSchema> }[]
+}
+
+const DmConversationIdSchema = z
+  .string()
+  .regex(/^([0-9]{1,19}-[0-9]{1,19}|[0-9]{15,19})$/)
   .openapi({
     description:
-      'A problem that indicates that you are not allowed to see a particular field on a Tweet, User, etc.',
+      "Unique identifier of a DM conversation. This can either be a numeric string, or a pair of numeric strings separated by a '-' character in the case of one-on-one DM Conversations.",
+    example: '123123123-456456456',
   })
-  .openapi('FieldUnauthorizedProblem')
+  .openapi('DmConversationId')
 
-const FilteredStreamingTweetResponseSchema = z
+const DmEventIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({ description: 'Unique identifier of a DM Event.', example: '1146654567674912769' })
+  .openapi('DmEventId')
+
+const DmEventSchema = z
   .object({
-    data: TweetSchema.exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    matching_rules: z
-      .array(
-        z
-          .object({ id: RuleIdSchema, tag: RuleTagSchema.exactOptional() })
-          .openapi({ required: ['id'] }),
-      )
+    attachments: z
+      .object({
+        card_ids: z
+          .array(z.string())
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'A list of card IDs (if cards are attached).' }),
+        media_keys: z
+          .array(MediaKeySchema)
+          .min(1)
+          .exactOptional()
+          .openapi({
+            description:
+              'A list of Media Keys for each one of the media attachments (if media are attached).',
+          }),
+      })
       .exactOptional()
-      .openapi({ description: 'The list of rules which matched the Tweet' }),
-  })
-  .openapi({
-    description:
-      'A Tweet or error that can be returned by the streaming Tweet API. The values returned with a successful streamed Tweet includes the user provided rules that the Tweet matched.',
-    required: [],
-  })
-  .openapi('FilteredStreamingTweetResponse')
-
-const GenericProblemSchema = ProblemSchema.openapi({
-  description:
-    'A generic problem with no additional information beyond that provided by the HTTP status code.',
-}).openapi('GenericProblem')
-
-const Get2ComplianceJobsIdResponseSchema = z
-  .object({
-    data: ComplianceJobSchema.exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2ComplianceJobsIdResponse')
-
-const ResultCountSchema = z
-  .int32()
-  .openapi({ description: 'The number of results returned in this response.' })
-  .openapi('ResultCount')
-
-const Get2ComplianceJobsResponseSchema = z
-  .object({
-    data: z.array(ComplianceJobSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    meta: z
-      .object({ result_count: ResultCountSchema.exactOptional() })
+      .openapi({
+        description: 'Specifies the type of attachments (if any) present in this DM.',
+        required: [],
+      }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional(),
+    dm_conversation_id: DmConversationIdSchema.exactOptional(),
+    event_type: z.string().openapi({ example: 'MessageCreate' }),
+    id: DmEventIdSchema,
+    participant_ids: z
+      .array(UserIdSchema)
+      .min(1)
       .exactOptional()
-      .openapi({ required: [] }),
+      .openapi({
+        description:
+          'A list of participants for a ParticipantsJoin or ParticipantsLeave event_type.',
+      }),
+    referenced_tweets: z
+      .array(z.object({ id: TweetIdSchema }).openapi({ required: ['id'] }))
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'A list of Tweets this DM refers to.' }),
+    sender_id: UserIdSchema.exactOptional(),
+    text: z.string().exactOptional(),
   })
-  .openapi({ required: [] })
-  .openapi('Get2ComplianceJobsResponse')
+  .openapi({ required: ['id', 'event_type'] })
+  .openapi('DmEvent')
+
+const NextTokenSchema = z
+  .string()
+  .min(1)
+  .openapi({ description: 'The next token.' })
+  .openapi('NextToken')
 
 const PreviousTokenSchema = z
   .string()
@@ -1482,90 +994,65 @@ const PreviousTokenSchema = z
   .openapi({ description: 'The previous token.' })
   .openapi('PreviousToken')
 
-const Get2DmConversationsIdDmEventsResponseSchema = z
-  .object({
-    data: z.array(DmEventSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: NextTokenSchema.exactOptional(),
-        previous_token: PreviousTokenSchema.exactOptional(),
-        result_count: ResultCountSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2DmConversationsIdDmEventsResponse')
+const ResultCountSchema = z
+  .int32()
+  .openapi({ description: 'The number of results returned in this response.' })
+  .openapi('ResultCount')
 
-const Get2DmConversationsWithParticipantIdDmEventsResponseSchema = z
-  .object({
-    data: z.array(DmEventSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: NextTokenSchema.exactOptional(),
-        previous_token: PreviousTokenSchema.exactOptional(),
-        result_count: ResultCountSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2DmConversationsWithParticipantIdDmEventsResponse')
+type Get2DmConversationsIdDmEventsResponseType = {
+  data?: z.infer<typeof DmEventSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
 
-const Get2DmEventsResponseSchema = z
-  .object({
-    data: z.array(DmEventSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: NextTokenSchema.exactOptional(),
-        previous_token: PreviousTokenSchema.exactOptional(),
-        result_count: ResultCountSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2DmEventsResponse')
+type Get2DmConversationsWithParticipantIdDmEventsResponseType = {
+  data?: z.infer<typeof DmEventSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
 
-const Get2ListsIdFollowersResponseSchema = z
-  .object({
-    data: z.array(UserSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: NextTokenSchema.exactOptional(),
-        previous_token: PreviousTokenSchema.exactOptional(),
-        result_count: ResultCountSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2ListsIdFollowersResponse')
+type Get2DmEventsResponseType = {
+  data?: z.infer<typeof DmEventSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
 
-const Get2ListsIdMembersResponseSchema = z
-  .object({
-    data: z.array(UserSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: NextTokenSchema.exactOptional(),
-        previous_token: PreviousTokenSchema.exactOptional(),
-        result_count: ResultCountSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2ListsIdMembersResponse')
+type Get2ListsIdFollowersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2ListsIdMembersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
 
 const ListIdSchema = z
   .string()
@@ -1590,31 +1077,22 @@ const ListSchema = z
   })
   .openapi('List')
 
-const Get2ListsIdResponseSchema = z
-  .object({
-    data: ListSchema.exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2ListsIdResponse')
+type Get2ListsIdResponseType = {
+  data?: z.infer<typeof ListSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
 
-const Get2ListsIdTweetsResponseSchema = z
-  .object({
-    data: z.array(TweetSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: NextTokenSchema.exactOptional(),
-        previous_token: PreviousTokenSchema.exactOptional(),
-        result_count: ResultCountSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2ListsIdTweetsResponse')
+type Get2ListsIdTweetsResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
 
 const SpaceIdSchema = z
   .string()
@@ -1718,7 +1196,950 @@ const SpaceSchema = z
   .openapi({ description: '', required: ['id', 'state'] })
   .openapi('Space')
 
-const Get2SpacesByCreatorIdsResponseSchema = z
+type Get2SpacesByCreatorIdsResponseType = {
+  data?: z.infer<typeof SpaceSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: z.infer<typeof ResultCountSchema> }
+}
+
+type Get2SpacesIdBuyersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2SpacesIdResponseType = {
+  data?: z.infer<typeof SpaceSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2SpacesIdTweetsResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2SpacesResponseType = {
+  data?: z.infer<typeof SpaceSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2SpacesSearchResponseType = {
+  data?: z.infer<typeof SpaceSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: z.infer<typeof ResultCountSchema> }
+}
+
+type Get2TweetsFirehoseStreamResponseType = {
+  data?: z.infer<typeof TweetSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2TweetsIdLikingUsersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2TweetsIdQuoteTweetsResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2TweetsIdResponseType = {
+  data?: z.infer<typeof TweetSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2TweetsIdRetweetedByResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2TweetsResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2TweetsSample10StreamResponseType = {
+  data?: z.infer<typeof TweetSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2TweetsSampleStreamResponseType = {
+  data?: z.infer<typeof TweetSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+const NewestIdSchema = z
+  .string()
+  .openapi({ description: 'The newest id in this response.' })
+  .openapi('NewestId')
+
+const OldestIdSchema = z
+  .string()
+  .openapi({ description: 'The oldest id in this response.' })
+  .openapi('OldestId')
+
+type Get2TweetsSearchAllResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: z.infer<typeof NewestIdSchema>
+    next_token?: z.infer<typeof NextTokenSchema>
+    oldest_id?: z.infer<typeof OldestIdSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2TweetsSearchRecentResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: z.infer<typeof NewestIdSchema>
+    next_token?: z.infer<typeof NextTokenSchema>
+    oldest_id?: z.infer<typeof OldestIdSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2TweetsSearchStreamResponseType = {
+  data?: z.infer<typeof TweetSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2UsersByResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2UsersByUsernameUsernameResponseType = {
+  data?: z.infer<typeof UserSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2UsersIdBlockingResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdBookmarksResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdFollowedListsResponseType = {
+  data?: z.infer<typeof ListSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdFollowersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdFollowingResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdLikedTweetsResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdListMembershipsResponseType = {
+  data?: z.infer<typeof ListSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdMentionsResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: z.infer<typeof NewestIdSchema>
+    next_token?: z.infer<typeof NextTokenSchema>
+    oldest_id?: z.infer<typeof OldestIdSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdMutingResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdOwnedListsResponseType = {
+  data?: z.infer<typeof ListSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    next_token?: z.infer<typeof NextTokenSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdPinnedListsResponseType = {
+  data?: z.infer<typeof ListSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: z.infer<typeof ResultCountSchema> }
+}
+
+type Get2UsersIdResponseType = {
+  data?: z.infer<typeof UserSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2UsersIdTimelinesReverseChronologicalResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: z.infer<typeof NewestIdSchema>
+    next_token?: z.infer<typeof NextTokenSchema>
+    oldest_id?: z.infer<typeof OldestIdSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersIdTweetsResponseType = {
+  data?: z.infer<typeof TweetSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: z.infer<typeof NewestIdSchema>
+    next_token?: z.infer<typeof NextTokenSchema>
+    oldest_id?: z.infer<typeof OldestIdSchema>
+    previous_token?: z.infer<typeof PreviousTokenSchema>
+    result_count?: z.infer<typeof ResultCountSchema>
+  }
+}
+
+type Get2UsersMeResponseType = {
+  data?: z.infer<typeof UserSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type Get2UsersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type StreamingTweetResponseType = {
+  data?: z.infer<typeof TweetSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+const RuleValueSchema = z
+  .string()
+  .openapi({ description: 'The filterlang value of the rule.', example: 'coffee -is:retweet' })
+  .openapi('RuleValue')
+
+const RuleNoIdSchema = z
+  .object({ tag: RuleTagSchema.exactOptional(), value: RuleValueSchema })
+  .openapi({ description: 'A user-provided stream filtering rule.', required: ['value'] })
+  .openapi('RuleNoId')
+
+const AddRulesRequestSchema = z
+  .object({ add: z.array(RuleNoIdSchema) })
+  .openapi({
+    description: 'A request to add a user-specified stream filtering rule.',
+    required: ['add'],
+  })
+  .openapi('AddRulesRequest')
+
+const DeleteRulesRequestSchema = z
+  .object({
+    delete: z
+      .object({
+        ids: z
+          .array(RuleIdSchema)
+          .exactOptional()
+          .openapi({ description: 'IDs of all deleted user-specified stream filtering rules.' }),
+        values: z
+          .array(RuleValueSchema)
+          .exactOptional()
+          .openapi({ description: 'Values of all deleted user-specified stream filtering rules.' }),
+      })
+      .openapi({
+        description: 'IDs and values of all deleted user-specified stream filtering rules.',
+        required: [],
+      }),
+  })
+  .openapi({
+    description: 'A response from deleting user-specified stream filtering rules.',
+    required: ['delete'],
+  })
+  .openapi('DeleteRulesRequest')
+
+const AddOrDeleteRulesRequestSchema = z
+  .xor([AddRulesRequestSchema, DeleteRulesRequestSchema])
+  .openapi('AddOrDeleteRulesRequest')
+
+const RuleSchema = z
+  .object({
+    id: RuleIdSchema.exactOptional(),
+    tag: RuleTagSchema.exactOptional(),
+    value: RuleValueSchema,
+  })
+  .openapi({ description: 'A user-provided stream filtering rule.', required: ['value'] })
+  .openapi('Rule')
+
+const RulesRequestSummarySchema = z
+  .xor([
+    z
+      .object({
+        created: z
+          .int32()
+          .openapi({
+            description: 'Number of user-specified stream filtering rules that were created.',
+            example: 1,
+          }),
+        invalid: z
+          .int32()
+          .openapi({
+            description: 'Number of invalid user-specified stream filtering rules.',
+            example: 1,
+          }),
+        not_created: z
+          .int32()
+          .openapi({
+            description: 'Number of user-specified stream filtering rules that were not created.',
+            example: 1,
+          }),
+        valid: z
+          .int32()
+          .openapi({
+            description: 'Number of valid user-specified stream filtering rules.',
+            example: 1,
+          }),
+      })
+      .openapi({
+        description:
+          'A summary of the results of the addition of user-specified stream filtering rules.',
+        required: ['created', 'not_created', 'valid', 'invalid'],
+      }),
+    z
+      .object({
+        deleted: z
+          .int32()
+          .openapi({
+            description: 'Number of user-specified stream filtering rules that were deleted.',
+          }),
+        not_deleted: z
+          .int32()
+          .openapi({
+            description: 'Number of user-specified stream filtering rules that were not deleted.',
+          }),
+      })
+      .openapi({ required: ['deleted', 'not_deleted'] }),
+  ])
+  .openapi('RulesRequestSummary')
+
+const RulesResponseMetadataSchema = z
+  .object({
+    next_token: NextTokenSchema.exactOptional(),
+    result_count: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of Rules in result set.' }),
+    sent: z.string(),
+    summary: RulesRequestSummarySchema.exactOptional(),
+  })
+  .openapi({ required: ['sent'] })
+  .openapi('RulesResponseMetadata')
+
+const AddOrDeleteRulesResponseSchema = z
+  .object({
+    data: z
+      .array(RuleSchema)
+      .exactOptional()
+      .openapi({ description: 'All user-specified stream filtering rules that were created.' }),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+    meta: RulesResponseMetadataSchema,
+  })
+  .openapi({
+    description: 'A response from modifying user-specified stream filtering rules.',
+    required: ['meta'],
+  })
+  .openapi('AddOrDeleteRulesResponse')
+
+const AggregateSchema = z
+  .int32()
+  .openapi({ description: 'The sum of results returned in this response.' })
+  .openapi('Aggregate')
+
+const VariantSchema = z
+  .object({
+    bit_rate: z.int().exactOptional().openapi({ description: 'The bit rate of the media.' }),
+    content_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The content type of the media.' }),
+    url: z.url().exactOptional().openapi({ description: 'The url to the media.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Variant')
+
+const VariantsSchema = z
+  .array(VariantSchema)
+  .openapi({ description: 'An array of all available variants of the media.' })
+  .openapi('Variants')
+
+const AnimatedGifSchema = MediaSchema.and(
+  z
+    .object({
+      preview_image_url: z.url().exactOptional(),
+      variants: VariantsSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('AnimatedGif')
+
+const BlockUserMutationResponseSchema = z
+  .object({
+    data: z
+      .object({ blocking: z.boolean().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BlockUserMutationResponse')
+
+const BlockUserRequestSchema = z
+  .object({ target_user_id: UserIdSchema })
+  .openapi({ required: ['target_user_id'] })
+  .openapi('BlockUserRequest')
+
+const BookmarkAddRequestSchema = z
+  .object({ tweet_id: TweetIdSchema })
+  .openapi({ required: ['tweet_id'] })
+  .openapi('BookmarkAddRequest')
+
+const BookmarkMutationResponseSchema = z
+  .object({
+    data: z
+      .object({ bookmarked: z.boolean().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BookmarkMutationResponse')
+
+const ClientDisconnectedProblemSchema = ProblemSchema.openapi({
+  description: 'Your client has gone away.',
+}).openapi('ClientDisconnectedProblem')
+
+const ClientForbiddenProblemSchema = ProblemSchema.and(
+  z
+    .object({
+      reason: z.enum(['official-client-forbidden', 'client-not-enrolled']).exactOptional(),
+      registration_url: z.url().exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description: 'A problem that indicates your client is forbidden from making this request.',
+  })
+  .openapi('ClientForbiddenProblem')
+
+const CreatedAtSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'Creation time of the compliance job.',
+    example: '2021-01-06T18:40:40.000Z',
+  })
+  .openapi('CreatedAt')
+
+const DownloadExpirationSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'Expiration time of the download URL.',
+    example: '2021-01-06T18:40:40.000Z',
+  })
+  .openapi('DownloadExpiration')
+
+const DownloadUrlSchema = z
+  .url()
+  .openapi({ description: 'URL from which the user will retrieve their compliance results.' })
+  .openapi('DownloadUrl')
+
+const JobIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({ description: 'Compliance Job ID.', example: '1372966999991541762' })
+  .openapi('JobId')
+
+const ComplianceJobNameSchema = z
+  .string()
+  .max(64)
+  .openapi({ description: 'User-provided name for a compliance job.', example: 'my-job' })
+  .openapi('ComplianceJobName')
+
+const ComplianceJobStatusSchema = z
+  .enum(['created', 'in_progress', 'failed', 'complete', 'expired'])
+  .openapi({ description: 'Status of a compliance job.' })
+  .openapi('ComplianceJobStatus')
+
+const ComplianceJobTypeSchema = z
+  .enum(['tweets', 'users'])
+  .openapi({ description: 'Type of compliance job to list.' })
+  .openapi('ComplianceJobType')
+
+const UploadExpirationSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'Expiration time of the upload URL.',
+    example: '2021-01-06T18:40:40.000Z',
+  })
+  .openapi('UploadExpiration')
+
+const UploadUrlSchema = z
+  .url()
+  .openapi({ description: 'URL to which the user will upload their Tweet or user IDs.' })
+  .openapi('UploadUrl')
+
+const ComplianceJobSchema = z
+  .object({
+    created_at: CreatedAtSchema,
+    download_expires_at: DownloadExpirationSchema,
+    download_url: DownloadUrlSchema,
+    id: JobIdSchema,
+    name: ComplianceJobNameSchema.exactOptional(),
+    status: ComplianceJobStatusSchema,
+    type: ComplianceJobTypeSchema,
+    upload_expires_at: UploadExpirationSchema,
+    upload_url: UploadUrlSchema,
+  })
+  .openapi({
+    required: [
+      'id',
+      'type',
+      'created_at',
+      'upload_url',
+      'download_url',
+      'upload_expires_at',
+      'download_expires_at',
+      'status',
+    ],
+  })
+  .openapi('ComplianceJob')
+
+const ConflictProblemSchema = ProblemSchema.openapi({
+  description: 'You cannot create a new job if one is already in progress.',
+}).openapi('ConflictProblem')
+
+const ConnectionExceptionProblemSchema = ProblemSchema.and(
+  z
+    .object({
+      connection_issue: z
+        .enum([
+          'TooManyConnections',
+          'ProvisioningSubscription',
+          'RuleConfigurationIssue',
+          'RulesInvalidIssue',
+        ])
+        .exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ description: 'A problem that indicates something is wrong with the connection.' })
+  .openapi('ConnectionExceptionProblem')
+
+const MediaIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({ description: 'The unique identifier of this Media.', example: '1146654567674912769' })
+  .openapi('MediaId')
+
+const DmMediaAttachmentSchema = z
+  .object({ media_id: MediaIdSchema })
+  .openapi({ required: ['media_id'] })
+  .openapi('DmMediaAttachment')
+
+const DmAttachmentsSchema = z
+  .array(DmMediaAttachmentSchema)
+  .openapi({ description: 'Attachments to a DM Event.' })
+  .openapi('DmAttachments')
+
+const CreateAttachmentsMessageRequestSchema = z
+  .object({
+    attachments: DmAttachmentsSchema,
+    text: z.string().min(1).exactOptional().openapi({ description: 'Text of the message.' }),
+  })
+  .openapi({ required: ['attachments'] })
+  .openapi('CreateAttachmentsMessageRequest')
+
+const CreateComplianceJobRequestSchema = z
+  .object({
+    name: ComplianceJobNameSchema.exactOptional(),
+    resumable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, this endpoint will return a pre-signed URL with resumable uploads enabled.',
+      }),
+    type: z.enum(['tweets', 'users']).openapi({ description: 'Type of compliance job to list.' }),
+  })
+  .openapi({ description: 'A request to create a new batch compliance job.', required: ['type'] })
+  .openapi('CreateComplianceJobRequest')
+
+const CreateComplianceJobResponseSchema = z
+  .object({
+    data: ComplianceJobSchema.exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateComplianceJobResponse')
+
+const CreateTextMessageRequestSchema = z
+  .object({
+    attachments: DmAttachmentsSchema.exactOptional(),
+    text: z.string().min(1).openapi({ description: 'Text of the message.' }),
+  })
+  .openapi({ required: ['text'] })
+  .openapi('CreateTextMessageRequest')
+
+const CreateMessageRequestSchema = z
+  .union([CreateTextMessageRequestSchema, CreateAttachmentsMessageRequestSchema])
+  .openapi('CreateMessageRequest')
+
+const DmParticipantsSchema = z
+  .array(UserIdSchema)
+  .min(2)
+  .max(49)
+  .openapi({ description: 'Participants for the DM Conversation.' })
+  .openapi('DmParticipants')
+
+const CreateDmConversationRequestSchema = z
+  .strictObject({
+    conversation_type: z
+      .literal('Group')
+      .openapi({ description: 'The conversation type that is being created.' }),
+    message: CreateMessageRequestSchema,
+    participant_ids: DmParticipantsSchema,
+  })
+  .openapi({ required: ['conversation_type', 'participant_ids', 'message'] })
+  .openapi('CreateDmConversationRequest')
+
+const CreateDmEventResponseSchema = z
+  .object({
+    data: z
+      .object({ dm_conversation_id: DmConversationIdSchema, dm_event_id: DmEventIdSchema })
+      .exactOptional()
+      .openapi({ required: ['dm_conversation_id', 'dm_event_id'] }),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateDmEventResponse')
+
+const DisallowedResourceProblemSchema = ProblemSchema.and(
+  z
+    .object({
+      resource_id: z.string(),
+      resource_type: z.enum(['user', 'tweet', 'media', 'list', 'space']),
+      section: z.enum(['data', 'includes']),
+    })
+    .openapi({ required: ['resource_id', 'resource_type', 'section'] }),
+)
+  .openapi({
+    description:
+      'A problem that indicates that the resource requested violates the precepts of this API.',
+  })
+  .openapi('DisallowedResourceProblem')
+
+const DuplicateRuleProblemSchema = ProblemSchema.and(
+  z
+    .object({ id: z.string().exactOptional(), value: z.string().exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ description: 'The rule you have submitted is a duplicate.' })
+  .openapi('DuplicateRuleProblem')
+
+const EndSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({ description: 'The end time of the bucket.' })
+  .openapi('End')
+
+const ErrorSchema = z
+  .object({ code: z.int32(), message: z.string() })
+  .openapi({ required: ['code', 'message'] })
+  .openapi('Error')
+
+const FieldUnauthorizedProblemSchema = ProblemSchema.and(
+  z
+    .object({
+      field: z.string(),
+      resource_type: z.enum(['user', 'tweet', 'media', 'list', 'space']),
+      section: z.enum(['data', 'includes']),
+    })
+    .openapi({ required: ['resource_type', 'field', 'section'] }),
+)
+  .openapi({
+    description:
+      'A problem that indicates that you are not allowed to see a particular field on a Tweet, User, etc.',
+  })
+  .openapi('FieldUnauthorizedProblem')
+
+const FilteredStreamingTweetResponseSchema: z.ZodType<FilteredStreamingTweetResponseType> = z
+  .object({
+    data: TweetSchema.exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+    includes: ExpansionsSchema.exactOptional(),
+    matching_rules: z
+      .array(
+        z
+          .object({ id: RuleIdSchema, tag: RuleTagSchema.exactOptional() })
+          .openapi({ required: ['id'] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The list of rules which matched the Tweet' }),
+  })
+  .openapi({
+    description:
+      'A Tweet or error that can be returned by the streaming Tweet API. The values returned with a successful streamed Tweet includes the user provided rules that the Tweet matched.',
+    required: [],
+  })
+  .openapi('FilteredStreamingTweetResponse')
+
+const GenericProblemSchema = ProblemSchema.openapi({
+  description:
+    'A generic problem with no additional information beyond that provided by the HTTP status code.',
+}).openapi('GenericProblem')
+
+const Get2ComplianceJobsIdResponseSchema = z
+  .object({
+    data: ComplianceJobSchema.exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Get2ComplianceJobsIdResponse')
+
+const Get2ComplianceJobsResponseSchema = z
+  .object({
+    data: z.array(ComplianceJobSchema).min(1).exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+    meta: z
+      .object({ result_count: ResultCountSchema.exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('Get2ComplianceJobsResponse')
+
+const Get2DmConversationsIdDmEventsResponseSchema: z.ZodType<Get2DmConversationsIdDmEventsResponseType> =
+  z
+    .object({
+      data: z.array(DmEventSchema).min(1).exactOptional(),
+      errors: z.array(ProblemSchema).min(1).exactOptional(),
+      includes: ExpansionsSchema.exactOptional(),
+      meta: z
+        .object({
+          next_token: NextTokenSchema.exactOptional(),
+          previous_token: PreviousTokenSchema.exactOptional(),
+          result_count: ResultCountSchema.exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({ required: [] })
+    .openapi('Get2DmConversationsIdDmEventsResponse')
+
+const Get2DmConversationsWithParticipantIdDmEventsResponseSchema: z.ZodType<Get2DmConversationsWithParticipantIdDmEventsResponseType> =
+  z
+    .object({
+      data: z.array(DmEventSchema).min(1).exactOptional(),
+      errors: z.array(ProblemSchema).min(1).exactOptional(),
+      includes: ExpansionsSchema.exactOptional(),
+      meta: z
+        .object({
+          next_token: NextTokenSchema.exactOptional(),
+          previous_token: PreviousTokenSchema.exactOptional(),
+          result_count: ResultCountSchema.exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({ required: [] })
+    .openapi('Get2DmConversationsWithParticipantIdDmEventsResponse')
+
+const Get2DmEventsResponseSchema: z.ZodType<Get2DmEventsResponseType> = z
+  .object({
+    data: z.array(DmEventSchema).min(1).exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+    includes: ExpansionsSchema.exactOptional(),
+    meta: z
+      .object({
+        next_token: NextTokenSchema.exactOptional(),
+        previous_token: PreviousTokenSchema.exactOptional(),
+        result_count: ResultCountSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('Get2DmEventsResponse')
+
+const Get2ListsIdFollowersResponseSchema: z.ZodType<Get2ListsIdFollowersResponseType> = z
+  .object({
+    data: z.array(UserSchema).min(1).exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+    includes: ExpansionsSchema.exactOptional(),
+    meta: z
+      .object({
+        next_token: NextTokenSchema.exactOptional(),
+        previous_token: PreviousTokenSchema.exactOptional(),
+        result_count: ResultCountSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('Get2ListsIdFollowersResponse')
+
+const Get2ListsIdMembersResponseSchema: z.ZodType<Get2ListsIdMembersResponseType> = z
+  .object({
+    data: z.array(UserSchema).min(1).exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+    includes: ExpansionsSchema.exactOptional(),
+    meta: z
+      .object({
+        next_token: NextTokenSchema.exactOptional(),
+        previous_token: PreviousTokenSchema.exactOptional(),
+        result_count: ResultCountSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('Get2ListsIdMembersResponse')
+
+const Get2ListsIdResponseSchema: z.ZodType<Get2ListsIdResponseType> = z
+  .object({
+    data: ListSchema.exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+    includes: ExpansionsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Get2ListsIdResponse')
+
+const Get2ListsIdTweetsResponseSchema: z.ZodType<Get2ListsIdTweetsResponseType> = z
+  .object({
+    data: z.array(TweetSchema).min(1).exactOptional(),
+    errors: z.array(ProblemSchema).min(1).exactOptional(),
+    includes: ExpansionsSchema.exactOptional(),
+    meta: z
+      .object({
+        next_token: NextTokenSchema.exactOptional(),
+        previous_token: PreviousTokenSchema.exactOptional(),
+        result_count: ResultCountSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('Get2ListsIdTweetsResponse')
+
+const Get2SpacesByCreatorIdsResponseSchema: z.ZodType<Get2SpacesByCreatorIdsResponseType> = z
   .object({
     data: z.array(SpaceSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1731,7 +2152,7 @@ const Get2SpacesByCreatorIdsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2SpacesByCreatorIdsResponse')
 
-const Get2SpacesIdBuyersResponseSchema = z
+const Get2SpacesIdBuyersResponseSchema: z.ZodType<Get2SpacesIdBuyersResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1748,7 +2169,7 @@ const Get2SpacesIdBuyersResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2SpacesIdBuyersResponse')
 
-const Get2SpacesIdResponseSchema = z
+const Get2SpacesIdResponseSchema: z.ZodType<Get2SpacesIdResponseType> = z
   .object({
     data: SpaceSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1757,7 +2178,7 @@ const Get2SpacesIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2SpacesIdResponse')
 
-const Get2SpacesIdTweetsResponseSchema = z
+const Get2SpacesIdTweetsResponseSchema: z.ZodType<Get2SpacesIdTweetsResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1774,7 +2195,7 @@ const Get2SpacesIdTweetsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2SpacesIdTweetsResponse')
 
-const Get2SpacesResponseSchema = z
+const Get2SpacesResponseSchema: z.ZodType<Get2SpacesResponseType> = z
   .object({
     data: z.array(SpaceSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1783,7 +2204,7 @@ const Get2SpacesResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2SpacesResponse')
 
-const Get2SpacesSearchResponseSchema = z
+const Get2SpacesSearchResponseSchema: z.ZodType<Get2SpacesSearchResponseType> = z
   .object({
     data: z.array(SpaceSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1813,16 +2234,6 @@ const SearchCountSchema = z
     required: ['end', 'start', 'tweet_count'],
   })
   .openapi('SearchCount')
-
-const NewestIdSchema = z
-  .string()
-  .openapi({ description: 'The newest id in this response.' })
-  .openapi('NewestId')
-
-const OldestIdSchema = z
-  .string()
-  .openapi({ description: 'The oldest id in this response.' })
-  .openapi('OldestId')
 
 const Get2TweetsCountsAllResponseSchema = z
   .object({
@@ -1858,7 +2269,7 @@ const Get2TweetsCountsRecentResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsCountsRecentResponse')
 
-const Get2TweetsFirehoseStreamResponseSchema = z
+const Get2TweetsFirehoseStreamResponseSchema: z.ZodType<Get2TweetsFirehoseStreamResponseType> = z
   .object({
     data: TweetSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1867,7 +2278,7 @@ const Get2TweetsFirehoseStreamResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsFirehoseStreamResponse')
 
-const Get2TweetsIdLikingUsersResponseSchema = z
+const Get2TweetsIdLikingUsersResponseSchema: z.ZodType<Get2TweetsIdLikingUsersResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1884,7 +2295,7 @@ const Get2TweetsIdLikingUsersResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsIdLikingUsersResponse')
 
-const Get2TweetsIdQuoteTweetsResponseSchema = z
+const Get2TweetsIdQuoteTweetsResponseSchema: z.ZodType<Get2TweetsIdQuoteTweetsResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1900,7 +2311,7 @@ const Get2TweetsIdQuoteTweetsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsIdQuoteTweetsResponse')
 
-const Get2TweetsIdResponseSchema = z
+const Get2TweetsIdResponseSchema: z.ZodType<Get2TweetsIdResponseType> = z
   .object({
     data: TweetSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1909,7 +2320,7 @@ const Get2TweetsIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsIdResponse')
 
-const Get2TweetsIdRetweetedByResponseSchema = z
+const Get2TweetsIdRetweetedByResponseSchema: z.ZodType<Get2TweetsIdRetweetedByResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1926,7 +2337,7 @@ const Get2TweetsIdRetweetedByResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsIdRetweetedByResponse')
 
-const Get2TweetsResponseSchema = z
+const Get2TweetsResponseSchema: z.ZodType<Get2TweetsResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1935,7 +2346,7 @@ const Get2TweetsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsResponse')
 
-const Get2TweetsSample10StreamResponseSchema = z
+const Get2TweetsSample10StreamResponseSchema: z.ZodType<Get2TweetsSample10StreamResponseType> = z
   .object({
     data: TweetSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1944,7 +2355,7 @@ const Get2TweetsSample10StreamResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsSample10StreamResponse')
 
-const Get2TweetsSampleStreamResponseSchema = z
+const Get2TweetsSampleStreamResponseSchema: z.ZodType<Get2TweetsSampleStreamResponseType> = z
   .object({
     data: TweetSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1953,7 +2364,7 @@ const Get2TweetsSampleStreamResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsSampleStreamResponse')
 
-const Get2TweetsSearchAllResponseSchema = z
+const Get2TweetsSearchAllResponseSchema: z.ZodType<Get2TweetsSearchAllResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1971,7 +2382,7 @@ const Get2TweetsSearchAllResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsSearchAllResponse')
 
-const Get2TweetsSearchRecentResponseSchema = z
+const Get2TweetsSearchRecentResponseSchema: z.ZodType<Get2TweetsSearchRecentResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1989,7 +2400,7 @@ const Get2TweetsSearchRecentResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsSearchRecentResponse')
 
-const Get2TweetsSearchStreamResponseSchema = z
+const Get2TweetsSearchStreamResponseSchema: z.ZodType<Get2TweetsSearchStreamResponseType> = z
   .object({
     data: TweetSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -1998,7 +2409,7 @@ const Get2TweetsSearchStreamResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2TweetsSearchStreamResponse')
 
-const Get2UsersByResponseSchema = z
+const Get2UsersByResponseSchema: z.ZodType<Get2UsersByResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2007,16 +2418,17 @@ const Get2UsersByResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersByResponse')
 
-const Get2UsersByUsernameUsernameResponseSchema = z
-  .object({
-    data: UserSchema.exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2UsersByUsernameUsernameResponse')
+const Get2UsersByUsernameUsernameResponseSchema: z.ZodType<Get2UsersByUsernameUsernameResponseType> =
+  z
+    .object({
+      data: UserSchema.exactOptional(),
+      errors: z.array(ProblemSchema).min(1).exactOptional(),
+      includes: ExpansionsSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('Get2UsersByUsernameUsernameResponse')
 
-const Get2UsersIdBlockingResponseSchema = z
+const Get2UsersIdBlockingResponseSchema: z.ZodType<Get2UsersIdBlockingResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2033,7 +2445,7 @@ const Get2UsersIdBlockingResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdBlockingResponse')
 
-const Get2UsersIdBookmarksResponseSchema = z
+const Get2UsersIdBookmarksResponseSchema: z.ZodType<Get2UsersIdBookmarksResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2050,7 +2462,7 @@ const Get2UsersIdBookmarksResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdBookmarksResponse')
 
-const Get2UsersIdFollowedListsResponseSchema = z
+const Get2UsersIdFollowedListsResponseSchema: z.ZodType<Get2UsersIdFollowedListsResponseType> = z
   .object({
     data: z.array(ListSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2067,7 +2479,7 @@ const Get2UsersIdFollowedListsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdFollowedListsResponse')
 
-const Get2UsersIdFollowersResponseSchema = z
+const Get2UsersIdFollowersResponseSchema: z.ZodType<Get2UsersIdFollowersResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2084,7 +2496,7 @@ const Get2UsersIdFollowersResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdFollowersResponse')
 
-const Get2UsersIdFollowingResponseSchema = z
+const Get2UsersIdFollowingResponseSchema: z.ZodType<Get2UsersIdFollowingResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2101,7 +2513,7 @@ const Get2UsersIdFollowingResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdFollowingResponse')
 
-const Get2UsersIdLikedTweetsResponseSchema = z
+const Get2UsersIdLikedTweetsResponseSchema: z.ZodType<Get2UsersIdLikedTweetsResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2118,24 +2530,25 @@ const Get2UsersIdLikedTweetsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdLikedTweetsResponse')
 
-const Get2UsersIdListMembershipsResponseSchema = z
-  .object({
-    data: z.array(ListSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: NextTokenSchema.exactOptional(),
-        previous_token: PreviousTokenSchema.exactOptional(),
-        result_count: ResultCountSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2UsersIdListMembershipsResponse')
+const Get2UsersIdListMembershipsResponseSchema: z.ZodType<Get2UsersIdListMembershipsResponseType> =
+  z
+    .object({
+      data: z.array(ListSchema).min(1).exactOptional(),
+      errors: z.array(ProblemSchema).min(1).exactOptional(),
+      includes: ExpansionsSchema.exactOptional(),
+      meta: z
+        .object({
+          next_token: NextTokenSchema.exactOptional(),
+          previous_token: PreviousTokenSchema.exactOptional(),
+          result_count: ResultCountSchema.exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({ required: [] })
+    .openapi('Get2UsersIdListMembershipsResponse')
 
-const Get2UsersIdMentionsResponseSchema = z
+const Get2UsersIdMentionsResponseSchema: z.ZodType<Get2UsersIdMentionsResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2154,7 +2567,7 @@ const Get2UsersIdMentionsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdMentionsResponse')
 
-const Get2UsersIdMutingResponseSchema = z
+const Get2UsersIdMutingResponseSchema: z.ZodType<Get2UsersIdMutingResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2171,7 +2584,7 @@ const Get2UsersIdMutingResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdMutingResponse')
 
-const Get2UsersIdOwnedListsResponseSchema = z
+const Get2UsersIdOwnedListsResponseSchema: z.ZodType<Get2UsersIdOwnedListsResponseType> = z
   .object({
     data: z.array(ListSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2188,7 +2601,7 @@ const Get2UsersIdOwnedListsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdOwnedListsResponse')
 
-const Get2UsersIdPinnedListsResponseSchema = z
+const Get2UsersIdPinnedListsResponseSchema: z.ZodType<Get2UsersIdPinnedListsResponseType> = z
   .object({
     data: z.array(ListSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2201,7 +2614,7 @@ const Get2UsersIdPinnedListsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdPinnedListsResponse')
 
-const Get2UsersIdResponseSchema = z
+const Get2UsersIdResponseSchema: z.ZodType<Get2UsersIdResponseType> = z
   .object({
     data: UserSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2210,26 +2623,27 @@ const Get2UsersIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdResponse')
 
-const Get2UsersIdTimelinesReverseChronologicalResponseSchema = z
-  .object({
-    data: z.array(TweetSchema).min(1).exactOptional(),
-    errors: z.array(ProblemSchema).min(1).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        newest_id: NewestIdSchema.exactOptional(),
-        next_token: NextTokenSchema.exactOptional(),
-        oldest_id: OldestIdSchema.exactOptional(),
-        previous_token: PreviousTokenSchema.exactOptional(),
-        result_count: ResultCountSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Get2UsersIdTimelinesReverseChronologicalResponse')
+const Get2UsersIdTimelinesReverseChronologicalResponseSchema: z.ZodType<Get2UsersIdTimelinesReverseChronologicalResponseType> =
+  z
+    .object({
+      data: z.array(TweetSchema).min(1).exactOptional(),
+      errors: z.array(ProblemSchema).min(1).exactOptional(),
+      includes: ExpansionsSchema.exactOptional(),
+      meta: z
+        .object({
+          newest_id: NewestIdSchema.exactOptional(),
+          next_token: NextTokenSchema.exactOptional(),
+          oldest_id: OldestIdSchema.exactOptional(),
+          previous_token: PreviousTokenSchema.exactOptional(),
+          result_count: ResultCountSchema.exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({ required: [] })
+    .openapi('Get2UsersIdTimelinesReverseChronologicalResponse')
 
-const Get2UsersIdTweetsResponseSchema = z
+const Get2UsersIdTweetsResponseSchema: z.ZodType<Get2UsersIdTweetsResponseType> = z
   .object({
     data: z.array(TweetSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2248,7 +2662,7 @@ const Get2UsersIdTweetsResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersIdTweetsResponse')
 
-const Get2UsersMeResponseSchema = z
+const Get2UsersMeResponseSchema: z.ZodType<Get2UsersMeResponseType> = z
   .object({
     data: UserSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2257,7 +2671,7 @@ const Get2UsersMeResponseSchema = z
   .openapi({ required: [] })
   .openapi('Get2UsersMeResponse')
 
-const Get2UsersResponseSchema = z
+const Get2UsersResponseSchema: z.ZodType<Get2UsersResponseType> = z
   .object({
     data: z.array(UserSchema).min(1).exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -2532,7 +2946,7 @@ const RulesLookupResponseSchema = z
   .openapi({ required: ['meta'] })
   .openapi('RulesLookupResponse')
 
-const StreamingTweetResponseSchema = z
+const StreamingTweetResponseSchema: z.ZodType<StreamingTweetResponseType> = z
   .object({
     data: TweetSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -5571,7 +5985,7 @@ export const get2OpenapiJsonRoute = createRoute({
   responses: {
     200: {
       description: 'The request was successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })

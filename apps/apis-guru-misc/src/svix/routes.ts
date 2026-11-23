@@ -134,7 +134,7 @@ const BackgroundTaskOpWebhookTypeSchema = z
 
 const BackgroundTaskFinishedEventDataSchema = z
   .object({
-    data: z.object({}).openapi({ title: 'Data' }),
+    data: z.looseObject({}).openapi({ title: 'Data' }),
     status: BackgroundTaskOpWebhookStatusSchema,
     task: BackgroundTaskOpWebhookTypeSchema,
     taskId: z.string().openapi({ example: 'qtask_1srOrx2ZWZBpBUvZwXKQmoEYga2', title: 'Taskid' }),
@@ -184,7 +184,7 @@ const BackgroundTaskTypeSchema = z
 
 const BackgroundTaskOutSchema = z
   .object({
-    data: z.object({}).openapi({ title: 'Data' }),
+    data: z.looseObject({}).openapi({ title: 'Data' }),
     id: z.string().openapi({ example: 'qtask_1srOrx2ZWZBpBUvZwXKQmoEYga2', title: 'Id' }),
     status: BackgroundTaskStatusSchema,
     task: BackgroundTaskTypeSchema,
@@ -594,7 +594,7 @@ const EndpointMessageOutSchema = z
       .exactOptional()
       .openapi({ title: 'Nextattempt' }),
     payload: z
-      .object({})
+      .looseObject({})
       .openapi({ example: { email: 'test@example.com', username: 'test_user' }, title: 'Payload' }),
     status: MessageStatusSchema,
     timestamp: z.iso.datetime({ offset: true }).openapi({ title: 'Timestamp' }),
@@ -931,7 +931,7 @@ const EventTypeInSchema = z
       .record(
         z.string(),
         z
-          .object({})
+          .looseObject({})
           .openapi({
             example: {
               description: 'An invoice was paid by a user',
@@ -992,7 +992,7 @@ const EventTypeOutSchema = z
       .record(
         z.string(),
         z
-          .object({})
+          .looseObject({})
           .openapi({
             example: {
               description: 'An invoice was paid by a user',
@@ -1048,7 +1048,7 @@ const EventTypeUpdateSchema = z
       .record(
         z.string(),
         z
-          .object({})
+          .looseObject({})
           .openapi({
             example: {
               description: 'An invoice was paid by a user',
@@ -1510,7 +1510,7 @@ const MessageOutSchema = z
       .openapi({ example: 'user.signup', title: 'Eventtype' }),
     id: z.string().openapi({ example: 'msg_1srOrx2ZWZBpBUvZwXKQmoEYga2', title: 'Id' }),
     payload: z
-      .object({})
+      .looseObject({})
       .openapi({ example: { email: 'test@example.com', username: 'test_user' }, title: 'Payload' }),
     timestamp: z.iso.datetime({ offset: true }).openapi({ title: 'Timestamp' }),
   })
@@ -1735,7 +1735,7 @@ const MessageInSchema = z
       .max(256)
       .openapi({ example: 'user.signup', title: 'Eventtype' }),
     payload: z
-      .object({})
+      .looseObject({})
       .openapi({ example: { email: 'test@example.com', username: 'test_user' }, title: 'Payload' }),
     payloadRetentionPeriod: z
       .int()

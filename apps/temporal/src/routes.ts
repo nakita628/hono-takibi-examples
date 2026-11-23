@@ -1,5 +1,57 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ResetOptionsSchema = z
+  .object({
+    workflowTaskId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The id of a specific `WORKFLOW_TASK_COMPLETED`,`WORKFLOW_TASK_TIMED_OUT`, `WORKFLOW_TASK_FAILED`, or\n `WORKFLOW_TASK_STARTED` event to reset to.\n Note that this option doesn't make sense when used as part of a batch request.",
+      }),
+    buildId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Resets to the first workflow task processed by this build id.\n If the workflow was not processed by the build id, or the workflow task can't be\n determined, no reset will be performed.\n Note that by default, this reset is allowed to be to a prior run in a chain of\n continue-as-new.",
+      }),
+    resetReapplyType: z
+      .enum([
+        'RESET_REAPPLY_TYPE_UNSPECIFIED',
+        'RESET_REAPPLY_TYPE_SIGNAL',
+        'RESET_REAPPLY_TYPE_NONE',
+        'RESET_REAPPLY_TYPE_ALL_ELIGIBLE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Use `options`.\n Default: RESET_REAPPLY_TYPE_SIGNAL' }),
+    currentRunOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, limit the reset to only within the current run. (Applies to build_id targets and\n possibly others in the future.)',
+      }),
+    resetReapplyExcludeTypes: z
+      .array(
+        z.enum([
+          'RESET_REAPPLY_EXCLUDE_TYPE_UNSPECIFIED',
+          'RESET_REAPPLY_EXCLUDE_TYPE_SIGNAL',
+          'RESET_REAPPLY_EXCLUDE_TYPE_UPDATE',
+          'RESET_REAPPLY_EXCLUDE_TYPE_NEXUS',
+          'RESET_REAPPLY_EXCLUDE_TYPE_CANCEL_REQUEST',
+        ]),
+      )
+      .exactOptional()
+      .openapi({ description: 'Event types not to be reapplied' }),
+  })
+  .openapi({
+    description:
+      'Describes where and how to reset a workflow, used for batch reset currently\n and may be used for single-workflow reset later.',
+    required: [],
+  })
+  .openapi('ResetOptions')
+
 const PayloadSchema = z
   .any()
   .openapi({
@@ -13,362 +65,6 @@ const PayloadsSchema = z
   .openapi({ description: 'See `Payload`', required: [] })
   .openapi('Payloads')
 
-const ApplicationFailureInfoSchema = z
-  .object({
-    type: z.string().exactOptional(),
-    nonRetryable: z.boolean().exactOptional(),
-    details: PayloadsSchema.exactOptional(),
-    nextRetryDelay: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'next_retry_delay can be used by the client to override the activity\n retry interval calculated by the retry policy. Retry attempts will\n still be subject to the maximum retries limit and total time limit\n defined by the policy.',
-      }),
-    category: z
-      .enum(['APPLICATION_ERROR_CATEGORY_UNSPECIFIED', 'APPLICATION_ERROR_CATEGORY_BENIGN'])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ApplicationFailureInfo')
-
-const TimeoutFailureInfoSchema = z
-  .object({
-    timeoutType: z
-      .enum([
-        'TIMEOUT_TYPE_UNSPECIFIED',
-        'TIMEOUT_TYPE_START_TO_CLOSE',
-        'TIMEOUT_TYPE_SCHEDULE_TO_START',
-        'TIMEOUT_TYPE_SCHEDULE_TO_CLOSE',
-        'TIMEOUT_TYPE_HEARTBEAT',
-      ])
-      .exactOptional(),
-    lastHeartbeatDetails: PayloadsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TimeoutFailureInfo')
-
-const CanceledFailureInfoSchema = z
-  .object({
-    details: PayloadsSchema.exactOptional(),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The identity of the worker or client that requested the cancellation.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CanceledFailureInfo')
-
-const TerminatedFailureInfoSchema = z
-  .object({
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The identity of the worker or client that requested the termination.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TerminatedFailureInfo')
-
-const ServerFailureInfoSchema = z
-  .object({ nonRetryable: z.boolean().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ServerFailureInfo')
-
-const ResetWorkflowFailureInfoSchema = z
-  .object({ lastHeartbeatDetails: PayloadsSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ResetWorkflowFailureInfo')
-
-const ActivityTypeSchema = z
-  .object({ name: z.string().exactOptional() })
-  .openapi({
-    description:
-      'Represents the identifier used by a activity author to define the activity. Typically, the\n name of a function. This is sometimes referred to as the activity\'s "name"',
-    required: [],
-  })
-  .openapi('ActivityType')
-
-const ActivityFailureInfoSchema = z
-  .object({
-    scheduledEventId: z.string().exactOptional(),
-    startedEventId: z.string().exactOptional(),
-    identity: z.string().exactOptional(),
-    activityType: ActivityTypeSchema.exactOptional(),
-    activityId: z.string().exactOptional(),
-    retryState: z
-      .enum([
-        'RETRY_STATE_UNSPECIFIED',
-        'RETRY_STATE_IN_PROGRESS',
-        'RETRY_STATE_NON_RETRYABLE_FAILURE',
-        'RETRY_STATE_TIMEOUT',
-        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
-        'RETRY_STATE_RETRY_POLICY_NOT_SET',
-        'RETRY_STATE_INTERNAL_SERVER_ERROR',
-        'RETRY_STATE_CANCEL_REQUESTED',
-      ])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityFailureInfo')
-
-const WorkflowExecutionSchema = z
-  .object({ workflowId: z.string().exactOptional(), runId: z.string().exactOptional() })
-  .openapi({
-    description:
-      'Identifies a specific workflow within a namespace. Practically speaking, because run_id is a\n uuid, a workflow execution is globally unique. Note that many commands allow specifying an empty\n run id as a way of saying "target the latest run of the workflow".',
-    required: [],
-  })
-  .openapi('WorkflowExecution')
-
-const WorkflowTypeSchema = z
-  .object({ name: z.string().exactOptional() })
-  .openapi({
-    description:
-      'Represents the identifier used by a workflow author to define the workflow. Typically, the\n name of a function. This is sometimes referred to as the workflow\'s "name"',
-    required: [],
-  })
-  .openapi('WorkflowType')
-
-const ChildWorkflowExecutionFailureInfoSchema = z
-  .object({
-    namespace: z.string().exactOptional(),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    initiatedEventId: z.string().exactOptional(),
-    startedEventId: z.string().exactOptional(),
-    retryState: z
-      .enum([
-        'RETRY_STATE_UNSPECIFIED',
-        'RETRY_STATE_IN_PROGRESS',
-        'RETRY_STATE_NON_RETRYABLE_FAILURE',
-        'RETRY_STATE_TIMEOUT',
-        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
-        'RETRY_STATE_RETRY_POLICY_NOT_SET',
-        'RETRY_STATE_INTERNAL_SERVER_ERROR',
-        'RETRY_STATE_CANCEL_REQUESTED',
-      ])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ChildWorkflowExecutionFailureInfo')
-
-const NexusOperationFailureInfoSchema = z
-  .object({
-    scheduledEventId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The NexusOperationScheduled event ID.' }),
-    endpoint: z.string().exactOptional().openapi({ description: 'Endpoint name.' }),
-    service: z.string().exactOptional().openapi({ description: 'Service name.' }),
-    operation: z.string().exactOptional().openapi({ description: 'Operation name.' }),
-    operationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Operation ID - may be empty if the operation completed synchronously.\n\n Deprecated. Renamed to operation_token.',
-      }),
-    operationToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Operation token - may be empty if the operation completed synchronously.',
-      }),
-  })
-  .openapi({
-    description:
-      'Representation of the Temporal SDK NexusOperationError object that is returned to workflow callers.',
-    required: [],
-  })
-  .openapi('NexusOperationFailureInfo')
-
-const NexusHandlerFailureInfoSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Nexus error type as defined in the spec:\n https://github.com/nexus-rpc/api/blob/main/SPEC.md#predefined-handler-errors.',
-      }),
-    retryBehavior: z
-      .enum([
-        'NEXUS_HANDLER_ERROR_RETRY_BEHAVIOR_UNSPECIFIED',
-        'NEXUS_HANDLER_ERROR_RETRY_BEHAVIOR_RETRYABLE',
-        'NEXUS_HANDLER_ERROR_RETRY_BEHAVIOR_NON_RETRYABLE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Retry behavior, defaults to the retry behavior of the error type as defined in the spec.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NexusHandlerFailureInfo')
-
-type FailureType = {
-  message?: string
-  source?: string
-  stackTrace?: string
-  encodedAttributes?: z.infer<typeof PayloadSchema>
-  cause?: FailureType
-  applicationFailureInfo?: z.infer<typeof ApplicationFailureInfoSchema>
-  timeoutFailureInfo?: z.infer<typeof TimeoutFailureInfoSchema>
-  canceledFailureInfo?: z.infer<typeof CanceledFailureInfoSchema>
-  terminatedFailureInfo?: z.infer<typeof TerminatedFailureInfoSchema>
-  serverFailureInfo?: z.infer<typeof ServerFailureInfoSchema>
-  resetWorkflowFailureInfo?: z.infer<typeof ResetWorkflowFailureInfoSchema>
-  activityFailureInfo?: z.infer<typeof ActivityFailureInfoSchema>
-  childWorkflowExecutionFailureInfo?: z.infer<typeof ChildWorkflowExecutionFailureInfoSchema>
-  nexusOperationExecutionFailureInfo?: z.infer<typeof NexusOperationFailureInfoSchema>
-  nexusHandlerFailureInfo?: z.infer<typeof NexusHandlerFailureInfoSchema>
-}
-
-const RetryPolicySchema = z
-  .object({
-    initialInterval: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Interval of the first retry. If retryBackoffCoefficient is 1.0 then it is used for all retries.',
-      }),
-    backoffCoefficient: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Coefficient used to calculate the next retry interval.\n The next retry interval is previous interval multiplied by the coefficient.\n Must be 1 or larger.',
-      }),
-    maximumInterval: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum interval between retries. Exponential backoff leads to interval increase.\n This value is the cap of the increase. Default is 100x of the initial interval.',
-      }),
-    maximumAttempts: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum number of attempts. When exceeded the retries stop even if not expired yet.\n 1 disables retries. 0 means unlimited (up to the timeouts)',
-      }),
-    nonRetryableErrorTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Non-Retryable errors types. Will stop retrying if the error type matches this list. Note that\n this is not a substring match, the error *type* (not message) must match exactly.',
-      }),
-  })
-  .openapi({
-    description: 'How retries ought to be handled, usable by both workflows and activities',
-    required: [],
-  })
-  .openapi('RetryPolicy')
-
-const FailureSchema: z.ZodType<FailureType> = z
-  .lazy(() =>
-    z
-      .object({
-        message: z.string().exactOptional(),
-        source: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The source this Failure originated in, e.g. TypeScriptSDK / JavaSDK\n In some SDKs this is used to rehydrate the stack trace into an exception object.',
-          }),
-        stackTrace: z.string().exactOptional(),
-        encodedAttributes: PayloadSchema.exactOptional().openapi({
-          description:
-            'Alternative way to supply `message` and `stack_trace` and possibly other attributes, used for encryption of\n errors originating in user code which might contain sensitive information.\n The `encoded_attributes` Payload could represent any serializable object, e.g. JSON object or a `Failure` proto\n message.\n\n SDK authors:\n - The SDK should provide a default `encodeFailureAttributes` and `decodeFailureAttributes` implementation that:\n   - Uses a JSON object to represent `{ message, stack_trace }`.\n   - Overwrites the original message with "Encoded failure" to indicate that more information could be extracted.\n   - Overwrites the original stack_trace with an empty string.\n   - The resulting JSON object is converted to Payload using the default PayloadConverter and should be processed\n     by the user-provided PayloadCodec\n\n - If there\'s demand, we could allow overriding the default SDK implementation to encode other opaque Failure attributes.',
-        }),
-        cause: FailureSchema.exactOptional(),
-        applicationFailureInfo: ApplicationFailureInfoSchema.exactOptional(),
-        timeoutFailureInfo: TimeoutFailureInfoSchema.exactOptional(),
-        canceledFailureInfo: CanceledFailureInfoSchema.exactOptional(),
-        terminatedFailureInfo: TerminatedFailureInfoSchema.exactOptional(),
-        serverFailureInfo: ServerFailureInfoSchema.exactOptional(),
-        resetWorkflowFailureInfo: ResetWorkflowFailureInfoSchema.exactOptional(),
-        activityFailureInfo: ActivityFailureInfoSchema.exactOptional(),
-        childWorkflowExecutionFailureInfo: ChildWorkflowExecutionFailureInfoSchema.exactOptional(),
-        nexusOperationExecutionFailureInfo: NexusOperationFailureInfoSchema.exactOptional(),
-        nexusHandlerFailureInfo: NexusHandlerFailureInfoSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Failure')
-
-const WorkerDeploymentVersionSchema = z
-  .object({
-    buildId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier for this Version within the Deployment it is a part of.\n Not necessarily unique within the namespace.\n The combination of `deployment_name` and `build_id` uniquely identifies this\n Version within the namespace, because Deployment names are unique within a namespace.',
-      }),
-    deploymentName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identifies the Worker Deployment this Version is part of.' }),
-  })
-  .openapi({
-    description:
-      'A Worker Deployment Version (Version, for short) represents a\n version of workers within a Worker Deployment. (see documentation of WorkerDeploymentVersionInfo)\n Version records are created in Temporal server automatically when their\n first poller arrives to the server.\n Experimental. Worker Deployment Versions are experimental and might significantly change in the future.',
-    required: [],
-  })
-  .openapi('WorkerDeploymentVersion')
-
-const PrioritySchema = z
-  .object({
-    priorityKey: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Priority key is a positive integer from 1 to n, where smaller integers\n correspond to higher priorities (tasks run sooner). In general, tasks in\n a queue should be processed in close to priority order, although small\n deviations are possible.\n\n The maximum priority value (minimum priority) is determined by server\n configuration, and defaults to 5.\n\n If priority is not present (or zero), then the effective priority will be\n the default priority, which is calculated by (min+max)/2. With the\n default max of 5, and min of 1, that comes out to 3.',
-      }),
-    fairnessKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fairness key is a short string that\'s used as a key for a fairness\n balancing mechanism. It may correspond to a tenant id, or to a fixed\n string like "high" or "low". The default is the empty string.\n\n The fairness mechanism attempts to dispatch tasks for a given key in\n proportion to its weight. For example, using a thousand distinct tenant\n ids, each with a weight of 1.0 (the default) will result in each tenant\n getting a roughly equal share of task dispatch throughput.\n\n (Note: this does not imply equal share of worker capacity! Fairness\n decisions are made based on queue statistics, not\n current worker load.)\n\n As another example, using keys "high" and "low" with weight 9.0 and 1.0\n respectively will prefer dispatching "high" tasks over "low" tasks at a\n 9:1 ratio, while allowing either key to use all worker capacity if the\n other is not present.\n\n All fairness mechanisms, including rate limits, are best-effort and\n probabilistic. The results may not match what a "perfect" algorithm with\n infinite resources would produce. The more unique keys are used, the less\n accurate the results will be.\n\n Fairness keys are limited to 64 bytes.',
-      }),
-    fairnessWeight: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fairness weight for a task can come from multiple sources for\n flexibility. From highest to lowest precedence:\n 1. Weights for a small set of keys can be overridden in task queue\n    configuration with an API.\n 2. It can be attached to the workflow/activity in this field.\n 3. The default weight of 1.0 will be used.\n\n Weight values are clamped to the range [0.001, 1000].',
-      }),
-  })
-  .openapi({
-    description:
-      'Priority contains metadata that controls relative ordering of task processing\n when tasks are backed up in a queue. Initially, Priority will be used in\n matching (workflow and activity) task queues. Later it may be used in history\n task queues and in rate limiting decisions.\n\n Priority is attached to workflows and activities. By default, activities\n inherit Priority from the workflow that created them, but may override fields\n when an activity is started or modified.\n\n Despite being named "Priority", this message also contains fields that\n control "fairness" mechanisms.\n\n For all fields, the field not present or equal to zero/empty string means to\n inherit the value from the calling workflow, or if there is no calling\n workflow, then use the default value.\n\n For all fields other than fairness_key, the zero value isn\'t meaningful so\n there\'s no confusion between inherit/default and a meaningful value. For\n fairness_key, the empty string will be interpreted as "inherit". This means\n that if a workflow has a non-empty fairness key, you can\'t override the\n fairness key of its activity to the empty string.\n\n The overall semantics of Priority are:\n 1. First, consider "priority": higher priority (lower number) goes first.\n 2. Then, consider fairness: try to dispatch tasks for different fairness keys\n    in proportion to their weight.\n\n Applications may use any subset of mechanisms that are useful to them and\n leave the other fields to use default values.\n\n Not all queues in the system may support the "full" semantics of all priority\n fields. (Currently only support in matching task queues is planned.)',
-    required: [],
-  })
-  .openapi('Priority')
-
-const SearchAttributesSchema = z
-  .object({ indexedFields: z.record(z.string(), PayloadSchema).exactOptional() })
-  .openapi({
-    description:
-      'A user-defined set of *indexed* fields that are used/exposed when listing/searching workflows.\n The payload is not serialized in a user-defined way.',
-    required: [],
-  })
-  .openapi('SearchAttributes')
-
 const HeaderSchema = z
   .object({ fields: z.record(z.string(), PayloadSchema).exactOptional() })
   .openapi({
@@ -377,23 +73,6 @@ const HeaderSchema = z
     required: [],
   })
   .openapi('Header')
-
-const UserMetadataSchema = z
-  .object({
-    summary: PayloadSchema.exactOptional().openapi({
-      description:
-        'Short-form text that provides a summary. This payload should be a "json/plain"-encoded payload\n that is a single JSON string for use in user interfaces. User interface formatting may not\n apply to this text when used in "title" situations. The payload data section is limited to 400\n bytes by default.',
-    }),
-    details: PayloadSchema.exactOptional().openapi({
-      description:
-        'Long-form text that provides details. This payload should be a "json/plain"-encoded payload\n that is a single JSON string for use in user interfaces. User interface formatting may apply to\n this text in common use. The payload data section is limited to 20000 bytes by default.',
-    }),
-  })
-  .openapi({
-    description: 'Information a user can set, often for use by user interfaces.',
-    required: [],
-  })
-  .openapi('UserMetadata')
 
 const WorkflowEventEventReferenceSchema = z
   .object({
@@ -598,6 +277,367 @@ const LinkSchema = z
   })
   .openapi('Link')
 
+const PostResetOperationSignalWorkflowSchema = z
+  .object({
+    signalName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The workflow author-defined name of the signal to send to the workflow.',
+      }),
+    input: PayloadsSchema.exactOptional().openapi({
+      description: 'Serialized value(s) to provide with the signal.',
+    }),
+    header: HeaderSchema.exactOptional().openapi({
+      description: 'Headers that are passed with the signal to the processing workflow.',
+    }),
+    links: z
+      .array(LinkSchema)
+      .exactOptional()
+      .openapi({ description: 'Links to be associated with the WorkflowExecutionSignaled event.' }),
+  })
+  .openapi({
+    description:
+      'SignalWorkflow represents sending a signal after a workflow reset.\n Keep the parameter in sync with temporal.api.workflowservice.v1.SignalWorkflowExecutionRequest.',
+    required: [],
+  })
+  .openapi('PostResetOperationSignalWorkflow')
+
+const WorkerDeploymentVersionSchema = z
+  .object({
+    buildId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for this Version within the Deployment it is a part of.\n Not necessarily unique within the namespace.\n The combination of `deployment_name` and `build_id` uniquely identifies this\n Version within the namespace, because Deployment names are unique within a namespace.',
+      }),
+    deploymentName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifies the Worker Deployment this Version is part of.' }),
+  })
+  .openapi({
+    description:
+      'A Worker Deployment Version (Version, for short) represents a\n version of workers within a Worker Deployment. (see documentation of WorkerDeploymentVersionInfo)\n Version records are created in Temporal server automatically when their\n first poller arrives to the server.\n Experimental. Worker Deployment Versions are experimental and might significantly change in the future.',
+    required: [],
+  })
+  .openapi('WorkerDeploymentVersion')
+
+const VersioningOverridePinnedOverrideSchema = z
+  .object({
+    behavior: z
+      .enum(['PINNED_OVERRIDE_BEHAVIOR_UNSPECIFIED', 'PINNED_OVERRIDE_BEHAVIOR_PINNED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Defaults to PINNED_OVERRIDE_BEHAVIOR_UNSPECIFIED.\n See `PinnedOverrideBehavior` for details.',
+      }),
+    version: WorkerDeploymentVersionSchema.exactOptional().openapi({
+      description:
+        'Specifies the Worker Deployment Version to pin this workflow to.\n Required if the target workflow is not already pinned to a version.\n\n If omitted and the target workflow is already pinned, the effective\n pinned version will be the existing pinned version.\n\n If omitted and the target workflow is not pinned, the override request\n will be rejected with a PreconditionFailed error.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('VersioningOverridePinnedOverride')
+
+const DeploymentSchema = z
+  .object({
+    seriesName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Different versions of the same worker service/application are related together by having a\n shared series name.\n Out of all deployments of a series, one can be designated as the current deployment, which\n receives new workflow executions and new tasks of workflows with\n `VERSIONING_BEHAVIOR_AUTO_UPGRADE` versioning behavior.',
+      }),
+    buildId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Build ID changes with each version of the worker when the worker program code and/or config\n changes.',
+      }),
+  })
+  .openapi({
+    description:
+      '`Deployment` identifies a deployment of Temporal workers. The combination of deployment series\n name + build ID serves as the identifier. User can use `WorkerDeploymentOptions` in their worker\n programs to specify these values.\n Deprecated.',
+    required: [],
+  })
+  .openapi('Deployment')
+
+const VersioningOverrideSchema = z
+  .object({
+    pinned: VersioningOverridePinnedOverrideSchema.exactOptional().openapi({
+      description: 'Override the workflow to have Pinned behavior.',
+    }),
+    autoUpgrade: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Override the workflow to have AutoUpgrade behavior.' }),
+    behavior: z
+      .enum([
+        'VERSIONING_BEHAVIOR_UNSPECIFIED',
+        'VERSIONING_BEHAVIOR_PINNED',
+        'VERSIONING_BEHAVIOR_AUTO_UPGRADE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required.\n Deprecated. Use `override`.' }),
+    deployment: DeploymentSchema.exactOptional().openapi({
+      description:
+        'Required if behavior is `PINNED`. Must be null if behavior is `AUTO_UPGRADE`.\n Identifies the worker deployment to pin the workflow to.\n Deprecated. Use `override.pinned.version`.',
+    }),
+    pinnedVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if behavior is `PINNED`. Must be absent if behavior is not `PINNED`.\n Identifies the worker deployment version to pin the workflow to, in the format\n "<deployment_name>.<build_id>".\n Deprecated. Use `override.pinned.version`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Used to override the versioning behavior (and pinned deployment version, if applicable) of a\n specific workflow execution. If set, this override takes precedence over worker-sent values.\n See `WorkflowExecutionInfo.VersioningInfo` for more information.\n\n To remove the override, call `UpdateWorkflowExecutionOptions` with a null\n `VersioningOverride`, and use the `update_mask` to indicate that it should be mutated.\n\n Pinned behavior overrides are automatically inherited by child workflows, workflow retries, continue-as-new\n workflows, and cron workflows.',
+    required: [],
+  })
+  .openapi('VersioningOverride')
+
+const PrioritySchema = z
+  .object({
+    priorityKey: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Priority key is a positive integer from 1 to n, where smaller integers\n correspond to higher priorities (tasks run sooner). In general, tasks in\n a queue should be processed in close to priority order, although small\n deviations are possible.\n\n The maximum priority value (minimum priority) is determined by server\n configuration, and defaults to 5.\n\n If priority is not present (or zero), then the effective priority will be\n the default priority, which is calculated by (min+max)/2. With the\n default max of 5, and min of 1, that comes out to 3.',
+      }),
+    fairnessKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Fairness key is a short string that\'s used as a key for a fairness\n balancing mechanism. It may correspond to a tenant id, or to a fixed\n string like "high" or "low". The default is the empty string.\n\n The fairness mechanism attempts to dispatch tasks for a given key in\n proportion to its weight. For example, using a thousand distinct tenant\n ids, each with a weight of 1.0 (the default) will result in each tenant\n getting a roughly equal share of task dispatch throughput.\n\n (Note: this does not imply equal share of worker capacity! Fairness\n decisions are made based on queue statistics, not\n current worker load.)\n\n As another example, using keys "high" and "low" with weight 9.0 and 1.0\n respectively will prefer dispatching "high" tasks over "low" tasks at a\n 9:1 ratio, while allowing either key to use all worker capacity if the\n other is not present.\n\n All fairness mechanisms, including rate limits, are best-effort and\n probabilistic. The results may not match what a "perfect" algorithm with\n infinite resources would produce. The more unique keys are used, the less\n accurate the results will be.\n\n Fairness keys are limited to 64 bytes.',
+      }),
+    fairnessWeight: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Fairness weight for a task can come from multiple sources for\n flexibility. From highest to lowest precedence:\n 1. Weights for a small set of keys can be overridden in task queue\n    configuration with an API.\n 2. It can be attached to the workflow/activity in this field.\n 3. The default weight of 1.0 will be used.\n\n Weight values are clamped to the range [0.001, 1000].',
+      }),
+  })
+  .openapi({
+    description:
+      'Priority contains metadata that controls relative ordering of task processing\n when tasks are backed up in a queue. Initially, Priority will be used in\n matching (workflow and activity) task queues. Later it may be used in history\n task queues and in rate limiting decisions.\n\n Priority is attached to workflows and activities. By default, activities\n inherit Priority from the workflow that created them, but may override fields\n when an activity is started or modified.\n\n Despite being named "Priority", this message also contains fields that\n control "fairness" mechanisms.\n\n For all fields, the field not present or equal to zero/empty string means to\n inherit the value from the calling workflow, or if there is no calling\n workflow, then use the default value.\n\n For all fields other than fairness_key, the zero value isn\'t meaningful so\n there\'s no confusion between inherit/default and a meaningful value. For\n fairness_key, the empty string will be interpreted as "inherit". This means\n that if a workflow has a non-empty fairness key, you can\'t override the\n fairness key of its activity to the empty string.\n\n The overall semantics of Priority are:\n 1. First, consider "priority": higher priority (lower number) goes first.\n 2. Then, consider fairness: try to dispatch tasks for different fairness keys\n    in proportion to their weight.\n\n Applications may use any subset of mechanisms that are useful to them and\n leave the other fields to use default values.\n\n Not all queues in the system may support the "full" semantics of all priority\n fields. (Currently only support in matching task queues is planned.)',
+    required: [],
+  })
+  .openapi('Priority')
+
+const TimeSkippingConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enables or disables time skipping for this workflow execution.' }),
+    maxSkippedDuration: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({ description: 'Maximum total virtual time that can be skipped.' }),
+    maxElapsedDuration: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum elapsed time since time skipping was enabled.\n This includes both skipped time and real time elapsing.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration for time skipping during a workflow execution.\n When enabled, virtual time advances automatically whenever there is no in-flight work.\n In-flight work includes activities, child workflows, Nexus operations, signal/cancel external workflow operations,\n and possibly other features added in the future.\n User timers are not classified as in-flight work and will be skipped over.\n When time advances, it skips to the earlier of the next user timer or the configured bound, if either exists.\n \n Propagation behavior of time skipping:\n The enabled flag, bound fields, and accumulated skipped duration are propagated to related executions as follows:\n (1) Child workflows and continue-as-new: both the configuration and the accumulated skipped duration are\n     inherited from the current execution. The configured bound is shared between the inherited skipped\n     duration and any additional duration skipped by the new run.\n (2) Retry and cron: the configuration and accumulated skipped duration are inherited as recorded when the\n     current workflow started; the accumulated skipped duration of the current run is not propagated.\n (3) Reset: the new run retains the time-skipping configuration of the current execution. Because reset replays\n     all events up to the reset point and re-applies any UpdateWorkflowExecutionOptions changes made after that\n     point, the resulting run ends up with the same final time-skipping configuration as the previous run.',
+    required: [],
+  })
+  .openapi('TimeSkippingConfig')
+
+const WorkflowExecutionOptionsSchema = z
+  .object({
+    versioningOverride: VersioningOverrideSchema.exactOptional().openapi({
+      description:
+        'If set, takes precedence over the Versioning Behavior sent by the SDK on Workflow Task completion.',
+    }),
+    priority: PrioritySchema.exactOptional().openapi({
+      description: "If set, overrides the workflow's priority sent by the SDK.",
+    }),
+    timeSkippingConfig: TimeSkippingConfigSchema.exactOptional().openapi({
+      description:
+        'Time-skipping configuration for this workflow execution.\n If not set, the time-skipping configuration is not updated by this request;\n the existing configuration is preserved.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('WorkflowExecutionOptions')
+
+const PostResetOperationUpdateWorkflowOptionsSchema = z
+  .object({
+    workflowExecutionOptions: WorkflowExecutionOptionsSchema.exactOptional().openapi({
+      description:
+        'Update Workflow options that were originally specified via StartWorkflowExecution. Partial updates are accepted and controlled by update_mask.',
+    }),
+    updateMask: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Controls which fields from `workflow_execution_options` will be applied.\n To unset a field, set it to null and use the update mask to indicate that it should be mutated.',
+      }),
+  })
+  .openapi({
+    description:
+      'UpdateWorkflowOptions represents updating workflow execution options after a workflow reset.\n Keep the parameters in sync with temporal.api.workflowservice.v1.UpdateWorkflowExecutionOptionsRequest.',
+    required: [],
+  })
+  .openapi('PostResetOperationUpdateWorkflowOptions')
+
+const PostResetOperationSchema = z
+  .object({
+    signalWorkflow: PostResetOperationSignalWorkflowSchema.exactOptional(),
+    updateWorkflowOptions: PostResetOperationUpdateWorkflowOptionsSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'PostResetOperation represents an operation to be performed on the new workflow execution after a workflow reset.',
+    required: [],
+  })
+  .openapi('PostResetOperation')
+
+type BatchOperationResetType = {
+  identity?: string
+  options?: z.infer<typeof ResetOptionsSchema>
+  resetType?:
+    | 'RESET_TYPE_UNSPECIFIED'
+    | 'RESET_TYPE_FIRST_WORKFLOW_TASK'
+    | 'RESET_TYPE_LAST_WORKFLOW_TASK'
+  resetReapplyType?:
+    | 'RESET_REAPPLY_TYPE_UNSPECIFIED'
+    | 'RESET_REAPPLY_TYPE_SIGNAL'
+    | 'RESET_REAPPLY_TYPE_NONE'
+    | 'RESET_REAPPLY_TYPE_ALL_ELIGIBLE'
+  postResetOperations?: z.infer<typeof PostResetOperationSchema>[]
+}
+
+const ActivityTypeSchema = z
+  .object({ name: z.string().exactOptional() })
+  .openapi({
+    description:
+      'Represents the identifier used by a activity author to define the activity. Typically, the\n name of a function. This is sometimes referred to as the activity\'s "name"',
+    required: [],
+  })
+  .openapi('ActivityType')
+
+const RetryPolicySchema = z
+  .object({
+    initialInterval: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Interval of the first retry. If retryBackoffCoefficient is 1.0 then it is used for all retries.',
+      }),
+    backoffCoefficient: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Coefficient used to calculate the next retry interval.\n The next retry interval is previous interval multiplied by the coefficient.\n Must be 1 or larger.',
+      }),
+    maximumInterval: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum interval between retries. Exponential backoff leads to interval increase.\n This value is the cap of the increase. Default is 100x of the initial interval.',
+      }),
+    maximumAttempts: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of attempts. When exceeded the retries stop even if not expired yet.\n 1 disables retries. 0 means unlimited (up to the timeouts)',
+      }),
+    nonRetryableErrorTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Non-Retryable errors types. Will stop retrying if the error type matches this list. Note that\n this is not a substring match, the error *type* (not message) must match exactly.',
+      }),
+  })
+  .openapi({
+    description: 'How retries ought to be handled, usable by both workflows and activities',
+    required: [],
+  })
+  .openapi('RetryPolicy')
+
+const FailureSchema: z.ZodType<FailureType> = z
+  .lazy(() =>
+    z
+      .object({
+        message: z.string().exactOptional(),
+        source: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The source this Failure originated in, e.g. TypeScriptSDK / JavaSDK\n In some SDKs this is used to rehydrate the stack trace into an exception object.',
+          }),
+        stackTrace: z.string().exactOptional(),
+        encodedAttributes: PayloadSchema.exactOptional().openapi({
+          description:
+            'Alternative way to supply `message` and `stack_trace` and possibly other attributes, used for encryption of\n errors originating in user code which might contain sensitive information.\n The `encoded_attributes` Payload could represent any serializable object, e.g. JSON object or a `Failure` proto\n message.\n\n SDK authors:\n - The SDK should provide a default `encodeFailureAttributes` and `decodeFailureAttributes` implementation that:\n   - Uses a JSON object to represent `{ message, stack_trace }`.\n   - Overwrites the original message with "Encoded failure" to indicate that more information could be extracted.\n   - Overwrites the original stack_trace with an empty string.\n   - The resulting JSON object is converted to Payload using the default PayloadConverter and should be processed\n     by the user-provided PayloadCodec\n\n - If there\'s demand, we could allow overriding the default SDK implementation to encode other opaque Failure attributes.',
+        }),
+        cause: FailureSchema.exactOptional(),
+        applicationFailureInfo: ApplicationFailureInfoSchema.exactOptional(),
+        timeoutFailureInfo: TimeoutFailureInfoSchema.exactOptional(),
+        canceledFailureInfo: CanceledFailureInfoSchema.exactOptional(),
+        terminatedFailureInfo: TerminatedFailureInfoSchema.exactOptional(),
+        serverFailureInfo: ServerFailureInfoSchema.exactOptional(),
+        resetWorkflowFailureInfo: ResetWorkflowFailureInfoSchema.exactOptional(),
+        activityFailureInfo: ActivityFailureInfoSchema.exactOptional(),
+        childWorkflowExecutionFailureInfo: ChildWorkflowExecutionFailureInfoSchema.exactOptional(),
+        nexusOperationExecutionFailureInfo: NexusOperationFailureInfoSchema.exactOptional(),
+        nexusHandlerFailureInfo: NexusHandlerFailureInfoSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('Failure')
+
+const SearchAttributesSchema = z
+  .object({ indexedFields: z.record(z.string(), PayloadSchema).exactOptional() })
+  .openapi({
+    description:
+      'A user-defined set of *indexed* fields that are used/exposed when listing/searching workflows.\n The payload is not serialized in a user-defined way.',
+    required: [],
+  })
+  .openapi('SearchAttributes')
+
+const UserMetadataSchema = z
+  .object({
+    summary: PayloadSchema.exactOptional().openapi({
+      description:
+        'Short-form text that provides a summary. This payload should be a "json/plain"-encoded payload\n that is a single JSON string for use in user interfaces. User interface formatting may not\n apply to this text when used in "title" situations. The payload data section is limited to 400\n bytes by default.',
+    }),
+    details: PayloadSchema.exactOptional().openapi({
+      description:
+        'Long-form text that provides details. This payload should be a "json/plain"-encoded payload\n that is a single JSON string for use in user interfaces. User interface formatting may apply to\n this text in common use. The payload data section is limited to 20000 bytes by default.',
+    }),
+  })
+  .openapi({
+    description: 'Information a user can set, often for use by user interfaces.',
+    required: [],
+  })
+  .openapi('UserMetadata')
+
 const ActivityExecutionInfoSchema = z
   .object({
     activityId: z
@@ -781,86 +821,6 @@ const ActivityExecutionInfoSchema = z
   .openapi({ description: 'Information about a standalone activity.', required: [] })
   .openapi('ActivityExecutionInfo')
 
-const ActivityExecutionListInfoSchema = z
-  .object({
-    activityId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier of this activity within its namespace along with run ID (below).',
-      }),
-    runId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The run ID of the standalone activity.' }),
-    activityType: ActivityTypeSchema.exactOptional().openapi({
-      description:
-        'The type of the activity, a string that maps to a registered activity on a worker.',
-    }),
-    scheduleTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Time the activity was originally scheduled via a StartActivityExecution request.',
-      }),
-    closeTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'If the activity is in a terminal status, this field represents the time the activity transitioned to that status.',
-      }),
-    status: z
-      .enum([
-        'ACTIVITY_EXECUTION_STATUS_UNSPECIFIED',
-        'ACTIVITY_EXECUTION_STATUS_RUNNING',
-        'ACTIVITY_EXECUTION_STATUS_COMPLETED',
-        'ACTIVITY_EXECUTION_STATUS_FAILED',
-        'ACTIVITY_EXECUTION_STATUS_CANCELED',
-        'ACTIVITY_EXECUTION_STATUS_TERMINATED',
-        'ACTIVITY_EXECUTION_STATUS_TIMED_OUT',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Only scheduled and terminal statuses appear here. More detailed information in PendingActivityInfo but not\n available in the list response.',
-      }),
-    searchAttributes: SearchAttributesSchema.exactOptional().openapi({
-      description: 'Search attributes from the start request.',
-    }),
-    taskQueue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The task queue this activity was scheduled on when it was originally started, updated on activity options update.',
-      }),
-    stateTransitionCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Updated on terminal status.' }),
-    stateSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Updated once on scheduled and once on terminal status.' }),
-    executionDuration: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The difference between close time and scheduled time.\n This field is only populated if the activity is closed.',
-      }),
-  })
-  .openapi({
-    description:
-      'Limited activity information returned in the list response.\n When adding fields here, ensure that it is also present in ActivityExecutionInfo (note that it\n may already be present in ActivityExecutionInfo but not at the top-level).',
-    required: [],
-  })
-  .openapi('ActivityExecutionListInfo')
-
 const ActivityExecutionOutcomeSchema = z
   .object({
     result: PayloadsSchema.exactOptional().openapi({
@@ -876,1042 +836,6 @@ const ActivityExecutionOutcomeSchema = z
     required: [],
   })
   .openapi('ActivityExecutionOutcome')
-
-const TaskQueueSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    kind: z
-      .enum([
-        'TASK_QUEUE_KIND_UNSPECIFIED',
-        'TASK_QUEUE_KIND_NORMAL',
-        'TASK_QUEUE_KIND_STICKY',
-        'TASK_QUEUE_KIND_WORKER_COMMANDS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Default: TASK_QUEUE_KIND_NORMAL.' }),
-    normalName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Iff kind == TASK_QUEUE_KIND_STICKY, then this field contains the name of\n the normal task queue that the sticky worker is running on.',
-      }),
-  })
-  .openapi({ description: 'See https://docs.temporal.io/docs/concepts/task-queues/', required: [] })
-  .openapi('TaskQueue')
-
-const ActivityOptionsSchema = z
-  .object({
-    taskQueue: TaskQueueSchema.exactOptional(),
-    scheduleToCloseTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates how long the caller is willing to wait for an activity completion. Limits how long\n retries will be attempted. Either this or `start_to_close_timeout` must be specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    scheduleToStartTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Limits time an activity task can stay in a task queue before a worker picks it up. This\n timeout is always non retryable, as all a retry would achieve is to put it back into the same\n queue. Defaults to `schedule_to_close_timeout` or workflow execution timeout if not\n specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    startToCloseTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum time an activity is allowed to execute after being picked up by a worker. This\n timeout is always retryable. Either this or `schedule_to_close_timeout` must be\n specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    heartbeatTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({ description: 'Maximum permitted time between successful worker heartbeats.' }),
-    retryPolicy: RetryPolicySchema.exactOptional().openapi({
-      description:
-        'The retry policy for the activity. Will never exceed `schedule_to_close_timeout`.',
-    }),
-    priority: PrioritySchema.exactOptional().openapi({
-      description:
-        'Priority metadata. If this message is not present, or any fields are not\n present, they inherit the values from the workflow.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityOptions')
-
-const ActivityPropertiesModifiedExternallyEventAttributesSchema = z
-  .object({
-    scheduledEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the `ACTIVITY_TASK_SCHEDULED` event this modification corresponds to.',
-      }),
-    newRetryPolicy: RetryPolicySchema.exactOptional().openapi({
-      description:
-        'If set, update the retry policy of the activity, replacing it with the specified one.\n The number of attempts at the activity is preserved.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityPropertiesModifiedExternallyEventAttributes')
-
-const ActivityTaskCancelRequestedEventAttributesSchema = z
-  .object({
-    scheduledEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the `ACTIVITY_TASK_SCHEDULED` event this cancel request corresponds to',
-      }),
-    workflowTaskCompletedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The `WORKFLOW_TASK_COMPLETED` event which this command was reported with',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityTaskCancelRequestedEventAttributes')
-
-const WorkerVersionStampSchema = z
-  .object({
-    buildId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An opaque whole-worker identifier. Replaces the deprecated `binary_checksum` field when this\n message is included in requests which previously used that.',
-      }),
-    useVersioning: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, the worker is opting in to worker versioning. Otherwise, this is used only as a\n marker for workflow reset points and the BuildIDs search attribute.',
-      }),
-  })
-  .openapi({
-    description:
-      'Deprecated. This message is replaced with `Deployment` and `VersioningBehavior`.\n Identifies the version(s) of a worker that processed a task',
-    required: [],
-  })
-  .openapi('WorkerVersionStamp')
-
-const ActivityTaskCanceledEventAttributesSchema = z
-  .object({
-    details: PayloadsSchema.exactOptional().openapi({
-      description: 'Additional information that the activity reported upon confirming cancellation',
-    }),
-    latestCancelRequestedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'id of the most recent `ACTIVITY_TASK_CANCEL_REQUESTED` event which refers to the same\n activity',
-      }),
-    scheduledEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the `ACTIVITY_TASK_SCHEDULED` event this cancel confirmation corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the `ACTIVITY_TASK_STARTED` event this cancel confirmation corresponds to',
-      }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'id of the worker who canceled this activity' }),
-    workerVersion: WorkerVersionStampSchema.exactOptional().openapi({
-      description:
-        'Version info of the worker who processed this workflow task.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityTaskCanceledEventAttributes')
-
-const ActivityTaskCompletedEventAttributesSchema = z
-  .object({
-    result: PayloadsSchema.exactOptional().openapi({
-      description:
-        'Serialized results of the activity. IE: The return value of the activity function',
-    }),
-    scheduledEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the `ACTIVITY_TASK_SCHEDULED` event this completion corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the `ACTIVITY_TASK_STARTED` event this completion corresponds to',
-      }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'id of the worker that completed this task' }),
-    workerVersion: WorkerVersionStampSchema.exactOptional().openapi({
-      description:
-        'Version info of the worker who processed this workflow task.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityTaskCompletedEventAttributes')
-
-const ActivityTaskFailedEventAttributesSchema = z
-  .object({
-    failure: FailureSchema.exactOptional().openapi({ description: 'Failure details' }),
-    scheduledEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the `ACTIVITY_TASK_SCHEDULED` event this failure corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the `ACTIVITY_TASK_STARTED` event this failure corresponds to',
-      }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'id of the worker that failed this task' }),
-    retryState: z
-      .enum([
-        'RETRY_STATE_UNSPECIFIED',
-        'RETRY_STATE_IN_PROGRESS',
-        'RETRY_STATE_NON_RETRYABLE_FAILURE',
-        'RETRY_STATE_TIMEOUT',
-        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
-        'RETRY_STATE_RETRY_POLICY_NOT_SET',
-        'RETRY_STATE_INTERNAL_SERVER_ERROR',
-        'RETRY_STATE_CANCEL_REQUESTED',
-      ])
-      .exactOptional(),
-    workerVersion: WorkerVersionStampSchema.exactOptional().openapi({
-      description:
-        'Version info of the worker who processed this workflow task.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityTaskFailedEventAttributes')
-
-const ActivityTaskScheduledEventAttributesSchema = z
-  .object({
-    activityId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The worker/user assigned identifier for the activity' }),
-    activityType: ActivityTypeSchema.exactOptional(),
-    taskQueue: TaskQueueSchema.exactOptional(),
-    header: HeaderSchema.exactOptional(),
-    input: PayloadsSchema.exactOptional(),
-    scheduleToCloseTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates how long the caller is willing to wait for an activity completion. Limits how long\n retries will be attempted. Either this or `start_to_close_timeout` must be specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    scheduleToStartTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Limits time an activity task can stay in a task queue before a worker picks it up. This\n timeout is always non retryable, as all a retry would achieve is to put it back into the same\n queue. Defaults to `schedule_to_close_timeout` or workflow execution timeout if not\n specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    startToCloseTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum time an activity is allowed to execute after being picked up by a worker. This\n timeout is always retryable. Either this or `schedule_to_close_timeout` must be\n specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    heartbeatTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({ description: 'Maximum permitted time between successful worker heartbeats.' }),
-    workflowTaskCompletedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The `WORKFLOW_TASK_COMPLETED` event which this command was reported with',
-      }),
-    retryPolicy: RetryPolicySchema.exactOptional().openapi({
-      description:
-        "Activities are assigned a default retry policy controlled by the service's dynamic\n configuration. Retries will happen up to `schedule_to_close_timeout`. To disable retries set\n retry_policy.maximum_attempts to 1.",
-    }),
-    useWorkflowBuildId: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If this is set, the activity would be assigned to the Build ID of the workflow. Otherwise,\n Assignment rules of the activity's Task Queue will be used to determine the Build ID.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]",
-      }),
-    priority: PrioritySchema.exactOptional().openapi({
-      description:
-        'Priority metadata. If this message is not present, or any fields are not\n present, they inherit the values from the workflow.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityTaskScheduledEventAttributes')
-
-const ActivityTaskStartedEventAttributesSchema = z
-  .object({
-    scheduledEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the `ACTIVITY_TASK_SCHEDULED` event this task corresponds to',
-      }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'id of the worker that picked up this task' }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field is populated from the RecordActivityTaskStartedRequest. Matching service would\n set the request_id on the RecordActivityTaskStartedRequest to a new UUID. This is useful\n in case a RecordActivityTaskStarted call succeed but matching doesn't get that response,\n so matching could retry and history service would return success if the request_id matches.\n In that case, matching will continue to deliver the task to worker. Without this field, history\n service would return AlreadyStarted error, and matching would drop the task.",
-      }),
-    attempt: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Starting at 1, the number of times this task has been attempted' }),
-    lastFailure: FailureSchema.exactOptional().openapi({
-      description:
-        'Will be set to the most recent failure details, if this task has previously failed and then\n been retried.',
-    }),
-    workerVersion: WorkerVersionStampSchema.exactOptional().openapi({
-      description:
-        'Version info of the worker to whom this task was dispatched.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
-    }),
-    buildIdRedirectCounter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Used by server internally to properly reapply build ID redirects to an execution\n when rebuilding it from events.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityTaskStartedEventAttributes')
-
-const ActivityTaskTimedOutEventAttributesSchema = z
-  .object({
-    failure: FailureSchema.exactOptional().openapi({
-      description:
-        'If this activity had failed, was retried, and then timed out, that failure is stored as the\n `cause` in here.',
-    }),
-    scheduledEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the `ACTIVITY_TASK_SCHEDULED` event this timeout corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the `ACTIVITY_TASK_STARTED` event this timeout corresponds to',
-      }),
-    retryState: z
-      .enum([
-        'RETRY_STATE_UNSPECIFIED',
-        'RETRY_STATE_IN_PROGRESS',
-        'RETRY_STATE_NON_RETRYABLE_FAILURE',
-        'RETRY_STATE_TIMEOUT',
-        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
-        'RETRY_STATE_RETRY_POLICY_NOT_SET',
-        'RETRY_STATE_INTERNAL_SERVER_ERROR',
-        'RETRY_STATE_CANCEL_REQUESTED',
-      ])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityTaskTimedOutEventAttributes')
-
-const AlertSchema = z
-  .object({
-    message: z.string().exactOptional(),
-    severity: z
-      .enum(['SEVERITY_UNSPECIFIED', 'SEVERITY_HIGH', 'SEVERITY_MEDIUM', 'SEVERITY_LOW'])
-      .exactOptional(),
-  })
-  .openapi({ description: 'Alert contains notification and severity.', required: [] })
-  .openapi('Alert')
-
-const BackfillRequestSchema = z
-  .object({
-    startTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Time range to evaluate schedule in. Currently, this time range is\n exclusive on start_time and inclusive on end_time. (This is admittedly\n counterintuitive and it may change in the future, so to be safe, use a\n start time strictly before a scheduled time.) Also note that an action\n nominally scheduled in the interval but with jitter that pushes it after\n end_time will not be included.',
-      }),
-    endTime: z.iso.datetime({ offset: true }).exactOptional(),
-    overlapPolicy: z
-      .enum([
-        'SCHEDULE_OVERLAP_POLICY_UNSPECIFIED',
-        'SCHEDULE_OVERLAP_POLICY_SKIP',
-        'SCHEDULE_OVERLAP_POLICY_BUFFER_ONE',
-        'SCHEDULE_OVERLAP_POLICY_BUFFER_ALL',
-        'SCHEDULE_OVERLAP_POLICY_CANCEL_OTHER',
-        'SCHEDULE_OVERLAP_POLICY_TERMINATE_OTHER',
-        'SCHEDULE_OVERLAP_POLICY_ALLOW_ALL',
-      ])
-      .exactOptional()
-      .openapi({ description: 'If set, override overlap policy for this request.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('BackfillRequest')
-
-const BadBinaryInfoSchema = z
-  .object({
-    reason: z.string().exactOptional(),
-    operator: z.string().exactOptional(),
-    createTime: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BadBinaryInfo')
-
-const BadBinariesSchema = z
-  .object({ binaries: z.record(z.string(), BadBinaryInfoSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('BadBinaries')
-
-const BatchOperationCancellationSchema = z
-  .object({
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client' }),
-  })
-  .openapi({
-    description:
-      'BatchOperationCancellation sends cancel requests to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.RequestCancelWorkflowExecutionRequest.\n Ignore first_execution_run_id because this is used for single workflow operation.',
-    required: [],
-  })
-  .openapi('BatchOperationCancellation')
-
-const BatchOperationDeletionSchema = z
-  .object({
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client' }),
-  })
-  .openapi({
-    description:
-      'BatchOperationDeletion sends deletion requests to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.DeleteWorkflowExecutionRequest.',
-    required: [],
-  })
-  .openapi('BatchOperationDeletion')
-
-const BatchOperationInfoSchema = z
-  .object({
-    jobId: z.string().exactOptional().openapi({ description: 'Batch job ID' }),
-    state: z
-      .enum([
-        'BATCH_OPERATION_STATE_UNSPECIFIED',
-        'BATCH_OPERATION_STATE_RUNNING',
-        'BATCH_OPERATION_STATE_COMPLETED',
-        'BATCH_OPERATION_STATE_FAILED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Batch operation state' }),
-    startTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Batch operation start time' }),
-    closeTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Batch operation close time' }),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchOperationInfo')
-
-const ResetOptionsSchema = z
-  .object({
-    workflowTaskId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The id of a specific `WORKFLOW_TASK_COMPLETED`,`WORKFLOW_TASK_TIMED_OUT`, `WORKFLOW_TASK_FAILED`, or\n `WORKFLOW_TASK_STARTED` event to reset to.\n Note that this option doesn't make sense when used as part of a batch request.",
-      }),
-    buildId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Resets to the first workflow task processed by this build id.\n If the workflow was not processed by the build id, or the workflow task can't be\n determined, no reset will be performed.\n Note that by default, this reset is allowed to be to a prior run in a chain of\n continue-as-new.",
-      }),
-    resetReapplyType: z
-      .enum([
-        'RESET_REAPPLY_TYPE_UNSPECIFIED',
-        'RESET_REAPPLY_TYPE_SIGNAL',
-        'RESET_REAPPLY_TYPE_NONE',
-        'RESET_REAPPLY_TYPE_ALL_ELIGIBLE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Use `options`.\n Default: RESET_REAPPLY_TYPE_SIGNAL' }),
-    currentRunOnly: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, limit the reset to only within the current run. (Applies to build_id targets and\n possibly others in the future.)',
-      }),
-    resetReapplyExcludeTypes: z
-      .array(
-        z.enum([
-          'RESET_REAPPLY_EXCLUDE_TYPE_UNSPECIFIED',
-          'RESET_REAPPLY_EXCLUDE_TYPE_SIGNAL',
-          'RESET_REAPPLY_EXCLUDE_TYPE_UPDATE',
-          'RESET_REAPPLY_EXCLUDE_TYPE_NEXUS',
-          'RESET_REAPPLY_EXCLUDE_TYPE_CANCEL_REQUEST',
-        ]),
-      )
-      .exactOptional()
-      .openapi({ description: 'Event types not to be reapplied' }),
-  })
-  .openapi({
-    description:
-      'Describes where and how to reset a workflow, used for batch reset currently\n and may be used for single-workflow reset later.',
-    required: [],
-  })
-  .openapi('ResetOptions')
-
-const PostResetOperationSignalWorkflowSchema = z
-  .object({
-    signalName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The workflow author-defined name of the signal to send to the workflow.',
-      }),
-    input: PayloadsSchema.exactOptional().openapi({
-      description: 'Serialized value(s) to provide with the signal.',
-    }),
-    header: HeaderSchema.exactOptional().openapi({
-      description: 'Headers that are passed with the signal to the processing workflow.',
-    }),
-    links: z
-      .array(LinkSchema)
-      .exactOptional()
-      .openapi({ description: 'Links to be associated with the WorkflowExecutionSignaled event.' }),
-  })
-  .openapi({
-    description:
-      'SignalWorkflow represents sending a signal after a workflow reset.\n Keep the parameter in sync with temporal.api.workflowservice.v1.SignalWorkflowExecutionRequest.',
-    required: [],
-  })
-  .openapi('PostResetOperationSignalWorkflow')
-
-const VersioningOverridePinnedOverrideSchema = z
-  .object({
-    behavior: z
-      .enum(['PINNED_OVERRIDE_BEHAVIOR_UNSPECIFIED', 'PINNED_OVERRIDE_BEHAVIOR_PINNED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Defaults to PINNED_OVERRIDE_BEHAVIOR_UNSPECIFIED.\n See `PinnedOverrideBehavior` for details.',
-      }),
-    version: WorkerDeploymentVersionSchema.exactOptional().openapi({
-      description:
-        'Specifies the Worker Deployment Version to pin this workflow to.\n Required if the target workflow is not already pinned to a version.\n\n If omitted and the target workflow is already pinned, the effective\n pinned version will be the existing pinned version.\n\n If omitted and the target workflow is not pinned, the override request\n will be rejected with a PreconditionFailed error.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('VersioningOverridePinnedOverride')
-
-const DeploymentSchema = z
-  .object({
-    seriesName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Different versions of the same worker service/application are related together by having a\n shared series name.\n Out of all deployments of a series, one can be designated as the current deployment, which\n receives new workflow executions and new tasks of workflows with\n `VERSIONING_BEHAVIOR_AUTO_UPGRADE` versioning behavior.',
-      }),
-    buildId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Build ID changes with each version of the worker when the worker program code and/or config\n changes.',
-      }),
-  })
-  .openapi({
-    description:
-      '`Deployment` identifies a deployment of Temporal workers. The combination of deployment series\n name + build ID serves as the identifier. User can use `WorkerDeploymentOptions` in their worker\n programs to specify these values.\n Deprecated.',
-    required: [],
-  })
-  .openapi('Deployment')
-
-const VersioningOverrideSchema = z
-  .object({
-    pinned: VersioningOverridePinnedOverrideSchema.exactOptional().openapi({
-      description: 'Override the workflow to have Pinned behavior.',
-    }),
-    autoUpgrade: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Override the workflow to have AutoUpgrade behavior.' }),
-    behavior: z
-      .enum([
-        'VERSIONING_BEHAVIOR_UNSPECIFIED',
-        'VERSIONING_BEHAVIOR_PINNED',
-        'VERSIONING_BEHAVIOR_AUTO_UPGRADE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required.\n Deprecated. Use `override`.' }),
-    deployment: DeploymentSchema.exactOptional().openapi({
-      description:
-        'Required if behavior is `PINNED`. Must be null if behavior is `AUTO_UPGRADE`.\n Identifies the worker deployment to pin the workflow to.\n Deprecated. Use `override.pinned.version`.',
-    }),
-    pinnedVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required if behavior is `PINNED`. Must be absent if behavior is not `PINNED`.\n Identifies the worker deployment version to pin the workflow to, in the format\n "<deployment_name>.<build_id>".\n Deprecated. Use `override.pinned.version`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Used to override the versioning behavior (and pinned deployment version, if applicable) of a\n specific workflow execution. If set, this override takes precedence over worker-sent values.\n See `WorkflowExecutionInfo.VersioningInfo` for more information.\n\n To remove the override, call `UpdateWorkflowExecutionOptions` with a null\n `VersioningOverride`, and use the `update_mask` to indicate that it should be mutated.\n\n Pinned behavior overrides are automatically inherited by child workflows, workflow retries, continue-as-new\n workflows, and cron workflows.',
-    required: [],
-  })
-  .openapi('VersioningOverride')
-
-const TimeSkippingConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enables or disables time skipping for this workflow execution.' }),
-    maxSkippedDuration: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({ description: 'Maximum total virtual time that can be skipped.' }),
-    maxElapsedDuration: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum elapsed time since time skipping was enabled.\n This includes both skipped time and real time elapsing.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration for time skipping during a workflow execution.\n When enabled, virtual time advances automatically whenever there is no in-flight work.\n In-flight work includes activities, child workflows, Nexus operations, signal/cancel external workflow operations,\n and possibly other features added in the future.\n User timers are not classified as in-flight work and will be skipped over.\n When time advances, it skips to the earlier of the next user timer or the configured bound, if either exists.\n \n Propagation behavior of time skipping:\n The enabled flag, bound fields, and accumulated skipped duration are propagated to related executions as follows:\n (1) Child workflows and continue-as-new: both the configuration and the accumulated skipped duration are\n     inherited from the current execution. The configured bound is shared between the inherited skipped\n     duration and any additional duration skipped by the new run.\n (2) Retry and cron: the configuration and accumulated skipped duration are inherited as recorded when the\n     current workflow started; the accumulated skipped duration of the current run is not propagated.\n (3) Reset: the new run retains the time-skipping configuration of the current execution. Because reset replays\n     all events up to the reset point and re-applies any UpdateWorkflowExecutionOptions changes made after that\n     point, the resulting run ends up with the same final time-skipping configuration as the previous run.',
-    required: [],
-  })
-  .openapi('TimeSkippingConfig')
-
-const WorkflowExecutionOptionsSchema = z
-  .object({
-    versioningOverride: VersioningOverrideSchema.exactOptional().openapi({
-      description:
-        'If set, takes precedence over the Versioning Behavior sent by the SDK on Workflow Task completion.',
-    }),
-    priority: PrioritySchema.exactOptional().openapi({
-      description: "If set, overrides the workflow's priority sent by the SDK.",
-    }),
-    timeSkippingConfig: TimeSkippingConfigSchema.exactOptional().openapi({
-      description:
-        'Time-skipping configuration for this workflow execution.\n If not set, the time-skipping configuration is not updated by this request;\n the existing configuration is preserved.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('WorkflowExecutionOptions')
-
-const PostResetOperationUpdateWorkflowOptionsSchema = z
-  .object({
-    workflowExecutionOptions: WorkflowExecutionOptionsSchema.exactOptional().openapi({
-      description:
-        'Update Workflow options that were originally specified via StartWorkflowExecution. Partial updates are accepted and controlled by update_mask.',
-    }),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls which fields from `workflow_execution_options` will be applied.\n To unset a field, set it to null and use the update mask to indicate that it should be mutated.',
-      }),
-  })
-  .openapi({
-    description:
-      'UpdateWorkflowOptions represents updating workflow execution options after a workflow reset.\n Keep the parameters in sync with temporal.api.workflowservice.v1.UpdateWorkflowExecutionOptionsRequest.',
-    required: [],
-  })
-  .openapi('PostResetOperationUpdateWorkflowOptions')
-
-const PostResetOperationSchema = z
-  .object({
-    signalWorkflow: PostResetOperationSignalWorkflowSchema.exactOptional(),
-    updateWorkflowOptions: PostResetOperationUpdateWorkflowOptionsSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'PostResetOperation represents an operation to be performed on the new workflow execution after a workflow reset.',
-    required: [],
-  })
-  .openapi('PostResetOperation')
-
-const BatchOperationResetSchema = z
-  .object({
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client.' }),
-    options: ResetOptionsSchema.exactOptional().openapi({
-      description:
-        'Describes what to reset to and how. If set, `reset_type` and `reset_reapply_type` are ignored.',
-    }),
-    resetType: z
-      .enum([
-        'RESET_TYPE_UNSPECIFIED',
-        'RESET_TYPE_FIRST_WORKFLOW_TASK',
-        'RESET_TYPE_LAST_WORKFLOW_TASK',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Use `options`.' }),
-    resetReapplyType: z
-      .enum([
-        'RESET_REAPPLY_TYPE_UNSPECIFIED',
-        'RESET_REAPPLY_TYPE_SIGNAL',
-        'RESET_REAPPLY_TYPE_NONE',
-        'RESET_REAPPLY_TYPE_ALL_ELIGIBLE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Use `options`.' }),
-    postResetOperations: z
-      .array(PostResetOperationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Operations to perform after the workflow has been reset. These operations will be applied\n to the *new* run of the workflow execution in the order they are provided.\n All operations are applied to the workflow before the first new workflow task is generated',
-      }),
-  })
-  .openapi({
-    description:
-      'BatchOperationReset sends reset requests to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.ResetWorkflowExecutionRequest.',
-    required: [],
-  })
-  .openapi('BatchOperationReset')
-
-const BatchOperationResetActivitiesSchema = z
-  .object({
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client.' }),
-    type: z.string().exactOptional(),
-    matchAll: z.boolean().exactOptional(),
-    resetAttempts: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Setting this flag will also reset the number of attempts.' }),
-    resetHeartbeat: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Setting this flag will also reset the heartbeat details.' }),
-    keepPaused: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If activity is paused, it will remain paused after reset' }),
-    jitter: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, the activity will start at a random time within the specified jitter\n duration, introducing variability to the start time.',
-      }),
-    restoreOriginalOptions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, the activity options will be restored to the defaults.\n Default options are then options activity was created with.\n They are part of the first ActivityTaskScheduled event.',
-      }),
-  })
-  .openapi({
-    description:
-      'BatchOperationResetActivities sends activity reset requests in a batch.\n NOTE: keep in sync with temporal.api.workflowservice.v1.ResetActivityRequest',
-    required: [],
-  })
-  .openapi('BatchOperationResetActivities')
-
-const BatchOperationSignalSchema = z
-  .object({
-    signal: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The workflow author-defined name of the signal to send to the workflow',
-      }),
-    input: PayloadsSchema.exactOptional().openapi({
-      description: 'Serialized value(s) to provide with the signal',
-    }),
-    header: HeaderSchema.exactOptional().openapi({
-      description:
-        'Headers that are passed with the signal to the processing workflow.\n These can include things like auth or tracing tokens.',
-    }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client' }),
-  })
-  .openapi({
-    description:
-      'BatchOperationSignal sends signals to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.SignalWorkflowExecutionRequest.',
-    required: [],
-  })
-  .openapi('BatchOperationSignal')
-
-const BatchOperationTerminationSchema = z
-  .object({
-    details: PayloadsSchema.exactOptional().openapi({
-      description: 'Serialized value(s) to provide to the termination event',
-    }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client' }),
-  })
-  .openapi({
-    description:
-      'BatchOperationTermination sends terminate requests to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.TerminateWorkflowExecutionRequest.\n Ignore first_execution_run_id because this is used for single workflow operation.',
-    required: [],
-  })
-  .openapi('BatchOperationTermination')
-
-const BatchOperationUnpauseActivitiesSchema = z
-  .object({
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client.' }),
-    type: z.string().exactOptional(),
-    matchAll: z.boolean().exactOptional(),
-    resetAttempts: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Setting this flag will also reset the number of attempts.' }),
-    resetHeartbeat: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Setting this flag will also reset the heartbeat details.' }),
-    jitter: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, the activity will start at a random time within the specified jitter\n duration, introducing variability to the start time.',
-      }),
-  })
-  .openapi({
-    description: 'BatchOperationUnpauseActivities sends unpause requests to batch workflows.',
-    required: [],
-  })
-  .openapi('BatchOperationUnpauseActivities')
-
-const BatchOperationUpdateActivityOptionsSchema = z
-  .object({
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client.' }),
-    type: z.string().exactOptional(),
-    matchAll: z.boolean().exactOptional(),
-    activityOptions: ActivityOptionsSchema.exactOptional().openapi({
-      description:
-        'Update Activity options. Partial updates are accepted and controlled by update_mask.',
-    }),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Controls which fields from `activity_options` will be applied' }),
-    restoreOriginal: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, the activity options will be restored to the default.\n Default options are then options activity was created with.\n They are part of the first ActivityTaskScheduled event.\n This flag cannot be combined with any other option; if you supply\n restore_original together with other options, the request will be rejected.',
-      }),
-  })
-  .openapi({
-    description:
-      'BatchOperationUpdateActivityOptions sends an update-activity-options requests in a batch.\n NOTE: keep in sync with temporal.api.workflowservice.v1.UpdateActivityRequest',
-    required: [],
-  })
-  .openapi('BatchOperationUpdateActivityOptions')
-
-const BatchOperationUpdateWorkflowExecutionOptionsSchema = z
-  .object({
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the worker/client.' }),
-    workflowExecutionOptions: WorkflowExecutionOptionsSchema.exactOptional().openapi({
-      description:
-        'Update Workflow options that were originally specified via StartWorkflowExecution. Partial updates are accepted and controlled by update_mask.',
-    }),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls which fields from `workflow_execution_options` will be applied.\n To unset a field, set it to null and use the update mask to indicate that it should be mutated.',
-      }),
-  })
-  .openapi({
-    description:
-      'BatchOperationUpdateWorkflowExecutionOptions sends UpdateWorkflowExecutionOptions requests to batch workflows.\n Keep the parameters in sync with temporal.api.workflowservice.v1.UpdateWorkflowExecutionOptionsRequest.',
-    required: [],
-  })
-  .openapi('BatchOperationUpdateWorkflowExecutionOptions')
-
-const RampByPercentageSchema = z
-  .object({
-    rampPercentage: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Acceptable range is [0,100).' }),
-  })
-  .openapi({ required: [] })
-  .openapi('RampByPercentage')
-
-const BuildIdAssignmentRuleSchema = z
-  .object({
-    targetBuildId: z.string().exactOptional(),
-    percentageRamp: RampByPercentageSchema.exactOptional().openapi({
-      description:
-        'This ramp is useful for gradual Blue/Green deployments (and similar)\n where you want to send a certain portion of the traffic to the target\n Build ID.',
-    }),
-  })
-  .openapi({
-    description:
-      'Assignment rules are applied to *new* Workflow and Activity executions at\n schedule time to assign them to a Build ID.\n\n Assignment rules will not be used in the following cases:\n    - Child Workflows or Continue-As-New Executions who inherit their\n      parent/previous Workflow\'s assigned Build ID (by setting the\n      `inherit_build_id` flag - default behavior in SDKs when the same Task Queue\n      is used.)\n    - An Activity that inherits the assigned Build ID of its Workflow (by\n      setting the `use_workflow_build_id` flag - default behavior in SDKs\n      when the same Task Queue is used.)\n\n In absence of (applicable) redirect rules (`CompatibleBuildIdRedirectRule`s)\n the task will be dispatched to Workers of the Build ID determined by the\n assignment rules (or inherited). Otherwise, the final Build ID will be\n determined by the redirect rules.\n\n Once a Workflow completes its first Workflow Task in a particular Build ID it\n stays in that Build ID regardless of changes to assignment rules. Redirect\n rules can be used to move the workflow to another compatible Build ID.\n\n When using Worker Versioning on a Task Queue, in the steady state,\n there should typically be a single assignment rule to send all new executions\n to the latest Build ID. Existence of at least one such "unconditional"\n rule at all times is enforces by the system, unless the `force` flag is used\n by the user when replacing/deleting these rules (for exceptional cases).\n\n During a deployment, one or more additional rules can be added to assign a\n subset of the tasks to a new Build ID based on a "ramp percentage".\n\n When there are multiple assignment rules for a Task Queue, the rules are\n evaluated in order, starting from index 0. The first applicable rule will be\n applied and the rest will be ignored.\n\n In the event that no assignment rule is applicable on a task (or the Task\n Queue is simply not versioned), the tasks will be dispatched to an\n unversioned Worker.',
-    required: [],
-  })
-  .openapi('BuildIdAssignmentRule')
-
-const TaskQueueReachabilitySchema = z
-  .object({
-    taskQueue: z.string().exactOptional(),
-    reachability: z
-      .array(
-        z.enum([
-          'TASK_REACHABILITY_UNSPECIFIED',
-          'TASK_REACHABILITY_NEW_WORKFLOWS',
-          'TASK_REACHABILITY_EXISTING_WORKFLOWS',
-          'TASK_REACHABILITY_OPEN_WORKFLOWS',
-          'TASK_REACHABILITY_CLOSED_WORKFLOWS',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Task reachability for a worker in a single task queue.\n See the TaskReachability docstring for information about each enum variant.\n If reachability is empty, this worker is considered unreachable in this task queue.',
-      }),
-  })
-  .openapi({
-    description: 'Reachability of tasks for a worker on a single task queue.',
-    required: [],
-  })
-  .openapi('TaskQueueReachability')
-
-const BuildIdReachabilitySchema = z
-  .object({
-    buildId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A build id or empty if unversioned.' }),
-    taskQueueReachability: z
-      .array(TaskQueueReachabilitySchema)
-      .exactOptional()
-      .openapi({ description: 'Reachability per task queue.' }),
-  })
-  .openapi({
-    description: 'Reachability of tasks for a worker by build id, in one or more task queues.',
-    required: [],
-  })
-  .openapi('BuildIdReachability')
-
-const CalendarSpecSchema = z
-  .object({
-    second: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expression to match seconds. Default: 0' }),
-    minute: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expression to match minutes. Default: 0' }),
-    hour: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expression to match hours. Default: 0' }),
-    dayOfMonth: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Expression to match days of the month. Default: *\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: standard name of field --)',
-      }),
-    month: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expression to match months. Default: *' }),
-    year: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expression to match years. Default: *' }),
-    dayOfWeek: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expression to match days of the week. Default: *' }),
-    comment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Free-form comment describing the intention of this spec.' }),
-  })
-  .openapi({
-    description:
-      'CalendarSpec describes an event specification relative to the calendar,\n similar to a traditional cron specification, but with labeled fields. Each\n field can be one of:\n   *: matches always\n   x: matches when the field equals x\n   x/y : matches when the field equals x+n*y where n is an integer\n   x-z: matches when the field is between x and z inclusive\n   w,x,y,...: matches when the field is one of the listed values\n Each x, y, z, ... is either a decimal integer, or a month or day of week name\n or abbreviation (in the appropriate fields).\n A timestamp matches if all fields match.\n Note that fields have different default values, for convenience.\n Note that the special case that some cron implementations have for treating\n day_of_month and day_of_week as "or" instead of "and" when both are set is\n not implemented.\n day_of_week can accept 0 or 7 as Sunday\n CalendarSpec gets compiled into StructuredCalendarSpec, which is what will be\n returned if you describe the schedule.',
-    required: [],
-  })
-  .openapi('CalendarSpec')
 
 const CallbackNexusSchema = z
   .object({
@@ -2005,1991 +929,14 @@ const CallbackInfoSchema = z
   })
   .openapi('CallbackInfo')
 
-const ChildWorkflowExecutionCanceledEventAttributesSchema = z
-  .object({
-    details: PayloadsSchema.exactOptional(),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
-      }),
-    namespaceId: z.string().exactOptional(),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    initiatedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ChildWorkflowExecutionCanceledEventAttributes')
-
-const ChildWorkflowExecutionCompletedEventAttributesSchema = z
-  .object({
-    result: PayloadsSchema.exactOptional(),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
-      }),
-    namespaceId: z.string().exactOptional(),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    initiatedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ChildWorkflowExecutionCompletedEventAttributes')
-
-const ChildWorkflowExecutionFailedEventAttributesSchema = z
-  .object({
-    failure: FailureSchema.exactOptional(),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
-      }),
-    namespaceId: z.string().exactOptional(),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    initiatedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
-      }),
-    retryState: z
-      .enum([
-        'RETRY_STATE_UNSPECIFIED',
-        'RETRY_STATE_IN_PROGRESS',
-        'RETRY_STATE_NON_RETRYABLE_FAILURE',
-        'RETRY_STATE_TIMEOUT',
-        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
-        'RETRY_STATE_RETRY_POLICY_NOT_SET',
-        'RETRY_STATE_INTERNAL_SERVER_ERROR',
-        'RETRY_STATE_CANCEL_REQUESTED',
-      ])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ChildWorkflowExecutionFailedEventAttributes')
-
-const ChildWorkflowExecutionStartedEventAttributesSchema = z
-  .object({
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
-      }),
-    namespaceId: z.string().exactOptional(),
-    initiatedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
-      }),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    header: HeaderSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ChildWorkflowExecutionStartedEventAttributes')
-
-const ChildWorkflowExecutionTerminatedEventAttributesSchema = z
-  .object({
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
-      }),
-    namespaceId: z.string().exactOptional(),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    initiatedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ChildWorkflowExecutionTerminatedEventAttributes')
-
-const ChildWorkflowExecutionTimedOutEventAttributesSchema = z
-  .object({
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
-      }),
-    namespaceId: z.string().exactOptional(),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    initiatedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
-      }),
-    retryState: z
-      .enum([
-        'RETRY_STATE_UNSPECIFIED',
-        'RETRY_STATE_IN_PROGRESS',
-        'RETRY_STATE_NON_RETRYABLE_FAILURE',
-        'RETRY_STATE_TIMEOUT',
-        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
-        'RETRY_STATE_RETRY_POLICY_NOT_SET',
-        'RETRY_STATE_INTERNAL_SERVER_ERROR',
-        'RETRY_STATE_CANCEL_REQUESTED',
-      ])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ChildWorkflowExecutionTimedOutEventAttributes')
-
-const ClusterReplicationConfigSchema = z
-  .object({ clusterName: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ClusterReplicationConfig')
-
-const CompatibleBuildIdRedirectRuleSchema = z
-  .object({
-    sourceBuildId: z.string().exactOptional(),
-    targetBuildId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Target Build ID must be compatible with the Source Build ID; that is it\n must be able to process event histories made by the Source Build ID by\n using [Patching](https://docs.temporal.io/workflows#patching) or other\n means.',
-      }),
-  })
-  .openapi({
-    description:
-      "These rules apply to tasks assigned to a particular Build ID\n (`source_build_id`) to redirect them to another *compatible* Build ID\n (`target_build_id`).\n\n It is user's responsibility to ensure that the target Build ID is compatible\n with the source Build ID (e.g. by using the Patching API).\n\n Most deployments are not expected to need these rules, however following\n situations can greatly benefit from redirects:\n  - Need to move long-running Workflow Executions from an old Build ID to a\n    newer one.\n  - Need to hotfix some broken or stuck Workflow Executions.\n\n In steady state, redirect rules are beneficial when dealing with old\n Executions ran on now-decommissioned Build IDs:\n  - To redirecting the Workflow Queries to the current (compatible) Build ID.\n  - To be able to Reset an old Execution so it can run on the current\n    (compatible) Build ID.\n\n Redirect rules can be chained.",
-    required: [],
-  })
-  .openapi('CompatibleBuildIdRedirectRule')
-
-const CompatibleVersionSetSchema = z
-  .object({
-    buildIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'All the compatible versions, unordered, except for the last element, which is considered the set "default".',
-      }),
-  })
-  .openapi({
-    description:
-      'Used by the worker versioning APIs, represents an unordered set of one or more versions which are\n considered to be compatible with each other. Currently the versions are always worker build IDs.',
-    required: [],
-  })
-  .openapi('CompatibleVersionSet')
-
-const ComputeProviderSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of the compute provider. This string is implementation-specific and\n can be used by implementations to understand how to interpret the\n contents of the provider_details field.',
-      }),
-    details: PayloadSchema.exactOptional().openapi({
-      description:
-        "Contains provider-specific instructions and configuration.\n For server-implemented providers, use the SDK's default content\n converter to ensure the server can understand it.\n For remote-implemented providers, you might use your own content\n converters according to what the remote endpoints understand.",
-    }),
-    nexusEndpoint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If the compute provider is a Nexus service, this should point\n there.',
-      }),
-  })
-  .openapi({
-    description:
-      "ComputeProvider stores information used by a worker control plane controller\n to respond to worker lifecycle events. For example, when a Task is received\n on a TaskQueue that has no active pollers, a serverless worker lifecycle\n controller might need to invoke an AWS Lambda Function that itself ends up\n calling the SDK's worker.New() function.",
-    required: [],
-  })
-  .openapi('ComputeProvider')
-
-const ComputeScalerSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of the compute scaler. this string is implementation-specific and\n can be used by implementations to understand how to interpret the\n contents of the scaler_details field.',
-      }),
-    details: PayloadSchema.exactOptional().openapi({
-      description:
-        "Contains scaler-specific instructions and configuration.\n For server-implemented scalers, use the SDK's default data\n converter to ensure the server can understand it.\n For remote-implemented scalers, you might use your own data\n converters according to what the remote endpoints understand.",
-    }),
-  })
-  .openapi({
-    description:
-      'ComputeScaler instructs the Temporal Service when to scale up or down the number of\n Workers that comprise a WorkerDeployment.',
-    required: [],
-  })
-  .openapi('ComputeScaler')
-
-const ComputeConfigScalingGroupSchema = z
-  .object({
-    taskQueueTypes: z
-      .array(
-        z.enum([
-          'TASK_QUEUE_TYPE_UNSPECIFIED',
-          'TASK_QUEUE_TYPE_WORKFLOW',
-          'TASK_QUEUE_TYPE_ACTIVITY',
-          'TASK_QUEUE_TYPE_NEXUS',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The set of task queue types this scaling group serves.\n If not provided, this scaling group serves all not otherwise defined\n task types.',
-      }),
-    provider: ComputeProviderSchema.exactOptional().openapi({
-      description:
-        'Stores instructions for a worker control plane controller how to respond\n to worker lifeycle events.',
-    }),
-    scaler: ComputeScalerSchema.exactOptional().openapi({
-      description:
-        'Informs a worker lifecycle controller *when* and *how often* to perform\n certain worker lifecycle actions like starting a serverless worker.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ComputeConfigScalingGroup')
-
-const ComputeConfigSchema = z
-  .object({
-    scalingGroups: z
-      .record(z.string(), ComputeConfigScalingGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Each scaling group describes a compute config for a specific subset of the worker\n deployment version: covering a specific set of task types and/or regions.\n Having different configurations for different task types, allows independent\n tuning of activity and workflow task processing (for example).\n\n The key of the map is the ID of the scaling group used to reference it in subsequent\n update calls.',
-      }),
-  })
-  .openapi({
-    description:
-      'ComputeConfig stores configuration that helps a worker control plane\n controller understand *when* and *how* to respond to worker lifecycle\n events.',
-    required: [],
-  })
-  .openapi('ComputeConfig')
-
-const ComputeConfigScalingGroupSummarySchema = z
-  .object({
-    taskQueueTypes: z
-      .array(
-        z.enum([
-          'TASK_QUEUE_TYPE_UNSPECIFIED',
-          'TASK_QUEUE_TYPE_WORKFLOW',
-          'TASK_QUEUE_TYPE_ACTIVITY',
-          'TASK_QUEUE_TYPE_NEXUS',
-        ]),
-      )
-      .exactOptional(),
-    providerType: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ComputeConfigScalingGroupSummary')
-
-const ComputeConfigScalingGroupUpdateSchema = z
-  .object({
-    scalingGroup: ComputeConfigScalingGroupSchema.exactOptional(),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls which fields from `scaling_group` will be applied. Semantics:\n - Mask is ignored for new scaling groups (only applicable when scaling group already exists).\n - Empty mask for an existing scaling group is no-op: no change.\n - Non-empty mask for an existing scaling group will update/unset only to the fields\n   mentioned in the mask.\n - Accepted paths: "task_queue_types", "provider", "provider.type", "provider.details",\n   "provider.nexus_endpoint", "scaler", "scaler.type", "scaler.details"',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ComputeConfigScalingGroupUpdate')
-
-const ComputeConfigSummarySchema = z
-  .object({
-    scalingGroups: z.record(z.string(), ComputeConfigScalingGroupSummarySchema).exactOptional(),
-  })
-  .openapi({
-    description: 'A subset of information in ComputeConfig optimized for list views.',
-    required: [],
-  })
-  .openapi('ComputeConfigSummary')
-
-const ConfigMetadataSchema = z
-  .object({
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Reason for why the config was set.' }),
-    updateIdentity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Identity of the last updater.\n Set by the request's identity field.",
-      }),
-    updateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Time of the last update.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ConfigMetadata')
-
-const CountActivityExecutionsResponseAggregationGroupSchema = z
-  .object({
-    groupValues: z.array(PayloadSchema).exactOptional(),
-    count: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CountActivityExecutionsResponseAggregationGroup')
-
-const CountActivityExecutionsResponseSchema = z
-  .object({
-    count: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `query` is not grouping by any field, the count is an approximate number\n of activities that match the query.\n If `query` is grouping by a field, the count is simply the sum of the counts\n of the groups returned in the response. This number can be smaller than the\n total number of activities matching the query.',
-      }),
-    groups: z
-      .array(CountActivityExecutionsResponseAggregationGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains the groups if the request is grouping by a field.\n The list might not be complete, and the counts of each group is approximate.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CountActivityExecutionsResponse')
-
-const CountNexusOperationExecutionsResponseAggregationGroupSchema = z
-  .object({
-    groupValues: z.array(PayloadSchema).exactOptional(),
-    count: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CountNexusOperationExecutionsResponseAggregationGroup')
-
-const CountNexusOperationExecutionsResponseSchema = z
-  .object({
-    count: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `query` is not grouping by any field, the count is an approximate number\n of operations that match the query.\n If `query` is grouping by a field, the count is simply the sum of the counts\n of the groups returned in the response. This number can be smaller than the\n total number of operations matching the query.',
-      }),
-    groups: z
-      .array(CountNexusOperationExecutionsResponseAggregationGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains the groups if the request is grouping by a field.\n The list might not be complete, and the counts of each group is approximate.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CountNexusOperationExecutionsResponse')
-
-const CountSchedulesResponseAggregationGroupSchema = z
-  .object({
-    groupValues: z.array(PayloadSchema).exactOptional(),
-    count: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CountSchedulesResponseAggregationGroup')
-
-const CountSchedulesResponseSchema = z
-  .object({
-    count: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `query` is not grouping by any field, the count is an approximate number\n of schedules that match the query.\n If `query` is grouping by a field, the count is simply the sum of the counts\n of the groups returned in the response. This number can be smaller than the\n total number of schedules matching the query.',
-      }),
-    groups: z
-      .array(CountSchedulesResponseAggregationGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains the groups if the request is grouping by a field.\n The list might not be complete, and the counts of each group is approximate.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CountSchedulesResponse')
-
-const CountWorkflowExecutionsResponseAggregationGroupSchema = z
-  .object({
-    groupValues: z.array(PayloadSchema).exactOptional(),
-    count: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CountWorkflowExecutionsResponseAggregationGroup')
-
-const CountWorkflowExecutionsResponseSchema = z
-  .object({
-    count: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `query` is not grouping by any field, the count is an approximate number\n of workflows that matches the query.\n If `query` is grouping by a field, the count is simply the sum of the counts\n of the groups returned in the response. This number can be smaller than the\n total number of workflows matching the query.',
-      }),
-    groups: z
-      .array(CountWorkflowExecutionsResponseAggregationGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          '`groups` contains the groups if the request is grouping by a field.\n The list might not be complete, and the counts of each group is approximate.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CountWorkflowExecutionsResponse')
-
-const EndpointTargetWorkerSchema = z
-  .object({
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Namespace to route requests to.' }),
-    taskQueue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Nexus task queue to route requests to.' }),
-  })
-  .openapi({
-    description: 'Target a worker polling on a Nexus task queue in a specific namespace.',
-    required: [],
-  })
-  .openapi('EndpointTargetWorker')
-
-const EndpointTargetExternalSchema = z
-  .object({ url: z.string().exactOptional().openapi({ description: 'URL to call.' }) })
-  .openapi({
-    description:
-      'Target an external server by URL.\n At a later point, this will support providing credentials, in the meantime, an http.RoundTripper can be injected\n into the server to modify the request.',
-    required: [],
-  })
-  .openapi('EndpointTargetExternal')
-
-const EndpointTargetSchema = z
-  .object({
-    worker: EndpointTargetWorkerSchema.exactOptional(),
-    external: EndpointTargetExternalSchema.exactOptional(),
-  })
-  .openapi({ description: 'Target to route requests to.', required: [] })
-  .openapi('EndpointTarget')
-
-const EndpointSpecSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Endpoint name, unique for this cluster. Must match `[a-zA-Z_][a-zA-Z0-9_]*`.\n Renaming an endpoint breaks all workflow callers that reference this endpoint, causing operations to fail.',
-      }),
-    description: PayloadSchema.exactOptional().openapi({
-      description:
-        'Markdown description serialized as a single JSON string.\n If the Payload is encrypted, the UI and CLI may decrypt with the configured codec server endpoint.\n By default, the server enforces a limit of 20,000 bytes for this entire payload.',
-    }),
-    target: EndpointTargetSchema.exactOptional().openapi({
-      description: 'Target to route requests to.',
-    }),
-  })
-  .openapi({ description: 'Contains mutable fields for an Endpoint.', required: [] })
-  .openapi('EndpointSpec')
-
-const CreateNexusEndpointRequestSchema = z
-  .object({
-    spec: EndpointSpecSchema.exactOptional().openapi({
-      description: 'Endpoint definition to create.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateNexusEndpointRequest')
-
-const EndpointSchema = z
-  .object({
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Data version for this endpoint, incremented for every update issued via the UpdateNexusEndpoint API.',
-      }),
-    id: z.string().exactOptional().openapi({ description: 'Unique server-generated endpoint ID.' }),
-    spec: EndpointSpecSchema.exactOptional().openapi({ description: 'Spec for the endpoint.' }),
-    createdTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the endpoint was created.\n (-- api-linter: core::0142::time-field-names=disabled\n     aip.dev/not-precedent: Not following linter rules. --)',
-      }),
-    lastModifiedTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the endpoint was last modified.\n Will not be set if the endpoint has never been modified.\n (-- api-linter: core::0142::time-field-names=disabled\n     aip.dev/not-precedent: Not following linter rules. --)',
-      }),
-    urlPrefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Server exposed URL prefix for invocation of operations on this endpoint.\n This doesn't include the protocol, hostname or port as the server does not know how it should be accessed\n publicly. The URL is stable in the face of endpoint renames.",
-      }),
-  })
-  .openapi({
-    description:
-      'A cluster-global binding from an endpoint ID to a target for dispatching incoming Nexus requests.',
-    required: [],
-  })
-  .openapi('Endpoint')
-
-const CreateNexusEndpointResponseSchema = z
-  .object({
-    endpoint: EndpointSchema.exactOptional().openapi({
-      description: 'Data post acceptance. Can be used to issue additional updates to this record.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateNexusEndpointResponse')
-
-const RangeSchema = z
-  .object({
-    start: z.int32().exactOptional().openapi({ description: 'Start of range (inclusive).' }),
-    end: z.int32().exactOptional().openapi({ description: 'End of range (inclusive).' }),
-    step: z.int32().exactOptional().openapi({ description: 'Step (optional, default 1).' }),
-  })
-  .openapi({
-    description:
-      'Range represents a set of integer values, used to match fields of a calendar\n time in StructuredCalendarSpec. If end < start, then end is interpreted as\n equal to start. This means you can use a Range with start set to a value, and\n end and step unset (defaulting to 0) to represent a single value.',
-    required: [],
-  })
-  .openapi('Range')
-
-const StructuredCalendarSpecSchema = z
-  .object({
-    second: z.array(RangeSchema).exactOptional().openapi({ description: 'Match seconds (0-59)' }),
-    minute: z.array(RangeSchema).exactOptional().openapi({ description: 'Match minutes (0-59)' }),
-    hour: z.array(RangeSchema).exactOptional().openapi({ description: 'Match hours (0-23)' }),
-    dayOfMonth: z
-      .array(RangeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Match days of the month (1-31)\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: standard name of field --)',
-      }),
-    month: z.array(RangeSchema).exactOptional().openapi({ description: 'Match months (1-12)' }),
-    year: z.array(RangeSchema).exactOptional().openapi({ description: 'Match years.' }),
-    dayOfWeek: z
-      .array(RangeSchema)
-      .exactOptional()
-      .openapi({ description: 'Match days of the week (0-6; 0 is Sunday).' }),
-    comment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Free-form comment describing the intention of this spec.' }),
-  })
-  .openapi({
-    description:
-      'StructuredCalendarSpec describes an event specification relative to the\n calendar, in a form that\'s easy to work with programmatically. Each field can\n be one or more ranges.\n A timestamp matches if at least one range of each field matches the\n corresponding fields of the timestamp, except for year: if year is missing,\n that means all years match. For all fields besides year, at least one Range\n must be present to match anything.\n Relative expressions such as "last day of the month" or "third Monday" are not currently\n representable; callers must enumerate the concrete days they require.',
-    required: [],
-  })
-  .openapi('StructuredCalendarSpec')
-
-const IntervalSpecSchema = z
-  .object({
-    interval: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional(),
-    phase: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      'IntervalSpec matches times that can be expressed as:\n epoch + n * interval + phase\n where n is an integer.\n phase defaults to zero if missing. interval is required.\n Both interval and phase must be non-negative and are truncated to the nearest\n second before any calculations.\n For example, an interval of 1 hour with phase of zero would match every hour,\n on the hour. The same interval but a phase of 19 minutes would match every\n xx:19:00. An interval of 28 days with phase zero would match\n 2022-02-17T00:00:00Z (among other times). The same interval with a phase of 3\n days, 5 hours, and 23 minutes would match 2022-02-20T05:23:00Z instead.',
-    required: [],
-  })
-  .openapi('IntervalSpec')
-
-const ScheduleSpecSchema = z
-  .object({
-    structuredCalendar: z
-      .array(StructuredCalendarSpecSchema)
-      .exactOptional()
-      .openapi({ description: 'Calendar-based specifications of times.' }),
-    cronString: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'cron_string holds a traditional cron specification as a string. It\n accepts 5, 6, or 7 fields, separated by spaces, and interprets them the\n same way as CalendarSpec.\n 5 fields:         minute, hour, day_of_month, month, day_of_week\n 6 fields:         minute, hour, day_of_month, month, day_of_week, year\n 7 fields: second, minute, hour, day_of_month, month, day_of_week, year\n If year is not given, it defaults to *. If second is not given, it\n defaults to 0.\n Shorthands @yearly, @monthly, @weekly, @daily, and @hourly are also\n accepted instead of the 5-7 time fields.\n Optionally, the string can be preceded by CRON_TZ=<timezone name> or\n TZ=<timezone name>, which will get copied to timezone_name. (There must\n not also be a timezone_name present.)\n Optionally "#" followed by a comment can appear at the end of the string.\n Note that the special case that some cron implementations have for\n treating day_of_month and day_of_week as "or" instead of "and" when both\n are set is not implemented.\n @every <interval>[/<phase>] is accepted and gets compiled into an\n IntervalSpec instead. <interval> and <phase> should be a decimal integer\n with a unit suffix s, m, h, or d.',
-      }),
-    calendar: z
-      .array(CalendarSpecSchema)
-      .exactOptional()
-      .openapi({ description: 'Calendar-based specifications of times.' }),
-    interval: z
-      .array(IntervalSpecSchema)
-      .exactOptional()
-      .openapi({ description: 'Interval-based specifications of times.' }),
-    excludeCalendar: z
-      .array(CalendarSpecSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Any timestamps matching any of exclude_* will be skipped.\n Deprecated. Use exclude_structured_calendar.',
-      }),
-    excludeStructuredCalendar: z.array(StructuredCalendarSpecSchema).exactOptional(),
-    startTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'If start_time is set, any timestamps before start_time will be skipped.\n (Together, start_time and end_time make an inclusive interval.)',
-      }),
-    endTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'If end_time is set, any timestamps after end_time will be skipped.',
-      }),
-    jitter: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'All timestamps will be incremented by a random value from 0 to this\n amount of jitter. Default: 0',
-      }),
-    timezoneName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time zone to interpret all calendar-based specs in.\n\n If unset, defaults to UTC. We recommend using UTC for your application if\n at all possible, to avoid various surprising properties of time zones.\n\n Time zones may be provided by name, corresponding to names in the IANA\n time zone database (see https://www.iana.org/time-zones). The definition\n will be loaded by the Temporal server from the environment it runs in.\n\n If your application requires more control over the time zone definition\n used, it may pass in a complete definition in the form of a TZif file\n from the time zone database. If present, this will be used instead of\n loading anything from the environment. You are then responsible for\n updating timezone_data when the definition changes.\n\n Calendar spec matching is based on literal matching of the clock time\n with no special handling of DST: if you write a calendar spec that fires\n at 2:30am and specify a time zone that follows DST, that action will not\n be triggered on the day that has no 2:30am. Similarly, an action that\n fires at 1:30am will be triggered twice on the day that has two 1:30s.\n\n Also note that no actions are taken on leap-seconds (e.g. 23:59:60 UTC).',
-      }),
-    timezoneData: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      "ScheduleSpec is a complete description of a set of absolute timestamps\n (possibly infinite) that an action should occur at. The meaning of a\n ScheduleSpec depends only on its contents and never changes, except that the\n definition of a time zone can change over time (most commonly, when daylight\n saving time policy changes for an area). To create a totally self-contained\n ScheduleSpec, use UTC or include timezone_data.\n\n For input, you can provide zero or more of: structured_calendar, calendar,\n cron_string, interval, and exclude_structured_calendar, and all of them will\n be used (the schedule will take action at the union of all of their times,\n minus the ones that match exclude_structured_calendar).\n\n On input, calendar and cron_string fields will be compiled into\n structured_calendar (and maybe interval and timezone_name), so if you\n Describe a schedule, you'll see only structured_calendar, interval, etc.\n\n If a spec has no matching times after the current time, then the schedule\n will be subject to automatic deletion (after several days).",
-    required: [],
-  })
-  .openapi('ScheduleSpec')
-
-const MemoSchema = z
-  .object({ fields: z.record(z.string(), PayloadSchema).exactOptional() })
-  .openapi({
-    description:
-      'A user-defined set of *unindexed* fields that are exposed when listing/searching workflows',
-    required: [],
-  })
-  .openapi('Memo')
-
-const NewWorkflowExecutionInfoSchema = z
-  .object({
-    workflowId: z.string().exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    taskQueue: TaskQueueSchema.exactOptional(),
-    input: PayloadsSchema.exactOptional().openapi({
-      description: 'Serialized arguments to the workflow.',
-    }),
-    workflowExecutionTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description: 'Total workflow execution timeout including retries and continue as new.',
-      }),
-    workflowRunTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({ description: 'Timeout of a single workflow run.' }),
-    workflowTaskTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({ description: 'Timeout of a single workflow task.' }),
-    workflowIdReusePolicy: z
-      .enum([
-        'WORKFLOW_ID_REUSE_POLICY_UNSPECIFIED',
-        'WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE',
-        'WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY',
-        'WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE',
-        'WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Default: WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE.' }),
-    retryPolicy: RetryPolicySchema.exactOptional().openapi({
-      description:
-        'The retry policy for the workflow. Will never exceed `workflow_execution_timeout`.',
-    }),
-    cronSchedule: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'See https://docs.temporal.io/docs/content/what-is-a-temporal-cron-job/',
-      }),
-    memo: MemoSchema.exactOptional(),
-    searchAttributes: SearchAttributesSchema.exactOptional(),
-    header: HeaderSchema.exactOptional(),
-    userMetadata: UserMetadataSchema.exactOptional().openapi({
-      description:
-        'Metadata on the workflow if it is started. This is carried over to the WorkflowExecutionConfig\n for use by user interfaces to display the fixed as-of-start summary and details of the\n workflow.',
-    }),
-    versioningOverride: VersioningOverrideSchema.exactOptional().openapi({
-      description:
-        'If set, takes precedence over the Versioning Behavior sent by the SDK on Workflow Task completion.\n To unset the override after the workflow is running, use UpdateWorkflowExecutionOptions.',
-    }),
-    priority: PrioritySchema.exactOptional().openapi({ description: 'Priority metadata' }),
-  })
-  .openapi({
-    description:
-      'NewWorkflowExecutionInfo is a shared message that encapsulates all the\n required arguments to starting a workflow in different contexts.',
-    required: [],
-  })
-  .openapi('NewWorkflowExecutionInfo')
-
-const ScheduleActionSchema = z
-  .object({
-    startWorkflow: NewWorkflowExecutionInfoSchema.exactOptional().openapi({
-      description:
-        'All fields of NewWorkflowExecutionInfo are valid except for:\n - workflow_id_reuse_policy\n - cron_schedule\n The workflow id of the started workflow may not match this exactly,\n it may have a timestamp appended for uniqueness.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduleAction')
-
-const SchedulePoliciesSchema = z
-  .object({
-    overlapPolicy: z
-      .enum([
-        'SCHEDULE_OVERLAP_POLICY_UNSPECIFIED',
-        'SCHEDULE_OVERLAP_POLICY_SKIP',
-        'SCHEDULE_OVERLAP_POLICY_BUFFER_ONE',
-        'SCHEDULE_OVERLAP_POLICY_BUFFER_ALL',
-        'SCHEDULE_OVERLAP_POLICY_CANCEL_OTHER',
-        'SCHEDULE_OVERLAP_POLICY_TERMINATE_OTHER',
-        'SCHEDULE_OVERLAP_POLICY_ALLOW_ALL',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Policy for overlaps.\n Note that this can be changed after a schedule has taken some actions,\n and some changes might produce unintuitive results. In general, the later\n policy overrides the earlier policy.',
-      }),
-    catchupWindow: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          "Policy for catchups:\n If the Temporal server misses an action due to one or more components\n being down, and comes back up, the action will be run if the scheduled\n time is within this window from the current time.\n This value defaults to one year, and can't be less than 10 seconds.",
-      }),
-    pauseOnFailure: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, and a workflow run fails or times out, turn on "paused".\n This applies after retry policies: the full chain of retries must fail to\n trigger a pause here.',
-      }),
-    keepOriginalWorkflowId: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, and the action would start a workflow, a timestamp will not be\n appended to the scheduled workflow id.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SchedulePolicies')
-
-const ScheduleStateSchema = z
-  .object({
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Informative human-readable message with contextual notes, e.g. the reason\n a schedule is paused. The system may overwrite this message on certain\n conditions, e.g. when pause-on-failure happens.',
-      }),
-    paused: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, do not take any actions based on the schedule spec.' }),
-    limitedActions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If limited_actions is true, decrement remaining_actions after each\n action, and do not take any more scheduled actions if remaining_actions\n is zero. Actions may still be taken by explicit request (i.e. trigger\n immediately or backfill). Skipped actions (due to overlap policy) do not\n count against remaining actions.\n If a schedule has no more remaining actions, then the schedule will be\n subject to automatic deletion (after several days).',
-      }),
-    remainingActions: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduleState')
-
-const ScheduleSchema = z
-  .object({
-    spec: ScheduleSpecSchema.exactOptional(),
-    action: ScheduleActionSchema.exactOptional(),
-    policies: SchedulePoliciesSchema.exactOptional(),
-    state: ScheduleStateSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Schedule')
-
-const TriggerImmediatelyRequestSchema = z
-  .object({
-    overlapPolicy: z
-      .enum([
-        'SCHEDULE_OVERLAP_POLICY_UNSPECIFIED',
-        'SCHEDULE_OVERLAP_POLICY_SKIP',
-        'SCHEDULE_OVERLAP_POLICY_BUFFER_ONE',
-        'SCHEDULE_OVERLAP_POLICY_BUFFER_ALL',
-        'SCHEDULE_OVERLAP_POLICY_CANCEL_OTHER',
-        'SCHEDULE_OVERLAP_POLICY_TERMINATE_OTHER',
-        'SCHEDULE_OVERLAP_POLICY_ALLOW_ALL',
-      ])
-      .exactOptional()
-      .openapi({ description: 'If set, override overlap policy for this one request.' }),
-    scheduledTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp used for the identity of the target workflow.\n If not set the default value is the current time.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TriggerImmediatelyRequest')
-
-const SchedulePatchSchema = z
-  .object({
-    triggerImmediately: TriggerImmediatelyRequestSchema.exactOptional().openapi({
-      description: 'If set, trigger one action immediately.',
-    }),
-    backfillRequest: z
-      .array(BackfillRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, runs though the specified time period(s) and takes actions as if that time\n passed by right now, all at once. The overlap policy can be overridden for the\n scope of the backfill.',
-      }),
-    pause: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, change the state to paused or unpaused (respectively) and set the\n notes field to the value of the string.',
-      }),
-    unpause: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SchedulePatch')
-
-const CreateScheduleRequestSchema = z
-  .object({
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The namespace the schedule should be created in.' }),
-    scheduleId: z.string().exactOptional().openapi({ description: 'The id of the new schedule.' }),
-    schedule: ScheduleSchema.exactOptional().openapi({
-      description: 'The schedule spec, policies, action, and initial state.',
-    }),
-    initialPatch: SchedulePatchSchema.exactOptional().openapi({
-      description: 'Optional initial patch (e.g. to run the action once immediately).',
-    }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the client who initiated this request.' }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier for this create request for idempotence. Typically UUIDv4.',
-      }),
-    memo: MemoSchema.exactOptional().openapi({
-      description: 'Memo and search attributes to attach to the schedule itself.',
-    }),
-    searchAttributes: SearchAttributesSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      '(-- api-linter: core::0203::optional=disabled\n     aip.dev/not-precedent: field_behavior annotation not available in our gogo fork --)',
-    required: [],
-  })
-  .openapi('CreateScheduleRequest')
-
-const CreateScheduleResponseSchema = z
-  .object({ conflictToken: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('CreateScheduleResponse')
-
-const CreateWorkerDeploymentRequestSchema = z
-  .object({
-    namespace: z.string().exactOptional(),
-    deploymentName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the Worker Deployment to create. If a Worker Deployment with\n this name already exists, an error will be returned.',
-      }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The identity of the client who initiated this request.' }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier for this create request for idempotence. Typically UUIDv4.',
-      }),
-  })
-  .openapi({ description: 'Creates a new WorkerDeployment.', required: [] })
-  .openapi('CreateWorkerDeploymentRequest')
-
-const CreateWorkerDeploymentResponseSchema = z
-  .object({
-    conflictToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This value is returned so that it can be optionally passed to APIs that\n write to the WorkerDeployment state to ensure that the state did not\n change between this API call and a future write.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateWorkerDeploymentResponse')
-
-const CreateWorkerDeploymentVersionRequestSchema = z
-  .object({
-    namespace: z.string().exactOptional(),
-    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional().openapi({
-      description: 'Required.',
-    }),
-    computeConfig: ComputeConfigSchema.exactOptional().openapi({
-      description:
-        'Optional. Contains the new worker compute configuration for the Worker\n Deployment. Used for worker scale management.',
-    }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The identity of the client who initiated this request.' }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier for this create request for idempotence. Typically UUIDv4.\n If a second request with the same ID is recieved, it is considered a successful no-op.\n Retrying with a different request ID for the same deployment name + build ID is an error.',
-      }),
-  })
-  .openapi({ description: 'Creates a new WorkerDeploymentVersion.', required: [] })
-  .openapi('CreateWorkerDeploymentVersionRequest')
-
-const CreateWorkerDeploymentVersionResponseSchema = z
-  .object({})
-  .openapi('CreateWorkerDeploymentVersionResponse')
-
-const WorkflowRuleSpecActivityStartingTriggerSchema = z
-  .object({
-    predicate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Activity predicate is a SQL-like string filter parameter.\n It is used to match against workflow data.\n The following activity attributes are supported as part of the predicate:\n - ActivityType: An Activity Type is the mapping of a name to an Activity Definition..\n - ActivityId: The ID of the activity.\n - ActivityAttempt: The number attempts of the activity.\n - BackoffInterval: The current amount of time between scheduled attempts of the activity.\n - ActivityStatus: The status of the activity. Can be one of "Scheduled", "Started", "Paused".\n - TaskQueue: The name of the task queue the workflow specified that the activity should run on.\n Activity predicate support the following operators:\n  * =, !=, >, >=, <, <=\n  * AND, OR, ()\n  * BETWEEN ... AND\n    STARTS_WITH',
-      }),
-  })
-  .openapi({
-    description: 'Activity trigger will be triggered when an activity is about to start.',
-    required: [],
-  })
-  .openapi('WorkflowRuleSpecActivityStartingTrigger')
-
-const WorkflowRuleActionActionActivityPauseSchema = z
-  .object({})
-  .openapi('WorkflowRuleActionActionActivityPause')
-
-const WorkflowRuleActionSchema = z
-  .object({ activityPause: WorkflowRuleActionActionActivityPauseSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('WorkflowRuleAction')
-
-const WorkflowRuleSpecSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the new workflow rule. Must be unique within the namespace.\n Can be set by the user, and can have business meaning.',
-      }),
-    activityStart: WorkflowRuleSpecActivityStartingTriggerSchema.exactOptional(),
-    visibilityQuery: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Restricted Visibility query.\n This query is used to filter workflows in this namespace to which this rule should apply.\n It is applied to any running workflow each time a triggering event occurs, before the trigger predicate is evaluated.\n The following workflow attributes are supported:\n - WorkflowType\n - WorkflowId\n - StartTime\n - ExecutionStatus',
-      }),
-    actions: z
-      .array(WorkflowRuleActionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'WorkflowRuleAction to be taken when the rule is triggered and predicate is matched.',
-      }),
-    expirationTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Expiration time of the rule. After this time, the rule will be deleted.\n Can be empty if the rule should never expire.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('WorkflowRuleSpec')
-
-const CreateWorkflowRuleRequestSchema = z
-  .object({
-    namespace: z.string().exactOptional(),
-    spec: WorkflowRuleSpecSchema.exactOptional().openapi({
-      description: 'The rule specification .',
-    }),
-    forceScan: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, the rule will be applied to the currently running workflows via batch job.\n If not set , the rule will only be applied when triggering condition is satisfied.\n visibility_query in the rule will be used to select the workflows to apply the rule to.',
-      }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Used to de-dupe requests. Typically should be UUID.' }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Identity of the actor who created the rule. Will be stored with the rule.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Rule description.Will be stored with the rule.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateWorkflowRuleRequest')
-
-const WorkflowRuleSchema = z
-  .object({
-    createTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Rule creation time.' }),
-    spec: WorkflowRuleSpecSchema.exactOptional().openapi({ description: 'Rule specification' }),
-    createdByIdentity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identity of the actor that created the rule\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: It is better reflect the intent this way, we will also have updated_by. --)\n (-- api-linter: core::0142::time-field-names=disabled\n     aip.dev/not-precedent: Same as above. All other options sounds clumsy --)',
-      }),
-    description: z.string().exactOptional().openapi({ description: 'Rule description.' }),
-  })
-  .openapi({
-    description:
-      'WorkflowRule describes a rule that can be applied to any workflow in this namespace.',
-    required: [],
-  })
-  .openapi('WorkflowRule')
-
-const CreateWorkflowRuleResponseSchema = z
-  .object({
-    rule: WorkflowRuleSchema.exactOptional().openapi({ description: 'Created rule.' }),
-    jobId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Batch Job ID if force-scan flag was provided. Otherwise empty.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateWorkflowRuleResponse')
-
-const DataBlobSchema = z
-  .object({
-    encodingType: z
-      .enum(['ENCODING_TYPE_UNSPECIFIED', 'ENCODING_TYPE_PROTO3', 'ENCODING_TYPE_JSON'])
-      .exactOptional(),
-    data: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DataBlob')
-
-const DeclinedTargetVersionUpgradeSchema = z
-  .object({
-    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional(),
-    revisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Revision number of the task queue routing config at the time the target\n was declined. If an incoming target's revision is <= this value, it is\n not newer and is not used for deciding whether or not to suppress the\n upgrade signal.",
-      }),
-  })
-  .openapi({
-    description:
-      'Wrapper for a target deployment version that the SDK declined to upgrade to.\n See declined_target_version_upgrade on WorkflowExecutionStartedEventAttributes.',
-    required: [],
-  })
-  .openapi('DeclinedTargetVersionUpgrade')
-
-const DeleteNexusEndpointResponseSchema = z.object({}).openapi('DeleteNexusEndpointResponse')
-
-const DeleteScheduleResponseSchema = z.object({}).openapi('DeleteScheduleResponse')
-
-const DeleteWorkerDeploymentResponseSchema = z.object({}).openapi('DeleteWorkerDeploymentResponse')
-
-const DeleteWorkerDeploymentVersionResponseSchema = z
-  .object({})
-  .openapi('DeleteWorkerDeploymentVersionResponse')
-
-const DeleteWorkflowRuleResponseSchema = z.object({}).openapi('DeleteWorkflowRuleResponse')
-
-const DeploymentInfoTaskQueueInfoSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    type: z
-      .enum([
-        'TASK_QUEUE_TYPE_UNSPECIFIED',
-        'TASK_QUEUE_TYPE_WORKFLOW',
-        'TASK_QUEUE_TYPE_ACTIVITY',
-        'TASK_QUEUE_TYPE_NEXUS',
-      ])
-      .exactOptional(),
-    firstPollerTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When server saw the first poller for this task queue in this deployment.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DeploymentInfoTaskQueueInfo')
-
-const DeploymentInfoSchema = z
-  .object({
-    deployment: DeploymentSchema.exactOptional(),
-    createTime: z.iso.datetime({ offset: true }).exactOptional(),
-    taskQueueInfos: z.array(DeploymentInfoTaskQueueInfoSchema).exactOptional(),
-    metadata: z
-      .record(z.string(), PayloadSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A user-defined set of key-values. Can be updated as part of write operations to the\n deployment, such as `SetCurrentDeployment`.',
-      }),
-    isCurrent: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If this deployment is the current deployment of its deployment series.',
-      }),
-  })
-  .openapi({
-    description:
-      '`DeploymentInfo` holds information about a deployment. Deployment information is tracked\n automatically by server as soon as the first poll from that deployment reaches the server. There\n can be multiple task queue workers in a single deployment which are listed in this message.\n Deprecated.',
-    required: [],
-  })
-  .openapi('DeploymentInfo')
-
-const DeploymentListInfoSchema = z
-  .object({
-    deployment: DeploymentSchema.exactOptional(),
-    createTime: z.iso.datetime({ offset: true }).exactOptional(),
-    isCurrent: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If this deployment is the current deployment of its deployment series.',
-      }),
-  })
-  .openapi({
-    description:
-      "DeploymentListInfo is an abbreviated set of fields from DeploymentInfo that's returned in\n ListDeployments.\n Deprecated.",
-    required: [],
-  })
-  .openapi('DeploymentListInfo')
-
-const DeploymentTransitionSchema = z
-  .object({
-    deployment: DeploymentSchema.exactOptional().openapi({
-      description:
-        'The target deployment of the transition. Null means a so-far-versioned workflow is\n transitioning to unversioned workers.',
-    }),
-  })
-  .openapi({
-    description:
-      'Holds information about ongoing transition of a workflow execution from one deployment to another.\n Deprecated. Use DeploymentVersionTransition.',
-    required: [],
-  })
-  .openapi('DeploymentTransition')
-
-const DeploymentVersionTransitionSchema = z
-  .object({
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Use `deployment_version`.' }),
-    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional().openapi({
-      description:
-        'The target Version of the transition.\n If nil, a so-far-versioned workflow is transitioning to unversioned workers.',
-    }),
-  })
-  .openapi({
-    description:
-      'Holds information about ongoing transition of a workflow execution from one worker\n deployment version to another.\n Experimental. Might change in the future.',
-    required: [],
-  })
-  .openapi('DeploymentVersionTransition')
-
-const DescribeActivityExecutionResponseSchema = z
-  .object({
-    runId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The run ID of the activity, useful when run_id was not specified in the request.',
-      }),
-    info: ActivityExecutionInfoSchema.exactOptional().openapi({
-      description: 'Information about the activity execution.',
-    }),
-    input: PayloadsSchema.exactOptional().openapi({
-      description:
-        'Serialized activity input, passed as arguments to the activity function.\n Only set if include_input was true in the request.',
-    }),
-    outcome: ActivityExecutionOutcomeSchema.exactOptional().openapi({
-      description:
-        'Only set if the activity is completed and include_outcome was true in the request.',
-    }),
-    longPollToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token for follow-on long-poll requests. Absent only if the activity is complete.',
-      }),
-    callbacks: z
-      .array(CallbackInfoSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Callbacks attached to this activity execution and their current state.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeActivityExecutionResponse')
-
-const DescribeBatchOperationResponseSchema = z
-  .object({
-    operationType: z
-      .enum([
-        'BATCH_OPERATION_TYPE_UNSPECIFIED',
-        'BATCH_OPERATION_TYPE_TERMINATE',
-        'BATCH_OPERATION_TYPE_CANCEL',
-        'BATCH_OPERATION_TYPE_SIGNAL',
-        'BATCH_OPERATION_TYPE_DELETE',
-        'BATCH_OPERATION_TYPE_RESET',
-        'BATCH_OPERATION_TYPE_UPDATE_EXECUTION_OPTIONS',
-        'BATCH_OPERATION_TYPE_UNPAUSE_ACTIVITY',
-        'BATCH_OPERATION_TYPE_UPDATE_ACTIVITY_OPTIONS',
-        'BATCH_OPERATION_TYPE_RESET_ACTIVITY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Batch operation type' }),
-    jobId: z.string().exactOptional().openapi({ description: 'Batch job ID' }),
-    state: z
-      .enum([
-        'BATCH_OPERATION_STATE_UNSPECIFIED',
-        'BATCH_OPERATION_STATE_RUNNING',
-        'BATCH_OPERATION_STATE_COMPLETED',
-        'BATCH_OPERATION_STATE_FAILED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Batch operation state' }),
-    startTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Batch operation start time' }),
-    closeTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Batch operation close time' }),
-    totalOperationCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total operation count' }),
-    completeOperationCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Complete operation count' }),
-    failureOperationCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Failure operation count' }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identity indicates the operator identity' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Reason indicates the reason to stop a operation' }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeBatchOperationResponse')
-
-const DescribeDeploymentResponseSchema = z
-  .object({ deploymentInfo: DeploymentInfoSchema.exactOptional() })
-  .openapi({
-    description: '[cleanup-wv-pre-release] Pre-release deployment APIs, clean up later',
-    required: [],
-  })
-  .openapi('DescribeDeploymentResponse')
-
-const NamespaceInfoCapabilitiesSchema = z
-  .object({
-    eagerWorkflowStart: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the namespace supports eager workflow start.' }),
-    syncUpdate: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the namespace supports sync update' }),
-    asyncUpdate: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the namespace supports async update' }),
-    workerHeartbeats: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the namespace supports worker heartbeats' }),
-    reportedProblemsSearchAttribute: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if the namespace supports reported problems search attribute',
-      }),
-    workflowPause: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the namespace supports pausing workflows' }),
-    standaloneActivities: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the namespace supports standalone activities' }),
-    workerPollCompleteOnShutdown: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the namespace supports server-side completion of outstanding worker polls on shutdown.\n When enabled, the server will complete polls for workers that send WorkerInstanceKey in their\n poll requests and call ShutdownWorker with the same WorkerInstanceKey. The poll will return\n an empty response. When this flag is true, workers should allow polls to return gracefully\n rather than terminating any open polls on shutdown.',
-      }),
-    pollerAutoscaling: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the namespace supports poller autoscaling' }),
-    workerCommands: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the namespace supports worker commands (server-to-worker communication via control queues).',
-      }),
-  })
-  .openapi({
-    description:
-      'Namespace capability details. Should contain what features are enabled in a namespace.',
-    required: [],
-  })
-  .openapi('NamespaceInfoCapabilities')
-
-const NamespaceInfoLimitsSchema = z
-  .object({
-    blobSizeLimitError: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum size in bytes for payload fields in workflow history events\n (e.g., workflow/activity inputs and results, failure details, signal payloads).\n When exceeded, the server will reject the operation with an error.',
-      }),
-    memoSizeLimitError: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Maximum total memo size in bytes per workflow execution.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NamespaceInfoLimits')
-
-const NamespaceInfoSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    state: z
-      .enum([
-        'NAMESPACE_STATE_UNSPECIFIED',
-        'NAMESPACE_STATE_REGISTERED',
-        'NAMESPACE_STATE_DEPRECATED',
-        'NAMESPACE_STATE_DELETED',
-      ])
-      .exactOptional(),
-    description: z.string().exactOptional(),
-    ownerEmail: z.string().exactOptional(),
-    data: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'A key-value map for any customized purpose.' }),
-    id: z.string().exactOptional(),
-    capabilities: NamespaceInfoCapabilitiesSchema.exactOptional().openapi({
-      description: 'All capabilities the namespace supports.',
-    }),
-    limits: NamespaceInfoLimitsSchema.exactOptional().openapi({
-      description: 'Namespace configured limits',
-    }),
-    supportsSchedules: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether scheduled workflows are supported on this namespace. This is only needed\n temporarily while the feature is experimental, so we can give it a high tag.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NamespaceInfo')
-
-const NamespaceConfigSchema = z
-  .object({
-    workflowExecutionRetentionTtl: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional(),
-    badBinaries: BadBinariesSchema.exactOptional(),
-    historyArchivalState: z
-      .enum(['ARCHIVAL_STATE_UNSPECIFIED', 'ARCHIVAL_STATE_DISABLED', 'ARCHIVAL_STATE_ENABLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'If unspecified (ARCHIVAL_STATE_UNSPECIFIED) then default server configuration is used.',
-      }),
-    historyArchivalUri: z.string().exactOptional(),
-    visibilityArchivalState: z
-      .enum(['ARCHIVAL_STATE_UNSPECIFIED', 'ARCHIVAL_STATE_DISABLED', 'ARCHIVAL_STATE_ENABLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'If unspecified (ARCHIVAL_STATE_UNSPECIFIED) then default server configuration is used.',
-      }),
-    visibilityArchivalUri: z.string().exactOptional(),
-    customSearchAttributeAliases: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Map from field name to alias.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NamespaceConfig')
-
-const NamespaceReplicationConfigSchema = z
-  .object({
-    activeClusterName: z.string().exactOptional(),
-    clusters: z.array(ClusterReplicationConfigSchema).exactOptional(),
-    state: z
-      .enum([
-        'REPLICATION_STATE_UNSPECIFIED',
-        'REPLICATION_STATE_NORMAL',
-        'REPLICATION_STATE_HANDOVER',
-      ])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NamespaceReplicationConfig')
-
-const FailoverStatusSchema = z
-  .object({
-    failoverTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp when the Cluster switched to the following failover_version',
-      }),
-    failoverVersion: z.string().exactOptional(),
-  })
-  .openapi({
-    description: 'Represents a historical replication status of a Namespace',
-    required: [],
-  })
-  .openapi('FailoverStatus')
-
-const DescribeNamespaceResponseSchema = z
-  .object({
-    namespaceInfo: NamespaceInfoSchema.exactOptional(),
-    config: NamespaceConfigSchema.exactOptional(),
-    replicationConfig: NamespaceReplicationConfigSchema.exactOptional(),
-    failoverVersion: z.string().exactOptional(),
-    isGlobalNamespace: z.boolean().exactOptional(),
-    failoverHistory: z
-      .array(FailoverStatusSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains the historical state of failover_versions for the cluster, truncated to contain only the last N\n states to ensure that the list does not grow unbounded.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeNamespaceResponse')
-
-const NexusOperationExecutionCancellationInfoSchema = z
-  .object({
-    requestedTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time when cancellation was requested.' }),
-    state: z
-      .enum([
-        'NEXUS_OPERATION_CANCELLATION_STATE_UNSPECIFIED',
-        'NEXUS_OPERATION_CANCELLATION_STATE_SCHEDULED',
-        'NEXUS_OPERATION_CANCELLATION_STATE_BACKING_OFF',
-        'NEXUS_OPERATION_CANCELLATION_STATE_SUCCEEDED',
-        'NEXUS_OPERATION_CANCELLATION_STATE_FAILED',
-        'NEXUS_OPERATION_CANCELLATION_STATE_TIMED_OUT',
-        'NEXUS_OPERATION_CANCELLATION_STATE_BLOCKED',
-      ])
-      .exactOptional(),
-    attempt: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of attempts made to deliver the cancel operation request.\n This number represents a minimum bound since the attempt is incremented after the request completes.',
-      }),
-    lastAttemptCompleteTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time when the last attempt completed.' }),
-    lastAttemptFailure: FailureSchema.exactOptional().openapi({
-      description: "The last attempt's failure, if any.",
-    }),
-    nextAttemptScheduleTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time when the next attempt is scheduled.' }),
-    blockedReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If the state is BLOCKED, blocked reason provides additional information.',
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A reason that may be specified in the CancelNexusOperationRequest.',
-      }),
-  })
-  .openapi({
-    description:
-      'NexusOperationExecutionCancellationInfo contains the state of a Nexus operation cancellation.',
-    required: [],
-  })
-  .openapi('NexusOperationExecutionCancellationInfo')
-
-const NexusOperationExecutionInfoSchema = z
-  .object({
-    operationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique identifier of this Nexus operation within its namespace along with run ID (below).',
-      }),
-    runId: z.string().exactOptional(),
-    endpoint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Endpoint name, resolved to a URL via the cluster's endpoint registry.",
-      }),
-    service: z.string().exactOptional().openapi({ description: 'Service name.' }),
-    operation: z.string().exactOptional().openapi({ description: 'Operation name.' }),
-    status: z
-      .enum([
-        'NEXUS_OPERATION_EXECUTION_STATUS_UNSPECIFIED',
-        'NEXUS_OPERATION_EXECUTION_STATUS_RUNNING',
-        'NEXUS_OPERATION_EXECUTION_STATUS_COMPLETED',
-        'NEXUS_OPERATION_EXECUTION_STATUS_FAILED',
-        'NEXUS_OPERATION_EXECUTION_STATUS_CANCELED',
-        'NEXUS_OPERATION_EXECUTION_STATUS_TERMINATED',
-        'NEXUS_OPERATION_EXECUTION_STATUS_TIMED_OUT',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'A general status for this operation, indicates whether it is currently running or in one of the terminal statuses.\n Updated once when the operation is originally scheduled, and again when it reaches a terminal status.',
-      }),
-    state: z
-      .enum([
-        'PENDING_NEXUS_OPERATION_STATE_UNSPECIFIED',
-        'PENDING_NEXUS_OPERATION_STATE_SCHEDULED',
-        'PENDING_NEXUS_OPERATION_STATE_BACKING_OFF',
-        'PENDING_NEXUS_OPERATION_STATE_STARTED',
-        'PENDING_NEXUS_OPERATION_STATE_BLOCKED',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'More detailed breakdown of NEXUS_OPERATION_EXECUTION_STATUS_RUNNING.',
-      }),
-    scheduleToCloseTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Schedule-to-close timeout for this operation.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    scheduleToStartTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Schedule-to-start timeout for this operation.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    startToCloseTimeout: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Start-to-close timeout for this operation.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
-      }),
-    attempt: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of attempts made to deliver the start operation request.\n This number is approximate, it is incremented when a task is added to the history queue.\n In practice, there could be more attempts if a task is executed but fails to commit, or less attempts if a task\n was never executed.',
-      }),
-    scheduleTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Time the operation was originally scheduled via a StartNexusOperation request.',
-      }),
-    expirationTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Scheduled time + schedule to close timeout.' }),
-    closeTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Time when the operation transitioned to a closed state.' }),
-    lastAttemptCompleteTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time when the last attempt completed.' }),
-    lastAttemptFailure: FailureSchema.exactOptional().openapi({
-      description: "The last attempt's failure, if any.",
-    }),
-    nextAttemptScheduleTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time when the next attempt is scheduled.' }),
-    executionDuration: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Elapsed time from schedule_time to now for running operations or to close_time for closed\n operations, including all attempts and backoff between attempts.',
-      }),
-    cancellationInfo: NexusOperationExecutionCancellationInfoSchema.exactOptional(),
-    blockedReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If the state is BLOCKED, blocked reason provides additional information.',
-      }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Server-generated request ID used as an idempotency token when submitting start requests to\n the handler. Distinct from the request_id in StartNexusOperationRequest, which is the\n caller-side idempotency key for the StartNexusOperation RPC itself.',
-      }),
-    operationToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Operation token. Only set for asynchronous operations after a successful StartOperation call.',
-      }),
-    stateTransitionCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Incremented each time the operation's state is mutated in persistence.",
-      }),
-    searchAttributes: SearchAttributesSchema.exactOptional(),
-    nexusHeader: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Header for context propagation and tracing purposes.' }),
-    userMetadata: UserMetadataSchema.exactOptional().openapi({
-      description:
-        'Metadata for use by user interfaces to display the fixed as-of-start summary and details of the operation.',
-    }),
-    links: z
-      .array(LinkSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Links attached by the handler of this operation on start or completion.',
-      }),
-    identity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identity of the client who started this operation.' }),
-  })
-  .openapi({
-    description:
-      'Full current state of a standalone Nexus operation, as of the time of the request.',
-    required: [],
-  })
-  .openapi('NexusOperationExecutionInfo')
-
-const DescribeNexusOperationExecutionResponseSchema = z
-  .object({
-    runId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The run ID of the operation, useful when run_id was not specified in the request.',
-      }),
-    info: NexusOperationExecutionInfoSchema.exactOptional().openapi({
-      description: 'Information about the operation.',
-    }),
-    input: PayloadSchema.exactOptional().openapi({
-      description:
-        'Serialized operation input, passed as the request payload.\n Only set if include_input was true in the request.',
-    }),
-    result: PayloadSchema.exactOptional().openapi({
-      description: 'The result if the operation completed successfully.',
-    }),
-    failure: FailureSchema.exactOptional().openapi({
-      description: 'The failure if the operation completed unsuccessfully.',
-    }),
-    longPollToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token for follow-on long-poll requests. Absent only if the operation is complete.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeNexusOperationExecutionResponse')
-
-const ScheduleActionResultSchema = z
-  .object({
-    scheduleTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Time that the action was taken (according to the schedule, including jitter).',
-      }),
-    actualTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Time that the action was taken (real time).' }),
-    startWorkflowResult: WorkflowExecutionSchema.exactOptional().openapi({
-      description: 'If action was start_workflow:',
-    }),
-    startWorkflowStatus: z
-      .enum([
-        'WORKFLOW_EXECUTION_STATUS_UNSPECIFIED',
-        'WORKFLOW_EXECUTION_STATUS_RUNNING',
-        'WORKFLOW_EXECUTION_STATUS_COMPLETED',
-        'WORKFLOW_EXECUTION_STATUS_FAILED',
-        'WORKFLOW_EXECUTION_STATUS_CANCELED',
-        'WORKFLOW_EXECUTION_STATUS_TERMINATED',
-        'WORKFLOW_EXECUTION_STATUS_CONTINUED_AS_NEW',
-        'WORKFLOW_EXECUTION_STATUS_TIMED_OUT',
-        'WORKFLOW_EXECUTION_STATUS_PAUSED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "If the action was start_workflow, this field will reflect an\n eventually-consistent view of the started workflow's status.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduleActionResult')
-
-const ScheduleInfoSchema = z
-  .object({
-    actionCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of actions taken so far.' }),
-    missedCatchupWindow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of times a scheduled action was skipped due to missing the catchup window.',
-      }),
-    overlapSkipped: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of skipped actions due to overlap.' }),
-    bufferDropped: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of dropped actions due to buffer limit.' }),
-    bufferSize: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of actions in the buffer. The buffer holds the actions that cannot\n be immediately triggered (due to the overlap policy). These actions can be a result of\n the normal schedule or a backfill.',
-      }),
-    runningWorkflows: z
-      .array(WorkflowExecutionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Currently-running workflows started by this schedule. (There might be\n more than one if the overlap policy allows overlaps.)\n Note that the run_ids in here are the original execution run ids as\n started by the schedule. If the workflows retried, did continue-as-new,\n or were reset, they might still be running but with a different run_id.',
-      }),
-    recentActions: z
-      .array(ScheduleActionResultSchema)
-      .exactOptional()
-      .openapi({ description: 'Most recent ten actual action times (including manual triggers).' }),
-    futureActionTimes: z
-      .array(z.iso.datetime({ offset: true }))
-      .exactOptional()
-      .openapi({ description: 'Next ten scheduled action times.' }),
-    createTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Timestamps of schedule creation and last update.' }),
-    updateTime: z.iso.datetime({ offset: true }).exactOptional(),
-    invalidScheduleError: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduleInfo')
-
-const DescribeScheduleResponseSchema = z
-  .object({
-    schedule: ScheduleSchema.exactOptional().openapi({
-      description:
-        'The complete current schedule details. This may not match the schedule as\n created because:\n - some types of schedule specs may get compiled into others (e.g.\n   CronString into StructuredCalendarSpec)\n - some unspecified fields may be replaced by defaults\n - some fields in the state are modified automatically\n - the schedule may have been modified by UpdateSchedule or PatchSchedule',
-    }),
-    info: ScheduleInfoSchema.exactOptional().openapi({ description: 'Extra schedule state info.' }),
-    memo: MemoSchema.exactOptional().openapi({
-      description: 'The memo and search attributes that the schedule was created with.',
-    }),
-    searchAttributes: SearchAttributesSchema.exactOptional(),
-    conflictToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This value can be passed back to UpdateSchedule to ensure that the\n schedule was not modified between a Describe and an Update, which could\n lead to lost updates and other confusion.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeScheduleResponse')
+type DescribeActivityExecutionResponseType = {
+  runId?: string
+  info?: z.infer<typeof ActivityExecutionInfoSchema>
+  input?: z.infer<typeof PayloadsSchema>
+  outcome?: z.infer<typeof ActivityExecutionOutcomeSchema>
+  longPollToken?: string
+  callbacks?: z.infer<typeof CallbackInfoSchema>[]
+}
 
 const WorkerVersionCapabilitiesSchema = z
   .object({
@@ -4148,6 +1095,26 @@ const RateLimitSchema = z
   .openapi({ required: [] })
   .openapi('RateLimit')
 
+const ConfigMetadataSchema = z
+  .object({
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Reason for why the config was set.' }),
+    updateIdentity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Identity of the last updater.\n Set by the request's identity field.",
+      }),
+    updateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Time of the last update.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ConfigMetadata')
+
 const RateLimitConfigSchema = z
   .object({
     rateLimit: RateLimitSchema.exactOptional(),
@@ -4256,42 +1223,16 @@ const TaskQueueVersionInfoSchema = z
   .openapi({ required: [] })
   .openapi('TaskQueueVersionInfo')
 
-const DescribeTaskQueueResponseSchema = z
-  .object({
-    pollers: z.array(PollerInfoSchema).exactOptional(),
-    stats: TaskQueueStatsSchema.exactOptional().openapi({
-      description:
-        'Statistics for the task queue.\n Only set if `report_stats` is set on the request.',
-    }),
-    statsByPriorityKey: z
-      .record(z.string(), TaskQueueStatsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Task queue stats breakdown by priority key. Only contains actively used priority keys.\n Only set if `report_stats` is set on the request.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "by" is used to clarify the keys and values. --)',
-      }),
-    versioningInfo: TaskQueueVersioningInfoSchema.exactOptional().openapi({
-      description:
-        "Specifies which Worker Deployment Version(s) Server routes this Task Queue's tasks to.\n When not present, it means the tasks are routed to Unversioned workers (workers with\n UNVERSIONED or unspecified WorkerVersioningMode.)\n Task Queue Versioning info is updated indirectly by calling SetWorkerDeploymentCurrentVersion\n and SetWorkerDeploymentRampingVersion on Worker Deployments.\n Note: This information is not relevant to Pinned workflow executions and their activities as\n they are always routed to their Pinned Deployment Version. However, new workflow executions\n are typically not Pinned until they complete their first task (unless they are started with\n a Pinned VersioningOverride or are Child Workflows of a Pinned parent).",
-    }),
-    config: TaskQueueConfigSchema.exactOptional().openapi({
-      description: 'Only populated if report_task_queue_config is set to true.',
-    }),
-    effectiveRateLimit: DescribeTaskQueueResponseEffectiveRateLimitSchema.exactOptional(),
-    taskQueueStatus: TaskQueueStatusSchema.exactOptional().openapi({
-      description:
-        'Deprecated.\n Status of the task queue. Only populated when `include_task_queue_status` is set to true in the request.',
-    }),
-    versionsInfo: z
-      .record(z.string(), TaskQueueVersionInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated.\n Only returned in ENHANCED mode.\n This map contains Task Queue information for each Build ID. Empty string as key value means unversioned.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeTaskQueueResponse')
+type DescribeTaskQueueResponseType = {
+  pollers?: z.infer<typeof PollerInfoSchema>[]
+  stats?: z.infer<typeof TaskQueueStatsSchema>
+  statsByPriorityKey?: { [key: string]: z.infer<typeof TaskQueueStatsSchema> }
+  versioningInfo?: z.infer<typeof TaskQueueVersioningInfoSchema>
+  config?: z.infer<typeof TaskQueueConfigSchema>
+  effectiveRateLimit?: z.infer<typeof DescribeTaskQueueResponseEffectiveRateLimitSchema>
+  taskQueueStatus?: z.infer<typeof TaskQueueStatusSchema>
+  versionsInfo?: { [key: string]: z.infer<typeof TaskQueueVersionInfoSchema> }
+}
 
 const VersionDrainageInfoSchema = z
   .object({
@@ -4321,6 +1262,33 @@ const VersionDrainageInfoSchema = z
     required: [],
   })
   .openapi('VersionDrainageInfo')
+
+const ComputeConfigScalingGroupSummarySchema = z
+  .object({
+    taskQueueTypes: z
+      .array(
+        z.enum([
+          'TASK_QUEUE_TYPE_UNSPECIFIED',
+          'TASK_QUEUE_TYPE_WORKFLOW',
+          'TASK_QUEUE_TYPE_ACTIVITY',
+          'TASK_QUEUE_TYPE_NEXUS',
+        ]),
+      )
+      .exactOptional(),
+    providerType: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ComputeConfigScalingGroupSummary')
+
+const ComputeConfigSummarySchema = z
+  .object({
+    scalingGroups: z.record(z.string(), ComputeConfigScalingGroupSummarySchema).exactOptional(),
+  })
+  .openapi({
+    description: 'A subset of information in ComputeConfig optimized for list views.',
+    required: [],
+  })
+  .openapi('ComputeConfigSummary')
 
 const WorkerDeploymentInfoWorkerDeploymentVersionSummarySchema = z
   .object({
@@ -4504,410 +1472,33 @@ const WorkerDeploymentInfoSchema = z
   })
   .openapi('WorkerDeploymentInfo')
 
-const DescribeWorkerDeploymentResponseSchema = z
-  .object({
-    conflictToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This value is returned so that it can be optionally passed to APIs\n that write to the Worker Deployment state to ensure that the state\n did not change between this read and a future write.',
-      }),
-    workerDeploymentInfo: WorkerDeploymentInfoSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeWorkerDeploymentResponse')
+type DescribeWorkerDeploymentResponseType = {
+  conflictToken?: string
+  workerDeploymentInfo?: z.infer<typeof WorkerDeploymentInfoSchema>
+}
 
-const WorkerDeploymentVersionInfoVersionTaskQueueInfoSchema = z
+const TaskQueueSchema = z
   .object({
     name: z.string().exactOptional(),
-    type: z
+    kind: z
       .enum([
-        'TASK_QUEUE_TYPE_UNSPECIFIED',
-        'TASK_QUEUE_TYPE_WORKFLOW',
-        'TASK_QUEUE_TYPE_ACTIVITY',
-        'TASK_QUEUE_TYPE_NEXUS',
-      ])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('WorkerDeploymentVersionInfoVersionTaskQueueInfo')
-
-const VersionMetadataSchema = z
-  .object({
-    entries: z
-      .record(z.string(), PayloadSchema)
-      .exactOptional()
-      .openapi({ description: 'Arbitrary key-values.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('VersionMetadata')
-
-const WorkerDeploymentVersionInfoSchema = z
-  .object({
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Use `deployment_version`.' }),
-    status: z
-      .enum([
-        'WORKER_DEPLOYMENT_VERSION_STATUS_UNSPECIFIED',
-        'WORKER_DEPLOYMENT_VERSION_STATUS_INACTIVE',
-        'WORKER_DEPLOYMENT_VERSION_STATUS_CURRENT',
-        'WORKER_DEPLOYMENT_VERSION_STATUS_RAMPING',
-        'WORKER_DEPLOYMENT_VERSION_STATUS_DRAINING',
-        'WORKER_DEPLOYMENT_VERSION_STATUS_DRAINED',
-        'WORKER_DEPLOYMENT_VERSION_STATUS_CREATED',
+        'TASK_QUEUE_KIND_UNSPECIFIED',
+        'TASK_QUEUE_KIND_NORMAL',
+        'TASK_QUEUE_KIND_STICKY',
+        'TASK_QUEUE_KIND_WORKER_COMMANDS',
       ])
       .exactOptional()
-      .openapi({ description: 'The status of the Worker Deployment Version.' }),
-    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional().openapi({
-      description: 'Required.',
-    }),
-    deploymentName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. User deployment_version.deployment_name.' }),
-    createTime: z.iso.datetime({ offset: true }).exactOptional(),
-    routingChangedTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Last time `current_since_time`, `ramping_since_time, or `ramp_percentage` of this version changed.',
-      }),
-    currentSinceTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          "(-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: 'Since' captures the field semantics despite being a preposition. --)\n Unset if not current.",
-      }),
-    rampingSinceTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          "(-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: 'Since' captures the field semantics despite being a preposition. --)\n Unset if not ramping. Updated when the version first starts ramping, not on each ramp change.",
-      }),
-    firstActivationTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Timestamp when this version first became current or ramping.' }),
-    lastCurrentTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp when this version last became current.\n Can be used to determine whether a version has ever been Current.',
-      }),
-    lastDeactivationTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp when this version last stopped being current or ramping.\n Cleared if the version becomes current or ramping again.',
-      }),
-    rampPercentage: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Range: [0, 100]. Must be zero if the version is not ramping (i.e. `ramping_since_time` is nil).\n Can be in the range [0, 100] if the version is ramping.',
-      }),
-    taskQueueInfos: z
-      .array(WorkerDeploymentVersionInfoVersionTaskQueueInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All the Task Queues that have ever polled from this Deployment version.\n Deprecated. Use `version_task_queues` in DescribeWorkerDeploymentVersionResponse instead.',
-      }),
-    drainageInfo: VersionDrainageInfoSchema.exactOptional().openapi({
-      description:
-        'Helps user determine when it is safe to decommission the workers of this\n Version. Not present when version is current or ramping.\n Current limitations:\n - Not supported for Unversioned mode.\n - Periodically refreshed, may have delays up to few minutes (consult the\n   last_checked_time value).\n - Refreshed only when version is not current or ramping AND the status is not\n   "drained" yet.\n - Once the status is changed to "drained", it is not changed until the Version\n   becomes Current or Ramping again, at which time the drainage info is cleared.\n   This means if the Version is "drained" but new workflows are sent to it via\n   Pinned Versioning Override, the status does not account for those Pinned-override\n   executions and remains "drained".',
-    }),
-    metadata: VersionMetadataSchema.exactOptional().openapi({
-      description: 'Arbitrary user-provided metadata attached to this version.',
-    }),
-    computeConfig: ComputeConfigSchema.exactOptional().openapi({
-      description:
-        'Optional. Contains the new worker compute configuration for the Worker\n Deployment. Used for worker scale management.',
-    }),
-    lastModifierIdentity: z
+      .openapi({ description: 'Default: TASK_QUEUE_KIND_NORMAL.' }),
+    normalName: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Identity of the last client who modified the configuration of this Version.\n As of now, this field only covers changes through the following APIs:\n - `CreateWorkerDeploymentVersion`\n - `UpdateWorkerDeploymentVersionComputeConfig`\n - `UpdateWorkerDeploymentVersionMetadata`',
+          'Iff kind == TASK_QUEUE_KIND_STICKY, then this field contains the name of\n the normal task queue that the sticky worker is running on.',
       }),
   })
-  .openapi({
-    description:
-      'A Worker Deployment Version (Version, for short) represents all workers of the same\n code and config within a Deployment. Workers of the same Version are expected to\n behave exactly the same so when executions move between them there are no\n non-determinism issues.\n Worker Deployment Versions are created in Temporal server automatically when\n their first poller arrives to the server.',
-    required: [],
-  })
-  .openapi('WorkerDeploymentVersionInfo')
-
-const DescribeWorkerDeploymentVersionResponseVersionTaskQueueSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    type: z
-      .enum([
-        'TASK_QUEUE_TYPE_UNSPECIFIED',
-        'TASK_QUEUE_TYPE_WORKFLOW',
-        'TASK_QUEUE_TYPE_ACTIVITY',
-        'TASK_QUEUE_TYPE_NEXUS',
-      ])
-      .exactOptional(),
-    stats: TaskQueueStatsSchema.exactOptional().openapi({
-      description: 'Only set if `report_task_queue_stats` is set on the request.',
-    }),
-    statsByPriorityKey: z
-      .record(z.string(), TaskQueueStatsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Task queue stats breakdown by priority key. Only contains actively used priority keys.\n Only set if `report_task_queue_stats` is set to true in the request.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "by" is used to clarify the key. --)',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeWorkerDeploymentVersionResponseVersionTaskQueue')
-
-const DescribeWorkerDeploymentVersionResponseSchema = z
-  .object({
-    workerDeploymentVersionInfo: WorkerDeploymentVersionInfoSchema.exactOptional(),
-    versionTaskQueues: z
-      .array(DescribeWorkerDeploymentVersionResponseVersionTaskQueueSchema)
-      .exactOptional()
-      .openapi({
-        description: 'All the Task Queues that have ever polled from this Deployment version.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeWorkerDeploymentVersionResponse')
-
-const WorkerHostInfoSchema = z
-  .object({
-    hostName: z.string().exactOptional().openapi({ description: 'Worker host identifier.' }),
-    workerGroupingKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker grouping identifier. A key to group workers that share the same client+namespace+process.\n This will be used to build the worker command nexus task queue name:\n "temporal-sys/worker-commands/{worker_grouping_key}"',
-      }),
-    processId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker process identifier. This id only needs to be unique\n within one host (so using e.g. a unix pid would be appropriate).',
-      }),
-    currentHostCpuUsage: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'System used CPU as a float in the range [0.0, 1.0] where 1.0 is defined as all\n cores on the host pegged.',
-      }),
-    currentHostMemUsage: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'System used memory as a float in the range [0.0, 1.0] where 1.0 is defined as\n all available memory on the host is used.',
-      }),
-  })
-  .openapi({
-    description: 'Holds everything needed to identify the worker host/process context',
-    required: [],
-  })
-  .openapi('WorkerHostInfo')
-
-const WorkerSlotsInfoSchema = z
-  .object({
-    currentAvailableSlots: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of slots available for the worker to specific tasks.\n May be -1 if the upper bound is not known.',
-      }),
-    currentUsedSlots: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of slots used by the worker for specific tasks.' }),
-    slotSupplierKind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind of the slot supplier, which is used to determine how the slots are allocated.\n Possible values: "Fixed | ResourceBased | Custom String"',
-      }),
-    totalProcessedTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total number of tasks processed (completed both successfully and unsuccesfully, or any other way)\n by the worker since the worker started. This is a cumulative counter.',
-      }),
-    totalFailedTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Total number of failed tasks processed by the worker so far.' }),
-    lastIntervalProcessedTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of tasks processed in since the last heartbeat from the worker.\n This is a cumulative counter, and it is reset to 0 each time the worker sends a heartbeat.\n Contains both successful and failed tasks.',
-      }),
-    lastIntervalFailureTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Number of failed tasks processed since the last heartbeat from the worker.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('WorkerSlotsInfo')
-
-const WorkerPollerInfoSchema = z
-  .object({
-    currentPollers: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of polling RPCs that are currently in flight.' }),
-    lastSuccessfulPollTime: z.iso.datetime({ offset: true }).exactOptional(),
-    isAutoscaling: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Set true if the number of concurrent pollers is auto-scaled' }),
-  })
-  .openapi({ required: [] })
-  .openapi('WorkerPollerInfo')
-
-const PluginInfoSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the plugin, required.' }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The version of the plugin, may be empty.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PluginInfo')
-
-const StorageDriverInfoSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ description: 'The type of the driver, required.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('StorageDriverInfo')
-
-const WorkerHeartbeatSchema = z
-  .object({
-    workerInstanceKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker identifier, should be unique for the namespace.\n It is distinct from worker identity, which is not necessarily namespace-unique.',
-      }),
-    workerIdentity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker identity, set by the client, may not be unique.\n Usually host_name+(user group name)+process_id, but can be overwritten by the user.',
-      }),
-    hostInfo: WorkerHostInfoSchema.exactOptional().openapi({
-      description: 'Worker host information.',
-    }),
-    taskQueue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Task queue this worker is polling for tasks.' }),
-    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional(),
-    sdkName: z.string().exactOptional(),
-    sdkVersion: z.string().exactOptional(),
-    status: z
-      .enum([
-        'WORKER_STATUS_UNSPECIFIED',
-        'WORKER_STATUS_RUNNING',
-        'WORKER_STATUS_SHUTTING_DOWN',
-        'WORKER_STATUS_SHUTDOWN',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Worker status. Defined by SDK.' }),
-    startTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker start time.\n It can be used to determine worker uptime. (current time - start time)',
-      }),
-    heartbeatTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp of this heartbeat, coming from the worker. Worker should set it to "now".\n Note that this timestamp comes directly from the worker and is subject to workers\' clock skew.',
-      }),
-    elapsedSinceLastHeartbeat: z
-      .string()
-      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
-      .exactOptional()
-      .openapi({ description: 'Elapsed time since the last heartbeat from the worker.' }),
-    workflowTaskSlotsInfo: WorkerSlotsInfoSchema.exactOptional(),
-    activityTaskSlotsInfo: WorkerSlotsInfoSchema.exactOptional(),
-    nexusTaskSlotsInfo: WorkerSlotsInfoSchema.exactOptional(),
-    localActivitySlotsInfo: WorkerSlotsInfoSchema.exactOptional(),
-    workflowPollerInfo: WorkerPollerInfoSchema.exactOptional(),
-    workflowStickyPollerInfo: WorkerPollerInfoSchema.exactOptional(),
-    activityPollerInfo: WorkerPollerInfoSchema.exactOptional(),
-    nexusPollerInfo: WorkerPollerInfoSchema.exactOptional(),
-    totalStickyCacheHit: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'A Workflow Task found a cached Workflow Execution to run against.',
-      }),
-    totalStickyCacheMiss: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'A Workflow Task did not find a cached Workflow execution to run against.',
-      }),
-    currentStickyCacheSize: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Current cache size, expressed in number of Workflow Executions.' }),
-    plugins: z
-      .array(PluginInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Plugins currently in use by this SDK.' }),
-    drivers: z
-      .array(StorageDriverInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Storage drivers in use by this SDK.' }),
-  })
-  .openapi({
-    description:
-      'Worker info message, contains information about the worker and its current state.\n All information is provided by the worker itself.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: Removing those words make names less clear. --)',
-    required: [],
-  })
-  .openapi('WorkerHeartbeat')
-
-const WorkerInfoSchema = z
-  .object({ workerHeartbeat: WorkerHeartbeatSchema.exactOptional() })
-  .openapi({ description: 'Detailed worker information.', required: [] })
-  .openapi('WorkerInfo')
-
-const DescribeWorkerResponseSchema = z
-  .object({ workerInfo: WorkerInfoSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('DescribeWorkerResponse')
+  .openapi({ description: 'See https://docs.temporal.io/docs/concepts/task-queues/', required: [] })
+  .openapi('TaskQueue')
 
 const WorkflowExecutionConfigSchema = z
   .object({
@@ -4930,6 +1521,33 @@ const WorkflowExecutionConfigSchema = z
   })
   .openapi({ required: [] })
   .openapi('WorkflowExecutionConfig')
+
+const WorkflowExecutionSchema = z
+  .object({ workflowId: z.string().exactOptional(), runId: z.string().exactOptional() })
+  .openapi({
+    description:
+      'Identifies a specific workflow within a namespace. Practically speaking, because run_id is a\n uuid, a workflow execution is globally unique. Note that many commands allow specifying an empty\n run id as a way of saying "target the latest run of the workflow".',
+    required: [],
+  })
+  .openapi('WorkflowExecution')
+
+const WorkflowTypeSchema = z
+  .object({ name: z.string().exactOptional() })
+  .openapi({
+    description:
+      'Represents the identifier used by a workflow author to define the workflow. Typically, the\n name of a function. This is sometimes referred to as the workflow\'s "name"',
+    required: [],
+  })
+  .openapi('WorkflowType')
+
+const MemoSchema = z
+  .object({ fields: z.record(z.string(), PayloadSchema).exactOptional() })
+  .openapi({
+    description:
+      'A user-defined set of *unindexed* fields that are exposed when listing/searching workflows',
+    required: [],
+  })
+  .openapi('Memo')
 
 const ResetPointInfoSchema = z
   .object({
@@ -4978,6 +1596,62 @@ const ResetPointsSchema = z
   .object({ points: z.array(ResetPointInfoSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('ResetPoints')
+
+const WorkerVersionStampSchema = z
+  .object({
+    buildId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An opaque whole-worker identifier. Replaces the deprecated `binary_checksum` field when this\n message is included in requests which previously used that.',
+      }),
+    useVersioning: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, the worker is opting in to worker versioning. Otherwise, this is used only as a\n marker for workflow reset points and the BuildIDs search attribute.',
+      }),
+  })
+  .openapi({
+    description:
+      'Deprecated. This message is replaced with `Deployment` and `VersioningBehavior`.\n Identifies the version(s) of a worker that processed a task',
+    required: [],
+  })
+  .openapi('WorkerVersionStamp')
+
+const DeploymentTransitionSchema = z
+  .object({
+    deployment: DeploymentSchema.exactOptional().openapi({
+      description:
+        'The target deployment of the transition. Null means a so-far-versioned workflow is\n transitioning to unversioned workers.',
+    }),
+  })
+  .openapi({
+    description:
+      'Holds information about ongoing transition of a workflow execution from one deployment to another.\n Deprecated. Use DeploymentVersionTransition.',
+    required: [],
+  })
+  .openapi('DeploymentTransition')
+
+const DeploymentVersionTransitionSchema = z
+  .object({
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Use `deployment_version`.' }),
+    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional().openapi({
+      description:
+        'The target Version of the transition.\n If nil, a so-far-versioned workflow is transitioning to unversioned workers.',
+    }),
+  })
+  .openapi({
+    description:
+      'Holds information about ongoing transition of a workflow execution from one worker\n deployment version to another.\n Experimental. Might change in the future.',
+    required: [],
+  })
+  .openapi('DeploymentVersionTransition')
 
 const WorkflowExecutionVersioningInfoSchema = z
   .object({
@@ -5181,6 +1855,50 @@ const PendingActivityInfoPauseInfoSchema = z
   })
   .openapi({ required: [] })
   .openapi('PendingActivityInfoPauseInfo')
+
+const ActivityOptionsSchema = z
+  .object({
+    taskQueue: TaskQueueSchema.exactOptional(),
+    scheduleToCloseTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates how long the caller is willing to wait for an activity completion. Limits how long\n retries will be attempted. Either this or `start_to_close_timeout` must be specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    scheduleToStartTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Limits time an activity task can stay in a task queue before a worker picks it up. This\n timeout is always non retryable, as all a retry would achieve is to put it back into the same\n queue. Defaults to `schedule_to_close_timeout` or workflow execution timeout if not\n specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    startToCloseTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum time an activity is allowed to execute after being picked up by a worker. This\n timeout is always retryable. Either this or `schedule_to_close_timeout` must be\n specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    heartbeatTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({ description: 'Maximum permitted time between successful worker heartbeats.' }),
+    retryPolicy: RetryPolicySchema.exactOptional().openapi({
+      description:
+        'The retry policy for the activity. Will never exceed `schedule_to_close_timeout`.',
+    }),
+    priority: PrioritySchema.exactOptional().openapi({
+      description:
+        'Priority metadata. If this message is not present, or any fields are not\n present, they inherit the values from the workflow.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityOptions')
 
 const PendingActivityInfoSchema = z
   .object({
@@ -5622,402 +2340,205 @@ const WorkflowExecutionExtendedInfoSchema = z
   })
   .openapi('WorkflowExecutionExtendedInfo')
 
-const DescribeWorkflowExecutionResponseSchema = z
-  .object({
-    executionConfig: WorkflowExecutionConfigSchema.exactOptional(),
-    workflowExecutionInfo: WorkflowExecutionInfoSchema.exactOptional(),
-    pendingActivities: z.array(PendingActivityInfoSchema).exactOptional(),
-    pendingChildren: z.array(PendingChildExecutionInfoSchema).exactOptional(),
-    pendingWorkflowTask: PendingWorkflowTaskInfoSchema.exactOptional(),
-    callbacks: z.array(CallbackInfoSchema).exactOptional(),
-    pendingNexusOperations: z.array(PendingNexusOperationInfoSchema).exactOptional(),
-    workflowExtendedInfo: WorkflowExecutionExtendedInfoSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeWorkflowExecutionResponse')
+type DescribeWorkflowExecutionResponseType = {
+  executionConfig?: z.infer<typeof WorkflowExecutionConfigSchema>
+  workflowExecutionInfo?: z.infer<typeof WorkflowExecutionInfoSchema>
+  pendingActivities?: z.infer<typeof PendingActivityInfoSchema>[]
+  pendingChildren?: z.infer<typeof PendingChildExecutionInfoSchema>[]
+  pendingWorkflowTask?: z.infer<typeof PendingWorkflowTaskInfoSchema>
+  callbacks?: z.infer<typeof CallbackInfoSchema>[]
+  pendingNexusOperations?: z.infer<typeof PendingNexusOperationInfoSchema>[]
+  workflowExtendedInfo?: z.infer<typeof WorkflowExecutionExtendedInfoSchema>
+}
 
-const DescribeWorkflowRuleResponseSchema = z
+const ApplicationFailureInfoSchema = z
   .object({
-    rule: WorkflowRuleSchema.exactOptional().openapi({ description: 'The rule that was read.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeWorkflowRuleResponse')
-
-const ExternalWorkflowExecutionCancelRequestedEventAttributesSchema = z
-  .object({
-    initiatedEventId: z
+    type: z.string().exactOptional(),
+    nonRetryable: z.boolean().exactOptional(),
+    details: PayloadsSchema.exactOptional(),
+    nextRetryDelay: z
       .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
       .exactOptional()
       .openapi({
         description:
-          'id of the `REQUEST_CANCEL_EXTERNAL_WORKFLOW_EXECUTION_INITIATED` event this event corresponds\n to',
+          'next_retry_delay can be used by the client to override the activity\n retry interval calculated by the retry policy. Retry attempts will\n still be subject to the maximum retries limit and total time limit\n defined by the policy.',
       }),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the to-be-cancelled workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
-      }),
-    namespaceId: z.string().exactOptional(),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    category: z
+      .enum(['APPLICATION_ERROR_CATEGORY_UNSPECIFIED', 'APPLICATION_ERROR_CATEGORY_BENIGN'])
+      .exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('ExternalWorkflowExecutionCancelRequestedEventAttributes')
+  .openapi('ApplicationFailureInfo')
 
-const ExternalWorkflowExecutionSignaledEventAttributesSchema = z
+const TimeoutFailureInfoSchema = z
   .object({
-    initiatedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'id of the `SIGNAL_EXTERNAL_WORKFLOW_EXECUTION_INITIATED` event this event corresponds to',
-      }),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespace of the workflow which was signaled.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
-      }),
-    namespaceId: z.string().exactOptional(),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    control: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+    timeoutType: z
+      .enum([
+        'TIMEOUT_TYPE_UNSPECIFIED',
+        'TIMEOUT_TYPE_START_TO_CLOSE',
+        'TIMEOUT_TYPE_SCHEDULE_TO_START',
+        'TIMEOUT_TYPE_SCHEDULE_TO_CLOSE',
+        'TIMEOUT_TYPE_HEARTBEAT',
+      ])
+      .exactOptional(),
+    lastHeartbeatDetails: PayloadsSchema.exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('ExternalWorkflowExecutionSignaledEventAttributes')
+  .openapi('TimeoutFailureInfo')
 
-const WorkerSelectorSchema = z
+const CanceledFailureInfoSchema = z
   .object({
-    workerInstanceKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Worker instance key to which the command should be sent.' }),
-  })
-  .openapi({
-    description:
-      'This is used to send commands to a specific worker or a group of workers.\n Right now, it is used to send commands to a specific worker instance.\n Will be extended to be able to send command to multiple workers.',
-    required: [],
-  })
-  .openapi('WorkerSelector')
-
-const FetchWorkerConfigRequestSchema = z
-  .object({
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Namespace this worker belongs to.' }),
+    details: PayloadsSchema.exactOptional(),
     identity: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The identity of the client who initiated this request.' }),
-    reason: z
+      .openapi({
+        description: 'The identity of the worker or client that requested the cancellation.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CanceledFailureInfo')
+
+const TerminatedFailureInfoSchema = z
+  .object({
+    identity: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Reason for sending worker command, can be used for audit purpose.',
+        description: 'The identity of the worker or client that requested the termination.',
       }),
-    selector: WorkerSelectorSchema.exactOptional().openapi({
-      description:
-        'Defines which workers should receive this command.\n only single worker is supported at this time.',
-    }),
-    resourceId: z
+  })
+  .openapi({ required: [] })
+  .openapi('TerminatedFailureInfo')
+
+const ServerFailureInfoSchema = z
+  .object({ nonRetryable: z.boolean().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ServerFailureInfo')
+
+const ResetWorkflowFailureInfoSchema = z
+  .object({ lastHeartbeatDetails: PayloadsSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ResetWorkflowFailureInfo')
+
+const ActivityFailureInfoSchema = z
+  .object({
+    scheduledEventId: z.string().exactOptional(),
+    startedEventId: z.string().exactOptional(),
+    identity: z.string().exactOptional(),
+    activityType: ActivityTypeSchema.exactOptional(),
+    activityId: z.string().exactOptional(),
+    retryState: z
+      .enum([
+        'RETRY_STATE_UNSPECIFIED',
+        'RETRY_STATE_IN_PROGRESS',
+        'RETRY_STATE_NON_RETRYABLE_FAILURE',
+        'RETRY_STATE_TIMEOUT',
+        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
+        'RETRY_STATE_RETRY_POLICY_NOT_SET',
+        'RETRY_STATE_INTERNAL_SERVER_ERROR',
+        'RETRY_STATE_CANCEL_REQUESTED',
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityFailureInfo')
+
+const ChildWorkflowExecutionFailureInfoSchema = z
+  .object({
+    namespace: z.string().exactOptional(),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    initiatedEventId: z.string().exactOptional(),
+    startedEventId: z.string().exactOptional(),
+    retryState: z
+      .enum([
+        'RETRY_STATE_UNSPECIFIED',
+        'RETRY_STATE_IN_PROGRESS',
+        'RETRY_STATE_NON_RETRYABLE_FAILURE',
+        'RETRY_STATE_TIMEOUT',
+        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
+        'RETRY_STATE_RETRY_POLICY_NOT_SET',
+        'RETRY_STATE_INTERNAL_SERVER_ERROR',
+        'RETRY_STATE_CANCEL_REQUESTED',
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ChildWorkflowExecutionFailureInfo')
+
+const NexusOperationFailureInfoSchema = z
+  .object({
+    scheduledEventId: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Resource ID for routing. Contains the worker grouping key.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FetchWorkerConfigRequest')
-
-const WorkerConfigSimplePollerBehaviorSchema = z
-  .object({ maxPollers: z.int32().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('WorkerConfigSimplePollerBehavior')
-
-const WorkerConfigAutoscalingPollerBehaviorSchema = z
-  .object({
-    minPollers: z
-      .int32()
+      .openapi({ description: 'The NexusOperationScheduled event ID.' }),
+    endpoint: z.string().exactOptional().openapi({ description: 'Endpoint name.' }),
+    service: z.string().exactOptional().openapi({ description: 'Service name.' }),
+    operation: z.string().exactOptional().openapi({ description: 'Operation name.' }),
+    operationId: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'At least this many poll calls will always be attempted (assuming slots are available).\n Cannot be zero.',
+          'Operation ID - may be empty if the operation completed synchronously.\n\n Deprecated. Renamed to operation_token.',
       }),
-    maxPollers: z
-      .int32()
+    operationToken: z
+      .string()
       .exactOptional()
       .openapi({
-        description:
-          'At most this many poll calls will ever be open at once. Must be >= `minimum`.',
+        description: 'Operation token - may be empty if the operation completed synchronously.',
       }),
-    initialPollers: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'This many polls will be attempted initially before scaling kicks in. Must be between\n  `minimum` and `maximum`.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('WorkerConfigAutoscalingPollerBehavior')
-
-const WorkerConfigSchema = z
-  .object({
-    workflowCacheSize: z.int32().exactOptional(),
-    simplePollerBehavior: WorkerConfigSimplePollerBehaviorSchema.exactOptional(),
-    autoscalingPollerBehavior: WorkerConfigAutoscalingPollerBehaviorSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('WorkerConfig')
-
-const FetchWorkerConfigResponseSchema = z
-  .object({
-    workerConfig: WorkerConfigSchema.exactOptional().openapi({
-      description: 'The worker configuration.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('FetchWorkerConfigResponse')
-
-const ReleaseInfoSchema = z
-  .object({
-    version: z.string().exactOptional(),
-    releaseTime: z.iso.datetime({ offset: true }).exactOptional(),
-    notes: z.string().exactOptional(),
-  })
-  .openapi({
-    description: 'ReleaseInfo contains information about specific version of temporal.',
-    required: [],
-  })
-  .openapi('ReleaseInfo')
-
-const VersionInfoSchema = z
-  .object({
-    current: ReleaseInfoSchema.exactOptional(),
-    recommended: ReleaseInfoSchema.exactOptional(),
-    instructions: z.string().exactOptional(),
-    alerts: z.array(AlertSchema).exactOptional(),
-    lastUpdateTime: z.iso.datetime({ offset: true }).exactOptional(),
   })
   .openapi({
     description:
-      'VersionInfo contains details about current and recommended release versions as well as alerts and upgrade instructions.',
+      'Representation of the Temporal SDK NexusOperationError object that is returned to workflow callers.',
     required: [],
   })
-  .openapi('VersionInfo')
+  .openapi('NexusOperationFailureInfo')
 
-const GetClusterInfoResponseSchema = z
+const NexusHandlerFailureInfoSchema = z
   .object({
-    supportedClients: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Key is client name i.e "temporal-go", "temporal-java", or "temporal-cli".\n Value is ranges of supported versions of this client i.e ">1.1.1 <=1.4.0 || ^5.0.0".',
-      }),
-    serverVersion: z.string().exactOptional(),
-    clusterId: z.string().exactOptional(),
-    versionInfo: VersionInfoSchema.exactOptional(),
-    clusterName: z.string().exactOptional(),
-    historyShardCount: z.int32().exactOptional(),
-    persistenceStore: z.string().exactOptional(),
-    visibilityStore: z.string().exactOptional(),
-    initialFailoverVersion: z.string().exactOptional(),
-    failoverVersionIncrement: z.string().exactOptional(),
-  })
-  .openapi({
-    description: 'GetClusterInfoResponse contains information about Temporal cluster.',
-    required: [],
-  })
-  .openapi('GetClusterInfoResponse')
-
-const GetCurrentDeploymentResponseSchema = z
-  .object({ currentDeploymentInfo: DeploymentInfoSchema.exactOptional() })
-  .openapi({
-    description: '[cleanup-wv-pre-release] Pre-release deployment APIs, clean up later',
-    required: [],
-  })
-  .openapi('GetCurrentDeploymentResponse')
-
-const GetDeploymentReachabilityResponseSchema = z
-  .object({
-    deploymentInfo: DeploymentInfoSchema.exactOptional(),
-    reachability: z
-      .enum([
-        'DEPLOYMENT_REACHABILITY_UNSPECIFIED',
-        'DEPLOYMENT_REACHABILITY_REACHABLE',
-        'DEPLOYMENT_REACHABILITY_CLOSED_WORKFLOWS_ONLY',
-        'DEPLOYMENT_REACHABILITY_UNREACHABLE',
-      ])
-      .exactOptional(),
-    lastUpdateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reachability level might come from server cache. This timestamp specifies when the value\n was actually calculated.',
-      }),
-  })
-  .openapi({
-    description: '[cleanup-wv-pre-release] Pre-release deployment APIs, clean up later',
-    required: [],
-  })
-  .openapi('GetDeploymentReachabilityResponse')
-
-const GetNexusEndpointResponseSchema = z
-  .object({ endpoint: EndpointSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('GetNexusEndpointResponse')
-
-const GetSystemInfoResponseCapabilitiesSchema = z
-  .object({
-    signalAndQueryHeader: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if signal and query headers are supported.' }),
-    internalErrorDifferentiation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if internal errors are differentiated from other types of errors for purposes of\n retrying non-internal errors.\n\n When unset/false, clients retry all failures. When true, clients should only retry\n non-internal errors.',
-      }),
-    activityFailureIncludeHeartbeat: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if RespondActivityTaskFailed API supports including heartbeat details',
-      }),
-    supportsSchedules: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Supports scheduled workflow features.' }),
-    encodedFailureAttributes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if server uses protos that include temporal.api.failure.v1.Failure.encoded_attributes',
-      }),
-    buildIdBasedVersioning: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "True if server supports dispatching Workflow and Activity tasks based on a worker's build_id\n (see:\n https://github.com/temporalio/proposals/blob/a123af3b559f43db16ea6dd31870bfb754c4dc5e/versioning/worker-versions.md)",
-      }),
-    upsertMemo: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if server supports upserting workflow memo' }),
-    eagerWorkflowStart: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if server supports eager workflow task dispatching for the StartWorkflowExecution API',
-      }),
-    sdkMetadata: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the server knows about the sdk metadata field on WFT completions and will record\n it in history',
-      }),
-    countGroupByExecutionStatus: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the server supports count group by execution status' }),
-    nexus: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the server supports Nexus operations.\n This flag is dependent both on server version and for Nexus to be enabled via server configuration.',
-      }),
-    serverScaledDeployments: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the server supports server-scaled deployments.\n This flag is dependent both on server version and for server-scaled deployments\n to be enabled via server configuration.',
-      }),
-  })
-  .openapi({ description: 'System capability details.', required: [] })
-  .openapi('GetSystemInfoResponseCapabilities')
-
-const GetSystemInfoResponseSchema = z
-  .object({
-    serverVersion: z.string().exactOptional().openapi({ description: 'Version of the server.' }),
-    capabilities: GetSystemInfoResponseCapabilitiesSchema.exactOptional().openapi({
-      description: 'All capabilities the system supports.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetSystemInfoResponse')
-
-const GetWorkerBuildIdCompatibilityResponseSchema = z
-  .object({
-    majorVersionSets: z
-      .array(CompatibleVersionSetSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Major version sets, in order from oldest to newest. The last element of the list will always\n be the current default major version. IE: New workflows will target the most recent version\n in that version set.\n\n There may be fewer sets returned than exist, if the request chose to limit this response.',
-      }),
-  })
-  .openapi({ description: '[cleanup-wv-pre-release]', required: [] })
-  .openapi('GetWorkerBuildIdCompatibilityResponse')
-
-const GetWorkerTaskReachabilityResponseSchema = z
-  .object({
-    buildIdReachability: z
-      .array(BuildIdReachabilitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Task reachability, broken down by build id and then task queue.\n When requesting a large number of task queues or all task queues associated with the given build ids in a\n namespace, all task queues will be listed in the response but some of them may not contain reachability\n information due to a server enforced limit. When reaching the limit, task queues that reachability information\n could not be retrieved for will be marked with a single TASK_REACHABILITY_UNSPECIFIED entry. The caller may issue\n another call to get the reachability for those task queues.\n\n Open source users can adjust this limit by setting the server's dynamic config value for\n `limit.reachabilityTaskQueueScan` with the caveat that this call can strain the visibility store.",
-      }),
-  })
-  .openapi({
-    description: '[cleanup-wv-pre-release]\n Deprecated. Use `DescribeTaskQueue`.',
-    required: [],
-  })
-  .openapi('GetWorkerTaskReachabilityResponse')
-
-const TimestampedBuildIdAssignmentRuleSchema = z
-  .object({
-    rule: BuildIdAssignmentRuleSchema.exactOptional(),
-    createTime: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TimestampedBuildIdAssignmentRule')
-
-const TimestampedCompatibleBuildIdRedirectRuleSchema = z
-  .object({
-    rule: CompatibleBuildIdRedirectRuleSchema.exactOptional(),
-    createTime: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TimestampedCompatibleBuildIdRedirectRule')
-
-const GetWorkerVersioningRulesResponseSchema = z
-  .object({
-    assignmentRules: z.array(TimestampedBuildIdAssignmentRuleSchema).exactOptional(),
-    compatibleRedirectRules: z
-      .array(TimestampedCompatibleBuildIdRedirectRuleSchema)
-      .exactOptional(),
-    conflictToken: z
+    type: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'This value can be passed back to UpdateWorkerVersioningRulesRequest to\n ensure that the rules were not modified between this List and the Update,\n which could lead to lost updates and other confusion.',
+          'The Nexus error type as defined in the spec:\n https://github.com/nexus-rpc/api/blob/main/SPEC.md#predefined-handler-errors.',
+      }),
+    retryBehavior: z
+      .enum([
+        'NEXUS_HANDLER_ERROR_RETRY_BEHAVIOR_UNSPECIFIED',
+        'NEXUS_HANDLER_ERROR_RETRY_BEHAVIOR_RETRYABLE',
+        'NEXUS_HANDLER_ERROR_RETRY_BEHAVIOR_NON_RETRYABLE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Retry behavior, defaults to the retry behavior of the error type as defined in the spec.',
       }),
   })
-  .openapi({ description: '[cleanup-wv-pre-release]', required: [] })
-  .openapi('GetWorkerVersioningRulesResponse')
+  .openapi({ required: [] })
+  .openapi('NexusHandlerFailureInfo')
+
+type FailureType = {
+  message?: string
+  source?: string
+  stackTrace?: string
+  encodedAttributes?: z.infer<typeof PayloadSchema>
+  cause?: FailureType
+  applicationFailureInfo?: z.infer<typeof ApplicationFailureInfoSchema>
+  timeoutFailureInfo?: z.infer<typeof TimeoutFailureInfoSchema>
+  canceledFailureInfo?: z.infer<typeof CanceledFailureInfoSchema>
+  terminatedFailureInfo?: z.infer<typeof TerminatedFailureInfoSchema>
+  serverFailureInfo?: z.infer<typeof ServerFailureInfoSchema>
+  resetWorkflowFailureInfo?: z.infer<typeof ResetWorkflowFailureInfoSchema>
+  activityFailureInfo?: z.infer<typeof ActivityFailureInfoSchema>
+  childWorkflowExecutionFailureInfo?: z.infer<typeof ChildWorkflowExecutionFailureInfoSchema>
+  nexusOperationExecutionFailureInfo?: z.infer<typeof NexusOperationFailureInfoSchema>
+  nexusHandlerFailureInfo?: z.infer<typeof NexusHandlerFailureInfoSchema>
+}
 
 const PrincipalSchema = z
   .object({
@@ -6071,6 +2592,24 @@ const InheritedAutoUpgradeInfoSchema = z
     required: [],
   })
   .openapi('InheritedAutoUpgradeInfo')
+
+const DeclinedTargetVersionUpgradeSchema = z
+  .object({
+    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional(),
+    revisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Revision number of the task queue routing config at the time the target\n was declined. If an incoming target's revision is <= this value, it is\n not newer and is not used for deciding whether or not to suppress the\n upgrade signal.",
+      }),
+  })
+  .openapi({
+    description:
+      'Wrapper for a target deployment version that the SDK declined to upgrade to.\n See declined_target_version_upgrade on WorkflowExecutionStartedEventAttributes.',
+    required: [],
+  })
+  .openapi('DeclinedTargetVersionUpgrade')
 
 const WorkflowExecutionStartedEventAttributesSchema = z
   .object({
@@ -6666,6 +3205,215 @@ const WorkflowTaskFailedEventAttributesSchema = z
   .openapi({ required: [] })
   .openapi('WorkflowTaskFailedEventAttributes')
 
+const ActivityTaskScheduledEventAttributesSchema = z
+  .object({
+    activityId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The worker/user assigned identifier for the activity' }),
+    activityType: ActivityTypeSchema.exactOptional(),
+    taskQueue: TaskQueueSchema.exactOptional(),
+    header: HeaderSchema.exactOptional(),
+    input: PayloadsSchema.exactOptional(),
+    scheduleToCloseTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates how long the caller is willing to wait for an activity completion. Limits how long\n retries will be attempted. Either this or `start_to_close_timeout` must be specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    scheduleToStartTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Limits time an activity task can stay in a task queue before a worker picks it up. This\n timeout is always non retryable, as all a retry would achieve is to put it back into the same\n queue. Defaults to `schedule_to_close_timeout` or workflow execution timeout if not\n specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    startToCloseTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum time an activity is allowed to execute after being picked up by a worker. This\n timeout is always retryable. Either this or `schedule_to_close_timeout` must be\n specified.\n\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    heartbeatTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({ description: 'Maximum permitted time between successful worker heartbeats.' }),
+    workflowTaskCompletedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `WORKFLOW_TASK_COMPLETED` event which this command was reported with',
+      }),
+    retryPolicy: RetryPolicySchema.exactOptional().openapi({
+      description:
+        "Activities are assigned a default retry policy controlled by the service's dynamic\n configuration. Retries will happen up to `schedule_to_close_timeout`. To disable retries set\n retry_policy.maximum_attempts to 1.",
+    }),
+    useWorkflowBuildId: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If this is set, the activity would be assigned to the Build ID of the workflow. Otherwise,\n Assignment rules of the activity's Task Queue will be used to determine the Build ID.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]",
+      }),
+    priority: PrioritySchema.exactOptional().openapi({
+      description:
+        'Priority metadata. If this message is not present, or any fields are not\n present, they inherit the values from the workflow.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityTaskScheduledEventAttributes')
+
+const ActivityTaskStartedEventAttributesSchema = z
+  .object({
+    scheduledEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the `ACTIVITY_TASK_SCHEDULED` event this task corresponds to',
+      }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'id of the worker that picked up this task' }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is populated from the RecordActivityTaskStartedRequest. Matching service would\n set the request_id on the RecordActivityTaskStartedRequest to a new UUID. This is useful\n in case a RecordActivityTaskStarted call succeed but matching doesn't get that response,\n so matching could retry and history service would return success if the request_id matches.\n In that case, matching will continue to deliver the task to worker. Without this field, history\n service would return AlreadyStarted error, and matching would drop the task.",
+      }),
+    attempt: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Starting at 1, the number of times this task has been attempted' }),
+    lastFailure: FailureSchema.exactOptional().openapi({
+      description:
+        'Will be set to the most recent failure details, if this task has previously failed and then\n been retried.',
+    }),
+    workerVersion: WorkerVersionStampSchema.exactOptional().openapi({
+      description:
+        'Version info of the worker to whom this task was dispatched.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
+    }),
+    buildIdRedirectCounter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Used by server internally to properly reapply build ID redirects to an execution\n when rebuilding it from events.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityTaskStartedEventAttributes')
+
+const ActivityTaskCompletedEventAttributesSchema = z
+  .object({
+    result: PayloadsSchema.exactOptional().openapi({
+      description:
+        'Serialized results of the activity. IE: The return value of the activity function',
+    }),
+    scheduledEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the `ACTIVITY_TASK_SCHEDULED` event this completion corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the `ACTIVITY_TASK_STARTED` event this completion corresponds to',
+      }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'id of the worker that completed this task' }),
+    workerVersion: WorkerVersionStampSchema.exactOptional().openapi({
+      description:
+        'Version info of the worker who processed this workflow task.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityTaskCompletedEventAttributes')
+
+const ActivityTaskFailedEventAttributesSchema = z
+  .object({
+    failure: FailureSchema.exactOptional().openapi({ description: 'Failure details' }),
+    scheduledEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the `ACTIVITY_TASK_SCHEDULED` event this failure corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the `ACTIVITY_TASK_STARTED` event this failure corresponds to',
+      }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'id of the worker that failed this task' }),
+    retryState: z
+      .enum([
+        'RETRY_STATE_UNSPECIFIED',
+        'RETRY_STATE_IN_PROGRESS',
+        'RETRY_STATE_NON_RETRYABLE_FAILURE',
+        'RETRY_STATE_TIMEOUT',
+        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
+        'RETRY_STATE_RETRY_POLICY_NOT_SET',
+        'RETRY_STATE_INTERNAL_SERVER_ERROR',
+        'RETRY_STATE_CANCEL_REQUESTED',
+      ])
+      .exactOptional(),
+    workerVersion: WorkerVersionStampSchema.exactOptional().openapi({
+      description:
+        'Version info of the worker who processed this workflow task.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityTaskFailedEventAttributes')
+
+const ActivityTaskTimedOutEventAttributesSchema = z
+  .object({
+    failure: FailureSchema.exactOptional().openapi({
+      description:
+        'If this activity had failed, was retried, and then timed out, that failure is stored as the\n `cause` in here.',
+    }),
+    scheduledEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the `ACTIVITY_TASK_SCHEDULED` event this timeout corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the `ACTIVITY_TASK_STARTED` event this timeout corresponds to',
+      }),
+    retryState: z
+      .enum([
+        'RETRY_STATE_UNSPECIFIED',
+        'RETRY_STATE_IN_PROGRESS',
+        'RETRY_STATE_NON_RETRYABLE_FAILURE',
+        'RETRY_STATE_TIMEOUT',
+        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
+        'RETRY_STATE_RETRY_POLICY_NOT_SET',
+        'RETRY_STATE_INTERNAL_SERVER_ERROR',
+        'RETRY_STATE_CANCEL_REQUESTED',
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityTaskTimedOutEventAttributes')
+
 const TimerStartedEventAttributesSchema = z
   .object({
     timerId: z
@@ -6705,6 +3453,63 @@ const TimerFiredEventAttributesSchema = z
   })
   .openapi({ required: [] })
   .openapi('TimerFiredEventAttributes')
+
+const ActivityTaskCancelRequestedEventAttributesSchema = z
+  .object({
+    scheduledEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the `ACTIVITY_TASK_SCHEDULED` event this cancel request corresponds to',
+      }),
+    workflowTaskCompletedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `WORKFLOW_TASK_COMPLETED` event which this command was reported with',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityTaskCancelRequestedEventAttributes')
+
+const ActivityTaskCanceledEventAttributesSchema = z
+  .object({
+    details: PayloadsSchema.exactOptional().openapi({
+      description: 'Additional information that the activity reported upon confirming cancellation',
+    }),
+    latestCancelRequestedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'id of the most recent `ACTIVITY_TASK_CANCEL_REQUESTED` event which refers to the same\n activity',
+      }),
+    scheduledEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the `ACTIVITY_TASK_SCHEDULED` event this cancel confirmation corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the `ACTIVITY_TASK_STARTED` event this cancel confirmation corresponds to',
+      }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'id of the worker who canceled this activity' }),
+    workerVersion: WorkerVersionStampSchema.exactOptional().openapi({
+      description:
+        'Version info of the worker who processed this workflow task.\n Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityTaskCanceledEventAttributes')
 
 const TimerCanceledEventAttributesSchema = z
   .object({
@@ -6916,6 +3721,28 @@ const RequestCancelExternalWorkflowExecutionFailedEventAttributesSchema = z
   .openapi({ required: [] })
   .openapi('RequestCancelExternalWorkflowExecutionFailedEventAttributes')
 
+const ExternalWorkflowExecutionCancelRequestedEventAttributesSchema = z
+  .object({
+    initiatedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'id of the `REQUEST_CANCEL_EXTERNAL_WORKFLOW_EXECUTION_INITIATED` event this event corresponds\n to',
+      }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the to-be-cancelled workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
+      }),
+    namespaceId: z.string().exactOptional(),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ExternalWorkflowExecutionCancelRequestedEventAttributes')
+
 const WorkflowExecutionContinuedAsNewEventAttributesSchema = z
   .object({
     newExecutionRunId: z
@@ -7112,6 +3939,207 @@ const StartChildWorkflowExecutionFailedEventAttributesSchema = z
   .openapi({ required: [] })
   .openapi('StartChildWorkflowExecutionFailedEventAttributes')
 
+const ChildWorkflowExecutionStartedEventAttributesSchema = z
+  .object({
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
+      }),
+    namespaceId: z.string().exactOptional(),
+    initiatedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
+      }),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    header: HeaderSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ChildWorkflowExecutionStartedEventAttributes')
+
+const ChildWorkflowExecutionCompletedEventAttributesSchema = z
+  .object({
+    result: PayloadsSchema.exactOptional(),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
+      }),
+    namespaceId: z.string().exactOptional(),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    initiatedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ChildWorkflowExecutionCompletedEventAttributes')
+
+const ChildWorkflowExecutionFailedEventAttributesSchema = z
+  .object({
+    failure: FailureSchema.exactOptional(),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
+      }),
+    namespaceId: z.string().exactOptional(),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    initiatedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
+      }),
+    retryState: z
+      .enum([
+        'RETRY_STATE_UNSPECIFIED',
+        'RETRY_STATE_IN_PROGRESS',
+        'RETRY_STATE_NON_RETRYABLE_FAILURE',
+        'RETRY_STATE_TIMEOUT',
+        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
+        'RETRY_STATE_RETRY_POLICY_NOT_SET',
+        'RETRY_STATE_INTERNAL_SERVER_ERROR',
+        'RETRY_STATE_CANCEL_REQUESTED',
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ChildWorkflowExecutionFailedEventAttributes')
+
+const ChildWorkflowExecutionCanceledEventAttributesSchema = z
+  .object({
+    details: PayloadsSchema.exactOptional(),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
+      }),
+    namespaceId: z.string().exactOptional(),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    initiatedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ChildWorkflowExecutionCanceledEventAttributes')
+
+const ChildWorkflowExecutionTimedOutEventAttributesSchema = z
+  .object({
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
+      }),
+    namespaceId: z.string().exactOptional(),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    initiatedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
+      }),
+    retryState: z
+      .enum([
+        'RETRY_STATE_UNSPECIFIED',
+        'RETRY_STATE_IN_PROGRESS',
+        'RETRY_STATE_NON_RETRYABLE_FAILURE',
+        'RETRY_STATE_TIMEOUT',
+        'RETRY_STATE_MAXIMUM_ATTEMPTS_REACHED',
+        'RETRY_STATE_RETRY_POLICY_NOT_SET',
+        'RETRY_STATE_INTERNAL_SERVER_ERROR',
+        'RETRY_STATE_CANCEL_REQUESTED',
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ChildWorkflowExecutionTimedOutEventAttributes')
+
+const ChildWorkflowExecutionTerminatedEventAttributesSchema = z
+  .object({
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the child workflow.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
+      }),
+    namespaceId: z.string().exactOptional(),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    initiatedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `START_CHILD_WORKFLOW_EXECUTION_INITIATED` event which this event corresponds to',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `CHILD_WORKFLOW_EXECUTION_STARTED` event which this event corresponds to',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ChildWorkflowExecutionTerminatedEventAttributes')
+
 const SignalExternalWorkflowExecutionInitiatedEventAttributesSchema = z
   .object({
     workflowTaskCompletedEventId: z
@@ -7179,6 +4207,29 @@ const SignalExternalWorkflowExecutionFailedEventAttributesSchema = z
   })
   .openapi({ required: [] })
   .openapi('SignalExternalWorkflowExecutionFailedEventAttributes')
+
+const ExternalWorkflowExecutionSignaledEventAttributesSchema = z
+  .object({
+    initiatedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'id of the `SIGNAL_EXTERNAL_WORKFLOW_EXECUTION_INITIATED` event this event corresponds to',
+      }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace of the workflow which was signaled.\n SDKs and UI tools should use `namespace` field but server must use `namespace_id` only.',
+      }),
+    namespaceId: z.string().exactOptional(),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    control: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ExternalWorkflowExecutionSignaledEventAttributes')
 
 const UpsertWorkflowSearchAttributesEventAttributesSchema = z
   .object({
@@ -7329,6 +4380,23 @@ const WorkflowPropertiesModifiedExternallyEventAttributesSchema = z
     required: [],
   })
   .openapi('WorkflowPropertiesModifiedExternallyEventAttributes')
+
+const ActivityPropertiesModifiedExternallyEventAttributesSchema = z
+  .object({
+    scheduledEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the `ACTIVITY_TASK_SCHEDULED` event this modification corresponds to.',
+      }),
+    newRetryPolicy: RetryPolicySchema.exactOptional().openapi({
+      description:
+        'If set, update the retry policy of the activity, replacing it with the specified one.\n The number of attempts at the activity is preserved.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityPropertiesModifiedExternallyEventAttributes')
 
 const WorkflowPropertiesModifiedEventAttributesSchema = z
   .object({
@@ -7734,7 +4802,226 @@ const WorkflowExecutionTimeSkippingTransitionedEventAttributesSchema = z
   })
   .openapi('WorkflowExecutionTimeSkippingTransitionedEventAttributes')
 
-const HistoryEventSchema = z
+type HistoryEventType = {
+  eventId?: string
+  eventTime?: string
+  eventType?:
+    | 'EVENT_TYPE_UNSPECIFIED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_STARTED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_COMPLETED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_FAILED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_TIMED_OUT'
+    | 'EVENT_TYPE_WORKFLOW_TASK_SCHEDULED'
+    | 'EVENT_TYPE_WORKFLOW_TASK_STARTED'
+    | 'EVENT_TYPE_WORKFLOW_TASK_COMPLETED'
+    | 'EVENT_TYPE_WORKFLOW_TASK_TIMED_OUT'
+    | 'EVENT_TYPE_WORKFLOW_TASK_FAILED'
+    | 'EVENT_TYPE_ACTIVITY_TASK_SCHEDULED'
+    | 'EVENT_TYPE_ACTIVITY_TASK_STARTED'
+    | 'EVENT_TYPE_ACTIVITY_TASK_COMPLETED'
+    | 'EVENT_TYPE_ACTIVITY_TASK_FAILED'
+    | 'EVENT_TYPE_ACTIVITY_TASK_TIMED_OUT'
+    | 'EVENT_TYPE_ACTIVITY_TASK_CANCEL_REQUESTED'
+    | 'EVENT_TYPE_ACTIVITY_TASK_CANCELED'
+    | 'EVENT_TYPE_TIMER_STARTED'
+    | 'EVENT_TYPE_TIMER_FIRED'
+    | 'EVENT_TYPE_TIMER_CANCELED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_CANCEL_REQUESTED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_CANCELED'
+    | 'EVENT_TYPE_REQUEST_CANCEL_EXTERNAL_WORKFLOW_EXECUTION_INITIATED'
+    | 'EVENT_TYPE_REQUEST_CANCEL_EXTERNAL_WORKFLOW_EXECUTION_FAILED'
+    | 'EVENT_TYPE_EXTERNAL_WORKFLOW_EXECUTION_CANCEL_REQUESTED'
+    | 'EVENT_TYPE_MARKER_RECORDED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_SIGNALED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_TERMINATED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_CONTINUED_AS_NEW'
+    | 'EVENT_TYPE_START_CHILD_WORKFLOW_EXECUTION_INITIATED'
+    | 'EVENT_TYPE_START_CHILD_WORKFLOW_EXECUTION_FAILED'
+    | 'EVENT_TYPE_CHILD_WORKFLOW_EXECUTION_STARTED'
+    | 'EVENT_TYPE_CHILD_WORKFLOW_EXECUTION_COMPLETED'
+    | 'EVENT_TYPE_CHILD_WORKFLOW_EXECUTION_FAILED'
+    | 'EVENT_TYPE_CHILD_WORKFLOW_EXECUTION_CANCELED'
+    | 'EVENT_TYPE_CHILD_WORKFLOW_EXECUTION_TIMED_OUT'
+    | 'EVENT_TYPE_CHILD_WORKFLOW_EXECUTION_TERMINATED'
+    | 'EVENT_TYPE_SIGNAL_EXTERNAL_WORKFLOW_EXECUTION_INITIATED'
+    | 'EVENT_TYPE_SIGNAL_EXTERNAL_WORKFLOW_EXECUTION_FAILED'
+    | 'EVENT_TYPE_EXTERNAL_WORKFLOW_EXECUTION_SIGNALED'
+    | 'EVENT_TYPE_UPSERT_WORKFLOW_SEARCH_ATTRIBUTES'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ADMITTED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ACCEPTED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_REJECTED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_COMPLETED'
+    | 'EVENT_TYPE_WORKFLOW_PROPERTIES_MODIFIED_EXTERNALLY'
+    | 'EVENT_TYPE_ACTIVITY_PROPERTIES_MODIFIED_EXTERNALLY'
+    | 'EVENT_TYPE_WORKFLOW_PROPERTIES_MODIFIED'
+    | 'EVENT_TYPE_NEXUS_OPERATION_SCHEDULED'
+    | 'EVENT_TYPE_NEXUS_OPERATION_STARTED'
+    | 'EVENT_TYPE_NEXUS_OPERATION_COMPLETED'
+    | 'EVENT_TYPE_NEXUS_OPERATION_FAILED'
+    | 'EVENT_TYPE_NEXUS_OPERATION_CANCELED'
+    | 'EVENT_TYPE_NEXUS_OPERATION_TIMED_OUT'
+    | 'EVENT_TYPE_NEXUS_OPERATION_CANCEL_REQUESTED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_OPTIONS_UPDATED'
+    | 'EVENT_TYPE_NEXUS_OPERATION_CANCEL_REQUEST_COMPLETED'
+    | 'EVENT_TYPE_NEXUS_OPERATION_CANCEL_REQUEST_FAILED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_PAUSED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_UNPAUSED'
+    | 'EVENT_TYPE_WORKFLOW_EXECUTION_TIME_SKIPPING_TRANSITIONED'
+  version?: string
+  taskId?: string
+  workerMayIgnore?: boolean
+  userMetadata?: z.infer<typeof UserMetadataSchema>
+  links?: z.infer<typeof LinkSchema>[]
+  principal?: z.infer<typeof PrincipalSchema>
+  workflowExecutionStartedEventAttributes?: z.infer<
+    typeof WorkflowExecutionStartedEventAttributesSchema
+  >
+  workflowExecutionCompletedEventAttributes?: z.infer<
+    typeof WorkflowExecutionCompletedEventAttributesSchema
+  >
+  workflowExecutionFailedEventAttributes?: z.infer<
+    typeof WorkflowExecutionFailedEventAttributesSchema
+  >
+  workflowExecutionTimedOutEventAttributes?: z.infer<
+    typeof WorkflowExecutionTimedOutEventAttributesSchema
+  >
+  workflowTaskScheduledEventAttributes?: z.infer<typeof WorkflowTaskScheduledEventAttributesSchema>
+  workflowTaskStartedEventAttributes?: z.infer<typeof WorkflowTaskStartedEventAttributesSchema>
+  workflowTaskCompletedEventAttributes?: z.infer<typeof WorkflowTaskCompletedEventAttributesSchema>
+  workflowTaskTimedOutEventAttributes?: z.infer<typeof WorkflowTaskTimedOutEventAttributesSchema>
+  workflowTaskFailedEventAttributes?: z.infer<typeof WorkflowTaskFailedEventAttributesSchema>
+  activityTaskScheduledEventAttributes?: z.infer<typeof ActivityTaskScheduledEventAttributesSchema>
+  activityTaskStartedEventAttributes?: z.infer<typeof ActivityTaskStartedEventAttributesSchema>
+  activityTaskCompletedEventAttributes?: z.infer<typeof ActivityTaskCompletedEventAttributesSchema>
+  activityTaskFailedEventAttributes?: z.infer<typeof ActivityTaskFailedEventAttributesSchema>
+  activityTaskTimedOutEventAttributes?: z.infer<typeof ActivityTaskTimedOutEventAttributesSchema>
+  timerStartedEventAttributes?: z.infer<typeof TimerStartedEventAttributesSchema>
+  timerFiredEventAttributes?: z.infer<typeof TimerFiredEventAttributesSchema>
+  activityTaskCancelRequestedEventAttributes?: z.infer<
+    typeof ActivityTaskCancelRequestedEventAttributesSchema
+  >
+  activityTaskCanceledEventAttributes?: z.infer<typeof ActivityTaskCanceledEventAttributesSchema>
+  timerCanceledEventAttributes?: z.infer<typeof TimerCanceledEventAttributesSchema>
+  markerRecordedEventAttributes?: z.infer<typeof MarkerRecordedEventAttributesSchema>
+  workflowExecutionSignaledEventAttributes?: z.infer<
+    typeof WorkflowExecutionSignaledEventAttributesSchema
+  >
+  workflowExecutionTerminatedEventAttributes?: z.infer<
+    typeof WorkflowExecutionTerminatedEventAttributesSchema
+  >
+  workflowExecutionCancelRequestedEventAttributes?: z.infer<
+    typeof WorkflowExecutionCancelRequestedEventAttributesSchema
+  >
+  workflowExecutionCanceledEventAttributes?: z.infer<
+    typeof WorkflowExecutionCanceledEventAttributesSchema
+  >
+  requestCancelExternalWorkflowExecutionInitiatedEventAttributes?: z.infer<
+    typeof RequestCancelExternalWorkflowExecutionInitiatedEventAttributesSchema
+  >
+  requestCancelExternalWorkflowExecutionFailedEventAttributes?: z.infer<
+    typeof RequestCancelExternalWorkflowExecutionFailedEventAttributesSchema
+  >
+  externalWorkflowExecutionCancelRequestedEventAttributes?: z.infer<
+    typeof ExternalWorkflowExecutionCancelRequestedEventAttributesSchema
+  >
+  workflowExecutionContinuedAsNewEventAttributes?: z.infer<
+    typeof WorkflowExecutionContinuedAsNewEventAttributesSchema
+  >
+  startChildWorkflowExecutionInitiatedEventAttributes?: z.infer<
+    typeof StartChildWorkflowExecutionInitiatedEventAttributesSchema
+  >
+  startChildWorkflowExecutionFailedEventAttributes?: z.infer<
+    typeof StartChildWorkflowExecutionFailedEventAttributesSchema
+  >
+  childWorkflowExecutionStartedEventAttributes?: z.infer<
+    typeof ChildWorkflowExecutionStartedEventAttributesSchema
+  >
+  childWorkflowExecutionCompletedEventAttributes?: z.infer<
+    typeof ChildWorkflowExecutionCompletedEventAttributesSchema
+  >
+  childWorkflowExecutionFailedEventAttributes?: z.infer<
+    typeof ChildWorkflowExecutionFailedEventAttributesSchema
+  >
+  childWorkflowExecutionCanceledEventAttributes?: z.infer<
+    typeof ChildWorkflowExecutionCanceledEventAttributesSchema
+  >
+  childWorkflowExecutionTimedOutEventAttributes?: z.infer<
+    typeof ChildWorkflowExecutionTimedOutEventAttributesSchema
+  >
+  childWorkflowExecutionTerminatedEventAttributes?: z.infer<
+    typeof ChildWorkflowExecutionTerminatedEventAttributesSchema
+  >
+  signalExternalWorkflowExecutionInitiatedEventAttributes?: z.infer<
+    typeof SignalExternalWorkflowExecutionInitiatedEventAttributesSchema
+  >
+  signalExternalWorkflowExecutionFailedEventAttributes?: z.infer<
+    typeof SignalExternalWorkflowExecutionFailedEventAttributesSchema
+  >
+  externalWorkflowExecutionSignaledEventAttributes?: z.infer<
+    typeof ExternalWorkflowExecutionSignaledEventAttributesSchema
+  >
+  upsertWorkflowSearchAttributesEventAttributes?: z.infer<
+    typeof UpsertWorkflowSearchAttributesEventAttributesSchema
+  >
+  workflowExecutionUpdateAcceptedEventAttributes?: z.infer<
+    typeof WorkflowExecutionUpdateAcceptedEventAttributesSchema
+  >
+  workflowExecutionUpdateRejectedEventAttributes?: z.infer<
+    typeof WorkflowExecutionUpdateRejectedEventAttributesSchema
+  >
+  workflowExecutionUpdateCompletedEventAttributes?: z.infer<
+    typeof WorkflowExecutionUpdateCompletedEventAttributesSchema
+  >
+  workflowPropertiesModifiedExternallyEventAttributes?: z.infer<
+    typeof WorkflowPropertiesModifiedExternallyEventAttributesSchema
+  >
+  activityPropertiesModifiedExternallyEventAttributes?: z.infer<
+    typeof ActivityPropertiesModifiedExternallyEventAttributesSchema
+  >
+  workflowPropertiesModifiedEventAttributes?: z.infer<
+    typeof WorkflowPropertiesModifiedEventAttributesSchema
+  >
+  workflowExecutionUpdateAdmittedEventAttributes?: z.infer<
+    typeof WorkflowExecutionUpdateAdmittedEventAttributesSchema
+  >
+  nexusOperationScheduledEventAttributes?: z.infer<
+    typeof NexusOperationScheduledEventAttributesSchema
+  >
+  nexusOperationStartedEventAttributes?: z.infer<typeof NexusOperationStartedEventAttributesSchema>
+  nexusOperationCompletedEventAttributes?: z.infer<
+    typeof NexusOperationCompletedEventAttributesSchema
+  >
+  nexusOperationFailedEventAttributes?: z.infer<typeof NexusOperationFailedEventAttributesSchema>
+  nexusOperationCanceledEventAttributes?: z.infer<
+    typeof NexusOperationCanceledEventAttributesSchema
+  >
+  nexusOperationTimedOutEventAttributes?: z.infer<
+    typeof NexusOperationTimedOutEventAttributesSchema
+  >
+  nexusOperationCancelRequestedEventAttributes?: z.infer<
+    typeof NexusOperationCancelRequestedEventAttributesSchema
+  >
+  workflowExecutionOptionsUpdatedEventAttributes?: z.infer<
+    typeof WorkflowExecutionOptionsUpdatedEventAttributesSchema
+  >
+  nexusOperationCancelRequestCompletedEventAttributes?: z.infer<
+    typeof NexusOperationCancelRequestCompletedEventAttributesSchema
+  >
+  nexusOperationCancelRequestFailedEventAttributes?: z.infer<
+    typeof NexusOperationCancelRequestFailedEventAttributesSchema
+  >
+  workflowExecutionPausedEventAttributes?: z.infer<
+    typeof WorkflowExecutionPausedEventAttributesSchema
+  >
+  workflowExecutionUnpausedEventAttributes?: z.infer<
+    typeof WorkflowExecutionUnpausedEventAttributesSchema
+  >
+  workflowExecutionTimeSkippingTransitionedEventAttributes?: z.infer<
+    typeof WorkflowExecutionTimeSkippingTransitionedEventAttributesSchema
+  >
+}
+
+const HistoryEventSchema: z.ZodType<HistoryEventType> = z
   .object({
     eventId: z
       .string()
@@ -7957,46 +5244,329 @@ const HistoryEventSchema = z
   })
   .openapi('HistoryEvent')
 
-const HistorySchema = z
+type HistoryType = { events?: z.infer<typeof HistoryEventSchema>[] }
+
+const HistorySchema: z.ZodType<HistoryType> = z
   .object({ events: z.array(HistoryEventSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('History')
 
-const GetWorkflowExecutionHistoryResponseSchema = z
+const DataBlobSchema = z
   .object({
-    history: HistorySchema.exactOptional(),
-    rawHistory: z
-      .array(DataBlobSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Raw history is an alternate representation of history that may be returned if configured on\n the frontend. This is not supported by all SDKs. Either this or `history` will be set.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Will be set if there are more history events than were included in this response',
-      }),
-    archived: z.boolean().exactOptional(),
+    encodingType: z
+      .enum(['ENCODING_TYPE_UNSPECIFIED', 'ENCODING_TYPE_PROTO3', 'ENCODING_TYPE_JSON'])
+      .exactOptional(),
+    data: z.string().exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('GetWorkflowExecutionHistoryResponse')
+  .openapi('DataBlob')
 
-const GetWorkflowExecutionHistoryReverseResponseSchema = z
+type GetWorkflowExecutionHistoryResponseType = {
+  history?: z.infer<typeof HistorySchema>
+  rawHistory?: z.infer<typeof DataBlobSchema>[]
+  nextPageToken?: string
+  archived?: boolean
+}
+
+type GetWorkflowExecutionHistoryReverseResponseType = {
+  history?: z.infer<typeof HistorySchema>
+  nextPageToken?: string
+}
+
+const RangeSchema = z
   .object({
-    history: HistorySchema.exactOptional(),
-    nextPageToken: z
+    start: z.int32().exactOptional().openapi({ description: 'Start of range (inclusive).' }),
+    end: z.int32().exactOptional().openapi({ description: 'End of range (inclusive).' }),
+    step: z.int32().exactOptional().openapi({ description: 'Step (optional, default 1).' }),
+  })
+  .openapi({
+    description:
+      'Range represents a set of integer values, used to match fields of a calendar\n time in StructuredCalendarSpec. If end < start, then end is interpreted as\n equal to start. This means you can use a Range with start set to a value, and\n end and step unset (defaulting to 0) to represent a single value.',
+    required: [],
+  })
+  .openapi('Range')
+
+const StructuredCalendarSpecSchema = z
+  .object({
+    second: z.array(RangeSchema).exactOptional().openapi({ description: 'Match seconds (0-59)' }),
+    minute: z.array(RangeSchema).exactOptional().openapi({ description: 'Match minutes (0-59)' }),
+    hour: z.array(RangeSchema).exactOptional().openapi({ description: 'Match hours (0-23)' }),
+    dayOfMonth: z
+      .array(RangeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Match days of the month (1-31)\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: standard name of field --)',
+      }),
+    month: z.array(RangeSchema).exactOptional().openapi({ description: 'Match months (1-12)' }),
+    year: z.array(RangeSchema).exactOptional().openapi({ description: 'Match years.' }),
+    dayOfWeek: z
+      .array(RangeSchema)
+      .exactOptional()
+      .openapi({ description: 'Match days of the week (0-6; 0 is Sunday).' }),
+    comment: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Free-form comment describing the intention of this spec.' }),
+  })
+  .openapi({
+    description:
+      'StructuredCalendarSpec describes an event specification relative to the\n calendar, in a form that\'s easy to work with programmatically. Each field can\n be one or more ranges.\n A timestamp matches if at least one range of each field matches the\n corresponding fields of the timestamp, except for year: if year is missing,\n that means all years match. For all fields besides year, at least one Range\n must be present to match anything.\n Relative expressions such as "last day of the month" or "third Monday" are not currently\n representable; callers must enumerate the concrete days they require.',
+    required: [],
+  })
+  .openapi('StructuredCalendarSpec')
+
+const CalendarSpecSchema = z
+  .object({
+    second: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expression to match seconds. Default: 0' }),
+    minute: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expression to match minutes. Default: 0' }),
+    hour: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expression to match hours. Default: 0' }),
+    dayOfMonth: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Will be set if there are more history events than were included in this response',
+          'Expression to match days of the month. Default: *\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: standard name of field --)',
+      }),
+    month: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expression to match months. Default: *' }),
+    year: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expression to match years. Default: *' }),
+    dayOfWeek: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expression to match days of the week. Default: *' }),
+    comment: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Free-form comment describing the intention of this spec.' }),
+  })
+  .openapi({
+    description:
+      'CalendarSpec describes an event specification relative to the calendar,\n similar to a traditional cron specification, but with labeled fields. Each\n field can be one of:\n   *: matches always\n   x: matches when the field equals x\n   x/y : matches when the field equals x+n*y where n is an integer\n   x-z: matches when the field is between x and z inclusive\n   w,x,y,...: matches when the field is one of the listed values\n Each x, y, z, ... is either a decimal integer, or a month or day of week name\n or abbreviation (in the appropriate fields).\n A timestamp matches if all fields match.\n Note that fields have different default values, for convenience.\n Note that the special case that some cron implementations have for treating\n day_of_month and day_of_week as "or" instead of "and" when both are set is\n not implemented.\n day_of_week can accept 0 or 7 as Sunday\n CalendarSpec gets compiled into StructuredCalendarSpec, which is what will be\n returned if you describe the schedule.',
+    required: [],
+  })
+  .openapi('CalendarSpec')
+
+const IntervalSpecSchema = z
+  .object({
+    interval: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional(),
+    phase: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      'IntervalSpec matches times that can be expressed as:\n epoch + n * interval + phase\n where n is an integer.\n phase defaults to zero if missing. interval is required.\n Both interval and phase must be non-negative and are truncated to the nearest\n second before any calculations.\n For example, an interval of 1 hour with phase of zero would match every hour,\n on the hour. The same interval but a phase of 19 minutes would match every\n xx:19:00. An interval of 28 days with phase zero would match\n 2022-02-17T00:00:00Z (among other times). The same interval with a phase of 3\n days, 5 hours, and 23 minutes would match 2022-02-20T05:23:00Z instead.',
+    required: [],
+  })
+  .openapi('IntervalSpec')
+
+const ScheduleSpecSchema = z
+  .object({
+    structuredCalendar: z
+      .array(StructuredCalendarSpecSchema)
+      .exactOptional()
+      .openapi({ description: 'Calendar-based specifications of times.' }),
+    cronString: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'cron_string holds a traditional cron specification as a string. It\n accepts 5, 6, or 7 fields, separated by spaces, and interprets them the\n same way as CalendarSpec.\n 5 fields:         minute, hour, day_of_month, month, day_of_week\n 6 fields:         minute, hour, day_of_month, month, day_of_week, year\n 7 fields: second, minute, hour, day_of_month, month, day_of_week, year\n If year is not given, it defaults to *. If second is not given, it\n defaults to 0.\n Shorthands @yearly, @monthly, @weekly, @daily, and @hourly are also\n accepted instead of the 5-7 time fields.\n Optionally, the string can be preceded by CRON_TZ=<timezone name> or\n TZ=<timezone name>, which will get copied to timezone_name. (There must\n not also be a timezone_name present.)\n Optionally "#" followed by a comment can appear at the end of the string.\n Note that the special case that some cron implementations have for\n treating day_of_month and day_of_week as "or" instead of "and" when both\n are set is not implemented.\n @every <interval>[/<phase>] is accepted and gets compiled into an\n IntervalSpec instead. <interval> and <phase> should be a decimal integer\n with a unit suffix s, m, h, or d.',
+      }),
+    calendar: z
+      .array(CalendarSpecSchema)
+      .exactOptional()
+      .openapi({ description: 'Calendar-based specifications of times.' }),
+    interval: z
+      .array(IntervalSpecSchema)
+      .exactOptional()
+      .openapi({ description: 'Interval-based specifications of times.' }),
+    excludeCalendar: z
+      .array(CalendarSpecSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Any timestamps matching any of exclude_* will be skipped.\n Deprecated. Use exclude_structured_calendar.',
+      }),
+    excludeStructuredCalendar: z.array(StructuredCalendarSpecSchema).exactOptional(),
+    startTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'If start_time is set, any timestamps before start_time will be skipped.\n (Together, start_time and end_time make an inclusive interval.)',
+      }),
+    endTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'If end_time is set, any timestamps after end_time will be skipped.',
+      }),
+    jitter: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'All timestamps will be incremented by a random value from 0 to this\n amount of jitter. Default: 0',
+      }),
+    timezoneName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time zone to interpret all calendar-based specs in.\n\n If unset, defaults to UTC. We recommend using UTC for your application if\n at all possible, to avoid various surprising properties of time zones.\n\n Time zones may be provided by name, corresponding to names in the IANA\n time zone database (see https://www.iana.org/time-zones). The definition\n will be loaded by the Temporal server from the environment it runs in.\n\n If your application requires more control over the time zone definition\n used, it may pass in a complete definition in the form of a TZif file\n from the time zone database. If present, this will be used instead of\n loading anything from the environment. You are then responsible for\n updating timezone_data when the definition changes.\n\n Calendar spec matching is based on literal matching of the clock time\n with no special handling of DST: if you write a calendar spec that fires\n at 2:30am and specify a time zone that follows DST, that action will not\n be triggered on the day that has no 2:30am. Similarly, an action that\n fires at 1:30am will be triggered twice on the day that has two 1:30s.\n\n Also note that no actions are taken on leap-seconds (e.g. 23:59:60 UTC).',
+      }),
+    timezoneData: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      "ScheduleSpec is a complete description of a set of absolute timestamps\n (possibly infinite) that an action should occur at. The meaning of a\n ScheduleSpec depends only on its contents and never changes, except that the\n definition of a time zone can change over time (most commonly, when daylight\n saving time policy changes for an area). To create a totally self-contained\n ScheduleSpec, use UTC or include timezone_data.\n\n For input, you can provide zero or more of: structured_calendar, calendar,\n cron_string, interval, and exclude_structured_calendar, and all of them will\n be used (the schedule will take action at the union of all of their times,\n minus the ones that match exclude_structured_calendar).\n\n On input, calendar and cron_string fields will be compiled into\n structured_calendar (and maybe interval and timezone_name), so if you\n Describe a schedule, you'll see only structured_calendar, interval, etc.\n\n If a spec has no matching times after the current time, then the schedule\n will be subject to automatic deletion (after several days).",
+    required: [],
+  })
+  .openapi('ScheduleSpec')
+
+const ScheduleActionResultSchema = z
+  .object({
+    scheduleTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Time that the action was taken (according to the schedule, including jitter).',
+      }),
+    actualTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Time that the action was taken (real time).' }),
+    startWorkflowResult: WorkflowExecutionSchema.exactOptional().openapi({
+      description: 'If action was start_workflow:',
+    }),
+    startWorkflowStatus: z
+      .enum([
+        'WORKFLOW_EXECUTION_STATUS_UNSPECIFIED',
+        'WORKFLOW_EXECUTION_STATUS_RUNNING',
+        'WORKFLOW_EXECUTION_STATUS_COMPLETED',
+        'WORKFLOW_EXECUTION_STATUS_FAILED',
+        'WORKFLOW_EXECUTION_STATUS_CANCELED',
+        'WORKFLOW_EXECUTION_STATUS_TERMINATED',
+        'WORKFLOW_EXECUTION_STATUS_CONTINUED_AS_NEW',
+        'WORKFLOW_EXECUTION_STATUS_TIMED_OUT',
+        'WORKFLOW_EXECUTION_STATUS_PAUSED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "If the action was start_workflow, this field will reflect an\n eventually-consistent view of the started workflow's status.",
       }),
   })
   .openapi({ required: [] })
-  .openapi('GetWorkflowExecutionHistoryReverseResponse')
+  .openapi('ScheduleActionResult')
+
+const ScheduleListInfoSchema = z
+  .object({
+    spec: ScheduleSpecSchema.exactOptional().openapi({
+      description: 'From spec:\n Some fields are dropped from this copy of spec: timezone_data',
+    }),
+    workflowType: WorkflowTypeSchema.exactOptional().openapi({
+      description:
+        "From action:\n Action is a oneof field, but we need to encode this in JSON and oneof fields don't work\n well with JSON. If action is start_workflow, this is set:",
+    }),
+    notes: z.string().exactOptional().openapi({ description: 'From state:' }),
+    paused: z.boolean().exactOptional(),
+    recentActions: z
+      .array(ScheduleActionResultSchema)
+      .exactOptional()
+      .openapi({ description: 'From info (maybe fewer entries):' }),
+    futureActionTimes: z.array(z.iso.datetime({ offset: true })).exactOptional(),
+  })
+  .openapi({
+    description:
+      "ScheduleListInfo is an abbreviated set of values from Schedule and ScheduleInfo\n that's returned in ListSchedules.",
+    required: [],
+  })
+  .openapi('ScheduleListInfo')
+
+const ScheduleListEntrySchema = z
+  .object({
+    scheduleId: z.string().exactOptional(),
+    memo: MemoSchema.exactOptional(),
+    searchAttributes: SearchAttributesSchema.exactOptional(),
+    info: ScheduleListInfoSchema.exactOptional(),
+  })
+  .openapi({ description: 'ScheduleListEntry is returned by ListSchedules.', required: [] })
+  .openapi('ScheduleListEntry')
+
+type ListSchedulesResponseType = {
+  schedules?: z.infer<typeof ScheduleListEntrySchema>[]
+  nextPageToken?: string
+}
+
+const ListWorkerDeploymentsResponseWorkerDeploymentSummarySchema = z
+  .object({
+    name: z.string().exactOptional(),
+    createTime: z.iso.datetime({ offset: true }).exactOptional(),
+    routingConfig: RoutingConfigSchema.exactOptional(),
+    latestVersionSummary:
+      WorkerDeploymentInfoWorkerDeploymentVersionSummarySchema.exactOptional().openapi({
+        description:
+          'Summary of the version that was added most recently in the Worker Deployment.',
+      }),
+    currentVersionSummary:
+      WorkerDeploymentInfoWorkerDeploymentVersionSummarySchema.exactOptional().openapi({
+        description: 'Summary of the current version of the Worker Deployment.',
+      }),
+    rampingVersionSummary:
+      WorkerDeploymentInfoWorkerDeploymentVersionSummarySchema.exactOptional().openapi({
+        description: 'Summary of the ramping version of the Worker Deployment.',
+      }),
+  })
+  .openapi({ description: 'A subset of WorkerDeploymentInfo', required: [] })
+  .openapi('ListWorkerDeploymentsResponseWorkerDeploymentSummary')
+
+type ListWorkerDeploymentsResponseType = {
+  nextPageToken?: string
+  workerDeployments?: z.infer<typeof ListWorkerDeploymentsResponseWorkerDeploymentSummarySchema>[]
+}
+
+const WorkflowQuerySchema = z
+  .object({
+    queryType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The workflow-author-defined identifier of the query. Typically a function name.',
+      }),
+    queryArgs: PayloadsSchema.exactOptional().openapi({
+      description: 'Serialized arguments that will be provided to the query handler.',
+    }),
+    header: HeaderSchema.exactOptional().openapi({
+      description:
+        'Headers that were passed by the caller of the query and copied by temporal\n server into the workflow task.',
+    }),
+  })
+  .openapi({ description: 'See https://docs.temporal.io/docs/concepts/queries/', required: [] })
+  .openapi('WorkflowQuery')
 
 const GoogleProtobufAnySchema = z
   .looseObject({
@@ -8011,6 +5581,3033 @@ const GoogleProtobufAnySchema = z
     required: [],
   })
   .openapi('GoogleProtobufAny')
+
+const MessageSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'An ID for this specific message.' }),
+    protocolInstanceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies the specific instance of a protocol to which this message\n belongs.',
+      }),
+    eventId: z.string().exactOptional(),
+    commandIndex: z.string().exactOptional(),
+    body: GoogleProtobufAnySchema.exactOptional().openapi({
+      description:
+        'The opaque data carried by this message. The protocol type can be\n extracted from the package name of the message carried inside the Any.',
+    }),
+  })
+  .openapi({
+    description:
+      '(-- api-linter: core::0146::any=disabled\n     aip.dev/not-precedent: We want runtime extensibility for the body field --)',
+    required: [],
+  })
+  .openapi('Message')
+
+const PollerScalingDecisionSchema = z
+  .object({
+    pollRequestDeltaSuggestion: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'How many poll requests to suggest should be added or removed, if any. As of now, server only\n scales up or down by 1. However, SDKs should allow for other values (while staying within\n defined min/max).\n\n The SDK is free to ignore this suggestion, EX: making more polls would not make sense because\n all slots are already occupied.',
+      }),
+  })
+  .openapi({
+    description:
+      'Attached to task responses to give hints to the SDK about how it may adjust its number of\n pollers.',
+    required: [],
+  })
+  .openapi('PollerScalingDecision')
+
+const PollerGroupInfoSchema = z
+  .object({ id: z.string().exactOptional(), weight: z.float32().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('PollerGroupInfo')
+
+type PollWorkflowTaskQueueResponseType = {
+  taskToken?: string
+  workflowExecution?: z.infer<typeof WorkflowExecutionSchema>
+  workflowType?: z.infer<typeof WorkflowTypeSchema>
+  previousStartedEventId?: string
+  startedEventId?: string
+  attempt?: number
+  backlogCountHint?: string
+  history?: z.infer<typeof HistorySchema>
+  nextPageToken?: string
+  query?: z.infer<typeof WorkflowQuerySchema>
+  workflowExecutionTaskQueue?: z.infer<typeof TaskQueueSchema>
+  scheduledTime?: string
+  startedTime?: string
+  queries?: { [key: string]: z.infer<typeof WorkflowQuerySchema> }
+  messages?: z.infer<typeof MessageSchema>[]
+  pollerScalingDecision?: z.infer<typeof PollerScalingDecisionSchema>
+  pollerGroupId?: string
+  pollerGroupInfos?: z.infer<typeof PollerGroupInfoSchema>[]
+}
+
+type ResetWorkflowExecutionRequestType = {
+  namespace?: string
+  workflowExecution?: z.infer<typeof WorkflowExecutionSchema>
+  reason?: string
+  workflowTaskFinishEventId?: string
+  requestId?: string
+  resetReapplyType?:
+    | 'RESET_REAPPLY_TYPE_UNSPECIFIED'
+    | 'RESET_REAPPLY_TYPE_SIGNAL'
+    | 'RESET_REAPPLY_TYPE_NONE'
+    | 'RESET_REAPPLY_TYPE_ALL_ELIGIBLE'
+  resetReapplyExcludeTypes?: (
+    | 'RESET_REAPPLY_EXCLUDE_TYPE_UNSPECIFIED'
+    | 'RESET_REAPPLY_EXCLUDE_TYPE_SIGNAL'
+    | 'RESET_REAPPLY_EXCLUDE_TYPE_UPDATE'
+    | 'RESET_REAPPLY_EXCLUDE_TYPE_NEXUS'
+    | 'RESET_REAPPLY_EXCLUDE_TYPE_CANCEL_REQUEST'
+  )[]
+  postResetOperations?: z.infer<typeof PostResetOperationSchema>[]
+  identity?: string
+}
+
+const BatchOperationTerminationSchema = z
+  .object({
+    details: PayloadsSchema.exactOptional().openapi({
+      description: 'Serialized value(s) to provide to the termination event',
+    }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client' }),
+  })
+  .openapi({
+    description:
+      'BatchOperationTermination sends terminate requests to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.TerminateWorkflowExecutionRequest.\n Ignore first_execution_run_id because this is used for single workflow operation.',
+    required: [],
+  })
+  .openapi('BatchOperationTermination')
+
+const BatchOperationSignalSchema = z
+  .object({
+    signal: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The workflow author-defined name of the signal to send to the workflow',
+      }),
+    input: PayloadsSchema.exactOptional().openapi({
+      description: 'Serialized value(s) to provide with the signal',
+    }),
+    header: HeaderSchema.exactOptional().openapi({
+      description:
+        'Headers that are passed with the signal to the processing workflow.\n These can include things like auth or tracing tokens.',
+    }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client' }),
+  })
+  .openapi({
+    description:
+      'BatchOperationSignal sends signals to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.SignalWorkflowExecutionRequest.',
+    required: [],
+  })
+  .openapi('BatchOperationSignal')
+
+const BatchOperationCancellationSchema = z
+  .object({
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client' }),
+  })
+  .openapi({
+    description:
+      'BatchOperationCancellation sends cancel requests to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.RequestCancelWorkflowExecutionRequest.\n Ignore first_execution_run_id because this is used for single workflow operation.',
+    required: [],
+  })
+  .openapi('BatchOperationCancellation')
+
+const BatchOperationDeletionSchema = z
+  .object({
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client' }),
+  })
+  .openapi({
+    description:
+      'BatchOperationDeletion sends deletion requests to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.DeleteWorkflowExecutionRequest.',
+    required: [],
+  })
+  .openapi('BatchOperationDeletion')
+
+const BatchOperationResetSchema: z.ZodType<BatchOperationResetType> = z
+  .object({
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client.' }),
+    options: ResetOptionsSchema.exactOptional().openapi({
+      description:
+        'Describes what to reset to and how. If set, `reset_type` and `reset_reapply_type` are ignored.',
+    }),
+    resetType: z
+      .enum([
+        'RESET_TYPE_UNSPECIFIED',
+        'RESET_TYPE_FIRST_WORKFLOW_TASK',
+        'RESET_TYPE_LAST_WORKFLOW_TASK',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Use `options`.' }),
+    resetReapplyType: z
+      .enum([
+        'RESET_REAPPLY_TYPE_UNSPECIFIED',
+        'RESET_REAPPLY_TYPE_SIGNAL',
+        'RESET_REAPPLY_TYPE_NONE',
+        'RESET_REAPPLY_TYPE_ALL_ELIGIBLE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Use `options`.' }),
+    postResetOperations: z
+      .array(PostResetOperationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Operations to perform after the workflow has been reset. These operations will be applied\n to the *new* run of the workflow execution in the order they are provided.\n All operations are applied to the workflow before the first new workflow task is generated',
+      }),
+  })
+  .openapi({
+    description:
+      'BatchOperationReset sends reset requests to batch workflows.\n Keep the parameter in sync with temporal.api.workflowservice.v1.ResetWorkflowExecutionRequest.',
+    required: [],
+  })
+  .openapi('BatchOperationReset')
+
+const BatchOperationUpdateWorkflowExecutionOptionsSchema = z
+  .object({
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client.' }),
+    workflowExecutionOptions: WorkflowExecutionOptionsSchema.exactOptional().openapi({
+      description:
+        'Update Workflow options that were originally specified via StartWorkflowExecution. Partial updates are accepted and controlled by update_mask.',
+    }),
+    updateMask: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Controls which fields from `workflow_execution_options` will be applied.\n To unset a field, set it to null and use the update mask to indicate that it should be mutated.',
+      }),
+  })
+  .openapi({
+    description:
+      'BatchOperationUpdateWorkflowExecutionOptions sends UpdateWorkflowExecutionOptions requests to batch workflows.\n Keep the parameters in sync with temporal.api.workflowservice.v1.UpdateWorkflowExecutionOptionsRequest.',
+    required: [],
+  })
+  .openapi('BatchOperationUpdateWorkflowExecutionOptions')
+
+const BatchOperationUnpauseActivitiesSchema = z
+  .object({
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client.' }),
+    type: z.string().exactOptional(),
+    matchAll: z.boolean().exactOptional(),
+    resetAttempts: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Setting this flag will also reset the number of attempts.' }),
+    resetHeartbeat: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Setting this flag will also reset the heartbeat details.' }),
+    jitter: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, the activity will start at a random time within the specified jitter\n duration, introducing variability to the start time.',
+      }),
+  })
+  .openapi({
+    description: 'BatchOperationUnpauseActivities sends unpause requests to batch workflows.',
+    required: [],
+  })
+  .openapi('BatchOperationUnpauseActivities')
+
+const BatchOperationResetActivitiesSchema = z
+  .object({
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client.' }),
+    type: z.string().exactOptional(),
+    matchAll: z.boolean().exactOptional(),
+    resetAttempts: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Setting this flag will also reset the number of attempts.' }),
+    resetHeartbeat: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Setting this flag will also reset the heartbeat details.' }),
+    keepPaused: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If activity is paused, it will remain paused after reset' }),
+    jitter: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, the activity will start at a random time within the specified jitter\n duration, introducing variability to the start time.',
+      }),
+    restoreOriginalOptions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, the activity options will be restored to the defaults.\n Default options are then options activity was created with.\n They are part of the first ActivityTaskScheduled event.',
+      }),
+  })
+  .openapi({
+    description:
+      'BatchOperationResetActivities sends activity reset requests in a batch.\n NOTE: keep in sync with temporal.api.workflowservice.v1.ResetActivityRequest',
+    required: [],
+  })
+  .openapi('BatchOperationResetActivities')
+
+const BatchOperationUpdateActivityOptionsSchema = z
+  .object({
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the worker/client.' }),
+    type: z.string().exactOptional(),
+    matchAll: z.boolean().exactOptional(),
+    activityOptions: ActivityOptionsSchema.exactOptional().openapi({
+      description:
+        'Update Activity options. Partial updates are accepted and controlled by update_mask.',
+    }),
+    updateMask: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Controls which fields from `activity_options` will be applied' }),
+    restoreOriginal: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, the activity options will be restored to the default.\n Default options are then options activity was created with.\n They are part of the first ActivityTaskScheduled event.\n This flag cannot be combined with any other option; if you supply\n restore_original together with other options, the request will be rejected.',
+      }),
+  })
+  .openapi({
+    description:
+      'BatchOperationUpdateActivityOptions sends an update-activity-options requests in a batch.\n NOTE: keep in sync with temporal.api.workflowservice.v1.UpdateActivityRequest',
+    required: [],
+  })
+  .openapi('BatchOperationUpdateActivityOptions')
+
+type StartBatchOperationRequestType = {
+  namespace?: string
+  visibilityQuery?: string
+  jobId?: string
+  reason?: string
+  executions?: z.infer<typeof WorkflowExecutionSchema>[]
+  maxOperationsPerSecond?: number
+  terminationOperation?: z.infer<typeof BatchOperationTerminationSchema>
+  signalOperation?: z.infer<typeof BatchOperationSignalSchema>
+  cancellationOperation?: z.infer<typeof BatchOperationCancellationSchema>
+  deletionOperation?: z.infer<typeof BatchOperationDeletionSchema>
+  resetOperation?: z.infer<typeof BatchOperationResetSchema>
+  updateWorkflowOptionsOperation?: z.infer<
+    typeof BatchOperationUpdateWorkflowExecutionOptionsSchema
+  >
+  unpauseActivitiesOperation?: z.infer<typeof BatchOperationUnpauseActivitiesSchema>
+  resetActivitiesOperation?: z.infer<typeof BatchOperationResetActivitiesSchema>
+  updateActivityOptionsOperation?: z.infer<typeof BatchOperationUpdateActivityOptionsSchema>
+}
+
+const PollWorkflowTaskQueueResponseSchema: z.ZodType<PollWorkflowTaskQueueResponseType> = z
+  .object({
+    taskToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique identifier for this task' }),
+    workflowExecution: WorkflowExecutionSchema.exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    previousStartedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last workflow task started event which was processed by some worker for this execution.\n Will be zero if no task has ever started.',
+      }),
+    startedEventId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the most recent workflow task started event, which will have been generated as a\n result of this poll request being served. Will be zero if the task\n does not contain any events which would advance history (no new WFT started).\n Currently this can happen for queries.',
+      }),
+    attempt: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Starting at 1, the number of attempts to complete this task by any worker.',
+      }),
+    backlogCountHint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A hint that there are more tasks already present in this task queue\n partition. Can be used to prioritize draining a sticky queue.\n\n Specifically, the returned number is the number of tasks remaining in\n the in-memory buffer for this partition, which is currently capped at\n 1000. Because sticky queues only have one partition, this number is\n more useful when draining them. Normal queues, typically having more than one\n partition, will return a number representing only some portion of the\n overall backlog. Subsequent RPCs may not hit the same partition as\n this call.',
+      }),
+    history: HistorySchema.exactOptional().openapi({
+      description:
+        'The history for this workflow, which will either be complete or partial. Partial histories\n are sent to workers who have signaled that they are using a sticky queue when completing\n a workflow task.',
+    }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Will be set if there are more history events than were included in this response. Such events\n should be fetched via `GetWorkflowExecutionHistory`.',
+      }),
+    query: WorkflowQuerySchema.exactOptional().openapi({
+      description:
+        'Legacy queries appear in this field. The query must be responded to via\n `RespondQueryTaskCompleted`. If the workflow is already closed (queries are permitted on\n closed workflows) then the `history` field will be populated with the entire history. It\n may also be populated if this task originates on a non-sticky queue.',
+    }),
+    workflowExecutionTaskQueue: TaskQueueSchema.exactOptional().openapi({
+      description:
+        'The task queue this task originated from, which will always be the original non-sticky name\n for the queue, even if this response came from polling a sticky queue.',
+    }),
+    scheduledTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When this task was scheduled by the server' }),
+    startedTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'When the current workflow task started event was generated, meaning the current attempt.',
+      }),
+    queries: z
+      .record(z.string(), WorkflowQuerySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Queries that should be executed after applying the history in this task. Responses should be\n attached to `RespondWorkflowTaskCompletedRequest::query_results`',
+      }),
+    messages: z
+      .array(MessageSchema)
+      .exactOptional()
+      .openapi({ description: 'Protocol messages piggybacking on a WFT as a transport' }),
+    pollerScalingDecision: PollerScalingDecisionSchema.exactOptional().openapi({
+      description: 'Server-advised information the SDK may use to adjust its poller count.',
+    }),
+    pollerGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This poller group ID identifies the owner of the workflow task awaiting for query response.\n Corresponding RespondQueryTaskCompleted should pass this value for proper routing.',
+      }),
+    pollerGroupInfos: z
+      .array(PollerGroupInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The weighted list of poller groups IDs that client should use for future polls to this task\n queue. Client is expected to:\n   1. Maintain minimum number of pollers no less than the number of groups.\n   2. Try to assign the next poll to a group without any pending polls,\n   3. If every group has some pending polls, assign the next poll to a group randomly\n     according to the weights.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PollWorkflowTaskQueueResponse')
+
+type StartWorkflowExecutionResponseType = {
+  runId?: string
+  started?: boolean
+  status?:
+    | 'WORKFLOW_EXECUTION_STATUS_UNSPECIFIED'
+    | 'WORKFLOW_EXECUTION_STATUS_RUNNING'
+    | 'WORKFLOW_EXECUTION_STATUS_COMPLETED'
+    | 'WORKFLOW_EXECUTION_STATUS_FAILED'
+    | 'WORKFLOW_EXECUTION_STATUS_CANCELED'
+    | 'WORKFLOW_EXECUTION_STATUS_TERMINATED'
+    | 'WORKFLOW_EXECUTION_STATUS_CONTINUED_AS_NEW'
+    | 'WORKFLOW_EXECUTION_STATUS_TIMED_OUT'
+    | 'WORKFLOW_EXECUTION_STATUS_PAUSED'
+  eagerWorkflowTask?: z.infer<typeof PollWorkflowTaskQueueResponseSchema>
+  link?: z.infer<typeof LinkSchema>
+}
+
+const ActivityExecutionListInfoSchema = z
+  .object({
+    activityId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier of this activity within its namespace along with run ID (below).',
+      }),
+    runId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The run ID of the standalone activity.' }),
+    activityType: ActivityTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the activity, a string that maps to a registered activity on a worker.',
+    }),
+    scheduleTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Time the activity was originally scheduled via a StartActivityExecution request.',
+      }),
+    closeTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'If the activity is in a terminal status, this field represents the time the activity transitioned to that status.',
+      }),
+    status: z
+      .enum([
+        'ACTIVITY_EXECUTION_STATUS_UNSPECIFIED',
+        'ACTIVITY_EXECUTION_STATUS_RUNNING',
+        'ACTIVITY_EXECUTION_STATUS_COMPLETED',
+        'ACTIVITY_EXECUTION_STATUS_FAILED',
+        'ACTIVITY_EXECUTION_STATUS_CANCELED',
+        'ACTIVITY_EXECUTION_STATUS_TERMINATED',
+        'ACTIVITY_EXECUTION_STATUS_TIMED_OUT',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Only scheduled and terminal statuses appear here. More detailed information in PendingActivityInfo but not\n available in the list response.',
+      }),
+    searchAttributes: SearchAttributesSchema.exactOptional().openapi({
+      description: 'Search attributes from the start request.',
+    }),
+    taskQueue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The task queue this activity was scheduled on when it was originally started, updated on activity options update.',
+      }),
+    stateTransitionCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Updated on terminal status.' }),
+    stateSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Updated once on scheduled and once on terminal status.' }),
+    executionDuration: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The difference between close time and scheduled time.\n This field is only populated if the activity is closed.',
+      }),
+  })
+  .openapi({
+    description:
+      'Limited activity information returned in the list response.\n When adding fields here, ensure that it is also present in ActivityExecutionInfo (note that it\n may already be present in ActivityExecutionInfo but not at the top-level).',
+    required: [],
+  })
+  .openapi('ActivityExecutionListInfo')
+
+const AlertSchema = z
+  .object({
+    message: z.string().exactOptional(),
+    severity: z
+      .enum(['SEVERITY_UNSPECIFIED', 'SEVERITY_HIGH', 'SEVERITY_MEDIUM', 'SEVERITY_LOW'])
+      .exactOptional(),
+  })
+  .openapi({ description: 'Alert contains notification and severity.', required: [] })
+  .openapi('Alert')
+
+const BackfillRequestSchema = z
+  .object({
+    startTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Time range to evaluate schedule in. Currently, this time range is\n exclusive on start_time and inclusive on end_time. (This is admittedly\n counterintuitive and it may change in the future, so to be safe, use a\n start time strictly before a scheduled time.) Also note that an action\n nominally scheduled in the interval but with jitter that pushes it after\n end_time will not be included.',
+      }),
+    endTime: z.iso.datetime({ offset: true }).exactOptional(),
+    overlapPolicy: z
+      .enum([
+        'SCHEDULE_OVERLAP_POLICY_UNSPECIFIED',
+        'SCHEDULE_OVERLAP_POLICY_SKIP',
+        'SCHEDULE_OVERLAP_POLICY_BUFFER_ONE',
+        'SCHEDULE_OVERLAP_POLICY_BUFFER_ALL',
+        'SCHEDULE_OVERLAP_POLICY_CANCEL_OTHER',
+        'SCHEDULE_OVERLAP_POLICY_TERMINATE_OTHER',
+        'SCHEDULE_OVERLAP_POLICY_ALLOW_ALL',
+      ])
+      .exactOptional()
+      .openapi({ description: 'If set, override overlap policy for this request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BackfillRequest')
+
+const BadBinaryInfoSchema = z
+  .object({
+    reason: z.string().exactOptional(),
+    operator: z.string().exactOptional(),
+    createTime: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BadBinaryInfo')
+
+const BadBinariesSchema = z
+  .object({ binaries: z.record(z.string(), BadBinaryInfoSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('BadBinaries')
+
+const BatchOperationInfoSchema = z
+  .object({
+    jobId: z.string().exactOptional().openapi({ description: 'Batch job ID' }),
+    state: z
+      .enum([
+        'BATCH_OPERATION_STATE_UNSPECIFIED',
+        'BATCH_OPERATION_STATE_RUNNING',
+        'BATCH_OPERATION_STATE_COMPLETED',
+        'BATCH_OPERATION_STATE_FAILED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Batch operation state' }),
+    startTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Batch operation start time' }),
+    closeTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Batch operation close time' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchOperationInfo')
+
+const RampByPercentageSchema = z
+  .object({
+    rampPercentage: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Acceptable range is [0,100).' }),
+  })
+  .openapi({ required: [] })
+  .openapi('RampByPercentage')
+
+const BuildIdAssignmentRuleSchema = z
+  .object({
+    targetBuildId: z.string().exactOptional(),
+    percentageRamp: RampByPercentageSchema.exactOptional().openapi({
+      description:
+        'This ramp is useful for gradual Blue/Green deployments (and similar)\n where you want to send a certain portion of the traffic to the target\n Build ID.',
+    }),
+  })
+  .openapi({
+    description:
+      'Assignment rules are applied to *new* Workflow and Activity executions at\n schedule time to assign them to a Build ID.\n\n Assignment rules will not be used in the following cases:\n    - Child Workflows or Continue-As-New Executions who inherit their\n      parent/previous Workflow\'s assigned Build ID (by setting the\n      `inherit_build_id` flag - default behavior in SDKs when the same Task Queue\n      is used.)\n    - An Activity that inherits the assigned Build ID of its Workflow (by\n      setting the `use_workflow_build_id` flag - default behavior in SDKs\n      when the same Task Queue is used.)\n\n In absence of (applicable) redirect rules (`CompatibleBuildIdRedirectRule`s)\n the task will be dispatched to Workers of the Build ID determined by the\n assignment rules (or inherited). Otherwise, the final Build ID will be\n determined by the redirect rules.\n\n Once a Workflow completes its first Workflow Task in a particular Build ID it\n stays in that Build ID regardless of changes to assignment rules. Redirect\n rules can be used to move the workflow to another compatible Build ID.\n\n When using Worker Versioning on a Task Queue, in the steady state,\n there should typically be a single assignment rule to send all new executions\n to the latest Build ID. Existence of at least one such "unconditional"\n rule at all times is enforces by the system, unless the `force` flag is used\n by the user when replacing/deleting these rules (for exceptional cases).\n\n During a deployment, one or more additional rules can be added to assign a\n subset of the tasks to a new Build ID based on a "ramp percentage".\n\n When there are multiple assignment rules for a Task Queue, the rules are\n evaluated in order, starting from index 0. The first applicable rule will be\n applied and the rest will be ignored.\n\n In the event that no assignment rule is applicable on a task (or the Task\n Queue is simply not versioned), the tasks will be dispatched to an\n unversioned Worker.',
+    required: [],
+  })
+  .openapi('BuildIdAssignmentRule')
+
+const TaskQueueReachabilitySchema = z
+  .object({
+    taskQueue: z.string().exactOptional(),
+    reachability: z
+      .array(
+        z.enum([
+          'TASK_REACHABILITY_UNSPECIFIED',
+          'TASK_REACHABILITY_NEW_WORKFLOWS',
+          'TASK_REACHABILITY_EXISTING_WORKFLOWS',
+          'TASK_REACHABILITY_OPEN_WORKFLOWS',
+          'TASK_REACHABILITY_CLOSED_WORKFLOWS',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Task reachability for a worker in a single task queue.\n See the TaskReachability docstring for information about each enum variant.\n If reachability is empty, this worker is considered unreachable in this task queue.',
+      }),
+  })
+  .openapi({
+    description: 'Reachability of tasks for a worker on a single task queue.',
+    required: [],
+  })
+  .openapi('TaskQueueReachability')
+
+const BuildIdReachabilitySchema = z
+  .object({
+    buildId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A build id or empty if unversioned.' }),
+    taskQueueReachability: z
+      .array(TaskQueueReachabilitySchema)
+      .exactOptional()
+      .openapi({ description: 'Reachability per task queue.' }),
+  })
+  .openapi({
+    description: 'Reachability of tasks for a worker by build id, in one or more task queues.',
+    required: [],
+  })
+  .openapi('BuildIdReachability')
+
+const ClusterReplicationConfigSchema = z
+  .object({ clusterName: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ClusterReplicationConfig')
+
+const CompatibleBuildIdRedirectRuleSchema = z
+  .object({
+    sourceBuildId: z.string().exactOptional(),
+    targetBuildId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Target Build ID must be compatible with the Source Build ID; that is it\n must be able to process event histories made by the Source Build ID by\n using [Patching](https://docs.temporal.io/workflows#patching) or other\n means.',
+      }),
+  })
+  .openapi({
+    description:
+      "These rules apply to tasks assigned to a particular Build ID\n (`source_build_id`) to redirect them to another *compatible* Build ID\n (`target_build_id`).\n\n It is user's responsibility to ensure that the target Build ID is compatible\n with the source Build ID (e.g. by using the Patching API).\n\n Most deployments are not expected to need these rules, however following\n situations can greatly benefit from redirects:\n  - Need to move long-running Workflow Executions from an old Build ID to a\n    newer one.\n  - Need to hotfix some broken or stuck Workflow Executions.\n\n In steady state, redirect rules are beneficial when dealing with old\n Executions ran on now-decommissioned Build IDs:\n  - To redirecting the Workflow Queries to the current (compatible) Build ID.\n  - To be able to Reset an old Execution so it can run on the current\n    (compatible) Build ID.\n\n Redirect rules can be chained.",
+    required: [],
+  })
+  .openapi('CompatibleBuildIdRedirectRule')
+
+const CompatibleVersionSetSchema = z
+  .object({
+    buildIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'All the compatible versions, unordered, except for the last element, which is considered the set "default".',
+      }),
+  })
+  .openapi({
+    description:
+      'Used by the worker versioning APIs, represents an unordered set of one or more versions which are\n considered to be compatible with each other. Currently the versions are always worker build IDs.',
+    required: [],
+  })
+  .openapi('CompatibleVersionSet')
+
+const ComputeProviderSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of the compute provider. This string is implementation-specific and\n can be used by implementations to understand how to interpret the\n contents of the provider_details field.',
+      }),
+    details: PayloadSchema.exactOptional().openapi({
+      description:
+        "Contains provider-specific instructions and configuration.\n For server-implemented providers, use the SDK's default content\n converter to ensure the server can understand it.\n For remote-implemented providers, you might use your own content\n converters according to what the remote endpoints understand.",
+    }),
+    nexusEndpoint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If the compute provider is a Nexus service, this should point\n there.',
+      }),
+  })
+  .openapi({
+    description:
+      "ComputeProvider stores information used by a worker control plane controller\n to respond to worker lifecycle events. For example, when a Task is received\n on a TaskQueue that has no active pollers, a serverless worker lifecycle\n controller might need to invoke an AWS Lambda Function that itself ends up\n calling the SDK's worker.New() function.",
+    required: [],
+  })
+  .openapi('ComputeProvider')
+
+const ComputeScalerSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of the compute scaler. this string is implementation-specific and\n can be used by implementations to understand how to interpret the\n contents of the scaler_details field.',
+      }),
+    details: PayloadSchema.exactOptional().openapi({
+      description:
+        "Contains scaler-specific instructions and configuration.\n For server-implemented scalers, use the SDK's default data\n converter to ensure the server can understand it.\n For remote-implemented scalers, you might use your own data\n converters according to what the remote endpoints understand.",
+    }),
+  })
+  .openapi({
+    description:
+      'ComputeScaler instructs the Temporal Service when to scale up or down the number of\n Workers that comprise a WorkerDeployment.',
+    required: [],
+  })
+  .openapi('ComputeScaler')
+
+const ComputeConfigScalingGroupSchema = z
+  .object({
+    taskQueueTypes: z
+      .array(
+        z.enum([
+          'TASK_QUEUE_TYPE_UNSPECIFIED',
+          'TASK_QUEUE_TYPE_WORKFLOW',
+          'TASK_QUEUE_TYPE_ACTIVITY',
+          'TASK_QUEUE_TYPE_NEXUS',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The set of task queue types this scaling group serves.\n If not provided, this scaling group serves all not otherwise defined\n task types.',
+      }),
+    provider: ComputeProviderSchema.exactOptional().openapi({
+      description:
+        'Stores instructions for a worker control plane controller how to respond\n to worker lifeycle events.',
+    }),
+    scaler: ComputeScalerSchema.exactOptional().openapi({
+      description:
+        'Informs a worker lifecycle controller *when* and *how often* to perform\n certain worker lifecycle actions like starting a serverless worker.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ComputeConfigScalingGroup')
+
+const ComputeConfigSchema = z
+  .object({
+    scalingGroups: z
+      .record(z.string(), ComputeConfigScalingGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Each scaling group describes a compute config for a specific subset of the worker\n deployment version: covering a specific set of task types and/or regions.\n Having different configurations for different task types, allows independent\n tuning of activity and workflow task processing (for example).\n\n The key of the map is the ID of the scaling group used to reference it in subsequent\n update calls.',
+      }),
+  })
+  .openapi({
+    description:
+      'ComputeConfig stores configuration that helps a worker control plane\n controller understand *when* and *how* to respond to worker lifecycle\n events.',
+    required: [],
+  })
+  .openapi('ComputeConfig')
+
+const ComputeConfigScalingGroupUpdateSchema = z
+  .object({
+    scalingGroup: ComputeConfigScalingGroupSchema.exactOptional(),
+    updateMask: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Controls which fields from `scaling_group` will be applied. Semantics:\n - Mask is ignored for new scaling groups (only applicable when scaling group already exists).\n - Empty mask for an existing scaling group is no-op: no change.\n - Non-empty mask for an existing scaling group will update/unset only to the fields\n   mentioned in the mask.\n - Accepted paths: "task_queue_types", "provider", "provider.type", "provider.details",\n   "provider.nexus_endpoint", "scaler", "scaler.type", "scaler.details"',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ComputeConfigScalingGroupUpdate')
+
+const CountActivityExecutionsResponseAggregationGroupSchema = z
+  .object({
+    groupValues: z.array(PayloadSchema).exactOptional(),
+    count: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CountActivityExecutionsResponseAggregationGroup')
+
+const CountActivityExecutionsResponseSchema = z
+  .object({
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `query` is not grouping by any field, the count is an approximate number\n of activities that match the query.\n If `query` is grouping by a field, the count is simply the sum of the counts\n of the groups returned in the response. This number can be smaller than the\n total number of activities matching the query.',
+      }),
+    groups: z
+      .array(CountActivityExecutionsResponseAggregationGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains the groups if the request is grouping by a field.\n The list might not be complete, and the counts of each group is approximate.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CountActivityExecutionsResponse')
+
+const CountNexusOperationExecutionsResponseAggregationGroupSchema = z
+  .object({
+    groupValues: z.array(PayloadSchema).exactOptional(),
+    count: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CountNexusOperationExecutionsResponseAggregationGroup')
+
+const CountNexusOperationExecutionsResponseSchema = z
+  .object({
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `query` is not grouping by any field, the count is an approximate number\n of operations that match the query.\n If `query` is grouping by a field, the count is simply the sum of the counts\n of the groups returned in the response. This number can be smaller than the\n total number of operations matching the query.',
+      }),
+    groups: z
+      .array(CountNexusOperationExecutionsResponseAggregationGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains the groups if the request is grouping by a field.\n The list might not be complete, and the counts of each group is approximate.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CountNexusOperationExecutionsResponse')
+
+const CountSchedulesResponseAggregationGroupSchema = z
+  .object({
+    groupValues: z.array(PayloadSchema).exactOptional(),
+    count: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CountSchedulesResponseAggregationGroup')
+
+const CountSchedulesResponseSchema = z
+  .object({
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `query` is not grouping by any field, the count is an approximate number\n of schedules that match the query.\n If `query` is grouping by a field, the count is simply the sum of the counts\n of the groups returned in the response. This number can be smaller than the\n total number of schedules matching the query.',
+      }),
+    groups: z
+      .array(CountSchedulesResponseAggregationGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains the groups if the request is grouping by a field.\n The list might not be complete, and the counts of each group is approximate.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CountSchedulesResponse')
+
+const CountWorkflowExecutionsResponseAggregationGroupSchema = z
+  .object({
+    groupValues: z.array(PayloadSchema).exactOptional(),
+    count: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CountWorkflowExecutionsResponseAggregationGroup')
+
+const CountWorkflowExecutionsResponseSchema = z
+  .object({
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `query` is not grouping by any field, the count is an approximate number\n of workflows that matches the query.\n If `query` is grouping by a field, the count is simply the sum of the counts\n of the groups returned in the response. This number can be smaller than the\n total number of workflows matching the query.',
+      }),
+    groups: z
+      .array(CountWorkflowExecutionsResponseAggregationGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          '`groups` contains the groups if the request is grouping by a field.\n The list might not be complete, and the counts of each group is approximate.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CountWorkflowExecutionsResponse')
+
+const EndpointTargetWorkerSchema = z
+  .object({
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Namespace to route requests to.' }),
+    taskQueue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Nexus task queue to route requests to.' }),
+  })
+  .openapi({
+    description: 'Target a worker polling on a Nexus task queue in a specific namespace.',
+    required: [],
+  })
+  .openapi('EndpointTargetWorker')
+
+const EndpointTargetExternalSchema = z
+  .object({ url: z.string().exactOptional().openapi({ description: 'URL to call.' }) })
+  .openapi({
+    description:
+      'Target an external server by URL.\n At a later point, this will support providing credentials, in the meantime, an http.RoundTripper can be injected\n into the server to modify the request.',
+    required: [],
+  })
+  .openapi('EndpointTargetExternal')
+
+const EndpointTargetSchema = z
+  .object({
+    worker: EndpointTargetWorkerSchema.exactOptional(),
+    external: EndpointTargetExternalSchema.exactOptional(),
+  })
+  .openapi({ description: 'Target to route requests to.', required: [] })
+  .openapi('EndpointTarget')
+
+const EndpointSpecSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Endpoint name, unique for this cluster. Must match `[a-zA-Z_][a-zA-Z0-9_]*`.\n Renaming an endpoint breaks all workflow callers that reference this endpoint, causing operations to fail.',
+      }),
+    description: PayloadSchema.exactOptional().openapi({
+      description:
+        'Markdown description serialized as a single JSON string.\n If the Payload is encrypted, the UI and CLI may decrypt with the configured codec server endpoint.\n By default, the server enforces a limit of 20,000 bytes for this entire payload.',
+    }),
+    target: EndpointTargetSchema.exactOptional().openapi({
+      description: 'Target to route requests to.',
+    }),
+  })
+  .openapi({ description: 'Contains mutable fields for an Endpoint.', required: [] })
+  .openapi('EndpointSpec')
+
+const CreateNexusEndpointRequestSchema = z
+  .object({
+    spec: EndpointSpecSchema.exactOptional().openapi({
+      description: 'Endpoint definition to create.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateNexusEndpointRequest')
+
+const EndpointSchema = z
+  .object({
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Data version for this endpoint, incremented for every update issued via the UpdateNexusEndpoint API.',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'Unique server-generated endpoint ID.' }),
+    spec: EndpointSpecSchema.exactOptional().openapi({ description: 'Spec for the endpoint.' }),
+    createdTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the endpoint was created.\n (-- api-linter: core::0142::time-field-names=disabled\n     aip.dev/not-precedent: Not following linter rules. --)',
+      }),
+    lastModifiedTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the endpoint was last modified.\n Will not be set if the endpoint has never been modified.\n (-- api-linter: core::0142::time-field-names=disabled\n     aip.dev/not-precedent: Not following linter rules. --)',
+      }),
+    urlPrefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Server exposed URL prefix for invocation of operations on this endpoint.\n This doesn't include the protocol, hostname or port as the server does not know how it should be accessed\n publicly. The URL is stable in the face of endpoint renames.",
+      }),
+  })
+  .openapi({
+    description:
+      'A cluster-global binding from an endpoint ID to a target for dispatching incoming Nexus requests.',
+    required: [],
+  })
+  .openapi('Endpoint')
+
+const CreateNexusEndpointResponseSchema = z
+  .object({
+    endpoint: EndpointSchema.exactOptional().openapi({
+      description: 'Data post acceptance. Can be used to issue additional updates to this record.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateNexusEndpointResponse')
+
+const NewWorkflowExecutionInfoSchema = z
+  .object({
+    workflowId: z.string().exactOptional(),
+    workflowType: WorkflowTypeSchema.exactOptional(),
+    taskQueue: TaskQueueSchema.exactOptional(),
+    input: PayloadsSchema.exactOptional().openapi({
+      description: 'Serialized arguments to the workflow.',
+    }),
+    workflowExecutionTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description: 'Total workflow execution timeout including retries and continue as new.',
+      }),
+    workflowRunTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({ description: 'Timeout of a single workflow run.' }),
+    workflowTaskTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({ description: 'Timeout of a single workflow task.' }),
+    workflowIdReusePolicy: z
+      .enum([
+        'WORKFLOW_ID_REUSE_POLICY_UNSPECIFIED',
+        'WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE',
+        'WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY',
+        'WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE',
+        'WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Default: WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE.' }),
+    retryPolicy: RetryPolicySchema.exactOptional().openapi({
+      description:
+        'The retry policy for the workflow. Will never exceed `workflow_execution_timeout`.',
+    }),
+    cronSchedule: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'See https://docs.temporal.io/docs/content/what-is-a-temporal-cron-job/',
+      }),
+    memo: MemoSchema.exactOptional(),
+    searchAttributes: SearchAttributesSchema.exactOptional(),
+    header: HeaderSchema.exactOptional(),
+    userMetadata: UserMetadataSchema.exactOptional().openapi({
+      description:
+        'Metadata on the workflow if it is started. This is carried over to the WorkflowExecutionConfig\n for use by user interfaces to display the fixed as-of-start summary and details of the\n workflow.',
+    }),
+    versioningOverride: VersioningOverrideSchema.exactOptional().openapi({
+      description:
+        'If set, takes precedence over the Versioning Behavior sent by the SDK on Workflow Task completion.\n To unset the override after the workflow is running, use UpdateWorkflowExecutionOptions.',
+    }),
+    priority: PrioritySchema.exactOptional().openapi({ description: 'Priority metadata' }),
+  })
+  .openapi({
+    description:
+      'NewWorkflowExecutionInfo is a shared message that encapsulates all the\n required arguments to starting a workflow in different contexts.',
+    required: [],
+  })
+  .openapi('NewWorkflowExecutionInfo')
+
+const ScheduleActionSchema = z
+  .object({
+    startWorkflow: NewWorkflowExecutionInfoSchema.exactOptional().openapi({
+      description:
+        'All fields of NewWorkflowExecutionInfo are valid except for:\n - workflow_id_reuse_policy\n - cron_schedule\n The workflow id of the started workflow may not match this exactly,\n it may have a timestamp appended for uniqueness.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ScheduleAction')
+
+const SchedulePoliciesSchema = z
+  .object({
+    overlapPolicy: z
+      .enum([
+        'SCHEDULE_OVERLAP_POLICY_UNSPECIFIED',
+        'SCHEDULE_OVERLAP_POLICY_SKIP',
+        'SCHEDULE_OVERLAP_POLICY_BUFFER_ONE',
+        'SCHEDULE_OVERLAP_POLICY_BUFFER_ALL',
+        'SCHEDULE_OVERLAP_POLICY_CANCEL_OTHER',
+        'SCHEDULE_OVERLAP_POLICY_TERMINATE_OTHER',
+        'SCHEDULE_OVERLAP_POLICY_ALLOW_ALL',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Policy for overlaps.\n Note that this can be changed after a schedule has taken some actions,\n and some changes might produce unintuitive results. In general, the later\n policy overrides the earlier policy.',
+      }),
+    catchupWindow: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          "Policy for catchups:\n If the Temporal server misses an action due to one or more components\n being down, and comes back up, the action will be run if the scheduled\n time is within this window from the current time.\n This value defaults to one year, and can't be less than 10 seconds.",
+      }),
+    pauseOnFailure: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, and a workflow run fails or times out, turn on "paused".\n This applies after retry policies: the full chain of retries must fail to\n trigger a pause here.',
+      }),
+    keepOriginalWorkflowId: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, and the action would start a workflow, a timestamp will not be\n appended to the scheduled workflow id.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SchedulePolicies')
+
+const ScheduleStateSchema = z
+  .object({
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Informative human-readable message with contextual notes, e.g. the reason\n a schedule is paused. The system may overwrite this message on certain\n conditions, e.g. when pause-on-failure happens.',
+      }),
+    paused: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, do not take any actions based on the schedule spec.' }),
+    limitedActions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If limited_actions is true, decrement remaining_actions after each\n action, and do not take any more scheduled actions if remaining_actions\n is zero. Actions may still be taken by explicit request (i.e. trigger\n immediately or backfill). Skipped actions (due to overlap policy) do not\n count against remaining actions.\n If a schedule has no more remaining actions, then the schedule will be\n subject to automatic deletion (after several days).',
+      }),
+    remainingActions: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ScheduleState')
+
+const ScheduleSchema = z
+  .object({
+    spec: ScheduleSpecSchema.exactOptional(),
+    action: ScheduleActionSchema.exactOptional(),
+    policies: SchedulePoliciesSchema.exactOptional(),
+    state: ScheduleStateSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Schedule')
+
+const TriggerImmediatelyRequestSchema = z
+  .object({
+    overlapPolicy: z
+      .enum([
+        'SCHEDULE_OVERLAP_POLICY_UNSPECIFIED',
+        'SCHEDULE_OVERLAP_POLICY_SKIP',
+        'SCHEDULE_OVERLAP_POLICY_BUFFER_ONE',
+        'SCHEDULE_OVERLAP_POLICY_BUFFER_ALL',
+        'SCHEDULE_OVERLAP_POLICY_CANCEL_OTHER',
+        'SCHEDULE_OVERLAP_POLICY_TERMINATE_OTHER',
+        'SCHEDULE_OVERLAP_POLICY_ALLOW_ALL',
+      ])
+      .exactOptional()
+      .openapi({ description: 'If set, override overlap policy for this one request.' }),
+    scheduledTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp used for the identity of the target workflow.\n If not set the default value is the current time.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TriggerImmediatelyRequest')
+
+const SchedulePatchSchema = z
+  .object({
+    triggerImmediately: TriggerImmediatelyRequestSchema.exactOptional().openapi({
+      description: 'If set, trigger one action immediately.',
+    }),
+    backfillRequest: z
+      .array(BackfillRequestSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, runs though the specified time period(s) and takes actions as if that time\n passed by right now, all at once. The overlap policy can be overridden for the\n scope of the backfill.',
+      }),
+    pause: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, change the state to paused or unpaused (respectively) and set the\n notes field to the value of the string.',
+      }),
+    unpause: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SchedulePatch')
+
+const CreateScheduleRequestSchema = z
+  .object({
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The namespace the schedule should be created in.' }),
+    scheduleId: z.string().exactOptional().openapi({ description: 'The id of the new schedule.' }),
+    schedule: ScheduleSchema.exactOptional().openapi({
+      description: 'The schedule spec, policies, action, and initial state.',
+    }),
+    initialPatch: SchedulePatchSchema.exactOptional().openapi({
+      description: 'Optional initial patch (e.g. to run the action once immediately).',
+    }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the client who initiated this request.' }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for this create request for idempotence. Typically UUIDv4.',
+      }),
+    memo: MemoSchema.exactOptional().openapi({
+      description: 'Memo and search attributes to attach to the schedule itself.',
+    }),
+    searchAttributes: SearchAttributesSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      '(-- api-linter: core::0203::optional=disabled\n     aip.dev/not-precedent: field_behavior annotation not available in our gogo fork --)',
+    required: [],
+  })
+  .openapi('CreateScheduleRequest')
+
+const CreateScheduleResponseSchema = z
+  .object({ conflictToken: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CreateScheduleResponse')
+
+const CreateWorkerDeploymentRequestSchema = z
+  .object({
+    namespace: z.string().exactOptional(),
+    deploymentName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the Worker Deployment to create. If a Worker Deployment with\n this name already exists, an error will be returned.',
+      }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The identity of the client who initiated this request.' }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for this create request for idempotence. Typically UUIDv4.',
+      }),
+  })
+  .openapi({ description: 'Creates a new WorkerDeployment.', required: [] })
+  .openapi('CreateWorkerDeploymentRequest')
+
+const CreateWorkerDeploymentResponseSchema = z
+  .object({
+    conflictToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This value is returned so that it can be optionally passed to APIs that\n write to the WorkerDeployment state to ensure that the state did not\n change between this API call and a future write.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateWorkerDeploymentResponse')
+
+const CreateWorkerDeploymentVersionRequestSchema = z
+  .object({
+    namespace: z.string().exactOptional(),
+    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional().openapi({
+      description: 'Required.',
+    }),
+    computeConfig: ComputeConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. Contains the new worker compute configuration for the Worker\n Deployment. Used for worker scale management.',
+    }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The identity of the client who initiated this request.' }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for this create request for idempotence. Typically UUIDv4.\n If a second request with the same ID is recieved, it is considered a successful no-op.\n Retrying with a different request ID for the same deployment name + build ID is an error.',
+      }),
+  })
+  .openapi({ description: 'Creates a new WorkerDeploymentVersion.', required: [] })
+  .openapi('CreateWorkerDeploymentVersionRequest')
+
+const CreateWorkerDeploymentVersionResponseSchema = z
+  .looseObject({})
+  .openapi('CreateWorkerDeploymentVersionResponse')
+
+const WorkflowRuleSpecActivityStartingTriggerSchema = z
+  .object({
+    predicate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Activity predicate is a SQL-like string filter parameter.\n It is used to match against workflow data.\n The following activity attributes are supported as part of the predicate:\n - ActivityType: An Activity Type is the mapping of a name to an Activity Definition..\n - ActivityId: The ID of the activity.\n - ActivityAttempt: The number attempts of the activity.\n - BackoffInterval: The current amount of time between scheduled attempts of the activity.\n - ActivityStatus: The status of the activity. Can be one of "Scheduled", "Started", "Paused".\n - TaskQueue: The name of the task queue the workflow specified that the activity should run on.\n Activity predicate support the following operators:\n  * =, !=, >, >=, <, <=\n  * AND, OR, ()\n  * BETWEEN ... AND\n    STARTS_WITH',
+      }),
+  })
+  .openapi({
+    description: 'Activity trigger will be triggered when an activity is about to start.',
+    required: [],
+  })
+  .openapi('WorkflowRuleSpecActivityStartingTrigger')
+
+const WorkflowRuleActionActionActivityPauseSchema = z
+  .looseObject({})
+  .openapi('WorkflowRuleActionActionActivityPause')
+
+const WorkflowRuleActionSchema = z
+  .object({ activityPause: WorkflowRuleActionActionActivityPauseSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('WorkflowRuleAction')
+
+const WorkflowRuleSpecSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the new workflow rule. Must be unique within the namespace.\n Can be set by the user, and can have business meaning.',
+      }),
+    activityStart: WorkflowRuleSpecActivityStartingTriggerSchema.exactOptional(),
+    visibilityQuery: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricted Visibility query.\n This query is used to filter workflows in this namespace to which this rule should apply.\n It is applied to any running workflow each time a triggering event occurs, before the trigger predicate is evaluated.\n The following workflow attributes are supported:\n - WorkflowType\n - WorkflowId\n - StartTime\n - ExecutionStatus',
+      }),
+    actions: z
+      .array(WorkflowRuleActionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'WorkflowRuleAction to be taken when the rule is triggered and predicate is matched.',
+      }),
+    expirationTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Expiration time of the rule. After this time, the rule will be deleted.\n Can be empty if the rule should never expire.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('WorkflowRuleSpec')
+
+const CreateWorkflowRuleRequestSchema = z
+  .object({
+    namespace: z.string().exactOptional(),
+    spec: WorkflowRuleSpecSchema.exactOptional().openapi({
+      description: 'The rule specification .',
+    }),
+    forceScan: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the rule will be applied to the currently running workflows via batch job.\n If not set , the rule will only be applied when triggering condition is satisfied.\n visibility_query in the rule will be used to select the workflows to apply the rule to.',
+      }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Used to de-dupe requests. Typically should be UUID.' }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Identity of the actor who created the rule. Will be stored with the rule.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Rule description.Will be stored with the rule.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateWorkflowRuleRequest')
+
+const WorkflowRuleSchema = z
+  .object({
+    createTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Rule creation time.' }),
+    spec: WorkflowRuleSpecSchema.exactOptional().openapi({ description: 'Rule specification' }),
+    createdByIdentity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identity of the actor that created the rule\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: It is better reflect the intent this way, we will also have updated_by. --)\n (-- api-linter: core::0142::time-field-names=disabled\n     aip.dev/not-precedent: Same as above. All other options sounds clumsy --)',
+      }),
+    description: z.string().exactOptional().openapi({ description: 'Rule description.' }),
+  })
+  .openapi({
+    description:
+      'WorkflowRule describes a rule that can be applied to any workflow in this namespace.',
+    required: [],
+  })
+  .openapi('WorkflowRule')
+
+const CreateWorkflowRuleResponseSchema = z
+  .object({
+    rule: WorkflowRuleSchema.exactOptional().openapi({ description: 'Created rule.' }),
+    jobId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Batch Job ID if force-scan flag was provided. Otherwise empty.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateWorkflowRuleResponse')
+
+const DeleteNexusEndpointResponseSchema = z.looseObject({}).openapi('DeleteNexusEndpointResponse')
+
+const DeleteScheduleResponseSchema = z.looseObject({}).openapi('DeleteScheduleResponse')
+
+const DeleteWorkerDeploymentResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteWorkerDeploymentResponse')
+
+const DeleteWorkerDeploymentVersionResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteWorkerDeploymentVersionResponse')
+
+const DeleteWorkflowRuleResponseSchema = z.looseObject({}).openapi('DeleteWorkflowRuleResponse')
+
+const DeploymentInfoTaskQueueInfoSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    type: z
+      .enum([
+        'TASK_QUEUE_TYPE_UNSPECIFIED',
+        'TASK_QUEUE_TYPE_WORKFLOW',
+        'TASK_QUEUE_TYPE_ACTIVITY',
+        'TASK_QUEUE_TYPE_NEXUS',
+      ])
+      .exactOptional(),
+    firstPollerTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When server saw the first poller for this task queue in this deployment.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeploymentInfoTaskQueueInfo')
+
+const DeploymentInfoSchema = z
+  .object({
+    deployment: DeploymentSchema.exactOptional(),
+    createTime: z.iso.datetime({ offset: true }).exactOptional(),
+    taskQueueInfos: z.array(DeploymentInfoTaskQueueInfoSchema).exactOptional(),
+    metadata: z
+      .record(z.string(), PayloadSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A user-defined set of key-values. Can be updated as part of write operations to the\n deployment, such as `SetCurrentDeployment`.',
+      }),
+    isCurrent: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If this deployment is the current deployment of its deployment series.',
+      }),
+  })
+  .openapi({
+    description:
+      '`DeploymentInfo` holds information about a deployment. Deployment information is tracked\n automatically by server as soon as the first poll from that deployment reaches the server. There\n can be multiple task queue workers in a single deployment which are listed in this message.\n Deprecated.',
+    required: [],
+  })
+  .openapi('DeploymentInfo')
+
+const DeploymentListInfoSchema = z
+  .object({
+    deployment: DeploymentSchema.exactOptional(),
+    createTime: z.iso.datetime({ offset: true }).exactOptional(),
+    isCurrent: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If this deployment is the current deployment of its deployment series.',
+      }),
+  })
+  .openapi({
+    description:
+      "DeploymentListInfo is an abbreviated set of fields from DeploymentInfo that's returned in\n ListDeployments.\n Deprecated.",
+    required: [],
+  })
+  .openapi('DeploymentListInfo')
+
+const DescribeActivityExecutionResponseSchema: z.ZodType<DescribeActivityExecutionResponseType> = z
+  .object({
+    runId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The run ID of the activity, useful when run_id was not specified in the request.',
+      }),
+    info: ActivityExecutionInfoSchema.exactOptional().openapi({
+      description: 'Information about the activity execution.',
+    }),
+    input: PayloadsSchema.exactOptional().openapi({
+      description:
+        'Serialized activity input, passed as arguments to the activity function.\n Only set if include_input was true in the request.',
+    }),
+    outcome: ActivityExecutionOutcomeSchema.exactOptional().openapi({
+      description:
+        'Only set if the activity is completed and include_outcome was true in the request.',
+    }),
+    longPollToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token for follow-on long-poll requests. Absent only if the activity is complete.',
+      }),
+    callbacks: z
+      .array(CallbackInfoSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Callbacks attached to this activity execution and their current state.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeActivityExecutionResponse')
+
+const DescribeBatchOperationResponseSchema = z
+  .object({
+    operationType: z
+      .enum([
+        'BATCH_OPERATION_TYPE_UNSPECIFIED',
+        'BATCH_OPERATION_TYPE_TERMINATE',
+        'BATCH_OPERATION_TYPE_CANCEL',
+        'BATCH_OPERATION_TYPE_SIGNAL',
+        'BATCH_OPERATION_TYPE_DELETE',
+        'BATCH_OPERATION_TYPE_RESET',
+        'BATCH_OPERATION_TYPE_UPDATE_EXECUTION_OPTIONS',
+        'BATCH_OPERATION_TYPE_UNPAUSE_ACTIVITY',
+        'BATCH_OPERATION_TYPE_UPDATE_ACTIVITY_OPTIONS',
+        'BATCH_OPERATION_TYPE_RESET_ACTIVITY',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Batch operation type' }),
+    jobId: z.string().exactOptional().openapi({ description: 'Batch job ID' }),
+    state: z
+      .enum([
+        'BATCH_OPERATION_STATE_UNSPECIFIED',
+        'BATCH_OPERATION_STATE_RUNNING',
+        'BATCH_OPERATION_STATE_COMPLETED',
+        'BATCH_OPERATION_STATE_FAILED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Batch operation state' }),
+    startTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Batch operation start time' }),
+    closeTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Batch operation close time' }),
+    totalOperationCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total operation count' }),
+    completeOperationCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Complete operation count' }),
+    failureOperationCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Failure operation count' }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identity indicates the operator identity' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Reason indicates the reason to stop a operation' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeBatchOperationResponse')
+
+const DescribeDeploymentResponseSchema = z
+  .object({ deploymentInfo: DeploymentInfoSchema.exactOptional() })
+  .openapi({
+    description: '[cleanup-wv-pre-release] Pre-release deployment APIs, clean up later',
+    required: [],
+  })
+  .openapi('DescribeDeploymentResponse')
+
+const NamespaceInfoCapabilitiesSchema = z
+  .object({
+    eagerWorkflowStart: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the namespace supports eager workflow start.' }),
+    syncUpdate: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the namespace supports sync update' }),
+    asyncUpdate: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the namespace supports async update' }),
+    workerHeartbeats: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the namespace supports worker heartbeats' }),
+    reportedProblemsSearchAttribute: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if the namespace supports reported problems search attribute',
+      }),
+    workflowPause: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the namespace supports pausing workflows' }),
+    standaloneActivities: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the namespace supports standalone activities' }),
+    workerPollCompleteOnShutdown: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the namespace supports server-side completion of outstanding worker polls on shutdown.\n When enabled, the server will complete polls for workers that send WorkerInstanceKey in their\n poll requests and call ShutdownWorker with the same WorkerInstanceKey. The poll will return\n an empty response. When this flag is true, workers should allow polls to return gracefully\n rather than terminating any open polls on shutdown.',
+      }),
+    pollerAutoscaling: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the namespace supports poller autoscaling' }),
+    workerCommands: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the namespace supports worker commands (server-to-worker communication via control queues).',
+      }),
+  })
+  .openapi({
+    description:
+      'Namespace capability details. Should contain what features are enabled in a namespace.',
+    required: [],
+  })
+  .openapi('NamespaceInfoCapabilities')
+
+const NamespaceInfoLimitsSchema = z
+  .object({
+    blobSizeLimitError: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum size in bytes for payload fields in workflow history events\n (e.g., workflow/activity inputs and results, failure details, signal payloads).\n When exceeded, the server will reject the operation with an error.',
+      }),
+    memoSizeLimitError: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Maximum total memo size in bytes per workflow execution.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NamespaceInfoLimits')
+
+const NamespaceInfoSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    state: z
+      .enum([
+        'NAMESPACE_STATE_UNSPECIFIED',
+        'NAMESPACE_STATE_REGISTERED',
+        'NAMESPACE_STATE_DEPRECATED',
+        'NAMESPACE_STATE_DELETED',
+      ])
+      .exactOptional(),
+    description: z.string().exactOptional(),
+    ownerEmail: z.string().exactOptional(),
+    data: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'A key-value map for any customized purpose.' }),
+    id: z.string().exactOptional(),
+    capabilities: NamespaceInfoCapabilitiesSchema.exactOptional().openapi({
+      description: 'All capabilities the namespace supports.',
+    }),
+    limits: NamespaceInfoLimitsSchema.exactOptional().openapi({
+      description: 'Namespace configured limits',
+    }),
+    supportsSchedules: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether scheduled workflows are supported on this namespace. This is only needed\n temporarily while the feature is experimental, so we can give it a high tag.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NamespaceInfo')
+
+const NamespaceConfigSchema = z
+  .object({
+    workflowExecutionRetentionTtl: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional(),
+    badBinaries: BadBinariesSchema.exactOptional(),
+    historyArchivalState: z
+      .enum(['ARCHIVAL_STATE_UNSPECIFIED', 'ARCHIVAL_STATE_DISABLED', 'ARCHIVAL_STATE_ENABLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'If unspecified (ARCHIVAL_STATE_UNSPECIFIED) then default server configuration is used.',
+      }),
+    historyArchivalUri: z.string().exactOptional(),
+    visibilityArchivalState: z
+      .enum(['ARCHIVAL_STATE_UNSPECIFIED', 'ARCHIVAL_STATE_DISABLED', 'ARCHIVAL_STATE_ENABLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'If unspecified (ARCHIVAL_STATE_UNSPECIFIED) then default server configuration is used.',
+      }),
+    visibilityArchivalUri: z.string().exactOptional(),
+    customSearchAttributeAliases: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Map from field name to alias.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NamespaceConfig')
+
+const NamespaceReplicationConfigSchema = z
+  .object({
+    activeClusterName: z.string().exactOptional(),
+    clusters: z.array(ClusterReplicationConfigSchema).exactOptional(),
+    state: z
+      .enum([
+        'REPLICATION_STATE_UNSPECIFIED',
+        'REPLICATION_STATE_NORMAL',
+        'REPLICATION_STATE_HANDOVER',
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NamespaceReplicationConfig')
+
+const FailoverStatusSchema = z
+  .object({
+    failoverTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp when the Cluster switched to the following failover_version',
+      }),
+    failoverVersion: z.string().exactOptional(),
+  })
+  .openapi({
+    description: 'Represents a historical replication status of a Namespace',
+    required: [],
+  })
+  .openapi('FailoverStatus')
+
+const DescribeNamespaceResponseSchema = z
+  .object({
+    namespaceInfo: NamespaceInfoSchema.exactOptional(),
+    config: NamespaceConfigSchema.exactOptional(),
+    replicationConfig: NamespaceReplicationConfigSchema.exactOptional(),
+    failoverVersion: z.string().exactOptional(),
+    isGlobalNamespace: z.boolean().exactOptional(),
+    failoverHistory: z
+      .array(FailoverStatusSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains the historical state of failover_versions for the cluster, truncated to contain only the last N\n states to ensure that the list does not grow unbounded.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeNamespaceResponse')
+
+const NexusOperationExecutionCancellationInfoSchema = z
+  .object({
+    requestedTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time when cancellation was requested.' }),
+    state: z
+      .enum([
+        'NEXUS_OPERATION_CANCELLATION_STATE_UNSPECIFIED',
+        'NEXUS_OPERATION_CANCELLATION_STATE_SCHEDULED',
+        'NEXUS_OPERATION_CANCELLATION_STATE_BACKING_OFF',
+        'NEXUS_OPERATION_CANCELLATION_STATE_SUCCEEDED',
+        'NEXUS_OPERATION_CANCELLATION_STATE_FAILED',
+        'NEXUS_OPERATION_CANCELLATION_STATE_TIMED_OUT',
+        'NEXUS_OPERATION_CANCELLATION_STATE_BLOCKED',
+      ])
+      .exactOptional(),
+    attempt: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of attempts made to deliver the cancel operation request.\n This number represents a minimum bound since the attempt is incremented after the request completes.',
+      }),
+    lastAttemptCompleteTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time when the last attempt completed.' }),
+    lastAttemptFailure: FailureSchema.exactOptional().openapi({
+      description: "The last attempt's failure, if any.",
+    }),
+    nextAttemptScheduleTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time when the next attempt is scheduled.' }),
+    blockedReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If the state is BLOCKED, blocked reason provides additional information.',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A reason that may be specified in the CancelNexusOperationRequest.',
+      }),
+  })
+  .openapi({
+    description:
+      'NexusOperationExecutionCancellationInfo contains the state of a Nexus operation cancellation.',
+    required: [],
+  })
+  .openapi('NexusOperationExecutionCancellationInfo')
+
+const NexusOperationExecutionInfoSchema = z
+  .object({
+    operationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier of this Nexus operation within its namespace along with run ID (below).',
+      }),
+    runId: z.string().exactOptional(),
+    endpoint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Endpoint name, resolved to a URL via the cluster's endpoint registry.",
+      }),
+    service: z.string().exactOptional().openapi({ description: 'Service name.' }),
+    operation: z.string().exactOptional().openapi({ description: 'Operation name.' }),
+    status: z
+      .enum([
+        'NEXUS_OPERATION_EXECUTION_STATUS_UNSPECIFIED',
+        'NEXUS_OPERATION_EXECUTION_STATUS_RUNNING',
+        'NEXUS_OPERATION_EXECUTION_STATUS_COMPLETED',
+        'NEXUS_OPERATION_EXECUTION_STATUS_FAILED',
+        'NEXUS_OPERATION_EXECUTION_STATUS_CANCELED',
+        'NEXUS_OPERATION_EXECUTION_STATUS_TERMINATED',
+        'NEXUS_OPERATION_EXECUTION_STATUS_TIMED_OUT',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'A general status for this operation, indicates whether it is currently running or in one of the terminal statuses.\n Updated once when the operation is originally scheduled, and again when it reaches a terminal status.',
+      }),
+    state: z
+      .enum([
+        'PENDING_NEXUS_OPERATION_STATE_UNSPECIFIED',
+        'PENDING_NEXUS_OPERATION_STATE_SCHEDULED',
+        'PENDING_NEXUS_OPERATION_STATE_BACKING_OFF',
+        'PENDING_NEXUS_OPERATION_STATE_STARTED',
+        'PENDING_NEXUS_OPERATION_STATE_BLOCKED',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'More detailed breakdown of NEXUS_OPERATION_EXECUTION_STATUS_RUNNING.',
+      }),
+    scheduleToCloseTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Schedule-to-close timeout for this operation.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    scheduleToStartTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Schedule-to-start timeout for this operation.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    startToCloseTimeout: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Start-to-close timeout for this operation.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "to" is used to indicate interval. --)',
+      }),
+    attempt: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of attempts made to deliver the start operation request.\n This number is approximate, it is incremented when a task is added to the history queue.\n In practice, there could be more attempts if a task is executed but fails to commit, or less attempts if a task\n was never executed.',
+      }),
+    scheduleTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Time the operation was originally scheduled via a StartNexusOperation request.',
+      }),
+    expirationTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Scheduled time + schedule to close timeout.' }),
+    closeTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Time when the operation transitioned to a closed state.' }),
+    lastAttemptCompleteTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time when the last attempt completed.' }),
+    lastAttemptFailure: FailureSchema.exactOptional().openapi({
+      description: "The last attempt's failure, if any.",
+    }),
+    nextAttemptScheduleTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time when the next attempt is scheduled.' }),
+    executionDuration: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Elapsed time from schedule_time to now for running operations or to close_time for closed\n operations, including all attempts and backoff between attempts.',
+      }),
+    cancellationInfo: NexusOperationExecutionCancellationInfoSchema.exactOptional(),
+    blockedReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If the state is BLOCKED, blocked reason provides additional information.',
+      }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Server-generated request ID used as an idempotency token when submitting start requests to\n the handler. Distinct from the request_id in StartNexusOperationRequest, which is the\n caller-side idempotency key for the StartNexusOperation RPC itself.',
+      }),
+    operationToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Operation token. Only set for asynchronous operations after a successful StartOperation call.',
+      }),
+    stateTransitionCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Incremented each time the operation's state is mutated in persistence.",
+      }),
+    searchAttributes: SearchAttributesSchema.exactOptional(),
+    nexusHeader: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Header for context propagation and tracing purposes.' }),
+    userMetadata: UserMetadataSchema.exactOptional().openapi({
+      description:
+        'Metadata for use by user interfaces to display the fixed as-of-start summary and details of the operation.',
+    }),
+    links: z
+      .array(LinkSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Links attached by the handler of this operation on start or completion.',
+      }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the client who started this operation.' }),
+  })
+  .openapi({
+    description:
+      'Full current state of a standalone Nexus operation, as of the time of the request.',
+    required: [],
+  })
+  .openapi('NexusOperationExecutionInfo')
+
+const DescribeNexusOperationExecutionResponseSchema = z
+  .object({
+    runId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The run ID of the operation, useful when run_id was not specified in the request.',
+      }),
+    info: NexusOperationExecutionInfoSchema.exactOptional().openapi({
+      description: 'Information about the operation.',
+    }),
+    input: PayloadSchema.exactOptional().openapi({
+      description:
+        'Serialized operation input, passed as the request payload.\n Only set if include_input was true in the request.',
+    }),
+    result: PayloadSchema.exactOptional().openapi({
+      description: 'The result if the operation completed successfully.',
+    }),
+    failure: FailureSchema.exactOptional().openapi({
+      description: 'The failure if the operation completed unsuccessfully.',
+    }),
+    longPollToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token for follow-on long-poll requests. Absent only if the operation is complete.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeNexusOperationExecutionResponse')
+
+const ScheduleInfoSchema = z
+  .object({
+    actionCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of actions taken so far.' }),
+    missedCatchupWindow: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of times a scheduled action was skipped due to missing the catchup window.',
+      }),
+    overlapSkipped: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of skipped actions due to overlap.' }),
+    bufferDropped: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of dropped actions due to buffer limit.' }),
+    bufferSize: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of actions in the buffer. The buffer holds the actions that cannot\n be immediately triggered (due to the overlap policy). These actions can be a result of\n the normal schedule or a backfill.',
+      }),
+    runningWorkflows: z
+      .array(WorkflowExecutionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Currently-running workflows started by this schedule. (There might be\n more than one if the overlap policy allows overlaps.)\n Note that the run_ids in here are the original execution run ids as\n started by the schedule. If the workflows retried, did continue-as-new,\n or were reset, they might still be running but with a different run_id.',
+      }),
+    recentActions: z
+      .array(ScheduleActionResultSchema)
+      .exactOptional()
+      .openapi({ description: 'Most recent ten actual action times (including manual triggers).' }),
+    futureActionTimes: z
+      .array(z.iso.datetime({ offset: true }))
+      .exactOptional()
+      .openapi({ description: 'Next ten scheduled action times.' }),
+    createTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Timestamps of schedule creation and last update.' }),
+    updateTime: z.iso.datetime({ offset: true }).exactOptional(),
+    invalidScheduleError: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ScheduleInfo')
+
+const DescribeScheduleResponseSchema = z
+  .object({
+    schedule: ScheduleSchema.exactOptional().openapi({
+      description:
+        'The complete current schedule details. This may not match the schedule as\n created because:\n - some types of schedule specs may get compiled into others (e.g.\n   CronString into StructuredCalendarSpec)\n - some unspecified fields may be replaced by defaults\n - some fields in the state are modified automatically\n - the schedule may have been modified by UpdateSchedule or PatchSchedule',
+    }),
+    info: ScheduleInfoSchema.exactOptional().openapi({ description: 'Extra schedule state info.' }),
+    memo: MemoSchema.exactOptional().openapi({
+      description: 'The memo and search attributes that the schedule was created with.',
+    }),
+    searchAttributes: SearchAttributesSchema.exactOptional(),
+    conflictToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This value can be passed back to UpdateSchedule to ensure that the\n schedule was not modified between a Describe and an Update, which could\n lead to lost updates and other confusion.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeScheduleResponse')
+
+const DescribeTaskQueueResponseSchema: z.ZodType<DescribeTaskQueueResponseType> = z
+  .object({
+    pollers: z.array(PollerInfoSchema).exactOptional(),
+    stats: TaskQueueStatsSchema.exactOptional().openapi({
+      description:
+        'Statistics for the task queue.\n Only set if `report_stats` is set on the request.',
+    }),
+    statsByPriorityKey: z
+      .record(z.string(), TaskQueueStatsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Task queue stats breakdown by priority key. Only contains actively used priority keys.\n Only set if `report_stats` is set on the request.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "by" is used to clarify the keys and values. --)',
+      }),
+    versioningInfo: TaskQueueVersioningInfoSchema.exactOptional().openapi({
+      description:
+        "Specifies which Worker Deployment Version(s) Server routes this Task Queue's tasks to.\n When not present, it means the tasks are routed to Unversioned workers (workers with\n UNVERSIONED or unspecified WorkerVersioningMode.)\n Task Queue Versioning info is updated indirectly by calling SetWorkerDeploymentCurrentVersion\n and SetWorkerDeploymentRampingVersion on Worker Deployments.\n Note: This information is not relevant to Pinned workflow executions and their activities as\n they are always routed to their Pinned Deployment Version. However, new workflow executions\n are typically not Pinned until they complete their first task (unless they are started with\n a Pinned VersioningOverride or are Child Workflows of a Pinned parent).",
+    }),
+    config: TaskQueueConfigSchema.exactOptional().openapi({
+      description: 'Only populated if report_task_queue_config is set to true.',
+    }),
+    effectiveRateLimit: DescribeTaskQueueResponseEffectiveRateLimitSchema.exactOptional(),
+    taskQueueStatus: TaskQueueStatusSchema.exactOptional().openapi({
+      description:
+        'Deprecated.\n Status of the task queue. Only populated when `include_task_queue_status` is set to true in the request.',
+    }),
+    versionsInfo: z
+      .record(z.string(), TaskQueueVersionInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated.\n Only returned in ENHANCED mode.\n This map contains Task Queue information for each Build ID. Empty string as key value means unversioned.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeTaskQueueResponse')
+
+const DescribeWorkerDeploymentResponseSchema: z.ZodType<DescribeWorkerDeploymentResponseType> = z
+  .object({
+    conflictToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This value is returned so that it can be optionally passed to APIs\n that write to the Worker Deployment state to ensure that the state\n did not change between this read and a future write.',
+      }),
+    workerDeploymentInfo: WorkerDeploymentInfoSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeWorkerDeploymentResponse')
+
+const WorkerDeploymentVersionInfoVersionTaskQueueInfoSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    type: z
+      .enum([
+        'TASK_QUEUE_TYPE_UNSPECIFIED',
+        'TASK_QUEUE_TYPE_WORKFLOW',
+        'TASK_QUEUE_TYPE_ACTIVITY',
+        'TASK_QUEUE_TYPE_NEXUS',
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('WorkerDeploymentVersionInfoVersionTaskQueueInfo')
+
+const VersionMetadataSchema = z
+  .object({
+    entries: z
+      .record(z.string(), PayloadSchema)
+      .exactOptional()
+      .openapi({ description: 'Arbitrary key-values.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('VersionMetadata')
+
+const WorkerDeploymentVersionInfoSchema = z
+  .object({
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Use `deployment_version`.' }),
+    status: z
+      .enum([
+        'WORKER_DEPLOYMENT_VERSION_STATUS_UNSPECIFIED',
+        'WORKER_DEPLOYMENT_VERSION_STATUS_INACTIVE',
+        'WORKER_DEPLOYMENT_VERSION_STATUS_CURRENT',
+        'WORKER_DEPLOYMENT_VERSION_STATUS_RAMPING',
+        'WORKER_DEPLOYMENT_VERSION_STATUS_DRAINING',
+        'WORKER_DEPLOYMENT_VERSION_STATUS_DRAINED',
+        'WORKER_DEPLOYMENT_VERSION_STATUS_CREATED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The status of the Worker Deployment Version.' }),
+    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional().openapi({
+      description: 'Required.',
+    }),
+    deploymentName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Deprecated. User deployment_version.deployment_name.' }),
+    createTime: z.iso.datetime({ offset: true }).exactOptional(),
+    routingChangedTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Last time `current_since_time`, `ramping_since_time, or `ramp_percentage` of this version changed.',
+      }),
+    currentSinceTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "(-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: 'Since' captures the field semantics despite being a preposition. --)\n Unset if not current.",
+      }),
+    rampingSinceTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "(-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: 'Since' captures the field semantics despite being a preposition. --)\n Unset if not ramping. Updated when the version first starts ramping, not on each ramp change.",
+      }),
+    firstActivationTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Timestamp when this version first became current or ramping.' }),
+    lastCurrentTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when this version last became current.\n Can be used to determine whether a version has ever been Current.',
+      }),
+    lastDeactivationTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when this version last stopped being current or ramping.\n Cleared if the version becomes current or ramping again.',
+      }),
+    rampPercentage: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Range: [0, 100]. Must be zero if the version is not ramping (i.e. `ramping_since_time` is nil).\n Can be in the range [0, 100] if the version is ramping.',
+      }),
+    taskQueueInfos: z
+      .array(WorkerDeploymentVersionInfoVersionTaskQueueInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'All the Task Queues that have ever polled from this Deployment version.\n Deprecated. Use `version_task_queues` in DescribeWorkerDeploymentVersionResponse instead.',
+      }),
+    drainageInfo: VersionDrainageInfoSchema.exactOptional().openapi({
+      description:
+        'Helps user determine when it is safe to decommission the workers of this\n Version. Not present when version is current or ramping.\n Current limitations:\n - Not supported for Unversioned mode.\n - Periodically refreshed, may have delays up to few minutes (consult the\n   last_checked_time value).\n - Refreshed only when version is not current or ramping AND the status is not\n   "drained" yet.\n - Once the status is changed to "drained", it is not changed until the Version\n   becomes Current or Ramping again, at which time the drainage info is cleared.\n   This means if the Version is "drained" but new workflows are sent to it via\n   Pinned Versioning Override, the status does not account for those Pinned-override\n   executions and remains "drained".',
+    }),
+    metadata: VersionMetadataSchema.exactOptional().openapi({
+      description: 'Arbitrary user-provided metadata attached to this version.',
+    }),
+    computeConfig: ComputeConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. Contains the new worker compute configuration for the Worker\n Deployment. Used for worker scale management.',
+    }),
+    lastModifierIdentity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identity of the last client who modified the configuration of this Version.\n As of now, this field only covers changes through the following APIs:\n - `CreateWorkerDeploymentVersion`\n - `UpdateWorkerDeploymentVersionComputeConfig`\n - `UpdateWorkerDeploymentVersionMetadata`',
+      }),
+  })
+  .openapi({
+    description:
+      'A Worker Deployment Version (Version, for short) represents all workers of the same\n code and config within a Deployment. Workers of the same Version are expected to\n behave exactly the same so when executions move between them there are no\n non-determinism issues.\n Worker Deployment Versions are created in Temporal server automatically when\n their first poller arrives to the server.',
+    required: [],
+  })
+  .openapi('WorkerDeploymentVersionInfo')
+
+const DescribeWorkerDeploymentVersionResponseVersionTaskQueueSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    type: z
+      .enum([
+        'TASK_QUEUE_TYPE_UNSPECIFIED',
+        'TASK_QUEUE_TYPE_WORKFLOW',
+        'TASK_QUEUE_TYPE_ACTIVITY',
+        'TASK_QUEUE_TYPE_NEXUS',
+      ])
+      .exactOptional(),
+    stats: TaskQueueStatsSchema.exactOptional().openapi({
+      description: 'Only set if `report_task_queue_stats` is set on the request.',
+    }),
+    statsByPriorityKey: z
+      .record(z.string(), TaskQueueStatsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Task queue stats breakdown by priority key. Only contains actively used priority keys.\n Only set if `report_task_queue_stats` is set to true in the request.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: "by" is used to clarify the key. --)',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeWorkerDeploymentVersionResponseVersionTaskQueue')
+
+const DescribeWorkerDeploymentVersionResponseSchema = z
+  .object({
+    workerDeploymentVersionInfo: WorkerDeploymentVersionInfoSchema.exactOptional(),
+    versionTaskQueues: z
+      .array(DescribeWorkerDeploymentVersionResponseVersionTaskQueueSchema)
+      .exactOptional()
+      .openapi({
+        description: 'All the Task Queues that have ever polled from this Deployment version.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeWorkerDeploymentVersionResponse')
+
+const WorkerHostInfoSchema = z
+  .object({
+    hostName: z.string().exactOptional().openapi({ description: 'Worker host identifier.' }),
+    workerGroupingKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker grouping identifier. A key to group workers that share the same client+namespace+process.\n This will be used to build the worker command nexus task queue name:\n "temporal-sys/worker-commands/{worker_grouping_key}"',
+      }),
+    processId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker process identifier. This id only needs to be unique\n within one host (so using e.g. a unix pid would be appropriate).',
+      }),
+    currentHostCpuUsage: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'System used CPU as a float in the range [0.0, 1.0] where 1.0 is defined as all\n cores on the host pegged.',
+      }),
+    currentHostMemUsage: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'System used memory as a float in the range [0.0, 1.0] where 1.0 is defined as\n all available memory on the host is used.',
+      }),
+  })
+  .openapi({
+    description: 'Holds everything needed to identify the worker host/process context',
+    required: [],
+  })
+  .openapi('WorkerHostInfo')
+
+const WorkerSlotsInfoSchema = z
+  .object({
+    currentAvailableSlots: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of slots available for the worker to specific tasks.\n May be -1 if the upper bound is not known.',
+      }),
+    currentUsedSlots: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of slots used by the worker for specific tasks.' }),
+    slotSupplierKind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind of the slot supplier, which is used to determine how the slots are allocated.\n Possible values: "Fixed | ResourceBased | Custom String"',
+      }),
+    totalProcessedTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total number of tasks processed (completed both successfully and unsuccesfully, or any other way)\n by the worker since the worker started. This is a cumulative counter.',
+      }),
+    totalFailedTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Total number of failed tasks processed by the worker so far.' }),
+    lastIntervalProcessedTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of tasks processed in since the last heartbeat from the worker.\n This is a cumulative counter, and it is reset to 0 each time the worker sends a heartbeat.\n Contains both successful and failed tasks.',
+      }),
+    lastIntervalFailureTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Number of failed tasks processed since the last heartbeat from the worker.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('WorkerSlotsInfo')
+
+const WorkerPollerInfoSchema = z
+  .object({
+    currentPollers: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of polling RPCs that are currently in flight.' }),
+    lastSuccessfulPollTime: z.iso.datetime({ offset: true }).exactOptional(),
+    isAutoscaling: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Set true if the number of concurrent pollers is auto-scaled' }),
+  })
+  .openapi({ required: [] })
+  .openapi('WorkerPollerInfo')
+
+const PluginInfoSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the plugin, required.' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The version of the plugin, may be empty.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PluginInfo')
+
+const StorageDriverInfoSchema = z
+  .object({
+    type: z.string().exactOptional().openapi({ description: 'The type of the driver, required.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('StorageDriverInfo')
+
+const WorkerHeartbeatSchema = z
+  .object({
+    workerInstanceKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker identifier, should be unique for the namespace.\n It is distinct from worker identity, which is not necessarily namespace-unique.',
+      }),
+    workerIdentity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker identity, set by the client, may not be unique.\n Usually host_name+(user group name)+process_id, but can be overwritten by the user.',
+      }),
+    hostInfo: WorkerHostInfoSchema.exactOptional().openapi({
+      description: 'Worker host information.',
+    }),
+    taskQueue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Task queue this worker is polling for tasks.' }),
+    deploymentVersion: WorkerDeploymentVersionSchema.exactOptional(),
+    sdkName: z.string().exactOptional(),
+    sdkVersion: z.string().exactOptional(),
+    status: z
+      .enum([
+        'WORKER_STATUS_UNSPECIFIED',
+        'WORKER_STATUS_RUNNING',
+        'WORKER_STATUS_SHUTTING_DOWN',
+        'WORKER_STATUS_SHUTDOWN',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Worker status. Defined by SDK.' }),
+    startTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker start time.\n It can be used to determine worker uptime. (current time - start time)',
+      }),
+    heartbeatTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp of this heartbeat, coming from the worker. Worker should set it to "now".\n Note that this timestamp comes directly from the worker and is subject to workers\' clock skew.',
+      }),
+    elapsedSinceLastHeartbeat: z
+      .string()
+      .regex(/^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$/)
+      .exactOptional()
+      .openapi({ description: 'Elapsed time since the last heartbeat from the worker.' }),
+    workflowTaskSlotsInfo: WorkerSlotsInfoSchema.exactOptional(),
+    activityTaskSlotsInfo: WorkerSlotsInfoSchema.exactOptional(),
+    nexusTaskSlotsInfo: WorkerSlotsInfoSchema.exactOptional(),
+    localActivitySlotsInfo: WorkerSlotsInfoSchema.exactOptional(),
+    workflowPollerInfo: WorkerPollerInfoSchema.exactOptional(),
+    workflowStickyPollerInfo: WorkerPollerInfoSchema.exactOptional(),
+    activityPollerInfo: WorkerPollerInfoSchema.exactOptional(),
+    nexusPollerInfo: WorkerPollerInfoSchema.exactOptional(),
+    totalStickyCacheHit: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'A Workflow Task found a cached Workflow Execution to run against.',
+      }),
+    totalStickyCacheMiss: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'A Workflow Task did not find a cached Workflow execution to run against.',
+      }),
+    currentStickyCacheSize: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Current cache size, expressed in number of Workflow Executions.' }),
+    plugins: z
+      .array(PluginInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'Plugins currently in use by this SDK.' }),
+    drivers: z
+      .array(StorageDriverInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'Storage drivers in use by this SDK.' }),
+  })
+  .openapi({
+    description:
+      'Worker info message, contains information about the worker and its current state.\n All information is provided by the worker itself.\n (-- api-linter: core::0140::prepositions=disabled\n     aip.dev/not-precedent: Removing those words make names less clear. --)',
+    required: [],
+  })
+  .openapi('WorkerHeartbeat')
+
+const WorkerInfoSchema = z
+  .object({ workerHeartbeat: WorkerHeartbeatSchema.exactOptional() })
+  .openapi({ description: 'Detailed worker information.', required: [] })
+  .openapi('WorkerInfo')
+
+const DescribeWorkerResponseSchema = z
+  .object({ workerInfo: WorkerInfoSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('DescribeWorkerResponse')
+
+const DescribeWorkflowExecutionResponseSchema: z.ZodType<DescribeWorkflowExecutionResponseType> = z
+  .object({
+    executionConfig: WorkflowExecutionConfigSchema.exactOptional(),
+    workflowExecutionInfo: WorkflowExecutionInfoSchema.exactOptional(),
+    pendingActivities: z.array(PendingActivityInfoSchema).exactOptional(),
+    pendingChildren: z.array(PendingChildExecutionInfoSchema).exactOptional(),
+    pendingWorkflowTask: PendingWorkflowTaskInfoSchema.exactOptional(),
+    callbacks: z.array(CallbackInfoSchema).exactOptional(),
+    pendingNexusOperations: z.array(PendingNexusOperationInfoSchema).exactOptional(),
+    workflowExtendedInfo: WorkflowExecutionExtendedInfoSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeWorkflowExecutionResponse')
+
+const DescribeWorkflowRuleResponseSchema = z
+  .object({
+    rule: WorkflowRuleSchema.exactOptional().openapi({ description: 'The rule that was read.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeWorkflowRuleResponse')
+
+const WorkerSelectorSchema = z
+  .object({
+    workerInstanceKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Worker instance key to which the command should be sent.' }),
+  })
+  .openapi({
+    description:
+      'This is used to send commands to a specific worker or a group of workers.\n Right now, it is used to send commands to a specific worker instance.\n Will be extended to be able to send command to multiple workers.',
+    required: [],
+  })
+  .openapi('WorkerSelector')
+
+const FetchWorkerConfigRequestSchema = z
+  .object({
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Namespace this worker belongs to.' }),
+    identity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identity of the client who initiated this request.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Reason for sending worker command, can be used for audit purpose.',
+      }),
+    selector: WorkerSelectorSchema.exactOptional().openapi({
+      description:
+        'Defines which workers should receive this command.\n only single worker is supported at this time.',
+    }),
+    resourceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Resource ID for routing. Contains the worker grouping key.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FetchWorkerConfigRequest')
+
+const WorkerConfigSimplePollerBehaviorSchema = z
+  .object({ maxPollers: z.int32().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('WorkerConfigSimplePollerBehavior')
+
+const WorkerConfigAutoscalingPollerBehaviorSchema = z
+  .object({
+    minPollers: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'At least this many poll calls will always be attempted (assuming slots are available).\n Cannot be zero.',
+      }),
+    maxPollers: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'At most this many poll calls will ever be open at once. Must be >= `minimum`.',
+      }),
+    initialPollers: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'This many polls will be attempted initially before scaling kicks in. Must be between\n  `minimum` and `maximum`.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('WorkerConfigAutoscalingPollerBehavior')
+
+const WorkerConfigSchema = z
+  .object({
+    workflowCacheSize: z.int32().exactOptional(),
+    simplePollerBehavior: WorkerConfigSimplePollerBehaviorSchema.exactOptional(),
+    autoscalingPollerBehavior: WorkerConfigAutoscalingPollerBehaviorSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('WorkerConfig')
+
+const FetchWorkerConfigResponseSchema = z
+  .object({
+    workerConfig: WorkerConfigSchema.exactOptional().openapi({
+      description: 'The worker configuration.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('FetchWorkerConfigResponse')
+
+const ReleaseInfoSchema = z
+  .object({
+    version: z.string().exactOptional(),
+    releaseTime: z.iso.datetime({ offset: true }).exactOptional(),
+    notes: z.string().exactOptional(),
+  })
+  .openapi({
+    description: 'ReleaseInfo contains information about specific version of temporal.',
+    required: [],
+  })
+  .openapi('ReleaseInfo')
+
+const VersionInfoSchema = z
+  .object({
+    current: ReleaseInfoSchema.exactOptional(),
+    recommended: ReleaseInfoSchema.exactOptional(),
+    instructions: z.string().exactOptional(),
+    alerts: z.array(AlertSchema).exactOptional(),
+    lastUpdateTime: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({
+    description:
+      'VersionInfo contains details about current and recommended release versions as well as alerts and upgrade instructions.',
+    required: [],
+  })
+  .openapi('VersionInfo')
+
+const GetClusterInfoResponseSchema = z
+  .object({
+    supportedClients: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Key is client name i.e "temporal-go", "temporal-java", or "temporal-cli".\n Value is ranges of supported versions of this client i.e ">1.1.1 <=1.4.0 || ^5.0.0".',
+      }),
+    serverVersion: z.string().exactOptional(),
+    clusterId: z.string().exactOptional(),
+    versionInfo: VersionInfoSchema.exactOptional(),
+    clusterName: z.string().exactOptional(),
+    historyShardCount: z.int32().exactOptional(),
+    persistenceStore: z.string().exactOptional(),
+    visibilityStore: z.string().exactOptional(),
+    initialFailoverVersion: z.string().exactOptional(),
+    failoverVersionIncrement: z.string().exactOptional(),
+  })
+  .openapi({
+    description: 'GetClusterInfoResponse contains information about Temporal cluster.',
+    required: [],
+  })
+  .openapi('GetClusterInfoResponse')
+
+const GetCurrentDeploymentResponseSchema = z
+  .object({ currentDeploymentInfo: DeploymentInfoSchema.exactOptional() })
+  .openapi({
+    description: '[cleanup-wv-pre-release] Pre-release deployment APIs, clean up later',
+    required: [],
+  })
+  .openapi('GetCurrentDeploymentResponse')
+
+const GetDeploymentReachabilityResponseSchema = z
+  .object({
+    deploymentInfo: DeploymentInfoSchema.exactOptional(),
+    reachability: z
+      .enum([
+        'DEPLOYMENT_REACHABILITY_UNSPECIFIED',
+        'DEPLOYMENT_REACHABILITY_REACHABLE',
+        'DEPLOYMENT_REACHABILITY_CLOSED_WORKFLOWS_ONLY',
+        'DEPLOYMENT_REACHABILITY_UNREACHABLE',
+      ])
+      .exactOptional(),
+    lastUpdateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Reachability level might come from server cache. This timestamp specifies when the value\n was actually calculated.',
+      }),
+  })
+  .openapi({
+    description: '[cleanup-wv-pre-release] Pre-release deployment APIs, clean up later',
+    required: [],
+  })
+  .openapi('GetDeploymentReachabilityResponse')
+
+const GetNexusEndpointResponseSchema = z
+  .object({ endpoint: EndpointSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('GetNexusEndpointResponse')
+
+const GetSystemInfoResponseCapabilitiesSchema = z
+  .object({
+    signalAndQueryHeader: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if signal and query headers are supported.' }),
+    internalErrorDifferentiation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if internal errors are differentiated from other types of errors for purposes of\n retrying non-internal errors.\n\n When unset/false, clients retry all failures. When true, clients should only retry\n non-internal errors.',
+      }),
+    activityFailureIncludeHeartbeat: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if RespondActivityTaskFailed API supports including heartbeat details',
+      }),
+    supportsSchedules: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Supports scheduled workflow features.' }),
+    encodedFailureAttributes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if server uses protos that include temporal.api.failure.v1.Failure.encoded_attributes',
+      }),
+    buildIdBasedVersioning: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "True if server supports dispatching Workflow and Activity tasks based on a worker's build_id\n (see:\n https://github.com/temporalio/proposals/blob/a123af3b559f43db16ea6dd31870bfb754c4dc5e/versioning/worker-versions.md)",
+      }),
+    upsertMemo: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if server supports upserting workflow memo' }),
+    eagerWorkflowStart: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if server supports eager workflow task dispatching for the StartWorkflowExecution API',
+      }),
+    sdkMetadata: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the server knows about the sdk metadata field on WFT completions and will record\n it in history',
+      }),
+    countGroupByExecutionStatus: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the server supports count group by execution status' }),
+    nexus: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the server supports Nexus operations.\n This flag is dependent both on server version and for Nexus to be enabled via server configuration.',
+      }),
+    serverScaledDeployments: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the server supports server-scaled deployments.\n This flag is dependent both on server version and for server-scaled deployments\n to be enabled via server configuration.',
+      }),
+  })
+  .openapi({ description: 'System capability details.', required: [] })
+  .openapi('GetSystemInfoResponseCapabilities')
+
+const GetSystemInfoResponseSchema = z
+  .object({
+    serverVersion: z.string().exactOptional().openapi({ description: 'Version of the server.' }),
+    capabilities: GetSystemInfoResponseCapabilitiesSchema.exactOptional().openapi({
+      description: 'All capabilities the system supports.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetSystemInfoResponse')
+
+const GetWorkerBuildIdCompatibilityResponseSchema = z
+  .object({
+    majorVersionSets: z
+      .array(CompatibleVersionSetSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Major version sets, in order from oldest to newest. The last element of the list will always\n be the current default major version. IE: New workflows will target the most recent version\n in that version set.\n\n There may be fewer sets returned than exist, if the request chose to limit this response.',
+      }),
+  })
+  .openapi({ description: '[cleanup-wv-pre-release]', required: [] })
+  .openapi('GetWorkerBuildIdCompatibilityResponse')
+
+const GetWorkerTaskReachabilityResponseSchema = z
+  .object({
+    buildIdReachability: z
+      .array(BuildIdReachabilitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Task reachability, broken down by build id and then task queue.\n When requesting a large number of task queues or all task queues associated with the given build ids in a\n namespace, all task queues will be listed in the response but some of them may not contain reachability\n information due to a server enforced limit. When reaching the limit, task queues that reachability information\n could not be retrieved for will be marked with a single TASK_REACHABILITY_UNSPECIFIED entry. The caller may issue\n another call to get the reachability for those task queues.\n\n Open source users can adjust this limit by setting the server's dynamic config value for\n `limit.reachabilityTaskQueueScan` with the caveat that this call can strain the visibility store.",
+      }),
+  })
+  .openapi({
+    description: '[cleanup-wv-pre-release]\n Deprecated. Use `DescribeTaskQueue`.',
+    required: [],
+  })
+  .openapi('GetWorkerTaskReachabilityResponse')
+
+const TimestampedBuildIdAssignmentRuleSchema = z
+  .object({
+    rule: BuildIdAssignmentRuleSchema.exactOptional(),
+    createTime: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TimestampedBuildIdAssignmentRule')
+
+const TimestampedCompatibleBuildIdRedirectRuleSchema = z
+  .object({
+    rule: CompatibleBuildIdRedirectRuleSchema.exactOptional(),
+    createTime: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TimestampedCompatibleBuildIdRedirectRule')
+
+const GetWorkerVersioningRulesResponseSchema = z
+  .object({
+    assignmentRules: z.array(TimestampedBuildIdAssignmentRuleSchema).exactOptional(),
+    compatibleRedirectRules: z
+      .array(TimestampedCompatibleBuildIdRedirectRuleSchema)
+      .exactOptional(),
+    conflictToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This value can be passed back to UpdateWorkerVersioningRulesRequest to\n ensure that the rules were not modified between this List and the Update,\n which could lead to lost updates and other confusion.',
+      }),
+  })
+  .openapi({ description: '[cleanup-wv-pre-release]', required: [] })
+  .openapi('GetWorkerVersioningRulesResponse')
+
+const GetWorkflowExecutionHistoryResponseSchema: z.ZodType<GetWorkflowExecutionHistoryResponseType> =
+  z
+    .object({
+      history: HistorySchema.exactOptional(),
+      rawHistory: z
+        .array(DataBlobSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Raw history is an alternate representation of history that may be returned if configured on\n the frontend. This is not supported by all SDKs. Either this or `history` will be set.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Will be set if there are more history events than were included in this response',
+        }),
+      archived: z.boolean().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('GetWorkflowExecutionHistoryResponse')
+
+const GetWorkflowExecutionHistoryReverseResponseSchema: z.ZodType<GetWorkflowExecutionHistoryReverseResponseType> =
+  z
+    .object({
+      history: HistorySchema.exactOptional(),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Will be set if there are more history events than were included in this response',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('GetWorkflowExecutionHistoryReverseResponse')
 
 const ListActivityExecutionsResponseSchema = z
   .object({
@@ -8160,41 +8757,7 @@ const ListScheduleMatchingTimesResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListScheduleMatchingTimesResponse')
 
-const ScheduleListInfoSchema = z
-  .object({
-    spec: ScheduleSpecSchema.exactOptional().openapi({
-      description: 'From spec:\n Some fields are dropped from this copy of spec: timezone_data',
-    }),
-    workflowType: WorkflowTypeSchema.exactOptional().openapi({
-      description:
-        "From action:\n Action is a oneof field, but we need to encode this in JSON and oneof fields don't work\n well with JSON. If action is start_workflow, this is set:",
-    }),
-    notes: z.string().exactOptional().openapi({ description: 'From state:' }),
-    paused: z.boolean().exactOptional(),
-    recentActions: z
-      .array(ScheduleActionResultSchema)
-      .exactOptional()
-      .openapi({ description: 'From info (maybe fewer entries):' }),
-    futureActionTimes: z.array(z.iso.datetime({ offset: true })).exactOptional(),
-  })
-  .openapi({
-    description:
-      "ScheduleListInfo is an abbreviated set of values from Schedule and ScheduleInfo\n that's returned in ListSchedules.",
-    required: [],
-  })
-  .openapi('ScheduleListInfo')
-
-const ScheduleListEntrySchema = z
-  .object({
-    scheduleId: z.string().exactOptional(),
-    memo: MemoSchema.exactOptional(),
-    searchAttributes: SearchAttributesSchema.exactOptional(),
-    info: ScheduleListInfoSchema.exactOptional(),
-  })
-  .openapi({ description: 'ScheduleListEntry is returned by ListSchedules.', required: [] })
-  .openapi('ScheduleListEntry')
-
-const ListSchedulesResponseSchema = z
+const ListSchedulesResponseSchema: z.ZodType<ListSchedulesResponseType> = z
   .object({
     schedules: z.array(ScheduleListEntrySchema).exactOptional(),
     nextPageToken: z.string().exactOptional(),
@@ -8252,29 +8815,7 @@ const ListSearchAttributesResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListSearchAttributesResponse')
 
-const ListWorkerDeploymentsResponseWorkerDeploymentSummarySchema = z
-  .object({
-    name: z.string().exactOptional(),
-    createTime: z.iso.datetime({ offset: true }).exactOptional(),
-    routingConfig: RoutingConfigSchema.exactOptional(),
-    latestVersionSummary:
-      WorkerDeploymentInfoWorkerDeploymentVersionSummarySchema.exactOptional().openapi({
-        description:
-          'Summary of the version that was added most recently in the Worker Deployment.',
-      }),
-    currentVersionSummary:
-      WorkerDeploymentInfoWorkerDeploymentVersionSummarySchema.exactOptional().openapi({
-        description: 'Summary of the current version of the Worker Deployment.',
-      }),
-    rampingVersionSummary:
-      WorkerDeploymentInfoWorkerDeploymentVersionSummarySchema.exactOptional().openapi({
-        description: 'Summary of the ramping version of the Worker Deployment.',
-      }),
-  })
-  .openapi({ description: 'A subset of WorkerDeploymentInfo', required: [] })
-  .openapi('ListWorkerDeploymentsResponseWorkerDeploymentSummary')
-
-const ListWorkerDeploymentsResponseSchema = z
+const ListWorkerDeploymentsResponseSchema: z.ZodType<ListWorkerDeploymentsResponseType> = z
   .object({
     nextPageToken: z.string().exactOptional(),
     workerDeployments: z
@@ -8389,30 +8930,6 @@ const ListWorkflowRulesResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListWorkflowRulesResponse')
 
-const MessageSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'An ID for this specific message.' }),
-    protocolInstanceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies the specific instance of a protocol to which this message\n belongs.',
-      }),
-    eventId: z.string().exactOptional(),
-    commandIndex: z.string().exactOptional(),
-    body: GoogleProtobufAnySchema.exactOptional().openapi({
-      description:
-        'The opaque data carried by this message. The protocol type can be\n extracted from the package name of the message carried inside the Any.',
-    }),
-  })
-  .openapi({
-    description:
-      '(-- api-linter: core::0146::any=disabled\n     aip.dev/not-precedent: We want runtime extensibility for the body field --)',
-    required: [],
-  })
-  .openapi('Message')
-
 const OnConflictOptionsSchema = z
   .object({
     attachRequestId: z
@@ -8461,7 +8978,7 @@ const PatchScheduleRequestSchema = z
   .openapi({ required: [] })
   .openapi('PatchScheduleRequest')
 
-const PatchScheduleResponseSchema = z.object({}).openapi('PatchScheduleResponse')
+const PatchScheduleResponseSchema = z.looseObject({}).openapi('PatchScheduleResponse')
 
 const PauseActivityExecutionRequestSchema = z
   .object({
@@ -8504,7 +9021,9 @@ const PauseActivityExecutionRequestSchema = z
   .openapi({ required: [] })
   .openapi('PauseActivityExecutionRequest')
 
-const PauseActivityExecutionResponseSchema = z.object({}).openapi('PauseActivityExecutionResponse')
+const PauseActivityExecutionResponseSchema = z
+  .looseObject({})
+  .openapi('PauseActivityExecutionResponse')
 
 const PauseActivityRequestSchema = z
   .object({
@@ -8540,7 +9059,7 @@ const PauseActivityRequestSchema = z
   .openapi('PauseActivityRequest')
 
 const PauseActivityResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Deprecated. Use `PauseActivityExecutionResponse`.' })
   .openapi('PauseActivityResponse')
 
@@ -8581,7 +9100,7 @@ const PauseWorkflowExecutionRequestSchema = z
   .openapi('PauseWorkflowExecutionRequest')
 
 const PauseWorkflowExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response to a successful PauseWorkflowExecution request.' })
   .openapi('PauseWorkflowExecutionResponse')
 
@@ -8648,145 +9167,6 @@ const PollNexusOperationExecutionResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('PollNexusOperationExecutionResponse')
-
-const WorkflowQuerySchema = z
-  .object({
-    queryType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The workflow-author-defined identifier of the query. Typically a function name.',
-      }),
-    queryArgs: PayloadsSchema.exactOptional().openapi({
-      description: 'Serialized arguments that will be provided to the query handler.',
-    }),
-    header: HeaderSchema.exactOptional().openapi({
-      description:
-        'Headers that were passed by the caller of the query and copied by temporal\n server into the workflow task.',
-    }),
-  })
-  .openapi({ description: 'See https://docs.temporal.io/docs/concepts/queries/', required: [] })
-  .openapi('WorkflowQuery')
-
-const PollerScalingDecisionSchema = z
-  .object({
-    pollRequestDeltaSuggestion: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'How many poll requests to suggest should be added or removed, if any. As of now, server only\n scales up or down by 1. However, SDKs should allow for other values (while staying within\n defined min/max).\n\n The SDK is free to ignore this suggestion, EX: making more polls would not make sense because\n all slots are already occupied.',
-      }),
-  })
-  .openapi({
-    description:
-      'Attached to task responses to give hints to the SDK about how it may adjust its number of\n pollers.',
-    required: [],
-  })
-  .openapi('PollerScalingDecision')
-
-const PollerGroupInfoSchema = z
-  .object({ id: z.string().exactOptional(), weight: z.float32().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('PollerGroupInfo')
-
-const PollWorkflowTaskQueueResponseSchema = z
-  .object({
-    taskToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A unique identifier for this task' }),
-    workflowExecution: WorkflowExecutionSchema.exactOptional(),
-    workflowType: WorkflowTypeSchema.exactOptional(),
-    previousStartedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The last workflow task started event which was processed by some worker for this execution.\n Will be zero if no task has ever started.',
-      }),
-    startedEventId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the most recent workflow task started event, which will have been generated as a\n result of this poll request being served. Will be zero if the task\n does not contain any events which would advance history (no new WFT started).\n Currently this can happen for queries.',
-      }),
-    attempt: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Starting at 1, the number of attempts to complete this task by any worker.',
-      }),
-    backlogCountHint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A hint that there are more tasks already present in this task queue\n partition. Can be used to prioritize draining a sticky queue.\n\n Specifically, the returned number is the number of tasks remaining in\n the in-memory buffer for this partition, which is currently capped at\n 1000. Because sticky queues only have one partition, this number is\n more useful when draining them. Normal queues, typically having more than one\n partition, will return a number representing only some portion of the\n overall backlog. Subsequent RPCs may not hit the same partition as\n this call.',
-      }),
-    history: HistorySchema.exactOptional().openapi({
-      description:
-        'The history for this workflow, which will either be complete or partial. Partial histories\n are sent to workers who have signaled that they are using a sticky queue when completing\n a workflow task.',
-    }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Will be set if there are more history events than were included in this response. Such events\n should be fetched via `GetWorkflowExecutionHistory`.',
-      }),
-    query: WorkflowQuerySchema.exactOptional().openapi({
-      description:
-        'Legacy queries appear in this field. The query must be responded to via\n `RespondQueryTaskCompleted`. If the workflow is already closed (queries are permitted on\n closed workflows) then the `history` field will be populated with the entire history. It\n may also be populated if this task originates on a non-sticky queue.',
-    }),
-    workflowExecutionTaskQueue: TaskQueueSchema.exactOptional().openapi({
-      description:
-        'The task queue this task originated from, which will always be the original non-sticky name\n for the queue, even if this response came from polling a sticky queue.',
-    }),
-    scheduledTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'When this task was scheduled by the server' }),
-    startedTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'When the current workflow task started event was generated, meaning the current attempt.',
-      }),
-    queries: z
-      .record(z.string(), WorkflowQuerySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Queries that should be executed after applying the history in this task. Responses should be\n attached to `RespondWorkflowTaskCompletedRequest::query_results`',
-      }),
-    messages: z
-      .array(MessageSchema)
-      .exactOptional()
-      .openapi({ description: 'Protocol messages piggybacking on a WFT as a transport' }),
-    pollerScalingDecision: PollerScalingDecisionSchema.exactOptional().openapi({
-      description: 'Server-advised information the SDK may use to adjust its poller count.',
-    }),
-    pollerGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This poller group ID identifies the owner of the workflow task awaiting for query response.\n Corresponding RespondQueryTaskCompleted should pass this value for proper routing.',
-      }),
-    pollerGroupInfos: z
-      .array(PollerGroupInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The weighted list of poller groups IDs that client should use for future polls to this task\n queue. Client is expected to:\n   1. Maintain minimum number of pollers no less than the number of groups.\n   2. Try to assign the next poll to a group without any pending polls,\n   3. If every group has some pending polls, assign the next poll to a group randomly\n     according to the weights.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('PollWorkflowTaskQueueResponse')
 
 const QueryRejectedSchema = z
   .object({
@@ -8972,7 +9352,9 @@ const RecordWorkerHeartbeatRequestSchema = z
   .openapi({ required: [] })
   .openapi('RecordWorkerHeartbeatRequest')
 
-const RecordWorkerHeartbeatResponseSchema = z.object({}).openapi('RecordWorkerHeartbeatResponse')
+const RecordWorkerHeartbeatResponseSchema = z
+  .looseObject({})
+  .openapi('RecordWorkerHeartbeatResponse')
 
 const RegisterNamespaceRequestSchema = z
   .object({
@@ -9011,7 +9393,7 @@ const RegisterNamespaceRequestSchema = z
   .openapi({ required: [] })
   .openapi('RegisterNamespaceRequest')
 
-const RegisterNamespaceResponseSchema = z.object({}).openapi('RegisterNamespaceResponse')
+const RegisterNamespaceResponseSchema = z.looseObject({}).openapi('RegisterNamespaceResponse')
 
 const RequestCancelActivityExecutionRequestSchema = z
   .object({
@@ -9041,7 +9423,7 @@ const RequestCancelActivityExecutionRequestSchema = z
   .openapi('RequestCancelActivityExecutionRequest')
 
 const RequestCancelActivityExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RequestCancelActivityExecutionResponse')
 
 const RequestCancelNexusOperationExecutionRequestSchema = z
@@ -9072,7 +9454,7 @@ const RequestCancelNexusOperationExecutionRequestSchema = z
   .openapi('RequestCancelNexusOperationExecutionRequest')
 
 const RequestCancelNexusOperationExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RequestCancelNexusOperationExecutionResponse')
 
 const RequestCancelWorkflowExecutionRequestSchema = z
@@ -9107,7 +9489,7 @@ const RequestCancelWorkflowExecutionRequestSchema = z
   .openapi('RequestCancelWorkflowExecutionRequest')
 
 const RequestCancelWorkflowExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RequestCancelWorkflowExecutionResponse')
 
 const ResetActivityExecutionRequestSchema = z
@@ -9172,7 +9554,9 @@ const ResetActivityExecutionRequestSchema = z
   .openapi({ required: [] })
   .openapi('ResetActivityExecutionRequest')
 
-const ResetActivityExecutionResponseSchema = z.object({}).openapi('ResetActivityExecutionResponse')
+const ResetActivityExecutionResponseSchema = z
+  .looseObject({})
+  .openapi('ResetActivityExecutionResponse')
 
 const ResetActivityRequestSchema = z
   .object({
@@ -9231,11 +9615,11 @@ const ResetActivityRequestSchema = z
   .openapi('ResetActivityRequest')
 
 const ResetActivityResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Deprecated. Use `ResetActivityExecutionRequest`.' })
   .openapi('ResetActivityResponse')
 
-const ResetWorkflowExecutionRequestSchema = z
+const ResetWorkflowExecutionRequestSchema: z.ZodType<ResetWorkflowExecutionRequestType> = z
   .object({
     namespace: z.string().exactOptional(),
     workflowExecution: WorkflowExecutionSchema.exactOptional().openapi({
@@ -9341,7 +9725,7 @@ const RespondActivityTaskCanceledByIdRequestSchema = z
   .openapi('RespondActivityTaskCanceledByIdRequest')
 
 const RespondActivityTaskCanceledByIdResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RespondActivityTaskCanceledByIdResponse')
 
 const RespondActivityTaskCanceledRequestSchema = z
@@ -9381,7 +9765,7 @@ const RespondActivityTaskCanceledRequestSchema = z
   .openapi('RespondActivityTaskCanceledRequest')
 
 const RespondActivityTaskCanceledResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RespondActivityTaskCanceledResponse')
 
 const RespondActivityTaskCompletedByIdRequestSchema = z
@@ -9427,7 +9811,7 @@ const RespondActivityTaskCompletedByIdRequestSchema = z
   .openapi('RespondActivityTaskCompletedByIdRequest')
 
 const RespondActivityTaskCompletedByIdResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RespondActivityTaskCompletedByIdResponse')
 
 const RespondActivityTaskCompletedRequestSchema = z
@@ -9467,7 +9851,7 @@ const RespondActivityTaskCompletedRequestSchema = z
   .openapi('RespondActivityTaskCompletedRequest')
 
 const RespondActivityTaskCompletedResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RespondActivityTaskCompletedResponse')
 
 const RespondActivityTaskFailedByIdRequestSchema = z
@@ -10132,7 +10516,7 @@ const StartActivityExecutionResponseSchema = z
   .openapi({ required: [] })
   .openapi('StartActivityExecutionResponse')
 
-const StartBatchOperationRequestSchema = z
+const StartBatchOperationRequestSchema: z.ZodType<StartBatchOperationRequestType> = z
   .object({
     namespace: z
       .string()
@@ -10181,7 +10565,7 @@ const StartBatchOperationRequestSchema = z
   .openapi({ required: [] })
   .openapi('StartBatchOperationRequest')
 
-const StartBatchOperationResponseSchema = z.object({}).openapi('StartBatchOperationResponse')
+const StartBatchOperationResponseSchema = z.looseObject({}).openapi('StartBatchOperationResponse')
 
 const StartNexusOperationExecutionRequestSchema = z
   .object({
@@ -10425,7 +10809,7 @@ const StartWorkflowExecutionRequestSchema = z
   .openapi({ required: [] })
   .openapi('StartWorkflowExecutionRequest')
 
-const StartWorkflowExecutionResponseSchema = z
+const StartWorkflowExecutionResponseSchema: z.ZodType<StartWorkflowExecutionResponseType> = z
   .object({
     runId: z
       .string()
@@ -10508,7 +10892,7 @@ const StopBatchOperationRequestSchema = z
   .openapi({ required: [] })
   .openapi('StopBatchOperationRequest')
 
-const StopBatchOperationResponseSchema = z.object({}).openapi('StopBatchOperationResponse')
+const StopBatchOperationResponseSchema = z.looseObject({}).openapi('StopBatchOperationResponse')
 
 const TerminateActivityExecutionRequestSchema = z
   .object({
@@ -10538,7 +10922,7 @@ const TerminateActivityExecutionRequestSchema = z
   .openapi('TerminateActivityExecutionRequest')
 
 const TerminateActivityExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('TerminateActivityExecutionResponse')
 
 const TerminateNexusOperationExecutionRequestSchema = z
@@ -10569,7 +10953,7 @@ const TerminateNexusOperationExecutionRequestSchema = z
   .openapi('TerminateNexusOperationExecutionRequest')
 
 const TerminateNexusOperationExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('TerminateNexusOperationExecutionResponse')
 
 const TerminateWorkflowExecutionRequestSchema = z
@@ -10602,7 +10986,7 @@ const TerminateWorkflowExecutionRequestSchema = z
   .openapi('TerminateWorkflowExecutionRequest')
 
 const TerminateWorkflowExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('TerminateWorkflowExecutionResponse')
 
 const TriggerWorkflowRuleRequestSchema = z
@@ -10690,7 +11074,7 @@ const UnpauseActivityExecutionRequestSchema = z
   .openapi('UnpauseActivityExecutionRequest')
 
 const UnpauseActivityExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UnpauseActivityExecutionResponse')
 
 const UnpauseActivityRequestSchema = z
@@ -10739,7 +11123,7 @@ const UnpauseActivityRequestSchema = z
   .openapi('UnpauseActivityRequest')
 
 const UnpauseActivityResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Deprecated. Use `UnpauseActivityExecutionResponse`.' })
   .openapi('UnpauseActivityResponse')
 
@@ -10780,7 +11164,7 @@ const UnpauseWorkflowExecutionRequestSchema = z
   .openapi('UnpauseWorkflowExecutionRequest')
 
 const UnpauseWorkflowExecutionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response to a successful UnpauseWorkflowExecution request.' })
   .openapi('UnpauseWorkflowExecutionResponse')
 
@@ -11035,7 +11419,7 @@ const UpdateScheduleRequestSchema = z
   .openapi({ required: [] })
   .openapi('UpdateScheduleRequest')
 
-const UpdateScheduleResponseSchema = z.object({}).openapi('UpdateScheduleResponse')
+const UpdateScheduleResponseSchema = z.looseObject({}).openapi('UpdateScheduleResponse')
 
 const UpdateTaskQueueConfigRequestRateLimitUpdateSchema = z
   .object({
@@ -11182,7 +11566,7 @@ const UpdateWorkerDeploymentVersionComputeConfigRequestSchema = z
   .openapi('UpdateWorkerDeploymentVersionComputeConfigRequest')
 
 const UpdateWorkerDeploymentVersionComputeConfigResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateWorkerDeploymentVersionComputeConfigResponse')
 
 const UpdateWorkerDeploymentVersionMetadataRequestSchema = z
@@ -11371,7 +11755,7 @@ const ValidateWorkerDeploymentVersionComputeConfigRequestSchema = z
   .openapi('ValidateWorkerDeploymentVersionComputeConfigRequest')
 
 const ValidateWorkerDeploymentVersionComputeConfigResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ValidateWorkerDeploymentVersionComputeConfigResponse')
 
 export const getApiV1ClusterInfoRoute = createRoute({

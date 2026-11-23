@@ -844,6 +844,13 @@ export const getSearchArticlesQueryQueryRoute = createRoute({
           example: 'startup',
         }),
     }),
+    params: z.object({
+      query: z
+        .string()
+        .openapi({
+          param: { name: 'query', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
   },
   responses: {
     200: {
@@ -882,6 +889,13 @@ export const getSearchListsQueryQueryRoute = createRoute({
             schema: { example: 'artificial intelligence', type: 'string' },
           },
           example: 'artificial intelligence',
+        }),
+    }),
+    params: z.object({
+      query: z
+        .string()
+        .openapi({
+          param: { name: 'query', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
   },
@@ -927,6 +941,13 @@ export const getSearchPublicationsQueryQueryRoute = createRoute({
           example: 'mental health',
         }),
     }),
+    params: z.object({
+      query: z
+        .string()
+        .openapi({
+          param: { name: 'query', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
   },
   responses: {
     200: {
@@ -966,6 +987,13 @@ export const getSearchTagsQueryQueryRoute = createRoute({
             schema: { example: 'blockchain', type: 'string' },
           },
           example: 'blockchain',
+        }),
+    }),
+    params: z.object({
+      query: z
+        .string()
+        .openapi({
+          param: { name: 'query', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
   },
@@ -1008,6 +1036,13 @@ export const getSearchUsersQueryQueryRoute = createRoute({
             schema: { example: 'data engineer', type: 'string' },
           },
           example: 'data engineer',
+        }),
+    }),
+    params: z.object({
+      query: z
+        .string()
+        .openapi({
+          param: { name: 'query', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
   },

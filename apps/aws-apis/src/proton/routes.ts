@@ -1,63 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IntegerSchema = z.int().openapi('Integer')
-
-const ResourceCountsSummarySchema = z
-  .object({
-    behindMajor: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of resources of this type in the Amazon Web Services account that need a major template version update.',
-        }),
-    ).exactOptional(),
-    behindMinor: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of resources of this type in the Amazon Web Services account that need a minor template version update.',
-        }),
-    ).exactOptional(),
-    failed: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of resources of this type in the Amazon Web Services account that failed to deploy.',
-        }),
-    ).exactOptional(),
-    total: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of resources of this type in the Amazon Web Services account.',
-        }),
-    ),
-    upToDate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of resources of this type in the Amazon Web Services account that are up-to-date with their template.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['total'], description: 'Summary counts of each Proton resource types.' })
-  .openapi('ResourceCountsSummary')
-
-type CountsSummaryType = {
-  components?: z.infer<typeof ResourceCountsSummarySchema> & { [key: string]: unknown }
-  environmentTemplates?: z.infer<typeof ResourceCountsSummarySchema> & { [key: string]: unknown }
-  environments?: z.infer<typeof ResourceCountsSummarySchema> & { [key: string]: unknown }
-  pipelines?: z.infer<typeof ResourceCountsSummarySchema> & { [key: string]: unknown }
-  serviceInstances?: z.infer<typeof ResourceCountsSummarySchema> & { [key: string]: unknown }
-  serviceTemplates?: z.infer<typeof ResourceCountsSummarySchema> & { [key: string]: unknown }
-  services?: z.infer<typeof ResourceCountsSummarySchema> & { [key: string]: unknown }
-}
-
 const EnvironmentAccountConnectionArnSchema = z.string().openapi('EnvironmentAccountConnectionArn')
 
 const RoleArnSchema = z
@@ -103,81 +45,45 @@ const EnvironmentAccountConnectionStatusSchema = z
 
 const EnvironmentAccountConnectionSchema = z
   .object({
-    arn: EnvironmentAccountConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the environment account connection.',
-        }),
-    ),
-    codebuildRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account.',
-        }),
-    ).exactOptional(),
-    componentRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    environmentAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The environment account that's connected to the environment account connection.",
-        }),
-    ),
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the environment that's associated with the environment account connection.",
-        }),
-    ),
-    id: EnvironmentAccountConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment account connection.' }),
-    ),
-    lastModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the environment account connection was last modified.',
-        }),
-    ),
-    managementAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the management account that's connected to the environment account connection.",
-        }),
-    ),
-    requestedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the environment account connection request was made.',
-        }),
-    ),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The IAM service role that's associated with the environment account connection.",
-        }),
-    ),
-    status: EnvironmentAccountConnectionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the environment account connection.' }),
-    ),
+    arn: EnvironmentAccountConnectionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment account connection.',
+    }),
+    codebuildRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account.',
+    }),
+    componentRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    environmentAccountId: AwsAccountIdSchema.openapi({
+      description:
+        "The environment account that's connected to the environment account connection.",
+    }),
+    environmentName: ResourceNameSchema.openapi({
+      description:
+        "The name of the environment that's associated with the environment account connection.",
+    }),
+    id: EnvironmentAccountConnectionIdSchema.openapi({
+      description: 'The ID of the environment account connection.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the environment account connection was last modified.',
+    }),
+    managementAccountId: AwsAccountIdSchema.openapi({
+      description:
+        "The ID of the management account that's connected to the environment account connection.",
+    }),
+    requestedAt: TimestampSchema.openapi({
+      description: 'The time when the environment account connection request was made.',
+    }),
+    roleArn: ArnSchema.openapi({
+      description:
+        "The IAM service role that's associated with the environment account connection.",
+    }),
+    status: EnvironmentAccountConnectionStatusSchema.openapi({
+      description: 'The status of the environment account connection.',
+    }),
   })
   .openapi({
     required: [
@@ -197,22 +103,18 @@ const EnvironmentAccountConnectionSchema = z
 
 const AcceptEnvironmentAccountConnectionOutputSchema = z
   .object({
-    environmentAccountConnection: EnvironmentAccountConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The environment account connection data that's returned by Proton.",
-        }),
-    ),
+    environmentAccountConnection: EnvironmentAccountConnectionSchema.openapi({
+      description: "The environment account connection data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environmentAccountConnection'] })
   .openapi('AcceptEnvironmentAccountConnectionOutput')
 
 const AcceptEnvironmentAccountConnectionInputSchema = z
   .object({
-    id: EnvironmentAccountConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment account connection.' }),
-    ),
+    id: EnvironmentAccountConnectionIdSchema.openapi({
+      description: 'The ID of the environment account connection.',
+    }),
   })
   .openapi({ required: ['id'], title: 'AcceptEnvironmentAccountConnectionInput' })
   .openapi('AcceptEnvironmentAccountConnectionInput')
@@ -254,73 +156,47 @@ const SpecContentsSchema = z.string().min(1).max(51200).openapi('SpecContents')
 
 const ComponentSchema = z
   .object({
-    arn: ComponentArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the component.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the component was created.' }),
-    ),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The component deployment status.' }),
-    ),
-    deploymentStatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message associated with the component deployment status.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the component.' }),
-    ).exactOptional(),
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Proton environment that this component is associated with.',
-        }),
-    ),
-    lastClientRequestToken: StringSchema.and(
-      z.any().openapi({ description: 'The last token the client requested.' }),
-    ).exactOptional(),
-    lastDeploymentAttemptedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when a deployment of the component was last attempted.',
-        }),
-    ).exactOptional(),
-    lastDeploymentSucceededAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the component was last deployed successfully.' }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the component was last modified.' }),
-    ),
-    name: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the component.' })),
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service instance that this component is attached to. Provided when a component is attached to a service instance.',
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that <code>serviceInstanceName</code> is associated with. Provided when a component is attached to a service instance.',
-        }),
-    ).exactOptional(),
-    serviceSpec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service spec that the component uses to access service inputs. Provided when a component is attached to a service instance.',
-        }),
-    ).exactOptional(),
+    arn: ComponentArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the component.',
+    }),
+    createdAt: TimestampSchema.openapi({ description: 'The time when the component was created.' }),
+    deploymentStatus: DeploymentStatusSchema.openapi({
+      description: 'The component deployment status.',
+    }),
+    deploymentStatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'The message associated with the component deployment status.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the component.',
+    }),
+    environmentName: ResourceNameSchema.openapi({
+      description: 'The name of the Proton environment that this component is associated with.',
+    }),
+    lastClientRequestToken: StringSchema.exactOptional().openapi({
+      description: 'The last token the client requested.',
+    }),
+    lastDeploymentAttemptedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time when a deployment of the component was last attempted.',
+    }),
+    lastDeploymentSucceededAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the component was last deployed successfully.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the component was last modified.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the component.' }),
+    serviceInstanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service instance that this component is attached to. Provided when a component is attached to a service instance.',
+    }),
+    serviceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service that <code>serviceInstanceName</code> is associated with. Provided when a component is attached to a service instance.',
+    }),
+    serviceSpec: SpecContentsSchema.exactOptional().openapi({
+      description:
+        'The service spec that the component uses to access service inputs. Provided when a component is attached to a service instance.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'deploymentStatus', 'environmentName', 'lastModifiedAt', 'name'],
@@ -331,23 +207,18 @@ const ComponentSchema = z
 
 const CancelComponentDeploymentOutputSchema = z
   .object({
-    component: ComponentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The detailed data of the component with the deployment that is being canceled.',
-        }),
-    ),
+    component: ComponentSchema.openapi({
+      description: 'The detailed data of the component with the deployment that is being canceled.',
+    }),
   })
   .openapi({ required: ['component'] })
   .openapi('CancelComponentDeploymentOutput')
 
 const CancelComponentDeploymentInputSchema = z
   .object({
-    componentName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the component with the deployment to cancel.' }),
-    ),
+    componentName: ResourceNameSchema.openapi({
+      description: 'The name of the component with the deployment to cancel.',
+    }),
   })
   .openapi({ required: ['componentName'], title: 'CancelComponentDeploymentInput' })
   .openapi('CancelComponentDeploymentInput')
@@ -373,14 +244,12 @@ const RepositoryProviderSchema = z
 
 const RepositoryBranchSchema = z
   .object({
-    arn: RepositoryArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the linked repository.' }),
-    ),
-    branch: GitBranchNameSchema.and(z.any().openapi({ description: 'The repository branch.' })),
-    name: RepositoryNameSchema.and(z.any().openapi({ description: 'The repository name.' })),
-    provider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
+    arn: RepositoryArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the linked repository.',
+    }),
+    branch: GitBranchNameSchema.openapi({ description: 'The repository branch.' }),
+    name: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    provider: RepositoryProviderSchema.openapi({ description: 'The repository provider.' }),
   })
   .openapi({
     required: ['arn', 'branch', 'name', 'provider'],
@@ -397,104 +266,66 @@ const TemplateVersionPartSchema = z
 
 const EnvironmentSchema = z
   .object({
-    arn: EnvironmentArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the environment.' }),
-    ),
-    codebuildRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using CodeBuild-based provisioning on your behalf.',
-        }),
-    ).exactOptional(),
-    componentRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the environment was created.' }),
-    ),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The environment deployment status.' }),
-    ),
-    deploymentStatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'An environment deployment status message.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the environment.' }),
-    ).exactOptional(),
-    environmentAccountConnectionId: EnvironmentAccountConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the environment account connection that's used to provision infrastructure resources in an environment account.",
-        }),
-    ).exactOptional(),
-    environmentAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the environment account that the environment infrastructure resources are provisioned in.',
-        }),
-    ).exactOptional(),
-    lastDeploymentAttemptedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when a deployment of the environment was last attempted.',
-        }),
-    ),
-    lastDeploymentSucceededAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the environment was last deployed successfully.' }),
-    ),
-    name: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the environment.' })),
-    protonServiceRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.',
-        }),
-    ).exactOptional(),
-    provisioning: ProvisioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
-        }),
-    ).exactOptional(),
-    provisioningRepository: RepositoryBranchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/APIReference/API_CreateRepository.html">CreateRepository</a>.',
-        }),
-    ).exactOptional(),
-    spec: SpecContentsSchema.and(
-      z.any().openapi({ description: 'The environment spec.' }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The major version of the environment template.' }),
-    ),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The minor version of the environment template.' }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the environment template.' }),
-    ),
+    arn: EnvironmentArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment.',
+    }),
+    codebuildRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using CodeBuild-based provisioning on your behalf.',
+    }),
+    componentRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the environment was created.',
+    }),
+    deploymentStatus: DeploymentStatusSchema.openapi({
+      description: 'The environment deployment status.',
+    }),
+    deploymentStatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'An environment deployment status message.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the environment.',
+    }),
+    environmentAccountConnectionId: EnvironmentAccountConnectionIdSchema.exactOptional().openapi({
+      description:
+        "The ID of the environment account connection that's used to provision infrastructure resources in an environment account.",
+    }),
+    environmentAccountId: AwsAccountIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the environment account that the environment infrastructure resources are provisioned in.',
+    }),
+    lastDeploymentAttemptedAt: TimestampSchema.openapi({
+      description: 'The time when a deployment of the environment was last attempted.',
+    }),
+    lastDeploymentSucceededAt: TimestampSchema.openapi({
+      description: 'The time when the environment was last deployed successfully.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the environment.' }),
+    protonServiceRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.',
+    }),
+    provisioning: ProvisioningSchema.exactOptional().openapi({
+      description:
+        'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
+    }),
+    provisioningRepository: RepositoryBranchSchema.exactOptional().openapi({
+      description:
+        'The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/APIReference/API_CreateRepository.html">CreateRepository</a>.',
+    }),
+    spec: SpecContentsSchema.exactOptional().openapi({ description: 'The environment spec.' }),
+    templateMajorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The major version of the environment template.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The minor version of the environment template.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment template.',
+    }),
   })
   .openapi({
     required: [
@@ -515,20 +346,18 @@ const EnvironmentSchema = z
 
 const CancelEnvironmentDeploymentOutputSchema = z
   .object({
-    environment: EnvironmentSchema.and(
-      z.any().openapi({ description: "The environment summary data that's returned by Proton." }),
-    ),
+    environment: EnvironmentSchema.openapi({
+      description: "The environment summary data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environment'] })
   .openapi('CancelEnvironmentDeploymentOutput')
 
 const CancelEnvironmentDeploymentInputSchema = z
   .object({
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the environment with the deployment to cancel.' }),
-    ),
+    environmentName: ResourceNameSchema.openapi({
+      description: 'The name of the environment with the deployment to cancel.',
+    }),
   })
   .openapi({ required: ['environmentName'], title: 'CancelEnvironmentDeploymentInput' })
   .openapi('CancelEnvironmentDeploymentInput')
@@ -537,83 +366,48 @@ const ServiceInstanceArnSchema = z.string().openapi('ServiceInstanceArn')
 
 const ServiceInstanceSchema = z
   .object({
-    arn: ServiceInstanceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the service instance.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service instance was created.' }),
-    ),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The service instance deployment status.' }),
-    ),
-    deploymentStatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The message associated with the service instance deployment status.',
-        }),
-    ).exactOptional(),
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the environment that the service instance was deployed into.',
-        }),
-    ),
-    lastClientRequestToken: StringSchema.and(
-      z.any().openapi({ description: 'The last client request token received.' }),
-    ).exactOptional(),
-    lastDeploymentAttemptedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when a deployment of the service instance was last attempted.',
-        }),
-    ),
-    lastDeploymentSucceededAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the service instance was last deployed successfully.',
-        }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service instance.' }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service that the service instance belongs to.' }),
-    ),
-    spec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The service spec that was used to create the service instance.' }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The major version of the service template that was used to create the service instance.',
-        }),
-    ),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minor version of the service template that was used to create the service instance.',
-        }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service template that was used to create the service instance.',
-        }),
-    ),
+    arn: ServiceInstanceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the service instance.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the service instance was created.',
+    }),
+    deploymentStatus: DeploymentStatusSchema.openapi({
+      description: 'The service instance deployment status.',
+    }),
+    deploymentStatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'The message associated with the service instance deployment status.',
+    }),
+    environmentName: ResourceNameSchema.openapi({
+      description: 'The name of the environment that the service instance was deployed into.',
+    }),
+    lastClientRequestToken: StringSchema.exactOptional().openapi({
+      description: 'The last client request token received.',
+    }),
+    lastDeploymentAttemptedAt: TimestampSchema.openapi({
+      description: 'The time when a deployment of the service instance was last attempted.',
+    }),
+    lastDeploymentSucceededAt: TimestampSchema.openapi({
+      description: 'The time when the service instance was last deployed successfully.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service instance.' }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service that the service instance belongs to.',
+    }),
+    spec: SpecContentsSchema.exactOptional().openapi({
+      description: 'The service spec that was used to create the service instance.',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'The major version of the service template that was used to create the service instance.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'The minor version of the service template that was used to create the service instance.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the service template that was used to create the service instance.',
+    }),
   })
   .openapi({
     required: [
@@ -635,31 +429,21 @@ const ServiceInstanceSchema = z
 
 const CancelServiceInstanceDeploymentOutputSchema = z
   .object({
-    serviceInstance: ServiceInstanceSchema.and(
-      z
-        .any()
-        .openapi({ description: "The service instance summary data that's returned by Proton." }),
-    ),
+    serviceInstance: ServiceInstanceSchema.openapi({
+      description: "The service instance summary data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['serviceInstance'] })
   .openapi('CancelServiceInstanceDeploymentOutput')
 
 const CancelServiceInstanceDeploymentInputSchema = z
   .object({
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service instance with the deployment to cancel.',
-        }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service with the service instance deployment to cancel.',
-        }),
-    ),
+    serviceInstanceName: ResourceNameSchema.openapi({
+      description: 'The name of the service instance with the deployment to cancel.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service with the service instance deployment to cancel.',
+    }),
   })
   .openapi({
     required: ['serviceInstanceName', 'serviceName'],
@@ -669,61 +453,38 @@ const CancelServiceInstanceDeploymentInputSchema = z
 
 const ServicePipelineSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the service pipeline.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service pipeline was created.' }),
-    ),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The deployment status of the service pipeline.' }),
-    ),
-    deploymentStatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'A service pipeline deployment status message.' }),
-    ).exactOptional(),
-    lastDeploymentAttemptedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when a deployment of the service pipeline was last attempted.',
-        }),
-    ),
-    lastDeploymentSucceededAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the service pipeline was last deployed successfully.',
-        }),
-    ),
-    spec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The service spec that was used to create the service pipeline.' }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The major version of the service template that was used to create the service pipeline.',
-        }),
-    ),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minor version of the service template that was used to create the service pipeline.',
-        }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service template that was used to create the service pipeline.',
-        }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the service pipeline.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the service pipeline was created.',
+    }),
+    deploymentStatus: DeploymentStatusSchema.openapi({
+      description: 'The deployment status of the service pipeline.',
+    }),
+    deploymentStatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A service pipeline deployment status message.',
+    }),
+    lastDeploymentAttemptedAt: TimestampSchema.openapi({
+      description: 'The time when a deployment of the service pipeline was last attempted.',
+    }),
+    lastDeploymentSucceededAt: TimestampSchema.openapi({
+      description: 'The time when the service pipeline was last deployed successfully.',
+    }),
+    spec: SpecContentsSchema.exactOptional().openapi({
+      description: 'The service spec that was used to create the service pipeline.',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'The major version of the service template that was used to create the service pipeline.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'The minor version of the service template that was used to create the service pipeline.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the service template that was used to create the service pipeline.',
+    }),
   })
   .openapi({
     required: [
@@ -742,33 +503,27 @@ const ServicePipelineSchema = z
 
 const CancelServicePipelineDeploymentOutputSchema = z
   .object({
-    pipeline: ServicePipelineSchema.and(
-      z
-        .any()
-        .openapi({ description: "The service pipeline detail data that's returned by Proton." }),
-    ),
+    pipeline: ServicePipelineSchema.openapi({
+      description: "The service pipeline detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['pipeline'] })
   .openapi('CancelServicePipelineDeploymentOutput')
 
 const CancelServicePipelineDeploymentInputSchema = z
   .object({
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service with the service pipeline deployment to cancel.',
-        }),
-    ),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service with the service pipeline deployment to cancel.',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'CancelServicePipelineDeploymentInput' })
   .openapi('CancelServicePipelineDeploymentInput')
 
 const CreateComponentOutputSchema = z
   .object({
-    component: ComponentSchema.and(
-      z.any().openapi({ description: 'The detailed data of the created component.' }),
-    ),
+    component: ComponentSchema.openapi({
+      description: 'The detailed data of the created component.',
+    }),
   })
   .openapi({ required: ['component'] })
   .openapi('CreateComponentOutput')
@@ -792,8 +547,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(z.any().openapi({ description: 'The key of the resource tag.' })),
-    value: TagValueSchema.and(z.any().openapi({ description: 'The value of the resource tag.' })),
+    key: TagKeySchema.openapi({ description: 'The key of the resource tag.' }),
+    value: TagValueSchema.openapi({ description: 'The value of the resource tag.' }),
   })
   .openapi({ required: ['key', 'value'], description: 'A description of a resource tag.' })
   .openapi('Tag')
@@ -804,73 +559,43 @@ const TemplateFileContentsSchema = z.string().min(1).max(51200).openapi('Templat
 
 const CreateComponentInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token for the created component.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An optional customer-provided description of the component.' }),
-    ).exactOptional(),
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the Proton environment that you want to associate this component with. You must specify this when you don't specify <code>serviceInstanceName</code> and <code>serviceName</code>.",
-        }),
-    ).exactOptional(),
-    manifest: TemplateManifestContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A path to a manifest file that lists the Infrastructure as Code (IaC) file, template language, and rendering engine for infrastructure that a custom component provisions.',
-        }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The customer-provided name of the component.' }),
-    ),
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service instance that you want to attach this component to. If you don't specify this, the component isn't attached to any service instance. Specify both <code>serviceInstanceName</code> and <code>serviceName</code> or neither of them.",
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service that <code>serviceInstanceName</code> is associated with. If you don't specify this, the component isn't attached to any service instance. Specify both <code>serviceInstanceName</code> and <code>serviceName</code> or neither of them.",
-        }),
-    ).exactOptional(),
-    serviceSpec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service spec that you want the component to use to access service inputs. Set this only when you attach the component to a service instance.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton component. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    templateFile: TemplateFileContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A path to the Infrastructure as Code (IaC) file describing infrastructure that a custom component provisions.</p> <note> <p>Components support a single IaC file, even if you use Terraform as your template language.</p> </note>',
-        }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token for the created component.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional customer-provided description of the component.',
+    }),
+    environmentName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "The name of the Proton environment that you want to associate this component with. You must specify this when you don't specify <code>serviceInstanceName</code> and <code>serviceName</code>.",
+    }),
+    manifest: TemplateManifestContentsSchema.openapi({
+      description:
+        'A path to a manifest file that lists the Infrastructure as Code (IaC) file, template language, and rendering engine for infrastructure that a custom component provisions.',
+    }),
+    name: ResourceNameSchema.openapi({
+      description: 'The customer-provided name of the component.',
+    }),
+    serviceInstanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "The name of the service instance that you want to attach this component to. If you don't specify this, the component isn't attached to any service instance. Specify both <code>serviceInstanceName</code> and <code>serviceName</code> or neither of them.",
+    }),
+    serviceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "The name of the service that <code>serviceInstanceName</code> is associated with. If you don't specify this, the component isn't attached to any service instance. Specify both <code>serviceInstanceName</code> and <code>serviceName</code> or neither of them.",
+    }),
+    serviceSpec: SpecContentsSchema.exactOptional().openapi({
+      description:
+        'The service spec that you want the component to use to access service inputs. Set this only when you attach the component to a service instance.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton component. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    templateFile: TemplateFileContentsSchema.openapi({
+      description:
+        '<p>A path to the Infrastructure as Code (IaC) file describing infrastructure that a custom component provisions.</p> <note> <p>Components support a single IaC file, even if you use Terraform as your template language.</p> </note>',
+    }),
   })
   .openapi({ required: ['manifest', 'name', 'templateFile'], title: 'CreateComponentInput' })
   .openapi('CreateComponentInput')
@@ -879,20 +604,18 @@ const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceede
 
 const CreateEnvironmentOutputSchema = z
   .object({
-    environment: EnvironmentSchema.and(
-      z.any().openapi({ description: "The environment detail data that's returned by Proton." }),
-    ),
+    environment: EnvironmentSchema.openapi({
+      description: "The environment detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environment'] })
   .openapi('CreateEnvironmentOutput')
 
 const RepositoryBranchInputSchema = z
   .object({
-    branch: GitBranchNameSchema.and(z.any().openapi({ description: 'The repository branch.' })),
-    name: RepositoryNameSchema.and(z.any().openapi({ description: 'The repository name.' })),
-    provider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
+    branch: GitBranchNameSchema.openapi({ description: 'The repository branch.' }),
+    name: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    provider: RepositoryProviderSchema.openapi({ description: 'The repository provider.' }),
   })
   .openapi({
     required: ['branch', 'name', 'provider'],
@@ -902,84 +625,48 @@ const RepositoryBranchInputSchema = z
 
 const CreateEnvironmentInputSchema = z
   .object({
-    codebuildRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using CodeBuild-based provisioning on your behalf.</p> <p>To use CodeBuild-based provisioning for the environment or for any service instance running in the environment, specify either the <code>environmentAccountConnectionId</code> or <code>codebuildRoleArn</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    componentRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>You must specify <code>componentRoleArn</code> to allow directly defined components to be associated with this environment.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A description of the environment that's being created and deployed.",
-        }),
-    ).exactOptional(),
-    environmentAccountConnectionId: EnvironmentAccountConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the environment account connection that you provide if you\'re provisioning your environment infrastructure resources to an environment account. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-env-account-connections.html">Environment account connections</a> in the <i>Proton User guide</i>.</p> <p>To use Amazon Web Services-managed provisioning for the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and omit the <code>provisioningRepository</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the environment.' })),
-    protonServiceRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.</p> <p>To use Amazon Web Services-managed provisioning for the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and omit the <code>provisioningRepository</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    provisioningRepository: RepositoryBranchInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.</p> <p>To use self-managed provisioning for the environment, specify this parameter and omit the <code>environmentAccountConnectionId</code> and <code>protonServiceRoleArn</code> parameters.</p>',
-        }),
-    ).exactOptional(),
-    spec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A YAML formatted string that provides inputs as defined in the environment template bundle schema file. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-environments.html">Environments</a> in the <i>Proton User Guide</i>.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton environment. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The major version of the environment template.' }),
-    ),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The minor version of the environment template.' }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the environment template. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-templates.html">Environment Templates</a> in the <i>Proton User Guide</i>.',
-        }),
-    ),
+    codebuildRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using CodeBuild-based provisioning on your behalf.</p> <p>To use CodeBuild-based provisioning for the environment or for any service instance running in the environment, specify either the <code>environmentAccountConnectionId</code> or <code>codebuildRoleArn</code> parameter.</p>',
+    }),
+    componentRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>You must specify <code>componentRoleArn</code> to allow directly defined components to be associated with this environment.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: "A description of the environment that's being created and deployed.",
+    }),
+    environmentAccountConnectionId: EnvironmentAccountConnectionIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the environment account connection that you provide if you\'re provisioning your environment infrastructure resources to an environment account. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-env-account-connections.html">Environment account connections</a> in the <i>Proton User guide</i>.</p> <p>To use Amazon Web Services-managed provisioning for the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and omit the <code>provisioningRepository</code> parameter.</p>',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the environment.' }),
+    protonServiceRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.</p> <p>To use Amazon Web Services-managed provisioning for the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and omit the <code>provisioningRepository</code> parameter.</p>',
+    }),
+    provisioningRepository: RepositoryBranchInputSchema.exactOptional().openapi({
+      description:
+        '<p>The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.</p> <p>To use self-managed provisioning for the environment, specify this parameter and omit the <code>environmentAccountConnectionId</code> and <code>protonServiceRoleArn</code> parameters.</p>',
+    }),
+    spec: SpecContentsSchema.openapi({
+      description:
+        'A YAML formatted string that provides inputs as defined in the environment template bundle schema file. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-environments.html">Environments</a> in the <i>Proton User Guide</i>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton environment. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The major version of the environment template.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The minor version of the environment template.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description:
+        'The name of the environment template. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-templates.html">Environment Templates</a> in the <i>Proton User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['name', 'spec', 'templateMajorVersion', 'templateName'],
@@ -989,75 +676,43 @@ const CreateEnvironmentInputSchema = z
 
 const CreateEnvironmentAccountConnectionOutputSchema = z
   .object({
-    environmentAccountConnection: EnvironmentAccountConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The environment account connection detail data that's returned by Proton.",
-        }),
-    ),
+    environmentAccountConnection: EnvironmentAccountConnectionSchema.openapi({
+      description: "The environment account connection detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environmentAccountConnection'] })
   .openapi('CreateEnvironmentAccountConnectionOutput')
 
 const CreateEnvironmentAccountConnectionInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When included, if two identical requests are made with the same client token, Proton returns the environment account connection that the first request created.',
-        }),
-    ).exactOptional(),
-    codebuildRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account.',
-        }),
-    ).exactOptional(),
-    componentRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>You must specify <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in this account.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the Proton environment that's created in the associated management account.",
-        }),
-    ),
-    managementAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the management account that accepts or rejects the environment account connection. You create and manage the Proton environment in this account. If the management account accepts the environment account connection, Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the IAM service role that's created in the environment account. Proton uses this role to provision infrastructure resources in the associated environment account.",
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton environment account connection. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'When included, if two identical requests are made with the same client token, Proton returns the environment account connection that the first request created.',
+    }),
+    codebuildRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account.',
+    }),
+    componentRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>You must specify <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in this account.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    environmentName: ResourceNameSchema.openapi({
+      description:
+        "The name of the Proton environment that's created in the associated management account.",
+    }),
+    managementAccountId: AwsAccountIdSchema.openapi({
+      description:
+        'The ID of the management account that accepts or rejects the environment account connection. You create and manage the Proton environment in this account. If the management account accepts the environment account connection, Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the IAM service role that's created in the environment account. Proton uses this role to provision infrastructure resources in the associated environment account.",
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton environment account connection. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['environmentName', 'managementAccountId'],
@@ -1078,51 +733,32 @@ const FullTemplateVersionNumberSchema = z
 
 const EnvironmentTemplateSchema = z
   .object({
-    arn: EnvironmentTemplateArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the environment template.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the environment template was created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the environment template.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the environment template as displayed in the developer interface.',
-        }),
-    ).exactOptional(),
-    encryptionKey: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The customer provided encryption key for the environment template.',
-        }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the environment template was last modified.' }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
-    provisioning: ProvisioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
-        }),
-    ).exactOptional(),
-    recommendedVersion: FullTemplateVersionNumberSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the recommended version of the environment template.' }),
-    ).exactOptional(),
+    arn: EnvironmentTemplateArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment template.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the environment template was created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the environment template.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The name of the environment template as displayed in the developer interface.',
+    }),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description: 'The customer provided encryption key for the environment template.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the environment template was last modified.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the environment template.' }),
+    provisioning: ProvisioningSchema.exactOptional().openapi({
+      description:
+        'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
+    }),
+    recommendedVersion: FullTemplateVersionNumberSchema.exactOptional().openapi({
+      description: 'The ID of the recommended version of the environment template.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'lastModifiedAt', 'name'],
@@ -1132,55 +768,33 @@ const EnvironmentTemplateSchema = z
 
 const CreateEnvironmentTemplateOutputSchema = z
   .object({
-    environmentTemplate: EnvironmentTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The environment template detail data that's returned by Proton.",
-        }),
-    ),
+    environmentTemplate: EnvironmentTemplateSchema.openapi({
+      description: "The environment template detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environmentTemplate'] })
   .openapi('CreateEnvironmentTemplateOutput')
 
 const CreateEnvironmentTemplateInputSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the environment template.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The environment template name as displayed in the developer interface.',
-        }),
-    ).exactOptional(),
-    encryptionKey: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A customer provided encryption key that Proton uses to encrypt data.',
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
-    provisioning: ProvisioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton environment template. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the environment template.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The environment template name as displayed in the developer interface.',
+    }),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description: 'A customer provided encryption key that Proton uses to encrypt data.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the environment template.' }),
+    provisioning: ProvisioningSchema.exactOptional().openapi({
+      description:
+        'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton environment template. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateEnvironmentTemplateInput' })
   .openapi('CreateEnvironmentTemplateInput')
@@ -1195,62 +809,40 @@ const TemplateVersionStatusSchema = z
 
 const EnvironmentTemplateVersionSchema = z
   .object({
-    arn: EnvironmentTemplateVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the version of an environment template.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the version of an environment template was created.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the minor version of an environment template.' }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the version of an environment template was last modified.',
-        }),
-    ),
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The latest major version that's associated with the version of an environment template.",
-        }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The minor version of an environment template.' }),
-    ),
-    recommendedMinorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The recommended minor version of the environment template.' }),
-    ).exactOptional(),
-    schema: TemplateSchemaSchema.and(
-      z.any().openapi({ description: 'The schema of the version of an environment template.' }),
-    ).exactOptional(),
-    status: TemplateVersionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the version of an environment template.' }),
-    ),
-    statusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status message of the version of an environment template.' }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the version of an environment template.' }),
-    ),
+    arn: EnvironmentTemplateVersionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the version of an environment template.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the version of an environment template was created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the minor version of an environment template.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the version of an environment template was last modified.',
+    }),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        "The latest major version that's associated with the version of an environment template.",
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The minor version of an environment template.',
+    }),
+    recommendedMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The recommended minor version of the environment template.',
+    }),
+    schema: TemplateSchemaSchema.exactOptional().openapi({
+      description: 'The schema of the version of an environment template.',
+    }),
+    status: TemplateVersionStatusSchema.openapi({
+      description: 'The status of the version of an environment template.',
+    }),
+    statusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'The status message of the version of an environment template.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the version of an environment template.',
+    }),
   })
   .openapi({
     required: [
@@ -1268,13 +860,9 @@ const EnvironmentTemplateVersionSchema = z
 
 const CreateEnvironmentTemplateVersionOutputSchema = z
   .object({
-    environmentTemplateVersion: EnvironmentTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The environment template detail data that's returned by Proton.",
-        }),
-    ),
+    environmentTemplateVersion: EnvironmentTemplateVersionSchema.openapi({
+      description: "The environment template detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environmentTemplateVersion'] })
   .openapi('CreateEnvironmentTemplateVersionOutput')
@@ -1290,100 +878,68 @@ const S3KeySchema = z.string().min(1).max(1024).openapi('S3Key')
 
 const S3ObjectSourceSchema = z
   .object({
-    bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the S3 bucket that contains a template bundle.' }),
-    ),
-    key: S3KeySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The path to the S3 bucket that contains a template bundle.' }),
-    ),
+    bucket: S3BucketSchema.openapi({
+      description: 'The name of the S3 bucket that contains a template bundle.',
+    }),
+    key: S3KeySchema.openapi({
+      description: 'The path to the S3 bucket that contains a template bundle.',
+    }),
   })
   .openapi({ required: ['bucket', 'key'], description: 'Template bundle S3 bucket data.' })
   .openapi('S3ObjectSource')
 
 const TemplateVersionSourceInputSchema = z
   .object({
-    s3: S3ObjectSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An S3 source object that includes the template bundle S3 path and name for a template minor version.',
-        }),
-    ).exactOptional(),
+    s3: S3ObjectSourceSchema.exactOptional().openapi({
+      description:
+        'An S3 source object that includes the template bundle S3 path and name for a template minor version.',
+    }),
   })
   .openapi({ description: 'Template version source data.', required: [] })
   .openapi('TemplateVersionSourceInput')
 
 const CreateEnvironmentTemplateVersionInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When included, if two identical requests are made with the same client token, Proton returns the environment template version that the first request created.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the new version of an environment template.' }),
-    ).exactOptional(),
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To create a new minor version of the environment template, include <code>major Version</code>.</p> <p>To create a new major and minor version of the environment template, exclude <code>major Version</code>.</p>',
-        }),
-    ).exactOptional(),
-    source: TemplateVersionSourceInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that includes the template bundle S3 bucket path and name for the new version of an template.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton environment template version. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'When included, if two identical requests are made with the same client token, Proton returns the environment template version that the first request created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the new version of an environment template.',
+    }),
+    majorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description:
+        '<p>To create a new minor version of the environment template, include <code>major Version</code>.</p> <p>To create a new major and minor version of the environment template, exclude <code>major Version</code>.</p>',
+    }),
+    source: TemplateVersionSourceInputSchema.openapi({
+      description:
+        'An object that includes the template bundle S3 bucket path and name for the new version of an template.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton environment template version. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the environment template.',
+    }),
   })
   .openapi({ required: ['source', 'templateName'], title: 'CreateEnvironmentTemplateVersionInput' })
   .openapi('CreateEnvironmentTemplateVersionInput')
 
 const RepositorySchema = z
   .object({
-    arn: RepositoryArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the linked repository.' }),
-    ),
-    connectionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of your AWS CodeStar connection that connects Proton to your repository provider account.',
-        }),
-    ),
-    encryptionKey: ArnSchema.and(
-      z.any().openapi({ description: 'Your customer Amazon Web Services KMS encryption key.' }),
-    ).exactOptional(),
-    name: RepositoryNameSchema.and(z.any().openapi({ description: 'The repository name.' })),
-    provider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
+    arn: RepositoryArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the linked repository.',
+    }),
+    connectionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of your AWS CodeStar connection that connects Proton to your repository provider account.',
+    }),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description: 'Your customer Amazon Web Services KMS encryption key.',
+    }),
+    name: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    provider: RepositoryProviderSchema.openapi({ description: 'The repository provider.' }),
   })
   .openapi({
     required: ['arn', 'connectionArn', 'name', 'provider'],
@@ -1394,51 +950,31 @@ const RepositorySchema = z
 
 const CreateRepositoryOutputSchema = z
   .object({
-    repository: RepositorySchema.and(
-      z
-        .any()
-        .openapi({ description: "The repository link's detail data that's returned by Proton." }),
-    ),
+    repository: RepositorySchema.openapi({
+      description: "The repository link's detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['repository'] })
   .openapi('CreateRepositoryOutput')
 
 const CreateRepositoryInputSchema = z
   .object({
-    connectionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of your AWS CodeStar connection that connects Proton to your repository provider account. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/setting-up-for-service.html">Setting up for Proton</a> in the <i>Proton User Guide</i>.',
-        }),
-    ),
-    encryptionKey: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of your customer Amazon Web Services Key Management Service (Amazon Web Services KMS) key.',
-        }),
-    ).exactOptional(),
-    name: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The repository name (for example, <code>myrepos/myrepo</code>).',
-        }),
-    ),
-    provider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton repository. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    connectionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of your AWS CodeStar connection that connects Proton to your repository provider account. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/setting-up-for-service.html">Setting up for Proton</a> in the <i>Proton User Guide</i>.',
+    }),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of your customer Amazon Web Services Key Management Service (Amazon Web Services KMS) key.',
+    }),
+    name: RepositoryNameSchema.openapi({
+      description: 'The repository name (for example, <code>myrepos/myrepo</code>).',
+    }),
+    provider: RepositoryProviderSchema.openapi({ description: 'The repository provider.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton repository. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['connectionArn', 'name', 'provider'], title: 'CreateRepositoryInput' })
   .openapi('CreateRepositoryInput')
@@ -1468,51 +1004,39 @@ const ServiceStatusSchema = z
 
 const ServiceSchema = z
   .object({
-    arn: ServiceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the service.' }),
-    ),
-    branchName: GitBranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the code repository branch that holds the code that's deployed in Proton.",
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service was created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the service.' }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service was last modified.' }),
-    ),
-    name: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the service.' })),
-    pipeline: ServicePipelineSchema.and(
-      z.any().openapi({ description: 'The service pipeline detail data.' }),
-    ).exactOptional(),
-    repositoryConnectionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the repository connection. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/setting-up-for-service.html#setting-up-vcontrol">Setting up an AWS CodeStar connection</a> in the <i>Proton User Guide</i>.',
-        }),
-    ).exactOptional(),
-    repositoryId: RepositoryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the source code repository.' }),
-    ).exactOptional(),
-    spec: SpecContentsSchema.and(
-      z.any().openapi({ description: 'The formatted specification that defines the service.' }),
-    ),
-    status: ServiceStatusSchema.and(z.any().openapi({ description: 'The status of the service.' })),
-    statusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'A service status message.' }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
+    arn: ServiceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the service.',
+    }),
+    branchName: GitBranchNameSchema.exactOptional().openapi({
+      description:
+        "The name of the code repository branch that holds the code that's deployed in Proton.",
+    }),
+    createdAt: TimestampSchema.openapi({ description: 'The time when the service was created.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the service.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the service was last modified.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service.' }),
+    pipeline: ServicePipelineSchema.exactOptional().openapi({
+      description: 'The service pipeline detail data.',
+    }),
+    repositoryConnectionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the repository connection. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/setting-up-for-service.html#setting-up-vcontrol">Setting up an AWS CodeStar connection</a> in the <i>Proton User Guide</i>.',
+    }),
+    repositoryId: RepositoryIdSchema.exactOptional().openapi({
+      description: 'The ID of the source code repository.',
+    }),
+    spec: SpecContentsSchema.openapi({
+      description: 'The formatted specification that defines the service.',
+    }),
+    status: ServiceStatusSchema.openapi({ description: 'The status of the service.' }),
+    statusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A service status message.',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'lastModifiedAt', 'name', 'spec', 'status', 'templateName'],
@@ -1522,82 +1046,48 @@ const ServiceSchema = z
 
 const CreateServiceOutputSchema = z
   .object({
-    service: ServiceSchema.and(
-      z.any().openapi({ description: "The service detail data that's returned by Proton." }),
-    ),
+    service: ServiceSchema.openapi({
+      description: "The service detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['service'] })
   .openapi('CreateServiceOutput')
 
 const CreateServiceInputSchema = z
   .object({
-    branchName: GitBranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the code repository branch that holds the code that's deployed in Proton. <i>Don't</i> include this parameter if your service template <i>doesn't</i> include a service pipeline.",
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the Proton service.' }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(z.any().openapi({ description: 'The service name.' })),
-    repositoryConnectionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the repository connection. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/setting-up-for-service.html#setting-up-vcontrol">Setting up an AWS CodeStar connection</a> in the <i>Proton User Guide</i>. <i>Don\'t</i> include this parameter if your service template <i>doesn\'t</i> include a service pipeline.',
-        }),
-    ).exactOptional(),
-    repositoryId: RepositoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the code repository. <i>Don't</i> include this parameter if your service template <i>doesn't</i> include a service pipeline.",
-        }),
-    ).exactOptional(),
-    spec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A link to a spec file that provides inputs as defined in the service template bundle schema file. The spec file is in YAML format. <i>Don’t</i> include pipeline inputs in the spec if your service template <i>doesn’t</i> include a service pipeline. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-create-svc.html">Create a service</a> in the <i>Proton User Guide</i>.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton service. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The major version of the service template that was used to create the service.',
-        }),
-    ),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minor version of the service template that was used to create the service.',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of the service template that's used to create the service.",
-        }),
-    ),
+    branchName: GitBranchNameSchema.exactOptional().openapi({
+      description:
+        "The name of the code repository branch that holds the code that's deployed in Proton. <i>Don't</i> include this parameter if your service template <i>doesn't</i> include a service pipeline.",
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the Proton service.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The service name.' }),
+    repositoryConnectionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the repository connection. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/setting-up-for-service.html#setting-up-vcontrol">Setting up an AWS CodeStar connection</a> in the <i>Proton User Guide</i>. <i>Don\'t</i> include this parameter if your service template <i>doesn\'t</i> include a service pipeline.',
+    }),
+    repositoryId: RepositoryIdSchema.exactOptional().openapi({
+      description:
+        "The ID of the code repository. <i>Don't</i> include this parameter if your service template <i>doesn't</i> include a service pipeline.",
+    }),
+    spec: SpecContentsSchema.openapi({
+      description:
+        'A link to a spec file that provides inputs as defined in the service template bundle schema file. The spec file is in YAML format. <i>Don’t</i> include pipeline inputs in the spec if your service template <i>doesn’t</i> include a service pipeline. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-create-svc.html">Create a service</a> in the <i>Proton User Guide</i>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton service. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The major version of the service template that was used to create the service.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The minor version of the service template that was used to create the service.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: "The name of the service template that's used to create the service.",
+    }),
   })
   .openapi({
     required: ['name', 'spec', 'templateMajorVersion', 'templateName'],
@@ -1607,51 +1097,39 @@ const CreateServiceInputSchema = z
 
 const CreateServiceInstanceOutputSchema = z
   .object({
-    serviceInstance: ServiceInstanceSchema.and(
-      z.any().openapi({ description: 'The detailed data of the service instance being created.' }),
-    ),
+    serviceInstance: ServiceInstanceSchema.openapi({
+      description: 'The detailed data of the service instance being created.',
+    }),
   })
   .openapi({ required: ['serviceInstance'] })
   .openapi('CreateServiceInstanceOutput')
 
 const CreateServiceInstanceInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token of the service instance to create.' }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service instance to create.' }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service the service instance is added to.' }),
-    ),
-    spec: SpecContentsSchema.and(
-      z.any().openapi({ description: 'The spec for the service instance you want to create.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton service instance. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To create a new major and minor version of the service template, <i>exclude</i> <code>major Version</code>.',
-        }),
-    ).exactOptional(),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To create a new minor version of the service template, include a <code>major Version</code>.',
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token of the service instance to create.',
+    }),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the service instance to create.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service the service instance is added to.',
+    }),
+    spec: SpecContentsSchema.openapi({
+      description: 'The spec for the service instance you want to create.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton service instance. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description:
+        'To create a new major and minor version of the service template, <i>exclude</i> <code>major Version</code>.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description:
+        'To create a new minor version of the service template, include a <code>major Version</code>.',
+    }),
   })
   .openapi({ required: ['name', 'serviceName', 'spec'], title: 'CreateServiceInstanceInput' })
   .openapi('CreateServiceInstanceInput')
@@ -1660,38 +1138,24 @@ const OpsFilePathSchema = z.string().min(1).max(4096).openapi('OpsFilePath')
 
 const ServiceSyncConfigSchema = z
   .object({
-    branch: GitBranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the code repository branch that holds the service code Proton will sync with.',
-        }),
-    ),
-    filePath: OpsFilePathSchema.and(
-      z.any().openapi({ description: 'The file path to the service sync configuration file.' }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the code repository that holds the service code Proton will sync with.',
-        }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository provider that holds the repository Proton will sync with.',
-        }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service that the service instance is added to.' }),
-    ),
+    branch: GitBranchNameSchema.openapi({
+      description:
+        'The name of the code repository branch that holds the service code Proton will sync with.',
+    }),
+    filePath: OpsFilePathSchema.openapi({
+      description: 'The file path to the service sync configuration file.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the code repository that holds the service code Proton will sync with.',
+    }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description:
+        'The name of the repository provider that holds the repository Proton will sync with.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service that the service instance is added to.',
+    }),
   })
   .openapi({
     required: ['branch', 'filePath', 'repositoryName', 'repositoryProvider', 'serviceName'],
@@ -1701,30 +1165,26 @@ const ServiceSyncConfigSchema = z
 
 const CreateServiceSyncConfigOutputSchema = z
   .object({
-    serviceSyncConfig: ServiceSyncConfigSchema.and(
-      z.any().openapi({ description: 'The detailed data of the Proton Ops file.' }),
-    ).exactOptional(),
+    serviceSyncConfig: ServiceSyncConfigSchema.exactOptional().openapi({
+      description: 'The detailed data of the Proton Ops file.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateServiceSyncConfigOutput')
 
 const CreateServiceSyncConfigInputSchema = z
   .object({
-    branch: GitBranchNameSchema.and(
-      z.any().openapi({ description: 'The repository branch for your Proton Ops file.' }),
-    ),
-    filePath: OpsFilePathSchema.and(
-      z.any().openapi({ description: 'The path to the Proton Ops file.' }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name.' }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The provider type for your repository.' }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service the Proton Ops file is for.' }),
-    ),
+    branch: GitBranchNameSchema.openapi({
+      description: 'The repository branch for your Proton Ops file.',
+    }),
+    filePath: OpsFilePathSchema.openapi({ description: 'The path to the Proton Ops file.' }),
+    repositoryName: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description: 'The provider type for your repository.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service the Proton Ops file is for.',
+    }),
   })
   .openapi({
     required: ['branch', 'filePath', 'repositoryName', 'repositoryProvider', 'serviceName'],
@@ -1736,47 +1196,33 @@ const ServiceTemplateArnSchema = z.string().openapi('ServiceTemplateArn')
 
 const ServiceTemplateSchema = z
   .object({
-    arn: ServiceTemplateArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the service template.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service template was created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the service template.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service template name as displayed in the developer interface.',
-        }),
-    ).exactOptional(),
-    encryptionKey: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The customer provided service template encryption key that's used to encrypt data.",
-        }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service template was last modified.' }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
-    pipelineProvisioning: ProvisioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If <code>pipelineProvisioning</code> is <code>true</code>, a service pipeline is included in the service template. Otherwise, a service pipeline <i>isn't</i> included in the service template.",
-        }),
-    ).exactOptional(),
-    recommendedVersion: FullTemplateVersionNumberSchema.and(
-      z.any().openapi({ description: 'The recommended version of the service template.' }),
-    ).exactOptional(),
+    arn: ServiceTemplateArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the service template.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the service template was created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the service template.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The service template name as displayed in the developer interface.',
+    }),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description:
+        "The customer provided service template encryption key that's used to encrypt data.",
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the service template was last modified.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
+    pipelineProvisioning: ProvisioningSchema.exactOptional().openapi({
+      description:
+        "If <code>pipelineProvisioning</code> is <code>true</code>, a service pipeline is included in the service template. Otherwise, a service pipeline <i>isn't</i> included in the service template.",
+    }),
+    recommendedVersion: FullTemplateVersionNumberSchema.exactOptional().openapi({
+      description: 'The recommended version of the service template.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'lastModifiedAt', 'name'],
@@ -1786,53 +1232,33 @@ const ServiceTemplateSchema = z
 
 const CreateServiceTemplateOutputSchema = z
   .object({
-    serviceTemplate: ServiceTemplateSchema.and(
-      z
-        .any()
-        .openapi({ description: "The service template detail data that's returned by Proton." }),
-    ),
+    serviceTemplate: ServiceTemplateSchema.openapi({
+      description: "The service template detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['serviceTemplate'] })
   .openapi('CreateServiceTemplateOutput')
 
 const CreateServiceTemplateInputSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the service template.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service template as displayed in the developer interface.',
-        }),
-    ).exactOptional(),
-    encryptionKey: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A customer provided encryption key that's used to encrypt data.",
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
-    pipelineProvisioning: ProvisioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "By default, Proton provides a service pipeline for your service. When this parameter is included, it indicates that an Proton service pipeline <i>isn't</i> provided for your service. After it's included, it <i>can't</i> be changed. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-template-authoring.html#ag-template-bundles\">Template bundles</a> in the <i>Proton User Guide</i>.",
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton service template. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the service template.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The name of the service template as displayed in the developer interface.',
+    }),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description: "A customer provided encryption key that's used to encrypt data.",
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
+    pipelineProvisioning: ProvisioningSchema.exactOptional().openapi({
+      description:
+        "By default, Proton provides a service pipeline for your service. When this parameter is included, it indicates that an Proton service pipeline <i>isn't</i> provided for your service. After it's included, it <i>can't</i> be changed. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-template-authoring.html#ag-template-bundles\">Template bundles</a> in the <i>Proton User Guide</i>.",
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton service template. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateServiceTemplateInput' })
   .openapi('CreateServiceTemplateInput')
@@ -1841,12 +1267,12 @@ const ServiceTemplateVersionArnSchema = z.string().openapi('ServiceTemplateVersi
 
 const CompatibleEnvironmentTemplateSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The major version of the compatible environment template.' }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The compatible environment template name.' }),
-    ),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The major version of the compatible environment template.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The compatible environment template name.',
+    }),
   })
   .openapi({
     required: ['majorVersion', 'templateName'],
@@ -1868,70 +1294,49 @@ const ServiceTemplateSupportedComponentSourceInputListSchema = z
 
 const ServiceTemplateVersionSchema = z
   .object({
-    arn: ServiceTemplateVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the version of a service template.',
-        }),
-    ),
-    compatibleEnvironmentTemplates: CompatibleEnvironmentTemplateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of compatible environment template names for the major version of a service template.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the version of a service template was created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the version of a service template.' }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the version of a service template was last modified.',
-        }),
-    ),
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The latest major version that's associated with the version of a service template.",
-        }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The minor version of a service template.' }),
-    ),
-    recommendedMinorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The recommended minor version of the service template.' }),
-    ).exactOptional(),
-    schema: TemplateSchemaSchema.and(
-      z.any().openapi({ description: 'The schema of the version of a service template.' }),
-    ).exactOptional(),
-    status: TemplateVersionStatusSchema.and(
-      z.any().openapi({ description: 'The service template version status.' }),
-    ),
-    statusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'A service template version status message.' }),
-    ).exactOptional(),
-    supportedComponentSources: ServiceTemplateSupportedComponentSourceInputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the version of a service template.' }),
-    ),
+    arn: ServiceTemplateVersionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the version of a service template.',
+    }),
+    compatibleEnvironmentTemplates: CompatibleEnvironmentTemplateListSchema.openapi({
+      description:
+        'An array of compatible environment template names for the major version of a service template.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the version of a service template was created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the version of a service template.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the version of a service template was last modified.',
+    }),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        "The latest major version that's associated with the version of a service template.",
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The minor version of a service template.',
+    }),
+    recommendedMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The recommended minor version of the service template.',
+    }),
+    schema: TemplateSchemaSchema.exactOptional().openapi({
+      description: 'The schema of the version of a service template.',
+    }),
+    status: TemplateVersionStatusSchema.openapi({
+      description: 'The service template version status.',
+    }),
+    statusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A service template version status message.',
+    }),
+    supportedComponentSources:
+      ServiceTemplateSupportedComponentSourceInputListSchema.exactOptional().openapi({
+        description:
+          '<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+      }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the version of a service template.',
+    }),
   })
   .openapi({
     required: [
@@ -1950,26 +1355,21 @@ const ServiceTemplateVersionSchema = z
 
 const CreateServiceTemplateVersionOutputSchema = z
   .object({
-    serviceTemplateVersion: ServiceTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The service template version summary of detail data that's returned by Proton.",
-        }),
-    ),
+    serviceTemplateVersion: ServiceTemplateVersionSchema.openapi({
+      description: "The service template version summary of detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['serviceTemplateVersion'] })
   .openapi('CreateServiceTemplateVersionOutput')
 
 const CompatibleEnvironmentTemplateInputSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The major version of the compatible environment template.' }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The compatible environment template name.' }),
-    ),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The major version of the compatible environment template.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The compatible environment template name.',
+    }),
   })
   .openapi({
     required: ['majorVersion', 'templateName'],
@@ -1985,60 +1385,35 @@ const CompatibleEnvironmentTemplateInputListSchema = z
 
 const CreateServiceTemplateVersionInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When included, if two identical requests are made with the same client token, Proton returns the service template version that the first request created.',
-        }),
-    ).exactOptional(),
-    compatibleEnvironmentTemplates: CompatibleEnvironmentTemplateInputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of environment template objects that are compatible with the new service template version. A service instance based on this service template version can run in environments based on compatible templates.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the new version of a service template.' }),
-    ).exactOptional(),
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To create a new minor version of the service template, include a <code>major Version</code>.</p> <p>To create a new major and minor version of the service template, <i>exclude</i> <code>major Version</code>.</p>',
-        }),
-    ).exactOptional(),
-    source: TemplateVersionSourceInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that includes the template bundle S3 bucket path and name for the new version of a service template.',
-        }),
-    ),
-    supportedComponentSources: ServiceTemplateSupportedComponentSourceInputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of metadata items that you can associate with the Proton service template version. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'When included, if two identical requests are made with the same client token, Proton returns the service template version that the first request created.',
+    }),
+    compatibleEnvironmentTemplates: CompatibleEnvironmentTemplateInputListSchema.openapi({
+      description:
+        'An array of environment template objects that are compatible with the new service template version. A service instance based on this service template version can run in environments based on compatible templates.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the new version of a service template.',
+    }),
+    majorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description:
+        '<p>To create a new minor version of the service template, include a <code>major Version</code>.</p> <p>To create a new major and minor version of the service template, <i>exclude</i> <code>major Version</code>.</p>',
+    }),
+    source: TemplateVersionSourceInputSchema.openapi({
+      description:
+        'An object that includes the template bundle S3 bucket path and name for the new version of a service template.',
+    }),
+    supportedComponentSources:
+      ServiceTemplateSupportedComponentSourceInputListSchema.exactOptional().openapi({
+        description:
+          '<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+      }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of metadata items that you can associate with the Proton service template version. A tag is a key-value pair.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/resources.html">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
   })
   .openapi({
     required: ['compatibleEnvironmentTemplates', 'source', 'templateName'],
@@ -2052,22 +1427,18 @@ const TemplateTypeSchema = z.enum(['ENVIRONMENT', 'SERVICE']).openapi('TemplateT
 
 const TemplateSyncConfigSchema = z
   .object({
-    branch: GitBranchNameSchema.and(z.any().openapi({ description: 'The repository branch.' })),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The repository name (for example, <code>myrepos/myrepo</code>).',
-        }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
-    subdirectory: SubdirectorySchema.and(
-      z.any().openapi({ description: 'A subdirectory path to your template bundle version.' }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(z.any().openapi({ description: 'The template name.' })),
-    templateType: TemplateTypeSchema.and(z.any().openapi({ description: 'The template type.' })),
+    branch: GitBranchNameSchema.openapi({ description: 'The repository branch.' }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The repository name (for example, <code>myrepos/myrepo</code>).',
+    }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description: 'The repository provider.',
+    }),
+    subdirectory: SubdirectorySchema.exactOptional().openapi({
+      description: 'A subdirectory path to your template bundle version.',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The template name.' }),
+    templateType: TemplateTypeSchema.openapi({ description: 'The template type.' }),
   })
   .openapi({
     required: ['branch', 'repositoryName', 'repositoryProvider', 'templateName', 'templateType'],
@@ -2077,46 +1448,34 @@ const TemplateSyncConfigSchema = z
 
 const CreateTemplateSyncConfigOutputSchema = z
   .object({
-    templateSyncConfig: TemplateSyncConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The template sync configuration detail data that's returned by Proton.",
-        }),
-    ).exactOptional(),
+    templateSyncConfig: TemplateSyncConfigSchema.exactOptional().openapi({
+      description: "The template sync configuration detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTemplateSyncConfigOutput')
 
 const CreateTemplateSyncConfigInputSchema = z
   .object({
-    branch: GitBranchNameSchema.and(
-      z.any().openapi({ description: 'The repository branch for your template.' }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The repository name (for example, <code>myrepos/myrepo</code>).',
-        }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The provider type for your repository.' }),
-    ),
-    subdirectory: SubdirectorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A repository subdirectory path to your template bundle directory. When included, Proton limits the template bundle search to this repository directory.',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your registered template.' }),
-    ),
-    templateType: TemplateTypeSchema.and(
-      z.any().openapi({ description: 'The type of the registered template.' }),
-    ),
+    branch: GitBranchNameSchema.openapi({
+      description: 'The repository branch for your template.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The repository name (for example, <code>myrepos/myrepo</code>).',
+    }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description: 'The provider type for your repository.',
+    }),
+    subdirectory: SubdirectorySchema.exactOptional().openapi({
+      description:
+        'A repository subdirectory path to your template bundle directory. When included, Proton limits the template bundle search to this repository directory.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of your registered template.',
+    }),
+    templateType: TemplateTypeSchema.openapi({
+      description: 'The type of the registered template.',
+    }),
   })
   .openapi({
     required: ['branch', 'repositoryName', 'repositoryProvider', 'templateName', 'templateType'],
@@ -2126,106 +1485,92 @@ const CreateTemplateSyncConfigInputSchema = z
 
 const DeleteComponentOutputSchema = z
   .object({
-    component: ComponentSchema.and(
-      z.any().openapi({ description: 'The detailed data of the component being deleted.' }),
-    ).exactOptional(),
+    component: ComponentSchema.exactOptional().openapi({
+      description: 'The detailed data of the component being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteComponentOutput')
 
 const DeleteComponentInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the component to delete.' }),
-    ),
+    name: ResourceNameSchema.openapi({ description: 'The name of the component to delete.' }),
   })
   .openapi({ required: ['name'], title: 'DeleteComponentInput' })
   .openapi('DeleteComponentInput')
 
 const DeleteEnvironmentOutputSchema = z
   .object({
-    environment: EnvironmentSchema.and(
-      z.any().openapi({ description: 'The detailed data of the environment being deleted.' }),
-    ).exactOptional(),
+    environment: EnvironmentSchema.exactOptional().openapi({
+      description: 'The detailed data of the environment being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteEnvironmentOutput')
 
 const DeleteEnvironmentInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment to delete.' }),
-    ),
+    name: ResourceNameSchema.openapi({ description: 'The name of the environment to delete.' }),
   })
   .openapi({ required: ['name'], title: 'DeleteEnvironmentInput' })
   .openapi('DeleteEnvironmentInput')
 
 const DeleteEnvironmentAccountConnectionOutputSchema = z
   .object({
-    environmentAccountConnection: EnvironmentAccountConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data of the environment account connection being deleted.',
-        }),
-    ).exactOptional(),
+    environmentAccountConnection: EnvironmentAccountConnectionSchema.exactOptional().openapi({
+      description: 'The detailed data of the environment account connection being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteEnvironmentAccountConnectionOutput')
 
 const DeleteEnvironmentAccountConnectionInputSchema = z
   .object({
-    id: EnvironmentAccountConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment account connection to delete.' }),
-    ),
+    id: EnvironmentAccountConnectionIdSchema.openapi({
+      description: 'The ID of the environment account connection to delete.',
+    }),
   })
   .openapi({ required: ['id'], title: 'DeleteEnvironmentAccountConnectionInput' })
   .openapi('DeleteEnvironmentAccountConnectionInput')
 
 const DeleteEnvironmentTemplateOutputSchema = z
   .object({
-    environmentTemplate: EnvironmentTemplateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The detailed data of the environment template being deleted.' }),
-    ).exactOptional(),
+    environmentTemplate: EnvironmentTemplateSchema.exactOptional().openapi({
+      description: 'The detailed data of the environment template being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteEnvironmentTemplateOutput')
 
 const DeleteEnvironmentTemplateInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template to delete.' }),
-    ),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the environment template to delete.',
+    }),
   })
   .openapi({ required: ['name'], title: 'DeleteEnvironmentTemplateInput' })
   .openapi('DeleteEnvironmentTemplateInput')
 
 const DeleteEnvironmentTemplateVersionOutputSchema = z
   .object({
-    environmentTemplateVersion: EnvironmentTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data of the environment template version being deleted.',
-        }),
-    ).exactOptional(),
+    environmentTemplateVersion: EnvironmentTemplateVersionSchema.exactOptional().openapi({
+      description: 'The detailed data of the environment template version being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteEnvironmentTemplateVersionOutput')
 
 const DeleteEnvironmentTemplateVersionInputSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The environment template major version to delete.' }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The environment template minor version to delete.' }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The environment template major version to delete.',
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The environment template minor version to delete.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the environment template.',
+    }),
   })
   .openapi({
     required: ['majorVersion', 'minorVersion', 'templateName'],
@@ -2235,110 +1580,92 @@ const DeleteEnvironmentTemplateVersionInputSchema = z
 
 const DeleteRepositoryOutputSchema = z
   .object({
-    repository: RepositorySchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The deleted repository link's detail data that's returned by Proton.",
-        }),
-    ).exactOptional(),
+    repository: RepositorySchema.exactOptional().openapi({
+      description: "The deleted repository link's detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRepositoryOutput')
 
 const DeleteRepositoryInputSchema = z
   .object({
-    name: RepositoryNameSchema.and(z.any().openapi({ description: 'The repository name.' })),
-    provider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
+    name: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    provider: RepositoryProviderSchema.openapi({ description: 'The repository provider.' }),
   })
   .openapi({ required: ['name', 'provider'], title: 'DeleteRepositoryInput' })
   .openapi('DeleteRepositoryInput')
 
 const DeleteServiceOutputSchema = z
   .object({
-    service: ServiceSchema.and(
-      z.any().openapi({ description: 'The detailed data of the service being deleted.' }),
-    ).exactOptional(),
+    service: ServiceSchema.exactOptional().openapi({
+      description: 'The detailed data of the service being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteServiceOutput')
 
 const DeleteServiceInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service to delete.' }),
-    ),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service to delete.' }),
   })
   .openapi({ required: ['name'], title: 'DeleteServiceInput' })
   .openapi('DeleteServiceInput')
 
 const DeleteServiceSyncConfigOutputSchema = z
   .object({
-    serviceSyncConfig: ServiceSyncConfigSchema.and(
-      z.any().openapi({ description: 'The detailed data for the service sync config.' }),
-    ).exactOptional(),
+    serviceSyncConfig: ServiceSyncConfigSchema.exactOptional().openapi({
+      description: 'The detailed data for the service sync config.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteServiceSyncConfigOutput')
 
 const DeleteServiceSyncConfigInputSchema = z
   .object({
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that you want to delete the service sync configuration for.',
-        }),
-    ),
+    serviceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the service that you want to delete the service sync configuration for.',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'DeleteServiceSyncConfigInput' })
   .openapi('DeleteServiceSyncConfigInput')
 
 const DeleteServiceTemplateOutputSchema = z
   .object({
-    serviceTemplate: ServiceTemplateSchema.and(
-      z.any().openapi({ description: 'The detailed data of the service template being deleted.' }),
-    ).exactOptional(),
+    serviceTemplate: ServiceTemplateSchema.exactOptional().openapi({
+      description: 'The detailed data of the service template being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteServiceTemplateOutput')
 
 const DeleteServiceTemplateInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template to delete.' }),
-    ),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the service template to delete.',
+    }),
   })
   .openapi({ required: ['name'], title: 'DeleteServiceTemplateInput' })
   .openapi('DeleteServiceTemplateInput')
 
 const DeleteServiceTemplateVersionOutputSchema = z
   .object({
-    serviceTemplateVersion: ServiceTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data of the service template version being deleted.',
-        }),
-    ).exactOptional(),
+    serviceTemplateVersion: ServiceTemplateVersionSchema.exactOptional().openapi({
+      description: 'The detailed data of the service template version being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteServiceTemplateVersionOutput')
 
 const DeleteServiceTemplateVersionInputSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The service template major version to delete.' }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The service template minor version to delete.' }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The service template major version to delete.',
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The service template minor version to delete.',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
   })
   .openapi({
     required: ['majorVersion', 'minorVersion', 'templateName'],
@@ -2348,21 +1675,17 @@ const DeleteServiceTemplateVersionInputSchema = z
 
 const DeleteTemplateSyncConfigOutputSchema = z
   .object({
-    templateSyncConfig: TemplateSyncConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The template sync configuration detail data that's returned by Proton.",
-        }),
-    ).exactOptional(),
+    templateSyncConfig: TemplateSyncConfigSchema.exactOptional().openapi({
+      description: "The template sync configuration detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteTemplateSyncConfigOutput')
 
 const DeleteTemplateSyncConfigInputSchema = z
   .object({
-    templateName: ResourceNameSchema.and(z.any().openapi({ description: 'The template name.' })),
-    templateType: TemplateTypeSchema.and(z.any().openapi({ description: 'The template type.' })),
+    templateName: ResourceNameSchema.openapi({ description: 'The template name.' }),
+    templateType: TemplateTypeSchema.openapi({ description: 'The template type.' }),
   })
   .openapi({ required: ['templateName', 'templateType'], title: 'DeleteTemplateSyncConfigInput' })
   .openapi('DeleteTemplateSyncConfigInput')
@@ -2378,30 +1701,18 @@ const RoleArnOrEmptyStringSchema = z
 
 const AccountSettingsSchema = z
   .object({
-    pipelineCodebuildRoleArn: RoleArnOrEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the service role that Proton uses for provisioning pipelines. Proton assumes this role for CodeBuild-based provisioning.',
-        }),
-    ).exactOptional(),
-    pipelineProvisioningRepository: RepositoryBranchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The linked repository for pipeline provisioning. Required if you have environments configured for self-managed provisioning with services that include pipelines. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.',
-        }),
-    ).exactOptional(),
-    pipelineServiceRoleArn: RoleArnOrEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Assumed by Proton for Amazon Web Services-managed provisioning, and by customer-owned automation for self-managed provisioning.',
-        }),
-    ).exactOptional(),
+    pipelineCodebuildRoleArn: RoleArnOrEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the service role that Proton uses for provisioning pipelines. Proton assumes this role for CodeBuild-based provisioning.',
+    }),
+    pipelineProvisioningRepository: RepositoryBranchSchema.exactOptional().openapi({
+      description:
+        'The linked repository for pipeline provisioning. Required if you have environments configured for self-managed provisioning with services that include pipelines. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.',
+    }),
+    pipelineServiceRoleArn: RoleArnOrEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Assumed by Proton for Amazon Web Services-managed provisioning, and by customer-owned automation for self-managed provisioning.',
+    }),
   })
   .openapi({
     description:
@@ -2412,155 +1723,115 @@ const AccountSettingsSchema = z
 
 const GetAccountSettingsOutputSchema = z
   .object({
-    accountSettings: AccountSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Proton pipeline service role detail data that's returned by Proton.",
-        }),
-    ).exactOptional(),
+    accountSettings: AccountSettingsSchema.exactOptional().openapi({
+      description: "The Proton pipeline service role detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccountSettingsOutput')
 
 const GetAccountSettingsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAccountSettingsInput' })
   .openapi('GetAccountSettingsInput')
 
 const GetComponentOutputSchema = z
   .object({
-    component: ComponentSchema.and(
-      z.any().openapi({ description: 'The detailed data of the requested component.' }),
-    ).exactOptional(),
+    component: ComponentSchema.exactOptional().openapi({
+      description: 'The detailed data of the requested component.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetComponentOutput')
 
 const GetComponentInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the component that you want to get the detailed data for.',
-        }),
-    ),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the component that you want to get the detailed data for.',
+    }),
   })
   .openapi({ required: ['name'], title: 'GetComponentInput' })
   .openapi('GetComponentInput')
 
 const GetEnvironmentOutputSchema = z
   .object({
-    environment: EnvironmentSchema.and(
-      z.any().openapi({ description: 'The detailed data of the requested environment.' }),
-    ),
+    environment: EnvironmentSchema.openapi({
+      description: 'The detailed data of the requested environment.',
+    }),
   })
   .openapi({ required: ['environment'] })
   .openapi('GetEnvironmentOutput')
 
 const GetEnvironmentInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the environment that you want to get the detailed data for.',
-        }),
-    ),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the environment that you want to get the detailed data for.',
+    }),
   })
   .openapi({ required: ['name'], title: 'GetEnvironmentInput' })
   .openapi('GetEnvironmentInput')
 
 const GetEnvironmentAccountConnectionOutputSchema = z
   .object({
-    environmentAccountConnection: EnvironmentAccountConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data of the requested environment account connection.',
-        }),
-    ),
+    environmentAccountConnection: EnvironmentAccountConnectionSchema.openapi({
+      description: 'The detailed data of the requested environment account connection.',
+    }),
   })
   .openapi({ required: ['environmentAccountConnection'] })
   .openapi('GetEnvironmentAccountConnectionOutput')
 
 const GetEnvironmentAccountConnectionInputSchema = z
   .object({
-    id: EnvironmentAccountConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the environment account connection that you want to get the detailed data for.',
-        }),
-    ),
+    id: EnvironmentAccountConnectionIdSchema.openapi({
+      description:
+        'The ID of the environment account connection that you want to get the detailed data for.',
+    }),
   })
   .openapi({ required: ['id'], title: 'GetEnvironmentAccountConnectionInput' })
   .openapi('GetEnvironmentAccountConnectionInput')
 
 const GetEnvironmentTemplateOutputSchema = z
   .object({
-    environmentTemplate: EnvironmentTemplateSchema.and(
-      z.any().openapi({ description: 'The detailed data of the requested environment template.' }),
-    ),
+    environmentTemplate: EnvironmentTemplateSchema.openapi({
+      description: 'The detailed data of the requested environment template.',
+    }),
   })
   .openapi({ required: ['environmentTemplate'] })
   .openapi('GetEnvironmentTemplateOutput')
 
 const GetEnvironmentTemplateInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the environment template that you want to get the detailed data for.',
-        }),
-    ),
+    name: ResourceNameSchema.openapi({
+      description:
+        'The name of the environment template that you want to get the detailed data for.',
+    }),
   })
   .openapi({ required: ['name'], title: 'GetEnvironmentTemplateInput' })
   .openapi('GetEnvironmentTemplateInput')
 
 const GetEnvironmentTemplateVersionOutputSchema = z
   .object({
-    environmentTemplateVersion: EnvironmentTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data of the requested environment template version.',
-        }),
-    ),
+    environmentTemplateVersion: EnvironmentTemplateVersionSchema.openapi({
+      description: 'The detailed data of the requested environment template version.',
+    }),
   })
   .openapi({ required: ['environmentTemplateVersion'] })
   .openapi('GetEnvironmentTemplateVersionOutput')
 
 const GetEnvironmentTemplateVersionInputSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To get environment template major version detail data, include <code>major Version</code>.',
-        }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To get environment template minor version detail data, include <code>minorVersion</code>.',
-        }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the environment template a version of which you want to get detailed data for.',
-        }),
-    ),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'To get environment template major version detail data, include <code>major Version</code>.',
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'To get environment template minor version detail data, include <code>minorVersion</code>.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description:
+        'The name of the environment template a version of which you want to get detailed data for.',
+    }),
   })
   .openapi({
     required: ['majorVersion', 'minorVersion', 'templateName'],
@@ -2570,41 +1841,31 @@ const GetEnvironmentTemplateVersionInputSchema = z
 
 const GetRepositoryOutputSchema = z
   .object({
-    repository: RepositorySchema.and(
-      z
-        .any()
-        .openapi({ description: "The repository link's detail data that's returned by Proton." }),
-    ),
+    repository: RepositorySchema.openapi({
+      description: "The repository link's detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['repository'] })
   .openapi('GetRepositoryOutput')
 
 const GetRepositoryInputSchema = z
   .object({
-    name: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The repository name, for example <code>myrepos/myrepo</code>.' }),
-    ),
-    provider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
+    name: RepositoryNameSchema.openapi({
+      description: 'The repository name, for example <code>myrepos/myrepo</code>.',
+    }),
+    provider: RepositoryProviderSchema.openapi({ description: 'The repository provider.' }),
   })
   .openapi({ required: ['name', 'provider'], title: 'GetRepositoryInput' })
   .openapi('GetRepositoryInput')
 
 const RepositorySyncEventSchema = z
   .object({
-    event: StringSchema.and(
-      z.any().openapi({ description: 'Event detail for a repository sync attempt.' }),
-    ),
-    externalId: StringSchema.and(
-      z.any().openapi({ description: 'The external ID of the sync event.' }),
-    ).exactOptional(),
-    time: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the sync event occurred.' }),
-    ),
-    type: StringSchema.and(z.any().openapi({ description: 'The type of event.' })),
+    event: StringSchema.openapi({ description: 'Event detail for a repository sync attempt.' }),
+    externalId: StringSchema.exactOptional().openapi({
+      description: 'The external ID of the sync event.',
+    }),
+    time: TimestampSchema.openapi({ description: 'The time that the sync event occurred.' }),
+    type: StringSchema.openapi({ description: 'The type of event.' }),
   })
   .openapi({
     required: ['event', 'time', 'type'],
@@ -2622,15 +1883,11 @@ const RepositorySyncStatusSchema = z
 
 const RepositorySyncAttemptSchema = z
   .object({
-    events: RepositorySyncEventsSchema.and(
-      z.any().openapi({ description: 'Detail data for sync attempt events.' }),
-    ),
-    startedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the sync attempt started.' }),
-    ),
-    status: RepositorySyncStatusSchema.and(
-      z.any().openapi({ description: 'The sync attempt status.' }),
-    ),
+    events: RepositorySyncEventsSchema.openapi({
+      description: 'Detail data for sync attempt events.',
+    }),
+    startedAt: TimestampSchema.openapi({ description: 'The time when the sync attempt started.' }),
+    status: RepositorySyncStatusSchema.openapi({ description: 'The sync attempt status.' }),
   })
   .openapi({
     required: ['events', 'startedAt', 'status'],
@@ -2640,13 +1897,9 @@ const RepositorySyncAttemptSchema = z
 
 const GetRepositorySyncStatusOutputSchema = z
   .object({
-    latestSync: RepositorySyncAttemptSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The repository sync status detail data that's returned by Proton.",
-        }),
-    ).exactOptional(),
+    latestSync: RepositorySyncAttemptSchema.exactOptional().openapi({
+      description: "The repository sync status detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRepositorySyncStatusOutput')
@@ -2655,14 +1908,12 @@ const SyncTypeSchema = z.enum(['TEMPLATE_SYNC', 'SERVICE_SYNC']).openapi('SyncTy
 
 const GetRepositorySyncStatusInputSchema = z
   .object({
-    branch: GitBranchNameSchema.and(z.any().openapi({ description: 'The repository branch.' })),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name.' }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
-    syncType: SyncTypeSchema.and(z.any().openapi({ description: 'The repository sync type.' })),
+    branch: GitBranchNameSchema.openapi({ description: 'The repository branch.' }),
+    repositoryName: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description: 'The repository provider.',
+    }),
+    syncType: SyncTypeSchema.openapi({ description: 'The repository sync type.' }),
   })
   .openapi({
     required: ['branch', 'repositoryName', 'repositoryProvider', 'syncType'],
@@ -2670,132 +1921,114 @@ const GetRepositorySyncStatusInputSchema = z
   })
   .openapi('GetRepositorySyncStatusInput')
 
-const CountsSummarySchema: z.ZodType<CountsSummaryType> = z
-  .lazy(() =>
-    z
-      .object({
-        components: ResourceCountsSummarySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "<p>The total number of components in the Amazon Web Services account.</p> <p>The semantics of the <code>components</code> field are different from the semantics of results for other infrastructure-provisioning resources. That's because at this time components don't have associated templates, therefore they don't have the concept of staleness. The <code>components</code> object will only contain <code>total</code> and <code>failed</code> members.</p>",
-            }),
-        ).exactOptional(),
-        environmentTemplates: ResourceCountsSummarySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The total number of environment templates in the Amazon Web Services account. The <code>environmentTemplates</code> object will only contain <code>total</code> members.',
-            }),
-        ).exactOptional(),
-        environments: ResourceCountsSummarySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The staleness counts for Proton environments in the Amazon Web Services account. The <code>environments</code> object will only contain <code>total</code> members.',
-            }),
-        ).exactOptional(),
-        pipelines: ResourceCountsSummarySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The staleness counts for Proton pipelines in the Amazon Web Services account.',
-            }),
-        ).exactOptional(),
-        serviceInstances: ResourceCountsSummarySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The staleness counts for Proton service instances in the Amazon Web Services account.',
-            }),
-        ).exactOptional(),
-        serviceTemplates: ResourceCountsSummarySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The total number of service templates in the Amazon Web Services account. The <code>serviceTemplates</code> object will only contain <code>total</code> members.',
-            }),
-        ).exactOptional(),
-        services: ResourceCountsSummarySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The staleness counts for Proton services in the Amazon Web Services account.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Summary counts of each Proton resource type.', required: [] }),
-  )
+const IntegerSchema = z.int().openapi('Integer')
+
+const ResourceCountsSummarySchema = z
+  .object({
+    behindMajor: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of resources of this type in the Amazon Web Services account that need a major template version update.',
+    }),
+    behindMinor: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of resources of this type in the Amazon Web Services account that need a minor template version update.',
+    }),
+    failed: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of resources of this type in the Amazon Web Services account that failed to deploy.',
+    }),
+    total: IntegerSchema.openapi({
+      description: 'The total number of resources of this type in the Amazon Web Services account.',
+    }),
+    upToDate: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of resources of this type in the Amazon Web Services account that are up-to-date with their template.',
+    }),
+  })
+  .openapi({ required: ['total'], description: 'Summary counts of each Proton resource types.' })
+  .openapi('ResourceCountsSummary')
+
+const CountsSummarySchema = z
+  .object({
+    components: ResourceCountsSummarySchema.exactOptional().openapi({
+      description:
+        "<p>The total number of components in the Amazon Web Services account.</p> <p>The semantics of the <code>components</code> field are different from the semantics of results for other infrastructure-provisioning resources. That's because at this time components don't have associated templates, therefore they don't have the concept of staleness. The <code>components</code> object will only contain <code>total</code> and <code>failed</code> members.</p>",
+    }),
+    environmentTemplates: ResourceCountsSummarySchema.exactOptional().openapi({
+      description:
+        'The total number of environment templates in the Amazon Web Services account. The <code>environmentTemplates</code> object will only contain <code>total</code> members.',
+    }),
+    environments: ResourceCountsSummarySchema.exactOptional().openapi({
+      description:
+        'The staleness counts for Proton environments in the Amazon Web Services account. The <code>environments</code> object will only contain <code>total</code> members.',
+    }),
+    pipelines: ResourceCountsSummarySchema.exactOptional().openapi({
+      description: 'The staleness counts for Proton pipelines in the Amazon Web Services account.',
+    }),
+    serviceInstances: ResourceCountsSummarySchema.exactOptional().openapi({
+      description:
+        'The staleness counts for Proton service instances in the Amazon Web Services account.',
+    }),
+    serviceTemplates: ResourceCountsSummarySchema.exactOptional().openapi({
+      description:
+        'The total number of service templates in the Amazon Web Services account. The <code>serviceTemplates</code> object will only contain <code>total</code> members.',
+    }),
+    services: ResourceCountsSummarySchema.exactOptional().openapi({
+      description: 'The staleness counts for Proton services in the Amazon Web Services account.',
+    }),
+  })
+  .openapi({ description: 'Summary counts of each Proton resource type.', required: [] })
   .openapi('CountsSummary')
 
 const GetResourcesSummaryOutputSchema = z
   .object({
-    counts: CountsSummarySchema.and(
-      z.any().openapi({ description: 'Summary counts of each Proton resource type.' }),
-    ),
+    counts: CountsSummarySchema.openapi({
+      description: 'Summary counts of each Proton resource type.',
+    }),
   })
   .openapi({ required: ['counts'] })
   .openapi('GetResourcesSummaryOutput')
 
 const GetResourcesSummaryInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourcesSummaryInput' })
   .openapi('GetResourcesSummaryInput')
 
 const GetServiceOutputSchema = z
   .object({
-    service: ServiceSchema.and(
-      z.any().openapi({ description: 'The detailed data of the requested service.' }),
-    ).exactOptional(),
+    service: ServiceSchema.exactOptional().openapi({
+      description: 'The detailed data of the requested service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceOutput')
 
 const GetServiceInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service that you want to get the detailed data for.',
-        }),
-    ),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the service that you want to get the detailed data for.',
+    }),
   })
   .openapi({ required: ['name'], title: 'GetServiceInput' })
   .openapi('GetServiceInput')
 
 const GetServiceInstanceOutputSchema = z
   .object({
-    serviceInstance: ServiceInstanceSchema.and(
-      z.any().openapi({ description: 'The detailed data of the requested service instance.' }),
-    ),
+    serviceInstance: ServiceInstanceSchema.openapi({
+      description: 'The detailed data of the requested service instance.',
+    }),
   })
   .openapi({ required: ['serviceInstance'] })
   .openapi('GetServiceInstanceOutput')
 
 const GetServiceInstanceInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a service instance that you want to get the detailed data for.',
-        }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service that you want the service instance input for.',
-        }),
-    ),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of a service instance that you want to get the detailed data for.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service that you want the service instance input for.',
+    }),
   })
   .openapi({ required: ['name', 'serviceName'], title: 'GetServiceInstanceInput' })
   .openapi('GetServiceInstanceInput')
@@ -2804,24 +2037,18 @@ const SHASchema = z.string().min(1).max(255).openapi('SHA')
 
 const RevisionSchema = z
   .object({
-    branch: GitBranchNameSchema.and(z.any().openapi({ description: 'The repository branch.' })),
-    directory: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The repository directory changed by a commit and push that activated the sync attempt.',
-        }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name.' }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
-    sha: SHASchema.and(
-      z.any().openapi({ description: 'The secure hash algorithm (SHA) hash for the revision.' }),
-    ),
+    branch: GitBranchNameSchema.openapi({ description: 'The repository branch.' }),
+    directory: StringSchema.openapi({
+      description:
+        'The repository directory changed by a commit and push that activated the sync attempt.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description: 'The repository provider.',
+    }),
+    sha: SHASchema.openapi({
+      description: 'The secure hash algorithm (SHA) hash for the revision.',
+    }),
   })
   .openapi({
     required: ['branch', 'directory', 'repositoryName', 'repositoryProvider', 'sha'],
@@ -2831,14 +2058,12 @@ const RevisionSchema = z
 
 const ResourceSyncEventSchema = z
   .object({
-    event: StringSchema.and(z.any().openapi({ description: 'A resource sync event.' })),
-    externalId: StringSchema.and(
-      z.any().openapi({ description: 'The external ID for the event.' }),
-    ).exactOptional(),
-    time: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the event occurred.' }),
-    ),
-    type: StringSchema.and(z.any().openapi({ description: 'The type of event.' })),
+    event: StringSchema.openapi({ description: 'A resource sync event.' }),
+    externalId: StringSchema.exactOptional().openapi({
+      description: 'The external ID for the event.',
+    }),
+    time: TimestampSchema.openapi({ description: 'The time when the event occurred.' }),
+    type: StringSchema.openapi({ description: 'The type of event.' }),
   })
   .openapi({
     required: ['event', 'time', 'type'],
@@ -2854,24 +2079,16 @@ const ResourceSyncStatusSchema = z
 
 const ResourceSyncAttemptSchema = z
   .object({
-    events: ResourceSyncEventsSchema.and(
-      z.any().openapi({ description: 'An array of events with detail data.' }),
-    ),
-    initialRevision: RevisionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Detail data for the initial repository commit, path and push.' }),
-    ),
-    startedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the sync attempt started.' }),
-    ),
-    status: ResourceSyncStatusSchema.and(
-      z.any().openapi({ description: 'The status of the sync attempt.' }),
-    ),
-    target: StringSchema.and(z.any().openapi({ description: 'The resource that is synced to.' })),
-    targetRevision: RevisionSchema.and(
-      z.any().openapi({ description: 'Detail data for the target revision.' }),
-    ),
+    events: ResourceSyncEventsSchema.openapi({
+      description: 'An array of events with detail data.',
+    }),
+    initialRevision: RevisionSchema.openapi({
+      description: 'Detail data for the initial repository commit, path and push.',
+    }),
+    startedAt: TimestampSchema.openapi({ description: 'The time when the sync attempt started.' }),
+    status: ResourceSyncStatusSchema.openapi({ description: 'The status of the sync attempt.' }),
+    target: StringSchema.openapi({ description: 'The resource that is synced to.' }),
+    targetRevision: RevisionSchema.openapi({ description: 'Detail data for the target revision.' }),
   })
   .openapi({
     required: ['events', 'initialRevision', 'startedAt', 'status', 'target', 'targetRevision'],
@@ -2881,45 +2098,27 @@ const ResourceSyncAttemptSchema = z
 
 const GetServiceInstanceSyncStatusOutputSchema = z
   .object({
-    desiredState: RevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The service instance sync desired state that's returned by Proton",
-        }),
-    ).exactOptional(),
-    latestSuccessfulSync: ResourceSyncAttemptSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data of the latest successful sync with the service instance.',
-        }),
-    ).exactOptional(),
-    latestSync: ResourceSyncAttemptSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data of the latest sync with the service instance.',
-        }),
-    ).exactOptional(),
+    desiredState: RevisionSchema.exactOptional().openapi({
+      description: "The service instance sync desired state that's returned by Proton",
+    }),
+    latestSuccessfulSync: ResourceSyncAttemptSchema.exactOptional().openapi({
+      description: 'The detailed data of the latest successful sync with the service instance.',
+    }),
+    latestSync: ResourceSyncAttemptSchema.exactOptional().openapi({
+      description: 'The detailed data of the latest sync with the service instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceInstanceSyncStatusOutput')
 
 const GetServiceInstanceSyncStatusInputSchema = z
   .object({
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service instance that you want the sync status input for.',
-        }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service that the service instance belongs to.' }),
-    ),
+    serviceInstanceName: ResourceNameSchema.openapi({
+      description: 'The name of the service instance that you want the sync status input for.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service that the service instance belongs to.',
+    }),
   })
   .openapi({
     required: ['serviceInstanceName', 'serviceName'],
@@ -2929,12 +2128,8 @@ const GetServiceInstanceSyncStatusInputSchema = z
 
 const SyncBlockerContextSchema = z
   .object({
-    key: StringSchema.and(
-      z.any().openapi({ description: 'The key for the sync blocker context.' }),
-    ),
-    value: StringSchema.and(
-      z.any().openapi({ description: 'The value of the sync blocker context.' }),
-    ),
+    key: StringSchema.openapi({ description: 'The key for the sync blocker context.' }),
+    value: StringSchema.openapi({ description: 'The value of the sync blocker context.' }),
   })
   .openapi({
     required: ['key', 'value'],
@@ -2950,26 +2145,24 @@ const BlockerTypeSchema = z.literal('AUTOMATED').openapi('BlockerType')
 
 const SyncBlockerSchema = z
   .object({
-    contexts: SyncBlockerContextsSchema.and(
-      z.any().openapi({ description: 'The contexts for the sync blocker.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the sync blocker was created.' }),
-    ),
-    createdReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason why the sync blocker was created.' }),
-    ),
-    id: StringSchema.and(z.any().openapi({ description: 'The ID of the sync blocker.' })),
-    resolvedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the sync blocker was resolved.' }),
-    ).exactOptional(),
-    resolvedReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason the sync blocker was resolved.' }),
-    ).exactOptional(),
-    status: BlockerStatusSchema.and(
-      z.any().openapi({ description: 'The status of the sync blocker.' }),
-    ),
-    type: BlockerTypeSchema.and(z.any().openapi({ description: 'The type of the sync blocker.' })),
+    contexts: SyncBlockerContextsSchema.exactOptional().openapi({
+      description: 'The contexts for the sync blocker.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the sync blocker was created.',
+    }),
+    createdReason: StringSchema.openapi({
+      description: 'The reason why the sync blocker was created.',
+    }),
+    id: StringSchema.openapi({ description: 'The ID of the sync blocker.' }),
+    resolvedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time the sync blocker was resolved.',
+    }),
+    resolvedReason: StringSchema.exactOptional().openapi({
+      description: 'The reason the sync blocker was resolved.',
+    }),
+    status: BlockerStatusSchema.openapi({ description: 'The status of the sync blocker.' }),
+    type: BlockerTypeSchema.openapi({ description: 'The type of the sync blocker.' }),
   })
   .openapi({
     required: ['createdAt', 'createdReason', 'id', 'status', 'type'],
@@ -2981,25 +2174,17 @@ const LatestSyncBlockersSchema = z.array(SyncBlockerSchema).openapi('LatestSyncB
 
 const ServiceSyncBlockerSummarySchema = z
   .object({
-    latestBlockers: LatestSyncBlockersSchema.and(
-      z.any().openapi({ description: 'The latest active blockers for the synced service.' }),
-    ).exactOptional(),
-    serviceInstanceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service instance that you want sync your service configuration with.',
-        }),
-    ).exactOptional(),
-    serviceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the service that you want to get the sync blocker summary for. If given a service instance name and a service name, it will return the blockers only applying to the instance that is blocked.</p> <p>If given only a service name, it will return the blockers that apply to all of the instances. In order to get the blockers for a single instance, you will need to make two distinct calls, one to get the sync blocker summary for the service and the other to get the sync blocker for the service instance.</p>',
-        }),
-    ),
+    latestBlockers: LatestSyncBlockersSchema.exactOptional().openapi({
+      description: 'The latest active blockers for the synced service.',
+    }),
+    serviceInstanceName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the service instance that you want sync your service configuration with.',
+    }),
+    serviceName: StringSchema.openapi({
+      description:
+        '<p>The name of the service that you want to get the sync blocker summary for. If given a service instance name and a service name, it will return the blockers only applying to the instance that is blocked.</p> <p>If given only a service name, it will return the blockers that apply to all of the instances. In order to get the blockers for a single instance, you will need to make two distinct calls, one to get the sync blocker summary for the service and the other to get the sync blocker for the service instance.</p>',
+    }),
   })
   .openapi({
     required: ['serviceName'],
@@ -3010,123 +2195,87 @@ const ServiceSyncBlockerSummarySchema = z
 
 const GetServiceSyncBlockerSummaryOutputSchema = z
   .object({
-    serviceSyncBlockerSummary: ServiceSyncBlockerSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data of the requested service sync blocker summary.',
-        }),
-    ).exactOptional(),
+    serviceSyncBlockerSummary: ServiceSyncBlockerSummarySchema.exactOptional().openapi({
+      description: 'The detailed data of the requested service sync blocker summary.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceSyncBlockerSummaryOutput')
 
 const GetServiceSyncBlockerSummaryInputSchema = z
   .object({
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service instance that you want to get the service sync blocker summary for. If given bothe the instance name and the service name, only the instance is blocked.',
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that you want to get the service sync blocker summary for. If given only the service name, all instances are blocked.',
-        }),
-    ),
+    serviceInstanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service instance that you want to get the service sync blocker summary for. If given bothe the instance name and the service name, only the instance is blocked.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the service that you want to get the service sync blocker summary for. If given only the service name, all instances are blocked.',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'GetServiceSyncBlockerSummaryInput' })
   .openapi('GetServiceSyncBlockerSummaryInput')
 
 const GetServiceSyncConfigOutputSchema = z
   .object({
-    serviceSyncConfig: ServiceSyncConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The detailed data of the requested service sync configuration.' }),
-    ).exactOptional(),
+    serviceSyncConfig: ServiceSyncConfigSchema.exactOptional().openapi({
+      description: 'The detailed data of the requested service sync configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceSyncConfigOutput')
 
 const GetServiceSyncConfigInputSchema = z
   .object({
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that you want to get the service sync configuration for.',
-        }),
-    ),
+    serviceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the service that you want to get the service sync configuration for.',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'GetServiceSyncConfigInput' })
   .openapi('GetServiceSyncConfigInput')
 
 const GetServiceTemplateOutputSchema = z
   .object({
-    serviceTemplate: ServiceTemplateSchema.and(
-      z.any().openapi({ description: 'The detailed data of the requested service template.' }),
-    ),
+    serviceTemplate: ServiceTemplateSchema.openapi({
+      description: 'The detailed data of the requested service template.',
+    }),
   })
   .openapi({ required: ['serviceTemplate'] })
   .openapi('GetServiceTemplateOutput')
 
 const GetServiceTemplateInputSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service template that you want to get detailed data for.',
-        }),
-    ),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the service template that you want to get detailed data for.',
+    }),
   })
   .openapi({ required: ['name'], title: 'GetServiceTemplateInput' })
   .openapi('GetServiceTemplateInput')
 
 const GetServiceTemplateVersionOutputSchema = z
   .object({
-    serviceTemplateVersion: ServiceTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The detailed data of the requested service template version.' }),
-    ),
+    serviceTemplateVersion: ServiceTemplateVersionSchema.openapi({
+      description: 'The detailed data of the requested service template version.',
+    }),
   })
   .openapi({ required: ['serviceTemplateVersion'] })
   .openapi('GetServiceTemplateVersionOutput')
 
 const GetServiceTemplateVersionInputSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To get service template major version detail data, include <code>major Version</code>.',
-        }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To get service template minor version detail data, include <code>minorVersion</code>.',
-        }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service template a version of which you want to get detailed data for.',
-        }),
-    ),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'To get service template major version detail data, include <code>major Version</code>.',
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'To get service template minor version detail data, include <code>minorVersion</code>.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description:
+        'The name of the service template a version of which you want to get detailed data for.',
+    }),
   })
   .openapi({
     required: ['majorVersion', 'minorVersion', 'templateName'],
@@ -3136,53 +2285,43 @@ const GetServiceTemplateVersionInputSchema = z
 
 const GetTemplateSyncConfigOutputSchema = z
   .object({
-    templateSyncConfig: TemplateSyncConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The template sync configuration detail data that's returned by Proton.",
-        }),
-    ).exactOptional(),
+    templateSyncConfig: TemplateSyncConfigSchema.exactOptional().openapi({
+      description: "The template sync configuration detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTemplateSyncConfigOutput')
 
 const GetTemplateSyncConfigInputSchema = z
   .object({
-    templateName: ResourceNameSchema.and(z.any().openapi({ description: 'The template name.' })),
-    templateType: TemplateTypeSchema.and(z.any().openapi({ description: 'The template type.' })),
+    templateName: ResourceNameSchema.openapi({ description: 'The template name.' }),
+    templateType: TemplateTypeSchema.openapi({ description: 'The template type.' }),
   })
   .openapi({ required: ['templateName', 'templateType'], title: 'GetTemplateSyncConfigInput' })
   .openapi('GetTemplateSyncConfigInput')
 
 const GetTemplateSyncStatusOutputSchema = z
   .object({
-    desiredState: RevisionSchema.and(
-      z
-        .any()
-        .openapi({ description: "The template sync desired state that's returned by Proton." }),
-    ).exactOptional(),
-    latestSuccessfulSync: ResourceSyncAttemptSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The details of the last successful sync that's returned by Proton.",
-        }),
-    ).exactOptional(),
-    latestSync: ResourceSyncAttemptSchema.and(
-      z.any().openapi({ description: "The details of the last sync that's returned by Proton." }),
-    ).exactOptional(),
+    desiredState: RevisionSchema.exactOptional().openapi({
+      description: "The template sync desired state that's returned by Proton.",
+    }),
+    latestSuccessfulSync: ResourceSyncAttemptSchema.exactOptional().openapi({
+      description: "The details of the last successful sync that's returned by Proton.",
+    }),
+    latestSync: ResourceSyncAttemptSchema.exactOptional().openapi({
+      description: "The details of the last sync that's returned by Proton.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTemplateSyncStatusOutput')
 
 const GetTemplateSyncStatusInputSchema = z
   .object({
-    templateName: ResourceNameSchema.and(z.any().openapi({ description: 'The template name.' })),
-    templateType: TemplateTypeSchema.and(z.any().openapi({ description: 'The template type.' })),
-    templateVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The template major version.' }),
-    ),
+    templateName: ResourceNameSchema.openapi({ description: 'The template name.' }),
+    templateType: TemplateTypeSchema.openapi({ description: 'The template type.' }),
+    templateVersion: TemplateVersionPartSchema.openapi({
+      description: 'The template major version.',
+    }),
   })
   .openapi({
     required: ['templateName', 'templateType', 'templateVersion'],
@@ -3198,10 +2337,10 @@ const OutputValueStringSchema = z.string().min(1).max(1024).openapi('OutputValue
 
 const OutputSchema = z
   .object({
-    key: OutputKeySchema.and(z.any().openapi({ description: 'The output key.' })).exactOptional(),
-    valueString: OutputValueStringSchema.and(
-      z.any().openapi({ description: 'The output value.' }),
-    ).exactOptional(),
+    key: OutputKeySchema.exactOptional().openapi({ description: 'The output key.' }),
+    valueString: OutputValueStringSchema.exactOptional().openapi({
+      description: 'The output value.',
+    }),
   })
   .openapi({ description: 'An infrastructure as code defined resource output.', required: [] })
   .openapi('Output')
@@ -3210,36 +2349,26 @@ const OutputsListSchema = z.array(OutputSchema).openapi('OutputsList')
 
 const ListComponentOutputsOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.',
-        }),
-    ).exactOptional(),
-    outputs: OutputsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of component Infrastructure as Code (IaC) outputs.' }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.',
+    }),
+    outputs: OutputsListSchema.openapi({
+      description: 'An array of component Infrastructure as Code (IaC) outputs.',
+    }),
   })
   .openapi({ required: ['outputs'] })
   .openapi('ListComponentOutputsOutput')
 
 const ListComponentOutputsInputSchema = z
   .object({
-    componentName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the component whose outputs you want.' }),
-    ),
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.',
-        }),
-    ).exactOptional(),
+    componentName: ResourceNameSchema.openapi({
+      description: 'The name of the component whose outputs you want.',
+    }),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.',
+    }),
   })
   .openapi({ required: ['componentName'], title: 'ListComponentOutputsInput' })
   .openapi('ListComponentOutputsInput')
@@ -3259,20 +2388,16 @@ const ProvisionedResourceEngineSchema = z
 
 const ProvisionedResourceSchema = z
   .object({
-    identifier: ProvisionedResourceIdentifierSchema.and(
-      z.any().openapi({ description: 'The provisioned resource identifier.' }),
-    ).exactOptional(),
-    name: ProvisionedResourceNameSchema.and(
-      z.any().openapi({ description: 'The provisioned resource name.' }),
-    ).exactOptional(),
-    provisioningEngine: ProvisionedResourceEngineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource provisioning engine. At this time, <code>CLOUDFORMATION</code> can be used for Amazon Web Services-managed provisioning, and <code>TERRAFORM</code> can be used for self-managed provisioning.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html#ag-works-prov-methods-self">Self-managed provisioning</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    identifier: ProvisionedResourceIdentifierSchema.exactOptional().openapi({
+      description: 'The provisioned resource identifier.',
+    }),
+    name: ProvisionedResourceNameSchema.exactOptional().openapi({
+      description: 'The provisioned resource name.',
+    }),
+    provisioningEngine: ProvisionedResourceEngineSchema.exactOptional().openapi({
+      description:
+        '<p>The resource provisioning engine. At this time, <code>CLOUDFORMATION</code> can be used for Amazon Web Services-managed provisioning, and <code>TERRAFORM</code> can be used for self-managed provisioning.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html#ag-works-prov-methods-self">Self-managed provisioning</a> in the <i>Proton User Guide</i>.</p>',
+    }),
   })
   .openapi({ description: 'Detail data for a provisioned resource.', required: [] })
   .openapi('ProvisionedResource')
@@ -3283,97 +2408,63 @@ const ProvisionedResourceListSchema = z
 
 const ListComponentProvisionedResourcesOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.',
-        }),
-    ).exactOptional(),
-    provisionedResources: ProvisionedResourceListSchema.and(
-      z.any().openapi({ description: 'An array of provisioned resources for a component.' }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.',
+    }),
+    provisionedResources: ProvisionedResourceListSchema.openapi({
+      description: 'An array of provisioned resources for a component.',
+    }),
   })
   .openapi({ required: ['provisionedResources'] })
   .openapi('ListComponentProvisionedResourcesOutput')
 
 const ListComponentProvisionedResourcesInputSchema = z
   .object({
-    componentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the component whose provisioned resources you want.',
-        }),
-    ),
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.',
-        }),
-    ).exactOptional(),
+    componentName: ResourceNameSchema.openapi({
+      description: 'The name of the component whose provisioned resources you want.',
+    }),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.',
+    }),
   })
   .openapi({ required: ['componentName'], title: 'ListComponentProvisionedResourcesInput' })
   .openapi('ListComponentProvisionedResourcesInput')
 
 const ComponentSummarySchema = z
   .object({
-    arn: ComponentArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the component.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the component was created.' }),
-    ),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The component deployment status.' }),
-    ),
-    deploymentStatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message associated with the component deployment status.' }),
-    ).exactOptional(),
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Proton environment that this component is associated with.',
-        }),
-    ),
-    lastDeploymentAttemptedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when a deployment of the component was last attempted.',
-        }),
-    ).exactOptional(),
-    lastDeploymentSucceededAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the component was last deployed successfully.' }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the component was last modified.' }),
-    ),
-    name: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the component.' })),
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service instance that this component is attached to. Provided when a component is attached to a service instance.',
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that <code>serviceInstanceName</code> is associated with. Provided when a component is attached to a service instance.',
-        }),
-    ).exactOptional(),
+    arn: ComponentArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the component.',
+    }),
+    createdAt: TimestampSchema.openapi({ description: 'The time when the component was created.' }),
+    deploymentStatus: DeploymentStatusSchema.openapi({
+      description: 'The component deployment status.',
+    }),
+    deploymentStatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'The message associated with the component deployment status.',
+    }),
+    environmentName: ResourceNameSchema.openapi({
+      description: 'The name of the Proton environment that this component is associated with.',
+    }),
+    lastDeploymentAttemptedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time when a deployment of the component was last attempted.',
+    }),
+    lastDeploymentSucceededAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the component was last deployed successfully.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the component was last modified.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the component.' }),
+    serviceInstanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service instance that this component is attached to. Provided when a component is attached to a service instance.',
+    }),
+    serviceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service that <code>serviceInstanceName</code> is associated with. Provided when a component is attached to a service instance.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'deploymentStatus', 'environmentName', 'lastModifiedAt', 'name'],
@@ -3391,17 +2482,13 @@ const NextTokenSchema = z
 
 const ListComponentsOutputSchema = z
   .object({
-    components: ComponentSummaryListSchema.and(
-      z.any().openapi({ description: 'An array of components with summary data.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next component in the array of components, after the current requested list of components.',
-        }),
-    ).exactOptional(),
+    components: ComponentSummaryListSchema.openapi({
+      description: 'An array of components with summary data.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next component in the array of components, after the current requested list of components.',
+    }),
   })
   .openapi({ required: ['components'] })
   .openapi('ListComponentsOutput')
@@ -3410,114 +2497,66 @@ const MaxPageResultsSchema = z.int().min(1).max(100).openapi('MaxPageResults')
 
 const ListComponentsInputSchema = z
   .object({
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an environment for result list filtering. Proton returns components associated with the environment or attached to service instances running in it.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxPageResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of components to list.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next component in the array of components, after the list of components that was previously requested.',
-        }),
-    ).exactOptional(),
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a service instance for result list filtering. Proton returns the component attached to the service instance, if any.',
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a service for result list filtering. Proton returns components attached to service instances of the service.',
-        }),
-    ).exactOptional(),
+    environmentName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of an environment for result list filtering. Proton returns components associated with the environment or attached to service instances running in it.',
+    }),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of components to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next component in the array of components, after the list of components that was previously requested.',
+    }),
+    serviceInstanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of a service instance for result list filtering. Proton returns the component attached to the service instance, if any.',
+    }),
+    serviceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of a service for result list filtering. Proton returns components attached to service instances of the service.',
+    }),
   })
   .openapi({ title: 'ListComponentsInput', required: [] })
   .openapi('ListComponentsInput')
 
 const EnvironmentAccountConnectionSummarySchema = z
   .object({
-    arn: EnvironmentAccountConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the environment account connection.',
-        }),
-    ),
-    componentRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    environmentAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the environment account that's connected to the environment account connection.",
-        }),
-    ),
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the environment that's associated with the environment account connection.",
-        }),
-    ),
-    id: EnvironmentAccountConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment account connection.' }),
-    ),
-    lastModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the environment account connection was last modified.',
-        }),
-    ),
-    managementAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the management account that's connected to the environment account connection.",
-        }),
-    ),
-    requestedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the environment account connection request was made.',
-        }),
-    ),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The IAM service role that's associated with the environment account connection.",
-        }),
-    ),
-    status: EnvironmentAccountConnectionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the environment account connection.' }),
-    ),
+    arn: EnvironmentAccountConnectionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment account connection.',
+    }),
+    componentRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    environmentAccountId: AwsAccountIdSchema.openapi({
+      description:
+        "The ID of the environment account that's connected to the environment account connection.",
+    }),
+    environmentName: ResourceNameSchema.openapi({
+      description:
+        "The name of the environment that's associated with the environment account connection.",
+    }),
+    id: EnvironmentAccountConnectionIdSchema.openapi({
+      description: 'The ID of the environment account connection.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the environment account connection was last modified.',
+    }),
+    managementAccountId: AwsAccountIdSchema.openapi({
+      description:
+        "The ID of the management account that's connected to the environment account connection.",
+    }),
+    requestedAt: TimestampSchema.openapi({
+      description: 'The time when the environment account connection request was made.',
+    }),
+    roleArn: ArnSchema.openapi({
+      description:
+        "The IAM service role that's associated with the environment account connection.",
+    }),
+    status: EnvironmentAccountConnectionStatusSchema.openapi({
+      description: 'The status of the environment account connection.',
+    }),
   })
   .openapi({
     required: [
@@ -3541,22 +2580,14 @@ const EnvironmentAccountConnectionSummaryListSchema = z
 
 const ListEnvironmentAccountConnectionsOutputSchema = z
   .object({
-    environmentAccountConnections: EnvironmentAccountConnectionSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of environment account connections with details that's returned by Proton. ",
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment account connection in the array of environment account connections, after the current requested list of environment account connections.',
-        }),
-    ).exactOptional(),
+    environmentAccountConnections: EnvironmentAccountConnectionSummaryListSchema.openapi({
+      description:
+        "An array of environment account connections with details that's returned by Proton. ",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment account connection in the array of environment account connections, after the current requested list of environment account connections.',
+    }),
   })
   .openapi({ required: ['environmentAccountConnections'] })
   .openapi('ListEnvironmentAccountConnectionsOutput')
@@ -3571,167 +2602,109 @@ const EnvironmentAccountConnectionStatusListSchema = z
 
 const ListEnvironmentAccountConnectionsInputSchema = z
   .object({
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The environment name that's associated with each listed environment account connection.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxPageResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of environment account connections to list.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment account connection in the array of environment account connections, after the list of environment account connections that was previously requested.',
-        }),
-    ).exactOptional(),
-    requestedBy: EnvironmentAccountConnectionRequesterAccountTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of account making the <code>ListEnvironmentAccountConnections</code> request.',
-        }),
-    ),
-    statuses: EnvironmentAccountConnectionStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status details for each listed environment account connection.',
-        }),
-    ).exactOptional(),
+    environmentName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "The environment name that's associated with each listed environment account connection.",
+    }),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of environment account connections to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment account connection in the array of environment account connections, after the list of environment account connections that was previously requested.',
+    }),
+    requestedBy: EnvironmentAccountConnectionRequesterAccountTypeSchema.openapi({
+      description:
+        'The type of account making the <code>ListEnvironmentAccountConnections</code> request.',
+    }),
+    statuses: EnvironmentAccountConnectionStatusListSchema.exactOptional().openapi({
+      description: 'The status details for each listed environment account connection.',
+    }),
   })
   .openapi({ required: ['requestedBy'], title: 'ListEnvironmentAccountConnectionsInput' })
   .openapi('ListEnvironmentAccountConnectionsInput')
 
 const ListEnvironmentOutputsOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment output in the array of environment outputs, after the current requested list of environment outputs.',
-        }),
-    ).exactOptional(),
-    outputs: OutputsListSchema.and(
-      z.any().openapi({ description: 'An array of environment outputs with detail data.' }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment output in the array of environment outputs, after the current requested list of environment outputs.',
+    }),
+    outputs: OutputsListSchema.openapi({
+      description: 'An array of environment outputs with detail data.',
+    }),
   })
   .openapi({ required: ['outputs'] })
   .openapi('ListEnvironmentOutputsOutput')
 
 const ListEnvironmentOutputsInputSchema = z
   .object({
-    environmentName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The environment name.' }),
-    ),
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment output in the array of environment outputs, after the list of environment outputs that was previously requested.',
-        }),
-    ).exactOptional(),
+    environmentName: ResourceNameSchema.openapi({ description: 'The environment name.' }),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment output in the array of environment outputs, after the list of environment outputs that was previously requested.',
+    }),
   })
   .openapi({ required: ['environmentName'], title: 'ListEnvironmentOutputsInput' })
   .openapi('ListEnvironmentOutputsInput')
 
 const ListEnvironmentProvisionedResourcesOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment provisioned resource in the array of provisioned resources, after the current requested list of environment provisioned resources.',
-        }),
-    ).exactOptional(),
-    provisionedResources: ProvisionedResourceListSchema.and(
-      z.any().openapi({ description: 'An array of environment provisioned resources.' }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment provisioned resource in the array of provisioned resources, after the current requested list of environment provisioned resources.',
+    }),
+    provisionedResources: ProvisionedResourceListSchema.openapi({
+      description: 'An array of environment provisioned resources.',
+    }),
   })
   .openapi({ required: ['provisionedResources'] })
   .openapi('ListEnvironmentProvisionedResourcesOutput')
 
 const ListEnvironmentProvisionedResourcesInputSchema = z
   .object({
-    environmentName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The environment name.' }),
-    ),
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment provisioned resource in the array of environment provisioned resources, after the list of environment provisioned resources that was previously requested.',
-        }),
-    ).exactOptional(),
+    environmentName: ResourceNameSchema.openapi({ description: 'The environment name.' }),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment provisioned resource in the array of environment provisioned resources, after the list of environment provisioned resources that was previously requested.',
+    }),
   })
   .openapi({ required: ['environmentName'], title: 'ListEnvironmentProvisionedResourcesInput' })
   .openapi('ListEnvironmentProvisionedResourcesInput')
 
 const EnvironmentTemplateVersionSummarySchema = z
   .object({
-    arn: EnvironmentTemplateVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the version of an environment template.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the version of an environment template was created.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the version of an environment template.' }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the version of an environment template was last modified.',
-        }),
-    ),
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The latest major version that's associated with the version of an environment template.",
-        }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The version of an environment template.' }),
-    ),
-    recommendedMinorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The recommended minor version of the environment template.' }),
-    ).exactOptional(),
-    status: TemplateVersionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the version of an environment template.' }),
-    ),
-    statusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status message of the version of an environment template.' }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
+    arn: EnvironmentTemplateVersionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the version of an environment template.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the version of an environment template was created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the version of an environment template.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the version of an environment template was last modified.',
+    }),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        "The latest major version that's associated with the version of an environment template.",
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The version of an environment template.',
+    }),
+    recommendedMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The recommended minor version of the environment template.',
+    }),
+    status: TemplateVersionStatusSchema.openapi({
+      description: 'The status of the version of an environment template.',
+    }),
+    statusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'The status message of the version of an environment template.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the environment template.',
+    }),
   })
   .openapi({
     required: [
@@ -3753,97 +2726,63 @@ const EnvironmentTemplateVersionSummaryListSchema = z
 
 const ListEnvironmentTemplateVersionsOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.',
-        }),
-    ).exactOptional(),
-    templateVersions: EnvironmentTemplateVersionSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of major or minor versions of an environment template detail data.',
-        }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.',
+    }),
+    templateVersions: EnvironmentTemplateVersionSummaryListSchema.openapi({
+      description: 'An array of major or minor versions of an environment template detail data.',
+    }),
   })
   .openapi({ required: ['templateVersions'] })
   .openapi('ListEnvironmentTemplateVersionsOutput')
 
 const ListEnvironmentTemplateVersionsInputSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To view a list of minor of versions under a major version of an environment template, include <code>major Version</code>.</p> <p>To view a list of major versions of an environment template, <i>exclude</i> <code>major Version</code>.</p>',
-        }),
-    ).exactOptional(),
-    maxResults: MaxPageResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of major or minor versions of an environment template to list.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
+    majorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description:
+        '<p>To view a list of minor of versions under a major version of an environment template, include <code>major Version</code>.</p> <p>To view a list of major versions of an environment template, <i>exclude</i> <code>major Version</code>.</p>',
+    }),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of major or minor versions of an environment template to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the environment template.',
+    }),
   })
   .openapi({ required: ['templateName'], title: 'ListEnvironmentTemplateVersionsInput' })
   .openapi('ListEnvironmentTemplateVersionsInput')
 
 const EnvironmentTemplateSummarySchema = z
   .object({
-    arn: EnvironmentTemplateArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the environment template.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the environment template was created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the environment template.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the environment template as displayed in the developer interface.',
-        }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the environment template was last modified.' }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
-    provisioning: ProvisioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
-        }),
-    ).exactOptional(),
-    recommendedVersion: FullTemplateVersionNumberSchema.and(
-      z.any().openapi({ description: 'The recommended version of the environment template.' }),
-    ).exactOptional(),
+    arn: EnvironmentTemplateArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment template.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the environment template was created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the environment template.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The name of the environment template as displayed in the developer interface.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the environment template was last modified.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the environment template.' }),
+    provisioning: ProvisioningSchema.exactOptional().openapi({
+      description:
+        'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
+    }),
+    recommendedVersion: FullTemplateVersionNumberSchema.exactOptional().openapi({
+      description: 'The recommended version of the environment template.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'lastModifiedAt', 'name'],
@@ -3857,117 +2796,83 @@ const EnvironmentTemplateSummaryListSchema = z
 
 const ListEnvironmentTemplatesOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment template in the array of environment templates, after the current requested list of environment templates.',
-        }),
-    ).exactOptional(),
-    templates: EnvironmentTemplateSummaryListSchema.and(
-      z.any().openapi({ description: 'An array of environment templates with detail data.' }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment template in the array of environment templates, after the current requested list of environment templates.',
+    }),
+    templates: EnvironmentTemplateSummaryListSchema.openapi({
+      description: 'An array of environment templates with detail data.',
+    }),
   })
   .openapi({ required: ['templates'] })
   .openapi('ListEnvironmentTemplatesOutput')
 
 const ListEnvironmentTemplatesInputSchema = z
   .object({
-    maxResults: MaxPageResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of environment templates to list.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment template in the array of environment templates, after the list of environment templates that was previously requested.',
-        }),
-    ).exactOptional(),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of environment templates to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment template in the array of environment templates, after the list of environment templates that was previously requested.',
+    }),
   })
   .openapi({ title: 'ListEnvironmentTemplatesInput', required: [] })
   .openapi('ListEnvironmentTemplatesInput')
 
 const EnvironmentSummarySchema = z
   .object({
-    arn: EnvironmentArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the environment.' }),
-    ),
-    componentRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the environment was created.' }),
-    ),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The environment deployment status.' }),
-    ),
-    deploymentStatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'An environment deployment status message.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the environment.' }),
-    ).exactOptional(),
-    environmentAccountConnectionId: EnvironmentAccountConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the environment account connection that the environment is associated with.',
-        }),
-    ).exactOptional(),
-    environmentAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the environment account that the environment infrastructure resources are provisioned in.',
-        }),
-    ).exactOptional(),
-    lastDeploymentAttemptedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when a deployment of the environment was last attempted.',
-        }),
-    ),
-    lastDeploymentSucceededAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the environment was last deployed successfully.' }),
-    ),
-    name: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the environment.' })),
-    protonServiceRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.',
-        }),
-    ).exactOptional(),
-    provisioning: ProvisioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
-        }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The major version of the environment template.' }),
-    ),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The minor version of the environment template.' }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
+    arn: EnvironmentArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment.',
+    }),
+    componentRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the environment was created.',
+    }),
+    deploymentStatus: DeploymentStatusSchema.openapi({
+      description: 'The environment deployment status.',
+    }),
+    deploymentStatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'An environment deployment status message.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the environment.',
+    }),
+    environmentAccountConnectionId: EnvironmentAccountConnectionIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the environment account connection that the environment is associated with.',
+    }),
+    environmentAccountId: AwsAccountIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the environment account that the environment infrastructure resources are provisioned in.',
+    }),
+    lastDeploymentAttemptedAt: TimestampSchema.openapi({
+      description: 'The time when a deployment of the environment was last attempted.',
+    }),
+    lastDeploymentSucceededAt: TimestampSchema.openapi({
+      description: 'The time when the environment was last deployed successfully.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the environment.' }),
+    protonServiceRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.',
+    }),
+    provisioning: ProvisioningSchema.exactOptional().openapi({
+      description:
+        'When included, indicates that the environment template is for customer provisioned and managed infrastructure.',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The major version of the environment template.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The minor version of the environment template.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the environment template.',
+    }),
   })
   .openapi({
     required: [
@@ -3992,37 +2897,25 @@ const EnvironmentSummaryListSchema = z
 
 const ListEnvironmentsOutputSchema = z
   .object({
-    environments: EnvironmentSummaryListSchema.and(
-      z.any().openapi({ description: 'An array of environment detail data summaries.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment in the array of environments, after the current requested list of environments.',
-        }),
-    ).exactOptional(),
+    environments: EnvironmentSummaryListSchema.openapi({
+      description: 'An array of environment detail data summaries.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment in the array of environments, after the current requested list of environments.',
+    }),
   })
   .openapi({ required: ['environments'] })
   .openapi('ListEnvironmentsOutput')
 
 const EnvironmentTemplateFilterSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Include <code>majorVersion</code> to filter search for a major version.',
-        }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Include <code>templateName</code> to filter search for a template name.',
-        }),
-    ),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description: 'Include <code>majorVersion</code> to filter search for a major version.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'Include <code>templateName</code> to filter search for a template name.',
+    }),
   })
   .openapi({
     required: ['majorVersion', 'templateName'],
@@ -4036,41 +2929,31 @@ const EnvironmentTemplateFilterListSchema = z
 
 const ListEnvironmentsInputSchema = z
   .object({
-    environmentTemplates: EnvironmentTemplateFilterListSchema.and(
-      z.any().openapi({ description: 'An array of the versions of the environment template.' }),
-    ).exactOptional(),
-    maxResults: MaxPageResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of environments to list.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next environment in the array of environments, after the list of environments that was previously requested.',
-        }),
-    ).exactOptional(),
+    environmentTemplates: EnvironmentTemplateFilterListSchema.exactOptional().openapi({
+      description: 'An array of the versions of the environment template.',
+    }),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of environments to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next environment in the array of environments, after the list of environments that was previously requested.',
+    }),
   })
   .openapi({ title: 'ListEnvironmentsInput', required: [] })
   .openapi('ListEnvironmentsInput')
 
 const RepositorySummarySchema = z
   .object({
-    arn: RepositoryArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the linked repository.' }),
-    ),
-    connectionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the of your connection that connects Proton to your repository.',
-        }),
-    ),
-    name: RepositoryNameSchema.and(z.any().openapi({ description: 'The repository name.' })),
-    provider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
+    arn: RepositoryArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the linked repository.',
+    }),
+    connectionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the of your connection that connects Proton to your repository.',
+    }),
+    name: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    provider: RepositoryProviderSchema.openapi({ description: 'The repository provider.' }),
   })
   .openapi({
     required: ['arn', 'connectionArn', 'name', 'provider'],
@@ -4085,46 +2968,36 @@ const RepositorySummaryListSchema = z
 
 const ListRepositoriesOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next repository in the array of repositories, after the current requested list of repositories. ',
-        }),
-    ).exactOptional(),
-    repositories: RepositorySummaryListSchema.and(
-      z.any().openapi({ description: 'An array of repository links.' }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next repository in the array of repositories, after the current requested list of repositories. ',
+    }),
+    repositories: RepositorySummaryListSchema.openapi({
+      description: 'An array of repository links.',
+    }),
   })
   .openapi({ required: ['repositories'] })
   .openapi('ListRepositoriesOutput')
 
 const ListRepositoriesInputSchema = z
   .object({
-    maxResults: MaxPageResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of repositories to list.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next repository in the array of repositories, after the list of repositories previously requested.',
-        }),
-    ).exactOptional(),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of repositories to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next repository in the array of repositories, after the list of repositories previously requested.',
+    }),
   })
   .openapi({ title: 'ListRepositoriesInput', required: [] })
   .openapi('ListRepositoriesInput')
 
 const RepositorySyncDefinitionSchema = z
   .object({
-    branch: GitBranchNameSchema.and(z.any().openapi({ description: 'The repository branch.' })),
-    directory: StringSchema.and(
-      z.any().openapi({ description: 'The directory in the repository.' }),
-    ),
-    parent: StringSchema.and(z.any().openapi({ description: 'The resource that is synced from.' })),
-    target: StringSchema.and(z.any().openapi({ description: 'The resource that is synced to.' })),
+    branch: GitBranchNameSchema.openapi({ description: 'The repository branch.' }),
+    directory: StringSchema.openapi({ description: 'The directory in the repository.' }),
+    parent: StringSchema.openapi({ description: 'The resource that is synced from.' }),
+    target: StringSchema.openapi({ description: 'The resource that is synced to.' }),
   })
   .openapi({
     required: ['branch', 'directory', 'parent', 'target'],
@@ -4138,44 +3011,30 @@ const RepositorySyncDefinitionListSchema = z
 
 const ListRepositorySyncDefinitionsOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next repository sync definition in the array of repository sync definitions, after the current requested list of repository sync definitions.',
-        }),
-    ).exactOptional(),
-    syncDefinitions: RepositorySyncDefinitionListSchema.and(
-      z.any().openapi({ description: 'An array of repository sync definitions.' }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next repository sync definition in the array of repository sync definitions, after the current requested list of repository sync definitions.',
+    }),
+    syncDefinitions: RepositorySyncDefinitionListSchema.openapi({
+      description: 'An array of repository sync definitions.',
+    }),
   })
   .openapi({ required: ['syncDefinitions'] })
   .openapi('ListRepositorySyncDefinitionsOutput')
 
 const ListRepositorySyncDefinitionsInputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next repository sync definition in the array of repository sync definitions, after the list of repository sync definitions previously requested.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name.' }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
-    syncType: SyncTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sync type. The only supported value is <code>TEMPLATE_SYNC</code>.',
-        }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next repository sync definition in the array of repository sync definitions, after the list of repository sync definitions previously requested.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({ description: 'The repository name.' }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description: 'The repository provider.',
+    }),
+    syncType: SyncTypeSchema.openapi({
+      description: 'The sync type. The only supported value is <code>TEMPLATE_SYNC</code>.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'repositoryProvider', 'syncType'],
@@ -4185,46 +3044,30 @@ const ListRepositorySyncDefinitionsInputSchema = z
 
 const ListServiceInstanceOutputsOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next output in the array of outputs, after the current requested list of outputs.',
-        }),
-    ).exactOptional(),
-    outputs: OutputsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of service instance Infrastructure as Code (IaC) outputs.',
-        }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next output in the array of outputs, after the current requested list of outputs.',
+    }),
+    outputs: OutputsListSchema.openapi({
+      description: 'An array of service instance Infrastructure as Code (IaC) outputs.',
+    }),
   })
   .openapi({ required: ['outputs'] })
   .openapi('ListServiceInstanceOutputsOutput')
 
 const ListServiceInstanceOutputsInputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.',
-        }),
-    ).exactOptional(),
-    serviceInstanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service instance whose outputs you want.' }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that <code>serviceInstanceName</code> is associated to.',
-        }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.',
+    }),
+    serviceInstanceName: ResourceNameSchema.openapi({
+      description: 'The name of the service instance whose outputs you want.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the service that <code>serviceInstanceName</code> is associated to.',
+    }),
   })
   .openapi({
     required: ['serviceInstanceName', 'serviceName'],
@@ -4234,46 +3077,30 @@ const ListServiceInstanceOutputsInputSchema = z
 
 const ListServiceInstanceProvisionedResourcesOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.',
-        }),
-    ).exactOptional(),
-    provisionedResources: ProvisionedResourceListSchema.and(
-      z.any().openapi({ description: 'An array of provisioned resources for a service instance.' }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.',
+    }),
+    provisionedResources: ProvisionedResourceListSchema.openapi({
+      description: 'An array of provisioned resources for a service instance.',
+    }),
   })
   .openapi({ required: ['provisionedResources'] })
   .openapi('ListServiceInstanceProvisionedResourcesOutput')
 
 const ListServiceInstanceProvisionedResourcesInputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.',
-        }),
-    ).exactOptional(),
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service instance whose provisioned resources you want.',
-        }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that <code>serviceInstanceName</code> is associated to.',
-        }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.',
+    }),
+    serviceInstanceName: ResourceNameSchema.openapi({
+      description: 'The name of the service instance whose provisioned resources you want.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the service that <code>serviceInstanceName</code> is associated to.',
+    }),
   })
   .openapi({
     required: ['serviceInstanceName', 'serviceName'],
@@ -4283,50 +3110,38 @@ const ListServiceInstanceProvisionedResourcesInputSchema = z
 
 const ServiceInstanceSummarySchema = z
   .object({
-    arn: ServiceInstanceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the service instance.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service instance was created.' }),
-    ),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The service instance deployment status.' }),
-    ),
-    deploymentStatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'A service instance deployment status message.' }),
-    ).exactOptional(),
-    environmentName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the environment that the service instance was deployed into.',
-        }),
-    ),
-    lastDeploymentAttemptedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when a deployment of the service was last attempted.' }),
-    ),
-    lastDeploymentSucceededAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service was last deployed successfully.' }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service instance.' }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service that the service instance belongs to.' }),
-    ),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The service instance template major version.' }),
-    ),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The service instance template minor version.' }),
-    ),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
+    arn: ServiceInstanceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the service instance.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the service instance was created.',
+    }),
+    deploymentStatus: DeploymentStatusSchema.openapi({
+      description: 'The service instance deployment status.',
+    }),
+    deploymentStatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A service instance deployment status message.',
+    }),
+    environmentName: ResourceNameSchema.openapi({
+      description: 'The name of the environment that the service instance was deployed into.',
+    }),
+    lastDeploymentAttemptedAt: TimestampSchema.openapi({
+      description: 'The time when a deployment of the service was last attempted.',
+    }),
+    lastDeploymentSucceededAt: TimestampSchema.openapi({
+      description: 'The time when the service was last deployed successfully.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service instance.' }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service that the service instance belongs to.',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The service instance template major version.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The service instance template minor version.',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
   })
   .openapi({
     required: [
@@ -4352,17 +3167,13 @@ const ServiceInstanceSummaryListSchema = z
 
 const ListServiceInstancesOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next service instance in the array of service instances, after the current requested list of service instances.',
-        }),
-    ).exactOptional(),
-    serviceInstances: ServiceInstanceSummaryListSchema.and(
-      z.any().openapi({ description: 'An array of service instances with summary data.' }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next service instance in the array of service instances, after the current requested list of service instances.',
+    }),
+    serviceInstances: ServiceInstanceSummaryListSchema.openapi({
+      description: 'An array of service instances with summary data.',
+    }),
   })
   .openapi({ required: ['serviceInstances'] })
   .openapi('ListServiceInstancesOutput')
@@ -4386,17 +3197,13 @@ const ListServiceInstancesFilterValueSchema = z.string().openapi('ListServiceIns
 
 const ListServiceInstancesFilterSchema = z
   .object({
-    key: ListServiceInstancesFilterBySchema.and(
-      z.any().openapi({ description: 'The name of a filtering criterion.' }),
-    ).exactOptional(),
-    value: ListServiceInstancesFilterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value to filter by.</p> <p>With the date/time keys (<code>*At{Before,After}</code>), the value is a valid <a href="https://datatracker.ietf.org/doc/html/rfc3339.html">RFC 3339</a> string with no UTC offset and with an optional fractional precision (for example, <code>1985-04-12T23:20:50.52Z</code>).</p>',
-        }),
-    ).exactOptional(),
+    key: ListServiceInstancesFilterBySchema.exactOptional().openapi({
+      description: 'The name of a filtering criterion.',
+    }),
+    value: ListServiceInstancesFilterValueSchema.exactOptional().openapi({
+      description:
+        '<p>A value to filter by.</p> <p>With the date/time keys (<code>*At{Before,After}</code>), the value is a valid <a href="https://datatracker.ietf.org/doc/html/rfc3339.html">RFC 3339</a> string with no UTC offset and with an optional fractional precision (for example, <code>1985-04-12T23:20:50.52Z</code>).</p>',
+    }),
   })
   .openapi({
     description:
@@ -4425,176 +3232,114 @@ const SortOrderSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('SortOrder')
 
 const ListServiceInstancesInputSchema = z
   .object({
-    filters: ListServiceInstancesFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of filtering criteria that scope down the result list. By default, all service instances in the Amazon Web Services account are returned.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxPageResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of service instances to list.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next service in the array of service instances, after the list of service instances that was previously requested.',
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service that the service instance belongs to.' }),
-    ).exactOptional(),
-    sortBy: ListServiceInstancesSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The field that the result list is sorted by.</p> <p>When you choose to sort by <code>serviceName</code>, service instances within each service are sorted by service instance name.</p> <p>Default: <code>serviceName</code> </p>',
-        }),
-    ).exactOptional(),
-    sortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description: '<p>Result list sort order.</p> <p>Default: <code>ASCENDING</code> </p>',
-        }),
-    ).exactOptional(),
+    filters: ListServiceInstancesFilterListSchema.exactOptional().openapi({
+      description:
+        'An array of filtering criteria that scope down the result list. By default, all service instances in the Amazon Web Services account are returned.',
+    }),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of service instances to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next service in the array of service instances, after the list of service instances that was previously requested.',
+    }),
+    serviceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the service that the service instance belongs to.',
+    }),
+    sortBy: ListServiceInstancesSortBySchema.exactOptional().openapi({
+      description:
+        '<p>The field that the result list is sorted by.</p> <p>When you choose to sort by <code>serviceName</code>, service instances within each service are sorted by service instance name.</p> <p>Default: <code>serviceName</code> </p>',
+    }),
+    sortOrder: SortOrderSchema.exactOptional().openapi({
+      description: '<p>Result list sort order.</p> <p>Default: <code>ASCENDING</code> </p>',
+    }),
   })
   .openapi({ title: 'ListServiceInstancesInput', required: [] })
   .openapi('ListServiceInstancesInput')
 
 const ListServicePipelineOutputsOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next output in the array of outputs, after the current requested list of outputs.',
-        }),
-    ).exactOptional(),
-    outputs: OutputsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of service pipeline Infrastructure as Code (IaC) outputs.',
-        }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next output in the array of outputs, after the current requested list of outputs.',
+    }),
+    outputs: OutputsListSchema.openapi({
+      description: 'An array of service pipeline Infrastructure as Code (IaC) outputs.',
+    }),
   })
   .openapi({ required: ['outputs'] })
   .openapi('ListServicePipelineOutputsOutput')
 
 const ListServicePipelineOutputsInputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.',
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: "The name of the service whose pipeline's outputs you want." }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: "The name of the service whose pipeline's outputs you want.",
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'ListServicePipelineOutputsInput' })
   .openapi('ListServicePipelineOutputsInput')
 
 const ListServicePipelineProvisionedResourcesOutputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.',
-        }),
-    ).exactOptional(),
-    provisionedResources: ProvisionedResourceListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of provisioned resources for a service and pipeline.' }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.',
+    }),
+    provisionedResources: ProvisionedResourceListSchema.openapi({
+      description: 'An array of provisioned resources for a service and pipeline.',
+    }),
   })
   .openapi({ required: ['provisionedResources'] })
   .openapi('ListServicePipelineProvisionedResourcesOutput')
 
 const ListServicePipelineProvisionedResourcesInputSchema = z
   .object({
-    nextToken: EmptyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.',
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of the service whose pipeline's provisioned resources you want.",
-        }),
-    ),
+    nextToken: EmptyNextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: "The name of the service whose pipeline's provisioned resources you want.",
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'ListServicePipelineProvisionedResourcesInput' })
   .openapi('ListServicePipelineProvisionedResourcesInput')
 
 const ServiceTemplateVersionSummarySchema = z
   .object({
-    arn: ServiceTemplateVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the version of a service template.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the version of a service template was created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the version of a service template.' }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the version of a service template was last modified.',
-        }),
-    ),
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The latest major version that's associated with the version of a service template.",
-        }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The minor version of a service template.' }),
-    ),
-    recommendedMinorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The recommended minor version of the service template.' }),
-    ).exactOptional(),
-    status: TemplateVersionStatusSchema.and(
-      z.any().openapi({ description: 'The service template minor version status.' }),
-    ),
-    statusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'A service template minor version status message.' }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
+    arn: ServiceTemplateVersionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the version of a service template.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the version of a service template was created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the version of a service template.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the version of a service template was last modified.',
+    }),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        "The latest major version that's associated with the version of a service template.",
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description: 'The minor version of a service template.',
+    }),
+    recommendedMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The recommended minor version of the service template.',
+    }),
+    status: TemplateVersionStatusSchema.openapi({
+      description: 'The service template minor version status.',
+    }),
+    statusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A service template minor version status message.',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
   })
   .openapi({
     required: [
@@ -4616,94 +3361,60 @@ const ServiceTemplateVersionSummaryListSchema = z
 
 const ListServiceTemplateVersionsOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next major or minor version in the array of major or minor versions of a service template, after the current requested list of service major or minor versions.',
-        }),
-    ).exactOptional(),
-    templateVersions: ServiceTemplateVersionSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of major or minor versions of a service template with detail data.',
-        }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next major or minor version in the array of major or minor versions of a service template, after the current requested list of service major or minor versions.',
+    }),
+    templateVersions: ServiceTemplateVersionSummaryListSchema.openapi({
+      description: 'An array of major or minor versions of a service template with detail data.',
+    }),
   })
   .openapi({ required: ['templateVersions'] })
   .openapi('ListServiceTemplateVersionsOutput')
 
 const ListServiceTemplateVersionsInputSchema = z
   .object({
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To view a list of minor of versions under a major version of a service template, include <code>major Version</code>.</p> <p>To view a list of major versions of a service template, <i>exclude</i> <code>major Version</code>.</p>',
-        }),
-    ).exactOptional(),
-    maxResults: MaxPageResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of major or minor versions of a service template to list.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next major or minor version in the array of major or minor versions of a service template, after the list of major or minor versions that was previously requested.',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
+    majorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description:
+        '<p>To view a list of minor of versions under a major version of a service template, include <code>major Version</code>.</p> <p>To view a list of major versions of a service template, <i>exclude</i> <code>major Version</code>.</p>',
+    }),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of major or minor versions of a service template to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next major or minor version in the array of major or minor versions of a service template, after the list of major or minor versions that was previously requested.',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
   })
   .openapi({ required: ['templateName'], title: 'ListServiceTemplateVersionsInput' })
   .openapi('ListServiceTemplateVersionsInput')
 
 const ServiceTemplateSummarySchema = z
   .object({
-    arn: ServiceTemplateArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the service template.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service template was created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the service template.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service template name as displayed in the developer interface.',
-        }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service template was last modified.' }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
-    pipelineProvisioning: ProvisioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If <code>pipelineProvisioning</code> is <code>true</code>, a service pipeline is included in the service template, otherwise a service pipeline <i>isn't</i> included in the service template.",
-        }),
-    ).exactOptional(),
-    recommendedVersion: FullTemplateVersionNumberSchema.and(
-      z.any().openapi({ description: 'The recommended version of the service template.' }),
-    ).exactOptional(),
+    arn: ServiceTemplateArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the service template.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the service template was created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the service template.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The service template name as displayed in the developer interface.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the service template was last modified.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
+    pipelineProvisioning: ProvisioningSchema.exactOptional().openapi({
+      description:
+        "If <code>pipelineProvisioning</code> is <code>true</code>, a service pipeline is included in the service template, otherwise a service pipeline <i>isn't</i> included in the service template.",
+    }),
+    recommendedVersion: FullTemplateVersionNumberSchema.exactOptional().openapi({
+      description: 'The recommended version of the service template.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'lastModifiedAt', 'name'],
@@ -4717,60 +3428,48 @@ const ServiceTemplateSummaryListSchema = z
 
 const ListServiceTemplatesOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next service template in the array of service templates, after the current requested list of service templates.',
-        }),
-    ).exactOptional(),
-    templates: ServiceTemplateSummaryListSchema.and(
-      z.any().openapi({ description: 'An array of service templates with detail data.' }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next service template in the array of service templates, after the current requested list of service templates.',
+    }),
+    templates: ServiceTemplateSummaryListSchema.openapi({
+      description: 'An array of service templates with detail data.',
+    }),
   })
   .openapi({ required: ['templates'] })
   .openapi('ListServiceTemplatesOutput')
 
 const ListServiceTemplatesInputSchema = z
   .object({
-    maxResults: MaxPageResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of service templates to list.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next service template in the array of service templates, after the list of service templates previously requested.',
-        }),
-    ).exactOptional(),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of service templates to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next service template in the array of service templates, after the list of service templates previously requested.',
+    }),
   })
   .openapi({ title: 'ListServiceTemplatesInput', required: [] })
   .openapi('ListServiceTemplatesInput')
 
 const ServiceSummarySchema = z
   .object({
-    arn: ServiceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the service.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service was created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the service.' }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the service was last modified.' }),
-    ),
-    name: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the service.' })),
-    status: ServiceStatusSchema.and(z.any().openapi({ description: 'The status of the service.' })),
-    statusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'A service status message.' }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
+    arn: ServiceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the service.',
+    }),
+    createdAt: TimestampSchema.openapi({ description: 'The time when the service was created.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the service.',
+    }),
+    lastModifiedAt: TimestampSchema.openapi({
+      description: 'The time when the service was last modified.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service.' }),
+    status: ServiceStatusSchema.openapi({ description: 'The status of the service.' }),
+    statusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A service status message.',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'lastModifiedAt', 'name', 'status', 'templateName'],
@@ -4782,81 +3481,59 @@ const ServiceSummaryListSchema = z.array(ServiceSummarySchema).openapi('ServiceS
 
 const ListServicesOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next service in the array of services, after the current requested list of services.',
-        }),
-    ).exactOptional(),
-    services: ServiceSummaryListSchema.and(
-      z.any().openapi({ description: 'An array of services with summaries of detail data.' }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next service in the array of services, after the current requested list of services.',
+    }),
+    services: ServiceSummaryListSchema.openapi({
+      description: 'An array of services with summaries of detail data.',
+    }),
   })
   .openapi({ required: ['services'] })
   .openapi('ListServicesOutput')
 
 const ListServicesInputSchema = z
   .object({
-    maxResults: MaxPageResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of services to list.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next service in the array of services, after the list of services that was previously requested.',
-        }),
-    ).exactOptional(),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of services to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next service in the array of services, after the list of services that was previously requested.',
+    }),
   })
   .openapi({ title: 'ListServicesInput', required: [] })
   .openapi('ListServicesInput')
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next resource tag in the array of resource tags, after the current requested list of resource tags.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of resource tags with detail data.' }),
-    ),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next resource tag in the array of resource tags, after the current requested list of resource tags.',
+    }),
+    tags: TagListSchema.openapi({ description: 'A list of resource tags with detail data.' }),
   })
   .openapi({ required: ['tags'] })
   .openapi('ListTagsForResourceOutput')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    maxResults: MaxPageResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of tags to list.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the location of the next resource tag in the array of resource tags, after the list of resource tags that was previously requested.',
-        }),
-    ).exactOptional(),
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the resource for the listed tags.',
-        }),
-    ),
+    maxResults: MaxPageResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of tags to list.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the location of the next resource tag in the array of resource tags, after the list of resource tags that was previously requested.',
+    }),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource for the listed tags.',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
 
 const NotifyResourceDeploymentStatusChangeOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NotifyResourceDeploymentStatusChangeOutput')
 
 const DeploymentIdSchema = z
@@ -4883,109 +3560,82 @@ const NotifyResourceDeploymentStatusChangeInputStatusMessageStringSchema = z
 
 const NotifyResourceDeploymentStatusChangeInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: 'The deployment ID for your provisioned resource.' }),
-    ).exactOptional(),
-    outputs: NotifyResourceDeploymentStatusChangeInputOutputsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The provisioned resource state change detail data that's returned by Proton.",
-        }),
-    ).exactOptional(),
-    resourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The provisioned resource Amazon Resource Name (ARN).' }),
-    ),
-    status: ResourceDeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The status of your provisioned resource.' }),
-    ).exactOptional(),
-    statusMessage: NotifyResourceDeploymentStatusChangeInputStatusMessageStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The deployment status message for your provisioned resource.' }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: 'The deployment ID for your provisioned resource.',
+    }),
+    outputs: NotifyResourceDeploymentStatusChangeInputOutputsListSchema.exactOptional().openapi({
+      description: "The provisioned resource state change detail data that's returned by Proton.",
+    }),
+    resourceArn: ArnSchema.openapi({
+      description: 'The provisioned resource Amazon Resource Name (ARN).',
+    }),
+    status: ResourceDeploymentStatusSchema.exactOptional().openapi({
+      description: 'The status of your provisioned resource.',
+    }),
+    statusMessage:
+      NotifyResourceDeploymentStatusChangeInputStatusMessageStringSchema.exactOptional().openapi({
+        description: 'The deployment status message for your provisioned resource.',
+      }),
   })
   .openapi({ required: ['resourceArn'], title: 'NotifyResourceDeploymentStatusChangeInput' })
   .openapi('NotifyResourceDeploymentStatusChangeInput')
 
 const RejectEnvironmentAccountConnectionOutputSchema = z
   .object({
-    environmentAccountConnection: EnvironmentAccountConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The environment connection account detail data that's returned by Proton.",
-        }),
-    ),
+    environmentAccountConnection: EnvironmentAccountConnectionSchema.openapi({
+      description: "The environment connection account detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environmentAccountConnection'] })
   .openapi('RejectEnvironmentAccountConnectionOutput')
 
 const RejectEnvironmentAccountConnectionInputSchema = z
   .object({
-    id: EnvironmentAccountConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment account connection to reject.' }),
-    ),
+    id: EnvironmentAccountConnectionIdSchema.openapi({
+      description: 'The ID of the environment account connection to reject.',
+    }),
   })
   .openapi({ required: ['id'], title: 'RejectEnvironmentAccountConnectionInput' })
   .openapi('RejectEnvironmentAccountConnectionInput')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
 const TagResourceInputSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Proton resource to apply customer tags to.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of customer tags to apply to the Proton resource.' }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Proton resource to apply customer tags to.',
+    }),
+    tags: TagListSchema.openapi({
+      description: 'A list of customer tags to apply to the Proton resource.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(50).openapi('TagKeyList')
 
 const UntagResourceInputSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to remove customer tags from.',
-        }),
-    ),
-    tagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of customer tag keys that indicate the customer tags to be removed from the resource.',
-        }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource to remove customer tags from.',
+    }),
+    tagKeys: TagKeyListSchema.openapi({
+      description:
+        'A list of customer tag keys that indicate the customer tags to be removed from the resource.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
 
 const UpdateAccountSettingsOutputSchema = z
   .object({
-    accountSettings: AccountSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Proton pipeline service role and repository data shared across the Amazon Web Services account.',
-        }),
-    ),
+    accountSettings: AccountSettingsSchema.openapi({
+      description:
+        'The Proton pipeline service role and repository data shared across the Amazon Web Services account.',
+    }),
   })
   .openapi({ required: ['accountSettings'] })
   .openapi('UpdateAccountSettingsOutput')
@@ -4994,47 +3644,31 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const UpdateAccountSettingsInputSchema = z
   .object({
-    deletePipelineProvisioningRepository: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Set to <code>true</code> to remove a configured pipeline repository from the account settings. Don't set this field if you are updating the configured pipeline repository.",
-        }),
-    ).exactOptional(),
-    pipelineCodebuildRoleArn: RoleArnOrEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Proton assumes this role for CodeBuild-based provisioning.',
-        }),
-    ).exactOptional(),
-    pipelineProvisioningRepository: RepositoryBranchInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A linked repository for pipeline provisioning. Specify it if you have environments configured for self-managed provisioning with services that include pipelines. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.</p> <p>To remove a previously configured repository, set <code>deletePipelineProvisioningRepository</code> to <code>true</code>, and don't set <code>pipelineProvisioningRepository</code>.</p>",
-        }),
-    ).exactOptional(),
-    pipelineServiceRoleArn: RoleArnOrEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Assumed by Proton for Amazon Web Services-managed provisioning, and by customer-owned automation for self-managed provisioning.</p> <p>To remove a previously configured ARN, specify an empty string.</p>',
-        }),
-    ).exactOptional(),
+    deletePipelineProvisioningRepository: BooleanSchema.exactOptional().openapi({
+      description:
+        "Set to <code>true</code> to remove a configured pipeline repository from the account settings. Don't set this field if you are updating the configured pipeline repository.",
+    }),
+    pipelineCodebuildRoleArn: RoleArnOrEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Proton assumes this role for CodeBuild-based provisioning.',
+    }),
+    pipelineProvisioningRepository: RepositoryBranchInputSchema.exactOptional().openapi({
+      description:
+        "<p>A linked repository for pipeline provisioning. Specify it if you have environments configured for self-managed provisioning with services that include pipelines. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.</p> <p>To remove a previously configured repository, set <code>deletePipelineProvisioningRepository</code> to <code>true</code>, and don't set <code>pipelineProvisioningRepository</code>.</p>",
+    }),
+    pipelineServiceRoleArn: RoleArnOrEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Assumed by Proton for Amazon Web Services-managed provisioning, and by customer-owned automation for self-managed provisioning.</p> <p>To remove a previously configured ARN, specify an empty string.</p>',
+    }),
   })
   .openapi({ title: 'UpdateAccountSettingsInput', required: [] })
   .openapi('UpdateAccountSettingsInput')
 
 const UpdateComponentOutputSchema = z
   .object({
-    component: ComponentSchema.and(
-      z.any().openapi({ description: 'The detailed data of the updated component.' }),
-    ),
+    component: ComponentSchema.openapi({
+      description: 'The detailed data of the updated component.',
+    }),
   })
   .openapi({ required: ['component'] })
   .openapi('UpdateComponentOutput')
@@ -5052,66 +3686,42 @@ const ResourceNameOrEmptySchema = z
 
 const UpdateComponentInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token for the updated component.' }),
-    ).exactOptional(),
-    deploymentType: ComponentDeploymentUpdateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The deployment type. It defines the mode for updating a component, as follows:</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated. You can only specify <code>description</code> in this mode.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the component is deployed and updated with the new <code>serviceSpec</code>, <code>templateSource</code>, and/or <code>type</code> that you provide. Only requested parameters are updated.</p> </dd> </dl>",
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An optional customer-provided description of the component.' }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the component to update.' }),
-    ),
-    serviceInstanceName: ResourceNameOrEmptySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service instance that you want to attach this component to. Don't specify to keep the component's current service instance attachment. Specify an empty string to detach the component from the service instance it's attached to. Specify non-empty values for both <code>serviceInstanceName</code> and <code>serviceName</code> or for neither of them.",
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameOrEmptySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service that <code>serviceInstanceName</code> is associated with. Don't specify to keep the component's current service instance attachment. Specify an empty string to detach the component from the service instance it's attached to. Specify non-empty values for both <code>serviceInstanceName</code> and <code>serviceName</code> or for neither of them.",
-        }),
-    ).exactOptional(),
-    serviceSpec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service spec that you want the component to use to access service inputs. Set this only when the component is attached to a service instance.',
-        }),
-    ).exactOptional(),
-    templateFile: TemplateFileContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A path to the Infrastructure as Code (IaC) file describing infrastructure that a custom component provisions.</p> <note> <p>Components support a single IaC file, even if you use Terraform as your template language.</p> </note>',
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token for the updated component.',
+    }),
+    deploymentType: ComponentDeploymentUpdateTypeSchema.openapi({
+      description:
+        "<p>The deployment type. It defines the mode for updating a component, as follows:</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated. You can only specify <code>description</code> in this mode.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the component is deployed and updated with the new <code>serviceSpec</code>, <code>templateSource</code>, and/or <code>type</code> that you provide. Only requested parameters are updated.</p> </dd> </dl>",
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional customer-provided description of the component.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the component to update.' }),
+    serviceInstanceName: ResourceNameOrEmptySchema.exactOptional().openapi({
+      description:
+        "The name of the service instance that you want to attach this component to. Don't specify to keep the component's current service instance attachment. Specify an empty string to detach the component from the service instance it's attached to. Specify non-empty values for both <code>serviceInstanceName</code> and <code>serviceName</code> or for neither of them.",
+    }),
+    serviceName: ResourceNameOrEmptySchema.exactOptional().openapi({
+      description:
+        "The name of the service that <code>serviceInstanceName</code> is associated with. Don't specify to keep the component's current service instance attachment. Specify an empty string to detach the component from the service instance it's attached to. Specify non-empty values for both <code>serviceInstanceName</code> and <code>serviceName</code> or for neither of them.",
+    }),
+    serviceSpec: SpecContentsSchema.exactOptional().openapi({
+      description:
+        'The service spec that you want the component to use to access service inputs. Set this only when the component is attached to a service instance.',
+    }),
+    templateFile: TemplateFileContentsSchema.exactOptional().openapi({
+      description:
+        '<p>A path to the Infrastructure as Code (IaC) file describing infrastructure that a custom component provisions.</p> <note> <p>Components support a single IaC file, even if you use Terraform as your template language.</p> </note>',
+    }),
   })
   .openapi({ required: ['deploymentType', 'name'], title: 'UpdateComponentInput' })
   .openapi('UpdateComponentInput')
 
 const UpdateEnvironmentOutputSchema = z
   .object({
-    environment: EnvironmentSchema.and(
-      z.any().openapi({ description: "The environment detail data that's returned by Proton." }),
-    ),
+    environment: EnvironmentSchema.openapi({
+      description: "The environment detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environment'] })
   .openapi('UpdateEnvironmentOutput')
@@ -5122,196 +3732,130 @@ const DeploymentUpdateTypeSchema = z
 
 const UpdateEnvironmentInputSchema = z
   .object({
-    codebuildRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using CodeBuild-based provisioning on your behalf.',
-        }),
-    ).exactOptional(),
-    componentRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    deploymentType: DeploymentUpdateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>There are four modes for updating an environment. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>",
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the environment update.' }),
-    ).exactOptional(),
-    environmentAccountConnectionId: EnvironmentAccountConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the environment account connection.</p> <p>You can only update to a new environment account connection if it was created in the same environment account that the current environment account connection was created in and is associated with the current environment.</p>',
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment to update.' }),
-    ),
-    protonServiceRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make API calls to other services your behalf.',
-        }),
-    ).exactOptional(),
-    provisioningRepository: RepositoryBranchInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.',
-        }),
-    ).exactOptional(),
-    spec: SpecContentsSchema.and(
-      z.any().openapi({ description: 'The formatted specification that defines the update.' }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The major version of the environment to update.' }),
-    ).exactOptional(),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The minor version of the environment to update.' }),
-    ).exactOptional(),
+    codebuildRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using CodeBuild-based provisioning on your behalf.',
+    }),
+    componentRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    deploymentType: DeploymentUpdateTypeSchema.openapi({
+      description:
+        "<p>There are four modes for updating an environment. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>",
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the environment update.',
+    }),
+    environmentAccountConnectionId: EnvironmentAccountConnectionIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the environment account connection.</p> <p>You can only update to a new environment account connection if it was created in the same environment account that the current environment account connection was created in and is associated with the current environment.</p>',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the environment to update.' }),
+    protonServiceRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make API calls to other services your behalf.',
+    }),
+    provisioningRepository: RepositoryBranchInputSchema.exactOptional().openapi({
+      description:
+        'The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.',
+    }),
+    spec: SpecContentsSchema.exactOptional().openapi({
+      description: 'The formatted specification that defines the update.',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The major version of the environment to update.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The minor version of the environment to update.',
+    }),
   })
   .openapi({ required: ['deploymentType', 'name'], title: 'UpdateEnvironmentInput' })
   .openapi('UpdateEnvironmentInput')
 
 const UpdateEnvironmentAccountConnectionOutputSchema = z
   .object({
-    environmentAccountConnection: EnvironmentAccountConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The environment account connection detail data that's returned by Proton.",
-        }),
-    ),
+    environmentAccountConnection: EnvironmentAccountConnectionSchema.openapi({
+      description: "The environment account connection detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environmentAccountConnection'] })
   .openapi('UpdateEnvironmentAccountConnectionOutput')
 
 const UpdateEnvironmentAccountConnectionInputSchema = z
   .object({
-    codebuildRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account.',
-        }),
-    ).exactOptional(),
-    componentRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    id: EnvironmentAccountConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment account connection to update.' }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the IAM service role that's associated with the environment account connection to update.",
-        }),
-    ).exactOptional(),
+    codebuildRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account.',
+    }),
+    componentRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+    }),
+    id: EnvironmentAccountConnectionIdSchema.openapi({
+      description: 'The ID of the environment account connection to update.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the IAM service role that's associated with the environment account connection to update.",
+    }),
   })
   .openapi({ required: ['id'], title: 'UpdateEnvironmentAccountConnectionInput' })
   .openapi('UpdateEnvironmentAccountConnectionInput')
 
 const UpdateEnvironmentTemplateOutputSchema = z
   .object({
-    environmentTemplate: EnvironmentTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The environment template detail data that's returned by Proton.",
-        }),
-    ),
+    environmentTemplate: EnvironmentTemplateSchema.openapi({
+      description: "The environment template detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environmentTemplate'] })
   .openapi('UpdateEnvironmentTemplateOutput')
 
 const UpdateEnvironmentTemplateInputSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the environment template update.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the environment template to update as displayed in the developer interface.',
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template to update.' }),
-    ),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the environment template update.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description:
+        'The name of the environment template to update as displayed in the developer interface.',
+    }),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the environment template to update.',
+    }),
   })
   .openapi({ required: ['name'], title: 'UpdateEnvironmentTemplateInput' })
   .openapi('UpdateEnvironmentTemplateInput')
 
 const UpdateEnvironmentTemplateVersionOutputSchema = z
   .object({
-    environmentTemplateVersion: EnvironmentTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The environment template version detail data that's returned by Proton.",
-        }),
-    ),
+    environmentTemplateVersion: EnvironmentTemplateVersionSchema.openapi({
+      description: "The environment template version detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['environmentTemplateVersion'] })
   .openapi('UpdateEnvironmentTemplateVersionOutput')
 
 const UpdateEnvironmentTemplateVersionInputSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of environment template version to update.' }),
-    ).exactOptional(),
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To update a major version of an environment template, include <code>major Version</code>.',
-        }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To update a minor version of an environment template, include <code>minorVersion</code>.',
-        }),
-    ),
-    status: TemplateVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the environment template minor version to update.',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment template.' }),
-    ),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of environment template version to update.',
+    }),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'To update a major version of an environment template, include <code>major Version</code>.',
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'To update a minor version of an environment template, include <code>minorVersion</code>.',
+    }),
+    status: TemplateVersionStatusSchema.exactOptional().openapi({
+      description: 'The status of the environment template minor version to update.',
+    }),
+    templateName: ResourceNameSchema.openapi({
+      description: 'The name of the environment template.',
+    }),
   })
   .openapi({
     required: ['majorVersion', 'minorVersion', 'templateName'],
@@ -5321,78 +3865,60 @@ const UpdateEnvironmentTemplateVersionInputSchema = z
 
 const UpdateServiceOutputSchema = z
   .object({
-    service: ServiceSchema.and(
-      z.any().openapi({ description: "The service detail data that's returned by Proton." }),
-    ),
+    service: ServiceSchema.openapi({
+      description: "The service detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['service'] })
   .openapi('UpdateServiceOutput')
 
 const UpdateServiceInputSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The edited service description.' }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service to edit.' }),
-    ),
-    spec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists the service instances to add and the existing service instances to remain. Omit the existing service instances to delete from the list. <i>Don\'t</i> include edits to the existing service instances or pipeline. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-svc-update.html">Edit a service</a> in the <i>Proton User Guide</i>.',
-        }),
-    ).exactOptional(),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The edited service description.',
+    }),
+    name: ResourceNameSchema.openapi({ description: 'The name of the service to edit.' }),
+    spec: SpecContentsSchema.exactOptional().openapi({
+      description:
+        'Lists the service instances to add and the existing service instances to remain. Omit the existing service instances to delete from the list. <i>Don\'t</i> include edits to the existing service instances or pipeline. For more information, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-svc-update.html">Edit a service</a> in the <i>Proton User Guide</i>.',
+    }),
   })
   .openapi({ required: ['name'], title: 'UpdateServiceInput' })
   .openapi('UpdateServiceInput')
 
 const UpdateServiceInstanceOutputSchema = z
   .object({
-    serviceInstance: ServiceInstanceSchema.and(
-      z
-        .any()
-        .openapi({ description: "The service instance summary data that's returned by Proton." }),
-    ),
+    serviceInstance: ServiceInstanceSchema.openapi({
+      description: "The service instance summary data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['serviceInstance'] })
   .openapi('UpdateServiceInstanceOutput')
 
 const UpdateServiceInstanceInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token of the service instance to update.' }),
-    ).exactOptional(),
-    deploymentType: DeploymentUpdateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The deployment type. It defines the mode for updating a service instance, as follows:</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this deployment type.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>",
-        }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service instance to update.' }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service that the service instance belongs to.' }),
-    ),
-    spec: SpecContentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The formatted specification that defines the service instance update.',
-        }),
-    ).exactOptional(),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The major version of the service template to update.' }),
-    ).exactOptional(),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z.any().openapi({ description: 'The minor version of the service template to update.' }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token of the service instance to update.',
+    }),
+    deploymentType: DeploymentUpdateTypeSchema.openapi({
+      description:
+        "<p>The deployment type. It defines the mode for updating a service instance, as follows:</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this deployment type.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>",
+    }),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the service instance to update.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service that the service instance belongs to.',
+    }),
+    spec: SpecContentsSchema.exactOptional().openapi({
+      description: 'The formatted specification that defines the service instance update.',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The major version of the service template to update.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description: 'The minor version of the service template to update.',
+    }),
   })
   .openapi({
     required: ['deploymentType', 'name', 'serviceName'],
@@ -5402,49 +3928,33 @@ const UpdateServiceInstanceInputSchema = z
 
 const UpdateServicePipelineOutputSchema = z
   .object({
-    pipeline: ServicePipelineSchema.and(
-      z.any().openapi({ description: 'The pipeline details that are returned by Proton.' }),
-    ),
+    pipeline: ServicePipelineSchema.openapi({
+      description: 'The pipeline details that are returned by Proton.',
+    }),
   })
   .openapi({ required: ['pipeline'] })
   .openapi('UpdateServicePipelineOutput')
 
 const UpdateServicePipelineInputSchema = z
   .object({
-    deploymentType: DeploymentUpdateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The deployment type.</p> <p>There are four modes for updating a service pipeline. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>",
-        }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service to that the pipeline is associated with.',
-        }),
-    ),
-    spec: SpecContentsSchema.and(
-      z.any().openapi({ description: 'The spec for the service pipeline to update.' }),
-    ),
-    templateMajorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The major version of the service template that was used to create the service that the pipeline is associated with.',
-        }),
-    ).exactOptional(),
-    templateMinorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minor version of the service template that was used to create the service that the pipeline is associated with.',
-        }),
-    ).exactOptional(),
+    deploymentType: DeploymentUpdateTypeSchema.openapi({
+      description:
+        "<p>The deployment type.</p> <p>There are four modes for updating a service pipeline. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>",
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service to that the pipeline is associated with.',
+    }),
+    spec: SpecContentsSchema.openapi({
+      description: 'The spec for the service pipeline to update.',
+    }),
+    templateMajorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description:
+        'The major version of the service template that was used to create the service that the pipeline is associated with.',
+    }),
+    templateMinorVersion: TemplateVersionPartSchema.exactOptional().openapi({
+      description:
+        'The minor version of the service template that was used to create the service that the pipeline is associated with.',
+    }),
   })
   .openapi({
     required: ['deploymentType', 'serviceName', 'spec'],
@@ -5454,79 +3964,54 @@ const UpdateServicePipelineInputSchema = z
 
 const UpdateServiceSyncBlockerOutputSchema = z
   .object({
-    serviceInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service instance that you want to update the service sync blocker for.',
-        }),
-    ).exactOptional(),
-    serviceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that you want to update the service sync blocker for.',
-        }),
-    ),
-    serviceSyncBlocker: SyncBlockerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed data on the service sync blocker that was updated.',
-        }),
-    ),
+    serviceInstanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service instance that you want to update the service sync blocker for.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service that you want to update the service sync blocker for.',
+    }),
+    serviceSyncBlocker: SyncBlockerSchema.openapi({
+      description: 'The detailed data on the service sync blocker that was updated.',
+    }),
   })
   .openapi({ required: ['serviceName', 'serviceSyncBlocker'] })
   .openapi('UpdateServiceSyncBlockerOutput')
 
 const UpdateServiceSyncBlockerInputSchema = z
   .object({
-    id: StringSchema.and(z.any().openapi({ description: 'The ID of the service sync blocker.' })),
-    resolvedReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason the service sync blocker was resolved.' }),
-    ),
+    id: StringSchema.openapi({ description: 'The ID of the service sync blocker.' }),
+    resolvedReason: StringSchema.openapi({
+      description: 'The reason the service sync blocker was resolved.',
+    }),
   })
   .openapi({ required: ['id', 'resolvedReason'], title: 'UpdateServiceSyncBlockerInput' })
   .openapi('UpdateServiceSyncBlockerInput')
 
 const UpdateServiceSyncConfigOutputSchema = z
   .object({
-    serviceSyncConfig: ServiceSyncConfigSchema.and(
-      z.any().openapi({ description: 'The detailed data of the Proton Ops file.' }),
-    ).exactOptional(),
+    serviceSyncConfig: ServiceSyncConfigSchema.exactOptional().openapi({
+      description: 'The detailed data of the Proton Ops file.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateServiceSyncConfigOutput')
 
 const UpdateServiceSyncConfigInputSchema = z
   .object({
-    branch: GitBranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the code repository branch where the Proton Ops file is found.',
-        }),
-    ),
-    filePath: OpsFilePathSchema.and(
-      z.any().openapi({ description: 'The path to the Proton Ops file.' }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the Proton Ops file is found.' }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository provider where the Proton Ops file is found.',
-        }),
-    ),
-    serviceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service the Proton Ops file is for.' }),
-    ),
+    branch: GitBranchNameSchema.openapi({
+      description: 'The name of the code repository branch where the Proton Ops file is found.',
+    }),
+    filePath: OpsFilePathSchema.openapi({ description: 'The path to the Proton Ops file.' }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where the Proton Ops file is found.',
+    }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description: 'The name of the repository provider where the Proton Ops file is found.',
+    }),
+    serviceName: ResourceNameSchema.openapi({
+      description: 'The name of the service the Proton Ops file is for.',
+    }),
   })
   .openapi({
     required: ['branch', 'filePath', 'repositoryName', 'repositoryProvider', 'serviceName'],
@@ -5536,93 +4021,65 @@ const UpdateServiceSyncConfigInputSchema = z
 
 const UpdateServiceTemplateOutputSchema = z
   .object({
-    serviceTemplate: ServiceTemplateSchema.and(
-      z
-        .any()
-        .openapi({ description: "The service template detail data that's returned by Proton." }),
-    ),
+    serviceTemplate: ServiceTemplateSchema.openapi({
+      description: "The service template detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['serviceTemplate'] })
   .openapi('UpdateServiceTemplateOutput')
 
 const UpdateServiceTemplateInputSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the service template update.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service template to update that's displayed in the developer interface.",
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template to update.' }),
-    ),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the service template update.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description:
+        "The name of the service template to update that's displayed in the developer interface.",
+    }),
+    name: ResourceNameSchema.openapi({
+      description: 'The name of the service template to update.',
+    }),
   })
   .openapi({ required: ['name'], title: 'UpdateServiceTemplateInput' })
   .openapi('UpdateServiceTemplateInput')
 
 const UpdateServiceTemplateVersionOutputSchema = z
   .object({
-    serviceTemplateVersion: ServiceTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The service template version detail data that's returned by Proton.",
-        }),
-    ),
+    serviceTemplateVersion: ServiceTemplateVersionSchema.openapi({
+      description: "The service template version detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: ['serviceTemplateVersion'] })
   .openapi('UpdateServiceTemplateVersionOutput')
 
 const UpdateServiceTemplateVersionInputSchema = z
   .object({
-    compatibleEnvironmentTemplates: CompatibleEnvironmentTemplateInputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of environment template objects that are compatible with this service template version. A service instance based on this service template version can run in environments based on compatible templates.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of a service template version to update.' }),
-    ).exactOptional(),
-    majorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To update a major version of a service template, include <code>major Version</code>.',
-        }),
-    ),
-    minorVersion: TemplateVersionPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To update a minor version of a service template, include <code>minorVersion</code>.',
-        }),
-    ),
-    status: TemplateVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status of the service template minor version to update.' }),
-    ).exactOptional(),
-    supportedComponentSources: ServiceTemplateSupportedComponentSourceInputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <note> <p>A change to <code>supportedComponentSources</code> doesn\'t impact existing component attachments to instances based on this template version. A change only affects later associations.</p> </note> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service template.' }),
-    ),
+    compatibleEnvironmentTemplates:
+      CompatibleEnvironmentTemplateInputListSchema.exactOptional().openapi({
+        description:
+          'An array of environment template objects that are compatible with this service template version. A service instance based on this service template version can run in environments based on compatible templates.',
+      }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of a service template version to update.',
+    }),
+    majorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'To update a major version of a service template, include <code>major Version</code>.',
+    }),
+    minorVersion: TemplateVersionPartSchema.openapi({
+      description:
+        'To update a minor version of a service template, include <code>minorVersion</code>.',
+    }),
+    status: TemplateVersionStatusSchema.exactOptional().openapi({
+      description: 'The status of the service template minor version to update.',
+    }),
+    supportedComponentSources:
+      ServiceTemplateSupportedComponentSourceInputListSchema.exactOptional().openapi({
+        description:
+          '<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <note> <p>A change to <code>supportedComponentSources</code> doesn\'t impact existing component attachments to instances based on this template version. A change only affects later associations.</p> </note> <p>For more information about components, see <a href="https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html">Proton components</a> in the <i>Proton User Guide</i>.</p>',
+      }),
+    templateName: ResourceNameSchema.openapi({ description: 'The name of the service template.' }),
   })
   .openapi({
     required: ['majorVersion', 'minorVersion', 'templateName'],
@@ -5632,46 +4089,30 @@ const UpdateServiceTemplateVersionInputSchema = z
 
 const UpdateTemplateSyncConfigOutputSchema = z
   .object({
-    templateSyncConfig: TemplateSyncConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The template sync configuration detail data that's returned by Proton.",
-        }),
-    ).exactOptional(),
+    templateSyncConfig: TemplateSyncConfigSchema.exactOptional().openapi({
+      description: "The template sync configuration detail data that's returned by Proton.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTemplateSyncConfigOutput')
 
 const UpdateTemplateSyncConfigInputSchema = z
   .object({
-    branch: GitBranchNameSchema.and(
-      z.any().openapi({ description: 'The repository branch for your template.' }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The repository name (for example, <code>myrepos/myrepo</code>).',
-        }),
-    ),
-    repositoryProvider: RepositoryProviderSchema.and(
-      z.any().openapi({ description: 'The repository provider.' }),
-    ),
-    subdirectory: SubdirectorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A subdirectory path to your template bundle version. When included, limits the template bundle search to this repository directory.',
-        }),
-    ).exactOptional(),
-    templateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The synced template name.' }),
-    ),
-    templateType: TemplateTypeSchema.and(
-      z.any().openapi({ description: 'The synced template type.' }),
-    ),
+    branch: GitBranchNameSchema.openapi({
+      description: 'The repository branch for your template.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The repository name (for example, <code>myrepos/myrepo</code>).',
+    }),
+    repositoryProvider: RepositoryProviderSchema.openapi({
+      description: 'The repository provider.',
+    }),
+    subdirectory: SubdirectorySchema.exactOptional().openapi({
+      description:
+        'A subdirectory path to your template bundle version. When included, limits the template bundle search to this repository directory.',
+    }),
+    templateName: ResourceNameSchema.openapi({ description: 'The synced template name.' }),
+    templateType: TemplateTypeSchema.openapi({ description: 'The synced template type.' }),
   })
   .openapi({
     required: ['branch', 'repositoryName', 'repositoryProvider', 'templateName', 'templateType'],

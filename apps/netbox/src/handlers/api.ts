@@ -1,0 +1,5031 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  deleteApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+  deleteApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  deleteApiCircuitsCircuitGroupsIdIndexRoute,
+  deleteApiCircuitsCircuitGroupsIndexRoute,
+  deleteApiCircuitsCircuitsIdIndexRoute,
+  deleteApiCircuitsCircuitsIndexRoute,
+  deleteApiCircuitsCircuitTerminationsIdIndexRoute,
+  deleteApiCircuitsCircuitTerminationsIndexRoute,
+  deleteApiCircuitsCircuitTypesIdIndexRoute,
+  deleteApiCircuitsCircuitTypesIndexRoute,
+  deleteApiCircuitsProviderAccountsIdIndexRoute,
+  deleteApiCircuitsProviderAccountsIndexRoute,
+  deleteApiCircuitsProviderNetworksIdIndexRoute,
+  deleteApiCircuitsProviderNetworksIndexRoute,
+  deleteApiCircuitsProvidersIdIndexRoute,
+  deleteApiCircuitsProvidersIndexRoute,
+  deleteApiCircuitsVirtualCircuitsIdIndexRoute,
+  deleteApiCircuitsVirtualCircuitsIndexRoute,
+  deleteApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+  deleteApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  deleteApiCircuitsVirtualCircuitTypesIdIndexRoute,
+  deleteApiCircuitsVirtualCircuitTypesIndexRoute,
+  deleteApiCoreDataSourcesIdIndexRoute,
+  deleteApiCoreDataSourcesIndexRoute,
+  deleteApiDcimCableBundlesIdIndexRoute,
+  deleteApiDcimCableBundlesIndexRoute,
+  deleteApiDcimCablesIdIndexRoute,
+  deleteApiDcimCablesIndexRoute,
+  deleteApiDcimConsolePortsIdIndexRoute,
+  deleteApiDcimConsolePortsIndexRoute,
+  deleteApiDcimConsolePortTemplatesIdIndexRoute,
+  deleteApiDcimConsolePortTemplatesIndexRoute,
+  deleteApiDcimConsoleServerPortsIdIndexRoute,
+  deleteApiDcimConsoleServerPortsIndexRoute,
+  deleteApiDcimConsoleServerPortTemplatesIdIndexRoute,
+  deleteApiDcimConsoleServerPortTemplatesIndexRoute,
+  deleteApiDcimCoolingFeedsIdIndexRoute,
+  deleteApiDcimCoolingFeedsIndexRoute,
+  deleteApiDcimCoolingIntakesIdIndexRoute,
+  deleteApiDcimCoolingIntakesIndexRoute,
+  deleteApiDcimCoolingIntakeTemplatesIdIndexRoute,
+  deleteApiDcimCoolingIntakeTemplatesIndexRoute,
+  deleteApiDcimCoolingOutflowsIdIndexRoute,
+  deleteApiDcimCoolingOutflowsIndexRoute,
+  deleteApiDcimCoolingOutflowTemplatesIdIndexRoute,
+  deleteApiDcimCoolingOutflowTemplatesIndexRoute,
+  deleteApiDcimCoolingSourcesIdIndexRoute,
+  deleteApiDcimCoolingSourcesIndexRoute,
+  deleteApiDcimDeviceBaysIdIndexRoute,
+  deleteApiDcimDeviceBaysIndexRoute,
+  deleteApiDcimDeviceBayTemplatesIdIndexRoute,
+  deleteApiDcimDeviceBayTemplatesIndexRoute,
+  deleteApiDcimDeviceRolesIdIndexRoute,
+  deleteApiDcimDeviceRolesIndexRoute,
+  deleteApiDcimDevicesIdIndexRoute,
+  deleteApiDcimDevicesIndexRoute,
+  deleteApiDcimDeviceTypesIdIndexRoute,
+  deleteApiDcimDeviceTypesIndexRoute,
+  deleteApiDcimFrontPortsIdIndexRoute,
+  deleteApiDcimFrontPortsIndexRoute,
+  deleteApiDcimFrontPortTemplatesIdIndexRoute,
+  deleteApiDcimFrontPortTemplatesIndexRoute,
+  deleteApiDcimInterfacesIdIndexRoute,
+  deleteApiDcimInterfacesIndexRoute,
+  deleteApiDcimInterfaceTemplatesIdIndexRoute,
+  deleteApiDcimInterfaceTemplatesIndexRoute,
+  deleteApiDcimInventoryItemRolesIdIndexRoute,
+  deleteApiDcimInventoryItemRolesIndexRoute,
+  deleteApiDcimInventoryItemsIdIndexRoute,
+  deleteApiDcimInventoryItemsIndexRoute,
+  deleteApiDcimInventoryItemTemplatesIdIndexRoute,
+  deleteApiDcimInventoryItemTemplatesIndexRoute,
+  deleteApiDcimLocationsIdIndexRoute,
+  deleteApiDcimLocationsIndexRoute,
+  deleteApiDcimMacAddressesIdIndexRoute,
+  deleteApiDcimMacAddressesIndexRoute,
+  deleteApiDcimManufacturersIdIndexRoute,
+  deleteApiDcimManufacturersIndexRoute,
+  deleteApiDcimModuleBaysIdIndexRoute,
+  deleteApiDcimModuleBaysIndexRoute,
+  deleteApiDcimModuleBayTemplatesIdIndexRoute,
+  deleteApiDcimModuleBayTemplatesIndexRoute,
+  deleteApiDcimModuleBayTypesIdIndexRoute,
+  deleteApiDcimModuleBayTypesIndexRoute,
+  deleteApiDcimModulesIdIndexRoute,
+  deleteApiDcimModulesIndexRoute,
+  deleteApiDcimModuleTypeProfilesIdIndexRoute,
+  deleteApiDcimModuleTypeProfilesIndexRoute,
+  deleteApiDcimModuleTypesIdIndexRoute,
+  deleteApiDcimModuleTypesIndexRoute,
+  deleteApiDcimPlatformsIdIndexRoute,
+  deleteApiDcimPlatformsIndexRoute,
+  deleteApiDcimPowerFeedsIdIndexRoute,
+  deleteApiDcimPowerFeedsIndexRoute,
+  deleteApiDcimPowerOutletsIdIndexRoute,
+  deleteApiDcimPowerOutletsIndexRoute,
+  deleteApiDcimPowerOutletTemplatesIdIndexRoute,
+  deleteApiDcimPowerOutletTemplatesIndexRoute,
+  deleteApiDcimPowerPanelsIdIndexRoute,
+  deleteApiDcimPowerPanelsIndexRoute,
+  deleteApiDcimPowerPortsIdIndexRoute,
+  deleteApiDcimPowerPortsIndexRoute,
+  deleteApiDcimPowerPortTemplatesIdIndexRoute,
+  deleteApiDcimPowerPortTemplatesIndexRoute,
+  deleteApiDcimRackGroupsIdIndexRoute,
+  deleteApiDcimRackGroupsIndexRoute,
+  deleteApiDcimRackReservationsIdIndexRoute,
+  deleteApiDcimRackReservationsIndexRoute,
+  deleteApiDcimRackRolesIdIndexRoute,
+  deleteApiDcimRackRolesIndexRoute,
+  deleteApiDcimRacksIdIndexRoute,
+  deleteApiDcimRacksIndexRoute,
+  deleteApiDcimRackTypesIdIndexRoute,
+  deleteApiDcimRackTypesIndexRoute,
+  deleteApiDcimRearPortsIdIndexRoute,
+  deleteApiDcimRearPortsIndexRoute,
+  deleteApiDcimRearPortTemplatesIdIndexRoute,
+  deleteApiDcimRearPortTemplatesIndexRoute,
+  deleteApiDcimRegionsIdIndexRoute,
+  deleteApiDcimRegionsIndexRoute,
+  deleteApiDcimSiteGroupsIdIndexRoute,
+  deleteApiDcimSiteGroupsIndexRoute,
+  deleteApiDcimSitesIdIndexRoute,
+  deleteApiDcimSitesIndexRoute,
+  deleteApiDcimVirtualChassisIdIndexRoute,
+  deleteApiDcimVirtualChassisIndexRoute,
+  deleteApiDcimVirtualDeviceContextsIdIndexRoute,
+  deleteApiDcimVirtualDeviceContextsIndexRoute,
+  deleteApiExtrasBookmarksIdIndexRoute,
+  deleteApiExtrasBookmarksIndexRoute,
+  deleteApiExtrasConfigContextProfilesIdIndexRoute,
+  deleteApiExtrasConfigContextProfilesIndexRoute,
+  deleteApiExtrasConfigContextsIdIndexRoute,
+  deleteApiExtrasConfigContextsIndexRoute,
+  deleteApiExtrasConfigTemplatesIdIndexRoute,
+  deleteApiExtrasConfigTemplatesIndexRoute,
+  deleteApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+  deleteApiExtrasCustomFieldChoiceSetsIndexRoute,
+  deleteApiExtrasCustomFieldsIdIndexRoute,
+  deleteApiExtrasCustomFieldsIndexRoute,
+  deleteApiExtrasCustomLinksIdIndexRoute,
+  deleteApiExtrasCustomLinksIndexRoute,
+  deleteApiExtrasDashboardIndexRoute,
+  deleteApiExtrasEventRulesIdIndexRoute,
+  deleteApiExtrasEventRulesIndexRoute,
+  deleteApiExtrasExportTemplatesIdIndexRoute,
+  deleteApiExtrasExportTemplatesIndexRoute,
+  deleteApiExtrasImageAttachmentsIdIndexRoute,
+  deleteApiExtrasImageAttachmentsIndexRoute,
+  deleteApiExtrasJournalEntriesIdIndexRoute,
+  deleteApiExtrasJournalEntriesIndexRoute,
+  deleteApiExtrasNotificationGroupsIdIndexRoute,
+  deleteApiExtrasNotificationGroupsIndexRoute,
+  deleteApiExtrasNotificationsIdIndexRoute,
+  deleteApiExtrasNotificationsIndexRoute,
+  deleteApiExtrasSavedFiltersIdIndexRoute,
+  deleteApiExtrasSavedFiltersIndexRoute,
+  deleteApiExtrasSubscriptionsIdIndexRoute,
+  deleteApiExtrasSubscriptionsIndexRoute,
+  deleteApiExtrasTableConfigsIdIndexRoute,
+  deleteApiExtrasTableConfigsIndexRoute,
+  deleteApiExtrasTagsIdIndexRoute,
+  deleteApiExtrasTagsIndexRoute,
+  deleteApiExtrasWebhooksIdIndexRoute,
+  deleteApiExtrasWebhooksIndexRoute,
+  deleteApiIpamAggregatesIdIndexRoute,
+  deleteApiIpamAggregatesIndexRoute,
+  deleteApiIpamAsnRangesIdIndexRoute,
+  deleteApiIpamAsnRangesIndexRoute,
+  deleteApiIpamAsnsIdIndexRoute,
+  deleteApiIpamAsnsIndexRoute,
+  deleteApiIpamFhrpGroupAssignmentsIdIndexRoute,
+  deleteApiIpamFhrpGroupAssignmentsIndexRoute,
+  deleteApiIpamFhrpGroupsIdIndexRoute,
+  deleteApiIpamFhrpGroupsIndexRoute,
+  deleteApiIpamIpAddressesIdIndexRoute,
+  deleteApiIpamIpAddressesIndexRoute,
+  deleteApiIpamIpRangesIdIndexRoute,
+  deleteApiIpamIpRangesIndexRoute,
+  deleteApiIpamPrefixesIdIndexRoute,
+  deleteApiIpamPrefixesIndexRoute,
+  deleteApiIpamRirsIdIndexRoute,
+  deleteApiIpamRirsIndexRoute,
+  deleteApiIpamRolesIdIndexRoute,
+  deleteApiIpamRolesIndexRoute,
+  deleteApiIpamRouteTargetsIdIndexRoute,
+  deleteApiIpamRouteTargetsIndexRoute,
+  deleteApiIpamServicesIdIndexRoute,
+  deleteApiIpamServicesIndexRoute,
+  deleteApiIpamServiceTemplatesIdIndexRoute,
+  deleteApiIpamServiceTemplatesIndexRoute,
+  deleteApiIpamVlanGroupsIdIndexRoute,
+  deleteApiIpamVlanGroupsIndexRoute,
+  deleteApiIpamVlansIdIndexRoute,
+  deleteApiIpamVlansIndexRoute,
+  deleteApiIpamVlanTranslationPoliciesIdIndexRoute,
+  deleteApiIpamVlanTranslationPoliciesIndexRoute,
+  deleteApiIpamVlanTranslationRulesIdIndexRoute,
+  deleteApiIpamVlanTranslationRulesIndexRoute,
+  deleteApiIpamVrfsIdIndexRoute,
+  deleteApiIpamVrfsIndexRoute,
+  deleteApiTenancyContactAssignmentsIdIndexRoute,
+  deleteApiTenancyContactAssignmentsIndexRoute,
+  deleteApiTenancyContactGroupsIdIndexRoute,
+  deleteApiTenancyContactGroupsIndexRoute,
+  deleteApiTenancyContactRolesIdIndexRoute,
+  deleteApiTenancyContactRolesIndexRoute,
+  deleteApiTenancyContactsIdIndexRoute,
+  deleteApiTenancyContactsIndexRoute,
+  deleteApiTenancyTenantGroupsIdIndexRoute,
+  deleteApiTenancyTenantGroupsIndexRoute,
+  deleteApiTenancyTenantsIdIndexRoute,
+  deleteApiTenancyTenantsIndexRoute,
+  deleteApiUsersGroupsIdIndexRoute,
+  deleteApiUsersGroupsIndexRoute,
+  deleteApiUsersOwnerGroupsIdIndexRoute,
+  deleteApiUsersOwnerGroupsIndexRoute,
+  deleteApiUsersOwnersIdIndexRoute,
+  deleteApiUsersOwnersIndexRoute,
+  deleteApiUsersPermissionsIdIndexRoute,
+  deleteApiUsersPermissionsIndexRoute,
+  deleteApiUsersTokensIdIndexRoute,
+  deleteApiUsersTokensIndexRoute,
+  deleteApiUsersUsersIdIndexRoute,
+  deleteApiUsersUsersIndexRoute,
+  deleteApiVirtualizationClusterGroupsIdIndexRoute,
+  deleteApiVirtualizationClusterGroupsIndexRoute,
+  deleteApiVirtualizationClustersIdIndexRoute,
+  deleteApiVirtualizationClustersIndexRoute,
+  deleteApiVirtualizationClusterTypesIdIndexRoute,
+  deleteApiVirtualizationClusterTypesIndexRoute,
+  deleteApiVirtualizationInterfacesIdIndexRoute,
+  deleteApiVirtualizationInterfacesIndexRoute,
+  deleteApiVirtualizationVirtualDisksIdIndexRoute,
+  deleteApiVirtualizationVirtualDisksIndexRoute,
+  deleteApiVirtualizationVirtualMachinesIdIndexRoute,
+  deleteApiVirtualizationVirtualMachinesIndexRoute,
+  deleteApiVirtualizationVirtualMachineTypesIdIndexRoute,
+  deleteApiVirtualizationVirtualMachineTypesIndexRoute,
+  deleteApiVpnIkePoliciesIdIndexRoute,
+  deleteApiVpnIkePoliciesIndexRoute,
+  deleteApiVpnIkeProposalsIdIndexRoute,
+  deleteApiVpnIkeProposalsIndexRoute,
+  deleteApiVpnIpsecPoliciesIdIndexRoute,
+  deleteApiVpnIpsecPoliciesIndexRoute,
+  deleteApiVpnIpsecProfilesIdIndexRoute,
+  deleteApiVpnIpsecProfilesIndexRoute,
+  deleteApiVpnIpsecProposalsIdIndexRoute,
+  deleteApiVpnIpsecProposalsIndexRoute,
+  deleteApiVpnL2vpnsIdIndexRoute,
+  deleteApiVpnL2vpnsIndexRoute,
+  deleteApiVpnL2vpnTerminationsIdIndexRoute,
+  deleteApiVpnL2vpnTerminationsIndexRoute,
+  deleteApiVpnTunnelGroupsIdIndexRoute,
+  deleteApiVpnTunnelGroupsIndexRoute,
+  deleteApiVpnTunnelsIdIndexRoute,
+  deleteApiVpnTunnelsIndexRoute,
+  deleteApiVpnTunnelTerminationsIdIndexRoute,
+  deleteApiVpnTunnelTerminationsIndexRoute,
+  deleteApiWirelessWirelessLanGroupsIdIndexRoute,
+  deleteApiWirelessWirelessLanGroupsIndexRoute,
+  deleteApiWirelessWirelessLansIdIndexRoute,
+  deleteApiWirelessWirelessLansIndexRoute,
+  deleteApiWirelessWirelessLinksIdIndexRoute,
+  deleteApiWirelessWirelessLinksIndexRoute,
+  getApiAuthenticationCheckIndexRoute,
+  getApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+  getApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  getApiCircuitsCircuitGroupsIdIndexRoute,
+  getApiCircuitsCircuitGroupsIndexRoute,
+  getApiCircuitsCircuitsIdIndexRoute,
+  getApiCircuitsCircuitsIndexRoute,
+  getApiCircuitsCircuitTerminationsIdIndexRoute,
+  getApiCircuitsCircuitTerminationsIdPathsIndexRoute,
+  getApiCircuitsCircuitTerminationsIndexRoute,
+  getApiCircuitsCircuitTypesIdIndexRoute,
+  getApiCircuitsCircuitTypesIndexRoute,
+  getApiCircuitsProviderAccountsIdIndexRoute,
+  getApiCircuitsProviderAccountsIndexRoute,
+  getApiCircuitsProviderNetworksIdIndexRoute,
+  getApiCircuitsProviderNetworksIndexRoute,
+  getApiCircuitsProvidersIdIndexRoute,
+  getApiCircuitsProvidersIndexRoute,
+  getApiCircuitsVirtualCircuitsIdIndexRoute,
+  getApiCircuitsVirtualCircuitsIndexRoute,
+  getApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+  getApiCircuitsVirtualCircuitTerminationsIdPathsIndexRoute,
+  getApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  getApiCircuitsVirtualCircuitTypesIdIndexRoute,
+  getApiCircuitsVirtualCircuitTypesIndexRoute,
+  getApiCoreBackgroundQueuesIndexRoute,
+  getApiCoreBackgroundQueuesNameIndexRoute,
+  getApiCoreBackgroundTasksIdIndexRoute,
+  getApiCoreBackgroundTasksIndexRoute,
+  getApiCoreBackgroundWorkersIndexRoute,
+  getApiCoreBackgroundWorkersNameIndexRoute,
+  getApiCoreDataFilesIdIndexRoute,
+  getApiCoreDataFilesIndexRoute,
+  getApiCoreDataSourcesIdIndexRoute,
+  getApiCoreDataSourcesIndexRoute,
+  getApiCoreJobsIdIndexRoute,
+  getApiCoreJobsIndexRoute,
+  getApiCoreObjectChangesIdIndexRoute,
+  getApiCoreObjectChangesIndexRoute,
+  getApiCoreObjectTypesIdIndexRoute,
+  getApiCoreObjectTypesIndexRoute,
+  getApiDcimCableBundlesIdIndexRoute,
+  getApiDcimCableBundlesIndexRoute,
+  getApiDcimCablesIdIndexRoute,
+  getApiDcimCablesIndexRoute,
+  getApiDcimCableTerminationsIdIndexRoute,
+  getApiDcimCableTerminationsIndexRoute,
+  getApiDcimConnectedDeviceIndexRoute,
+  getApiDcimConsolePortsIdIndexRoute,
+  getApiDcimConsolePortsIdTraceIndexRoute,
+  getApiDcimConsolePortsIndexRoute,
+  getApiDcimConsolePortTemplatesIdIndexRoute,
+  getApiDcimConsolePortTemplatesIndexRoute,
+  getApiDcimConsoleServerPortsIdIndexRoute,
+  getApiDcimConsoleServerPortsIdTraceIndexRoute,
+  getApiDcimConsoleServerPortsIndexRoute,
+  getApiDcimConsoleServerPortTemplatesIdIndexRoute,
+  getApiDcimConsoleServerPortTemplatesIndexRoute,
+  getApiDcimCoolingFeedsIdIndexRoute,
+  getApiDcimCoolingFeedsIndexRoute,
+  getApiDcimCoolingIntakesIdIndexRoute,
+  getApiDcimCoolingIntakesIndexRoute,
+  getApiDcimCoolingIntakeTemplatesIdIndexRoute,
+  getApiDcimCoolingIntakeTemplatesIndexRoute,
+  getApiDcimCoolingOutflowsIdIndexRoute,
+  getApiDcimCoolingOutflowsIndexRoute,
+  getApiDcimCoolingOutflowTemplatesIdIndexRoute,
+  getApiDcimCoolingOutflowTemplatesIndexRoute,
+  getApiDcimCoolingSourcesIdIndexRoute,
+  getApiDcimCoolingSourcesIndexRoute,
+  getApiDcimDeviceBaysIdIndexRoute,
+  getApiDcimDeviceBaysIndexRoute,
+  getApiDcimDeviceBayTemplatesIdIndexRoute,
+  getApiDcimDeviceBayTemplatesIndexRoute,
+  getApiDcimDeviceRolesIdIndexRoute,
+  getApiDcimDeviceRolesIndexRoute,
+  getApiDcimDevicesIdIndexRoute,
+  getApiDcimDevicesIndexRoute,
+  getApiDcimDeviceTypesIdIndexRoute,
+  getApiDcimDeviceTypesIndexRoute,
+  getApiDcimFrontPortsIdIndexRoute,
+  getApiDcimFrontPortsIdPathsIndexRoute,
+  getApiDcimFrontPortsIndexRoute,
+  getApiDcimFrontPortTemplatesIdIndexRoute,
+  getApiDcimFrontPortTemplatesIndexRoute,
+  getApiDcimInterfacesIdIndexRoute,
+  getApiDcimInterfacesIdTraceIndexRoute,
+  getApiDcimInterfacesIndexRoute,
+  getApiDcimInterfaceTemplatesIdIndexRoute,
+  getApiDcimInterfaceTemplatesIndexRoute,
+  getApiDcimInventoryItemRolesIdIndexRoute,
+  getApiDcimInventoryItemRolesIndexRoute,
+  getApiDcimInventoryItemsIdIndexRoute,
+  getApiDcimInventoryItemsIndexRoute,
+  getApiDcimInventoryItemTemplatesIdIndexRoute,
+  getApiDcimInventoryItemTemplatesIndexRoute,
+  getApiDcimLocationsIdIndexRoute,
+  getApiDcimLocationsIndexRoute,
+  getApiDcimMacAddressesIdIndexRoute,
+  getApiDcimMacAddressesIndexRoute,
+  getApiDcimManufacturersIdIndexRoute,
+  getApiDcimManufacturersIndexRoute,
+  getApiDcimModuleBaysIdIndexRoute,
+  getApiDcimModuleBaysIndexRoute,
+  getApiDcimModuleBayTemplatesIdIndexRoute,
+  getApiDcimModuleBayTemplatesIndexRoute,
+  getApiDcimModuleBayTypesIdIndexRoute,
+  getApiDcimModuleBayTypesIndexRoute,
+  getApiDcimModulesIdIndexRoute,
+  getApiDcimModulesIndexRoute,
+  getApiDcimModuleTypeProfilesIdIndexRoute,
+  getApiDcimModuleTypeProfilesIndexRoute,
+  getApiDcimModuleTypesIdIndexRoute,
+  getApiDcimModuleTypesIndexRoute,
+  getApiDcimPlatformsIdIndexRoute,
+  getApiDcimPlatformsIndexRoute,
+  getApiDcimPowerFeedsIdIndexRoute,
+  getApiDcimPowerFeedsIdTraceIndexRoute,
+  getApiDcimPowerFeedsIndexRoute,
+  getApiDcimPowerOutletsIdIndexRoute,
+  getApiDcimPowerOutletsIdTraceIndexRoute,
+  getApiDcimPowerOutletsIndexRoute,
+  getApiDcimPowerOutletTemplatesIdIndexRoute,
+  getApiDcimPowerOutletTemplatesIndexRoute,
+  getApiDcimPowerPanelsIdIndexRoute,
+  getApiDcimPowerPanelsIndexRoute,
+  getApiDcimPowerPortsIdIndexRoute,
+  getApiDcimPowerPortsIdTraceIndexRoute,
+  getApiDcimPowerPortsIndexRoute,
+  getApiDcimPowerPortTemplatesIdIndexRoute,
+  getApiDcimPowerPortTemplatesIndexRoute,
+  getApiDcimRackGroupsIdIndexRoute,
+  getApiDcimRackGroupsIndexRoute,
+  getApiDcimRackReservationsIdIndexRoute,
+  getApiDcimRackReservationsIndexRoute,
+  getApiDcimRackRolesIdIndexRoute,
+  getApiDcimRackRolesIndexRoute,
+  getApiDcimRacksIdElevationIndexRoute,
+  getApiDcimRacksIdIndexRoute,
+  getApiDcimRacksIndexRoute,
+  getApiDcimRackTypesIdIndexRoute,
+  getApiDcimRackTypesIndexRoute,
+  getApiDcimRearPortsIdIndexRoute,
+  getApiDcimRearPortsIdPathsIndexRoute,
+  getApiDcimRearPortsIndexRoute,
+  getApiDcimRearPortTemplatesIdIndexRoute,
+  getApiDcimRearPortTemplatesIndexRoute,
+  getApiDcimRegionsIdIndexRoute,
+  getApiDcimRegionsIndexRoute,
+  getApiDcimSiteGroupsIdIndexRoute,
+  getApiDcimSiteGroupsIndexRoute,
+  getApiDcimSitesIdIndexRoute,
+  getApiDcimSitesIndexRoute,
+  getApiDcimVirtualChassisIdIndexRoute,
+  getApiDcimVirtualChassisIndexRoute,
+  getApiDcimVirtualDeviceContextsIdIndexRoute,
+  getApiDcimVirtualDeviceContextsIndexRoute,
+  getApiExtrasBookmarksIdIndexRoute,
+  getApiExtrasBookmarksIndexRoute,
+  getApiExtrasConfigContextProfilesIdIndexRoute,
+  getApiExtrasConfigContextProfilesIndexRoute,
+  getApiExtrasConfigContextsIdIndexRoute,
+  getApiExtrasConfigContextsIndexRoute,
+  getApiExtrasConfigTemplatesIdIndexRoute,
+  getApiExtrasConfigTemplatesIndexRoute,
+  getApiExtrasCustomFieldChoiceSetsIdChoicesIndexRoute,
+  getApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+  getApiExtrasCustomFieldChoiceSetsIndexRoute,
+  getApiExtrasCustomFieldsIdIndexRoute,
+  getApiExtrasCustomFieldsIndexRoute,
+  getApiExtrasCustomLinksIdIndexRoute,
+  getApiExtrasCustomLinksIndexRoute,
+  getApiExtrasDashboardIndexRoute,
+  getApiExtrasEventRulesIdIndexRoute,
+  getApiExtrasEventRulesIndexRoute,
+  getApiExtrasExportTemplatesIdIndexRoute,
+  getApiExtrasExportTemplatesIndexRoute,
+  getApiExtrasImageAttachmentsIdIndexRoute,
+  getApiExtrasImageAttachmentsIndexRoute,
+  getApiExtrasJournalEntriesIdIndexRoute,
+  getApiExtrasJournalEntriesIndexRoute,
+  getApiExtrasNotificationGroupsIdIndexRoute,
+  getApiExtrasNotificationGroupsIndexRoute,
+  getApiExtrasNotificationsIdIndexRoute,
+  getApiExtrasNotificationsIndexRoute,
+  getApiExtrasSavedFiltersIdIndexRoute,
+  getApiExtrasSavedFiltersIndexRoute,
+  getApiExtrasScriptsIdIndexRoute,
+  getApiExtrasScriptsIndexRoute,
+  getApiExtrasSubscriptionsIdIndexRoute,
+  getApiExtrasSubscriptionsIndexRoute,
+  getApiExtrasTableConfigsIdIndexRoute,
+  getApiExtrasTableConfigsIndexRoute,
+  getApiExtrasTaggedObjectsIdIndexRoute,
+  getApiExtrasTaggedObjectsIndexRoute,
+  getApiExtrasTagsIdIndexRoute,
+  getApiExtrasTagsIndexRoute,
+  getApiExtrasWebhooksIdIndexRoute,
+  getApiExtrasWebhooksIndexRoute,
+  getApiIpamAggregatesIdIndexRoute,
+  getApiIpamAggregatesIndexRoute,
+  getApiIpamAsnRangesIdAvailableAsnsIndexRoute,
+  getApiIpamAsnRangesIdIndexRoute,
+  getApiIpamAsnRangesIndexRoute,
+  getApiIpamAsnsIdIndexRoute,
+  getApiIpamAsnsIndexRoute,
+  getApiIpamFhrpGroupAssignmentsIdIndexRoute,
+  getApiIpamFhrpGroupAssignmentsIndexRoute,
+  getApiIpamFhrpGroupsIdIndexRoute,
+  getApiIpamFhrpGroupsIndexRoute,
+  getApiIpamIpAddressesIdIndexRoute,
+  getApiIpamIpAddressesIndexRoute,
+  getApiIpamIpRangesIdAvailableIpsIndexRoute,
+  getApiIpamIpRangesIdIndexRoute,
+  getApiIpamIpRangesIndexRoute,
+  getApiIpamPrefixesIdAvailableIpsIndexRoute,
+  getApiIpamPrefixesIdAvailablePrefixesIndexRoute,
+  getApiIpamPrefixesIdIndexRoute,
+  getApiIpamPrefixesIndexRoute,
+  getApiIpamRirsIdIndexRoute,
+  getApiIpamRirsIndexRoute,
+  getApiIpamRolesIdIndexRoute,
+  getApiIpamRolesIndexRoute,
+  getApiIpamRouteTargetsIdIndexRoute,
+  getApiIpamRouteTargetsIndexRoute,
+  getApiIpamServicesIdIndexRoute,
+  getApiIpamServicesIndexRoute,
+  getApiIpamServiceTemplatesIdIndexRoute,
+  getApiIpamServiceTemplatesIndexRoute,
+  getApiIpamVlanGroupsIdAvailableVlansIndexRoute,
+  getApiIpamVlanGroupsIdIndexRoute,
+  getApiIpamVlanGroupsIndexRoute,
+  getApiIpamVlansIdIndexRoute,
+  getApiIpamVlansIndexRoute,
+  getApiIpamVlanTranslationPoliciesIdIndexRoute,
+  getApiIpamVlanTranslationPoliciesIndexRoute,
+  getApiIpamVlanTranslationRulesIdIndexRoute,
+  getApiIpamVlanTranslationRulesIndexRoute,
+  getApiIpamVrfsIdIndexRoute,
+  getApiIpamVrfsIndexRoute,
+  getApiSchemaIndexRoute,
+  getApiStatusIndexRoute,
+  getApiTenancyContactAssignmentsIdIndexRoute,
+  getApiTenancyContactAssignmentsIndexRoute,
+  getApiTenancyContactGroupsIdIndexRoute,
+  getApiTenancyContactGroupsIndexRoute,
+  getApiTenancyContactRolesIdIndexRoute,
+  getApiTenancyContactRolesIndexRoute,
+  getApiTenancyContactsIdIndexRoute,
+  getApiTenancyContactsIndexRoute,
+  getApiTenancyTenantGroupsIdIndexRoute,
+  getApiTenancyTenantGroupsIndexRoute,
+  getApiTenancyTenantsIdIndexRoute,
+  getApiTenancyTenantsIndexRoute,
+  getApiUsersConfigIndexRoute,
+  getApiUsersGroupsIdIndexRoute,
+  getApiUsersGroupsIndexRoute,
+  getApiUsersOwnerGroupsIdIndexRoute,
+  getApiUsersOwnerGroupsIndexRoute,
+  getApiUsersOwnersIdIndexRoute,
+  getApiUsersOwnersIndexRoute,
+  getApiUsersPermissionsIdIndexRoute,
+  getApiUsersPermissionsIndexRoute,
+  getApiUsersTokensIdIndexRoute,
+  getApiUsersTokensIndexRoute,
+  getApiUsersUsersIdIndexRoute,
+  getApiUsersUsersIndexRoute,
+  getApiVirtualizationClusterGroupsIdIndexRoute,
+  getApiVirtualizationClusterGroupsIndexRoute,
+  getApiVirtualizationClustersIdIndexRoute,
+  getApiVirtualizationClustersIndexRoute,
+  getApiVirtualizationClusterTypesIdIndexRoute,
+  getApiVirtualizationClusterTypesIndexRoute,
+  getApiVirtualizationInterfacesIdIndexRoute,
+  getApiVirtualizationInterfacesIndexRoute,
+  getApiVirtualizationVirtualDisksIdIndexRoute,
+  getApiVirtualizationVirtualDisksIndexRoute,
+  getApiVirtualizationVirtualMachinesIdIndexRoute,
+  getApiVirtualizationVirtualMachinesIndexRoute,
+  getApiVirtualizationVirtualMachineTypesIdIndexRoute,
+  getApiVirtualizationVirtualMachineTypesIndexRoute,
+  getApiVpnIkePoliciesIdIndexRoute,
+  getApiVpnIkePoliciesIndexRoute,
+  getApiVpnIkeProposalsIdIndexRoute,
+  getApiVpnIkeProposalsIndexRoute,
+  getApiVpnIpsecPoliciesIdIndexRoute,
+  getApiVpnIpsecPoliciesIndexRoute,
+  getApiVpnIpsecProfilesIdIndexRoute,
+  getApiVpnIpsecProfilesIndexRoute,
+  getApiVpnIpsecProposalsIdIndexRoute,
+  getApiVpnIpsecProposalsIndexRoute,
+  getApiVpnL2vpnsIdIndexRoute,
+  getApiVpnL2vpnsIndexRoute,
+  getApiVpnL2vpnTerminationsIdIndexRoute,
+  getApiVpnL2vpnTerminationsIndexRoute,
+  getApiVpnTunnelGroupsIdIndexRoute,
+  getApiVpnTunnelGroupsIndexRoute,
+  getApiVpnTunnelsIdIndexRoute,
+  getApiVpnTunnelsIndexRoute,
+  getApiVpnTunnelTerminationsIdIndexRoute,
+  getApiVpnTunnelTerminationsIndexRoute,
+  getApiWirelessWirelessLanGroupsIdIndexRoute,
+  getApiWirelessWirelessLanGroupsIndexRoute,
+  getApiWirelessWirelessLansIdIndexRoute,
+  getApiWirelessWirelessLansIndexRoute,
+  getApiWirelessWirelessLinksIdIndexRoute,
+  getApiWirelessWirelessLinksIndexRoute,
+  patchApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+  patchApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  patchApiCircuitsCircuitGroupsIdIndexRoute,
+  patchApiCircuitsCircuitGroupsIndexRoute,
+  patchApiCircuitsCircuitsIdIndexRoute,
+  patchApiCircuitsCircuitsIndexRoute,
+  patchApiCircuitsCircuitTerminationsIdIndexRoute,
+  patchApiCircuitsCircuitTerminationsIndexRoute,
+  patchApiCircuitsCircuitTypesIdIndexRoute,
+  patchApiCircuitsCircuitTypesIndexRoute,
+  patchApiCircuitsProviderAccountsIdIndexRoute,
+  patchApiCircuitsProviderAccountsIndexRoute,
+  patchApiCircuitsProviderNetworksIdIndexRoute,
+  patchApiCircuitsProviderNetworksIndexRoute,
+  patchApiCircuitsProvidersIdIndexRoute,
+  patchApiCircuitsProvidersIndexRoute,
+  patchApiCircuitsVirtualCircuitsIdIndexRoute,
+  patchApiCircuitsVirtualCircuitsIndexRoute,
+  patchApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+  patchApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  patchApiCircuitsVirtualCircuitTypesIdIndexRoute,
+  patchApiCircuitsVirtualCircuitTypesIndexRoute,
+  patchApiCoreDataSourcesIdIndexRoute,
+  patchApiCoreDataSourcesIndexRoute,
+  patchApiDcimCableBundlesIdIndexRoute,
+  patchApiDcimCableBundlesIndexRoute,
+  patchApiDcimCablesIdIndexRoute,
+  patchApiDcimCablesIndexRoute,
+  patchApiDcimConsolePortsIdIndexRoute,
+  patchApiDcimConsolePortsIndexRoute,
+  patchApiDcimConsolePortTemplatesIdIndexRoute,
+  patchApiDcimConsolePortTemplatesIndexRoute,
+  patchApiDcimConsoleServerPortsIdIndexRoute,
+  patchApiDcimConsoleServerPortsIndexRoute,
+  patchApiDcimConsoleServerPortTemplatesIdIndexRoute,
+  patchApiDcimConsoleServerPortTemplatesIndexRoute,
+  patchApiDcimCoolingFeedsIdIndexRoute,
+  patchApiDcimCoolingFeedsIndexRoute,
+  patchApiDcimCoolingIntakesIdIndexRoute,
+  patchApiDcimCoolingIntakesIndexRoute,
+  patchApiDcimCoolingIntakeTemplatesIdIndexRoute,
+  patchApiDcimCoolingIntakeTemplatesIndexRoute,
+  patchApiDcimCoolingOutflowsIdIndexRoute,
+  patchApiDcimCoolingOutflowsIndexRoute,
+  patchApiDcimCoolingOutflowTemplatesIdIndexRoute,
+  patchApiDcimCoolingOutflowTemplatesIndexRoute,
+  patchApiDcimCoolingSourcesIdIndexRoute,
+  patchApiDcimCoolingSourcesIndexRoute,
+  patchApiDcimDeviceBaysIdIndexRoute,
+  patchApiDcimDeviceBaysIndexRoute,
+  patchApiDcimDeviceBayTemplatesIdIndexRoute,
+  patchApiDcimDeviceBayTemplatesIndexRoute,
+  patchApiDcimDeviceRolesIdIndexRoute,
+  patchApiDcimDeviceRolesIndexRoute,
+  patchApiDcimDevicesIdIndexRoute,
+  patchApiDcimDevicesIndexRoute,
+  patchApiDcimDeviceTypesIdIndexRoute,
+  patchApiDcimDeviceTypesIndexRoute,
+  patchApiDcimFrontPortsIdIndexRoute,
+  patchApiDcimFrontPortsIndexRoute,
+  patchApiDcimFrontPortTemplatesIdIndexRoute,
+  patchApiDcimFrontPortTemplatesIndexRoute,
+  patchApiDcimInterfacesIdIndexRoute,
+  patchApiDcimInterfacesIndexRoute,
+  patchApiDcimInterfaceTemplatesIdIndexRoute,
+  patchApiDcimInterfaceTemplatesIndexRoute,
+  patchApiDcimInventoryItemRolesIdIndexRoute,
+  patchApiDcimInventoryItemRolesIndexRoute,
+  patchApiDcimInventoryItemsIdIndexRoute,
+  patchApiDcimInventoryItemsIndexRoute,
+  patchApiDcimInventoryItemTemplatesIdIndexRoute,
+  patchApiDcimInventoryItemTemplatesIndexRoute,
+  patchApiDcimLocationsIdIndexRoute,
+  patchApiDcimLocationsIndexRoute,
+  patchApiDcimMacAddressesIdIndexRoute,
+  patchApiDcimMacAddressesIndexRoute,
+  patchApiDcimManufacturersIdIndexRoute,
+  patchApiDcimManufacturersIndexRoute,
+  patchApiDcimModuleBaysIdIndexRoute,
+  patchApiDcimModuleBaysIndexRoute,
+  patchApiDcimModuleBayTemplatesIdIndexRoute,
+  patchApiDcimModuleBayTemplatesIndexRoute,
+  patchApiDcimModuleBayTypesIdIndexRoute,
+  patchApiDcimModuleBayTypesIndexRoute,
+  patchApiDcimModulesIdIndexRoute,
+  patchApiDcimModulesIndexRoute,
+  patchApiDcimModuleTypeProfilesIdIndexRoute,
+  patchApiDcimModuleTypeProfilesIndexRoute,
+  patchApiDcimModuleTypesIdIndexRoute,
+  patchApiDcimModuleTypesIndexRoute,
+  patchApiDcimPlatformsIdIndexRoute,
+  patchApiDcimPlatformsIndexRoute,
+  patchApiDcimPowerFeedsIdIndexRoute,
+  patchApiDcimPowerFeedsIndexRoute,
+  patchApiDcimPowerOutletsIdIndexRoute,
+  patchApiDcimPowerOutletsIndexRoute,
+  patchApiDcimPowerOutletTemplatesIdIndexRoute,
+  patchApiDcimPowerOutletTemplatesIndexRoute,
+  patchApiDcimPowerPanelsIdIndexRoute,
+  patchApiDcimPowerPanelsIndexRoute,
+  patchApiDcimPowerPortsIdIndexRoute,
+  patchApiDcimPowerPortsIndexRoute,
+  patchApiDcimPowerPortTemplatesIdIndexRoute,
+  patchApiDcimPowerPortTemplatesIndexRoute,
+  patchApiDcimRackGroupsIdIndexRoute,
+  patchApiDcimRackGroupsIndexRoute,
+  patchApiDcimRackReservationsIdIndexRoute,
+  patchApiDcimRackReservationsIndexRoute,
+  patchApiDcimRackRolesIdIndexRoute,
+  patchApiDcimRackRolesIndexRoute,
+  patchApiDcimRacksIdIndexRoute,
+  patchApiDcimRacksIndexRoute,
+  patchApiDcimRackTypesIdIndexRoute,
+  patchApiDcimRackTypesIndexRoute,
+  patchApiDcimRearPortsIdIndexRoute,
+  patchApiDcimRearPortsIndexRoute,
+  patchApiDcimRearPortTemplatesIdIndexRoute,
+  patchApiDcimRearPortTemplatesIndexRoute,
+  patchApiDcimRegionsIdIndexRoute,
+  patchApiDcimRegionsIndexRoute,
+  patchApiDcimSiteGroupsIdIndexRoute,
+  patchApiDcimSiteGroupsIndexRoute,
+  patchApiDcimSitesIdIndexRoute,
+  patchApiDcimSitesIndexRoute,
+  patchApiDcimVirtualChassisIdIndexRoute,
+  patchApiDcimVirtualChassisIndexRoute,
+  patchApiDcimVirtualDeviceContextsIdIndexRoute,
+  patchApiDcimVirtualDeviceContextsIndexRoute,
+  patchApiExtrasBookmarksIdIndexRoute,
+  patchApiExtrasBookmarksIndexRoute,
+  patchApiExtrasConfigContextProfilesIdIndexRoute,
+  patchApiExtrasConfigContextProfilesIndexRoute,
+  patchApiExtrasConfigContextsIdIndexRoute,
+  patchApiExtrasConfigContextsIndexRoute,
+  patchApiExtrasConfigTemplatesIdIndexRoute,
+  patchApiExtrasConfigTemplatesIndexRoute,
+  patchApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+  patchApiExtrasCustomFieldChoiceSetsIndexRoute,
+  patchApiExtrasCustomFieldsIdIndexRoute,
+  patchApiExtrasCustomFieldsIndexRoute,
+  patchApiExtrasCustomLinksIdIndexRoute,
+  patchApiExtrasCustomLinksIndexRoute,
+  patchApiExtrasDashboardIndexRoute,
+  patchApiExtrasEventRulesIdIndexRoute,
+  patchApiExtrasEventRulesIndexRoute,
+  patchApiExtrasExportTemplatesIdIndexRoute,
+  patchApiExtrasExportTemplatesIndexRoute,
+  patchApiExtrasImageAttachmentsIdIndexRoute,
+  patchApiExtrasImageAttachmentsIndexRoute,
+  patchApiExtrasJournalEntriesIdIndexRoute,
+  patchApiExtrasJournalEntriesIndexRoute,
+  patchApiExtrasNotificationGroupsIdIndexRoute,
+  patchApiExtrasNotificationGroupsIndexRoute,
+  patchApiExtrasNotificationsIdIndexRoute,
+  patchApiExtrasNotificationsIndexRoute,
+  patchApiExtrasSavedFiltersIdIndexRoute,
+  patchApiExtrasSavedFiltersIndexRoute,
+  patchApiExtrasScriptsUploadIdIndexRoute,
+  patchApiExtrasSubscriptionsIdIndexRoute,
+  patchApiExtrasSubscriptionsIndexRoute,
+  patchApiExtrasTableConfigsIdIndexRoute,
+  patchApiExtrasTableConfigsIndexRoute,
+  patchApiExtrasTagsIdIndexRoute,
+  patchApiExtrasTagsIndexRoute,
+  patchApiExtrasWebhooksIdIndexRoute,
+  patchApiExtrasWebhooksIndexRoute,
+  patchApiIpamAggregatesIdIndexRoute,
+  patchApiIpamAggregatesIndexRoute,
+  patchApiIpamAsnRangesIdIndexRoute,
+  patchApiIpamAsnRangesIndexRoute,
+  patchApiIpamAsnsIdIndexRoute,
+  patchApiIpamAsnsIndexRoute,
+  patchApiIpamFhrpGroupAssignmentsIdIndexRoute,
+  patchApiIpamFhrpGroupAssignmentsIndexRoute,
+  patchApiIpamFhrpGroupsIdIndexRoute,
+  patchApiIpamFhrpGroupsIndexRoute,
+  patchApiIpamIpAddressesIdIndexRoute,
+  patchApiIpamIpAddressesIndexRoute,
+  patchApiIpamIpRangesIdIndexRoute,
+  patchApiIpamIpRangesIndexRoute,
+  patchApiIpamPrefixesIdIndexRoute,
+  patchApiIpamPrefixesIndexRoute,
+  patchApiIpamRirsIdIndexRoute,
+  patchApiIpamRirsIndexRoute,
+  patchApiIpamRolesIdIndexRoute,
+  patchApiIpamRolesIndexRoute,
+  patchApiIpamRouteTargetsIdIndexRoute,
+  patchApiIpamRouteTargetsIndexRoute,
+  patchApiIpamServicesIdIndexRoute,
+  patchApiIpamServicesIndexRoute,
+  patchApiIpamServiceTemplatesIdIndexRoute,
+  patchApiIpamServiceTemplatesIndexRoute,
+  patchApiIpamVlanGroupsIdIndexRoute,
+  patchApiIpamVlanGroupsIndexRoute,
+  patchApiIpamVlansIdIndexRoute,
+  patchApiIpamVlansIndexRoute,
+  patchApiIpamVlanTranslationPoliciesIdIndexRoute,
+  patchApiIpamVlanTranslationPoliciesIndexRoute,
+  patchApiIpamVlanTranslationRulesIdIndexRoute,
+  patchApiIpamVlanTranslationRulesIndexRoute,
+  patchApiIpamVrfsIdIndexRoute,
+  patchApiIpamVrfsIndexRoute,
+  patchApiTenancyContactAssignmentsIdIndexRoute,
+  patchApiTenancyContactAssignmentsIndexRoute,
+  patchApiTenancyContactGroupsIdIndexRoute,
+  patchApiTenancyContactGroupsIndexRoute,
+  patchApiTenancyContactRolesIdIndexRoute,
+  patchApiTenancyContactRolesIndexRoute,
+  patchApiTenancyContactsIdIndexRoute,
+  patchApiTenancyContactsIndexRoute,
+  patchApiTenancyTenantGroupsIdIndexRoute,
+  patchApiTenancyTenantGroupsIndexRoute,
+  patchApiTenancyTenantsIdIndexRoute,
+  patchApiTenancyTenantsIndexRoute,
+  patchApiUsersGroupsIdIndexRoute,
+  patchApiUsersGroupsIndexRoute,
+  patchApiUsersOwnerGroupsIdIndexRoute,
+  patchApiUsersOwnerGroupsIndexRoute,
+  patchApiUsersOwnersIdIndexRoute,
+  patchApiUsersOwnersIndexRoute,
+  patchApiUsersPermissionsIdIndexRoute,
+  patchApiUsersPermissionsIndexRoute,
+  patchApiUsersTokensIdIndexRoute,
+  patchApiUsersTokensIndexRoute,
+  patchApiUsersUsersIdIndexRoute,
+  patchApiUsersUsersIndexRoute,
+  patchApiVirtualizationClusterGroupsIdIndexRoute,
+  patchApiVirtualizationClusterGroupsIndexRoute,
+  patchApiVirtualizationClustersIdIndexRoute,
+  patchApiVirtualizationClustersIndexRoute,
+  patchApiVirtualizationClusterTypesIdIndexRoute,
+  patchApiVirtualizationClusterTypesIndexRoute,
+  patchApiVirtualizationInterfacesIdIndexRoute,
+  patchApiVirtualizationInterfacesIndexRoute,
+  patchApiVirtualizationVirtualDisksIdIndexRoute,
+  patchApiVirtualizationVirtualDisksIndexRoute,
+  patchApiVirtualizationVirtualMachinesIdIndexRoute,
+  patchApiVirtualizationVirtualMachinesIndexRoute,
+  patchApiVirtualizationVirtualMachineTypesIdIndexRoute,
+  patchApiVirtualizationVirtualMachineTypesIndexRoute,
+  patchApiVpnIkePoliciesIdIndexRoute,
+  patchApiVpnIkePoliciesIndexRoute,
+  patchApiVpnIkeProposalsIdIndexRoute,
+  patchApiVpnIkeProposalsIndexRoute,
+  patchApiVpnIpsecPoliciesIdIndexRoute,
+  patchApiVpnIpsecPoliciesIndexRoute,
+  patchApiVpnIpsecProfilesIdIndexRoute,
+  patchApiVpnIpsecProfilesIndexRoute,
+  patchApiVpnIpsecProposalsIdIndexRoute,
+  patchApiVpnIpsecProposalsIndexRoute,
+  patchApiVpnL2vpnsIdIndexRoute,
+  patchApiVpnL2vpnsIndexRoute,
+  patchApiVpnL2vpnTerminationsIdIndexRoute,
+  patchApiVpnL2vpnTerminationsIndexRoute,
+  patchApiVpnTunnelGroupsIdIndexRoute,
+  patchApiVpnTunnelGroupsIndexRoute,
+  patchApiVpnTunnelsIdIndexRoute,
+  patchApiVpnTunnelsIndexRoute,
+  patchApiVpnTunnelTerminationsIdIndexRoute,
+  patchApiVpnTunnelTerminationsIndexRoute,
+  patchApiWirelessWirelessLanGroupsIdIndexRoute,
+  patchApiWirelessWirelessLanGroupsIndexRoute,
+  patchApiWirelessWirelessLansIdIndexRoute,
+  patchApiWirelessWirelessLansIndexRoute,
+  patchApiWirelessWirelessLinksIdIndexRoute,
+  patchApiWirelessWirelessLinksIndexRoute,
+  postApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  postApiCircuitsCircuitGroupsIndexRoute,
+  postApiCircuitsCircuitsIndexRoute,
+  postApiCircuitsCircuitTerminationsIndexRoute,
+  postApiCircuitsCircuitTypesIndexRoute,
+  postApiCircuitsProviderAccountsIndexRoute,
+  postApiCircuitsProviderNetworksIndexRoute,
+  postApiCircuitsProvidersIndexRoute,
+  postApiCircuitsVirtualCircuitsIndexRoute,
+  postApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  postApiCircuitsVirtualCircuitTypesIndexRoute,
+  postApiCoreBackgroundTasksIdDeleteIndexRoute,
+  postApiCoreBackgroundTasksIdEnqueueIndexRoute,
+  postApiCoreBackgroundTasksIdRequeueIndexRoute,
+  postApiCoreBackgroundTasksIdStopIndexRoute,
+  postApiCoreDataSourcesIdSyncIndexRoute,
+  postApiCoreDataSourcesIndexRoute,
+  postApiDcimCableBundlesIndexRoute,
+  postApiDcimCablesIndexRoute,
+  postApiDcimConsolePortsIndexRoute,
+  postApiDcimConsolePortTemplatesIndexRoute,
+  postApiDcimConsoleServerPortsIndexRoute,
+  postApiDcimConsoleServerPortTemplatesIndexRoute,
+  postApiDcimCoolingFeedsIndexRoute,
+  postApiDcimCoolingIntakesIndexRoute,
+  postApiDcimCoolingIntakeTemplatesIndexRoute,
+  postApiDcimCoolingOutflowsIndexRoute,
+  postApiDcimCoolingOutflowTemplatesIndexRoute,
+  postApiDcimCoolingSourcesIndexRoute,
+  postApiDcimDeviceBaysIndexRoute,
+  postApiDcimDeviceBayTemplatesIndexRoute,
+  postApiDcimDeviceRolesIndexRoute,
+  postApiDcimDevicesIdRenderConfigIndexRoute,
+  postApiDcimDevicesIndexRoute,
+  postApiDcimDeviceTypesIndexRoute,
+  postApiDcimFrontPortsIndexRoute,
+  postApiDcimFrontPortTemplatesIndexRoute,
+  postApiDcimInterfacesIndexRoute,
+  postApiDcimInterfaceTemplatesIndexRoute,
+  postApiDcimInventoryItemRolesIndexRoute,
+  postApiDcimInventoryItemsIndexRoute,
+  postApiDcimInventoryItemTemplatesIndexRoute,
+  postApiDcimLocationsIndexRoute,
+  postApiDcimMacAddressesIndexRoute,
+  postApiDcimManufacturersIndexRoute,
+  postApiDcimModuleBaysIndexRoute,
+  postApiDcimModuleBayTemplatesIndexRoute,
+  postApiDcimModuleBayTypesIndexRoute,
+  postApiDcimModulesIndexRoute,
+  postApiDcimModuleTypeProfilesIndexRoute,
+  postApiDcimModuleTypesIndexRoute,
+  postApiDcimPlatformsIndexRoute,
+  postApiDcimPowerFeedsIndexRoute,
+  postApiDcimPowerOutletsIndexRoute,
+  postApiDcimPowerOutletTemplatesIndexRoute,
+  postApiDcimPowerPanelsIndexRoute,
+  postApiDcimPowerPortsIndexRoute,
+  postApiDcimPowerPortTemplatesIndexRoute,
+  postApiDcimRackGroupsIndexRoute,
+  postApiDcimRackReservationsIndexRoute,
+  postApiDcimRackRolesIndexRoute,
+  postApiDcimRacksIndexRoute,
+  postApiDcimRackTypesIndexRoute,
+  postApiDcimRearPortsIndexRoute,
+  postApiDcimRearPortTemplatesIndexRoute,
+  postApiDcimRegionsIndexRoute,
+  postApiDcimSiteGroupsIndexRoute,
+  postApiDcimSitesIndexRoute,
+  postApiDcimVirtualChassisIndexRoute,
+  postApiDcimVirtualDeviceContextsIndexRoute,
+  postApiExtrasBookmarksIndexRoute,
+  postApiExtrasConfigContextProfilesIdSyncIndexRoute,
+  postApiExtrasConfigContextProfilesIndexRoute,
+  postApiExtrasConfigContextsIdSyncIndexRoute,
+  postApiExtrasConfigContextsIndexRoute,
+  postApiExtrasConfigTemplatesIdRenderIndexRoute,
+  postApiExtrasConfigTemplatesIdSyncIndexRoute,
+  postApiExtrasConfigTemplatesIndexRoute,
+  postApiExtrasCustomFieldChoiceSetsIndexRoute,
+  postApiExtrasCustomFieldsIndexRoute,
+  postApiExtrasCustomLinksIndexRoute,
+  postApiExtrasEventRulesIndexRoute,
+  postApiExtrasExportTemplatesIdSyncIndexRoute,
+  postApiExtrasExportTemplatesIndexRoute,
+  postApiExtrasImageAttachmentsIndexRoute,
+  postApiExtrasJournalEntriesIndexRoute,
+  postApiExtrasNotificationGroupsIndexRoute,
+  postApiExtrasNotificationsIndexRoute,
+  postApiExtrasSavedFiltersIndexRoute,
+  postApiExtrasScriptsIdIndexRoute,
+  postApiExtrasScriptsUploadIndexRoute,
+  postApiExtrasSubscriptionsIndexRoute,
+  postApiExtrasTableConfigsIndexRoute,
+  postApiExtrasTagsIndexRoute,
+  postApiExtrasWebhooksIndexRoute,
+  postApiIpamAggregatesIndexRoute,
+  postApiIpamAsnRangesIdAvailableAsnsIndexRoute,
+  postApiIpamAsnRangesIndexRoute,
+  postApiIpamAsnsIndexRoute,
+  postApiIpamFhrpGroupAssignmentsIndexRoute,
+  postApiIpamFhrpGroupsIndexRoute,
+  postApiIpamIpAddressesIndexRoute,
+  postApiIpamIpRangesIdAvailableIpsIndexRoute,
+  postApiIpamIpRangesIndexRoute,
+  postApiIpamPrefixesIdAvailableIpsIndexRoute,
+  postApiIpamPrefixesIdAvailablePrefixesIndexRoute,
+  postApiIpamPrefixesIndexRoute,
+  postApiIpamRirsIndexRoute,
+  postApiIpamRolesIndexRoute,
+  postApiIpamRouteTargetsIndexRoute,
+  postApiIpamServicesIndexRoute,
+  postApiIpamServiceTemplatesIndexRoute,
+  postApiIpamVlanGroupsIdAvailableVlansIndexRoute,
+  postApiIpamVlanGroupsIndexRoute,
+  postApiIpamVlansIndexRoute,
+  postApiIpamVlanTranslationPoliciesIndexRoute,
+  postApiIpamVlanTranslationRulesIndexRoute,
+  postApiIpamVrfsIndexRoute,
+  postApiTenancyContactAssignmentsIndexRoute,
+  postApiTenancyContactGroupsIndexRoute,
+  postApiTenancyContactRolesIndexRoute,
+  postApiTenancyContactsIndexRoute,
+  postApiTenancyTenantGroupsIndexRoute,
+  postApiTenancyTenantsIndexRoute,
+  postApiUsersGroupsIndexRoute,
+  postApiUsersOwnerGroupsIndexRoute,
+  postApiUsersOwnersIndexRoute,
+  postApiUsersPermissionsIndexRoute,
+  postApiUsersTokensIndexRoute,
+  postApiUsersTokensProvisionIndexRoute,
+  postApiUsersUsersIndexRoute,
+  postApiVirtualizationClusterGroupsIndexRoute,
+  postApiVirtualizationClustersIndexRoute,
+  postApiVirtualizationClusterTypesIndexRoute,
+  postApiVirtualizationInterfacesIndexRoute,
+  postApiVirtualizationVirtualDisksIndexRoute,
+  postApiVirtualizationVirtualMachinesIdRenderConfigIndexRoute,
+  postApiVirtualizationVirtualMachinesIndexRoute,
+  postApiVirtualizationVirtualMachineTypesIndexRoute,
+  postApiVpnIkePoliciesIndexRoute,
+  postApiVpnIkeProposalsIndexRoute,
+  postApiVpnIpsecPoliciesIndexRoute,
+  postApiVpnIpsecProfilesIndexRoute,
+  postApiVpnIpsecProposalsIndexRoute,
+  postApiVpnL2vpnsIndexRoute,
+  postApiVpnL2vpnTerminationsIndexRoute,
+  postApiVpnTunnelGroupsIndexRoute,
+  postApiVpnTunnelsIndexRoute,
+  postApiVpnTunnelTerminationsIndexRoute,
+  postApiWirelessWirelessLanGroupsIndexRoute,
+  postApiWirelessWirelessLansIndexRoute,
+  postApiWirelessWirelessLinksIndexRoute,
+  putApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+  putApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  putApiCircuitsCircuitGroupsIdIndexRoute,
+  putApiCircuitsCircuitGroupsIndexRoute,
+  putApiCircuitsCircuitsIdIndexRoute,
+  putApiCircuitsCircuitsIndexRoute,
+  putApiCircuitsCircuitTerminationsIdIndexRoute,
+  putApiCircuitsCircuitTerminationsIndexRoute,
+  putApiCircuitsCircuitTypesIdIndexRoute,
+  putApiCircuitsCircuitTypesIndexRoute,
+  putApiCircuitsProviderAccountsIdIndexRoute,
+  putApiCircuitsProviderAccountsIndexRoute,
+  putApiCircuitsProviderNetworksIdIndexRoute,
+  putApiCircuitsProviderNetworksIndexRoute,
+  putApiCircuitsProvidersIdIndexRoute,
+  putApiCircuitsProvidersIndexRoute,
+  putApiCircuitsVirtualCircuitsIdIndexRoute,
+  putApiCircuitsVirtualCircuitsIndexRoute,
+  putApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+  putApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  putApiCircuitsVirtualCircuitTypesIdIndexRoute,
+  putApiCircuitsVirtualCircuitTypesIndexRoute,
+  putApiCoreDataSourcesIdIndexRoute,
+  putApiCoreDataSourcesIndexRoute,
+  putApiDcimCableBundlesIdIndexRoute,
+  putApiDcimCableBundlesIndexRoute,
+  putApiDcimCablesIdIndexRoute,
+  putApiDcimCablesIndexRoute,
+  putApiDcimConsolePortsIdIndexRoute,
+  putApiDcimConsolePortsIndexRoute,
+  putApiDcimConsolePortTemplatesIdIndexRoute,
+  putApiDcimConsolePortTemplatesIndexRoute,
+  putApiDcimConsoleServerPortsIdIndexRoute,
+  putApiDcimConsoleServerPortsIndexRoute,
+  putApiDcimConsoleServerPortTemplatesIdIndexRoute,
+  putApiDcimConsoleServerPortTemplatesIndexRoute,
+  putApiDcimCoolingFeedsIdIndexRoute,
+  putApiDcimCoolingFeedsIndexRoute,
+  putApiDcimCoolingIntakesIdIndexRoute,
+  putApiDcimCoolingIntakesIndexRoute,
+  putApiDcimCoolingIntakeTemplatesIdIndexRoute,
+  putApiDcimCoolingIntakeTemplatesIndexRoute,
+  putApiDcimCoolingOutflowsIdIndexRoute,
+  putApiDcimCoolingOutflowsIndexRoute,
+  putApiDcimCoolingOutflowTemplatesIdIndexRoute,
+  putApiDcimCoolingOutflowTemplatesIndexRoute,
+  putApiDcimCoolingSourcesIdIndexRoute,
+  putApiDcimCoolingSourcesIndexRoute,
+  putApiDcimDeviceBaysIdIndexRoute,
+  putApiDcimDeviceBaysIndexRoute,
+  putApiDcimDeviceBayTemplatesIdIndexRoute,
+  putApiDcimDeviceBayTemplatesIndexRoute,
+  putApiDcimDeviceRolesIdIndexRoute,
+  putApiDcimDeviceRolesIndexRoute,
+  putApiDcimDevicesIdIndexRoute,
+  putApiDcimDevicesIndexRoute,
+  putApiDcimDeviceTypesIdIndexRoute,
+  putApiDcimDeviceTypesIndexRoute,
+  putApiDcimFrontPortsIdIndexRoute,
+  putApiDcimFrontPortsIndexRoute,
+  putApiDcimFrontPortTemplatesIdIndexRoute,
+  putApiDcimFrontPortTemplatesIndexRoute,
+  putApiDcimInterfacesIdIndexRoute,
+  putApiDcimInterfacesIndexRoute,
+  putApiDcimInterfaceTemplatesIdIndexRoute,
+  putApiDcimInterfaceTemplatesIndexRoute,
+  putApiDcimInventoryItemRolesIdIndexRoute,
+  putApiDcimInventoryItemRolesIndexRoute,
+  putApiDcimInventoryItemsIdIndexRoute,
+  putApiDcimInventoryItemsIndexRoute,
+  putApiDcimInventoryItemTemplatesIdIndexRoute,
+  putApiDcimInventoryItemTemplatesIndexRoute,
+  putApiDcimLocationsIdIndexRoute,
+  putApiDcimLocationsIndexRoute,
+  putApiDcimMacAddressesIdIndexRoute,
+  putApiDcimMacAddressesIndexRoute,
+  putApiDcimManufacturersIdIndexRoute,
+  putApiDcimManufacturersIndexRoute,
+  putApiDcimModuleBaysIdIndexRoute,
+  putApiDcimModuleBaysIndexRoute,
+  putApiDcimModuleBayTemplatesIdIndexRoute,
+  putApiDcimModuleBayTemplatesIndexRoute,
+  putApiDcimModuleBayTypesIdIndexRoute,
+  putApiDcimModuleBayTypesIndexRoute,
+  putApiDcimModulesIdIndexRoute,
+  putApiDcimModulesIndexRoute,
+  putApiDcimModuleTypeProfilesIdIndexRoute,
+  putApiDcimModuleTypeProfilesIndexRoute,
+  putApiDcimModuleTypesIdIndexRoute,
+  putApiDcimModuleTypesIndexRoute,
+  putApiDcimPlatformsIdIndexRoute,
+  putApiDcimPlatformsIndexRoute,
+  putApiDcimPowerFeedsIdIndexRoute,
+  putApiDcimPowerFeedsIndexRoute,
+  putApiDcimPowerOutletsIdIndexRoute,
+  putApiDcimPowerOutletsIndexRoute,
+  putApiDcimPowerOutletTemplatesIdIndexRoute,
+  putApiDcimPowerOutletTemplatesIndexRoute,
+  putApiDcimPowerPanelsIdIndexRoute,
+  putApiDcimPowerPanelsIndexRoute,
+  putApiDcimPowerPortsIdIndexRoute,
+  putApiDcimPowerPortsIndexRoute,
+  putApiDcimPowerPortTemplatesIdIndexRoute,
+  putApiDcimPowerPortTemplatesIndexRoute,
+  putApiDcimRackGroupsIdIndexRoute,
+  putApiDcimRackGroupsIndexRoute,
+  putApiDcimRackReservationsIdIndexRoute,
+  putApiDcimRackReservationsIndexRoute,
+  putApiDcimRackRolesIdIndexRoute,
+  putApiDcimRackRolesIndexRoute,
+  putApiDcimRacksIdIndexRoute,
+  putApiDcimRacksIndexRoute,
+  putApiDcimRackTypesIdIndexRoute,
+  putApiDcimRackTypesIndexRoute,
+  putApiDcimRearPortsIdIndexRoute,
+  putApiDcimRearPortsIndexRoute,
+  putApiDcimRearPortTemplatesIdIndexRoute,
+  putApiDcimRearPortTemplatesIndexRoute,
+  putApiDcimRegionsIdIndexRoute,
+  putApiDcimRegionsIndexRoute,
+  putApiDcimSiteGroupsIdIndexRoute,
+  putApiDcimSiteGroupsIndexRoute,
+  putApiDcimSitesIdIndexRoute,
+  putApiDcimSitesIndexRoute,
+  putApiDcimVirtualChassisIdIndexRoute,
+  putApiDcimVirtualChassisIndexRoute,
+  putApiDcimVirtualDeviceContextsIdIndexRoute,
+  putApiDcimVirtualDeviceContextsIndexRoute,
+  putApiExtrasBookmarksIdIndexRoute,
+  putApiExtrasBookmarksIndexRoute,
+  putApiExtrasConfigContextProfilesIdIndexRoute,
+  putApiExtrasConfigContextProfilesIndexRoute,
+  putApiExtrasConfigContextsIdIndexRoute,
+  putApiExtrasConfigContextsIndexRoute,
+  putApiExtrasConfigTemplatesIdIndexRoute,
+  putApiExtrasConfigTemplatesIndexRoute,
+  putApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+  putApiExtrasCustomFieldChoiceSetsIndexRoute,
+  putApiExtrasCustomFieldsIdIndexRoute,
+  putApiExtrasCustomFieldsIndexRoute,
+  putApiExtrasCustomLinksIdIndexRoute,
+  putApiExtrasCustomLinksIndexRoute,
+  putApiExtrasDashboardIndexRoute,
+  putApiExtrasEventRulesIdIndexRoute,
+  putApiExtrasEventRulesIndexRoute,
+  putApiExtrasExportTemplatesIdIndexRoute,
+  putApiExtrasExportTemplatesIndexRoute,
+  putApiExtrasImageAttachmentsIdIndexRoute,
+  putApiExtrasImageAttachmentsIndexRoute,
+  putApiExtrasJournalEntriesIdIndexRoute,
+  putApiExtrasJournalEntriesIndexRoute,
+  putApiExtrasNotificationGroupsIdIndexRoute,
+  putApiExtrasNotificationGroupsIndexRoute,
+  putApiExtrasNotificationsIdIndexRoute,
+  putApiExtrasNotificationsIndexRoute,
+  putApiExtrasSavedFiltersIdIndexRoute,
+  putApiExtrasSavedFiltersIndexRoute,
+  putApiExtrasScriptsUploadIdIndexRoute,
+  putApiExtrasSubscriptionsIdIndexRoute,
+  putApiExtrasSubscriptionsIndexRoute,
+  putApiExtrasTableConfigsIdIndexRoute,
+  putApiExtrasTableConfigsIndexRoute,
+  putApiExtrasTagsIdIndexRoute,
+  putApiExtrasTagsIndexRoute,
+  putApiExtrasWebhooksIdIndexRoute,
+  putApiExtrasWebhooksIndexRoute,
+  putApiIpamAggregatesIdIndexRoute,
+  putApiIpamAggregatesIndexRoute,
+  putApiIpamAsnRangesIdIndexRoute,
+  putApiIpamAsnRangesIndexRoute,
+  putApiIpamAsnsIdIndexRoute,
+  putApiIpamAsnsIndexRoute,
+  putApiIpamFhrpGroupAssignmentsIdIndexRoute,
+  putApiIpamFhrpGroupAssignmentsIndexRoute,
+  putApiIpamFhrpGroupsIdIndexRoute,
+  putApiIpamFhrpGroupsIndexRoute,
+  putApiIpamIpAddressesIdIndexRoute,
+  putApiIpamIpAddressesIndexRoute,
+  putApiIpamIpRangesIdIndexRoute,
+  putApiIpamIpRangesIndexRoute,
+  putApiIpamPrefixesIdIndexRoute,
+  putApiIpamPrefixesIndexRoute,
+  putApiIpamRirsIdIndexRoute,
+  putApiIpamRirsIndexRoute,
+  putApiIpamRolesIdIndexRoute,
+  putApiIpamRolesIndexRoute,
+  putApiIpamRouteTargetsIdIndexRoute,
+  putApiIpamRouteTargetsIndexRoute,
+  putApiIpamServicesIdIndexRoute,
+  putApiIpamServicesIndexRoute,
+  putApiIpamServiceTemplatesIdIndexRoute,
+  putApiIpamServiceTemplatesIndexRoute,
+  putApiIpamVlanGroupsIdIndexRoute,
+  putApiIpamVlanGroupsIndexRoute,
+  putApiIpamVlansIdIndexRoute,
+  putApiIpamVlansIndexRoute,
+  putApiIpamVlanTranslationPoliciesIdIndexRoute,
+  putApiIpamVlanTranslationPoliciesIndexRoute,
+  putApiIpamVlanTranslationRulesIdIndexRoute,
+  putApiIpamVlanTranslationRulesIndexRoute,
+  putApiIpamVrfsIdIndexRoute,
+  putApiIpamVrfsIndexRoute,
+  putApiTenancyContactAssignmentsIdIndexRoute,
+  putApiTenancyContactAssignmentsIndexRoute,
+  putApiTenancyContactGroupsIdIndexRoute,
+  putApiTenancyContactGroupsIndexRoute,
+  putApiTenancyContactRolesIdIndexRoute,
+  putApiTenancyContactRolesIndexRoute,
+  putApiTenancyContactsIdIndexRoute,
+  putApiTenancyContactsIndexRoute,
+  putApiTenancyTenantGroupsIdIndexRoute,
+  putApiTenancyTenantGroupsIndexRoute,
+  putApiTenancyTenantsIdIndexRoute,
+  putApiTenancyTenantsIndexRoute,
+  putApiUsersGroupsIdIndexRoute,
+  putApiUsersGroupsIndexRoute,
+  putApiUsersOwnerGroupsIdIndexRoute,
+  putApiUsersOwnerGroupsIndexRoute,
+  putApiUsersOwnersIdIndexRoute,
+  putApiUsersOwnersIndexRoute,
+  putApiUsersPermissionsIdIndexRoute,
+  putApiUsersPermissionsIndexRoute,
+  putApiUsersTokensIdIndexRoute,
+  putApiUsersTokensIndexRoute,
+  putApiUsersUsersIdIndexRoute,
+  putApiUsersUsersIndexRoute,
+  putApiVirtualizationClusterGroupsIdIndexRoute,
+  putApiVirtualizationClusterGroupsIndexRoute,
+  putApiVirtualizationClustersIdIndexRoute,
+  putApiVirtualizationClustersIndexRoute,
+  putApiVirtualizationClusterTypesIdIndexRoute,
+  putApiVirtualizationClusterTypesIndexRoute,
+  putApiVirtualizationInterfacesIdIndexRoute,
+  putApiVirtualizationInterfacesIndexRoute,
+  putApiVirtualizationVirtualDisksIdIndexRoute,
+  putApiVirtualizationVirtualDisksIndexRoute,
+  putApiVirtualizationVirtualMachinesIdIndexRoute,
+  putApiVirtualizationVirtualMachinesIndexRoute,
+  putApiVirtualizationVirtualMachineTypesIdIndexRoute,
+  putApiVirtualizationVirtualMachineTypesIndexRoute,
+  putApiVpnIkePoliciesIdIndexRoute,
+  putApiVpnIkePoliciesIndexRoute,
+  putApiVpnIkeProposalsIdIndexRoute,
+  putApiVpnIkeProposalsIndexRoute,
+  putApiVpnIpsecPoliciesIdIndexRoute,
+  putApiVpnIpsecPoliciesIndexRoute,
+  putApiVpnIpsecProfilesIdIndexRoute,
+  putApiVpnIpsecProfilesIndexRoute,
+  putApiVpnIpsecProposalsIdIndexRoute,
+  putApiVpnIpsecProposalsIndexRoute,
+  putApiVpnL2vpnsIdIndexRoute,
+  putApiVpnL2vpnsIndexRoute,
+  putApiVpnL2vpnTerminationsIdIndexRoute,
+  putApiVpnL2vpnTerminationsIndexRoute,
+  putApiVpnTunnelGroupsIdIndexRoute,
+  putApiVpnTunnelGroupsIndexRoute,
+  putApiVpnTunnelsIdIndexRoute,
+  putApiVpnTunnelsIndexRoute,
+  putApiVpnTunnelTerminationsIdIndexRoute,
+  putApiVpnTunnelTerminationsIndexRoute,
+  putApiWirelessWirelessLanGroupsIdIndexRoute,
+  putApiWirelessWirelessLanGroupsIndexRoute,
+  putApiWirelessWirelessLansIdIndexRoute,
+  putApiWirelessWirelessLansIndexRoute,
+  putApiWirelessWirelessLinksIdIndexRoute,
+  putApiWirelessWirelessLinksIndexRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const apiHandler = app
+  .openapi(getApiAuthenticationCheckIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsCircuitGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitGroupAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitGroupAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitGroupAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitGroupAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsCircuitGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitTerminationsIdPathsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsCircuitsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsCircuitsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsCircuitsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsCircuitsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsProviderAccountsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsProviderAccountsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsProviderAccountsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsProviderAccountsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsProviderAccountsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsProviderAccountsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsProviderAccountsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsProviderAccountsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsProviderAccountsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsProviderNetworksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsProviderNetworksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsProviderNetworksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsProviderNetworksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsProviderNetworksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsProviderNetworksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsProviderNetworksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsProviderNetworksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsProviderNetworksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsProvidersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsProvidersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsProvidersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsProvidersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsProvidersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsProvidersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsProvidersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsProvidersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsProvidersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsVirtualCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsVirtualCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsVirtualCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsVirtualCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsVirtualCircuitTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsVirtualCircuitTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsVirtualCircuitTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsVirtualCircuitTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsVirtualCircuitTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsVirtualCircuitTerminationsIdPathsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsVirtualCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsVirtualCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsVirtualCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsVirtualCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsVirtualCircuitTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsVirtualCircuitTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsVirtualCircuitTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsVirtualCircuitTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsVirtualCircuitTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsVirtualCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCircuitsVirtualCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsVirtualCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsVirtualCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsVirtualCircuitsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCircuitsVirtualCircuitsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCircuitsVirtualCircuitsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCircuitsVirtualCircuitsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCircuitsVirtualCircuitsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreBackgroundQueuesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreBackgroundQueuesNameIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreBackgroundTasksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreBackgroundTasksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCoreBackgroundTasksIdDeleteIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCoreBackgroundTasksIdEnqueueIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCoreBackgroundTasksIdRequeueIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCoreBackgroundTasksIdStopIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreBackgroundWorkersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreBackgroundWorkersNameIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreDataFilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreDataFilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreDataSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCoreDataSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCoreDataSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCoreDataSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCoreDataSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreDataSourcesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiCoreDataSourcesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiCoreDataSourcesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiCoreDataSourcesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiCoreDataSourcesIdSyncIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreJobsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreJobsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreObjectChangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreObjectChangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreObjectTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiCoreObjectTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCableBundlesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimCableBundlesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCableBundlesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCableBundlesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCableBundlesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCableBundlesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCableBundlesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCableBundlesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCableBundlesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCableTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCableTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCablesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimCablesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCablesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCablesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCablesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCablesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCablesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCablesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCablesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConnectedDeviceIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsolePortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimConsolePortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimConsolePortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimConsolePortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimConsolePortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsolePortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimConsolePortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimConsolePortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimConsolePortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsolePortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimConsolePortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimConsolePortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimConsolePortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimConsolePortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsolePortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimConsolePortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimConsolePortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimConsolePortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsolePortsIdTraceIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsoleServerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimConsoleServerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimConsoleServerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimConsoleServerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimConsoleServerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsoleServerPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimConsoleServerPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimConsoleServerPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimConsoleServerPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsoleServerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimConsoleServerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimConsoleServerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimConsoleServerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimConsoleServerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsoleServerPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimConsoleServerPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimConsoleServerPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimConsoleServerPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimConsoleServerPortsIdTraceIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimCoolingFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingFeedsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingFeedsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingFeedsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingFeedsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingIntakeTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimCoolingIntakeTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingIntakeTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingIntakeTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingIntakeTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingIntakeTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingIntakeTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingIntakeTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingIntakeTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingIntakesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimCoolingIntakesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingIntakesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingIntakesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingIntakesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingIntakesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingIntakesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingIntakesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingIntakesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingOutflowTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimCoolingOutflowTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingOutflowTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingOutflowTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingOutflowTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingOutflowTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingOutflowTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingOutflowTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingOutflowTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingOutflowsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimCoolingOutflowsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingOutflowsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingOutflowsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingOutflowsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingOutflowsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingOutflowsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingOutflowsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingOutflowsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimCoolingSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingSourcesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimCoolingSourcesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimCoolingSourcesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimCoolingSourcesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimCoolingSourcesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDeviceBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimDeviceBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDeviceBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDeviceBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDeviceBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDeviceBayTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDeviceBayTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDeviceBayTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDeviceBayTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDeviceBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimDeviceBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDeviceBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDeviceBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDeviceBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDeviceBaysIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDeviceBaysIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDeviceBaysIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDeviceBaysIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDeviceRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimDeviceRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDeviceRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDeviceRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDeviceRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDeviceRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDeviceRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDeviceRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDeviceRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDeviceTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimDeviceTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDeviceTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDeviceTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDeviceTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDeviceTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDeviceTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDeviceTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDeviceTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDevicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimDevicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDevicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDevicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDevicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimDevicesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimDevicesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimDevicesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimDevicesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimDevicesIdRenderConfigIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimFrontPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimFrontPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimFrontPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimFrontPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimFrontPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimFrontPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimFrontPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimFrontPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimFrontPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimFrontPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimFrontPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimFrontPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimFrontPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimFrontPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimFrontPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimFrontPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimFrontPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimFrontPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimFrontPortsIdPathsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInterfaceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimInterfaceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInterfaceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInterfaceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInterfaceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInterfaceTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInterfaceTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInterfaceTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInterfaceTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInterfacesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInterfacesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInterfacesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInterfacesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInterfacesIdTraceIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInventoryItemRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimInventoryItemRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInventoryItemRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInventoryItemRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInventoryItemRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInventoryItemRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInventoryItemRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInventoryItemRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInventoryItemRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInventoryItemTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimInventoryItemTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInventoryItemTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInventoryItemTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInventoryItemTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInventoryItemTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInventoryItemTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInventoryItemTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInventoryItemTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInventoryItemsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimInventoryItemsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInventoryItemsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInventoryItemsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInventoryItemsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimInventoryItemsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimInventoryItemsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimInventoryItemsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimInventoryItemsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimLocationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimLocationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimLocationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimLocationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimLocationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimLocationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimLocationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimLocationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimLocationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimMacAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimMacAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimMacAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimMacAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimMacAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimMacAddressesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimMacAddressesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimMacAddressesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimMacAddressesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimManufacturersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimManufacturersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimManufacturersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimManufacturersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimManufacturersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimManufacturersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimManufacturersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimManufacturersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimManufacturersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimModuleBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleBayTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleBayTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleBayTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleBayTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleBayTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleBayTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimModuleBayTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleBayTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleBayTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleBayTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleBayTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleBayTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleBayTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleBayTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimModuleBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleBaysIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleBaysIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleBaysIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleBaysIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleBaysIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleTypeProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimModuleTypeProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleTypeProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleTypeProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleTypeProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleTypeProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleTypeProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleTypeProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleTypeProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimModuleTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModuleTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModuleTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModuleTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModuleTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimModulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimModulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimModulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimModulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimModulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPlatformsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimPlatformsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPlatformsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPlatformsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPlatformsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPlatformsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPlatformsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPlatformsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPlatformsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimPowerFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerFeedsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerFeedsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerFeedsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerFeedsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerFeedsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerFeedsIdTraceIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerOutletTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimPowerOutletTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerOutletTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerOutletTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerOutletTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerOutletTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerOutletTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerOutletTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerOutletTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerOutletsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimPowerOutletsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerOutletsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerOutletsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerOutletsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerOutletsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerOutletsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerOutletsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerOutletsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerOutletsIdTraceIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerPanelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimPowerPanelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerPanelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerPanelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerPanelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerPanelsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerPanelsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerPanelsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerPanelsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimPowerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimPowerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimPowerPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimPowerPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimPowerPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimPowerPortsIdTraceIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRackGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimRackGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRackGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRackGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRackGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRackGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRackGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRackGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRackGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRackReservationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimRackReservationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRackReservationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRackReservationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRackReservationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRackReservationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRackReservationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRackReservationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRackReservationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRackRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimRackRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRackRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRackRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRackRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRackRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRackRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRackRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRackRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRackTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimRackTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRackTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRackTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRackTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRackTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRackTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRackTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRackTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRacksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimRacksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRacksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRacksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRacksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRacksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRacksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRacksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRacksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRacksIdElevationIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRearPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimRearPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRearPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRearPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRearPortTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRearPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRearPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRearPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRearPortTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRearPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimRearPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRearPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRearPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRearPortsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRearPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRearPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRearPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRearPortsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRearPortsIdPathsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRegionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimRegionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRegionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRegionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRegionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimRegionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimRegionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimRegionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimRegionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimSiteGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimSiteGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimSiteGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimSiteGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimSiteGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimSiteGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimSiteGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimSiteGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimSiteGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimSitesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimSitesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimSitesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimSitesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimSitesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimSitesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimSitesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimSitesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimSitesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimVirtualChassisIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimVirtualChassisIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimVirtualChassisIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimVirtualChassisIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimVirtualChassisIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimVirtualChassisIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimVirtualChassisIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimVirtualChassisIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimVirtualChassisIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimVirtualDeviceContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiDcimVirtualDeviceContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimVirtualDeviceContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimVirtualDeviceContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimVirtualDeviceContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiDcimVirtualDeviceContextsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiDcimVirtualDeviceContextsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiDcimVirtualDeviceContextsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiDcimVirtualDeviceContextsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasBookmarksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasBookmarksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasBookmarksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasBookmarksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasBookmarksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasBookmarksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasBookmarksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasBookmarksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasBookmarksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasConfigContextProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasConfigContextProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasConfigContextProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasConfigContextProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasConfigContextProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasConfigContextProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasConfigContextProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasConfigContextProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasConfigContextProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasConfigContextProfilesIdSyncIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasConfigContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasConfigContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasConfigContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasConfigContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasConfigContextsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasConfigContextsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasConfigContextsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasConfigContextsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasConfigContextsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasConfigContextsIdSyncIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasConfigTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasConfigTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasConfigTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasConfigTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasConfigTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasConfigTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasConfigTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasConfigTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasConfigTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasConfigTemplatesIdRenderIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasConfigTemplatesIdSyncIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasCustomFieldChoiceSetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasCustomFieldChoiceSetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasCustomFieldChoiceSetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasCustomFieldChoiceSetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasCustomFieldChoiceSetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasCustomFieldChoiceSetsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasCustomFieldChoiceSetsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasCustomFieldChoiceSetsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasCustomFieldChoiceSetsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasCustomFieldChoiceSetsIdChoicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasCustomFieldsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasCustomFieldsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasCustomFieldsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasCustomFieldsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasCustomFieldsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasCustomFieldsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasCustomFieldsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasCustomFieldsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasCustomFieldsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasCustomLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasCustomLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasCustomLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasCustomLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasCustomLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasCustomLinksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasCustomLinksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasCustomLinksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasCustomLinksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasDashboardIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasDashboardIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasDashboardIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasDashboardIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasEventRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasEventRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasEventRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasEventRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasEventRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasEventRulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasEventRulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasEventRulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasEventRulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasExportTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasExportTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasExportTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasExportTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasExportTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasExportTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasExportTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasExportTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasExportTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasExportTemplatesIdSyncIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasImageAttachmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasImageAttachmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasImageAttachmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasImageAttachmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasImageAttachmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasImageAttachmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasImageAttachmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasImageAttachmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasImageAttachmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasJournalEntriesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasJournalEntriesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasJournalEntriesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasJournalEntriesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasJournalEntriesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasJournalEntriesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasJournalEntriesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasJournalEntriesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasJournalEntriesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasNotificationGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasNotificationGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasNotificationGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasNotificationGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasNotificationGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasNotificationGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasNotificationGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasNotificationGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasNotificationGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasNotificationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasNotificationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasNotificationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasNotificationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasNotificationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasNotificationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasNotificationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasNotificationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasNotificationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasSavedFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasSavedFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasSavedFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasSavedFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasSavedFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasSavedFiltersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasSavedFiltersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasSavedFiltersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasSavedFiltersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasScriptsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasScriptsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasScriptsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasScriptsUploadIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasScriptsUploadIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasScriptsUploadIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasSubscriptionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasSubscriptionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasSubscriptionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasSubscriptionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasSubscriptionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasSubscriptionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasSubscriptionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasSubscriptionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasSubscriptionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasTableConfigsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasTableConfigsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasTableConfigsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasTableConfigsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasTableConfigsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasTableConfigsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasTableConfigsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasTableConfigsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasTableConfigsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasTaggedObjectsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasTaggedObjectsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasTagsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasTagsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasTagsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasTagsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasTagsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasTagsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasTagsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasTagsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasTagsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasWebhooksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiExtrasWebhooksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasWebhooksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasWebhooksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasWebhooksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiExtrasWebhooksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiExtrasWebhooksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiExtrasWebhooksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiExtrasWebhooksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamAggregatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamAggregatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamAggregatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamAggregatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamAggregatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamAggregatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamAggregatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamAggregatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamAggregatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamAsnRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamAsnRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamAsnRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamAsnRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamAsnRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamAsnRangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamAsnRangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamAsnRangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamAsnRangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamAsnRangesIdAvailableAsnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamAsnRangesIdAvailableAsnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamAsnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamAsnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamAsnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamAsnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamAsnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamAsnsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamAsnsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamAsnsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamAsnsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamFhrpGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamFhrpGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamFhrpGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamFhrpGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamFhrpGroupAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamFhrpGroupAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamFhrpGroupAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamFhrpGroupAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamFhrpGroupAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamFhrpGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamFhrpGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamFhrpGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamFhrpGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamFhrpGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamFhrpGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamFhrpGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamFhrpGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamFhrpGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamIpAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamIpAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamIpAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamIpAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamIpAddressesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamIpAddressesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamIpAddressesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamIpAddressesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamIpAddressesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamIpRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamIpRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamIpRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamIpRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamIpRangesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamIpRangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamIpRangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamIpRangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamIpRangesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamIpRangesIdAvailableIpsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamIpRangesIdAvailableIpsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamPrefixesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamPrefixesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamPrefixesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamPrefixesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamPrefixesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamPrefixesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamPrefixesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamPrefixesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamPrefixesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamPrefixesIdAvailableIpsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamPrefixesIdAvailableIpsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamPrefixesIdAvailablePrefixesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamPrefixesIdAvailablePrefixesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamRirsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamRirsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamRirsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamRirsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamRirsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamRirsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamRirsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamRirsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamRirsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamRouteTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamRouteTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamRouteTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamRouteTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamRouteTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamRouteTargetsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamRouteTargetsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamRouteTargetsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamRouteTargetsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamServiceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamServiceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamServiceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamServiceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamServiceTemplatesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamServiceTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamServiceTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamServiceTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamServiceTemplatesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamServicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamServicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamServicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamServicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamServicesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamServicesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamServicesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamServicesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamServicesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamVlanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVlanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVlanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVlanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlanGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVlanGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVlanGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVlanGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlanGroupsIdAvailableVlansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamVlanGroupsIdAvailableVlansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlanTranslationPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamVlanTranslationPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVlanTranslationPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVlanTranslationPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVlanTranslationPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlanTranslationPoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVlanTranslationPoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVlanTranslationPoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVlanTranslationPoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlanTranslationRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamVlanTranslationRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVlanTranslationRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVlanTranslationRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVlanTranslationRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlanTranslationRulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVlanTranslationRulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVlanTranslationRulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVlanTranslationRulesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamVlansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVlansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVlansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVlansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVlansIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVlansIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVlansIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVlansIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVrfsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiIpamVrfsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVrfsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVrfsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVrfsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiIpamVrfsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiIpamVrfsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiIpamVrfsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiIpamVrfsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiSchemaIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiStatusIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyContactAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiTenancyContactAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyContactAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyContactAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyContactAssignmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyContactAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyContactAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyContactAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyContactAssignmentsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyContactGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiTenancyContactGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyContactGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyContactGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyContactGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyContactGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyContactGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyContactGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyContactGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyContactRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiTenancyContactRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyContactRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyContactRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyContactRolesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyContactRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyContactRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyContactRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyContactRolesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyContactsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiTenancyContactsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyContactsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyContactsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyContactsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyContactsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyContactsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyContactsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyContactsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyTenantGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiTenancyTenantGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyTenantGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyTenantGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyTenantGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyTenantGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyTenantGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyTenantGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyTenantGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyTenantsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiTenancyTenantsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyTenantsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyTenantsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyTenantsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiTenancyTenantsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiTenancyTenantsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiTenancyTenantsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiTenancyTenantsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersConfigIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiUsersGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersOwnerGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiUsersOwnerGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersOwnerGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersOwnerGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersOwnerGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersOwnerGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersOwnerGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersOwnerGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersOwnerGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersOwnersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiUsersOwnersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersOwnersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersOwnersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersOwnersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersOwnersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersOwnersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersOwnersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersOwnersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersPermissionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiUsersPermissionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersPermissionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersPermissionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersPermissionsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersPermissionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersPermissionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersPermissionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersPermissionsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersTokensIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiUsersTokensIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersTokensIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersTokensIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersTokensIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersTokensIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersTokensIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersTokensIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersTokensIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiUsersTokensProvisionIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersUsersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiUsersUsersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersUsersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersUsersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersUsersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiUsersUsersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiUsersUsersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiUsersUsersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiUsersUsersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationClusterGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVirtualizationClusterGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationClusterGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationClusterGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationClusterGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationClusterGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationClusterGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationClusterGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationClusterGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationClusterTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVirtualizationClusterTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationClusterTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationClusterTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationClusterTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationClusterTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationClusterTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationClusterTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationClusterTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationClustersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVirtualizationClustersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationClustersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationClustersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationClustersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationClustersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationClustersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationClustersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationClustersIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVirtualizationInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationInterfacesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationInterfacesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationInterfacesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationInterfacesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationInterfacesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationVirtualDisksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVirtualizationVirtualDisksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationVirtualDisksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationVirtualDisksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationVirtualDisksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationVirtualDisksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationVirtualDisksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationVirtualDisksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationVirtualDisksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationVirtualMachineTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVirtualizationVirtualMachineTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationVirtualMachineTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationVirtualMachineTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationVirtualMachineTypesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationVirtualMachineTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationVirtualMachineTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationVirtualMachineTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationVirtualMachineTypesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationVirtualMachinesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVirtualizationVirtualMachinesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationVirtualMachinesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationVirtualMachinesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationVirtualMachinesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVirtualizationVirtualMachinesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVirtualizationVirtualMachinesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVirtualizationVirtualMachinesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVirtualizationVirtualMachinesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVirtualizationVirtualMachinesIdRenderConfigIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIkePoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnIkePoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIkePoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIkePoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIkePoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIkePoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIkePoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIkePoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIkePoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIkeProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnIkeProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIkeProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIkeProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIkeProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIkeProposalsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIkeProposalsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIkeProposalsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIkeProposalsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIpsecPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnIpsecPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIpsecPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIpsecPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIpsecPoliciesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIpsecPoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIpsecPoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIpsecPoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIpsecPoliciesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIpsecProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnIpsecProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIpsecProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIpsecProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIpsecProfilesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIpsecProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIpsecProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIpsecProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIpsecProfilesIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIpsecProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnIpsecProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIpsecProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIpsecProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIpsecProposalsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnIpsecProposalsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnIpsecProposalsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnIpsecProposalsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnIpsecProposalsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnL2vpnTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnL2vpnTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnL2vpnTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnL2vpnTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnL2vpnTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnL2vpnTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnL2vpnTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnL2vpnTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnL2vpnTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnL2vpnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnL2vpnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnL2vpnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnL2vpnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnL2vpnsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnL2vpnsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnL2vpnsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnL2vpnsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnL2vpnsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnTunnelGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnTunnelGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnTunnelGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnTunnelGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnTunnelGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnTunnelGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnTunnelGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnTunnelGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnTunnelGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnTunnelTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnTunnelTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnTunnelTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnTunnelTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnTunnelTerminationsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnTunnelTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnTunnelTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnTunnelTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnTunnelTerminationsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnTunnelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiVpnTunnelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnTunnelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnTunnelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnTunnelsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiVpnTunnelsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiVpnTunnelsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiVpnTunnelsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiVpnTunnelsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiWirelessWirelessLanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiWirelessWirelessLanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiWirelessWirelessLanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiWirelessWirelessLanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiWirelessWirelessLanGroupsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiWirelessWirelessLanGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiWirelessWirelessLanGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiWirelessWirelessLanGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiWirelessWirelessLanGroupsIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiWirelessWirelessLansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiWirelessWirelessLansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiWirelessWirelessLansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiWirelessWirelessLansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiWirelessWirelessLansIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiWirelessWirelessLansIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiWirelessWirelessLansIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiWirelessWirelessLansIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiWirelessWirelessLansIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiWirelessWirelessLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postApiWirelessWirelessLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiWirelessWirelessLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiWirelessWirelessLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiWirelessWirelessLinksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getApiWirelessWirelessLinksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putApiWirelessWirelessLinksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchApiWirelessWirelessLinksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteApiWirelessWirelessLinksIdIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })

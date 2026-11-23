@@ -554,6 +554,7 @@ const AppFormFieldsGetLookupFieldFormSchema = z
         sort: z.string().exactOptional(),
         filterCond: z.string().exactOptional(),
       })
+      .nullable()
       .exactOptional()
       .openapi({ required: [] }),
     code: z.string().min(1).max(128).exactOptional(),
@@ -971,6 +972,7 @@ const AppFormFieldsGetReferenceTableFieldFormSchema = z
         filterCond: z.string().exactOptional(),
         displayFields: z.array(z.string()).exactOptional(),
       })
+      .nullable()
       .exactOptional()
       .openapi({ required: [] }),
   })
@@ -1357,6 +1359,440 @@ type AppFormFieldsGetTableFormType = {
     | 'USER_SELECT'
 }
 
+const BulkRequestPostUpdateKeySchema = z
+  .object({ field: z.string(), value: z.string().max(64) })
+  .openapi({ required: ['field', 'value'] })
+  .openapi('BulkRequestPostUpdateKey')
+
+const RecordWritableObjectSchema: z.ZodType<RecordWritableObjectType> = z
+  .lazy(() =>
+    z
+      .union([
+        z
+          .object({ type: z.literal('CHECK_BOX').exactOptional(), value: z.array(z.string()) })
+          .openapi({ required: ['value'], description: 'Check box' }),
+        z
+          .object({
+            type: z.literal('DATE').exactOptional(),
+            value: z.iso.date().nullable().exactOptional(),
+          })
+          .openapi({ description: 'Date', required: [] }),
+        z
+          .object({
+            type: z.literal('DATETIME').exactOptional(),
+            value: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+          })
+          .openapi({ description: 'Date and time', required: [] }),
+        z
+          .object({ type: z.literal('NUMBER').exactOptional(), value: z.string().exactOptional() })
+          .openapi({ description: 'Number', required: [] }),
+        z
+          .object({
+            type: z.literal('RICH_TEXT').exactOptional(),
+            value: z.string().exactOptional(),
+          })
+          .openapi({ description: 'Rich text', required: [] }),
+        z
+          .object({
+            type: z.literal('FILE').exactOptional(),
+            value: z.array(SingleFileSimpleValueSchema),
+          })
+          .openapi({ required: ['value'], description: 'Attachment' }),
+        z
+          .object({
+            type: z.literal('GROUP_SELECT').exactOptional(),
+            value: z.array(GroupEntitySimpleValueSchema),
+          })
+          .openapi({ required: ['value'], description: 'Group Selection' }),
+        z
+          .object({ type: z.literal('LINK').exactOptional(), value: z.string().exactOptional() })
+          .openapi({ description: 'Link', required: [] }),
+        z
+          .object({
+            type: z.literal('MULTI_LINE_TEXT').exactOptional(),
+            value: z.string().exactOptional(),
+          })
+          .openapi({ description: 'Text area', required: [] }),
+        z
+          .object({ type: z.literal('MULTI_SELECT').exactOptional(), value: z.array(z.string()) })
+          .openapi({ required: ['value'], description: 'Multi-choice' }),
+        z
+          .object({
+            type: z.literal('ORGANIZATION_SELECT').exactOptional(),
+            value: z.array(OrganizationEntitySimpleValueSchema),
+          })
+          .openapi({ required: ['value'], description: 'Department Selection' }),
+        z
+          .object({
+            type: z.literal('RADIO_BUTTON').exactOptional(),
+            value: z.string().exactOptional(),
+          })
+          .openapi({ description: 'Radio button', required: [] }),
+        z
+          .object({
+            type: z.literal('SUBTABLE').exactOptional(),
+            value: z.array(SimpleRowWritableValueSchema).exactOptional(),
+          })
+          .openapi({ description: 'Table', required: [] }),
+        z
+          .object({
+            type: z.literal('SINGLE_LINE_TEXT').exactOptional(),
+            value: z.string().exactOptional(),
+          })
+          .openapi({ description: 'Text', required: [] }),
+        z
+          .object({
+            type: z.literal('DROP_DOWN').exactOptional(),
+            value: z.string().nullable().exactOptional(),
+          })
+          .openapi({ description: 'Drop-down', required: [] }),
+        z
+          .object({
+            type: z.literal('TIME').exactOptional(),
+            value: z.string().nullable().exactOptional(),
+          })
+          .openapi({ description: 'Time', required: [] }),
+        z
+          .object({
+            type: z.literal('USER_SELECT').exactOptional(),
+            value: z.array(UserEntitySimpleValueSchema),
+          })
+          .openapi({ required: ['value'], description: 'User selection' }),
+      ])
+      .openapi({
+        description:
+          'The value of a single field when writing a record.\n\n**Always an object with a `value` property, never a bare value.**\n\n```\ncorrect: { "fieldCode": { "value": "ABC" } }\nwrong:   { "fieldCode": "ABC" }\n```\n\nSending a bare value returns HTTP 400. `type` is optional; when omitted, the App\'s field settings are used.\n\nThe shape of `value` depends on the field type, which `GET /k/v1/app/form/fields.json` reports:\n\n| Field type | shape of `value` |\n|---|---|\n| Single-line text, Multi-line text, Rich text, Link, Number, Date, Time, Date and time, Drop-down, Radio button | string — numbers and dates are strings too, e.g. `"1200000"`, `"2026-08-31"` |\n| Check box, Multi-choice | array of strings, each matching one of the App\'s choices exactly |\n| User selection, Department selection, Group selection | array of `{ "code": "..." }` |\n| Attachment | array of `{ "fileKey": "..." }` — upload the file first to obtain a key |\n| Table | array of `{ "id": "...", "value": { "<fieldCode>": { "value": ... } } }` |\n\nTo clear a field, send an empty string for the text-like types, or an empty array for the array types.\n\n**A field code that does not exist in the App is silently ignored.** The request still returns HTTP 200 and a new revision, so a typo looks like success even though nothing changed. Copy the codes from `GET /k/v1/app/form/fields.json` exactly.\n\n**Table and Attachment fields are replaced, not merged.** When updating an existing record, every table row and every `fileKey` the request does not list is deleted. To change one cell of a table, send the whole table including the `id` of each row to keep. Fields left out of the request entirely are untouched.',
+      }),
+  )
+  .openapi('RecordWritableObject')
+
+const BulkRequestPostRecordFormSchema = z
+  .object({
+    updateKey: BulkRequestPostUpdateKeySchema.exactOptional(),
+    record: z.record(z.string(), RecordWritableObjectSchema).exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BulkRequestPostRecordForm')
+
+type BulkRequestPostRecordsPutFormType = {
+  app: bigint
+  records: z.infer<typeof BulkRequestPostRecordFormSchema>[]
+  upsert?: boolean
+}
+
+const BulkRequestPostRecordPostFormSchema = z
+  .object({
+    app: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    record: z.record(z.string(), RecordWritableObjectSchema),
+  })
+  .openapi({ required: ['app', 'record'] })
+  .openapi('BulkRequestPostRecordPostForm')
+
+const BulkRequestPostRecordPutFormSchema = z
+  .object({
+    app: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    updateKey: BulkRequestPostUpdateKeySchema.exactOptional(),
+    record: z.record(z.string(), RecordWritableObjectSchema).exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: ['app'] })
+  .openapi('BulkRequestPostRecordPutForm')
+
+const BulkRequestPostRecordStatusPutFormSchema = z
+  .object({
+    app: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    action: z.string(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    assignee: z.string().exactOptional(),
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: ['app', 'action', 'id'] })
+  .openapi('BulkRequestPostRecordStatusPutForm')
+
+const BulkRequestPostRecordAssigneesPutFormSchema = z
+  .object({
+    app: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    assignees: z.array(z.string()),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: ['app', 'assignees', 'id'] })
+  .openapi('BulkRequestPostRecordAssigneesPutForm')
+
+const BulkRequestPostRecordsDeleteFormSchema = z
+  .object({
+    app: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    ids: z.array(
+      z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .openapi({ type: 'integer', format: 'int64' }),
+    ),
+    revisions: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: ['app', 'ids'] })
+  .openapi('BulkRequestPostRecordsDeleteForm')
+
+const BulkRequestPostRecordsPostFormSchema = z
+  .object({
+    app: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    records: z.array(z.record(z.string(), RecordWritableObjectSchema)),
+  })
+  .openapi({ required: ['app', 'records'] })
+  .openapi('BulkRequestPostRecordsPostForm')
+
+const BulkRequestPostRecordsPutFormSchema: z.ZodType<BulkRequestPostRecordsPutFormType> = z
+  .object({
+    app: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    records: z.array(BulkRequestPostRecordFormSchema),
+    upsert: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['app', 'records'] })
+  .openapi('BulkRequestPostRecordsPutForm')
+
+const BulkRequestPostRecordsStatusPutFormRecordSchema = z
+  .object({
+    action: z.string(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    assignee: z.string().exactOptional(),
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: ['action', 'id'] })
+  .openapi('BulkRequestPostRecordsStatusPutFormRecord')
+
+const BulkRequestPostRecordsStatusPutFormSchema = z
+  .object({
+    app: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    records: z.array(BulkRequestPostRecordsStatusPutFormRecordSchema),
+  })
+  .openapi({ required: ['app', 'records'] })
+  .openapi('BulkRequestPostRecordsStatusPutForm')
+
+type BulkRequestPostRequestFormType = {
+  method: string
+  payload:
+    | z.infer<typeof BulkRequestPostRecordPostFormSchema>
+    | z.infer<typeof BulkRequestPostRecordPutFormSchema>
+    | z.infer<typeof BulkRequestPostRecordStatusPutFormSchema>
+    | z.infer<typeof BulkRequestPostRecordAssigneesPutFormSchema>
+    | z.infer<typeof BulkRequestPostRecordsDeleteFormSchema>
+    | z.infer<typeof BulkRequestPostRecordsPostFormSchema>
+    | z.infer<typeof BulkRequestPostRecordsPutFormSchema>
+    | z.infer<typeof BulkRequestPostRecordsStatusPutFormSchema>
+  api: string
+}
+
 type CalcSimpleValueType = { type: 'CALC'; value?: string }
 
 type CategorySimpleValueType = { type: 'CATEGORY'; value?: string[] }
@@ -1522,7 +1958,7 @@ const FormGetBultinPropertiesSchema = z
 const FormGetCalcSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
-    unit: z.string().exactOptional(),
+    unit: z.string().nullable().exactOptional(),
     expression: z.string().exactOptional(),
     code: z.string().exactOptional(),
     format: z
@@ -1579,8 +2015,9 @@ const FormGetCalcSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     hideExpression: z.boolean().exactOptional(),
     required: z.boolean().exactOptional(),
   })
@@ -1591,8 +2028,8 @@ const FormGetDateSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
-    defaultExpression: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
+    defaultExpression: z.string().nullable().exactOptional(),
     unique: z.boolean().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -1635,8 +2072,8 @@ const FormGetDatetimeSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
-    defaultExpression: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
+    defaultExpression: z.string().nullable().exactOptional(),
     unique: z.boolean().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -1689,9 +2126,10 @@ const FormGetDecimalSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    defaultValue: z.string().exactOptional(),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    defaultValue: z.string().nullable().exactOptional(),
     unitPosition: z.string().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -1736,9 +2174,10 @@ const FormGetDecimalSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    unit: z.string().exactOptional(),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    unit: z.string().nullable().exactOptional(),
     unique: z.boolean().exactOptional(),
     displayScale: z
       .preprocess(
@@ -1750,8 +2189,9 @@ const FormGetDecimalSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     digit: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
@@ -1761,7 +2201,7 @@ const FormGetEditorSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -1845,7 +2285,7 @@ const FormGetLinkSimplePropertiesSchema = z
     noLabel: z.boolean().exactOptional(),
     protocol: z.enum(['WEB', 'CALL', 'MAIL']).exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     minLength: z
       .preprocess(
         (val) =>
@@ -1856,8 +2296,9 @@ const FormGetLinkSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     unique: z.boolean().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -1901,8 +2342,9 @@ const FormGetLinkSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     required: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
@@ -1912,7 +2354,7 @@ const FormGetMultipleLineTextSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -1954,7 +2396,7 @@ const FormGetMultipleSelectSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.array(z.string()).exactOptional(),
+    defaultValue: z.array(z.string()).nullable().exactOptional(),
     options: z.array(z.string()).exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -1998,7 +2440,7 @@ const FormGetSingleLineTextSimplePropertiesSchema = z
     noLabel: z.boolean().exactOptional(),
     expression: z.string().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     minLength: z
       .preprocess(
         (val) =>
@@ -2009,8 +2451,9 @@ const FormGetSingleLineTextSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     unique: z.boolean().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -2054,8 +2497,9 @@ const FormGetSingleLineTextSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     hideExpression: z.boolean().exactOptional(),
     required: z.boolean().exactOptional(),
   })
@@ -2066,7 +2510,7 @@ const FormGetSingleSelectSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     options: z.array(z.string()).exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -2109,8 +2553,8 @@ const FormGetTimeSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
-    defaultExpression: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
+    defaultExpression: z.string().nullable().exactOptional(),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -2285,8 +2729,9 @@ const FormGetLookupSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -2338,8 +2783,9 @@ const FormGetReferenceTableLayoutPropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -3060,6 +3506,7 @@ const PreviewAppFormFieldsGetLookupFieldFormSchema = z
         sort: z.string().exactOptional(),
         filterCond: z.string().exactOptional(),
       })
+      .nullable()
       .exactOptional()
       .openapi({ required: [] }),
     code: z.string().min(1).max(128).exactOptional(),
@@ -3477,6 +3924,7 @@ const PreviewAppFormFieldsGetReferenceTableFieldFormSchema = z
         filterCond: z.string().exactOptional(),
         displayFields: z.array(z.string()).exactOptional(),
       })
+      .nullable()
       .exactOptional()
       .openapi({ required: [] }),
   })
@@ -8711,7 +9159,7 @@ const PreviewFormGetBultinPropertiesSchema = z
 const PreviewFormGetCalcSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
-    unit: z.string().exactOptional(),
+    unit: z.string().nullable().exactOptional(),
     expression: z.string().exactOptional(),
     code: z.string().exactOptional(),
     format: z
@@ -8768,8 +9216,9 @@ const PreviewFormGetCalcSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     hideExpression: z.boolean().exactOptional(),
     required: z.boolean().exactOptional(),
   })
@@ -8780,8 +9229,8 @@ const PreviewFormGetDateSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
-    defaultExpression: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
+    defaultExpression: z.string().nullable().exactOptional(),
     unique: z.boolean().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -8824,8 +9273,8 @@ const PreviewFormGetDatetimeSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
-    defaultExpression: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
+    defaultExpression: z.string().nullable().exactOptional(),
     unique: z.boolean().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -8878,9 +9327,10 @@ const PreviewFormGetDecimalSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    defaultValue: z.string().exactOptional(),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    defaultValue: z.string().nullable().exactOptional(),
     unitPosition: z.string().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -8925,9 +9375,10 @@ const PreviewFormGetDecimalSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    unit: z.string().exactOptional(),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    unit: z.string().nullable().exactOptional(),
     unique: z.boolean().exactOptional(),
     displayScale: z
       .preprocess(
@@ -8939,8 +9390,9 @@ const PreviewFormGetDecimalSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     digit: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
@@ -8950,7 +9402,7 @@ const PreviewFormGetEditorSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -9034,7 +9486,7 @@ const PreviewFormGetLinkSimplePropertiesSchema = z
     noLabel: z.boolean().exactOptional(),
     protocol: z.enum(['WEB', 'CALL', 'MAIL']).exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     minLength: z
       .preprocess(
         (val) =>
@@ -9045,8 +9497,9 @@ const PreviewFormGetLinkSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     unique: z.boolean().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -9090,8 +9543,9 @@ const PreviewFormGetLinkSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     required: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
@@ -9101,7 +9555,7 @@ const PreviewFormGetMultipleLineTextSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -9143,7 +9597,7 @@ const PreviewFormGetMultipleSelectSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.array(z.string()).exactOptional(),
+    defaultValue: z.array(z.string()).nullable().exactOptional(),
     options: z.array(z.string()).exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -9187,7 +9641,7 @@ const PreviewFormGetSingleLineTextSimplePropertiesSchema = z
     noLabel: z.boolean().exactOptional(),
     expression: z.string().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     minLength: z
       .preprocess(
         (val) =>
@@ -9198,8 +9652,9 @@ const PreviewFormGetSingleLineTextSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     unique: z.boolean().exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -9243,8 +9698,9 @@ const PreviewFormGetSingleLineTextSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     hideExpression: z.boolean().exactOptional(),
     required: z.boolean().exactOptional(),
   })
@@ -9255,7 +9711,7 @@ const PreviewFormGetSingleSelectSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
     options: z.array(z.string()).exactOptional(),
     label: z.string().exactOptional(),
     type: z
@@ -9298,8 +9754,8 @@ const PreviewFormGetTimeSimplePropertiesSchema = z
   .object({
     noLabel: z.boolean().exactOptional(),
     code: z.string().exactOptional(),
-    defaultValue: z.string().exactOptional(),
-    defaultExpression: z.string().exactOptional(),
+    defaultValue: z.string().nullable().exactOptional(),
+    defaultExpression: z.string().nullable().exactOptional(),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -9474,8 +9930,9 @@ const PreviewFormGetLookupSimplePropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -9527,8 +9984,9 @@ const PreviewFormGetReferenceTableLayoutPropertiesSchema = z
               : val,
         z.int64(),
       )
+      .nullable()
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
     label: z.string().exactOptional(),
     type: z
       .enum([
@@ -9748,29 +10206,28 @@ const EditorSimpleValueSchema: z.ZodType<EditorSimpleValueType> & z.core.$ZodTyp
   .openapi('EditorSimpleValue')
 
 const FileSimpleValueSchema: z.ZodType<FileSimpleValueType> & z.core.$ZodTypeDiscriminable = z
-  .lazy(() =>
-    z.object({ type: z.literal('FILE'), value: z.array(SingleFileSimpleValueSchema) }).openapi({
-      required: ['value', 'type'],
-      description: 'Attachment',
-      example: {
-        type: 'FILE',
-        value: [
-          {
-            contentType: 'text/plain',
-            fileKey: '20150417022053715283FF97DC413CBC4B7A41C',
-            name: 'kintoneUpdates.txt',
-            size: '25302',
-          },
-          {
-            contentType: 'text/plain',
-            fileKey: '20150417022159ECFC1223C4B34C939E1B9BD25',
-            name: 'APIUpdatestxt',
-            size: '20311',
-          },
-        ],
-      },
-    }),
-  )
+  .object({ type: z.literal('FILE'), value: z.array(SingleFileSimpleValueSchema) })
+  .openapi({
+    required: ['value', 'type'],
+    description: 'Attachment',
+    example: {
+      type: 'FILE',
+      value: [
+        {
+          contentType: 'text/plain',
+          fileKey: '20150417022053715283FF97DC413CBC4B7A41C',
+          name: 'kintoneUpdates.txt',
+          size: '25302',
+        },
+        {
+          contentType: 'text/plain',
+          fileKey: '20150417022159ECFC1223C4B34C939E1B9BD25',
+          name: 'APIUpdatestxt',
+          size: '20311',
+        },
+      ],
+    },
+  })
   .openapi('FileSimpleValue')
 
 const GroupSelectSimpleValueSchema: z.ZodType<GroupSelectSimpleValueType> &
@@ -10157,108 +10614,6 @@ type SimpleRowValueType = {
   value?: { [key: string]: z.infer<typeof RecordObjectSchema> }
 }
 
-const RecordWritableObjectSchema: z.ZodType<RecordWritableObjectType> = z
-  .lazy(() =>
-    z
-      .union([
-        z
-          .object({ type: z.literal('CHECK_BOX').exactOptional(), value: z.array(z.string()) })
-          .openapi({ required: ['value'], description: 'Check box' }),
-        z
-          .object({
-            type: z.literal('DATE').exactOptional(),
-            value: z.iso.date().nullable().exactOptional(),
-          })
-          .openapi({ description: 'Date', required: [] }),
-        z
-          .object({
-            type: z.literal('DATETIME').exactOptional(),
-            value: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-          })
-          .openapi({ description: 'Date and time', required: [] }),
-        z
-          .object({ type: z.literal('NUMBER').exactOptional(), value: z.string().exactOptional() })
-          .openapi({ description: 'Number', required: [] }),
-        z
-          .object({
-            type: z.literal('RICH_TEXT').exactOptional(),
-            value: z.string().exactOptional(),
-          })
-          .openapi({ description: 'Rich text', required: [] }),
-        z
-          .object({
-            type: z.literal('FILE').exactOptional(),
-            value: z.array(SingleFileSimpleValueSchema),
-          })
-          .openapi({ required: ['value'], description: 'Attachment' }),
-        z
-          .object({
-            type: z.literal('GROUP_SELECT').exactOptional(),
-            value: z.array(GroupEntitySimpleValueSchema),
-          })
-          .openapi({ required: ['value'], description: 'Group Selection' }),
-        z
-          .object({ type: z.literal('LINK').exactOptional(), value: z.string().exactOptional() })
-          .openapi({ description: 'Link', required: [] }),
-        z
-          .object({
-            type: z.literal('MULTI_LINE_TEXT').exactOptional(),
-            value: z.string().exactOptional(),
-          })
-          .openapi({ description: 'Text area', required: [] }),
-        z
-          .object({ type: z.literal('MULTI_SELECT').exactOptional(), value: z.array(z.string()) })
-          .openapi({ required: ['value'], description: 'Multi-choice' }),
-        z
-          .object({
-            type: z.literal('ORGANIZATION_SELECT').exactOptional(),
-            value: z.array(OrganizationEntitySimpleValueSchema),
-          })
-          .openapi({ required: ['value'], description: 'Department Selection' }),
-        z
-          .object({
-            type: z.literal('RADIO_BUTTON').exactOptional(),
-            value: z.string().exactOptional(),
-          })
-          .openapi({ description: 'Radio button', required: [] }),
-        z
-          .object({
-            type: z.literal('SUBTABLE').exactOptional(),
-            value: z.array(SimpleRowWritableValueSchema).exactOptional(),
-          })
-          .openapi({ description: 'Table', required: [] }),
-        z
-          .object({
-            type: z.literal('SINGLE_LINE_TEXT').exactOptional(),
-            value: z.string().exactOptional(),
-          })
-          .openapi({ description: 'Text', required: [] }),
-        z
-          .object({
-            type: z.literal('DROP_DOWN').exactOptional(),
-            value: z.string().nullable().exactOptional(),
-          })
-          .openapi({ description: 'Drop-down', required: [] }),
-        z
-          .object({
-            type: z.literal('TIME').exactOptional(),
-            value: z.string().nullable().exactOptional(),
-          })
-          .openapi({ description: 'Time', required: [] }),
-        z
-          .object({
-            type: z.literal('USER_SELECT').exactOptional(),
-            value: z.array(UserEntitySimpleValueSchema),
-          })
-          .openapi({ required: ['value'], description: 'User selection' }),
-      ])
-      .openapi({
-        description:
-          'The value of a single field when writing a record.\n\n**Always an object with a `value` property, never a bare value.**\n\n```\ncorrect: { "fieldCode": { "value": "ABC" } }\nwrong:   { "fieldCode": "ABC" }\n```\n\nSending a bare value returns HTTP 400. `type` is optional; when omitted, the App\'s field settings are used.\n\nThe shape of `value` depends on the field type, which `GET /k/v1/app/form/fields.json` reports:\n\n| Field type | shape of `value` |\n|---|---|\n| Single-line text, Multi-line text, Rich text, Link, Number, Date, Time, Date and time, Drop-down, Radio button | string — numbers and dates are strings too, e.g. `"1200000"`, `"2026-08-31"` |\n| Check box, Multi-choice | array of strings, each matching one of the App\'s choices exactly |\n| User selection, Department selection, Group selection | array of `{ "code": "..." }` |\n| Attachment | array of `{ "fileKey": "..." }` — upload the file first to obtain a key |\n| Table | array of `{ "id": "...", "value": { "<fieldCode>": { "value": ... } } }` |\n\nTo clear a field, send an empty string for the text-like types, or an empty array for the array types.\n\n**A field code that does not exist in the App is silently ignored.** The request still returns HTTP 200 and a new revision, so a typo looks like success even though nothing changed. Copy the codes from `GET /k/v1/app/form/fields.json` exactly.\n\n**Table and Attachment fields are replaced, not merged.** When updating an existing record, every table row and every `fileKey` the request does not list is deleted. To change one cell of a table, send the whole table including the `id` of each row to keep. Fields left out of the request entirely are untouched.',
-      }),
-  )
-  .openapi('RecordWritableObject')
-
 type SimpleRowWritableValueType = {
   id?: string
   value?: { [key: string]: z.infer<typeof RecordWritableObjectSchema> }
@@ -10289,7 +10644,7 @@ const AppAclGetRightSchema = z
     recordDeletable: z.boolean().exactOptional(),
     entity: z
       .object({
-        code: z.string().exactOptional(),
+        code: z.string().nullable().exactOptional(),
         type: z.enum(['USER', 'ORGANIZATION', 'GROUP', 'CREATOR']).exactOptional(),
       })
       .exactOptional()
@@ -12237,6 +12592,7 @@ const AppReportsGetReportSchema = z
           .exactOptional(),
         active: z.boolean().exactOptional(),
       })
+      .nullable()
       .exactOptional()
       .openapi({ required: [] }),
     chartType: z
@@ -12312,6 +12668,7 @@ const AppReportsGetReportWithChartModeSchema = z
           .exactOptional(),
         active: z.boolean().exactOptional(),
       })
+      .nullable()
       .exactOptional()
       .openapi({ required: [] }),
     chartType: z
@@ -12679,7 +13036,7 @@ const AppStatusGetAssigneeEntityFormSchema = z
     includeSubs: z.boolean().exactOptional(),
     entity: z
       .object({
-        code: z.string().exactOptional(),
+        code: z.string().nullable().exactOptional(),
         type: z
           .enum(['USER', 'GROUP', 'ORGANIZATION', 'FIELD_ENTITY', 'CREATOR', 'CUSTOM_FIELD'])
           .exactOptional(),
@@ -12692,6 +13049,7 @@ const AppStatusGetAssigneeEntityFormSchema = z
 
 const AppStatusGetStateFormSchema = z
   .object({
+    instructions: z.string().exactOptional(),
     name: z.string().exactOptional(),
     index: z
       .preprocess(
@@ -12897,47 +13255,6 @@ const AppViewsGetListViewOutputFormSchema = z
   .openapi({ required: [] })
   .openapi('AppViewsGetListViewOutputForm')
 
-const BulkRequestPostRecordAssigneesPutFormSchema = z
-  .object({
-    app: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    assignees: z.array(z.string()),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    revision: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: ['app', 'assignees', 'id'] })
-  .openapi('BulkRequestPostRecordAssigneesPutForm')
-
 const BulkRequestPostRecordAssigneesPutOutputFormSchema = z
   .object({ revision: z.string().exactOptional() })
   .openapi({ required: [] })
@@ -12962,61 +13279,6 @@ const BulkRequestPostRecordBeanSchema = z
   .openapi({ required: [] })
   .openapi('BulkRequestPostRecordBean')
 
-const BulkRequestPostUpdateKeySchema = z
-  .object({ field: z.string(), value: z.string().max(64) })
-  .openapi({ required: ['field', 'value'] })
-  .openapi('BulkRequestPostUpdateKey')
-
-const BulkRequestPostRecordFormSchema = z
-  .object({
-    updateKey: BulkRequestPostUpdateKeySchema.exactOptional(),
-    record: z.record(z.string(), RecordWritableObjectSchema).exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    revision: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('BulkRequestPostRecordForm')
-
-const BulkRequestPostRecordPostFormSchema = z
-  .object({
-    app: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    record: z.record(z.string(), RecordWritableObjectSchema),
-  })
-  .openapi({ required: ['app', 'record'] })
-  .openapi('BulkRequestPostRecordPostForm')
-
 const BulkRequestPostRecordPostOutputFormSchema = z
   .object({
     id: z
@@ -13036,120 +13298,14 @@ const BulkRequestPostRecordPostOutputFormSchema = z
   .openapi({ required: [] })
   .openapi('BulkRequestPostRecordPostOutputForm')
 
-const BulkRequestPostRecordPutFormSchema = z
-  .object({
-    app: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    updateKey: BulkRequestPostUpdateKeySchema.exactOptional(),
-    record: z.record(z.string(), RecordWritableObjectSchema).exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    revision: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: ['app'] })
-  .openapi('BulkRequestPostRecordPutForm')
-
 const BulkRequestPostRecordPutOutputFormSchema = z
   .object({ revision: z.string().exactOptional() })
   .openapi({ required: [] })
   .openapi('BulkRequestPostRecordPutOutputForm')
 
-const BulkRequestPostRecordsDeleteFormSchema = z
-  .object({
-    app: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    ids: z.array(
-      z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .openapi({ type: 'integer', format: 'int64' }),
-    ),
-    revisions: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: ['app', 'ids'] })
-  .openapi('BulkRequestPostRecordsDeleteForm')
-
 const BulkRequestPostRecordsDeleteOutputFormSchema = z
   .any()
   .openapi('BulkRequestPostRecordsDeleteOutputForm')
-
-const BulkRequestPostRecordsPostFormSchema = z
-  .object({
-    app: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    records: z.array(z.record(z.string(), RecordWritableObjectSchema)),
-  })
-  .openapi({ required: ['app', 'records'] })
-  .openapi('BulkRequestPostRecordsPostForm')
 
 const BulkRequestPostRecordsPostOutputFormSchema = z
   .object({
@@ -13187,25 +13343,6 @@ const BulkRequestPostRecordsPostOutputFormSchema = z
   .openapi({ required: [] })
   .openapi('BulkRequestPostRecordsPostOutputForm')
 
-const BulkRequestPostRecordsPutFormSchema = z
-  .object({
-    app: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    records: z.array(BulkRequestPostRecordFormSchema),
-    upsert: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['app', 'records'] })
-  .openapi('BulkRequestPostRecordsPutForm')
-
 const BulkRequestPostUpsertRecordBeanSchema = z
   .object({
     id: z
@@ -13238,55 +13375,6 @@ const BulkRequestPostRecordsPutOutputFormSchema = z
   .openapi({ required: [] })
   .openapi('BulkRequestPostRecordsPutOutputForm')
 
-const BulkRequestPostRecordsStatusPutFormRecordSchema = z
-  .object({
-    action: z.string(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    assignee: z.string().exactOptional(),
-    revision: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: ['action', 'id'] })
-  .openapi('BulkRequestPostRecordsStatusPutFormRecord')
-
-const BulkRequestPostRecordsStatusPutFormSchema = z
-  .object({
-    app: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    records: z.array(BulkRequestPostRecordsStatusPutFormRecordSchema),
-  })
-  .openapi({ required: ['app', 'records'] })
-  .openapi('BulkRequestPostRecordsStatusPutForm')
-
 const BulkRequestPostRecordsStatusPutOutputFormRecordSchema = z
   .object({
     id: z
@@ -13313,54 +13401,12 @@ const BulkRequestPostRecordsStatusPutOutputFormSchema = z
   .openapi({ required: [] })
   .openapi('BulkRequestPostRecordsStatusPutOutputForm')
 
-const BulkRequestPostRecordStatusPutFormSchema = z
-  .object({
-    app: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    action: z.string(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    assignee: z.string().exactOptional(),
-    revision: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: ['app', 'action', 'id'] })
-  .openapi('BulkRequestPostRecordStatusPutForm')
-
 const BulkRequestPostRecordStatusPutOutputFormSchema = z
   .object({ revision: z.string().exactOptional() })
   .openapi({ required: [] })
   .openapi('BulkRequestPostRecordStatusPutOutputForm')
 
-const BulkRequestPostRequestFormSchema = z
+const BulkRequestPostRequestFormSchema: z.ZodType<BulkRequestPostRequestFormType> = z
   .object({
     method: z.string().openapi({ description: 'The API method for the request.' }),
     payload: z
@@ -13664,7 +13710,7 @@ const PreviewAppAclGetRightSchema = z
     recordDeletable: z.boolean().exactOptional(),
     entity: z
       .object({
-        code: z.string().exactOptional(),
+        code: z.string().nullable().exactOptional(),
         type: z.enum(['USER', 'ORGANIZATION', 'GROUP', 'CREATOR']).exactOptional(),
       })
       .exactOptional()
@@ -18319,6 +18365,7 @@ const PreviewAppReportsGetReportSchema = z
           .exactOptional(),
         active: z.boolean().exactOptional(),
       })
+      .nullable()
       .exactOptional()
       .openapi({ required: [] }),
     chartType: z
@@ -18399,6 +18446,7 @@ const PreviewAppReportsGetReportWithChartModeSchema = z
           .exactOptional(),
         active: z.boolean().exactOptional(),
       })
+      .nullable()
       .exactOptional()
       .openapi({ required: [] }),
     chartType: z
@@ -19269,7 +19317,7 @@ const PreviewAppStatusGetAssigneeEntityFormSchema = z
     includeSubs: z.boolean().exactOptional(),
     entity: z
       .object({
-        code: z.string().exactOptional(),
+        code: z.string().nullable().exactOptional(),
         type: z
           .enum(['USER', 'GROUP', 'ORGANIZATION', 'FIELD_ENTITY', 'CREATOR', 'CUSTOM_FIELD'])
           .exactOptional(),
@@ -19282,6 +19330,7 @@ const PreviewAppStatusGetAssigneeEntityFormSchema = z
 
 const PreviewAppStatusGetStateFormSchema = z
   .object({
+    instructions: z.string().exactOptional(),
     name: z.string().exactOptional(),
     index: z
       .preprocess(
@@ -19339,7 +19388,7 @@ const PreviewAppStatusPutActionFormSchema = z
       .max(64)
       .openapi({
         description:
-          'The Status name before taking action.\nIf a Status name that you want to specify has been changed, place the changed value for this parameter.\nRequired, if setting the `actions` parameter.',
+          'The Status name before taking action.\nIf you are renaming the status, specify the new name.\nRequired, if setting the `actions` parameter.',
       }),
     to: z
       .string()
@@ -19347,14 +19396,14 @@ const PreviewAppStatusPutActionFormSchema = z
       .max(64)
       .openapi({
         description:
-          'The Status name after taking action.\nIf a Status name that you want to specify has been changed, place the changed value for this parameter.\nRequired, if setting the `actions` parameter.',
+          'The Status name after taking action.\nIf you are renaming the status, specify the new name.\nRequired, if setting the `actions` parameter.',
       }),
     filterCond: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The branch criteria of the action, specified as a query.\nFor more information on query formats refer to the following document:\n[Query String](https://kintone.dev/en/docs/kintone/overview/query-string/)\nThere are restrictions on the conditions that can be specified:\n[Available Operators and Functions for Each Field](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/#available-operators-and-functions-for-each-field)\n[Additional Restrictions for Each API](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/#additional-restrictions-for-each-api)',
+          'The branch criteria of the action, specified as a query.\nFor more information on query formats refer to the following document:\n[Query String](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/)\nThere are restrictions on the conditions that can be specified:\n[Available Operators and Functions for Each Field](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/#available-operators-and-functions-for-each-field)\n[Additional Restrictions for Each API](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/#additional-restrictions-for-each-api)',
       }),
     type: z.enum(['PRIMARY', 'SECONDARY']).exactOptional(),
   })
@@ -19368,7 +19417,7 @@ const PreviewAppStatusPutAssigneeEntityFormSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The **Include affiliated departments** settings of the department.\n- `true`: Affiliated departments are included as Assignees\n- `false`: Affiliated departments are not included as Assignees\nIf ignored, this value is false.',
+          'The **Include affiliated departments** settings of the department.\n- `true`: Affiliated departments are included as Assignees\n- `false`: Affiliated departments are not included as Assignees\nIf omitted, this value is false.',
       }),
     entity: z
       .object({
@@ -19397,6 +19446,14 @@ const PreviewAppStatusPutAssigneeEntityFormSchema = z
 
 const PreviewAppStatusPutStateFormSchema = z
   .object({
+    instructions: z
+      .string()
+      .max(10000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The assignee instructions of the status.\nThe maximum limit is 10,000 characters.\nIf ignored, the following applies:\n- Updating an existing status: The current instructions are not changed.\n- Adding a new status: An empty string is set.',
+      }),
     name: z
       .string()
       .min(1)
@@ -19446,7 +19503,7 @@ const PreviewAppStatusPutStateFormSchema = z
   .openapi({
     required: ['index'],
     description:
-      'An object containing the settings of each status.\n- Add a new status: Specify a status name that does not exist.\n- Update a status: Specify the name of the status to be updated.\n- Delete a status: Do not specify the status name for deletion.\nThe first status cannot be added. To change the first status, update the name of the existing first status.',
+      'An object containing the settings of each status.\n- To add a new status, specify a status name that does not exist.\n- To update a status, specify the name of the status to be updated.\n- To delete a status, omit it from `states`.\nA new status cannot be added as the first status. To change the first status, rename the existing one.',
   })
   .openapi('PreviewAppStatusPutStateForm')
 
@@ -20458,9 +20515,221 @@ const RecordsStatusPutRecordsStatusPutOutputFormRecordSchema = z
   .openapi({ required: [] })
   .openapi('RecordsStatusPutRecordsStatusPutOutputFormRecord')
 
+const SearchPostFieldSchema = z
+  .object({ code: z.string().exactOptional(), label: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('SearchPostField')
+
+const SearchPostHitSchema = z
+  .object({
+    messageComment: z
+      .object({
+        createdAt: z.iso.datetime({ offset: true }).exactOptional(),
+        creator: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        recipient: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        commentId: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    attachment: z
+      .object({
+        createdAt: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        creator: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .nullable()
+          .exactOptional()
+          .openapi({ required: [] }),
+        name: z.string().exactOptional(),
+        fileKey: z.string().exactOptional(),
+        attachedTo: z
+          .enum([
+            'RECORD',
+            'SPACE',
+            'THREAD',
+            'THREAD_COMMENT',
+            'PEOPLE_COMMENT',
+            'MESSAGE_COMMENT',
+          ])
+          .exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    snippets: z.array(z.string()).exactOptional(),
+    record: z
+      .object({
+        recordId: z.string().exactOptional(),
+        spaceName: z.string().nullable().exactOptional(),
+        recordTitle: z.string().exactOptional(),
+        createdAt: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        spaceId: z.string().nullable().exactOptional(),
+        creator: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .nullable()
+          .exactOptional()
+          .openapi({ required: [] }),
+        matchedFields: z.array(SearchPostFieldSchema).exactOptional(),
+        appName: z.string().exactOptional(),
+        appId: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    threadComment: z
+      .object({
+        spaceName: z.string().exactOptional(),
+        threadId: z.string().exactOptional(),
+        spaceId: z.string().exactOptional(),
+        createdAt: z.iso.datetime({ offset: true }).exactOptional(),
+        creator: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        replyId: z.string().nullable().exactOptional(),
+        commentId: z.string().exactOptional(),
+        threadName: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    peopleComment: z
+      .object({
+        owner: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        createdAt: z.iso.datetime({ offset: true }).exactOptional(),
+        creator: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        replyId: z.string().nullable().exactOptional(),
+        commentId: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    recordComment: z
+      .object({
+        recordId: z.string().exactOptional(),
+        spaceName: z.string().nullable().exactOptional(),
+        recordTitle: z.string().exactOptional(),
+        createdAt: z.iso.datetime({ offset: true }).exactOptional(),
+        spaceId: z.string().nullable().exactOptional(),
+        creator: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appName: z.string().exactOptional(),
+        appId: z.string().exactOptional(),
+        commentId: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    thread: z
+      .object({
+        spaceName: z.string().exactOptional(),
+        threadId: z.string().exactOptional(),
+        spaceId: z.string().exactOptional(),
+        createdAt: z.iso.datetime({ offset: true }).exactOptional(),
+        creator: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        threadName: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z
+      .enum([
+        'RECORD',
+        'RECORD_COMMENT',
+        'SPACE',
+        'THREAD',
+        'THREAD_COMMENT',
+        'PEOPLE_COMMENT',
+        'MESSAGE_COMMENT',
+        'ATTACHMENT',
+      ])
+      .exactOptional(),
+    url: z.string().exactOptional(),
+    space: z
+      .object({
+        spaceName: z.string().exactOptional(),
+        spaceId: z.string().exactOptional(),
+        createdAt: z.iso.datetime({ offset: true }).exactOptional(),
+        creator: z
+          .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchPostHit')
+
+const SearchPostQueryFormSchema = z
+  .object({
+    keywords: z
+      .array(z.string())
+      .openapi({
+        description:
+          'An array of keywords.\nSpecify between 1 and 20 keywords.\nEach keyword must be between 1 and 50 characters.\nThe maximum limit is 20 keywords across the entire `query`. The request will fail if this limit is exceeded.',
+      }),
+    operator: z
+      .enum(['AND', 'OR', 'NOT'])
+      .openapi({
+        description:
+          'How the search condition is evaluated.\nSpecify one of the following values:\n- `AND`: Returns data that contains all keywords.\n- `OR`: Returns data that contains any of the keywords.\n- `NOT`: Returns data that does not contain the keywords.\nThe search result will be empty if `query` contains no conditions that use `AND` or `OR`.',
+      }),
+  })
+  .openapi({ required: ['keywords', 'operator'] })
+  .openapi('SearchPostQueryForm')
+
+const SearchPostScopeFormSchema = z
+  .object({
+    codes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The log in names of users.\nThe maximum limit is 20 log in names.\nIf `scopes[].scope` is `PEOPLE` or `MESSAGE`, specify the log in names of People owners or Message partners. This limits the search scope to those People or Messages. If ignored, all People or all Messages are searched.\nThis parameter cannot be specified if `scopes[].scope` is `APP` or `SPACE`.',
+      }),
+    scope: z
+      .enum(['SPACE', 'APP', 'PEOPLE', 'MESSAGE'])
+      .openapi({
+        description:
+          'The type of search scope.\nSpecify one of the following values:\n- `APP`: Apps\n- `SPACE`: Spaces\n- `PEOPLE`: People\n- `MESSAGE`: Messages\nRequired if `scopes` is specified.',
+      }),
+    ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The App IDs or Space IDs.\nThe maximum limit is 20 IDs.\nIf `scopes[].scope` is `APP` or `SPACE`, specify App IDs or Space IDs to limit the search scope to those Apps or Spaces. If ignored, all Apps or all Spaces are searched.\nThis parameter cannot be specified if `scopes[].scope` is `PEOPLE` or `MESSAGE`.',
+      }),
+  })
+  .openapi({ required: ['scope'] })
+  .openapi('SearchPostScopeForm')
+
 const SpaceGetAttachedAppSchema = z
   .object({
-    threadId: z.string().nullable().exactOptional(),
+    threadId: z.string().exactOptional(),
     createdAt: z.iso.datetime({ offset: true }).exactOptional(),
     creator: z
       .object({ code: z.string().exactOptional(), name: z.string().exactOptional() })
@@ -21474,7 +21743,7 @@ export const postKGuestGuestSpaceIdV1AppMoveJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of app/move/post',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -21697,7 +21966,7 @@ export const getKGuestGuestSpaceIdV1AppNotificationsReminderJsonRoute = createRo
         'application/json': {
           schema: z
             .object({
-              timezone: z.string().exactOptional(),
+              timezone: z.string().nullable().exactOptional(),
               notifications: z.array(AppNotificationsReminderGetNotificationSchema),
               revision: z.string().exactOptional(),
             })
@@ -22046,7 +22315,7 @@ export const getKGuestGuestSpaceIdV1AppStatusJsonRoute = createRoute({
             in: 'query',
             schema: { enum: ['default', 'user', 'ja', 'en', 'zh'], type: 'string' },
             description:
-              'The localized language to retrieve the data in:\n- `default`: retrieves the default names\n- `en`: retrieves the localized English names\n- `zh`: retrieves the localized Chinese names\n- `ja`: retrieves the localized Japanese names\n- `user`: retrieves the localized names, in the same language as the language setting* set on the user used for the authentication.\nIf ignored, the default names will be retrieved.',
+              'The language of the names to retrieve. Specify this when localized names are set for status names, action names, and similar items.\n- `default`: retrieves the default names\n- `en`: retrieves the localized English names\n- `zh`: retrieves the localized Chinese names\n- `ja`: retrieves the localized Japanese names\n- `user`: retrieves the localized names in the display language set by the user running the API*\nIf omitted, the default names are retrieved.',
             required: false,
           },
         }),
@@ -22060,8 +22329,8 @@ export const getKGuestGuestSpaceIdV1AppStatusJsonRoute = createRoute({
           schema: z
             .object({
               enable: z.boolean().exactOptional(),
-              actions: z.array(AppStatusGetActionFormSchema).exactOptional(),
-              states: z.record(z.string(), AppStatusGetStateFormSchema).exactOptional(),
+              actions: z.array(AppStatusGetActionFormSchema).nullable().exactOptional(),
+              states: z.record(z.string(), AppStatusGetStateFormSchema).nullable().exactOptional(),
               revision: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -22426,7 +22695,7 @@ export const postKGuestGuestSpaceIdV1BulkRequestJsonRoute = createRoute({
                   BulkRequestPostRecordPutOutputFormSchema,
                   BulkRequestPostRecordStatusPutOutputFormSchema,
                   BulkRequestPostRecordAssigneesPutOutputFormSchema,
-                  BulkRequestPostRecordsDeleteOutputFormSchema,
+                  z.looseObject({}).and(BulkRequestPostRecordsDeleteOutputFormSchema),
                   BulkRequestPostRecordsPostOutputFormSchema,
                   BulkRequestPostRecordsPutOutputFormSchema,
                   BulkRequestPostRecordsStatusPutOutputFormSchema,
@@ -22855,7 +23124,7 @@ export const postKGuestGuestSpaceIdV1GuestsJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of guests/post',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -22911,7 +23180,7 @@ export const deleteKGuestGuestSpaceIdV1GuestsJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of guests/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -23085,7 +23354,7 @@ export const deleteKGuestGuestSpaceIdV1PluginJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of plugin/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -24288,7 +24557,7 @@ export const postKGuestGuestSpaceIdV1PreviewAppDeployJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of preview/app/deploy/post',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -25308,7 +25577,7 @@ export const getKGuestGuestSpaceIdV1PreviewAppNotificationsReminderJsonRoute = c
         'application/json': {
           schema: z
             .object({
-              timezone: z.string().exactOptional(),
+              timezone: z.string().nullable().exactOptional(),
               notifications: z
                 .array(PreviewAppNotificationsReminderGetNotificationSchema)
                 .exactOptional(),
@@ -26097,7 +26366,7 @@ export const getKGuestGuestSpaceIdV1PreviewAppStatusJsonRoute = createRoute({
             in: 'query',
             schema: { enum: ['default', 'user', 'ja', 'en', 'zh'], type: 'string' },
             description:
-              'The localized language to retrieve the data in:\n- `default`: retrieves the default names\n- `en`: retrieves the localized English names\n- `zh`: retrieves the localized Chinese names\n- `ja`: retrieves the localized Japanese names\n- `user`: retrieves the localized names, in the same language as the language setting* set on the user used for the authentication.\nIf ignored, the default names will be retrieved.',
+              'The language of the names to retrieve. Specify this when localized names are set for status names, action names, and similar items.\n- `default`: retrieves the default names\n- `en`: retrieves the localized English names\n- `zh`: retrieves the localized Chinese names\n- `ja`: retrieves the localized Japanese names\n- `user`: retrieves the localized names in the display language set by the user running the API*\nIf omitted, the default names are retrieved.',
             required: false,
           },
         }),
@@ -26111,8 +26380,11 @@ export const getKGuestGuestSpaceIdV1PreviewAppStatusJsonRoute = createRoute({
           schema: z
             .object({
               enable: z.boolean().exactOptional(),
-              actions: z.array(PreviewAppStatusGetActionFormSchema).exactOptional(),
-              states: z.record(z.string(), PreviewAppStatusGetStateFormSchema).exactOptional(),
+              actions: z.array(PreviewAppStatusGetActionFormSchema).nullable().exactOptional(),
+              states: z
+                .record(z.string(), PreviewAppStatusGetStateFormSchema)
+                .nullable()
+                .exactOptional(),
               revision: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -26173,7 +26445,7 @@ export const putKGuestGuestSpaceIdV1PreviewAppStatusJsonRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    'The on/off settings of the process management settings.\n- `true`: Process management settings is enabled.\n- `false`: Process management settings is disabled.',
+                    'Whether process management is enabled.\n- `true`: Process management is enabled.\n- `false`: Process management is disabled.',
                 }),
               actions: z
                 .array(PreviewAppStatusPutActionFormSchema)
@@ -26194,7 +26466,7 @@ export const putKGuestGuestSpaceIdV1PreviewAppStatusJsonRoute = createRoute({
                   type: 'integer',
                   format: 'int64',
                   description:
-                    'Specify the revision number of the settings that will be deployed.\nThe request will fail if the revision number is not the latest revision.\nThe revision will not be checked if this parameter is ignored, or `-1` is specified.',
+                    'The expected revision number of the App settings.\nIf it does not match the actual revision number, the request fails and the settings are not changed.\nThe revision number is not checked if this parameter is omitted or `-1` is specified.',
                 }),
               states: z
                 .record(z.string(), PreviewAppStatusPutStateFormSchema)
@@ -27204,7 +27476,7 @@ export const getKGuestGuestSpaceIdV1RecordAclJsonRoute = createRoute({
     },
     '4XX': ErrorResponse,
   },
-  security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_record:read'] }],
+  security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_settings:read'] }],
 })
 
 export const putKGuestGuestSpaceIdV1RecordAclJsonRoute = createRoute({
@@ -27305,7 +27577,7 @@ export const putKGuestGuestSpaceIdV1RecordAclJsonRoute = createRoute({
     },
     '4XX': ErrorResponse,
   },
-  security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_record:write'] }],
+  security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_settings:write'] }],
 })
 
 export const putKGuestGuestSpaceIdV1RecordAssigneesJsonRoute = createRoute({
@@ -27578,7 +27850,7 @@ export const deleteKGuestGuestSpaceIdV1RecordCommentJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of record/comment/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -28188,7 +28460,7 @@ export const deleteKGuestGuestSpaceIdV1RecordsJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of records/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -28423,7 +28695,7 @@ export const postKGuestGuestSpaceIdV1RecordsCursorJsonRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ id: z.string(), totalCount: z.string().nullable() })
+            .object({ id: z.string(), totalCount: z.string() })
             .openapi({ required: ['id', 'totalCount'] }),
         },
       },
@@ -28475,7 +28747,7 @@ export const deleteKGuestGuestSpaceIdV1RecordsCursorJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of records/cursor/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -28560,6 +28832,174 @@ export const putKGuestGuestSpaceIdV1RecordsStatusJsonRoute = createRoute({
   security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_record:write'] }],
 })
 
+export const postKGuestGuestSpaceIdV1SearchJsonRoute = createRoute({
+  method: 'post',
+  path: '/k/guest/{guestSpaceId}/v1/search.json',
+  tags: ['SEARCHS'],
+  summary: 'Post search (guest space)',
+  description: 'Searches across Kintone, including App records and Thread posts.',
+  operationId: 'postSearchForGuestSpace',
+  request: {
+    params: z.object({
+      guestSpaceId: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .openapi({
+          param: {
+            name: 'guestSpaceId',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', format: 'int64' },
+            description:
+              'Guest space ID (the number that appears in the space URL /k/#/space/<ID> when the space is open in a browser).',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              types: z
+                .array(
+                  z.enum([
+                    'RECORD',
+                    'RECORD_COMMENT',
+                    'SPACE',
+                    'THREAD',
+                    'THREAD_COMMENT',
+                    'PEOPLE_COMMENT',
+                    'MESSAGE_COMMENT',
+                    'ATTACHMENT',
+                  ]),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The types of data to search.\nSpecify any of the following values:\n- `RECORD`: Records\n- `RECORD_COMMENT`: Record comments\n- `SPACE`: Spaces\n- `THREAD`: Threads\n- `THREAD_COMMENT`: Thread comments\n- `PEOPLE_COMMENT`: People comments\n- `MESSAGE_COMMENT`: Message comments\n- `ATTACHMENT`: Attachments\nIf ignored, all data types are searched.',
+                }),
+              excludeScopes: z
+                .array(SearchPostScopeFormSchema)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The scopes to exclude from the search.\nThe maximum limit is 20 scopes.\nIf multiple scopes are specified, data that meets all conditions is returned.\nIf both `scopes` and `excludeScopes` are specified, data that meets both conditions is returned. Therefore, `excludeScopes` takes priority where the two scopes overlap.',
+                }),
+              creators: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The log in names of the creators.\nThe maximum limit is 20 log in names.',
+                }),
+              includeSynonyms: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Whether to include spelling variations, abbreviations, and synonyms of the keywords in the search.\nIf ignored, this value is `false`.',
+                }),
+              query: z
+                .array(SearchPostQueryFormSchema)
+                .openapi({
+                  description:
+                    'The search conditions.\nSpecify between 1 and 20 conditions.\nIf multiple conditions are specified, data that meets all conditions is returned.',
+                }),
+              limit: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'The maximum number of results to retrieve.\nSpecify a value between 1 and 20.\nIf ignored, this value is `20`.\nThe response may contain fewer results than the limit, even if more matching data remains. Use the `nextPageToken` property in the response to check whether more matching data remains.',
+                }),
+              scopes: z
+                .array(SearchPostScopeFormSchema)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The search scopes.\nThe maximum limit is 20 scopes.\nIf multiple scopes are specified, data that meets any of the scopes is returned.',
+                }),
+              createdBefore: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The latest created datetime.\nReturns data created on or before the specified datetime. This value cannot be earlier than `createdAfter`.\nFor more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.',
+                }),
+              sort: z
+                .object({
+                  by: z
+                    .enum(['RELEVANCE', 'CREATED_AT'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The sort criteria.\nSpecify one of the following values:\n- `RELEVANCE`: Relevance to the keywords\n- `CREATED_AT`: Created datetime\nIf ignored, this value is `RELEVANCE`.',
+                    }),
+                  order: z
+                    .enum(['ASC', 'DESC'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The sort direction.\nSpecify one of the following values:\n- `ASC`: Ascending order\n- `DESC`: Descending order\nIf ignored, this value is `DESC`.\n`ASC` cannot be specified if `sort.by` is `RELEVANCE`.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({ description: 'The sort conditions.', required: [] }),
+              pageToken: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The token used to retrieve the next page of search results.\nIgnore this parameter in the first request. To retrieve the next page, specify the `nextPageToken` value from the previous response.\nThe token expires 30 minutes after it is issued. The request will fail if an expired token is specified.',
+                }),
+              createdAfter: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The earliest created datetime.\nReturns data created on or after the specified datetime. This value cannot be later than `createdBefore`.\nFor more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.',
+                }),
+            })
+            .openapi({ required: ['query'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'success case of search/post',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              hits: z.array(SearchPostHitSchema).exactOptional(),
+              nextPageToken: z.string().nullable().exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    '4XX': ErrorResponse,
+  },
+  security: [{ passwordAuth: [] }],
+})
+
 export const getKGuestGuestSpaceIdV1SpaceJsonRoute = createRoute({
   method: 'get',
   path: '/k/guest/{guestSpaceId}/v1/space.json',
@@ -28629,8 +29069,8 @@ export const getKGuestGuestSpaceIdV1SpaceJsonRoute = createRoute({
               memberCount: z.string().exactOptional(),
               attachedApps: z.array(SpaceGetAttachedAppSchema).exactOptional(),
               isPrivate: z.boolean().exactOptional(),
-              body: z.string().exactOptional(),
-              showAppList: z.boolean().exactOptional(),
+              body: z.string().nullable().exactOptional(),
+              showAppList: z.boolean().nullable().exactOptional(),
               coverUrl: z.string().exactOptional(),
               coverType: z.enum(['BLOB', 'PRESET']).exactOptional(),
               fixedMember: z.boolean().exactOptional(),
@@ -28640,11 +29080,11 @@ export const getKGuestGuestSpaceIdV1SpaceJsonRoute = createRoute({
                 .openapi({ required: [] }),
               name: z.string().exactOptional(),
               useMultiThread: z.boolean().exactOptional(),
-              showMemberList: z.boolean().exactOptional(),
-              showRelatedLinkList: z.boolean().exactOptional(),
+              showMemberList: z.boolean().nullable().exactOptional(),
+              showRelatedLinkList: z.boolean().nullable().exactOptional(),
               id: z.string().exactOptional(),
-              showAnnouncement: z.boolean().exactOptional(),
-              showThreadList: z.boolean().exactOptional(),
+              showAnnouncement: z.boolean().nullable().exactOptional(),
+              showThreadList: z.boolean().nullable().exactOptional(),
               defaultThread: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -28788,7 +29228,7 @@ export const putKGuestGuestSpaceIdV1SpaceJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -28849,7 +29289,7 @@ export const deleteKGuestGuestSpaceIdV1SpaceJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -28916,7 +29356,7 @@ export const putKGuestGuestSpaceIdV1SpaceBodyJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/body/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -28977,7 +29417,7 @@ export const putKGuestGuestSpaceIdV1SpaceGuestsJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/guests/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -29119,7 +29559,7 @@ export const putKGuestGuestSpaceIdV1SpaceMembersJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/members/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -29201,7 +29641,7 @@ export const putKGuestGuestSpaceIdV1SpaceThreadJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/thread/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -29533,6 +29973,154 @@ export const postKGuestGuestSpaceIdV1TemplateSpaceJsonRoute = createRoute({
       content: {
         'application/json': {
           schema: z.object({ id: z.string().exactOptional() }).openapi({ required: [] }),
+        },
+      },
+    },
+    '4XX': ErrorResponse,
+  },
+  security: [{ passwordAuth: [] }],
+})
+
+export const postKGuestV1SearchJsonRoute = createRoute({
+  method: 'post',
+  path: '/k/guest/v1/search.json',
+  tags: ['SEARCHS'],
+  summary: 'Post search (all participating guest spaces)',
+  description: 'Searches across Kintone, including App records and Thread posts.',
+  operationId: 'postSearchForGuest',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              types: z
+                .array(
+                  z.enum([
+                    'RECORD',
+                    'RECORD_COMMENT',
+                    'SPACE',
+                    'THREAD',
+                    'THREAD_COMMENT',
+                    'PEOPLE_COMMENT',
+                    'MESSAGE_COMMENT',
+                    'ATTACHMENT',
+                  ]),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The types of data to search.\nSpecify any of the following values:\n- `RECORD`: Records\n- `RECORD_COMMENT`: Record comments\n- `SPACE`: Spaces\n- `THREAD`: Threads\n- `THREAD_COMMENT`: Thread comments\n- `PEOPLE_COMMENT`: People comments\n- `MESSAGE_COMMENT`: Message comments\n- `ATTACHMENT`: Attachments\nIf ignored, all data types are searched.',
+                }),
+              excludeScopes: z
+                .array(SearchPostScopeFormSchema)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The scopes to exclude from the search.\nThe maximum limit is 20 scopes.\nIf multiple scopes are specified, data that meets all conditions is returned.\nIf both `scopes` and `excludeScopes` are specified, data that meets both conditions is returned. Therefore, `excludeScopes` takes priority where the two scopes overlap.',
+                }),
+              creators: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The log in names of the creators.\nThe maximum limit is 20 log in names.',
+                }),
+              includeSynonyms: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Whether to include spelling variations, abbreviations, and synonyms of the keywords in the search.\nIf ignored, this value is `false`.',
+                }),
+              query: z
+                .array(SearchPostQueryFormSchema)
+                .openapi({
+                  description:
+                    'The search conditions.\nSpecify between 1 and 20 conditions.\nIf multiple conditions are specified, data that meets all conditions is returned.',
+                }),
+              limit: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'The maximum number of results to retrieve.\nSpecify a value between 1 and 20.\nIf ignored, this value is `20`.\nThe response may contain fewer results than the limit, even if more matching data remains. Use the `nextPageToken` property in the response to check whether more matching data remains.',
+                }),
+              scopes: z
+                .array(SearchPostScopeFormSchema)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The search scopes.\nThe maximum limit is 20 scopes.\nIf multiple scopes are specified, data that meets any of the scopes is returned.',
+                }),
+              createdBefore: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The latest created datetime.\nReturns data created on or before the specified datetime. This value cannot be earlier than `createdAfter`.\nFor more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.',
+                }),
+              sort: z
+                .object({
+                  by: z
+                    .enum(['RELEVANCE', 'CREATED_AT'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The sort criteria.\nSpecify one of the following values:\n- `RELEVANCE`: Relevance to the keywords\n- `CREATED_AT`: Created datetime\nIf ignored, this value is `RELEVANCE`.',
+                    }),
+                  order: z
+                    .enum(['ASC', 'DESC'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The sort direction.\nSpecify one of the following values:\n- `ASC`: Ascending order\n- `DESC`: Descending order\nIf ignored, this value is `DESC`.\n`ASC` cannot be specified if `sort.by` is `RELEVANCE`.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({ description: 'The sort conditions.', required: [] }),
+              pageToken: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The token used to retrieve the next page of search results.\nIgnore this parameter in the first request. To retrieve the next page, specify the `nextPageToken` value from the previous response.\nThe token expires 30 minutes after it is issued. The request will fail if an expired token is specified.',
+                }),
+              createdAfter: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The earliest created datetime.\nReturns data created on or after the specified datetime. This value cannot be later than `createdBefore`.\nFor more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.',
+                }),
+            })
+            .openapi({ required: ['query'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'success case of search/post',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              hits: z.array(SearchPostHitSchema).exactOptional(),
+              nextPageToken: z.string().nullable().exactOptional(),
+            })
+            .openapi({ required: [] }),
         },
       },
     },
@@ -30112,7 +30700,7 @@ export const postKV1AppMoveJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of app/move/post',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -30275,7 +30863,7 @@ export const getKV1AppNotificationsReminderJsonRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              timezone: z.string().exactOptional(),
+              timezone: z.string().nullable().exactOptional(),
               notifications: z.array(AppNotificationsReminderGetNotificationSchema),
               revision: z.string().exactOptional(),
             })
@@ -30544,7 +31132,7 @@ export const getKV1AppStatusJsonRoute = createRoute({
             in: 'query',
             schema: { enum: ['default', 'user', 'ja', 'en', 'zh'], type: 'string' },
             description:
-              'The localized language to retrieve the data in:\n- `default`: retrieves the default names\n- `en`: retrieves the localized English names\n- `zh`: retrieves the localized Chinese names\n- `ja`: retrieves the localized Japanese names\n- `user`: retrieves the localized names, in the same language as the language setting* set on the user used for the authentication.\nIf ignored, the default names will be retrieved.',
+              'The language of the names to retrieve. Specify this when localized names are set for status names, action names, and similar items.\n- `default`: retrieves the default names\n- `en`: retrieves the localized English names\n- `zh`: retrieves the localized Chinese names\n- `ja`: retrieves the localized Japanese names\n- `user`: retrieves the localized names in the display language set by the user running the API*\nIf omitted, the default names are retrieved.',
             required: false,
           },
         }),
@@ -30558,8 +31146,8 @@ export const getKV1AppStatusJsonRoute = createRoute({
           schema: z
             .object({
               enable: z.boolean().exactOptional(),
-              actions: z.array(AppStatusGetActionFormSchema).exactOptional(),
-              states: z.record(z.string(), AppStatusGetStateFormSchema).exactOptional(),
+              actions: z.array(AppStatusGetActionFormSchema).nullable().exactOptional(),
+              states: z.record(z.string(), AppStatusGetStateFormSchema).nullable().exactOptional(),
               revision: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -30844,7 +31432,7 @@ export const postKV1BulkRequestJsonRoute = createRoute({
                   BulkRequestPostRecordPutOutputFormSchema,
                   BulkRequestPostRecordStatusPutOutputFormSchema,
                   BulkRequestPostRecordAssigneesPutOutputFormSchema,
-                  BulkRequestPostRecordsDeleteOutputFormSchema,
+                  z.looseObject({}).and(BulkRequestPostRecordsDeleteOutputFormSchema),
                   BulkRequestPostRecordsPostOutputFormSchema,
                   BulkRequestPostRecordsPutOutputFormSchema,
                   BulkRequestPostRecordsStatusPutOutputFormSchema,
@@ -31153,7 +31741,7 @@ export const postKV1GuestsJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of guests/post',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -31189,7 +31777,7 @@ export const deleteKV1GuestsJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of guests/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -31303,7 +31891,7 @@ export const deleteKV1PluginJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of plugin/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -32226,7 +32814,7 @@ export const postKV1PreviewAppDeployJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of preview/app/deploy/post',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -33026,7 +33614,7 @@ export const getKV1PreviewAppNotificationsReminderJsonRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              timezone: z.string().exactOptional(),
+              timezone: z.string().nullable().exactOptional(),
               notifications: z
                 .array(PreviewAppNotificationsReminderGetNotificationSchema)
                 .exactOptional(),
@@ -33655,7 +34243,7 @@ export const getKV1PreviewAppStatusJsonRoute = createRoute({
             in: 'query',
             schema: { enum: ['default', 'user', 'ja', 'en', 'zh'], type: 'string' },
             description:
-              'The localized language to retrieve the data in:\n- `default`: retrieves the default names\n- `en`: retrieves the localized English names\n- `zh`: retrieves the localized Chinese names\n- `ja`: retrieves the localized Japanese names\n- `user`: retrieves the localized names, in the same language as the language setting* set on the user used for the authentication.\nIf ignored, the default names will be retrieved.',
+              'The language of the names to retrieve. Specify this when localized names are set for status names, action names, and similar items.\n- `default`: retrieves the default names\n- `en`: retrieves the localized English names\n- `zh`: retrieves the localized Chinese names\n- `ja`: retrieves the localized Japanese names\n- `user`: retrieves the localized names in the display language set by the user running the API*\nIf omitted, the default names are retrieved.',
             required: false,
           },
         }),
@@ -33669,8 +34257,11 @@ export const getKV1PreviewAppStatusJsonRoute = createRoute({
           schema: z
             .object({
               enable: z.boolean().exactOptional(),
-              actions: z.array(PreviewAppStatusGetActionFormSchema).exactOptional(),
-              states: z.record(z.string(), PreviewAppStatusGetStateFormSchema).exactOptional(),
+              actions: z.array(PreviewAppStatusGetActionFormSchema).nullable().exactOptional(),
+              states: z
+                .record(z.string(), PreviewAppStatusGetStateFormSchema)
+                .nullable()
+                .exactOptional(),
               revision: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -33711,7 +34302,7 @@ export const putKV1PreviewAppStatusJsonRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    'The on/off settings of the process management settings.\n- `true`: Process management settings is enabled.\n- `false`: Process management settings is disabled.',
+                    'Whether process management is enabled.\n- `true`: Process management is enabled.\n- `false`: Process management is disabled.',
                 }),
               actions: z
                 .array(PreviewAppStatusPutActionFormSchema)
@@ -33732,7 +34323,7 @@ export const putKV1PreviewAppStatusJsonRoute = createRoute({
                   type: 'integer',
                   format: 'int64',
                   description:
-                    'Specify the revision number of the settings that will be deployed.\nThe request will fail if the revision number is not the latest revision.\nThe revision will not be checked if this parameter is ignored, or `-1` is specified.',
+                    'The expected revision number of the App settings.\nIf it does not match the actual revision number, the request fails and the settings are not changed.\nThe revision number is not checked if this parameter is omitted or `-1` is specified.',
                 }),
               states: z
                 .record(z.string(), PreviewAppStatusPutStateFormSchema)
@@ -34522,7 +35113,7 @@ export const getKV1RecordAclJsonRoute = createRoute({
     },
     '4XX': ErrorResponse,
   },
-  security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_record:read'] }],
+  security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_settings:read'] }],
 })
 
 export const putKV1RecordAclJsonRoute = createRoute({
@@ -34603,7 +35194,7 @@ export const putKV1RecordAclJsonRoute = createRoute({
     },
     '4XX': ErrorResponse,
   },
-  security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_record:write'] }],
+  security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_settings:write'] }],
 })
 
 export const putKV1RecordAssigneesJsonRoute = createRoute({
@@ -34862,7 +35453,7 @@ export const deleteKV1RecordCommentJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of record/comment/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -35352,7 +35943,7 @@ export const deleteKV1RecordsJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of records/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -35527,7 +36118,7 @@ export const postKV1RecordsCursorJsonRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ id: z.string(), totalCount: z.string().nullable() })
+            .object({ id: z.string(), totalCount: z.string() })
             .openapi({ required: ['id', 'totalCount'] }),
         },
       },
@@ -35559,7 +36150,7 @@ export const deleteKV1RecordsCursorJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of records/cursor/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -35624,6 +36215,154 @@ export const putKV1RecordsStatusJsonRoute = createRoute({
   security: [{ apiToken: [] }, { passwordAuth: [] }, { oauth2: ['k:app_record:write'] }],
 })
 
+export const postKV1SearchJsonRoute = createRoute({
+  method: 'post',
+  path: '/k/v1/search.json',
+  tags: ['SEARCHS'],
+  summary: 'Post search',
+  description: 'Searches across Kintone, including App records and Thread posts.',
+  operationId: 'postSearch',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              types: z
+                .array(
+                  z.enum([
+                    'RECORD',
+                    'RECORD_COMMENT',
+                    'SPACE',
+                    'THREAD',
+                    'THREAD_COMMENT',
+                    'PEOPLE_COMMENT',
+                    'MESSAGE_COMMENT',
+                    'ATTACHMENT',
+                  ]),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The types of data to search.\nSpecify any of the following values:\n- `RECORD`: Records\n- `RECORD_COMMENT`: Record comments\n- `SPACE`: Spaces\n- `THREAD`: Threads\n- `THREAD_COMMENT`: Thread comments\n- `PEOPLE_COMMENT`: People comments\n- `MESSAGE_COMMENT`: Message comments\n- `ATTACHMENT`: Attachments\nIf ignored, all data types are searched.',
+                }),
+              excludeScopes: z
+                .array(SearchPostScopeFormSchema)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The scopes to exclude from the search.\nThe maximum limit is 20 scopes.\nIf multiple scopes are specified, data that meets all conditions is returned.\nIf both `scopes` and `excludeScopes` are specified, data that meets both conditions is returned. Therefore, `excludeScopes` takes priority where the two scopes overlap.',
+                }),
+              creators: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The log in names of the creators.\nThe maximum limit is 20 log in names.',
+                }),
+              includeSynonyms: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Whether to include spelling variations, abbreviations, and synonyms of the keywords in the search.\nIf ignored, this value is `false`.',
+                }),
+              query: z
+                .array(SearchPostQueryFormSchema)
+                .openapi({
+                  description:
+                    'The search conditions.\nSpecify between 1 and 20 conditions.\nIf multiple conditions are specified, data that meets all conditions is returned.',
+                }),
+              limit: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'The maximum number of results to retrieve.\nSpecify a value between 1 and 20.\nIf ignored, this value is `20`.\nThe response may contain fewer results than the limit, even if more matching data remains. Use the `nextPageToken` property in the response to check whether more matching data remains.',
+                }),
+              scopes: z
+                .array(SearchPostScopeFormSchema)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The search scopes.\nThe maximum limit is 20 scopes.\nIf multiple scopes are specified, data that meets any of the scopes is returned.',
+                }),
+              createdBefore: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The latest created datetime.\nReturns data created on or before the specified datetime. This value cannot be earlier than `createdAfter`.\nFor more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.',
+                }),
+              sort: z
+                .object({
+                  by: z
+                    .enum(['RELEVANCE', 'CREATED_AT'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The sort criteria.\nSpecify one of the following values:\n- `RELEVANCE`: Relevance to the keywords\n- `CREATED_AT`: Created datetime\nIf ignored, this value is `RELEVANCE`.',
+                    }),
+                  order: z
+                    .enum(['ASC', 'DESC'])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The sort direction.\nSpecify one of the following values:\n- `ASC`: Ascending order\n- `DESC`: Descending order\nIf ignored, this value is `DESC`.\n`ASC` cannot be specified if `sort.by` is `RELEVANCE`.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({ description: 'The sort conditions.', required: [] }),
+              pageToken: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The token used to retrieve the next page of search results.\nIgnore this parameter in the first request. To retrieve the next page, specify the `nextPageToken` value from the previous response.\nThe token expires 30 minutes after it is issued. The request will fail if an expired token is specified.',
+                }),
+              createdAfter: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The earliest created datetime.\nReturns data created on or after the specified datetime. This value cannot be later than `createdBefore`.\nFor more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.',
+                }),
+            })
+            .openapi({ required: ['query'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'success case of search/post',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              hits: z.array(SearchPostHitSchema).exactOptional(),
+              nextPageToken: z.string().nullable().exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    '4XX': ErrorResponse,
+  },
+  security: [{ passwordAuth: [] }],
+})
+
 export const getKV1SpaceJsonRoute = createRoute({
   method: 'get',
   path: '/k/v1/space.json',
@@ -35673,8 +36412,8 @@ export const getKV1SpaceJsonRoute = createRoute({
               memberCount: z.string().exactOptional(),
               attachedApps: z.array(SpaceGetAttachedAppSchema).exactOptional(),
               isPrivate: z.boolean().exactOptional(),
-              body: z.string().exactOptional(),
-              showAppList: z.boolean().exactOptional(),
+              body: z.string().nullable().exactOptional(),
+              showAppList: z.boolean().nullable().exactOptional(),
               coverUrl: z.string().exactOptional(),
               coverType: z.enum(['BLOB', 'PRESET']).exactOptional(),
               fixedMember: z.boolean().exactOptional(),
@@ -35684,11 +36423,11 @@ export const getKV1SpaceJsonRoute = createRoute({
                 .openapi({ required: [] }),
               name: z.string().exactOptional(),
               useMultiThread: z.boolean().exactOptional(),
-              showMemberList: z.boolean().exactOptional(),
-              showRelatedLinkList: z.boolean().exactOptional(),
+              showMemberList: z.boolean().nullable().exactOptional(),
+              showRelatedLinkList: z.boolean().nullable().exactOptional(),
               id: z.string().exactOptional(),
-              showAnnouncement: z.boolean().exactOptional(),
-              showThreadList: z.boolean().exactOptional(),
+              showAnnouncement: z.boolean().nullable().exactOptional(),
+              showThreadList: z.boolean().nullable().exactOptional(),
               defaultThread: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -35812,7 +36551,7 @@ export const putKV1SpaceJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -35853,7 +36592,7 @@ export const deleteKV1SpaceJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/delete',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -35900,7 +36639,7 @@ export const putKV1SpaceBodyJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/body/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -36002,7 +36741,7 @@ export const putKV1SpaceMembersJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/members/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },
@@ -36064,7 +36803,7 @@ export const putKV1SpaceThreadJsonRoute = createRoute({
   responses: {
     200: {
       description: 'success case of space/thread/put',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     '4XX': ErrorResponse,
   },

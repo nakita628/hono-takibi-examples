@@ -1,284 +1,30 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type CatalogCategoryType = { name?: string }
-
-const CatalogCustomAttributeDefinitionNumberConfigSchema = z
+const ErrorSchema = z
   .object({
-    precision: z
-      .int()
-      .min(0)
-      .max(5)
-      .exactOptional()
-      .openapi({
-        description:
-          'An integer between 0 and 5 that represents the maximum number of\npositions allowed after the decimal in number custom attribute values\nFor example:\n\n- if the precision is 0, the quantity can be 1, 2, 3, etc.\n- if the precision is 1, the quantity can be 0.1, 0.2, etc.\n- if the precision is 2, the quantity can be 0.01, 0.12, etc.\n\nDefault: 5',
-      }),
-  })
-  .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA', required: [] })
-  .openapi('CatalogCustomAttributeDefinitionNumberConfig')
-
-const CatalogCustomAttributeDefinitionSelectionConfigCustomAttributeSelectionSchema = z
-  .object({
-    name: z
+    category: z.string().openapi({ description: 'The high-level category for the error.' }),
+    code: z.string().openapi({ description: 'The specific code of the error.' }),
+    detail: z
       .string()
-      .min(1)
-      .max(255)
-      .openapi({ description: 'Selection name, unique within `allowed_selections`.' }),
-    uid: z.string().exactOptional().openapi({ description: 'Unique ID set by Square.' }),
-  })
-  .openapi({
-    description: 'A named selection for this `SELECTION`-type custom attribute definition.',
-    required: ['name'],
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-  })
-  .openapi('CatalogCustomAttributeDefinitionSelectionConfigCustomAttributeSelection')
-
-const CatalogCustomAttributeDefinitionSelectionConfigSchema = z
-  .object({
-    allowed_selections: z
-      .array(CatalogCustomAttributeDefinitionSelectionConfigCustomAttributeSelectionSchema)
       .exactOptional()
       .openapi({
-        description:
-          'The set of valid `CatalogCustomAttributeSelections`. Up to a maximum of 100\nselections can be defined. Can be modified.',
+        description: 'A human-readable description of the error for debugging purposes.',
       }),
-    max_allowed_selections: z
-      .int()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of selections that can be set. The maximum value for this\nattribute is 100. The default value is 1. The value can be modified, but changing the value will not\naffect existing custom attribute values on objects. Clients need to\nhandle custom attributes with more selected values than allowed by this limit.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration associated with `SELECTION`-type custom attribute definitions.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('CatalogCustomAttributeDefinitionSelectionConfig')
-
-const SourceApplicationSchema = z
-  .object({
-    application_id: z
+    field: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Read-only Square ID assigned to the application. Only used for\n[Product](https://developer.squareup.com/reference/square_2021-08-18/enums/Product) type `EXTERNAL_API`.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Read-only display name assigned to the application\n(e.g. `"Custom Application"`, `"Square POS 4.74 for Android"`).',
-      }),
-    product: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Read-only [Product](https://developer.squareup.com/reference/square_2021-08-18/enums/Product) type for the application.',
-      }),
-  })
-  .openapi({
-    description: 'Provides information about the application used to generate a change.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('SourceApplication')
-
-const CatalogCustomAttributeDefinitionStringConfigSchema = z
-  .object({
-    enforce_uniqueness: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If true, each Custom Attribute instance associated with this Custom Attribute\nDefinition must have a unique value within the seller's catalog. For\nexample, this may be used for a value like a SKU that should not be\nduplicated within a seller's catalog. May not be modified after the\ndefinition has been created.",
-      }),
-  })
-  .openapi({
-    description: 'Configuration associated with Custom Attribute Definitions of type `STRING`.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('CatalogCustomAttributeDefinitionStringConfig')
-
-type CatalogCustomAttributeDefinitionType = {
-  allowed_object_types: string[]
-  app_visibility?: string
-  custom_attribute_usage_count?: number
-  description?: string
-  key?: string
-  name: string
-  number_config?: z.infer<typeof CatalogCustomAttributeDefinitionNumberConfigSchema>
-  selection_config?: z.infer<typeof CatalogCustomAttributeDefinitionSelectionConfigSchema>
-  seller_visibility?: string
-  source_application?: z.infer<typeof SourceApplicationSchema>
-  string_config?: z.infer<typeof CatalogCustomAttributeDefinitionStringConfigSchema>
-  type: string
-}
-
-type CatalogCustomAttributeValueType = {
-  boolean_value?: boolean
-  custom_attribute_definition_id?: string
-  key?: string
-  name?: string
-  number_value?: string
-  selection_uid_values?: string[]
-  string_value?: string
-  type?: string
-}
-
-const MoneySchema = z
-  .object({
-    amount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The amount of money, in the smallest denomination of the currency\nindicated by `currency`. For example, when `currency` is `USD`, `amount` is\nin cents. Monetary amounts can be positive or negative. See the specific\nfield description to determine the meaning of the sign in a particular case.',
-      }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of currency, in __ISO 4217 format__. For example, the currency\ncode for US dollars is `USD`.\n\nSee [Currency](https://developer.squareup.com/reference/square_2021-08-18/enums/Currency) for possible values.',
+          'The name of the field provided in the original request (if any) that\nthe error pertains to.',
       }),
   })
   .openapi({
     description:
-      'Represents an amount of money. `Money` fields can be signed or unsigned.\nFields that do not explicitly define whether they are signed or unsigned are\nconsidered unsigned and can only hold positive amounts. For signed fields, the\nsign of the value indicates the purpose of the money transfer. See\n[Working with Monetary Amounts](https://developer.squareup.com/docs/build-basics/working-with-monetary-amounts)\nfor more information.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('Money')
-
-type CatalogDiscountType = {
-  amount_money?: z.infer<typeof MoneySchema>
-  discount_type?: string
-  label_color?: string
-  modify_tax_basis?: string
-  name?: string
-  percentage?: string
-  pin_required?: boolean
-}
-
-type CatalogImageType = { caption?: string; name?: string; url?: string }
-
-type CatalogItemOptionForItemType = { item_option_id?: string }
-
-const CatalogItemOptionForItemSchema: z.ZodType<CatalogItemOptionForItemType> = z
-  .object({
-    item_option_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique id of the item option, used to form the dimensions of the item option matrix in a specified order.',
-      }),
-  })
-  .openapi({
-    description:
-      ' An option that can be assigned to an item.\nFor example, a t-shirt item may offer a color option or a size option.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('CatalogItemOptionForItem')
-
-const CatalogModifierOverrideSchema = z
-  .object({
-    modifier_id: z
-      .string()
-      .min(1)
-      .openapi({
-        description: 'The ID of the `CatalogModifier` whose default behavior is being overridden.',
-      }),
-    on_by_default: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `true`, this `CatalogModifier` should be selected by default for this `CatalogItem`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Options to control how to override the default behavior of the specified modifier.',
-    required: ['modifier_id'],
+      'Represents an error encountered during a request to the Connect API.\n\nSee [Handling errors](https://developer.squareup.com/docs/build-basics/handling-errors) for more information.',
+    required: ['category', 'code'],
     'x-release-status': 'PUBLIC',
   })
-  .openapi('CatalogModifierOverride')
-
-type CatalogItemModifierListInfoType = {
-  enabled?: boolean
-  max_selected_modifiers?: number
-  min_selected_modifiers?: number
-  modifier_list_id: string
-  modifier_overrides?: z.infer<typeof CatalogModifierOverrideSchema>[]
-}
-
-const CatalogItemModifierListInfoSchema: z.ZodType<CatalogItemModifierListInfoType> = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If `true`, enable this `CatalogModifierList`. The default value is `true`.',
-      }),
-    max_selected_modifiers: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'If 0 or larger, the largest number of `CatalogModifier`s that can be selected from this `CatalogModifierList`.',
-      }),
-    min_selected_modifiers: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'If 0 or larger, the smallest number of `CatalogModifier`s that must be selected from this `CatalogModifierList`.',
-      }),
-    modifier_list_id: z
-      .string()
-      .min(1)
-      .openapi({
-        description:
-          'The ID of the `CatalogModifierList` controlled by this `CatalogModifierListInfo`.',
-      }),
-    modifier_overrides: z
-      .array(CatalogModifierOverrideSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `CatalogModifierOverride` objects that override whether a given `CatalogModifier` is enabled by default.',
-      }),
-  })
-  .openapi({
-    description:
-      'Options to control the properties of a `CatalogModifierList` applied to a `CatalogItem` instance.',
-    required: ['modifier_list_id'],
-    'x-release-status': 'PUBLIC',
-  })
-  .openapi('CatalogItemModifierListInfo')
+  .openapi('Error')
 
 const CatalogObjectSchema: z.ZodType<CatalogObjectType> = z
   .lazy(() =>
@@ -422,6 +168,2562 @@ const CatalogObjectSchema: z.ZodType<CatalogObjectType> = z
       }),
   )
   .openapi('CatalogObject')
+
+type BatchRetrieveCatalogObjectsResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  objects?: z.infer<typeof CatalogObjectSchema>[]
+  related_objects?: z.infer<typeof CatalogObjectSchema>[]
+}
+
+const MoneySchema = z
+  .object({
+    amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The amount of money, in the smallest denomination of the currency\nindicated by `currency`. For example, when `currency` is `USD`, `amount` is\nin cents. Monetary amounts can be positive or negative. See the specific\nfield description to determine the meaning of the sign in a particular case.',
+      }),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of currency, in __ISO 4217 format__. For example, the currency\ncode for US dollars is `USD`.\n\nSee [Currency](https://developer.squareup.com/reference/square_2021-08-18/enums/Currency) for possible values.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents an amount of money. `Money` fields can be signed or unsigned.\nFields that do not explicitly define whether they are signed or unsigned are\nconsidered unsigned and can only hold positive amounts. For signed fields, the\nsign of the value indicates the purpose of the money transfer. See\n[Working with Monetary Amounts](https://developer.squareup.com/docs/build-basics/working-with-monetary-amounts)\nfor more information.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('Money')
+
+const OrderLineItemDiscountSchema = z
+  .object({
+    amount_money: MoneySchema.exactOptional(),
+    applied_money: MoneySchema.exactOptional(),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The catalog object ID referencing [CatalogDiscount](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogDiscount).',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this discount references.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Application-defined data attached to this discount. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    name: z.string().max(255).exactOptional().openapi({ description: "The discount's name." }),
+    percentage: z
+      .string()
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of the discount, as a string representation of a decimal number.\nA value of `7.25` corresponds to a percentage of 7.25%.\n\n`percentage` is not set for amount-based discounts.',
+      }),
+    pricing_rule_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The object ID of a [pricing rule](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogPricingRule) to be applied \nautomatically to this discount. The specification and application of the discounts, to \nwhich a `pricing_rule_id` is assigned, are completely controlled by the corresponding \npricing rule.',
+        'x-read-only': true,
+      }),
+    reward_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The reward IDs corresponding to this discount. The application and\nspecification of discounts that have `reward_ids` are completely controlled by the backing\ncriteria corresponding to the reward tiers of the rewards that are added to the order\nthrough the Loyalty API. To manually unapply discounts that are the result of added rewards,\nthe rewards must be removed from the order through the Loyalty API.',
+        'x-is-beta': true,
+        'x-read-only': true,
+        'x-release-status': 'BETA',
+      }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the level at which the discount applies. For `ORDER` scoped discounts,\nSquare generates references in `applied_discounts` on all order line items that do\nnot have them. For `LINE_ITEM` scoped discounts, the discount only applies to line items\nwith a discount reference in their `applied_discounts` field.\n\nThis field is immutable. To change the scope of a discount, you must delete\nthe discount and re-add it as a new discount.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the discount.\n\nDiscounts that do not reference a catalog object ID must have a type of\n`FIXED_PERCENTAGE` or `FIXED_AMOUNT`.',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the discount only within this order.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a discount that applies to one or more line items in an\norder.\n\nFixed-amount, order-scoped discounts are distributed across all non-zero line item totals.\nThe amount distributed to each line item is relative to the\namount contributed by the item to the order subtotal.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderLineItemDiscount')
+
+const OrderFulfillmentPickupDetailsCurbsidePickupDetailsSchema = z
+  .object({
+    buyer_arrived_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the buyer arrived and is waiting for pickup. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+      }),
+    curbside_details: z
+      .string()
+      .max(250)
+      .exactOptional()
+      .openapi({
+        description:
+          'Specific details for curbside pickup, such as parking number and vehicle model.',
+      }),
+  })
+  .openapi({
+    description: 'Specific details for curbside pickup.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderFulfillmentPickupDetailsCurbsidePickupDetails')
+
+const AddressSchema = z
+  .object({
+    address_line_1: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The first line of the address.\n\nFields that start with `address_line` provide the address's most specific\ndetails, like street number, street name, and building name. They do *not*\nprovide less specific details like city, state/province, or country (these\ndetails are provided in other fields).",
+      }),
+    address_line_2: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The second line of the address, if any.' }),
+    address_line_3: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The third line of the address, if any.' }),
+    administrative_district_level_1: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "A civil entity within the address's country. In the US, this\nis the state.",
+      }),
+    administrative_district_level_2: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A civil entity within the address's `administrative_district_level_1`.\nIn the US, this is the county.",
+      }),
+    administrative_district_level_3: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A civil entity within the address's `administrative_district_level_2`,\nif any.",
+      }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The address's country, in ISO 3166-1-alpha-2 format." }),
+    first_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Optional first name when it's representing recipient." }),
+    last_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Optional last name when it's representing recipient." }),
+    locality: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The city or town of the address.' }),
+    organization: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Optional organization name when it's representing recipient." }),
+    postal_code: z.string().exactOptional().openapi({ description: "The address's postal code." }),
+    sublocality: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A civil region within the address's `locality`, if any." }),
+    sublocality_2: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A civil region within the address's `sublocality`, if any." }),
+    sublocality_3: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A civil region within the address's `sublocality_2`, if any." }),
+  })
+  .openapi({
+    description:
+      "Represents a postal address in a country. The address format is based \non an [open-source library from Google](https://github.com/google/libaddressinput). For more information, \nsee [AddressValidationMetadata](https://github.com/google/libaddressinput/wiki/AddressValidationMetadata). \nThis format has dedicated fields for four address components: postal code, \nlocality (city), administrative district (state, prefecture, or province), and \nsublocality (town or village). These components have dedicated fields in the \n`Address` object because software sometimes behaves differently based on them. \nFor example, sales tax software may charge different amounts of sales tax \nbased on the postal code, and some software is only available in \ncertain states due to compliance reasons.\n\nFor the remaining address components, the `Address` type provides the \n`address_line_1` and `address_line_2` fields for free-form data entry. \nThese fields are free-form because the remaining address components have \ntoo many variations around the world and typical software does not parse \nthese components. These fields enable users to enter anything they want. \n\nNote that, in the current implementation, all other `Address` type fields are blank. \nThese include `address_line_3`, `sublocality_2`, `sublocality_3`, \n`administrative_district_level_2`, `administrative_district_level_3`, \n`first_name`, `last_name`, and `organization`. \n\nWhen it comes to localization, the seller's language preferences \n(see [Language preferences](https://developer.squareup.com/docs/locations-api#location-specific-and-seller-level-language-preferences)) \nare ignored for addresses. Even though Square products (such as Square Point of Sale \nand the Seller Dashboard) mostly use a seller's language preference in \ncommunication, when it comes to addresses, they will use English for a US address, \nJapanese for an address in Japan, and so on.",
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('Address')
+
+const OrderFulfillmentRecipientSchema = z
+  .object({
+    address: AddressSchema.exactOptional(),
+    customer_id: z
+      .string()
+      .max(191)
+      .exactOptional()
+      .openapi({
+        description:
+          "The customer ID of the customer associated with the fulfillment.\n\nIf `customer_id` is provided, the fulfillment recipient's `display_name`,\n`email_address`, and `phone_number` are automatically populated from the\ntargeted customer profile. If these fields are set in the request, the request\nvalues overrides the information from the customer profile. If the\ntargeted customer profile does not contain the necessary information and\nthese fields are left unset, the request results in an error.",
+      }),
+    display_name: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description:
+          'The display name of the fulfillment recipient.\n\nIf provided, the display name overrides the value pulled from the customer profile indicated by `customer_id`.',
+      }),
+    email_address: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address of the fulfillment recipient.\n\nIf provided, the email address overrides the value pulled from the customer profile indicated by `customer_id`.',
+      }),
+    phone_number: z
+      .string()
+      .max(17)
+      .exactOptional()
+      .openapi({
+        description:
+          'The phone number of the fulfillment recipient.\n\nIf provided, the phone number overrides the value pulled from the customer profile indicated by `customer_id`.',
+      }),
+  })
+  .openapi({
+    description: 'Contains information about the recipient of a fulfillment.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderFulfillmentRecipient')
+
+const OrderFulfillmentPickupDetailsSchema = z
+  .object({
+    accepted_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment was accepted. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    auto_complete_duration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The duration of time after which an open and accepted pickup fulfillment\nis automatically moved to the `COMPLETED` state. The duration must be in RFC 3339\nformat (for example, "P1W3D").\n\nIf not set, this pickup fulfillment remains accepted until it is canceled or completed.',
+      }),
+    cancel_reason: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'A description of why the pickup was canceled. The maximum length: 100 characters.',
+      }),
+    canceled_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment was canceled. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    curbside_pickup_details:
+      OrderFulfillmentPickupDetailsCurbsidePickupDetailsSchema.exactOptional(),
+    expired_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the fulfillment expired. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    expires_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when this fulfillment expires if it is not accepted. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z"). The expiration time can only be set up to 7 days in the future.\nIf `expires_at` is not set, this pickup fulfillment is automatically accepted when \nplaced.',
+      }),
+    is_curbside_pickup: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to `true`, indicates that this pickup order is for curbside pickup, not in-store pickup.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    note: z
+      .string()
+      .max(500)
+      .exactOptional()
+      .openapi({
+        description:
+          'A note meant to provide additional instructions about the pickup\nfulfillment displayed in the Square Point of Sale application and set by the API.',
+      }),
+    picked_up_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the fulfillment was picked up by the recipient. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    pickup_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nthat represents the start of the pickup window. Must be in RFC 3339 timestamp format, e.g., \n"2016-09-04T23:59:33.123Z".\n\nFor fulfillments with the schedule type `ASAP`, this is automatically set\nto the current time plus the expected duration to prepare the fulfillment.',
+      }),
+    pickup_window_duration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The window of time in which the order should be picked up after the `pickup_at` timestamp.\nMust be in RFC 3339 duration format, e.g., "P1W3D". Can be used as an\ninformational guideline for merchants.',
+      }),
+    placed_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment was placed. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    prep_time_duration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The duration of time it takes to prepare this fulfillment.\nThe duration must be in RFC 3339 format (for example, "P1W3D").',
+      }),
+    ready_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment is marked as ready for pickup. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    recipient: OrderFulfillmentRecipientSchema.exactOptional(),
+    rejected_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment was rejected. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    schedule_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The schedule type of the pickup fulfillment. Defaults to `SCHEDULED`.',
+      }),
+  })
+  .openapi({
+    description: 'Contains details necessary to fulfill a pickup order.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderFulfillmentPickupDetails')
+
+const OrderFulfillmentShipmentDetailsSchema = z
+  .object({
+    cancel_reason: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'A description of why the shipment was canceled.' }),
+    canceled_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating the shipment was canceled.\nThe timestamp must be in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
+      }),
+    carrier: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({
+        description:
+          'The shipping carrier being used to ship this fulfillment (such as UPS, FedEx, or USPS).',
+      }),
+    expected_shipped_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the shipment is expected to be delivered to the shipping carrier.\nThe timestamp must be in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
+      }),
+    failed_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the shipment failed to be completed. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    failure_reason: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'A description of why the shipment failed to be completed.' }),
+    in_progress_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when this fulfillment was moved to the `RESERVED` state, which  indicates that preparation\nof this shipment has begun. The timestamp must be in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    packaged_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when this fulfillment was moved to the `PREPARED` state, which indicates that the\nfulfillment is packaged. The timestamp must be in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    placed_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the shipment was requested. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    recipient: OrderFulfillmentRecipientSchema.exactOptional(),
+    shipped_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when this fulfillment was moved to the `COMPLETED` state, which indicates that\nthe fulfillment has been given to the shipping carrier. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    shipping_note: z
+      .string()
+      .max(500)
+      .exactOptional()
+      .openapi({ description: 'A note with additional information for the shipping carrier.' }),
+    shipping_type: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({
+        description:
+          'A description of the type of shipping product purchased from the carrier\n(such as First Class, Priority, or Express).',
+      }),
+    tracking_number: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          "The reference number provided by the carrier to track the shipment's progress.",
+      }),
+    tracking_url: z
+      .string()
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: "A link to the tracking webpage on the carrier's website." }),
+  })
+  .openapi({
+    description: 'Contains the details necessary to fulfill a shipment order.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderFulfillmentShipmentDetails')
+
+const OrderFulfillmentSchema = z
+  .object({
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Application-defined data attached to this fulfillment. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    pickup_details: OrderFulfillmentPickupDetailsSchema.exactOptional(),
+    shipment_details: OrderFulfillmentShipmentDetailsSchema.exactOptional(),
+    state: z.string().exactOptional().openapi({ description: 'The state of the fulfillment.' }),
+    type: z.string().exactOptional().openapi({ description: 'The type of the fulfillment.' }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the fulfillment only within this order.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description: 'Contains details about how to fulfill this order.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderFulfillment')
+
+const OrderLineItemAppliedDiscountSchema = z
+  .object({
+    applied_money: MoneySchema.exactOptional(),
+    discount_uid: z
+      .string()
+      .min(1)
+      .max(60)
+      .openapi({
+        description:
+          'The `uid` of the discount that the applied discount represents. It must\nreference a discount present in the `order.discounts` field.\n\nThis field is immutable. To change which discounts apply to a line item,\nyou must delete the discount and re-add it as a new `OrderLineItemAppliedDiscount`.',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the applied discount only within this order.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents an applied portion of a discount to a line item in an order.\n\nOrder scoped discounts have automatically applied discounts present for each line item.\nLine-item scoped discounts must have applied discounts added manually for any applicable line\nitems. The corresponding applied money is automatically computed based on participating\nline items.',
+    required: ['discount_uid'],
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+  })
+  .openapi('OrderLineItemAppliedDiscount')
+
+const OrderLineItemAppliedTaxSchema = z
+  .object({
+    applied_money: MoneySchema.exactOptional(),
+    tax_uid: z
+      .string()
+      .min(1)
+      .max(60)
+      .openapi({
+        description:
+          'The `uid` of the tax for which this applied tax represents. It must reference\na tax present in the `order.taxes` field.\n\nThis field is immutable. To change which taxes apply to a line item, delete and add a new\n`OrderLineItemAppliedTax`.',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the applied tax only within this order.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents an applied portion of a tax to a line item in an order.\n\nOrder-scoped taxes automatically include the applied taxes in each line item.\nLine item taxes must be referenced from any applicable line items.\nThe corresponding applied money is automatically computed, based on the\nset of participating line items.',
+    required: ['tax_uid'],
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+  })
+  .openapi('OrderLineItemAppliedTax')
+
+const OrderLineItemModifierSchema = z
+  .object({
+    base_price_money: MoneySchema.exactOptional(),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The catalog object ID referencing [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier).',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this modifier references.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    name: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The name of the item modifier.' }),
+    total_price_money: MoneySchema.exactOptional(),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the modifier only within this order.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description:
+      'A [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier).',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderLineItemModifier')
+
+const OrderLineItemPricingBlocklistsBlockedDiscountSchema = z
+  .object({
+    discount_catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The `catalog_object_id` of the discount that should be blocked. \nUse this field to block catalog discounts. For ad hoc discounts, use the \n`discount_uid` field.',
+      }),
+    discount_uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'The `uid` of the discount that should be blocked. Use this field to block \nad hoc discounts. For catalog discounts, use the `discount_catalog_object_id` field.',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({ description: 'A unique ID of the `BlockedDiscount` within the order.' }),
+  })
+  .openapi({
+    description:
+      'A discount to block from applying to a line item. The discount must be \nidentified by either `discount_uid` or `discount_catalog_object_id`, but not both.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderLineItemPricingBlocklistsBlockedDiscount')
+
+const OrderLineItemPricingBlocklistsBlockedTaxSchema = z
+  .object({
+    tax_catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The `catalog_object_id` of the tax that should be blocked. \nUse this field to block catalog taxes. For ad hoc taxes, use the \n`tax_uid` field.',
+      }),
+    tax_uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'The `uid` of the tax that should be blocked. Use this field to block \nad hoc taxes. For catalog, taxes use the `tax_catalog_object_id` field.',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({ description: 'A unique ID of the `BlockedTax` within the order.' }),
+  })
+  .openapi({
+    description:
+      'A tax to block from applying to a line item. The tax must be \nidentified by either `tax_uid` or `tax_catalog_object_id`, but not both.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderLineItemPricingBlocklistsBlockedTax')
+
+const OrderLineItemPricingBlocklistsSchema = z
+  .object({
+    blocked_discounts: z
+      .array(OrderLineItemPricingBlocklistsBlockedDiscountSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of discounts blocked from applying to the line item. \nDiscounts can be blocked by the `discount_uid` (for ad hoc discounts) or \nthe `discount_catalog_object_id` (for catalog discounts).',
+      }),
+    blocked_taxes: z
+      .array(OrderLineItemPricingBlocklistsBlockedTaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of taxes blocked from applying to the line item. \nTaxes can be blocked by the `tax_uid` (for ad hoc taxes) or \nthe `tax_catalog_object_id` (for catalog taxes).',
+      }),
+  })
+  .openapi({
+    description:
+      'Describes pricing adjustments that are blocked from manual and \nautomatic application to a line item. For more information, see \n[Apply Taxes and Discounts](https://developer.squareup.com/docs/orders-api/apply-taxes-and-discounts).',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderLineItemPricingBlocklists')
+
+const MeasurementUnitCustomSchema = z
+  .object({
+    abbreviation: z
+      .string()
+      .openapi({
+        description:
+          'The abbreviation of the custom unit, such as "bsh" (bushel). This appears\nin the cart for the Point of Sale app, and in reports.',
+      }),
+    name: z.string().openapi({ description: 'The name of the custom unit, for example "bushel".' }),
+  })
+  .openapi({
+    description: 'The information needed to define a custom unit, provided by the seller.',
+    required: ['name', 'abbreviation'],
+    'x-release-status': 'PUBLIC',
+  })
+  .openapi('MeasurementUnitCustom')
+
+const MeasurementUnitSchema = z
+  .object({
+    area_unit: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Represents a standard area unit.' }),
+    custom_unit: MeasurementUnitCustomSchema.exactOptional(),
+    generic_unit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Reserved for API integrations that lack the ability to specify a real measurement unit',
+      }),
+    length_unit: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Represents a standard length unit.' }),
+    time_unit: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Represents a standard unit of time.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Represents the type of the measurement unit.' }),
+    volume_unit: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Represents a standard volume unit.' }),
+    weight_unit: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Represents a standard unit of weight or mass.' }),
+  })
+  .openapi({
+    description:
+      'Represents a unit of measurement to use with a quantity, such as ounces\nor inches. Exactly one of the following fields are required: `custom_unit`,\n`area_unit`, `length_unit`, `volume_unit`, and `weight_unit`.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('MeasurementUnit')
+
+const OrderQuantityUnitSchema = z
+  .object({
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The version of the catalog object that this measurement unit references.\n\nThis field is set when this is a catalog-backed measurement unit.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    measurement_unit: MeasurementUnitSchema.exactOptional(),
+    precision: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'For non-integer quantities, represents the number of digits after the decimal point that are\nrecorded for this quantity.\n\nFor example, a precision of 1 allows quantities such as `"1.0"` and `"1.1"`, but not `"1.01"`.\n\nMin: 0. Max: 5.',
+      }),
+  })
+  .openapi({
+    description:
+      'Contains the measurement unit for a quantity and a precision that\nspecifies the number of digits after the decimal point for decimal quantities.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderQuantityUnit')
+
+const OrderLineItemSchema = z
+  .object({
+    applied_discounts: z
+      .array(OrderLineItemAppliedDiscountSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of references to discounts applied to this line item. Each\n`OrderLineItemAppliedDiscount` has a `discount_uid` that references the `uid` of a top-level\n`OrderLineItemDiscounts` applied to the line item. On reads, the amount\napplied is populated.\n\nAn `OrderLineItemAppliedDiscount` is automatically created on every line item for all\n`ORDER` scoped discounts that are added to the order. `OrderLineItemAppliedDiscount` records\nfor `LINE_ITEM` scoped discounts must be added in requests for the discount to apply to any\nline items.\n\nTo change the amount of a discount, modify the referenced top-level discount.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    applied_taxes: z
+      .array(OrderLineItemAppliedTaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of references to taxes applied to this line item. Each\n`OrderLineItemAppliedTax` has a `tax_uid` that references the `uid` of a\ntop-level `OrderLineItemTax` applied to the line item. On reads, the\namount applied is populated.\n\nAn `OrderLineItemAppliedTax` is automatically created on every line\nitem for all `ORDER` scoped taxes added to the order. `OrderLineItemAppliedTax`\nrecords for `LINE_ITEM` scoped taxes must be added in requests for the tax\nto apply to any line items.\n\nTo change the amount of a tax, modify the referenced top-level tax.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    base_price_money: MoneySchema.exactOptional(),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The [CatalogItemVariation](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogItemVariation) ID applied to this line item.',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this line item references.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    gross_sales_money: MoneySchema.exactOptional(),
+    item_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of line item: an itemized sale, a non-itemized sale (custom amount), or the\nactivation or reloading of a gift card.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Application-defined data attached to this line item. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    modifiers: z
+      .array(OrderLineItemModifierSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier)s applied to this line item.',
+      }),
+    name: z
+      .string()
+      .max(512)
+      .exactOptional()
+      .openapi({ description: 'The name of the line item.' }),
+    note: z
+      .string()
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: 'The note of the line item.' }),
+    pricing_blocklists: OrderLineItemPricingBlocklistsSchema.exactOptional(),
+    quantity: z
+      .string()
+      .min(1)
+      .max(12)
+      .openapi({
+        description:
+          'The quantity purchased, formatted as a decimal number.\nFor example, `"3"`.\n\nLine items with a quantity of `"0"` are automatically removed\nwhen paying for or otherwise completing the order.\n\nLine items with a `quantity_unit` can have non-integer quantities.\nFor example, `"1.70000"`.',
+      }),
+    quantity_unit: OrderQuantityUnitSchema.exactOptional(),
+    total_discount_money: MoneySchema.exactOptional(),
+    total_money: MoneySchema.exactOptional(),
+    total_tax_money: MoneySchema.exactOptional(),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the line item only within this order.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    variation_name: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The name of the variation applied to this line item.' }),
+    variation_total_price_money: MoneySchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Represents a line item in an order. Each line item describes a different\nproduct to purchase, with its own quantity and price details.',
+    required: ['quantity'],
+    'x-release-status': 'PUBLIC',
+  })
+  .openapi('OrderLineItem')
+
+const OrderMoneyAmountsSchema = z
+  .object({
+    discount_money: MoneySchema.exactOptional(),
+    service_charge_money: MoneySchema.exactOptional(),
+    tax_money: MoneySchema.exactOptional(),
+    tip_money: MoneySchema.exactOptional(),
+    total_money: MoneySchema.exactOptional(),
+  })
+  .openapi({
+    description: 'A collection of various money amounts.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderMoneyAmounts')
+
+const OrderPricingOptionsSchema = z
+  .object({
+    auto_apply_discounts: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'The option to determine whether pricing rule-based\ndiscounts are automatically applied to an order.',
+      }),
+    auto_apply_taxes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'The option to determine whether rule-based taxes are automatically\napplied to an order when the criteria of the corresponding rules are met.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description:
+      "Pricing options for an order. The options affect how the order's price is calculated.\nThey can be used, for example, to apply automatic price adjustments that are based on preconfigured\n[pricing rules](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogPricingRule).",
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderPricingOptions')
+
+const AdditionalRecipientSchema = z
+  .object({
+    amount_money: MoneySchema,
+    description: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'The description of the additional recipient.' }),
+    location_id: z
+      .string()
+      .min(1)
+      .max(50)
+      .openapi({
+        description:
+          'The location ID for a recipient (other than the merchant) receiving a portion of this tender.',
+      }),
+    receivable_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique ID for this [AdditionalRecipientReceivable](https://developer.squareup.com/reference/square_2021-08-18/objects/AdditionalRecipientReceivable), assigned by the server.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents an additional recipient (other than the merchant) receiving a portion of this tender.',
+    required: ['location_id', 'amount_money'],
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+  })
+  .openapi('AdditionalRecipient')
+
+const RefundSchema = z
+  .object({
+    additional_recipients: z
+      .array(AdditionalRecipientSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional recipients (other than the merchant) receiving a portion of this refund.\nFor example, fees assessed on a refund of a purchase by a third party integration.',
+        'x-is-deprecated': true,
+        'x-release-status': 'DEPRECATED',
+      }),
+    amount_money: MoneySchema,
+    created_at: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp for when the refund was created, in RFC 3339 format.',
+        'x-read-only': true,
+      }),
+    id: z.string().max(255).openapi({ description: "The refund's unique ID." }),
+    location_id: z
+      .string()
+      .max(50)
+      .openapi({ description: "The ID of the refund's associated location." }),
+    processing_fee_money: MoneySchema.exactOptional(),
+    reason: z.string().max(192).openapi({ description: 'The reason for the refund being issued.' }),
+    status: z
+      .string()
+      .openapi({
+        description:
+          'The current status of the refund (`PENDING`, `APPROVED`, `REJECTED`,\nor `FAILED`).',
+      }),
+    tender_id: z.string().max(192).openapi({ description: 'The ID of the refunded tender.' }),
+    transaction_id: z
+      .string()
+      .max(192)
+      .openapi({ description: 'The ID of the transaction that the refunded tender is part of.' }),
+  })
+  .openapi({
+    description: 'Represents a refund processed for a Square transaction.',
+    required: [
+      'id',
+      'location_id',
+      'transaction_id',
+      'tender_id',
+      'reason',
+      'amount_money',
+      'status',
+    ],
+    'x-release-status': 'PUBLIC',
+  })
+  .openapi('Refund')
+
+const OrderReturnDiscountSchema = z
+  .object({
+    amount_money: MoneySchema.exactOptional(),
+    applied_money: MoneySchema.exactOptional(),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The catalog object ID referencing [CatalogDiscount](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogDiscount).',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this discount references.',
+      }),
+    name: z.string().max(255).exactOptional().openapi({ description: "The discount's name." }),
+    percentage: z
+      .string()
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of the tax, as a string representation of a decimal number.\nA value of `"7.25"` corresponds to a percentage of 7.25%.\n\n`percentage` is not set for amount-based discounts.',
+      }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the level at which the `OrderReturnDiscount` applies. For `ORDER` scoped\ndiscounts, the server generates references in `applied_discounts` on all\n`OrderReturnLineItem`s. For `LINE_ITEM` scoped discounts, the discount is only applied to\n`OrderReturnLineItem`s with references in their `applied_discounts` field.',
+      }),
+    source_discount_uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'The discount `uid` from the order that contains the original application of this discount.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the discount. If it is created by the API, it is `FIXED_PERCENTAGE` or `FIXED_AMOUNT`.\n\nDiscounts that do not reference a catalog object ID must have a type of\n`FIXED_PERCENTAGE` or `FIXED_AMOUNT`.',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the returned discount only within this order.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a discount being returned that applies to one or more return line items in an\norder.\n\nFixed-amount, order-scoped discounts are distributed across all non-zero return line item totals.\nThe amount distributed to each return line item is relative to that item’s contribution to the\norder subtotal.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderReturnDiscount')
+
+const OrderReturnLineItemModifierSchema = z
+  .object({
+    base_price_money: MoneySchema.exactOptional(),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The catalog object ID referencing [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier).',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this line item modifier references.',
+      }),
+    name: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The name of the item modifier.' }),
+    source_modifier_uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description:
+          "The modifier `uid` from the order's line item that contains the\noriginal sale of this line item modifier.",
+      }),
+    total_price_money: MoneySchema.exactOptional(),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the return modifier only within this order.',
+      }),
+  })
+  .openapi({
+    description: 'A line item modifier being returned.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderReturnLineItemModifier')
+
+const OrderReturnLineItemSchema = z
+  .object({
+    applied_discounts: z
+      .array(OrderLineItemAppliedDiscountSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of references to `OrderReturnDiscount` entities applied to the return line item. Each\n`OrderLineItemAppliedDiscount` has a `discount_uid` that references the `uid` of a top-level\n`OrderReturnDiscount` applied to the return line item. On reads, the applied amount\nis populated.',
+      }),
+    applied_taxes: z
+      .array(OrderLineItemAppliedTaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of references to `OrderReturnTax` entities applied to the return line item. Each\n`OrderLineItemAppliedTax` has a `tax_uid` that references the `uid` of a top-level\n`OrderReturnTax` applied to the return line item. On reads, the applied amount\nis populated.',
+      }),
+    base_price_money: MoneySchema.exactOptional(),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The [CatalogItemVariation](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogItemVariation) ID applied to this return line item.',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this line item references.',
+      }),
+    gross_return_money: MoneySchema.exactOptional(),
+    item_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of line item: an itemized return, a non-itemized return (custom amount),\nor the return of an unactivated gift card sale.',
+      }),
+    name: z
+      .string()
+      .max(512)
+      .exactOptional()
+      .openapi({ description: 'The name of the line item.' }),
+    note: z
+      .string()
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: 'The note of the return line item.' }),
+    quantity: z
+      .string()
+      .min(1)
+      .max(12)
+      .openapi({
+        description:
+          'The quantity returned, formatted as a decimal number.\nFor example, `"3"`.\n\nLine items with a `quantity_unit` can have non-integer quantities.\nFor example, `"1.70000"`.',
+      }),
+    quantity_unit: OrderQuantityUnitSchema.exactOptional(),
+    return_modifiers: z
+      .array(OrderReturnLineItemModifierSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier)s applied to this line item.',
+      }),
+    source_line_item_uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({ description: 'The `uid` of the line item in the original sale order.' }),
+    total_discount_money: MoneySchema.exactOptional(),
+    total_money: MoneySchema.exactOptional(),
+    total_tax_money: MoneySchema.exactOptional(),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({ description: 'A unique ID for this return line-item entry.' }),
+    variation_name: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The name of the variation applied to this return line item.' }),
+    variation_total_price_money: MoneySchema.exactOptional(),
+  })
+  .openapi({
+    description: 'The line item being returned in an order.',
+    required: ['quantity'],
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+  })
+  .openapi('OrderReturnLineItem')
+
+const OrderReturnServiceChargeSchema = z
+  .object({
+    amount_money: MoneySchema.exactOptional(),
+    applied_money: MoneySchema.exactOptional(),
+    applied_taxes: z
+      .array(OrderLineItemAppliedTaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of references to `OrderReturnTax` entities applied to the\n`OrderReturnServiceCharge`. Each `OrderLineItemAppliedTax` has a `tax_uid`\nthat references the `uid` of a top-level `OrderReturnTax` that is being\napplied to the `OrderReturnServiceCharge`. On reads, the applied amount is\npopulated.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    calculation_phase: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The calculation phase after which to apply the service charge.',
+        'x-read-only': true,
+      }),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The catalog object ID of the associated [OrderServiceCharge](https://developer.squareup.com/reference/square_2021-08-18/objects/OrderServiceCharge).',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this service charge references.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    name: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The name of the service charge.' }),
+    percentage: z
+      .string()
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of the service charge, as a string representation of\na decimal number. For example, a value of `"7.25"` corresponds to a\npercentage of 7.25%.\n\nEither `percentage` or `amount_money` should be set, but not both.',
+      }),
+    source_service_charge_uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'The service charge `uid` from the order containing the original\nservice charge. `source_service_charge_uid` is `null` for\nunlinked returns.',
+      }),
+    taxable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the surcharge can be taxed. Service charges\ncalculated in the `TOTAL_PHASE` cannot be marked as taxable.',
+      }),
+    total_money: MoneySchema.exactOptional(),
+    total_tax_money: MoneySchema.exactOptional(),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique ID that identifies the return service charge only within this order.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description: 'Represents the service charge applied to the original order.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderReturnServiceCharge')
+
+const OrderReturnTaxSchema = z
+  .object({
+    applied_money: MoneySchema.exactOptional(),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The catalog object ID referencing [CatalogTax](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogTax).',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this tax references.',
+      }),
+    name: z.string().max(255).exactOptional().openapi({ description: "The tax's name." }),
+    percentage: z
+      .string()
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of the tax, as a string representation of a decimal number.\nFor example, a value of `"7.25"` corresponds to a percentage of 7.25%.',
+      }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the level at which the `OrderReturnTax` applies. For `ORDER` scoped\ntaxes, Square generates references in `applied_taxes` on all\n`OrderReturnLineItem`s. For `LINE_ITEM` scoped taxes, the tax is only applied to\n`OrderReturnLineItem`s with references in their `applied_discounts` field.',
+      }),
+    source_tax_uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'The tax `uid` from the order that contains the original tax charge.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates the calculation method used to apply the tax.' }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the returned tax only within this order.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a tax being returned that applies to one or more return line items in an order.\n\nFixed-amount, order-scoped taxes are distributed across all non-zero return line item totals.\nThe amount distributed to each return line item is relative to that item’s contribution to the\norder subtotal.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderReturnTax')
+
+const OrderRoundingAdjustmentSchema = z
+  .object({
+    amount_money: MoneySchema.exactOptional(),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the rounding adjustment from the original sale order.',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the rounding adjustment only within this order.',
+      }),
+  })
+  .openapi({
+    description:
+      'A rounding adjustment of the money being returned. Commonly used to apply cash rounding\nwhen the minimum unit of the account is smaller than the lowest physical denomination of the currency.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderRoundingAdjustment')
+
+const OrderReturnSchema = z
+  .object({
+    return_amounts: OrderMoneyAmountsSchema.exactOptional(),
+    return_discounts: z
+      .array(OrderReturnDiscountSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A collection of references to discounts being returned for an order, including the total\napplied discount amount to be returned. The discounts must reference a top-level discount ID\nfrom the source order.',
+      }),
+    return_line_items: z
+      .array(OrderReturnLineItemSchema)
+      .exactOptional()
+      .openapi({ description: 'A collection of line items that are being returned.' }),
+    return_service_charges: z
+      .array(OrderReturnServiceChargeSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A collection of service charges that are being returned.',
+        'x-read-only': true,
+      }),
+    return_taxes: z
+      .array(OrderReturnTaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A collection of references to taxes being returned for an order, including the total\napplied tax amount to be returned. The taxes must reference a top-level tax ID from the source\norder.',
+      }),
+    rounding_adjustment: OrderRoundingAdjustmentSchema.exactOptional(),
+    source_order_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An order that contains the original sale of these return line items. This is unset\nfor unlinked returns.',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({ description: 'A unique ID that identifies the return only within this order.' }),
+  })
+  .openapi({
+    description:
+      'The set of line items, service charges, taxes, discounts, tips, and other items being returned in an order.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('OrderReturn')
+
+const OrderRewardSchema = z
+  .object({
+    id: z.string().min(1).openapi({ description: 'The identifier of the reward.' }),
+    reward_tier_id: z
+      .string()
+      .min(1)
+      .openapi({ description: 'The identifier of the reward tier corresponding to this reward.' }),
+  })
+  .openapi({
+    description:
+      'Represents a reward that can be applied to an order if the necessary\nreward tier criteria are met. Rewards are created through the Loyalty API.',
+    required: ['id', 'reward_tier_id'],
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+  })
+  .openapi('OrderReward')
+
+const OrderServiceChargeSchema = z
+  .object({
+    amount_money: MoneySchema.exactOptional(),
+    applied_money: MoneySchema.exactOptional(),
+    applied_taxes: z
+      .array(OrderLineItemAppliedTaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of references to the taxes applied to this service charge. Each\n`OrderLineItemAppliedTax` has a `tax_uid` that references the `uid` of a top-level\n`OrderLineItemTax` that is being applied to this service charge. On reads, the amount applied\nis populated.\n\nAn `OrderLineItemAppliedTax` is automatically created on every taxable service charge\nfor all `ORDER` scoped taxes that are added to the order. `OrderLineItemAppliedTax` records\nfor `LINE_ITEM` scoped taxes must be added in requests for the tax to apply to any taxable\nservice charge. Taxable service charges have the `taxable` field set to `true` and calculated\nin the `SUBTOTAL_PHASE`.\n\nTo change the amount of a tax, modify the referenced top-level tax.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    calculation_phase: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The calculation phase at which to apply the service charge.' }),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The catalog object ID referencing the service charge [CatalogObject](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogObject).',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this service charge references.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Application-defined data attached to this service charge. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    name: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The name of the service charge.' }),
+    percentage: z
+      .string()
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'The service charge percentage as a string representation of a\ndecimal number. For example, `"7.25"` indicates a service charge of 7.25%.\n\nExactly 1 of `percentage` or `amount_money` should be set.',
+      }),
+    taxable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the service charge can be taxed. If set to `true`,\norder-level taxes automatically apply to the service charge. Note that\nservice charges calculated in the `TOTAL_PHASE` cannot be marked as taxable.',
+      }),
+    total_money: MoneySchema.exactOptional(),
+    total_tax_money: MoneySchema.exactOptional(),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of the service charge.',
+        'x-is-beta': true,
+        'x-read-only': true,
+        'x-release-status': 'BETA',
+      }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the service charge only within this order.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description: 'Represents a service charge applied to an order.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderServiceCharge')
+
+const OrderSourceSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name used to identify the place (physical or digital) that an order originates.\nIf unset, the name defaults to the name of the application that created the order.',
+      }),
+  })
+  .openapi({
+    description: 'Represents the origination details of an order.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderSource')
+
+const OrderLineItemTaxSchema = z
+  .object({
+    applied_money: MoneySchema.exactOptional(),
+    auto_applied: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines whether the tax was automatically applied to the order based on\nthe catalog configuration. For an example, see \n[Automatically Apply Taxes to an Order](https://developer.squareup.com/docs/orders-api/apply-taxes-and-discounts/auto-apply-taxes).',
+        'x-is-beta': true,
+        'x-read-only': true,
+        'x-release-status': 'BETA',
+      }),
+    catalog_object_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The catalog object ID referencing [CatalogTax](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogTax).',
+      }),
+    catalog_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The version of the catalog object that this tax references.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Application-defined data attached to this tax. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    name: z.string().max(255).exactOptional().openapi({ description: "The tax's name." }),
+    percentage: z
+      .string()
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of the tax, as a string representation of a decimal\nnumber. For example, a value of `"7.25"` corresponds to a percentage of\n7.25%.',
+      }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the level at which the tax applies. For `ORDER` scoped taxes,\nSquare generates references in `applied_taxes` on all order line items that do\nnot have them. For `LINE_ITEM` scoped taxes, the tax only applies to line items\nwith references in their `applied_taxes` field.\n\nThis field is immutable. To change the scope, you must delete the tax and\nre-add it as a new tax.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates the calculation method used to apply the tax.' }),
+    uid: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description: 'A unique ID that identifies the tax only within this order.',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a tax that applies to one or more line item in the order.\n\nFixed-amount, order-scoped taxes are distributed across all non-zero line item totals.\nThe amount distributed to each line item is relative to the amount the item\ncontributes to the order subtotal.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderLineItemTax')
+
+const CardSchema = z
+  .object({
+    billing_address: AddressSchema.exactOptional(),
+    bin: z
+      .string()
+      .max(6)
+      .exactOptional()
+      .openapi({
+        description:
+          'The first six digits of the card number, known as the Bank Identification Number (BIN). Only the Payments API\nreturns this field.',
+        'x-read-only': true,
+      }),
+    card_brand: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The card's brand.", 'x-read-only': true }),
+    card_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the card.\nThe Card object includes this field only in response to Payments API calls.',
+        'x-read-only': true,
+      }),
+    cardholder_name: z
+      .string()
+      .max(96)
+      .exactOptional()
+      .openapi({ description: 'The name of the cardholder.' }),
+    customer_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of a customer created using the Customers API to be associated with the card.',
+      }),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether or not a card can be used for payments.',
+        'x-read-only': true,
+      }),
+    exp_month: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The expiration month of the associated card as an integer between 1 and 12.',
+      }),
+    exp_year: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: "The four-digit year of the card's expiration date.",
+      }),
+    fingerprint: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description:
+          '__Not currently set.__ Intended as a Square-assigned identifier, based\non the card number, to identify the card across multiple locations within a\nsingle application.',
+        'x-read-only': true,
+      }),
+    id: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'Unique ID for this card. Generated by Square.',
+        'x-read-only': true,
+      }),
+    last_4: z
+      .string()
+      .max(4)
+      .exactOptional()
+      .openapi({ description: 'The last 4 digits of the card number.', 'x-read-only': true }),
+    prepaid_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the Card is prepaid or not.\nThe Card object includes this field only in response to Payments API calls.',
+        'x-read-only': true,
+      }),
+    reference_id: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          'An optional user-defined reference ID that associates this card with\nanother entity in an external system. For example, a customer ID from an\nexternal customer management system.',
+      }),
+    version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Current version number of the card. Increments with each card update. Requests to update an\nexisting Card object will be rejected unless the version in the request matches the current\nversion for the Card.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents the payment details of a card to be used for payments. These\ndetails are determined by the payment token generated by Web Payments SDK.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('Card')
+
+const TenderCardDetailsSchema = z
+  .object({
+    card: CardSchema.exactOptional(),
+    entry_method: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The method used to enter the card's details for the transaction." }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The credit card payment's current state (such as `AUTHORIZED` or\n`CAPTURED`). See [TenderCardDetailsStatus](https://developer.squareup.com/reference/square_2021-08-18/objects/TenderCardDetailsStatus)\nfor possible values.",
+      }),
+  })
+  .openapi({
+    description:
+      'Represents additional details of a tender with `type` `CARD` or `SQUARE_GIFT_CARD`',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('TenderCardDetails')
+
+const TenderCashDetailsSchema = z
+  .object({
+    buyer_tendered_money: MoneySchema.exactOptional(),
+    change_back_money: MoneySchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Represents the details of a tender with `type` `CASH`.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('TenderCashDetails')
+
+const TenderSchema = z
+  .object({
+    additional_recipients: z
+      .array(AdditionalRecipientSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional recipients (other than the merchant) receiving a portion of this tender.\nFor example, fees assessed on the purchase by a third party integration.',
+        'x-is-deprecated': true,
+        'x-release-status': 'DEPRECATED',
+      }),
+    amount_money: MoneySchema.exactOptional(),
+    card_details: TenderCardDetailsSchema.exactOptional(),
+    cash_details: TenderCashDetailsSchema.exactOptional(),
+    created_at: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp for when the tender was created, in RFC 3339 format.',
+        'x-read-only': true,
+      }),
+    customer_id: z
+      .string()
+      .max(191)
+      .exactOptional()
+      .openapi({
+        description:
+          "If the tender is associated with a customer or represents a customer's card on file,\nthis is the ID of the associated customer.",
+      }),
+    id: z.string().max(192).exactOptional().openapi({ description: "The tender's unique ID." }),
+    location_id: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({ description: "The ID of the transaction's associated location." }),
+    note: z
+      .string()
+      .max(500)
+      .exactOptional()
+      .openapi({
+        description: 'An optional note associated with the tender at the time of payment.',
+      }),
+    payment_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the [Payment](https://developer.squareup.com/reference/square_2021-08-18/objects/Payment) that corresponds to this tender.\nThis value is only present for payments created with the v2 Payments API.',
+      }),
+    processing_fee_money: MoneySchema.exactOptional(),
+    tip_money: MoneySchema.exactOptional(),
+    transaction_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({ description: "The ID of the tender's associated transaction." }),
+    type: z.string().openapi({ description: 'The type of tender, such as `CARD` or `CASH`.' }),
+  })
+  .openapi({
+    description: 'Represents a tender (i.e., a method of payment) used in a Square transaction.',
+    required: ['type'],
+    'x-release-status': 'PUBLIC',
+  })
+  .openapi('Tender')
+
+type OrderType = {
+  closed_at?: string
+  created_at?: string
+  customer_id?: string
+  discounts?: z.infer<typeof OrderLineItemDiscountSchema>[]
+  fulfillments?: z.infer<typeof OrderFulfillmentSchema>[]
+  id?: string
+  line_items?: z.infer<typeof OrderLineItemSchema>[]
+  location_id: string
+  metadata?: { [key: string]: string }
+  net_amounts?: z.infer<typeof OrderMoneyAmountsSchema>
+  pricing_options?: z.infer<typeof OrderPricingOptionsSchema>
+  reference_id?: string
+  refunds?: z.infer<typeof RefundSchema>[]
+  return_amounts?: z.infer<typeof OrderMoneyAmountsSchema>
+  returns?: z.infer<typeof OrderReturnSchema>[]
+  rewards?: z.infer<typeof OrderRewardSchema>[]
+  rounding_adjustment?: z.infer<typeof OrderRoundingAdjustmentSchema>
+  service_charges?: z.infer<typeof OrderServiceChargeSchema>[]
+  source?: z.infer<typeof OrderSourceSchema>
+  state?: string
+  taxes?: z.infer<typeof OrderLineItemTaxSchema>[]
+  tenders?: z.infer<typeof TenderSchema>[]
+  total_discount_money?: z.infer<typeof MoneySchema>
+  total_money?: z.infer<typeof MoneySchema>
+  total_service_charge_money?: z.infer<typeof MoneySchema>
+  total_tax_money?: z.infer<typeof MoneySchema>
+  total_tip_money?: z.infer<typeof MoneySchema>
+  updated_at?: string
+  version?: number
+}
+
+const OrderSchema: z.ZodType<OrderType> = z
+  .object({
+    closed_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp for when the order reached a terminal [state](https://developer.squareup.com/reference/square_2021-08-18/enums/OrderState), in RFC 3339 format (for example "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    created_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp for when the order was created, in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    customer_id: z
+      .string()
+      .max(191)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the [customer](https://developer.squareup.com/reference/square_2021-08-18/objects/Customer) associated with the order.\n\n__IMPORTANT:__ You should specify a `customer_id` if you want the corresponding payment transactions\nto be explicitly linked to the customer in the Seller Dashboard. If this field is omitted, the \n`customer_id` assigned to any underlying `Payment` objects is ignored and might result in the \ncreation of new [instant profiles](https://developer.squareup.com/docs/customers-api/what-it-does#instant-profiles).',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    discounts: z
+      .array(OrderLineItemDiscountSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of all discounts associated with the order.\n\nDiscounts can be scoped to either `ORDER` or `LINE_ITEM`. For discounts scoped to `LINE_ITEM`,\nan `OrderLineItemAppliedDiscount` must be added to each line item that the discount applies to.\nFor discounts with `ORDER` scope, the server generates an `OrderLineItemAppliedDiscount`\nfor every line item.\n\n__IMPORTANT__: If `LINE_ITEM` scope is set on any discounts in this field, using the deprecated\n`line_items.discounts` field results in an error. Use `line_items.applied_discounts`\ninstead.',
+      }),
+    fulfillments: z
+      .array(OrderFulfillmentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Details about order fulfillment.\n\nOrders can only be created with at most one fulfillment. However, orders returned\nby the API might contain multiple fulfillments.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The order's unique ID.", 'x-read-only': true }),
+    line_items: z
+      .array(OrderLineItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The line items included in the order.' }),
+    location_id: z
+      .string()
+      .min(1)
+      .openapi({
+        description: 'The ID of the seller location that this order is associated with.',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Application-defined data attached to this order. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see  [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+    net_amounts: OrderMoneyAmountsSchema.exactOptional(),
+    pricing_options: OrderPricingOptionsSchema.exactOptional(),
+    reference_id: z
+      .string()
+      .max(40)
+      .exactOptional()
+      .openapi({
+        description:
+          'A client-specified ID to associate an entity in another system\nwith this order.',
+      }),
+    refunds: z
+      .array(RefundSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The refunds that are part of this order.',
+        'x-is-beta': true,
+        'x-read-only': true,
+        'x-release-status': 'BETA',
+      }),
+    return_amounts: OrderMoneyAmountsSchema.exactOptional(),
+    returns: z
+      .array(OrderReturnSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A collection of items from sale orders being returned in this one. Normally part of an\nitemized return or exchange. There is exactly one `Return` object per sale `Order` being\nreferenced.',
+        'x-is-beta': true,
+        'x-read-only': true,
+        'x-release-status': 'BETA',
+      }),
+    rewards: z
+      .array(OrderRewardSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A set-like list of Rewards that have been added to the Order.',
+        'x-is-beta': true,
+        'x-read-only': true,
+        'x-release-status': 'BETA',
+      }),
+    rounding_adjustment: OrderRoundingAdjustmentSchema.exactOptional(),
+    service_charges: z
+      .array(OrderServiceChargeSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of service charges applied to the order.' }),
+    source: OrderSourceSchema.exactOptional(),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The current state of the order: `OPEN`, `COMPLETED`, or `CANCELED`.',
+      }),
+    taxes: z
+      .array(OrderLineItemTaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of all taxes associated with the order.\n\nTaxes can be scoped to either `ORDER` or `LINE_ITEM`. For taxes with `LINE_ITEM` scope, an\n`OrderLineItemAppliedTax` must be added to each line item that the tax applies to. For taxes\nwith `ORDER` scope, the server generates an `OrderLineItemAppliedTax` for every line item.\n\nOn reads, each tax in the list includes the total amount of that tax applied to the order.\n\n__IMPORTANT__: If `LINE_ITEM` scope is set on any taxes in this field, using the deprecated\n`line_items.taxes` field results in an error. Use `line_items.applied_taxes`\ninstead.',
+      }),
+    tenders: z
+      .array(TenderSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The tenders that were used to pay for the order.',
+        'x-is-beta': true,
+        'x-read-only': true,
+        'x-release-status': 'BETA',
+      }),
+    total_discount_money: MoneySchema.exactOptional(),
+    total_money: MoneySchema.exactOptional(),
+    total_service_charge_money: MoneySchema.exactOptional(),
+    total_tax_money: MoneySchema.exactOptional(),
+    total_tip_money: MoneySchema.exactOptional(),
+    updated_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp for when the order was last updated, in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
+        'x-read-only': true,
+      }),
+    version: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version number, which is incremented each time an update is committed to the order.\nOrders not created through the API do not include a version number and\ntherefore cannot be updated.\n\n[Read more about working with versions](https://developer.squareup.com/docs/orders-api/manage-orders#update-orders).',
+        'x-is-beta': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description:
+      'Contains all information related to a single order to process with Square,\nincluding line items that specify the products to purchase. `Order` objects also\ninclude information about any associated tenders, refunds, and returns.\n\nAll Connect V2 Transactions have all been converted to Orders including all associated\nitemization data.',
+    required: ['location_id'],
+    'x-release-status': 'PUBLIC',
+  })
+  .openapi('Order')
+
+type BatchRetrieveOrdersResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  orders?: z.infer<typeof OrderSchema>[]
+}
+
+type CatalogObjectBatchType = { objects: z.infer<typeof CatalogObjectSchema>[] }
+
+const CatalogObjectBatchSchema: z.ZodType<CatalogObjectBatchType> = z
+  .object({
+    objects: z
+      .array(CatalogObjectSchema)
+      .openapi({ description: 'A list of CatalogObjects belonging to this batch.' }),
+  })
+  .openapi({
+    description: 'A batch of catalog objects.',
+    required: ['objects'],
+    'x-release-status': 'PUBLIC',
+  })
+  .openapi('CatalogObjectBatch')
+
+type BatchUpsertCatalogObjectsRequestType = {
+  batches: z.infer<typeof CatalogObjectBatchSchema>[]
+  idempotency_key: string
+}
+
+const CatalogIdMappingSchema = z
+  .object({
+    client_object_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The client-supplied temporary `#`-prefixed ID for a new `CatalogObject`.',
+      }),
+    object_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The permanent ID for the CatalogObject created by the server.' }),
+  })
+  .openapi({
+    description:
+      'A mapping between a temporary client-supplied ID and a permanent server-generated ID.\n\nWhen calling [UpsertCatalogObject](https://developer.squareup.com/reference/square_2021-08-18/catalog-api/upsert-catalog-object) or\n[BatchUpsertCatalogObjects](https://developer.squareup.com/reference/square_2021-08-18/catalog-api/batch-upsert-catalog-objects) to\ncreate a [CatalogObject](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogObject) instance, you can supply\na temporary ID for the to-be-created object, especially when the object is to be referenced\nelsewhere in the same request body. This temporary ID can be any string unique within\nthe call, but must be prefixed by "#".\n\nAfter the request is submitted and the object created, a permanent server-generated ID is assigned\nto the new object. The permanent ID is unique across the Square catalog.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('CatalogIdMapping')
+
+type BatchUpsertCatalogObjectsResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  id_mappings?: z.infer<typeof CatalogIdMappingSchema>[]
+  objects?: z.infer<typeof CatalogObjectSchema>[]
+  updated_at?: string
+}
+
+type CalculateOrderRequestType = {
+  order: z.infer<typeof OrderSchema>
+  proposed_rewards?: z.infer<typeof OrderRewardSchema>[]
+}
+
+type CalculateOrderResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  order?: z.infer<typeof OrderSchema>
+}
+
+type CatalogCategoryType = { name?: string }
+
+const CatalogCustomAttributeDefinitionNumberConfigSchema = z
+  .object({
+    precision: z
+      .int()
+      .min(0)
+      .max(5)
+      .exactOptional()
+      .openapi({
+        description:
+          'An integer between 0 and 5 that represents the maximum number of\npositions allowed after the decimal in number custom attribute values\nFor example:\n\n- if the precision is 0, the quantity can be 1, 2, 3, etc.\n- if the precision is 1, the quantity can be 0.1, 0.2, etc.\n- if the precision is 2, the quantity can be 0.01, 0.12, etc.\n\nDefault: 5',
+      }),
+  })
+  .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA', required: [] })
+  .openapi('CatalogCustomAttributeDefinitionNumberConfig')
+
+const CatalogCustomAttributeDefinitionSelectionConfigCustomAttributeSelectionSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(255)
+      .openapi({ description: 'Selection name, unique within `allowed_selections`.' }),
+    uid: z.string().exactOptional().openapi({ description: 'Unique ID set by Square.' }),
+  })
+  .openapi({
+    description: 'A named selection for this `SELECTION`-type custom attribute definition.',
+    required: ['name'],
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+  })
+  .openapi('CatalogCustomAttributeDefinitionSelectionConfigCustomAttributeSelection')
+
+const CatalogCustomAttributeDefinitionSelectionConfigSchema = z
+  .object({
+    allowed_selections: z
+      .array(CatalogCustomAttributeDefinitionSelectionConfigCustomAttributeSelectionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The set of valid `CatalogCustomAttributeSelections`. Up to a maximum of 100\nselections can be defined. Can be modified.',
+      }),
+    max_allowed_selections: z
+      .int()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of selections that can be set. The maximum value for this\nattribute is 100. The default value is 1. The value can be modified, but changing the value will not\naffect existing custom attribute values on objects. Clients need to\nhandle custom attributes with more selected values than allowed by this limit.',
+      }),
+  })
+  .openapi({
+    description: 'Configuration associated with `SELECTION`-type custom attribute definitions.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('CatalogCustomAttributeDefinitionSelectionConfig')
+
+const SourceApplicationSchema = z
+  .object({
+    application_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Read-only Square ID assigned to the application. Only used for\n[Product](https://developer.squareup.com/reference/square_2021-08-18/enums/Product) type `EXTERNAL_API`.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Read-only display name assigned to the application\n(e.g. `"Custom Application"`, `"Square POS 4.74 for Android"`).',
+      }),
+    product: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Read-only [Product](https://developer.squareup.com/reference/square_2021-08-18/enums/Product) type for the application.',
+      }),
+  })
+  .openapi({
+    description: 'Provides information about the application used to generate a change.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('SourceApplication')
+
+const CatalogCustomAttributeDefinitionStringConfigSchema = z
+  .object({
+    enforce_uniqueness: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If true, each Custom Attribute instance associated with this Custom Attribute\nDefinition must have a unique value within the seller's catalog. For\nexample, this may be used for a value like a SKU that should not be\nduplicated within a seller's catalog. May not be modified after the\ndefinition has been created.",
+      }),
+  })
+  .openapi({
+    description: 'Configuration associated with Custom Attribute Definitions of type `STRING`.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('CatalogCustomAttributeDefinitionStringConfig')
+
+type CatalogCustomAttributeDefinitionType = {
+  allowed_object_types: string[]
+  app_visibility?: string
+  custom_attribute_usage_count?: number
+  description?: string
+  key?: string
+  name: string
+  number_config?: z.infer<typeof CatalogCustomAttributeDefinitionNumberConfigSchema>
+  selection_config?: z.infer<typeof CatalogCustomAttributeDefinitionSelectionConfigSchema>
+  seller_visibility?: string
+  source_application?: z.infer<typeof SourceApplicationSchema>
+  string_config?: z.infer<typeof CatalogCustomAttributeDefinitionStringConfigSchema>
+  type: string
+}
+
+type CatalogCustomAttributeValueType = {
+  boolean_value?: boolean
+  custom_attribute_definition_id?: string
+  key?: string
+  name?: string
+  number_value?: string
+  selection_uid_values?: string[]
+  string_value?: string
+  type?: string
+}
+
+type CatalogDiscountType = {
+  amount_money?: z.infer<typeof MoneySchema>
+  discount_type?: string
+  label_color?: string
+  modify_tax_basis?: string
+  name?: string
+  percentage?: string
+  pin_required?: boolean
+}
+
+type CatalogImageType = { caption?: string; name?: string; url?: string }
+
+type CatalogItemOptionForItemType = { item_option_id?: string }
+
+const CatalogItemOptionForItemSchema: z.ZodType<CatalogItemOptionForItemType> = z
+  .object({
+    item_option_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique id of the item option, used to form the dimensions of the item option matrix in a specified order.',
+      }),
+  })
+  .openapi({
+    description:
+      ' An option that can be assigned to an item.\nFor example, a t-shirt item may offer a color option or a size option.',
+    'x-is-beta': true,
+    'x-release-status': 'BETA',
+    required: [],
+  })
+  .openapi('CatalogItemOptionForItem')
+
+const CatalogModifierOverrideSchema = z
+  .object({
+    modifier_id: z
+      .string()
+      .min(1)
+      .openapi({
+        description: 'The ID of the `CatalogModifier` whose default behavior is being overridden.',
+      }),
+    on_by_default: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, this `CatalogModifier` should be selected by default for this `CatalogItem`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Options to control how to override the default behavior of the specified modifier.',
+    required: ['modifier_id'],
+    'x-release-status': 'PUBLIC',
+  })
+  .openapi('CatalogModifierOverride')
+
+type CatalogItemModifierListInfoType = {
+  enabled?: boolean
+  max_selected_modifiers?: number
+  min_selected_modifiers?: number
+  modifier_list_id: string
+  modifier_overrides?: z.infer<typeof CatalogModifierOverrideSchema>[]
+}
+
+const CatalogItemModifierListInfoSchema: z.ZodType<CatalogItemModifierListInfoType> = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, enable this `CatalogModifierList`. The default value is `true`.',
+      }),
+    max_selected_modifiers: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'If 0 or larger, the largest number of `CatalogModifier`s that can be selected from this `CatalogModifierList`.',
+      }),
+    min_selected_modifiers: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'If 0 or larger, the smallest number of `CatalogModifier`s that must be selected from this `CatalogModifierList`.',
+      }),
+    modifier_list_id: z
+      .string()
+      .min(1)
+      .openapi({
+        description:
+          'The ID of the `CatalogModifierList` controlled by this `CatalogModifierListInfo`.',
+      }),
+    modifier_overrides: z
+      .array(CatalogModifierOverrideSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `CatalogModifierOverride` objects that override whether a given `CatalogModifier` is enabled by default.',
+      }),
+  })
+  .openapi({
+    description:
+      'Options to control the properties of a `CatalogModifierList` applied to a `CatalogItem` instance.',
+    required: ['modifier_list_id'],
+    'x-release-status': 'PUBLIC',
+  })
+  .openapi('CatalogItemModifierListInfo')
 
 type CatalogItemType = {
   abbreviation?: string
@@ -589,66 +2891,6 @@ type CatalogItemVariationType = {
   upc?: string
   user_data?: string
 }
-
-const MeasurementUnitCustomSchema = z
-  .object({
-    abbreviation: z
-      .string()
-      .openapi({
-        description:
-          'The abbreviation of the custom unit, such as "bsh" (bushel). This appears\nin the cart for the Point of Sale app, and in reports.',
-      }),
-    name: z.string().openapi({ description: 'The name of the custom unit, for example "bushel".' }),
-  })
-  .openapi({
-    description: 'The information needed to define a custom unit, provided by the seller.',
-    required: ['name', 'abbreviation'],
-    'x-release-status': 'PUBLIC',
-  })
-  .openapi('MeasurementUnitCustom')
-
-const MeasurementUnitSchema = z
-  .object({
-    area_unit: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Represents a standard area unit.' }),
-    custom_unit: MeasurementUnitCustomSchema.exactOptional(),
-    generic_unit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Reserved for API integrations that lack the ability to specify a real measurement unit',
-      }),
-    length_unit: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Represents a standard length unit.' }),
-    time_unit: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Represents a standard unit of time.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Represents the type of the measurement unit.' }),
-    volume_unit: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Represents a standard volume unit.' }),
-    weight_unit: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Represents a standard unit of weight or mass.' }),
-  })
-  .openapi({
-    description:
-      'Represents a unit of measurement to use with a quantity, such as ounces\nor inches. Exactly one of the following fields are required: `custom_unit`,\n`area_unit`, `length_unit`, `volume_unit`, and `weight_unit`.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('MeasurementUnit')
 
 type CatalogMeasurementUnitType = {
   measurement_unit?: z.infer<typeof MeasurementUnitSchema>
@@ -1952,6 +4194,836 @@ type CatalogObjectType = {
   version?: bigint
 }
 
+type CheckoutType = {
+  additional_recipients?: z.infer<typeof AdditionalRecipientSchema>[]
+  ask_for_shipping_address?: boolean
+  checkout_page_url?: string
+  created_at?: string
+  id?: string
+  merchant_support_email?: string
+  order?: z.infer<typeof OrderSchema>
+  pre_populate_buyer_email?: string
+  pre_populate_shipping_address?: z.infer<typeof AddressSchema>
+  redirect_url?: string
+}
+
+const ChargeRequestAdditionalRecipientSchema = z
+  .object({
+    amount_money: MoneySchema,
+    description: z
+      .string()
+      .min(1)
+      .max(100)
+      .openapi({ description: 'The description of the additional recipient.' }),
+    location_id: z
+      .string()
+      .min(1)
+      .max(50)
+      .openapi({
+        description:
+          'The location ID for a recipient (other than the merchant) receiving a portion of the tender.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents an additional recipient (other than the merchant) entitled to a portion of the tender.\nSupport is currently limited to USD, CAD and GBP currencies',
+    required: ['location_id', 'description', 'amount_money'],
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+  })
+  .openapi('ChargeRequestAdditionalRecipient')
+
+type CreateOrderRequestType = { idempotency_key?: string; order?: z.infer<typeof OrderSchema> }
+
+const CreateOrderRequestSchema: z.ZodType<CreateOrderRequestType> = z
+  .object({
+    idempotency_key: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'A value you specify that uniquely identifies this\norder among orders you have created.\n\nIf you are unsure whether a particular order was created successfully,\nyou can try it again with the same idempotency key without\nworrying about creating duplicate orders.\n\nFor more information, see [Idempotency](https://developer.squareup.com/docs/basics/api101/idempotency).',
+      }),
+    order: OrderSchema.exactOptional(),
+  })
+  .openapi({
+    description: '',
+    example: {
+      request_body: {
+        idempotency_key: '8193148c-9586-11e6-99f9-28cfe92138cf',
+        order: {
+          discounts: [
+            { name: 'Labor Day Sale', percentage: '5', scope: 'ORDER', uid: 'labor-day-sale' },
+            {
+              catalog_object_id: 'DB7L55ZH2BGWI4H23ULIWOQ7',
+              scope: 'ORDER',
+              uid: 'membership-discount',
+            },
+            {
+              amount_money: { amount: 100, currency: 'USD' },
+              name: 'Sale - $1.00 off',
+              scope: 'LINE_ITEM',
+              uid: 'one-dollar-off',
+            },
+          ],
+          line_items: [
+            {
+              base_price_money: { amount: 1599, currency: 'USD' },
+              name: 'New York Strip Steak',
+              quantity: '1',
+            },
+            {
+              applied_discounts: [{ discount_uid: 'one-dollar-off' }],
+              catalog_object_id: 'BEMYCSMIJL46OCDV4KYIKXIB',
+              modifiers: [{ catalog_object_id: 'CHQX7Y4KY6N5KINJKZCFURPZ' }],
+              quantity: '2',
+            },
+          ],
+          location_id: '057P5VYJ4A5X1',
+          reference_id: 'my-order-001',
+          taxes: [
+            { name: 'State Sales Tax', percentage: '9', scope: 'ORDER', uid: 'state-sales-tax' },
+          ],
+        },
+      },
+    },
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('CreateOrderRequest')
+
+type CreateCheckoutRequestType = {
+  additional_recipients?: z.infer<typeof ChargeRequestAdditionalRecipientSchema>[]
+  ask_for_shipping_address?: boolean
+  idempotency_key: string
+  merchant_support_email?: string
+  note?: string
+  order: z.infer<typeof CreateOrderRequestSchema>
+  pre_populate_buyer_email?: string
+  pre_populate_shipping_address?: z.infer<typeof AddressSchema>
+  redirect_url?: string
+}
+
+const CheckoutSchema: z.ZodType<CheckoutType> = z
+  .object({
+    additional_recipients: z
+      .array(AdditionalRecipientSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional recipients (other than the merchant) receiving a portion of this checkout.\nFor example, fees assessed on the purchase by a third party integration.',
+        'x-is-deprecated': true,
+        'x-release-status': 'DEPRECATED',
+      }),
+    ask_for_shipping_address: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, Square Checkout will collect shipping information on your\nbehalf and store that information with the transaction information in your\nSquare Dashboard.\n\nDefault: `false`.',
+      }),
+    checkout_page_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL that the buyer's browser should be redirected to after the\ncheckout is completed.",
+      }),
+    created_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time when the checkout was created, in RFC 3339 format.',
+        'x-read-only': true,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID generated by Square Checkout when a new checkout is requested.',
+      }),
+    merchant_support_email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The email address to display on the Square Checkout confirmation page\nand confirmation email that the buyer can use to contact the merchant.\n\nIf this value is not set, the confirmation page and email will display the\nprimary email address associated with the merchant's Square account.\n\nDefault: none; only exists if explicitly set.",
+      }),
+    order: OrderSchema.exactOptional(),
+    pre_populate_buyer_email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "If provided, the buyer's email is pre-populated on the checkout page\nas an editable text field.\n\nDefault: none; only exists if explicitly set.",
+      }),
+    pre_populate_shipping_address: AddressSchema.exactOptional(),
+    redirect_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL to redirect to after checkout is completed with `checkoutId`,\nSquare's `orderId`, `transactionId`, and `referenceId` appended as URL\nparameters. For example, if the provided redirect_url is\n`http://www.example.com/order-complete`, a successful transaction redirects\nthe customer to:\n\n<pre><code>http://www.example.com/order-complete?checkoutId=xxxxxx&amp;orderId=xxxxxx&amp;referenceId=xxxxxx&amp;transactionId=xxxxxx</code></pre>\n\nIf you do not provide a redirect URL, Square Checkout will display an order\nconfirmation page on your behalf; however Square strongly recommends that\nyou provide a redirect URL so you can verify the transaction results and\nfinalize the order through your existing/normal confirmation workflow.",
+      }),
+  })
+  .openapi({
+    description:
+      'Square Checkout lets merchants accept online payments for supported\npayment types using a checkout workflow hosted on squareup.com.',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('Checkout')
+
+type CreateCheckoutResponseType = {
+  checkout?: z.infer<typeof CheckoutSchema>
+  errors?: z.infer<typeof ErrorSchema>[]
+}
+
+type CreateOrderResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  order?: z.infer<typeof OrderSchema>
+}
+
+type ListCatalogResponseType = {
+  cursor?: string
+  errors?: z.infer<typeof ErrorSchema>[]
+  objects?: z.infer<typeof CatalogObjectSchema>[]
+}
+
+const TransactionSchema = z
+  .object({
+    client_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          "If the transaction was created in the Square Point of Sale app, this value\nis the ID generated for the transaction by Square Point of Sale.\n\nThis ID has no relationship to the transaction's canonical `id`, which is\ngenerated by Square's backend servers. This value is generated for bookkeeping\npurposes, in case the transaction cannot immediately be completed (for example,\nif the transaction is processed in offline mode).\n\nIt is not currently possible with the Connect API to perform a transaction\nlookup by this value.",
+      }),
+    created_at: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp for when the transaction was created, in RFC 3339 format.',
+      }),
+    id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({ description: "The transaction's unique ID, issued by Square payments servers." }),
+    location_id: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({ description: "The ID of the transaction's associated location." }),
+    order_id: z
+      .string()
+      .max(192)
+      .exactOptional()
+      .openapi({
+        description:
+          'The order_id is an identifier for the order associated with this transaction, if any.',
+      }),
+    product: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Square product that processed the transaction.' }),
+    reference_id: z
+      .string()
+      .max(40)
+      .exactOptional()
+      .openapi({
+        description:
+          'If the transaction was created with the [Charge](https://developer.squareup.com/reference/square_2021-08-18/transactions-api/charge)\nendpoint, this value is the same as the value provided for the `reference_id`\nparameter in the request to that endpoint. Otherwise, it is not set.',
+      }),
+    refunds: z
+      .array(RefundSchema)
+      .exactOptional()
+      .openapi({ description: 'Refunds that have been applied to any tender in the transaction.' }),
+    shipping_address: AddressSchema.exactOptional(),
+    tenders: z
+      .array(TenderSchema)
+      .exactOptional()
+      .openapi({ description: 'The tenders used to pay in the transaction.' }),
+  })
+  .openapi({
+    description:
+      'Represents a transaction processed with Square, either with the\nConnect API or with Square Point of Sale.\n\nThe `tenders` field of this object lists all methods of payment used to pay in\nthe transaction.',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('Transaction')
+
+type ListTransactionsResponseType = {
+  cursor?: string
+  errors?: z.infer<typeof ErrorSchema>[]
+  transactions?: z.infer<typeof TransactionSchema>[]
+}
+
+type PayOrderResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  order?: z.infer<typeof OrderSchema>
+}
+
+type RetrieveCatalogObjectResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  object?: z.infer<typeof CatalogObjectSchema>
+  related_objects?: z.infer<typeof CatalogObjectSchema>[]
+}
+
+type RetrieveOrderResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  order?: z.infer<typeof OrderSchema>
+}
+
+type SearchCatalogItemsResponseType = {
+  cursor?: string
+  errors?: z.infer<typeof ErrorSchema>[]
+  items?: z.infer<typeof CatalogObjectSchema>[]
+  matched_variation_ids?: string[]
+}
+
+type SearchCatalogObjectsResponseType = {
+  cursor?: string
+  errors?: z.infer<typeof ErrorSchema>[]
+  latest_time?: string
+  objects?: z.infer<typeof CatalogObjectSchema>[]
+  related_objects?: z.infer<typeof CatalogObjectSchema>[]
+}
+
+const OrderEntrySchema = z
+  .object({
+    location_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The location ID the order belongs to.' }),
+    order_id: z.string().exactOptional().openapi({ description: 'The ID of the order.' }),
+    version: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version number, which is incremented each time an update is committed to the order.\nOrders that were not created through the API do not include a version number and\ntherefore cannot be updated.\n\n[Read more about working with versions.](https://developer.squareup.com/docs/orders-api/manage-orders#update-orders)',
+        'x-is-beta': true,
+        'x-read-only': true,
+        'x-release-status': 'BETA',
+      }),
+  })
+  .openapi({
+    description:
+      'A lightweight description of an [order](https://developer.squareup.com/reference/square_2021-08-18/objects/Order) that is returned when \n`returned_entries` is `true` on a [SearchOrdersRequest](https://developer.squareup.com/reference/square_2021-08-18/orders-api/search-orders).',
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
+  .openapi('OrderEntry')
+
+type SearchOrdersResponseType = {
+  cursor?: string
+  errors?: z.infer<typeof ErrorSchema>[]
+  order_entries?: z.infer<typeof OrderEntrySchema>[]
+  orders?: z.infer<typeof OrderSchema>[]
+}
+
+type UpdateOrderRequestType = {
+  fields_to_clear?: string[]
+  idempotency_key?: string
+  order?: z.infer<typeof OrderSchema>
+}
+
+type UpdateOrderResponseType = {
+  errors?: z.infer<typeof ErrorSchema>[]
+  order?: z.infer<typeof OrderSchema>
+}
+
+const V1MoneySchema = z
+  .object({
+    amount: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Amount in the lowest denominated value of this Currency. E.g. in USD\nthese are cents, in JPY they are Yen (which do not have a 'cent' concept).",
+      }),
+    currency_code: z.string().exactOptional().openapi({ description: '' }),
+  })
+  .openapi({
+    description: '',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1Money')
+
+const V1PaymentTaxSchema = z
+  .object({
+    applied_money: V1MoneySchema.exactOptional(),
+    errors: z
+      .array(ErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Any errors that occurred during the request.' }),
+    fee_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the tax, if available. Taxes applied in older versions of Square Register might not have an ID.',
+      }),
+    inclusion_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Whether the tax is an ADDITIVE tax or an INCLUSIVE tax.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant-defined name of the tax.' }),
+    rate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rate of the tax, as a string representation of a decimal number. A value of 0.07 corresponds to a rate of 7%.',
+      }),
+  })
+  .openapi({
+    description: 'V1PaymentTax',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1PaymentTax')
+
+const DeviceSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: "The device's Square-issued ID." }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The device's merchant-specified name." }),
+  })
+  .openapi({
+    description: '',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('Device')
+
+const V1PaymentDiscountSchema = z
+  .object({
+    applied_money: V1MoneySchema.exactOptional(),
+    discount_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the applied discount, if available. Discounts applied in older versions of Square Register might not have an ID.',
+      }),
+    name: z.string().exactOptional().openapi({ description: "The discount's name." }),
+  })
+  .openapi({
+    description: 'V1PaymentDiscount',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1PaymentDiscount')
+
+const V1PaymentItemDetailSchema = z
+  .object({
+    category_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The name of the item's merchant-defined category, if any." }),
+    item_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique ID of the item purchased, if any.' }),
+    item_variation_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique ID of the item variation purchased, if any.' }),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({ description: " The item's merchant-defined SKU, if any." }),
+  })
+  .openapi({
+    description: 'V1PaymentItemDetail',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1PaymentItemDetail')
+
+const V1PaymentModifierSchema = z
+  .object({
+    applied_money: V1MoneySchema.exactOptional(),
+    modifier_option_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the applied modifier option, if available. Modifier options applied in older versions of Square Register might not have an ID.',
+      }),
+    name: z.string().exactOptional().openapi({ description: "The modifier option's name." }),
+  })
+  .openapi({
+    description: 'V1PaymentModifier',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1PaymentModifier')
+
+const V1PaymentItemizationSchema = z
+  .object({
+    discount_money: V1MoneySchema.exactOptional(),
+    discounts: z
+      .array(V1PaymentDiscountSchema)
+      .exactOptional()
+      .openapi({ description: 'All discounts applied to this itemization.' }),
+    gross_sales_money: V1MoneySchema.exactOptional(),
+    item_detail: V1PaymentItemDetailSchema.exactOptional(),
+    item_variation_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the item variation purchased, if any.' }),
+    itemization_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of purchase that the itemization represents, such as an ITEM or CUSTOM_AMOUNT',
+      }),
+    modifiers: z
+      .array(V1PaymentModifierSchema)
+      .exactOptional()
+      .openapi({ description: 'All modifier options applied to this itemization.' }),
+    name: z.string().exactOptional().openapi({ description: "The item's name." }),
+    net_sales_money: V1MoneySchema.exactOptional(),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Notes entered by the merchant about the item at the time of payment, if any.',
+      }),
+    quantity: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The quantity of the item purchased. This can be a decimal value.' }),
+    single_quantity_money: V1MoneySchema.exactOptional(),
+    taxes: z
+      .array(V1PaymentTaxSchema)
+      .exactOptional()
+      .openapi({ description: 'All taxes applied to this itemization.' }),
+    total_money: V1MoneySchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      "Payment include an` itemizations` field that lists the items purchased,\nalong with associated fees, modifiers, and discounts. Each itemization has an\n`itemization_type` field that indicates which of the following the itemization\nrepresents:\n\n<ul>\n<li>An item variation from the merchant's item library</li>\n<li>A custom monetary amount</li>\n<li>\nAn action performed on a Square gift card, such as activating or\nreloading it.\n</li>\n</ul>\n\n*Note**: itemization information included in a `Payment` object reflects\ndetails collected **at the time of the payment**. Details such as the name or\nprice of items might have changed since the payment was processed.",
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1PaymentItemization')
+
+const V1PaymentSurchargeSchema = z
+  .object({
+    amount_money: V1MoneySchema.exactOptional(),
+    applied_money: V1MoneySchema.exactOptional(),
+    name: z.string().exactOptional().openapi({ description: 'The name of the surcharge.' }),
+    rate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of the surcharge as a percentage. The percentage is provided as a string representing the decimal equivalent of the percentage. For example, "0.7" corresponds to a 7% surcharge. Exactly one of rate or amount_money should be set.',
+      }),
+    surcharge_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A Square-issued unique identifier associated with the surcharge.' }),
+    taxable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the surcharge is taxable.' }),
+    taxes: z
+      .array(V1PaymentTaxSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of taxes that should be applied to the surcharge.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the source of the surcharge. For example, if it was applied as an automatic gratuity for a large group.',
+      }),
+  })
+  .openapi({
+    description: 'V1PaymentSurcharge',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1PaymentSurcharge')
+
+const V1RefundSchema = z
+  .object({
+    created_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the merchant initiated the refund for Square to process, in ISO 8601 format.',
+      }),
+    is_exchange: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether or not the refund is associated with an exchange. If is_exchange is true, the refund reflects the value of goods returned in the exchange not the total money refunded.',
+      }),
+    merchant_id: z.string().exactOptional().openapi({ description: '' }),
+    payment_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Square-issued ID associated with the refund. For single-tender refunds, payment_id is the ID of the original payment ID. For split-tender refunds, payment_id is the ID of the original tender. For exchange-based refunds (is_exchange == true), payment_id is the ID of the original payment ID even if the payment includes other tenders.',
+      }),
+    processed_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when Square processed the refund on behalf of the merchant, in ISO 8601 format.',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant-specified reason for the refund.' }),
+    refunded_additive_tax: z
+      .array(V1PaymentTaxSchema)
+      .exactOptional()
+      .openapi({ description: 'All of the additive taxes associated with the refund.' }),
+    refunded_additive_tax_money: V1MoneySchema.exactOptional(),
+    refunded_discount_money: V1MoneySchema.exactOptional(),
+    refunded_inclusive_tax: z
+      .array(V1PaymentTaxSchema)
+      .exactOptional()
+      .openapi({ description: 'All of the inclusive taxes associated with the refund.' }),
+    refunded_inclusive_tax_money: V1MoneySchema.exactOptional(),
+    refunded_money: V1MoneySchema.exactOptional(),
+    refunded_processing_fee_money: V1MoneySchema.exactOptional(),
+    refunded_surcharge_money: V1MoneySchema.exactOptional(),
+    refunded_surcharges: z
+      .array(V1PaymentSurchargeSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of all surcharges associated with the refund.' }),
+    refunded_tax_money: V1MoneySchema.exactOptional(),
+    refunded_tip_money: V1MoneySchema.exactOptional(),
+    type: z.string().exactOptional().openapi({ description: 'The type of refund' }),
+  })
+  .openapi({
+    description: 'V1Refund',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1Refund')
+
+const V1TenderSchema = z
+  .object({
+    card_brand: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The brand of credit card provided.' }),
+    change_back_money: V1MoneySchema.exactOptional(),
+    employee_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the employee that processed the tender.' }),
+    entry_method: z.string().exactOptional().openapi({ description: "The tender's unique ID." }),
+    id: z.string().exactOptional().openapi({ description: "The tender's unique ID." }),
+    is_exchange: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether or not the tender is associated with an exchange. If is_exchange is true, the tender represents the value of goods returned in an exchange not the actual money paid. The exchange value reduces the tender amounts needed to pay for items purchased in the exchange.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A human-readable description of the tender.' }),
+    pan_suffix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The last four digits of the provided credit card's account number.",
+      }),
+    payment_note: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Notes entered by the merchant about the tender at the time of payment, if any. Typically only present for tender with the type: OTHER.',
+      }),
+    receipt_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the receipt for the tender.' }),
+    refunded_money: V1MoneySchema.exactOptional(),
+    settled_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the tender was settled, in ISO 8601 format.' }),
+    tendered_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the tender was created, in ISO 8601 format.' }),
+    tendered_money: V1MoneySchema.exactOptional(),
+    total_money: V1MoneySchema.exactOptional(),
+    type: z.string().exactOptional().openapi({ description: 'The type of tender.' }),
+  })
+  .openapi({
+    description:
+      'A tender represents a discrete monetary exchange. Square represents this\nexchange as a money object with a specific currency and amount, where the\namount is given in the smallest denomination of the given currency.\n\nSquare POS can accept more than one form of tender for a single payment (such\nas by splitting a bill between a credit card and a gift card). The `tender`\nfield of the Payment object lists all forms of tender used for the payment.\n\nSplit tender payments behave slightly differently from single tender payments:\n\nThe receipt_url for a split tender corresponds only to the first tender listed\nin the tender field. To get the receipt URLs for the remaining tenders, use\nthe receipt_url fields of the corresponding Tender objects.\n\n*A note on gift cards**: when a customer purchases a Square gift card from a\nmerchant, the merchant receives the full amount of the gift card in the\nassociated payment.\n\nWhen that gift card is used as a tender, the balance of the gift card is\nreduced and the merchant receives no funds. A `Tender` object with a type of\n`SQUARE_GIFT_CARD` indicates a gift card was used for some or all of the\nassociated payment.',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1Tender')
+
+type V1PaymentType = {
+  additive_tax?: z.infer<typeof V1PaymentTaxSchema>[]
+  additive_tax_money?: z.infer<typeof V1MoneySchema>
+  created_at?: string
+  creator_id?: string
+  device?: z.infer<typeof DeviceSchema>
+  discount_money?: z.infer<typeof V1MoneySchema>
+  gross_sales_money?: z.infer<typeof V1MoneySchema>
+  id?: string
+  inclusive_tax?: z.infer<typeof V1PaymentTaxSchema>[]
+  inclusive_tax_money?: z.infer<typeof V1MoneySchema>
+  is_partial?: boolean
+  itemizations?: z.infer<typeof V1PaymentItemizationSchema>[]
+  merchant_id?: string
+  net_sales_money?: z.infer<typeof V1MoneySchema>
+  net_total_money?: z.infer<typeof V1MoneySchema>
+  payment_url?: string
+  processing_fee_money?: z.infer<typeof V1MoneySchema>
+  receipt_url?: string
+  refunded_money?: z.infer<typeof V1MoneySchema>
+  refunds?: z.infer<typeof V1RefundSchema>[]
+  surcharge_money?: z.infer<typeof V1MoneySchema>
+  surcharges?: z.infer<typeof V1PaymentSurchargeSchema>[]
+  swedish_rounding_money?: z.infer<typeof V1MoneySchema>
+  tax_money?: z.infer<typeof V1MoneySchema>
+  tender?: z.infer<typeof V1TenderSchema>[]
+  tip_money?: z.infer<typeof V1MoneySchema>
+  total_collected_money?: z.infer<typeof V1MoneySchema>
+}
+
+const V1PaymentSchema: z.ZodType<V1PaymentType> = z
+  .object({
+    additive_tax: z
+      .array(V1PaymentTaxSchema)
+      .exactOptional()
+      .openapi({ description: 'All of the additive taxes associated with the payment.' }),
+    additive_tax_money: V1MoneySchema.exactOptional(),
+    created_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the payment was created, in ISO 8601 format. Reflects the time of the first payment if the object represents an incomplete partial payment, and the time of the last or complete payment otherwise.',
+      }),
+    creator_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the Square account that took the payment.',
+      }),
+    device: DeviceSchema.exactOptional(),
+    discount_money: V1MoneySchema.exactOptional(),
+    gross_sales_money: V1MoneySchema.exactOptional(),
+    id: z.string().exactOptional().openapi({ description: "The payment's unique identifier." }),
+    inclusive_tax: z
+      .array(V1PaymentTaxSchema)
+      .exactOptional()
+      .openapi({ description: 'All of the inclusive taxes associated with the payment.' }),
+    inclusive_tax_money: V1MoneySchema.exactOptional(),
+    is_partial: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether or not the payment is only partially paid for.\nIf true, this payment will have the tenders collected so far, but the\nitemizations will be empty until the payment is completed.',
+      }),
+    itemizations: z
+      .array(V1PaymentItemizationSchema)
+      .exactOptional()
+      .openapi({ description: 'The items purchased in the payment.' }),
+    merchant_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the merchant that took the payment.' }),
+    net_sales_money: V1MoneySchema.exactOptional(),
+    net_total_money: V1MoneySchema.exactOptional(),
+    payment_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL of the payment's detail page in the merchant dashboard. The merchant must be signed in to the merchant dashboard to view this page.",
+      }),
+    processing_fee_money: V1MoneySchema.exactOptional(),
+    receipt_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL of the receipt for the payment. Note that for split tender\npayments, this URL corresponds to the receipt for the first tender\nlisted in the payment's tender field. Each Tender object has its own\nreceipt_url field you can use to get the other receipts associated with\na split tender payment.",
+      }),
+    refunded_money: V1MoneySchema.exactOptional(),
+    refunds: z
+      .array(V1RefundSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'All of the refunds applied to the payment. Note that the value of all refunds on a payment can exceed the value of all tenders if a merchant chooses to refund money to a tender after previously accepting returned goods as part of an exchange.',
+      }),
+    surcharge_money: V1MoneySchema.exactOptional(),
+    surcharges: z
+      .array(V1PaymentSurchargeSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of all surcharges associated with the payment.' }),
+    swedish_rounding_money: V1MoneySchema.exactOptional(),
+    tax_money: V1MoneySchema.exactOptional(),
+    tender: z
+      .array(V1TenderSchema)
+      .exactOptional()
+      .openapi({ description: 'All of the tenders associated with the payment.' }),
+    tip_money: V1MoneySchema.exactOptional(),
+    total_collected_money: V1MoneySchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'A payment represents a paid transaction between a Square merchant and a\ncustomer. Payment details are usually available from Connect API endpoints\nwithin a few minutes after the transaction completes.\n\nEach Payment object includes several fields that end in `_money`. These fields\ndescribe the various amounts of money that contribute to the payment total:\n\n<ul>\n<li>\nMonetary values are <b>positive</b> if they represent an\n<em>increase</em> in the amount of money the merchant receives (e.g.,\n<code>tax_money</code>, <code>tip_money</code>).\n</li>\n<li>\nMonetary values are <b>negative</b> if they represent an\n<em>decrease</em> in the amount of money the merchant receives (e.g.,\n<code>discount_money</code>, <code>refunded_money</code>).\n</li>\n</ul>',
+    'x-is-deprecated': true,
+    'x-release-status': 'DEPRECATED',
+    required: [],
+  })
+  .openapi('V1Payment')
+
+type V1ListPaymentsResponseType = { items?: z.infer<typeof V1PaymentSchema>[] }
+
+type V1ListRefundsResponseType = { items?: z.infer<typeof V1RefundSchema>[] }
+
 const ACHDetailsSchema = z
   .object({
     account_number_suffix: z
@@ -1984,7 +5056,7 @@ const ACHDetailsSchema = z
   .openapi('ACHDetails')
 
 const AcceptDisputeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Defines the request parameters for the `AcceptDispute` endpoint.',
     example: { request_body: {} },
@@ -2115,32 +5187,6 @@ const DisputeSchema = z
     required: [],
   })
   .openapi('Dispute')
-
-const ErrorSchema = z
-  .object({
-    category: z.string().openapi({ description: 'The high-level category for the error.' }),
-    code: z.string().openapi({ description: 'The specific code of the error.' }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A human-readable description of the error for debugging purposes.',
-      }),
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the field provided in the original request (if any) that\nthe error pertains to.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents an error encountered during a request to the Connect API.\n\nSee [Handling errors](https://developer.squareup.com/docs/build-basics/handling-errors) for more information.',
-    required: ['category', 'code'],
-    'x-release-status': 'PUBLIC',
-  })
-  .openapi('Error')
 
 const AcceptDisputeResponseSchema = z
   .object({
@@ -2517,7 +5563,7 @@ const ActionCancelReasonSchema = z
   .openapi('ActionCancelReason')
 
 const AddGroupToCustomerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the fields that are included in the request body of\na request to the [AddGroupToCustomer](https://developer.squareup.com/reference/square_2021-08-18/customers-api/add-group-to-customer) endpoint.',
@@ -2541,119 +5587,6 @@ const AddGroupToCustomerResponseSchema = z
     required: [],
   })
   .openapi('AddGroupToCustomerResponse')
-
-const AdditionalRecipientSchema = z
-  .object({
-    amount_money: MoneySchema,
-    description: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({ description: 'The description of the additional recipient.' }),
-    location_id: z
-      .string()
-      .min(1)
-      .max(50)
-      .openapi({
-        description:
-          'The location ID for a recipient (other than the merchant) receiving a portion of this tender.',
-      }),
-    receivable_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique ID for this [AdditionalRecipientReceivable](https://developer.squareup.com/reference/square_2021-08-18/objects/AdditionalRecipientReceivable), assigned by the server.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents an additional recipient (other than the merchant) receiving a portion of this tender.',
-    required: ['location_id', 'amount_money'],
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-  })
-  .openapi('AdditionalRecipient')
-
-const AddressSchema = z
-  .object({
-    address_line_1: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The first line of the address.\n\nFields that start with `address_line` provide the address's most specific\ndetails, like street number, street name, and building name. They do *not*\nprovide less specific details like city, state/province, or country (these\ndetails are provided in other fields).",
-      }),
-    address_line_2: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The second line of the address, if any.' }),
-    address_line_3: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The third line of the address, if any.' }),
-    administrative_district_level_1: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "A civil entity within the address's country. In the US, this\nis the state.",
-      }),
-    administrative_district_level_2: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A civil entity within the address's `administrative_district_level_1`.\nIn the US, this is the county.",
-      }),
-    administrative_district_level_3: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A civil entity within the address's `administrative_district_level_2`,\nif any.",
-      }),
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The address's country, in ISO 3166-1-alpha-2 format." }),
-    first_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Optional first name when it's representing recipient." }),
-    last_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Optional last name when it's representing recipient." }),
-    locality: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The city or town of the address.' }),
-    organization: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Optional organization name when it's representing recipient." }),
-    postal_code: z.string().exactOptional().openapi({ description: "The address's postal code." }),
-    sublocality: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "A civil region within the address's `locality`, if any." }),
-    sublocality_2: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "A civil region within the address's `sublocality`, if any." }),
-    sublocality_3: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "A civil region within the address's `sublocality_2`, if any." }),
-  })
-  .openapi({
-    description:
-      "Represents a postal address in a country. The address format is based \non an [open-source library from Google](https://github.com/google/libaddressinput). For more information, \nsee [AddressValidationMetadata](https://github.com/google/libaddressinput/wiki/AddressValidationMetadata). \nThis format has dedicated fields for four address components: postal code, \nlocality (city), administrative district (state, prefecture, or province), and \nsublocality (town or village). These components have dedicated fields in the \n`Address` object because software sometimes behaves differently based on them. \nFor example, sales tax software may charge different amounts of sales tax \nbased on the postal code, and some software is only available in \ncertain states due to compliance reasons.\n\nFor the remaining address components, the `Address` type provides the \n`address_line_1` and `address_line_2` fields for free-form data entry. \nThese fields are free-form because the remaining address components have \ntoo many variations around the world and typical software does not parse \nthese components. These fields enable users to enter anything they want. \n\nNote that, in the current implementation, all other `Address` type fields are blank. \nThese include `address_line_3`, `sublocality_2`, `sublocality_3`, \n`administrative_district_level_2`, `administrative_district_level_3`, \n`first_name`, `last_name`, and `organization`. \n\nWhen it comes to localization, the seller's language preferences \n(see [Language preferences](https://developer.squareup.com/docs/locations-api#location-specific-and-seller-level-language-preferences)) \nare ignored for addresses. Even though Square products (such as Square Point of Sale \nand the Seller Dashboard) mostly use a seller's language preference in \ncommunication, when it comes to addresses, they will use English for a US address, \nJapanese for an address in Japan, and so on.",
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('Address')
 
 const AdjustLoyaltyPointsRequestSchema = z
   .object({
@@ -3713,151 +6646,152 @@ const BatchRetrieveCatalogObjectsRequestSchema = z
   })
   .openapi('BatchRetrieveCatalogObjectsRequest')
 
-const BatchRetrieveCatalogObjectsResponseSchema = z
-  .object({
-    errors: z
-      .array(ErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Any errors that occurred during the request.' }),
-    objects: z
-      .array(CatalogObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of [CatalogObject](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogObject)s returned.',
-      }),
-    related_objects: z
-      .array(CatalogObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of [CatalogObject](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogObject)s referenced by the object in the `objects` field.',
-      }),
-  })
-  .openapi({
-    description: '',
-    example: {
-      objects: [
-        {
-          id: 'W62UWFY35CWMYGVWK6TWJDNI',
-          is_deleted: false,
-          item_data: {
-            category_id: 'BJNQCF2FJ6S6UIDT65ABHLRX',
-            description: 'Hot Leaf Juice',
-            name: 'Tea',
-            tax_ids: ['HURXQOOAIC4IZSI2BEXQRYFY'],
-            variations: [
-              {
-                id: '2TZFAOHWGG7PAK2QEXWYPZSP',
-                is_deleted: false,
-                item_variation_data: {
-                  item_id: 'W62UWFY35CWMYGVWK6TWJDNI',
-                  name: 'Mug',
-                  ordinal: 0,
-                  price_money: { amount: 150, currency: 'USD' },
-                  pricing_type: 'FIXED_PRICING',
+const BatchRetrieveCatalogObjectsResponseSchema: z.ZodType<BatchRetrieveCatalogObjectsResponseType> =
+  z
+    .object({
+      errors: z
+        .array(ErrorSchema)
+        .exactOptional()
+        .openapi({ description: 'Any errors that occurred during the request.' }),
+      objects: z
+        .array(CatalogObjectSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of [CatalogObject](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogObject)s returned.',
+        }),
+      related_objects: z
+        .array(CatalogObjectSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of [CatalogObject](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogObject)s referenced by the object in the `objects` field.',
+        }),
+    })
+    .openapi({
+      description: '',
+      example: {
+        objects: [
+          {
+            id: 'W62UWFY35CWMYGVWK6TWJDNI',
+            is_deleted: false,
+            item_data: {
+              category_id: 'BJNQCF2FJ6S6UIDT65ABHLRX',
+              description: 'Hot Leaf Juice',
+              name: 'Tea',
+              tax_ids: ['HURXQOOAIC4IZSI2BEXQRYFY'],
+              variations: [
+                {
+                  id: '2TZFAOHWGG7PAK2QEXWYPZSP',
+                  is_deleted: false,
+                  item_variation_data: {
+                    item_id: 'W62UWFY35CWMYGVWK6TWJDNI',
+                    name: 'Mug',
+                    ordinal: 0,
+                    price_money: { amount: 150, currency: 'USD' },
+                    pricing_type: 'FIXED_PRICING',
+                  },
+                  present_at_all_locations: true,
+                  type: 'ITEM_VARIATION',
+                  updated_at: '2016-11-16T22:25:24.878Z',
+                  version: 1479335124878,
                 },
-                present_at_all_locations: true,
-                type: 'ITEM_VARIATION',
-                updated_at: '2016-11-16T22:25:24.878Z',
-                version: 1479335124878,
-              },
-            ],
+              ],
+            },
+            present_at_all_locations: true,
+            type: 'ITEM',
+            updated_at: '2016-11-16T22:25:24.878Z',
+            version: 1479335124878,
           },
-          present_at_all_locations: true,
-          type: 'ITEM',
-          updated_at: '2016-11-16T22:25:24.878Z',
-          version: 1479335124878,
-        },
-        {
-          id: 'AA27W3M2GGTF3H6AVPNB77CK',
-          is_deleted: false,
-          item_data: {
-            category_id: 'BJNQCF2FJ6S6UIDT65ABHLRX',
-            description: 'Hot Bean Juice',
-            name: 'Coffee',
-            tax_ids: ['HURXQOOAIC4IZSI2BEXQRYFY'],
-            variations: [
-              {
-                id: 'LBTYIHNHU52WOIHWT7SNRIYH',
-                is_deleted: false,
-                item_variation_data: {
-                  item_id: 'AA27W3M2GGTF3H6AVPNB77CK',
-                  name: 'Regular',
-                  ordinal: 0,
-                  price_money: { amount: 250, currency: 'USD' },
-                  pricing_type: 'FIXED_PRICING',
+          {
+            id: 'AA27W3M2GGTF3H6AVPNB77CK',
+            is_deleted: false,
+            item_data: {
+              category_id: 'BJNQCF2FJ6S6UIDT65ABHLRX',
+              description: 'Hot Bean Juice',
+              name: 'Coffee',
+              tax_ids: ['HURXQOOAIC4IZSI2BEXQRYFY'],
+              variations: [
+                {
+                  id: 'LBTYIHNHU52WOIHWT7SNRIYH',
+                  is_deleted: false,
+                  item_variation_data: {
+                    item_id: 'AA27W3M2GGTF3H6AVPNB77CK',
+                    name: 'Regular',
+                    ordinal: 0,
+                    price_money: { amount: 250, currency: 'USD' },
+                    pricing_type: 'FIXED_PRICING',
+                  },
+                  present_at_all_locations: true,
+                  type: 'ITEM_VARIATION',
+                  updated_at: '2016-11-16T22:25:24.878Z',
+                  version: 1479335124878,
                 },
-                present_at_all_locations: true,
-                type: 'ITEM_VARIATION',
-                updated_at: '2016-11-16T22:25:24.878Z',
-                version: 1479335124878,
-              },
-              {
-                id: 'PKYIC7HGGKW5CYVSCVDEIMHY',
-                is_deleted: false,
-                item_variation_data: {
-                  item_id: 'AA27W3M2GGTF3H6AVPNB77CK',
-                  name: 'Large',
-                  ordinal: 1,
-                  price_money: { amount: 350, currency: 'USD' },
-                  pricing_type: 'FIXED_PRICING',
+                {
+                  id: 'PKYIC7HGGKW5CYVSCVDEIMHY',
+                  is_deleted: false,
+                  item_variation_data: {
+                    item_id: 'AA27W3M2GGTF3H6AVPNB77CK',
+                    name: 'Large',
+                    ordinal: 1,
+                    price_money: { amount: 350, currency: 'USD' },
+                    pricing_type: 'FIXED_PRICING',
+                  },
+                  present_at_all_locations: true,
+                  type: 'ITEM_VARIATION',
+                  updated_at: '2016-11-16T22:25:24.878Z',
+                  version: 1479335124878,
                 },
-                present_at_all_locations: true,
-                type: 'ITEM_VARIATION',
-                updated_at: '2016-11-16T22:25:24.878Z',
-                version: 1479335124878,
-              },
-            ],
+              ],
+            },
+            present_at_all_locations: true,
+            type: 'ITEM',
+            updated_at: '2016-11-16T22:25:24.878Z',
+            version: 1479335124878,
           },
-          present_at_all_locations: true,
-          type: 'ITEM',
-          updated_at: '2016-11-16T22:25:24.878Z',
-          version: 1479335124878,
-        },
-      ],
-      related_objects: [
-        {
-          category_data: { name: 'Beverages' },
-          id: 'BJNQCF2FJ6S6UIDT65ABHLRX',
-          is_deleted: false,
-          present_at_all_locations: true,
-          type: 'CATEGORY',
-          updated_at: '2016-11-16T22:25:24.878Z',
-          version: 1479335124878,
-        },
-        {
-          id: 'HURXQOOAIC4IZSI2BEXQRYFY',
-          is_deleted: false,
-          present_at_all_locations: true,
-          tax_data: {
-            calculation_phase: 'TAX_SUBTOTAL_PHASE',
-            enabled: true,
-            inclusion_type: 'ADDITIVE',
-            name: 'Sales Tax',
-            percentage: '5.0',
+        ],
+        related_objects: [
+          {
+            category_data: { name: 'Beverages' },
+            id: 'BJNQCF2FJ6S6UIDT65ABHLRX',
+            is_deleted: false,
+            present_at_all_locations: true,
+            type: 'CATEGORY',
+            updated_at: '2016-11-16T22:25:24.878Z',
+            version: 1479335124878,
           },
-          type: 'TAX',
-          updated_at: '2016-11-16T22:25:24.878Z',
-          version: 1479335124878,
-        },
-      ],
-    },
-    'x-release-status': 'PUBLIC',
-    'x-sq-sdk-sample-code': {
-      csharp:
-        '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.csharp',
-      java: '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.java',
-      javascript:
-        '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.javascript',
-      php: '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.php',
-      python:
-        '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.python',
-      ruby: '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.ruby',
-    },
-    required: [],
-  })
-  .openapi('BatchRetrieveCatalogObjectsResponse')
+          {
+            id: 'HURXQOOAIC4IZSI2BEXQRYFY',
+            is_deleted: false,
+            present_at_all_locations: true,
+            tax_data: {
+              calculation_phase: 'TAX_SUBTOTAL_PHASE',
+              enabled: true,
+              inclusion_type: 'ADDITIVE',
+              name: 'Sales Tax',
+              percentage: '5.0',
+            },
+            type: 'TAX',
+            updated_at: '2016-11-16T22:25:24.878Z',
+            version: 1479335124878,
+          },
+        ],
+      },
+      'x-release-status': 'PUBLIC',
+      'x-sq-sdk-sample-code': {
+        csharp:
+          '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.csharp',
+        java: '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.java',
+        javascript:
+          '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.javascript',
+        php: '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.php',
+        python:
+          '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.python',
+        ruby: '/sdk_samples/Catalog/BatchRetrieveCatalogObjects/BatchRetrieveCatalogObjectsResponse.ruby',
+      },
+      required: [],
+    })
+    .openapi('BatchRetrieveCatalogObjectsResponse')
 
 const BatchRetrieveInventoryChangesRequestSchema = z
   .object({
@@ -4126,2009 +7060,7 @@ const BatchRetrieveOrdersRequestSchema = z
   })
   .openapi('BatchRetrieveOrdersRequest')
 
-const OrderLineItemDiscountSchema = z
-  .object({
-    amount_money: MoneySchema.exactOptional(),
-    applied_money: MoneySchema.exactOptional(),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The catalog object ID referencing [CatalogDiscount](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogDiscount).',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this discount references.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Application-defined data attached to this discount. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    name: z.string().max(255).exactOptional().openapi({ description: "The discount's name." }),
-    percentage: z
-      .string()
-      .max(10)
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of the discount, as a string representation of a decimal number.\nA value of `7.25` corresponds to a percentage of 7.25%.\n\n`percentage` is not set for amount-based discounts.',
-      }),
-    pricing_rule_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The object ID of a [pricing rule](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogPricingRule) to be applied \nautomatically to this discount. The specification and application of the discounts, to \nwhich a `pricing_rule_id` is assigned, are completely controlled by the corresponding \npricing rule.',
-        'x-read-only': true,
-      }),
-    reward_ids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The reward IDs corresponding to this discount. The application and\nspecification of discounts that have `reward_ids` are completely controlled by the backing\ncriteria corresponding to the reward tiers of the rewards that are added to the order\nthrough the Loyalty API. To manually unapply discounts that are the result of added rewards,\nthe rewards must be removed from the order through the Loyalty API.',
-        'x-is-beta': true,
-        'x-read-only': true,
-        'x-release-status': 'BETA',
-      }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the level at which the discount applies. For `ORDER` scoped discounts,\nSquare generates references in `applied_discounts` on all order line items that do\nnot have them. For `LINE_ITEM` scoped discounts, the discount only applies to line items\nwith a discount reference in their `applied_discounts` field.\n\nThis field is immutable. To change the scope of a discount, you must delete\nthe discount and re-add it as a new discount.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the discount.\n\nDiscounts that do not reference a catalog object ID must have a type of\n`FIXED_PERCENTAGE` or `FIXED_AMOUNT`.',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the discount only within this order.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a discount that applies to one or more line items in an\norder.\n\nFixed-amount, order-scoped discounts are distributed across all non-zero line item totals.\nThe amount distributed to each line item is relative to the\namount contributed by the item to the order subtotal.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderLineItemDiscount')
-
-const OrderFulfillmentPickupDetailsCurbsidePickupDetailsSchema = z
-  .object({
-    buyer_arrived_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the buyer arrived and is waiting for pickup. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-      }),
-    curbside_details: z
-      .string()
-      .max(250)
-      .exactOptional()
-      .openapi({
-        description:
-          'Specific details for curbside pickup, such as parking number and vehicle model.',
-      }),
-  })
-  .openapi({
-    description: 'Specific details for curbside pickup.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderFulfillmentPickupDetailsCurbsidePickupDetails')
-
-const OrderFulfillmentRecipientSchema = z
-  .object({
-    address: AddressSchema.exactOptional(),
-    customer_id: z
-      .string()
-      .max(191)
-      .exactOptional()
-      .openapi({
-        description:
-          "The customer ID of the customer associated with the fulfillment.\n\nIf `customer_id` is provided, the fulfillment recipient's `display_name`,\n`email_address`, and `phone_number` are automatically populated from the\ntargeted customer profile. If these fields are set in the request, the request\nvalues overrides the information from the customer profile. If the\ntargeted customer profile does not contain the necessary information and\nthese fields are left unset, the request results in an error.",
-      }),
-    display_name: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'The display name of the fulfillment recipient.\n\nIf provided, the display name overrides the value pulled from the customer profile indicated by `customer_id`.',
-      }),
-    email_address: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'The email address of the fulfillment recipient.\n\nIf provided, the email address overrides the value pulled from the customer profile indicated by `customer_id`.',
-      }),
-    phone_number: z
-      .string()
-      .max(17)
-      .exactOptional()
-      .openapi({
-        description:
-          'The phone number of the fulfillment recipient.\n\nIf provided, the phone number overrides the value pulled from the customer profile indicated by `customer_id`.',
-      }),
-  })
-  .openapi({
-    description: 'Contains information about the recipient of a fulfillment.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderFulfillmentRecipient')
-
-const OrderFulfillmentPickupDetailsSchema = z
-  .object({
-    accepted_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment was accepted. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    auto_complete_duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The duration of time after which an open and accepted pickup fulfillment\nis automatically moved to the `COMPLETED` state. The duration must be in RFC 3339\nformat (for example, "P1W3D").\n\nIf not set, this pickup fulfillment remains accepted until it is canceled or completed.',
-      }),
-    cancel_reason: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'A description of why the pickup was canceled. The maximum length: 100 characters.',
-      }),
-    canceled_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment was canceled. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    curbside_pickup_details:
-      OrderFulfillmentPickupDetailsCurbsidePickupDetailsSchema.exactOptional(),
-    expired_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the fulfillment expired. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    expires_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when this fulfillment expires if it is not accepted. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z"). The expiration time can only be set up to 7 days in the future.\nIf `expires_at` is not set, this pickup fulfillment is automatically accepted when \nplaced.',
-      }),
-    is_curbside_pickup: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to `true`, indicates that this pickup order is for curbside pickup, not in-store pickup.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    note: z
-      .string()
-      .max(500)
-      .exactOptional()
-      .openapi({
-        description:
-          'A note meant to provide additional instructions about the pickup\nfulfillment displayed in the Square Point of Sale application and set by the API.',
-      }),
-    picked_up_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the fulfillment was picked up by the recipient. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    pickup_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nthat represents the start of the pickup window. Must be in RFC 3339 timestamp format, e.g., \n"2016-09-04T23:59:33.123Z".\n\nFor fulfillments with the schedule type `ASAP`, this is automatically set\nto the current time plus the expected duration to prepare the fulfillment.',
-      }),
-    pickup_window_duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The window of time in which the order should be picked up after the `pickup_at` timestamp.\nMust be in RFC 3339 duration format, e.g., "P1W3D". Can be used as an\ninformational guideline for merchants.',
-      }),
-    placed_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment was placed. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    prep_time_duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The duration of time it takes to prepare this fulfillment.\nThe duration must be in RFC 3339 format (for example, "P1W3D").',
-      }),
-    ready_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment is marked as ready for pickup. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    recipient: OrderFulfillmentRecipientSchema.exactOptional(),
-    rejected_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates) \nindicating when the fulfillment was rejected. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    schedule_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The schedule type of the pickup fulfillment. Defaults to `SCHEDULED`.',
-      }),
-  })
-  .openapi({
-    description: 'Contains details necessary to fulfill a pickup order.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderFulfillmentPickupDetails')
-
-const OrderFulfillmentShipmentDetailsSchema = z
-  .object({
-    cancel_reason: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({ description: 'A description of why the shipment was canceled.' }),
-    canceled_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating the shipment was canceled.\nThe timestamp must be in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
-      }),
-    carrier: z
-      .string()
-      .max(50)
-      .exactOptional()
-      .openapi({
-        description:
-          'The shipping carrier being used to ship this fulfillment (such as UPS, FedEx, or USPS).',
-      }),
-    expected_shipped_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the shipment is expected to be delivered to the shipping carrier.\nThe timestamp must be in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
-      }),
-    failed_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the shipment failed to be completed. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    failure_reason: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({ description: 'A description of why the shipment failed to be completed.' }),
-    in_progress_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when this fulfillment was moved to the `RESERVED` state, which  indicates that preparation\nof this shipment has begun. The timestamp must be in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    packaged_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when this fulfillment was moved to the `PREPARED` state, which indicates that the\nfulfillment is packaged. The timestamp must be in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    placed_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when the shipment was requested. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    recipient: OrderFulfillmentRecipientSchema.exactOptional(),
-    shipped_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [timestamp](https://developer.squareup.com/docs/build-basics/working-with-dates)\nindicating when this fulfillment was moved to the `COMPLETED` state, which indicates that\nthe fulfillment has been given to the shipping carrier. The timestamp must be in RFC 3339 format\n(for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    shipping_note: z
-      .string()
-      .max(500)
-      .exactOptional()
-      .openapi({ description: 'A note with additional information for the shipping carrier.' }),
-    shipping_type: z
-      .string()
-      .max(50)
-      .exactOptional()
-      .openapi({
-        description:
-          'A description of the type of shipping product purchased from the carrier\n(such as First Class, Priority, or Express).',
-      }),
-    tracking_number: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          "The reference number provided by the carrier to track the shipment's progress.",
-      }),
-    tracking_url: z
-      .string()
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: "A link to the tracking webpage on the carrier's website." }),
-  })
-  .openapi({
-    description: 'Contains the details necessary to fulfill a shipment order.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderFulfillmentShipmentDetails')
-
-const OrderFulfillmentSchema = z
-  .object({
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Application-defined data attached to this fulfillment. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    pickup_details: OrderFulfillmentPickupDetailsSchema.exactOptional(),
-    shipment_details: OrderFulfillmentShipmentDetailsSchema.exactOptional(),
-    state: z.string().exactOptional().openapi({ description: 'The state of the fulfillment.' }),
-    type: z.string().exactOptional().openapi({ description: 'The type of the fulfillment.' }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the fulfillment only within this order.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description: 'Contains details about how to fulfill this order.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderFulfillment')
-
-const OrderLineItemAppliedDiscountSchema = z
-  .object({
-    applied_money: MoneySchema.exactOptional(),
-    discount_uid: z
-      .string()
-      .min(1)
-      .max(60)
-      .openapi({
-        description:
-          'The `uid` of the discount that the applied discount represents. It must\nreference a discount present in the `order.discounts` field.\n\nThis field is immutable. To change which discounts apply to a line item,\nyou must delete the discount and re-add it as a new `OrderLineItemAppliedDiscount`.',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the applied discount only within this order.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents an applied portion of a discount to a line item in an order.\n\nOrder scoped discounts have automatically applied discounts present for each line item.\nLine-item scoped discounts must have applied discounts added manually for any applicable line\nitems. The corresponding applied money is automatically computed based on participating\nline items.',
-    required: ['discount_uid'],
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-  })
-  .openapi('OrderLineItemAppliedDiscount')
-
-const OrderLineItemAppliedTaxSchema = z
-  .object({
-    applied_money: MoneySchema.exactOptional(),
-    tax_uid: z
-      .string()
-      .min(1)
-      .max(60)
-      .openapi({
-        description:
-          'The `uid` of the tax for which this applied tax represents. It must reference\na tax present in the `order.taxes` field.\n\nThis field is immutable. To change which taxes apply to a line item, delete and add a new\n`OrderLineItemAppliedTax`.',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the applied tax only within this order.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents an applied portion of a tax to a line item in an order.\n\nOrder-scoped taxes automatically include the applied taxes in each line item.\nLine item taxes must be referenced from any applicable line items.\nThe corresponding applied money is automatically computed, based on the\nset of participating line items.',
-    required: ['tax_uid'],
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-  })
-  .openapi('OrderLineItemAppliedTax')
-
-const OrderLineItemModifierSchema = z
-  .object({
-    base_price_money: MoneySchema.exactOptional(),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The catalog object ID referencing [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier).',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this modifier references.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    name: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The name of the item modifier.' }),
-    total_price_money: MoneySchema.exactOptional(),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the modifier only within this order.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description:
-      'A [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier).',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderLineItemModifier')
-
-const OrderLineItemPricingBlocklistsBlockedDiscountSchema = z
-  .object({
-    discount_catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The `catalog_object_id` of the discount that should be blocked. \nUse this field to block catalog discounts. For ad hoc discounts, use the \n`discount_uid` field.',
-      }),
-    discount_uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description:
-          'The `uid` of the discount that should be blocked. Use this field to block \nad hoc discounts. For catalog discounts, use the `discount_catalog_object_id` field.',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({ description: 'A unique ID of the `BlockedDiscount` within the order.' }),
-  })
-  .openapi({
-    description:
-      'A discount to block from applying to a line item. The discount must be \nidentified by either `discount_uid` or `discount_catalog_object_id`, but not both.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderLineItemPricingBlocklistsBlockedDiscount')
-
-const OrderLineItemPricingBlocklistsBlockedTaxSchema = z
-  .object({
-    tax_catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The `catalog_object_id` of the tax that should be blocked. \nUse this field to block catalog taxes. For ad hoc taxes, use the \n`tax_uid` field.',
-      }),
-    tax_uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description:
-          'The `uid` of the tax that should be blocked. Use this field to block \nad hoc taxes. For catalog, taxes use the `tax_catalog_object_id` field.',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({ description: 'A unique ID of the `BlockedTax` within the order.' }),
-  })
-  .openapi({
-    description:
-      'A tax to block from applying to a line item. The tax must be \nidentified by either `tax_uid` or `tax_catalog_object_id`, but not both.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderLineItemPricingBlocklistsBlockedTax')
-
-const OrderLineItemPricingBlocklistsSchema = z
-  .object({
-    blocked_discounts: z
-      .array(OrderLineItemPricingBlocklistsBlockedDiscountSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of discounts blocked from applying to the line item. \nDiscounts can be blocked by the `discount_uid` (for ad hoc discounts) or \nthe `discount_catalog_object_id` (for catalog discounts).',
-      }),
-    blocked_taxes: z
-      .array(OrderLineItemPricingBlocklistsBlockedTaxSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of taxes blocked from applying to the line item. \nTaxes can be blocked by the `tax_uid` (for ad hoc taxes) or \nthe `tax_catalog_object_id` (for catalog taxes).',
-      }),
-  })
-  .openapi({
-    description:
-      'Describes pricing adjustments that are blocked from manual and \nautomatic application to a line item. For more information, see \n[Apply Taxes and Discounts](https://developer.squareup.com/docs/orders-api/apply-taxes-and-discounts).',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderLineItemPricingBlocklists')
-
-const OrderQuantityUnitSchema = z
-  .object({
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The version of the catalog object that this measurement unit references.\n\nThis field is set when this is a catalog-backed measurement unit.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    measurement_unit: MeasurementUnitSchema.exactOptional(),
-    precision: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'For non-integer quantities, represents the number of digits after the decimal point that are\nrecorded for this quantity.\n\nFor example, a precision of 1 allows quantities such as `"1.0"` and `"1.1"`, but not `"1.01"`.\n\nMin: 0. Max: 5.',
-      }),
-  })
-  .openapi({
-    description:
-      'Contains the measurement unit for a quantity and a precision that\nspecifies the number of digits after the decimal point for decimal quantities.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderQuantityUnit')
-
-const OrderLineItemSchema = z
-  .object({
-    applied_discounts: z
-      .array(OrderLineItemAppliedDiscountSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of references to discounts applied to this line item. Each\n`OrderLineItemAppliedDiscount` has a `discount_uid` that references the `uid` of a top-level\n`OrderLineItemDiscounts` applied to the line item. On reads, the amount\napplied is populated.\n\nAn `OrderLineItemAppliedDiscount` is automatically created on every line item for all\n`ORDER` scoped discounts that are added to the order. `OrderLineItemAppliedDiscount` records\nfor `LINE_ITEM` scoped discounts must be added in requests for the discount to apply to any\nline items.\n\nTo change the amount of a discount, modify the referenced top-level discount.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    applied_taxes: z
-      .array(OrderLineItemAppliedTaxSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of references to taxes applied to this line item. Each\n`OrderLineItemAppliedTax` has a `tax_uid` that references the `uid` of a\ntop-level `OrderLineItemTax` applied to the line item. On reads, the\namount applied is populated.\n\nAn `OrderLineItemAppliedTax` is automatically created on every line\nitem for all `ORDER` scoped taxes added to the order. `OrderLineItemAppliedTax`\nrecords for `LINE_ITEM` scoped taxes must be added in requests for the tax\nto apply to any line items.\n\nTo change the amount of a tax, modify the referenced top-level tax.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    base_price_money: MoneySchema.exactOptional(),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The [CatalogItemVariation](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogItemVariation) ID applied to this line item.',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this line item references.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    gross_sales_money: MoneySchema.exactOptional(),
-    item_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of line item: an itemized sale, a non-itemized sale (custom amount), or the\nactivation or reloading of a gift card.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Application-defined data attached to this line item. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    modifiers: z
-      .array(OrderLineItemModifierSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier)s applied to this line item.',
-      }),
-    name: z
-      .string()
-      .max(512)
-      .exactOptional()
-      .openapi({ description: 'The name of the line item.' }),
-    note: z
-      .string()
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: 'The note of the line item.' }),
-    pricing_blocklists: OrderLineItemPricingBlocklistsSchema.exactOptional(),
-    quantity: z
-      .string()
-      .min(1)
-      .max(12)
-      .openapi({
-        description:
-          'The quantity purchased, formatted as a decimal number.\nFor example, `"3"`.\n\nLine items with a quantity of `"0"` are automatically removed\nwhen paying for or otherwise completing the order.\n\nLine items with a `quantity_unit` can have non-integer quantities.\nFor example, `"1.70000"`.',
-      }),
-    quantity_unit: OrderQuantityUnitSchema.exactOptional(),
-    total_discount_money: MoneySchema.exactOptional(),
-    total_money: MoneySchema.exactOptional(),
-    total_tax_money: MoneySchema.exactOptional(),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the line item only within this order.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    variation_name: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The name of the variation applied to this line item.' }),
-    variation_total_price_money: MoneySchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents a line item in an order. Each line item describes a different\nproduct to purchase, with its own quantity and price details.',
-    required: ['quantity'],
-    'x-release-status': 'PUBLIC',
-  })
-  .openapi('OrderLineItem')
-
-const OrderMoneyAmountsSchema = z
-  .object({
-    discount_money: MoneySchema.exactOptional(),
-    service_charge_money: MoneySchema.exactOptional(),
-    tax_money: MoneySchema.exactOptional(),
-    tip_money: MoneySchema.exactOptional(),
-    total_money: MoneySchema.exactOptional(),
-  })
-  .openapi({
-    description: 'A collection of various money amounts.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderMoneyAmounts')
-
-const OrderPricingOptionsSchema = z
-  .object({
-    auto_apply_discounts: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'The option to determine whether pricing rule-based\ndiscounts are automatically applied to an order.',
-      }),
-    auto_apply_taxes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'The option to determine whether rule-based taxes are automatically\napplied to an order when the criteria of the corresponding rules are met.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description:
-      "Pricing options for an order. The options affect how the order's price is calculated.\nThey can be used, for example, to apply automatic price adjustments that are based on preconfigured\n[pricing rules](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogPricingRule).",
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderPricingOptions')
-
-const RefundSchema = z
-  .object({
-    additional_recipients: z
-      .array(AdditionalRecipientSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional recipients (other than the merchant) receiving a portion of this refund.\nFor example, fees assessed on a refund of a purchase by a third party integration.',
-        'x-is-deprecated': true,
-        'x-release-status': 'DEPRECATED',
-      }),
-    amount_money: MoneySchema,
-    created_at: z
-      .string()
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp for when the refund was created, in RFC 3339 format.',
-        'x-read-only': true,
-      }),
-    id: z.string().max(255).openapi({ description: "The refund's unique ID." }),
-    location_id: z
-      .string()
-      .max(50)
-      .openapi({ description: "The ID of the refund's associated location." }),
-    processing_fee_money: MoneySchema.exactOptional(),
-    reason: z.string().max(192).openapi({ description: 'The reason for the refund being issued.' }),
-    status: z
-      .string()
-      .openapi({
-        description:
-          'The current status of the refund (`PENDING`, `APPROVED`, `REJECTED`,\nor `FAILED`).',
-      }),
-    tender_id: z.string().max(192).openapi({ description: 'The ID of the refunded tender.' }),
-    transaction_id: z
-      .string()
-      .max(192)
-      .openapi({ description: 'The ID of the transaction that the refunded tender is part of.' }),
-  })
-  .openapi({
-    description: 'Represents a refund processed for a Square transaction.',
-    required: [
-      'id',
-      'location_id',
-      'transaction_id',
-      'tender_id',
-      'reason',
-      'amount_money',
-      'status',
-    ],
-    'x-release-status': 'PUBLIC',
-  })
-  .openapi('Refund')
-
-const OrderReturnDiscountSchema = z
-  .object({
-    amount_money: MoneySchema.exactOptional(),
-    applied_money: MoneySchema.exactOptional(),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The catalog object ID referencing [CatalogDiscount](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogDiscount).',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this discount references.',
-      }),
-    name: z.string().max(255).exactOptional().openapi({ description: "The discount's name." }),
-    percentage: z
-      .string()
-      .max(10)
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of the tax, as a string representation of a decimal number.\nA value of `"7.25"` corresponds to a percentage of 7.25%.\n\n`percentage` is not set for amount-based discounts.',
-      }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the level at which the `OrderReturnDiscount` applies. For `ORDER` scoped\ndiscounts, the server generates references in `applied_discounts` on all\n`OrderReturnLineItem`s. For `LINE_ITEM` scoped discounts, the discount is only applied to\n`OrderReturnLineItem`s with references in their `applied_discounts` field.',
-      }),
-    source_discount_uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description:
-          'The discount `uid` from the order that contains the original application of this discount.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the discount. If it is created by the API, it is `FIXED_PERCENTAGE` or `FIXED_AMOUNT`.\n\nDiscounts that do not reference a catalog object ID must have a type of\n`FIXED_PERCENTAGE` or `FIXED_AMOUNT`.',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the returned discount only within this order.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a discount being returned that applies to one or more return line items in an\norder.\n\nFixed-amount, order-scoped discounts are distributed across all non-zero return line item totals.\nThe amount distributed to each return line item is relative to that item’s contribution to the\norder subtotal.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderReturnDiscount')
-
-const OrderReturnLineItemModifierSchema = z
-  .object({
-    base_price_money: MoneySchema.exactOptional(),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The catalog object ID referencing [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier).',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this line item modifier references.',
-      }),
-    name: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The name of the item modifier.' }),
-    source_modifier_uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description:
-          "The modifier `uid` from the order's line item that contains the\noriginal sale of this line item modifier.",
-      }),
-    total_price_money: MoneySchema.exactOptional(),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the return modifier only within this order.',
-      }),
-  })
-  .openapi({
-    description: 'A line item modifier being returned.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderReturnLineItemModifier')
-
-const OrderReturnLineItemSchema = z
-  .object({
-    applied_discounts: z
-      .array(OrderLineItemAppliedDiscountSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of references to `OrderReturnDiscount` entities applied to the return line item. Each\n`OrderLineItemAppliedDiscount` has a `discount_uid` that references the `uid` of a top-level\n`OrderReturnDiscount` applied to the return line item. On reads, the applied amount\nis populated.',
-      }),
-    applied_taxes: z
-      .array(OrderLineItemAppliedTaxSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of references to `OrderReturnTax` entities applied to the return line item. Each\n`OrderLineItemAppliedTax` has a `tax_uid` that references the `uid` of a top-level\n`OrderReturnTax` applied to the return line item. On reads, the applied amount\nis populated.',
-      }),
-    base_price_money: MoneySchema.exactOptional(),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The [CatalogItemVariation](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogItemVariation) ID applied to this return line item.',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this line item references.',
-      }),
-    gross_return_money: MoneySchema.exactOptional(),
-    item_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of line item: an itemized return, a non-itemized return (custom amount),\nor the return of an unactivated gift card sale.',
-      }),
-    name: z
-      .string()
-      .max(512)
-      .exactOptional()
-      .openapi({ description: 'The name of the line item.' }),
-    note: z
-      .string()
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: 'The note of the return line item.' }),
-    quantity: z
-      .string()
-      .min(1)
-      .max(12)
-      .openapi({
-        description:
-          'The quantity returned, formatted as a decimal number.\nFor example, `"3"`.\n\nLine items with a `quantity_unit` can have non-integer quantities.\nFor example, `"1.70000"`.',
-      }),
-    quantity_unit: OrderQuantityUnitSchema.exactOptional(),
-    return_modifiers: z
-      .array(OrderReturnLineItemModifierSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The [CatalogModifier](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogModifier)s applied to this line item.',
-      }),
-    source_line_item_uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({ description: 'The `uid` of the line item in the original sale order.' }),
-    total_discount_money: MoneySchema.exactOptional(),
-    total_money: MoneySchema.exactOptional(),
-    total_tax_money: MoneySchema.exactOptional(),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({ description: 'A unique ID for this return line-item entry.' }),
-    variation_name: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The name of the variation applied to this return line item.' }),
-    variation_total_price_money: MoneySchema.exactOptional(),
-  })
-  .openapi({
-    description: 'The line item being returned in an order.',
-    required: ['quantity'],
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-  })
-  .openapi('OrderReturnLineItem')
-
-const OrderReturnServiceChargeSchema = z
-  .object({
-    amount_money: MoneySchema.exactOptional(),
-    applied_money: MoneySchema.exactOptional(),
-    applied_taxes: z
-      .array(OrderLineItemAppliedTaxSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of references to `OrderReturnTax` entities applied to the\n`OrderReturnServiceCharge`. Each `OrderLineItemAppliedTax` has a `tax_uid`\nthat references the `uid` of a top-level `OrderReturnTax` that is being\napplied to the `OrderReturnServiceCharge`. On reads, the applied amount is\npopulated.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    calculation_phase: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The calculation phase after which to apply the service charge.',
-        'x-read-only': true,
-      }),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The catalog object ID of the associated [OrderServiceCharge](https://developer.squareup.com/reference/square_2021-08-18/objects/OrderServiceCharge).',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this service charge references.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    name: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The name of the service charge.' }),
-    percentage: z
-      .string()
-      .max(10)
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of the service charge, as a string representation of\na decimal number. For example, a value of `"7.25"` corresponds to a\npercentage of 7.25%.\n\nEither `percentage` or `amount_money` should be set, but not both.',
-      }),
-    source_service_charge_uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description:
-          'The service charge `uid` from the order containing the original\nservice charge. `source_service_charge_uid` is `null` for\nunlinked returns.',
-      }),
-    taxable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the surcharge can be taxed. Service charges\ncalculated in the `TOTAL_PHASE` cannot be marked as taxable.',
-      }),
-    total_money: MoneySchema.exactOptional(),
-    total_tax_money: MoneySchema.exactOptional(),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique ID that identifies the return service charge only within this order.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description: 'Represents the service charge applied to the original order.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderReturnServiceCharge')
-
-const OrderReturnTaxSchema = z
-  .object({
-    applied_money: MoneySchema.exactOptional(),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The catalog object ID referencing [CatalogTax](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogTax).',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this tax references.',
-      }),
-    name: z.string().max(255).exactOptional().openapi({ description: "The tax's name." }),
-    percentage: z
-      .string()
-      .max(10)
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of the tax, as a string representation of a decimal number.\nFor example, a value of `"7.25"` corresponds to a percentage of 7.25%.',
-      }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the level at which the `OrderReturnTax` applies. For `ORDER` scoped\ntaxes, Square generates references in `applied_taxes` on all\n`OrderReturnLineItem`s. For `LINE_ITEM` scoped taxes, the tax is only applied to\n`OrderReturnLineItem`s with references in their `applied_discounts` field.',
-      }),
-    source_tax_uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'The tax `uid` from the order that contains the original tax charge.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates the calculation method used to apply the tax.' }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the returned tax only within this order.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a tax being returned that applies to one or more return line items in an order.\n\nFixed-amount, order-scoped taxes are distributed across all non-zero return line item totals.\nThe amount distributed to each return line item is relative to that item’s contribution to the\norder subtotal.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderReturnTax')
-
-const OrderRoundingAdjustmentSchema = z
-  .object({
-    amount_money: MoneySchema.exactOptional(),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the rounding adjustment from the original sale order.',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the rounding adjustment only within this order.',
-      }),
-  })
-  .openapi({
-    description:
-      'A rounding adjustment of the money being returned. Commonly used to apply cash rounding\nwhen the minimum unit of the account is smaller than the lowest physical denomination of the currency.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderRoundingAdjustment')
-
-const OrderReturnSchema = z
-  .object({
-    return_amounts: OrderMoneyAmountsSchema.exactOptional(),
-    return_discounts: z
-      .array(OrderReturnDiscountSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A collection of references to discounts being returned for an order, including the total\napplied discount amount to be returned. The discounts must reference a top-level discount ID\nfrom the source order.',
-      }),
-    return_line_items: z
-      .array(OrderReturnLineItemSchema)
-      .exactOptional()
-      .openapi({ description: 'A collection of line items that are being returned.' }),
-    return_service_charges: z
-      .array(OrderReturnServiceChargeSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A collection of service charges that are being returned.',
-        'x-read-only': true,
-      }),
-    return_taxes: z
-      .array(OrderReturnTaxSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A collection of references to taxes being returned for an order, including the total\napplied tax amount to be returned. The taxes must reference a top-level tax ID from the source\norder.',
-      }),
-    rounding_adjustment: OrderRoundingAdjustmentSchema.exactOptional(),
-    source_order_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An order that contains the original sale of these return line items. This is unset\nfor unlinked returns.',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({ description: 'A unique ID that identifies the return only within this order.' }),
-  })
-  .openapi({
-    description:
-      'The set of line items, service charges, taxes, discounts, tips, and other items being returned in an order.',
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-    required: [],
-  })
-  .openapi('OrderReturn')
-
-const OrderRewardSchema = z
-  .object({
-    id: z.string().min(1).openapi({ description: 'The identifier of the reward.' }),
-    reward_tier_id: z
-      .string()
-      .min(1)
-      .openapi({ description: 'The identifier of the reward tier corresponding to this reward.' }),
-  })
-  .openapi({
-    description:
-      'Represents a reward that can be applied to an order if the necessary\nreward tier criteria are met. Rewards are created through the Loyalty API.',
-    required: ['id', 'reward_tier_id'],
-    'x-is-beta': true,
-    'x-release-status': 'BETA',
-  })
-  .openapi('OrderReward')
-
-const OrderServiceChargeSchema = z
-  .object({
-    amount_money: MoneySchema.exactOptional(),
-    applied_money: MoneySchema.exactOptional(),
-    applied_taxes: z
-      .array(OrderLineItemAppliedTaxSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of references to the taxes applied to this service charge. Each\n`OrderLineItemAppliedTax` has a `tax_uid` that references the `uid` of a top-level\n`OrderLineItemTax` that is being applied to this service charge. On reads, the amount applied\nis populated.\n\nAn `OrderLineItemAppliedTax` is automatically created on every taxable service charge\nfor all `ORDER` scoped taxes that are added to the order. `OrderLineItemAppliedTax` records\nfor `LINE_ITEM` scoped taxes must be added in requests for the tax to apply to any taxable\nservice charge. Taxable service charges have the `taxable` field set to `true` and calculated\nin the `SUBTOTAL_PHASE`.\n\nTo change the amount of a tax, modify the referenced top-level tax.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    calculation_phase: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The calculation phase at which to apply the service charge.' }),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The catalog object ID referencing the service charge [CatalogObject](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogObject).',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this service charge references.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Application-defined data attached to this service charge. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    name: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The name of the service charge.' }),
-    percentage: z
-      .string()
-      .max(10)
-      .exactOptional()
-      .openapi({
-        description:
-          'The service charge percentage as a string representation of a\ndecimal number. For example, `"7.25"` indicates a service charge of 7.25%.\n\nExactly 1 of `percentage` or `amount_money` should be set.',
-      }),
-    taxable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the service charge can be taxed. If set to `true`,\norder-level taxes automatically apply to the service charge. Note that\nservice charges calculated in the `TOTAL_PHASE` cannot be marked as taxable.',
-      }),
-    total_money: MoneySchema.exactOptional(),
-    total_tax_money: MoneySchema.exactOptional(),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of the service charge.',
-        'x-is-beta': true,
-        'x-read-only': true,
-        'x-release-status': 'BETA',
-      }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the service charge only within this order.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description: 'Represents a service charge applied to an order.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderServiceCharge')
-
-const OrderSourceSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name used to identify the place (physical or digital) that an order originates.\nIf unset, the name defaults to the name of the application that created the order.',
-      }),
-  })
-  .openapi({
-    description: 'Represents the origination details of an order.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderSource')
-
-const OrderLineItemTaxSchema = z
-  .object({
-    applied_money: MoneySchema.exactOptional(),
-    auto_applied: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines whether the tax was automatically applied to the order based on\nthe catalog configuration. For an example, see \n[Automatically Apply Taxes to an Order](https://developer.squareup.com/docs/orders-api/apply-taxes-and-discounts/auto-apply-taxes).',
-        'x-is-beta': true,
-        'x-read-only': true,
-        'x-release-status': 'BETA',
-      }),
-    catalog_object_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The catalog object ID referencing [CatalogTax](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogTax).',
-      }),
-    catalog_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The version of the catalog object that this tax references.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Application-defined data attached to this tax. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    name: z.string().max(255).exactOptional().openapi({ description: "The tax's name." }),
-    percentage: z
-      .string()
-      .max(10)
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of the tax, as a string representation of a decimal\nnumber. For example, a value of `"7.25"` corresponds to a percentage of\n7.25%.',
-      }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the level at which the tax applies. For `ORDER` scoped taxes,\nSquare generates references in `applied_taxes` on all order line items that do\nnot have them. For `LINE_ITEM` scoped taxes, the tax only applies to line items\nwith references in their `applied_taxes` field.\n\nThis field is immutable. To change the scope, you must delete the tax and\nre-add it as a new tax.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates the calculation method used to apply the tax.' }),
-    uid: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that identifies the tax only within this order.',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a tax that applies to one or more line item in the order.\n\nFixed-amount, order-scoped taxes are distributed across all non-zero line item totals.\nThe amount distributed to each line item is relative to the amount the item\ncontributes to the order subtotal.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderLineItemTax')
-
-const CardSchema = z
-  .object({
-    billing_address: AddressSchema.exactOptional(),
-    bin: z
-      .string()
-      .max(6)
-      .exactOptional()
-      .openapi({
-        description:
-          'The first six digits of the card number, known as the Bank Identification Number (BIN). Only the Payments API\nreturns this field.',
-        'x-read-only': true,
-      }),
-    card_brand: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The card's brand.", 'x-read-only': true }),
-    card_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the card.\nThe Card object includes this field only in response to Payments API calls.',
-        'x-read-only': true,
-      }),
-    cardholder_name: z
-      .string()
-      .max(96)
-      .exactOptional()
-      .openapi({ description: 'The name of the cardholder.' }),
-    customer_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of a customer created using the Customers API to be associated with the card.',
-      }),
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether or not a card can be used for payments.',
-        'x-read-only': true,
-      }),
-    exp_month: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The expiration month of the associated card as an integer between 1 and 12.',
-      }),
-    exp_year: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: "The four-digit year of the card's expiration date.",
-      }),
-    fingerprint: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          '__Not currently set.__ Intended as a Square-assigned identifier, based\non the card number, to identify the card across multiple locations within a\nsingle application.',
-        'x-read-only': true,
-      }),
-    id: z
-      .string()
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description: 'Unique ID for this card. Generated by Square.',
-        'x-read-only': true,
-      }),
-    last_4: z
-      .string()
-      .max(4)
-      .exactOptional()
-      .openapi({ description: 'The last 4 digits of the card number.', 'x-read-only': true }),
-    prepaid_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the Card is prepaid or not.\nThe Card object includes this field only in response to Payments API calls.',
-        'x-read-only': true,
-      }),
-    reference_id: z
-      .string()
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description:
-          'An optional user-defined reference ID that associates this card with\nanother entity in an external system. For example, a customer ID from an\nexternal customer management system.',
-      }),
-    version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Current version number of the card. Increments with each card update. Requests to update an\nexisting Card object will be rejected unless the version in the request matches the current\nversion for the Card.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents the payment details of a card to be used for payments. These\ndetails are determined by the payment token generated by Web Payments SDK.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('Card')
-
-const TenderCardDetailsSchema = z
-  .object({
-    card: CardSchema.exactOptional(),
-    entry_method: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The method used to enter the card's details for the transaction." }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The credit card payment's current state (such as `AUTHORIZED` or\n`CAPTURED`). See [TenderCardDetailsStatus](https://developer.squareup.com/reference/square_2021-08-18/objects/TenderCardDetailsStatus)\nfor possible values.",
-      }),
-  })
-  .openapi({
-    description:
-      'Represents additional details of a tender with `type` `CARD` or `SQUARE_GIFT_CARD`',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('TenderCardDetails')
-
-const TenderCashDetailsSchema = z
-  .object({
-    buyer_tendered_money: MoneySchema.exactOptional(),
-    change_back_money: MoneySchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Represents the details of a tender with `type` `CASH`.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('TenderCashDetails')
-
-const TenderSchema = z
-  .object({
-    additional_recipients: z
-      .array(AdditionalRecipientSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional recipients (other than the merchant) receiving a portion of this tender.\nFor example, fees assessed on the purchase by a third party integration.',
-        'x-is-deprecated': true,
-        'x-release-status': 'DEPRECATED',
-      }),
-    amount_money: MoneySchema.exactOptional(),
-    card_details: TenderCardDetailsSchema.exactOptional(),
-    cash_details: TenderCashDetailsSchema.exactOptional(),
-    created_at: z
-      .string()
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp for when the tender was created, in RFC 3339 format.',
-        'x-read-only': true,
-      }),
-    customer_id: z
-      .string()
-      .max(191)
-      .exactOptional()
-      .openapi({
-        description:
-          "If the tender is associated with a customer or represents a customer's card on file,\nthis is the ID of the associated customer.",
-      }),
-    id: z.string().max(192).exactOptional().openapi({ description: "The tender's unique ID." }),
-    location_id: z
-      .string()
-      .max(50)
-      .exactOptional()
-      .openapi({ description: "The ID of the transaction's associated location." }),
-    note: z
-      .string()
-      .max(500)
-      .exactOptional()
-      .openapi({
-        description: 'An optional note associated with the tender at the time of payment.',
-      }),
-    payment_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the [Payment](https://developer.squareup.com/reference/square_2021-08-18/objects/Payment) that corresponds to this tender.\nThis value is only present for payments created with the v2 Payments API.',
-      }),
-    processing_fee_money: MoneySchema.exactOptional(),
-    tip_money: MoneySchema.exactOptional(),
-    transaction_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({ description: "The ID of the tender's associated transaction." }),
-    type: z.string().openapi({ description: 'The type of tender, such as `CARD` or `CASH`.' }),
-  })
-  .openapi({
-    description: 'Represents a tender (i.e., a method of payment) used in a Square transaction.',
-    required: ['type'],
-    'x-release-status': 'PUBLIC',
-  })
-  .openapi('Tender')
-
-const OrderSchema = z
-  .object({
-    closed_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp for when the order reached a terminal [state](https://developer.squareup.com/reference/square_2021-08-18/enums/OrderState), in RFC 3339 format (for example "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    created_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp for when the order was created, in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    customer_id: z
-      .string()
-      .max(191)
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the [customer](https://developer.squareup.com/reference/square_2021-08-18/objects/Customer) associated with the order.\n\n__IMPORTANT:__ You should specify a `customer_id` if you want the corresponding payment transactions\nto be explicitly linked to the customer in the Seller Dashboard. If this field is omitted, the \n`customer_id` assigned to any underlying `Payment` objects is ignored and might result in the \ncreation of new [instant profiles](https://developer.squareup.com/docs/customers-api/what-it-does#instant-profiles).',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    discounts: z
-      .array(OrderLineItemDiscountSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of all discounts associated with the order.\n\nDiscounts can be scoped to either `ORDER` or `LINE_ITEM`. For discounts scoped to `LINE_ITEM`,\nan `OrderLineItemAppliedDiscount` must be added to each line item that the discount applies to.\nFor discounts with `ORDER` scope, the server generates an `OrderLineItemAppliedDiscount`\nfor every line item.\n\n__IMPORTANT__: If `LINE_ITEM` scope is set on any discounts in this field, using the deprecated\n`line_items.discounts` field results in an error. Use `line_items.applied_discounts`\ninstead.',
-      }),
-    fulfillments: z
-      .array(OrderFulfillmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Details about order fulfillment.\n\nOrders can only be created with at most one fulfillment. However, orders returned\nby the API might contain multiple fulfillments.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The order's unique ID.", 'x-read-only': true }),
-    line_items: z
-      .array(OrderLineItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The line items included in the order.' }),
-    location_id: z
-      .string()
-      .min(1)
-      .openapi({
-        description: 'The ID of the seller location that this order is associated with.',
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Application-defined data attached to this order. Metadata fields are intended\nto store descriptive references or associations with an entity in another system or store brief\ninformation about the object. Square does not process this field; it only stores and returns it\nin relevant API calls. Do not use metadata to store any sensitive information (such as personally\nidentifiable information or card details).\n\nKeys written by applications must be 60 characters or less and must be in the character set\n`[a-zA-Z0-9_-]`. Entries can also include metadata generated by Square. These keys are prefixed\nwith a namespace, separated from the key with a ':' character.\n\nValues have a maximum length of 255 characters.\n\nAn application can have up to 10 entries per metadata field.\n\nEntries written by applications are private and can only be read or modified by the same\napplication.\n\nFor more information, see  [Metadata](https://developer.squareup.com/docs/build-basics/metadata).",
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-    net_amounts: OrderMoneyAmountsSchema.exactOptional(),
-    pricing_options: OrderPricingOptionsSchema.exactOptional(),
-    reference_id: z
-      .string()
-      .max(40)
-      .exactOptional()
-      .openapi({
-        description:
-          'A client-specified ID to associate an entity in another system\nwith this order.',
-      }),
-    refunds: z
-      .array(RefundSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The refunds that are part of this order.',
-        'x-is-beta': true,
-        'x-read-only': true,
-        'x-release-status': 'BETA',
-      }),
-    return_amounts: OrderMoneyAmountsSchema.exactOptional(),
-    returns: z
-      .array(OrderReturnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A collection of items from sale orders being returned in this one. Normally part of an\nitemized return or exchange. There is exactly one `Return` object per sale `Order` being\nreferenced.',
-        'x-is-beta': true,
-        'x-read-only': true,
-        'x-release-status': 'BETA',
-      }),
-    rewards: z
-      .array(OrderRewardSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A set-like list of Rewards that have been added to the Order.',
-        'x-is-beta': true,
-        'x-read-only': true,
-        'x-release-status': 'BETA',
-      }),
-    rounding_adjustment: OrderRoundingAdjustmentSchema.exactOptional(),
-    service_charges: z
-      .array(OrderServiceChargeSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of service charges applied to the order.' }),
-    source: OrderSourceSchema.exactOptional(),
-    state: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The current state of the order: `OPEN`, `COMPLETED`, or `CANCELED`.',
-      }),
-    taxes: z
-      .array(OrderLineItemTaxSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of all taxes associated with the order.\n\nTaxes can be scoped to either `ORDER` or `LINE_ITEM`. For taxes with `LINE_ITEM` scope, an\n`OrderLineItemAppliedTax` must be added to each line item that the tax applies to. For taxes\nwith `ORDER` scope, the server generates an `OrderLineItemAppliedTax` for every line item.\n\nOn reads, each tax in the list includes the total amount of that tax applied to the order.\n\n__IMPORTANT__: If `LINE_ITEM` scope is set on any taxes in this field, using the deprecated\n`line_items.taxes` field results in an error. Use `line_items.applied_taxes`\ninstead.',
-      }),
-    tenders: z
-      .array(TenderSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The tenders that were used to pay for the order.',
-        'x-is-beta': true,
-        'x-read-only': true,
-        'x-release-status': 'BETA',
-      }),
-    total_discount_money: MoneySchema.exactOptional(),
-    total_money: MoneySchema.exactOptional(),
-    total_service_charge_money: MoneySchema.exactOptional(),
-    total_tax_money: MoneySchema.exactOptional(),
-    total_tip_money: MoneySchema.exactOptional(),
-    updated_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp for when the order was last updated, in RFC 3339 format (for example, "2016-09-04T23:59:33.123Z").',
-        'x-read-only': true,
-      }),
-    version: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The version number, which is incremented each time an update is committed to the order.\nOrders not created through the API do not include a version number and\ntherefore cannot be updated.\n\n[Read more about working with versions](https://developer.squareup.com/docs/orders-api/manage-orders#update-orders).',
-        'x-is-beta': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description:
-      'Contains all information related to a single order to process with Square,\nincluding line items that specify the products to purchase. `Order` objects also\ninclude information about any associated tenders, refunds, and returns.\n\nAll Connect V2 Transactions have all been converted to Orders including all associated\nitemization data.',
-    required: ['location_id'],
-    'x-release-status': 'PUBLIC',
-  })
-  .openapi('Order')
-
-const BatchRetrieveOrdersResponseSchema = z
+const BatchRetrieveOrdersResponseSchema: z.ZodType<BatchRetrieveOrdersResponseType> = z
   .object({
     errors: z
       .array(ErrorSchema)
@@ -6175,20 +7107,7 @@ const BatchRetrieveOrdersResponseSchema = z
   })
   .openapi('BatchRetrieveOrdersResponse')
 
-const CatalogObjectBatchSchema = z
-  .object({
-    objects: z
-      .array(CatalogObjectSchema)
-      .openapi({ description: 'A list of CatalogObjects belonging to this batch.' }),
-  })
-  .openapi({
-    description: 'A batch of catalog objects.',
-    required: ['objects'],
-    'x-release-status': 'PUBLIC',
-  })
-  .openapi('CatalogObjectBatch')
-
-const BatchUpsertCatalogObjectsRequestSchema = z
+const BatchUpsertCatalogObjectsRequestSchema: z.ZodType<BatchUpsertCatalogObjectsRequestType> = z
   .object({
     batches: z
       .array(CatalogObjectBatchSchema)
@@ -6311,28 +7230,7 @@ const BatchUpsertCatalogObjectsRequestSchema = z
   })
   .openapi('BatchUpsertCatalogObjectsRequest')
 
-const CatalogIdMappingSchema = z
-  .object({
-    client_object_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The client-supplied temporary `#`-prefixed ID for a new `CatalogObject`.',
-      }),
-    object_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The permanent ID for the CatalogObject created by the server.' }),
-  })
-  .openapi({
-    description:
-      'A mapping between a temporary client-supplied ID and a permanent server-generated ID.\n\nWhen calling [UpsertCatalogObject](https://developer.squareup.com/reference/square_2021-08-18/catalog-api/upsert-catalog-object) or\n[BatchUpsertCatalogObjects](https://developer.squareup.com/reference/square_2021-08-18/catalog-api/batch-upsert-catalog-objects) to\ncreate a [CatalogObject](https://developer.squareup.com/reference/square_2021-08-18/objects/CatalogObject) instance, you can supply\na temporary ID for the to-be-created object, especially when the object is to be referenced\nelsewhere in the same request body. This temporary ID can be any string unique within\nthe call, but must be prefixed by "#".\n\nAfter the request is submitted and the object created, a permanent server-generated ID is assigned\nto the new object. The permanent ID is unique across the Square catalog.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('CatalogIdMapping')
-
-const BatchUpsertCatalogObjectsResponseSchema = z
+const BatchUpsertCatalogObjectsResponseSchema: z.ZodType<BatchUpsertCatalogObjectsResponseType> = z
   .object({
     errors: z
       .array(ErrorSchema)
@@ -7467,7 +8365,7 @@ const CalculateLoyaltyPointsResponseSchema = z
   })
   .openapi('CalculateLoyaltyPointsResponse')
 
-const CalculateOrderRequestSchema = z
+const CalculateOrderRequestSchema: z.ZodType<CalculateOrderRequestType> = z
   .object({
     order: OrderSchema,
     proposed_rewards: z
@@ -7499,7 +8397,7 @@ const CalculateOrderRequestSchema = z
   })
   .openapi('CalculateOrderRequest')
 
-const CalculateOrderResponseSchema = z
+const CalculateOrderResponseSchema: z.ZodType<CalculateOrderResponseType> = z
   .object({
     errors: z
       .array(ErrorSchema)
@@ -8137,7 +9035,7 @@ const CancelPaymentByIdempotencyKeyResponseSchema = z
   .openapi('CancelPaymentByIdempotencyKeyResponse')
 
 const CancelPaymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Describes the request to cancel (void) a payment using \n[CancelPayment](https://developer.squareup.com/reference/square_2021-08-18/payments-api/cancel-payment). \nYou can only cancel a payment that is approved (not completed).\nFor more information, see \n[Delayed capture of a payment](https://developer.squareup.com/docs/payments-api/take-payments/card-payments#delayed-capture-of-a-card-payment).',
@@ -8676,7 +9574,7 @@ const CancelPaymentResponseSchema = z
   .openapi('CancelPaymentResponse')
 
 const CancelSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines parameters in a\n[CancelSubscription](https://developer.squareup.com/reference/square_2021-08-18/subscriptions-api/cancel-subscription) endpoint request.',
@@ -8838,7 +9736,7 @@ const CancelSubscriptionResponseSchema = z
   .openapi('CancelSubscriptionResponse')
 
 const CancelTerminalCheckoutRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', example: { request_body: {} }, 'x-release-status': 'PUBLIC' })
   .openapi('CancelTerminalCheckoutRequest')
 
@@ -9031,7 +9929,7 @@ const CancelTerminalCheckoutResponseSchema = z
   .openapi('CancelTerminalCheckoutResponse')
 
 const CancelTerminalRefundRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', example: { request_body: {} }, 'x-release-status': 'PUBLIC' })
   .openapi('CancelTerminalRefundRequest')
 
@@ -9176,7 +10074,7 @@ const CancelTerminalRefundResponseSchema = z
   .openapi('CancelTerminalRefundResponse')
 
 const CaptureTransactionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     example: {},
@@ -9643,7 +10541,7 @@ const CatalogDiscountTypeSchema = z
   .openapi('CatalogDiscountType')
 
 const CatalogInfoRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     example: {},
@@ -10439,98 +11337,6 @@ const ChargeRequestSchema = z
   })
   .openapi('ChargeRequest')
 
-const ChargeRequestAdditionalRecipientSchema = z
-  .object({
-    amount_money: MoneySchema,
-    description: z
-      .string()
-      .min(1)
-      .max(100)
-      .openapi({ description: 'The description of the additional recipient.' }),
-    location_id: z
-      .string()
-      .min(1)
-      .max(50)
-      .openapi({
-        description:
-          'The location ID for a recipient (other than the merchant) receiving a portion of the tender.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents an additional recipient (other than the merchant) entitled to a portion of the tender.\nSupport is currently limited to USD, CAD and GBP currencies',
-    required: ['location_id', 'description', 'amount_money'],
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-  })
-  .openapi('ChargeRequestAdditionalRecipient')
-
-const TransactionSchema = z
-  .object({
-    client_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          "If the transaction was created in the Square Point of Sale app, this value\nis the ID generated for the transaction by Square Point of Sale.\n\nThis ID has no relationship to the transaction's canonical `id`, which is\ngenerated by Square's backend servers. This value is generated for bookkeeping\npurposes, in case the transaction cannot immediately be completed (for example,\nif the transaction is processed in offline mode).\n\nIt is not currently possible with the Connect API to perform a transaction\nlookup by this value.",
-      }),
-    created_at: z
-      .string()
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp for when the transaction was created, in RFC 3339 format.',
-      }),
-    id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({ description: "The transaction's unique ID, issued by Square payments servers." }),
-    location_id: z
-      .string()
-      .max(50)
-      .exactOptional()
-      .openapi({ description: "The ID of the transaction's associated location." }),
-    order_id: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'The order_id is an identifier for the order associated with this transaction, if any.',
-      }),
-    product: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Square product that processed the transaction.' }),
-    reference_id: z
-      .string()
-      .max(40)
-      .exactOptional()
-      .openapi({
-        description:
-          'If the transaction was created with the [Charge](https://developer.squareup.com/reference/square_2021-08-18/transactions-api/charge)\nendpoint, this value is the same as the value provided for the `reference_id`\nparameter in the request to that endpoint. Otherwise, it is not set.',
-      }),
-    refunds: z
-      .array(RefundSchema)
-      .exactOptional()
-      .openapi({ description: 'Refunds that have been applied to any tender in the transaction.' }),
-    shipping_address: AddressSchema.exactOptional(),
-    tenders: z
-      .array(TenderSchema)
-      .exactOptional()
-      .openapi({ description: 'The tenders used to pay in the transaction.' }),
-  })
-  .openapi({
-    description:
-      'Represents a transaction processed with Square, either with the\nConnect API or with Square Point of Sale.\n\nThe `tenders` field of this object lists all methods of payment used to pay in\nthe transaction.',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('Transaction')
-
 const ChargeResponseSchema = z
   .object({
     errors: z
@@ -10590,79 +11396,9 @@ const ChargeResponseSchema = z
   .openapi('ChargeResponse')
 
 const CheckAppointmentsOnboardedRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA' })
   .openapi('CheckAppointmentsOnboardedRequest')
-
-const CheckoutSchema = z
-  .object({
-    additional_recipients: z
-      .array(AdditionalRecipientSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional recipients (other than the merchant) receiving a portion of this checkout.\nFor example, fees assessed on the purchase by a third party integration.',
-        'x-is-deprecated': true,
-        'x-release-status': 'DEPRECATED',
-      }),
-    ask_for_shipping_address: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `true`, Square Checkout will collect shipping information on your\nbehalf and store that information with the transaction information in your\nSquare Dashboard.\n\nDefault: `false`.',
-      }),
-    checkout_page_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL that the buyer's browser should be redirected to after the\ncheckout is completed.",
-      }),
-    created_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time when the checkout was created, in RFC 3339 format.',
-        'x-read-only': true,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID generated by Square Checkout when a new checkout is requested.',
-      }),
-    merchant_support_email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The email address to display on the Square Checkout confirmation page\nand confirmation email that the buyer can use to contact the merchant.\n\nIf this value is not set, the confirmation page and email will display the\nprimary email address associated with the merchant's Square account.\n\nDefault: none; only exists if explicitly set.",
-      }),
-    order: OrderSchema.exactOptional(),
-    pre_populate_buyer_email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "If provided, the buyer's email is pre-populated on the checkout page\nas an editable text field.\n\nDefault: none; only exists if explicitly set.",
-      }),
-    pre_populate_shipping_address: AddressSchema.exactOptional(),
-    redirect_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL to redirect to after checkout is completed with `checkoutId`,\nSquare's `orderId`, `transactionId`, and `referenceId` appended as URL\nparameters. For example, if the provided redirect_url is\n`http://www.example.com/order-complete`, a successful transaction redirects\nthe customer to:\n\n<pre><code>http://www.example.com/order-complete?checkoutId=xxxxxx&amp;orderId=xxxxxx&amp;referenceId=xxxxxx&amp;transactionId=xxxxxx</code></pre>\n\nIf you do not provide a redirect URL, Square Checkout will display an order\nconfirmation page on your behalf; however Square strongly recommends that\nyou provide a redirect URL so you can verify the transaction results and\nfinalize the order through your existing/normal confirmation workflow.",
-      }),
-  })
-  .openapi({
-    description:
-      'Square Checkout lets merchants accept online payments for supported\npayment types using a checkout workflow hosted on squareup.com.',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('Checkout')
 
 const CheckoutOptionsPaymentTypeSchema = z
   .enum([
@@ -10708,7 +11444,7 @@ const CheckoutOptionsPaymentTypeSchema = z
   .openapi('CheckoutOptionsPaymentType')
 
 const CompletePaymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Describes a request to complete (capture) a payment using \n[CompletePayment](https://developer.squareup.com/reference/square_2021-08-18/payments-api/complete-payment).\n\nBy default, payments are set to `autocomplete` immediately after they are created.\nTo complete payments manually, set `autocomplete` to `false`.',
@@ -11530,65 +12266,7 @@ const CreateCardResponseSchema = z
   })
   .openapi('CreateCardResponse')
 
-const CreateOrderRequestSchema = z
-  .object({
-    idempotency_key: z
-      .string()
-      .max(192)
-      .exactOptional()
-      .openapi({
-        description:
-          'A value you specify that uniquely identifies this\norder among orders you have created.\n\nIf you are unsure whether a particular order was created successfully,\nyou can try it again with the same idempotency key without\nworrying about creating duplicate orders.\n\nFor more information, see [Idempotency](https://developer.squareup.com/docs/basics/api101/idempotency).',
-      }),
-    order: OrderSchema.exactOptional(),
-  })
-  .openapi({
-    description: '',
-    example: {
-      request_body: {
-        idempotency_key: '8193148c-9586-11e6-99f9-28cfe92138cf',
-        order: {
-          discounts: [
-            { name: 'Labor Day Sale', percentage: '5', scope: 'ORDER', uid: 'labor-day-sale' },
-            {
-              catalog_object_id: 'DB7L55ZH2BGWI4H23ULIWOQ7',
-              scope: 'ORDER',
-              uid: 'membership-discount',
-            },
-            {
-              amount_money: { amount: 100, currency: 'USD' },
-              name: 'Sale - $1.00 off',
-              scope: 'LINE_ITEM',
-              uid: 'one-dollar-off',
-            },
-          ],
-          line_items: [
-            {
-              base_price_money: { amount: 1599, currency: 'USD' },
-              name: 'New York Strip Steak',
-              quantity: '1',
-            },
-            {
-              applied_discounts: [{ discount_uid: 'one-dollar-off' }],
-              catalog_object_id: 'BEMYCSMIJL46OCDV4KYIKXIB',
-              modifiers: [{ catalog_object_id: 'CHQX7Y4KY6N5KINJKZCFURPZ' }],
-              quantity: '2',
-            },
-          ],
-          location_id: '057P5VYJ4A5X1',
-          reference_id: 'my-order-001',
-          taxes: [
-            { name: 'State Sales Tax', percentage: '9', scope: 'ORDER', uid: 'state-sales-tax' },
-          ],
-        },
-      },
-    },
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('CreateOrderRequest')
-
-const CreateCheckoutRequestSchema = z
+const CreateCheckoutRequestSchema: z.ZodType<CreateCheckoutRequestType> = z
   .object({
     additional_recipients: z
       .array(ChargeRequestAdditionalRecipientSchema)
@@ -11732,7 +12410,7 @@ const CreateCheckoutRequestSchema = z
   })
   .openapi('CreateCheckoutRequest')
 
-const CreateCheckoutResponseSchema = z
+const CreateCheckoutResponseSchema: z.ZodType<CreateCheckoutResponseType> = z
   .object({
     checkout: CheckoutSchema.exactOptional(),
     errors: z
@@ -13760,7 +14438,7 @@ const CreateMobileAuthorizationCodeResponseSchema = z
   })
   .openapi('CreateMobileAuthorizationCodeResponse')
 
-const CreateOrderResponseSchema = z
+const CreateOrderResponseSchema: z.ZodType<CreateOrderResponseType> = z
   .object({
     errors: z
       .array(ErrorSchema)
@@ -15476,7 +16154,7 @@ const DayOfWeekSchema = z
   .openapi('DayOfWeek')
 
 const DeleteBreakTypeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to delete a `BreakType`.',
     example: {},
@@ -15501,7 +16179,7 @@ const DeleteBreakTypeResponseSchema = z
   .openapi('DeleteBreakTypeResponse')
 
 const DeleteCatalogObjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     example: {},
@@ -15558,7 +16236,7 @@ const DeleteCatalogObjectResponseSchema = z
   .openapi('DeleteCatalogObjectResponse')
 
 const DeleteCustomerCardRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the fields that are included in requests to the\n`DeleteCustomerCard` endpoint.',
@@ -15602,7 +16280,7 @@ const DeleteCustomerCardResponseSchema = z
   .openapi('DeleteCustomerCardResponse')
 
 const DeleteCustomerGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the fields that can be included in a request to the\n[DeleteCustomerGroup](https://developer.squareup.com/reference/square_2021-08-18/customer-groups-api/delete-customer-group) endpoint.',
@@ -15689,7 +16367,7 @@ const DeleteCustomerResponseSchema = z
   .openapi('DeleteCustomerResponse')
 
 const DeleteDisputeEvidenceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Defines the parameters for a `DeleteDisputeEvidence` request.',
     example: { request_body: {} },
@@ -15745,7 +16423,7 @@ const DeleteInvoiceResponseSchema = z
   .openapi('DeleteInvoiceResponse')
 
 const DeleteLoyaltyRewardRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to delete a loyalty reward.',
     example: { request_params: '?reward_id=9f18ac21-233a-31c3-be77-b45840f5a810' },
@@ -15769,7 +16447,7 @@ const DeleteLoyaltyRewardResponseSchema = z
   .openapi('DeleteLoyaltyRewardResponse')
 
 const DeleteShiftRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to delete a `Shift`.',
     example: {},
@@ -15794,7 +16472,7 @@ const DeleteShiftResponseSchema = z
   .openapi('DeleteShiftResponse')
 
 const DeleteSnippetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Represents a `DeleteSnippet` request.', 'x-release-status': 'PUBLIC' })
   .openapi('DeleteSnippetRequest')
 
@@ -15923,22 +16601,6 @@ const DeprecatedCreateDisputeEvidenceTextResponseSchema = z
   })
   .openapi('DeprecatedCreateDisputeEvidenceTextResponse')
 
-const DeviceSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: "The device's Square-issued ID." }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The device's merchant-specified name." }),
-  })
-  .openapi({
-    description: '',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('Device')
-
 const DeviceCodeStatusSchema = z
   .enum(['UNKNOWN', 'UNPAIRED', 'PAIRED', 'EXPIRED'])
   .openapi({
@@ -15957,7 +16619,7 @@ const DeviceCodeStatusSchema = z
   .openapi('DeviceCodeStatus')
 
 const DisableCardRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Disables the card, preventing any further updates or charges. Disabling\nan already disabled card is allowed but has no effect. Accessible via\nHTTP requests at POST https://connect.squareup.com/v2/cards/{card_id}/disable',
@@ -17049,7 +17711,7 @@ const ExcludeStrategySchema = z
   .openapi('ExcludeStrategy')
 
 const GetBankAccountByV1IdRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Request object for fetching a specific `BankAccount`\nby the object ID.',
     'x-release-status': 'PUBLIC',
@@ -17089,7 +17751,7 @@ const GetBankAccountByV1IdResponseSchema = z
   .openapi('GetBankAccountByV1IdResponse')
 
 const GetBankAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Request object to fetch a specific `BankAccount`\nby the object ID.',
     'x-release-status': 'PUBLIC',
@@ -17129,7 +17791,7 @@ const GetBankAccountResponseSchema = z
   .openapi('GetBankAccountResponse')
 
 const GetBreakTypeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to get a `BreakType` by ID.',
     example: {},
@@ -17166,7 +17828,7 @@ const GetBreakTypeResponseSchema = z
   .openapi('GetBreakTypeResponse')
 
 const GetDeviceCodeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', example: { request_body: {} }, 'x-release-status': 'PUBLIC' })
   .openapi('GetDeviceCodeRequest')
 
@@ -17200,7 +17862,7 @@ const GetDeviceCodeResponseSchema = z
   .openapi('GetDeviceCodeResponse')
 
 const GetEmployeeWageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to get an `EmployeeWage`.',
     example: {},
@@ -17235,7 +17897,7 @@ const GetEmployeeWageResponseSchema = z
   .openapi('GetEmployeeWageResponse')
 
 const GetInvoiceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Describes a `GetInvoice` request.', 'x-release-status': 'PUBLIC' })
   .openapi('GetInvoiceRequest')
 
@@ -17307,7 +17969,7 @@ const GetInvoiceResponseSchema = z
   .openapi('GetInvoiceResponse')
 
 const GetPaymentRefundRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Describes a request to retrieve a refund using \n[GetPaymentRefund](https://developer.squareup.com/reference/square_2021-08-18/refunds-api/get-payment-refund).',
@@ -17422,7 +18084,7 @@ const GetPaymentRefundResponseSchema = z
   .openapi('GetPaymentRefundResponse')
 
 const GetPaymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Describes a request to retrieve a payment using \n[GetPayment](https://developer.squareup.com/reference/square_2021-08-18/payments-api/get-payment).',
@@ -17498,7 +18160,7 @@ const GetPaymentResponseSchema = z
   .openapi('GetPaymentResponse')
 
 const GetShiftRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to get a `Shift` by ID.',
     example: {},
@@ -17550,7 +18212,7 @@ const GetShiftResponseSchema = z
   .openapi('GetShiftResponse')
 
 const GetTeamMemberWageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to get a `TeamMemberWage`.',
     example: {},
@@ -17604,7 +18266,7 @@ const GetTeamMemberWageResponseSchema = z
   .openapi('GetTeamMemberWageResponse')
 
 const GetTerminalCheckoutRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', example: { request_body: {} }, 'x-release-status': 'PUBLIC' })
   .openapi('GetTerminalCheckoutRequest')
 
@@ -17642,7 +18304,7 @@ const GetTerminalCheckoutResponseSchema = z
   .openapi('GetTerminalCheckoutResponse')
 
 const GetTerminalRefundRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', example: { request_body: {} }, 'x-release-status': 'PUBLIC' })
   .openapi('GetTerminalRefundRequest')
 
@@ -18893,7 +19555,26 @@ const ListCashDrawerShiftsResponseSchema = z
           'A collection of CashDrawerShiftSummary objects for shifts that match\nthe query.',
       }),
   })
-  .openapi({ description: '', example: {}, 'x-release-status': 'PUBLIC', required: [] })
+  .openapi({
+    description: '',
+    example: {
+      items: [
+        {
+          closed_at: '2019-11-22T00:44:49.000Z',
+          closed_cash_money: { amount: 9970, currency: 'USD' },
+          description: 'Misplaced some change',
+          ended_at: '2019-11-22T00:44:49.000Z',
+          expected_cash_money: { amount: 10000, currency: 'USD' },
+          id: 'DCC99978-09A6-4926-849F-300BE9C5793A',
+          opened_at: '2019-11-22T00:42:54.000Z',
+          opened_cash_money: { amount: 10000, currency: 'USD' },
+          state: 'CLOSED',
+        },
+      ],
+    },
+    'x-release-status': 'PUBLIC',
+    required: [],
+  })
   .openapi('ListCashDrawerShiftsResponse')
 
 const ListCatalogRequestSchema = z
@@ -18948,7 +19629,7 @@ const ListCatalogRequestSchema = z
   })
   .openapi('ListCatalogRequest')
 
-const ListCatalogResponseSchema = z
+const ListCatalogResponseSchema: z.ZodType<ListCatalogResponseType> = z
   .object({
     cursor: z
       .string()
@@ -20024,7 +20705,7 @@ const ListInvoicesResponseSchema = z
   .openapi('ListInvoicesResponse')
 
 const ListLocationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the fields that are included in requests to\nthe __ListLocations__ endpoint.',
@@ -20094,7 +20775,7 @@ const ListLocationsResponseSchema = z
   .openapi('ListLocationsResponse')
 
 const ListLoyaltyProgramsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to list `LoyaltyProgram`.',
     example: { request_body: {} },
@@ -20914,7 +21595,7 @@ const ListRefundsResponseSchema = z
   .openapi('ListRefundsResponse')
 
 const ListSitesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Represents a `ListSites` request.', 'x-release-status': 'PUBLIC' })
   .openapi('ListSitesRequest')
 
@@ -21324,7 +22005,7 @@ const ListTransactionsRequestSchema = z
   })
   .openapi('ListTransactionsRequest')
 
-const ListTransactionsResponseSchema = z
+const ListTransactionsResponseSchema: z.ZodType<ListTransactionsResponseType> = z
   .object({
     cursor: z
       .string()
@@ -22221,7 +22902,7 @@ const ObtainTokenResponseSchema = z
   .openapi('ObtainTokenResponse')
 
 const OnboardAppointmentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA' })
   .openapi('OnboardAppointmentsRequest')
 
@@ -22257,32 +22938,6 @@ const OrderCreatedObjectSchema = z
   .object({ order_created: OrderCreatedSchema.exactOptional() })
   .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA', required: [] })
   .openapi('OrderCreatedObject')
-
-const OrderEntrySchema = z
-  .object({
-    location_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The location ID the order belongs to.' }),
-    order_id: z.string().exactOptional().openapi({ description: 'The ID of the order.' }),
-    version: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The version number, which is incremented each time an update is committed to the order.\nOrders that were not created through the API do not include a version number and\ntherefore cannot be updated.\n\n[Read more about working with versions.](https://developer.squareup.com/docs/orders-api/manage-orders#update-orders)',
-        'x-is-beta': true,
-        'x-read-only': true,
-        'x-release-status': 'BETA',
-      }),
-  })
-  .openapi({
-    description:
-      'A lightweight description of an [order](https://developer.squareup.com/reference/square_2021-08-18/objects/Order) that is returned when \n`returned_entries` is `true` on a [SearchOrdersRequest](https://developer.squareup.com/reference/square_2021-08-18/orders-api/search-orders).',
-    'x-release-status': 'PUBLIC',
-    required: [],
-  })
-  .openapi('OrderEntry')
 
 const OrderFulfillmentPickupDetailsScheduleTypeSchema = z
   .enum(['SCHEDULED', 'ASAP'])
@@ -22681,7 +23336,7 @@ const PayOrderRequestSchema = z
   })
   .openapi('PayOrderRequest')
 
-const PayOrderResponseSchema = z
+const PayOrderResponseSchema: z.ZodType<PayOrderResponseType> = z
   .object({
     errors: z
       .array(ErrorSchema)
@@ -23173,7 +23828,7 @@ const RegisterDomainResponseStatusSchema = z
   .openapi('RegisterDomainResponseStatus')
 
 const RemoveGroupFromCustomerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the fields that are included in the request body of\na request to the [RemoveGroupFromCustomer](https://developer.squareup.com/reference/square_2021-08-18/customers-api/remove-group-from-customer) endpoint.',
@@ -23294,7 +23949,7 @@ const RenewTokenResponseSchema = z
   .openapi('RenewTokenResponse')
 
 const ResumeSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines parameters in a\n[ResumeSubscription](https://developer.squareup.com/reference/square_2021-08-18/subscriptions-api/resume-subscription) endpoint\nrequest.',
@@ -23332,7 +23987,7 @@ const ResumeSubscriptionResponseSchema = z
   .openapi('ResumeSubscriptionResponse')
 
 const RetrieveBookingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA' })
   .openapi('RetrieveBookingRequest')
 
@@ -23376,7 +24031,7 @@ const RetrieveBookingResponseSchema = z
   .openapi('RetrieveBookingResponse')
 
 const RetrieveBusinessBookingProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA' })
   .openapi('RetrieveBusinessBookingProfileRequest')
 
@@ -23419,7 +24074,7 @@ const RetrieveBusinessBookingProfileResponseSchema = z
   .openapi('RetrieveBusinessBookingProfileResponse')
 
 const RetrieveCardRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Retrieves details for a specific Card. Accessible via\nHTTP requests at GET https://connect.squareup.com/v2/cards/{card_id}',
@@ -23567,7 +24222,7 @@ const RetrieveCatalogObjectRequestSchema = z
   })
   .openapi('RetrieveCatalogObjectRequest')
 
-const RetrieveCatalogObjectResponseSchema = z
+const RetrieveCatalogObjectResponseSchema: z.ZodType<RetrieveCatalogObjectResponseType> = z
   .object({
     errors: z
       .array(ErrorSchema)
@@ -23657,7 +24312,7 @@ const RetrieveCatalogObjectResponseSchema = z
   .openapi('RetrieveCatalogObjectResponse')
 
 const RetrieveCustomerGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the fields that can be included in a request to the\n[RetrieveCustomerGroup](https://developer.squareup.com/reference/square_2021-08-18/customer-groups-api/retrieve-customer-group) endpoint.',
@@ -23691,7 +24346,7 @@ const RetrieveCustomerGroupResponseSchema = z
   .openapi('RetrieveCustomerGroupResponse')
 
 const RetrieveCustomerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the fields that are included in requests to the `RetrieveCustomer`\nendpoint.',
@@ -23759,7 +24414,7 @@ const RetrieveCustomerResponseSchema = z
   .openapi('RetrieveCustomerResponse')
 
 const RetrieveCustomerSegmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the valid parameters for requests to the `RetrieveCustomerSegmentRequest` endpoint.',
@@ -23793,7 +24448,7 @@ const RetrieveCustomerSegmentResponseSchema = z
   .openapi('RetrieveCustomerSegmentResponse')
 
 const RetrieveDisputeEvidenceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Defines the parameters for a `RetrieveDisputeEvidence` request.',
     example: { request_body: {} },
@@ -23826,7 +24481,7 @@ const RetrieveDisputeEvidenceResponseSchema = z
   .openapi('RetrieveDisputeEvidenceResponse')
 
 const RetrieveDisputeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Defines the request parameters for the `RetrieveDispute` endpoint.',
     example: { request_body: {} },
@@ -23864,7 +24519,7 @@ const RetrieveDisputeResponseSchema = z
   .openapi('RetrieveDisputeResponse')
 
 const RetrieveEmployeeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-deprecated': true, 'x-release-status': 'DEPRECATED' })
   .openapi('RetrieveEmployeeRequest')
 
@@ -23974,7 +24629,7 @@ const RetrieveGiftCardFromNonceResponseSchema = z
   .openapi('RetrieveGiftCardFromNonceResponse')
 
 const RetrieveGiftCardRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to retrieve digital gift cards.',
     example: { request_params: '?id=gftc:00113070ba5745f0b2377c1b9570cb03' },
@@ -24012,7 +24667,7 @@ const RetrieveGiftCardResponseSchema = z
   .openapi('RetrieveGiftCardResponse')
 
 const RetrieveInventoryAdjustmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     example: {},
@@ -24235,7 +24890,7 @@ const RetrieveInventoryCountResponseSchema = z
   .openapi('RetrieveInventoryCountResponse')
 
 const RetrieveInventoryPhysicalCountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     example: {},
@@ -24290,7 +24945,7 @@ const RetrieveInventoryPhysicalCountResponseSchema = z
   .openapi('RetrieveInventoryPhysicalCountResponse')
 
 const RetrieveInventoryTransferRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     example: {},
@@ -24348,7 +25003,7 @@ const RetrieveInventoryTransferResponseSchema = z
   .openapi('RetrieveInventoryTransferResponse')
 
 const RetrieveLocationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines the fields that are included in the request body for\nthe __RetrieveLocation__ endpoint.',
@@ -24413,7 +25068,7 @@ const RetrieveLocationResponseSchema = z
   .openapi('RetrieveLocationResponse')
 
 const RetrieveLoyaltyAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to retrieve a loyalty account.',
     example: { request_params: '?account_id=79b807d2-d786-46a9-933b-918028d7a8c5' },
@@ -24453,7 +25108,7 @@ const RetrieveLoyaltyAccountResponseSchema = z
   .openapi('RetrieveLoyaltyAccountResponse')
 
 const RetrieveLoyaltyProgramRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A request to retrieve the [loyalty program](https://developer.squareup.com/reference/square_2021-08-18/objects/LoyaltyProgram) that belongs to a seller. A seller can have only one loyalty program.',
@@ -24514,7 +25169,7 @@ const RetrieveLoyaltyProgramResponseSchema = z
   .openapi('RetrieveLoyaltyProgramResponse')
 
 const RetrieveLoyaltyRewardRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A request to retrieve a loyalty reward.',
     example: { request_params: '?reward_id=9f18ac21-233a-31c3-be77-b45840f5a810' },
@@ -24550,7 +25205,7 @@ const RetrieveLoyaltyRewardResponseSchema = z
   .openapi('RetrieveLoyaltyRewardResponse')
 
 const RetrieveMerchantRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Request object for the [RetrieveMerchant](https://developer.squareup.com/reference/square_2021-08-18/merchants-api/retrieve-merchant) endpoint.',
@@ -24586,16 +25241,16 @@ const RetrieveMerchantResponseSchema = z
   .openapi('RetrieveMerchantResponse')
 
 const RetrieveObsMigrationProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA' })
   .openapi('RetrieveObsMigrationProfileRequest')
 
 const RetrieveOrderRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', example: { request_body: {} }, 'x-release-status': 'PUBLIC' })
   .openapi('RetrieveOrderRequest')
 
-const RetrieveOrderResponseSchema = z
+const RetrieveOrderResponseSchema: z.ZodType<RetrieveOrderResponseType> = z
   .object({
     errors: z
       .array(ErrorSchema)
@@ -24681,7 +25336,7 @@ const RetrieveOrderResponseSchema = z
   .openapi('RetrieveOrderResponse')
 
 const RetrieveSnippetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Represents a `RetrieveSnippet` request.', 'x-release-status': 'PUBLIC' })
   .openapi('RetrieveSnippetRequest')
 
@@ -24757,7 +25412,7 @@ const RetrieveSnippetResponseSchema = z
   .openapi('RetrieveSnippetResponse')
 
 const RetrieveSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines parameters in a\n[RetrieveSubscription](https://developer.squareup.com/reference/square_2021-08-18/subscriptions-api/retrieve-subscription) endpoint request.',
@@ -24798,7 +25453,7 @@ const RetrieveSubscriptionResponseSchema = z
   .openapi('RetrieveSubscriptionResponse')
 
 const RetrieveTeamMemberBookingProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-beta': true, 'x-release-status': 'BETA' })
   .openapi('RetrieveTeamMemberBookingProfileRequest')
 
@@ -24827,7 +25482,7 @@ const RetrieveTeamMemberBookingProfileResponseSchema = z
   .openapi('RetrieveTeamMemberBookingProfileResponse')
 
 const RetrieveTeamMemberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Represents a retrieve request for a `TeamMember` object.',
     example: { request_body: {} },
@@ -24870,7 +25525,7 @@ const RetrieveTeamMemberResponseSchema = z
   .openapi('RetrieveTeamMemberResponse')
 
 const RetrieveTransactionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     example: {},
@@ -24946,7 +25601,7 @@ const RetrieveTransactionResponseSchema = z
   .openapi('RetrieveTransactionResponse')
 
 const RetrieveWageSettingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Represents a retrieve request for the wage setting of a team member.',
     example: { request_body: {} },
@@ -25567,7 +26222,7 @@ const SearchCatalogItemsRequestStockLevelSchema = z
   })
   .openapi('SearchCatalogItemsRequestStockLevel')
 
-const SearchCatalogItemsResponseSchema = z
+const SearchCatalogItemsResponseSchema: z.ZodType<SearchCatalogItemsResponseType> = z
   .object({
     cursor: z
       .string()
@@ -25594,7 +26249,64 @@ const SearchCatalogItemsResponseSchema = z
   .openapi({
     description:
       'Defines the response body returned from the [SearchCatalogItems](https://developer.squareup.com/reference/square_2021-08-18/catalog-api/search-catalog-items) endpoint.',
-    example: { matched_variation_ids: ['VBJNPHCOKDFECR6VU25WRJUD'] },
+    example: {
+      items: [
+        {
+          custom_attribute_values: {
+            BRAND: {
+              custom_attribute_definition_id: 'BRAND_DEFINITION_ID',
+              key: 'BRAND',
+              name: 'Brand',
+              string_value: 'Dark Horse',
+              type: 'STRING',
+            },
+            VARIETAL: {
+              custom_attribute_definition_id: 'VARIETAL_DEFINITION_ID',
+              key: 'VARIETAL',
+              name: 'Varietal',
+              selection_uid_values: ['MERLOT_SELECTION_ID', null],
+              type: 'SELECTION',
+            },
+            VINTAGE: {
+              custom_attribute_definition_id: 'EI7IJQDUKYSHULREPIPH6HNU',
+              key: 'VINTAGE',
+              name: 'Vintage',
+              number_value: 2018,
+              type: 'NUMBER',
+            },
+          },
+          id: 'GPOKJPTV2KDLVKCADJ7I77EZ',
+          is_deleted: false,
+          item_data: {
+            description: 'A nice red wine',
+            name: 'Dark Horse Merlot 2018',
+            product_type: 'REGULAR',
+            variations: [
+              {
+                id: 'VBJNPHCOKDFECR6VU25WRJUD',
+                is_deleted: false,
+                item_variation_data: {
+                  item_id: 'GPOKJPTV2KDLVKCADJ7I77EZ',
+                  name: '750 mL',
+                  ordinal: 0,
+                  price_money: { amount: 1000, currency: 'USD' },
+                  pricing_type: 'FIXED_PRICING',
+                },
+                present_at_all_locations: true,
+                type: 'ITEM_VARIATION',
+                updated_at: '2020-06-18T17:55:56.646Z',
+                version: 1592502956646,
+              },
+            ],
+          },
+          present_at_all_locations: true,
+          type: 'ITEM',
+          updated_at: '2020-06-18T17:55:56.646Z',
+          version: 1592502956646,
+        },
+      ],
+      matched_variation_ids: ['VBJNPHCOKDFECR6VU25WRJUD'],
+    },
     'x-release-status': 'PUBLIC',
     required: [],
   })
@@ -25666,7 +26378,7 @@ const SearchCatalogObjectsRequestSchema = z
   })
   .openapi('SearchCatalogObjectsRequest')
 
-const SearchCatalogObjectsResponseSchema = z
+const SearchCatalogObjectsResponseSchema: z.ZodType<SearchCatalogObjectsResponseType> = z
   .object({
     cursor: z
       .string()
@@ -26621,7 +27333,7 @@ const SearchOrdersRequestSchema = z
   })
   .openapi('SearchOrdersRequest')
 
-const SearchOrdersResponseSchema = z
+const SearchOrdersResponseSchema: z.ZodType<SearchOrdersResponseType> = z
   .object({
     cursor: z
       .string()
@@ -27574,7 +28286,7 @@ const SortOrderSchema = z
   .openapi('SortOrder')
 
 const SubmitEvidenceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Defines the parameters for a `SubmitEvidence` request.',
     example: { request_body: {} },
@@ -28589,7 +29301,7 @@ const UpdateLocationResponseSchema = z
   })
   .openapi('UpdateLocationResponse')
 
-const UpdateOrderRequestSchema = z
+const UpdateOrderRequestSchema: z.ZodType<UpdateOrderRequestType> = z
   .object({
     fields_to_clear: z
       .array(z.string())
@@ -28634,7 +29346,7 @@ const UpdateOrderRequestSchema = z
   })
   .openapi('UpdateOrderRequest')
 
-const UpdateOrderResponseSchema = z
+const UpdateOrderResponseSchema: z.ZodType<UpdateOrderResponseType> = z
   .object({
     errors: z
       .array(ErrorSchema)
@@ -29237,25 +29949,6 @@ const V1CreateEmployeeRoleRequestSchema = z
   .openapi({ description: '', 'x-release-status': 'PUBLIC', required: [] })
   .openapi('V1CreateEmployeeRoleRequest')
 
-const V1MoneySchema = z
-  .object({
-    amount: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "Amount in the lowest denominated value of this Currency. E.g. in USD\nthese are cents, in JPY they are Yen (which do not have a 'cent' concept).",
-      }),
-    currency_code: z.string().exactOptional().openapi({ description: '' }),
-  })
-  .openapi({
-    description: '',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1Money')
-
 const V1CreateRefundRequestSchema = z
   .object({
     payment_id: z
@@ -29553,69 +30246,6 @@ const V1OrderHistoryEntrySchema = z
   })
   .openapi('V1OrderHistoryEntry')
 
-const V1TenderSchema = z
-  .object({
-    card_brand: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The brand of credit card provided.' }),
-    change_back_money: V1MoneySchema.exactOptional(),
-    employee_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the employee that processed the tender.' }),
-    entry_method: z.string().exactOptional().openapi({ description: "The tender's unique ID." }),
-    id: z.string().exactOptional().openapi({ description: "The tender's unique ID." }),
-    is_exchange: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether or not the tender is associated with an exchange. If is_exchange is true, the tender represents the value of goods returned in an exchange not the actual money paid. The exchange value reduces the tender amounts needed to pay for items purchased in the exchange.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A human-readable description of the tender.' }),
-    pan_suffix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The last four digits of the provided credit card's account number.",
-      }),
-    payment_note: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Notes entered by the merchant about the tender at the time of payment, if any. Typically only present for tender with the type: OTHER.',
-      }),
-    receipt_url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the receipt for the tender.' }),
-    refunded_money: V1MoneySchema.exactOptional(),
-    settled_at: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the tender was settled, in ISO 8601 format.' }),
-    tendered_at: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the tender was created, in ISO 8601 format.' }),
-    tendered_money: V1MoneySchema.exactOptional(),
-    total_money: V1MoneySchema.exactOptional(),
-    type: z.string().exactOptional().openapi({ description: 'The type of tender.' }),
-  })
-  .openapi({
-    description:
-      'A tender represents a discrete monetary exchange. Square represents this\nexchange as a money object with a specific currency and amount, where the\namount is given in the smallest denomination of the given currency.\n\nSquare POS can accept more than one form of tender for a single payment (such\nas by splitting a bill between a credit card and a gift card). The `tender`\nfield of the Payment object lists all forms of tender used for the payment.\n\nSplit tender payments behave slightly differently from single tender payments:\n\nThe receipt_url for a split tender corresponds only to the first tender listed\nin the tender field. To get the receipt URLs for the remaining tenders, use\nthe receipt_url fields of the corresponding Tender objects.\n\n*A note on gift cards**: when a customer purchases a Square gift card from a\nmerchant, the merchant receives the full amount of the gift card in the\nassociated payment.\n\nWhen that gift card is used as a tender, the balance of the gift card is\nreduced and the merchant receives no funds. A `Tender` object with a type of\n`SQUARE_GIFT_CARD` indicates a gift card was used for some or all of the\nassociated payment.',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1Tender')
-
 const V1OrderSchema = z
   .object({
     btc_price_satoshi: z
@@ -29781,361 +30411,7 @@ const V1ListPaymentsRequestSchema = z
   })
   .openapi('V1ListPaymentsRequest')
 
-const V1PaymentTaxSchema = z
-  .object({
-    applied_money: V1MoneySchema.exactOptional(),
-    errors: z
-      .array(ErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Any errors that occurred during the request.' }),
-    fee_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the tax, if available. Taxes applied in older versions of Square Register might not have an ID.',
-      }),
-    inclusion_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Whether the tax is an ADDITIVE tax or an INCLUSIVE tax.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The merchant-defined name of the tax.' }),
-    rate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The rate of the tax, as a string representation of a decimal number. A value of 0.07 corresponds to a rate of 7%.',
-      }),
-  })
-  .openapi({
-    description: 'V1PaymentTax',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1PaymentTax')
-
-const V1PaymentDiscountSchema = z
-  .object({
-    applied_money: V1MoneySchema.exactOptional(),
-    discount_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the applied discount, if available. Discounts applied in older versions of Square Register might not have an ID.',
-      }),
-    name: z.string().exactOptional().openapi({ description: "The discount's name." }),
-  })
-  .openapi({
-    description: 'V1PaymentDiscount',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1PaymentDiscount')
-
-const V1PaymentItemDetailSchema = z
-  .object({
-    category_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The name of the item's merchant-defined category, if any." }),
-    item_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique ID of the item purchased, if any.' }),
-    item_variation_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique ID of the item variation purchased, if any.' }),
-    sku: z
-      .string()
-      .exactOptional()
-      .openapi({ description: " The item's merchant-defined SKU, if any." }),
-  })
-  .openapi({
-    description: 'V1PaymentItemDetail',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1PaymentItemDetail')
-
-const V1PaymentModifierSchema = z
-  .object({
-    applied_money: V1MoneySchema.exactOptional(),
-    modifier_option_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the applied modifier option, if available. Modifier options applied in older versions of Square Register might not have an ID.',
-      }),
-    name: z.string().exactOptional().openapi({ description: "The modifier option's name." }),
-  })
-  .openapi({
-    description: 'V1PaymentModifier',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1PaymentModifier')
-
-const V1PaymentItemizationSchema = z
-  .object({
-    discount_money: V1MoneySchema.exactOptional(),
-    discounts: z
-      .array(V1PaymentDiscountSchema)
-      .exactOptional()
-      .openapi({ description: 'All discounts applied to this itemization.' }),
-    gross_sales_money: V1MoneySchema.exactOptional(),
-    item_detail: V1PaymentItemDetailSchema.exactOptional(),
-    item_variation_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the item variation purchased, if any.' }),
-    itemization_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of purchase that the itemization represents, such as an ITEM or CUSTOM_AMOUNT',
-      }),
-    modifiers: z
-      .array(V1PaymentModifierSchema)
-      .exactOptional()
-      .openapi({ description: 'All modifier options applied to this itemization.' }),
-    name: z.string().exactOptional().openapi({ description: "The item's name." }),
-    net_sales_money: V1MoneySchema.exactOptional(),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Notes entered by the merchant about the item at the time of payment, if any.',
-      }),
-    quantity: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The quantity of the item purchased. This can be a decimal value.' }),
-    single_quantity_money: V1MoneySchema.exactOptional(),
-    taxes: z
-      .array(V1PaymentTaxSchema)
-      .exactOptional()
-      .openapi({ description: 'All taxes applied to this itemization.' }),
-    total_money: V1MoneySchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      "Payment include an` itemizations` field that lists the items purchased,\nalong with associated fees, modifiers, and discounts. Each itemization has an\n`itemization_type` field that indicates which of the following the itemization\nrepresents:\n\n<ul>\n<li>An item variation from the merchant's item library</li>\n<li>A custom monetary amount</li>\n<li>\nAn action performed on a Square gift card, such as activating or\nreloading it.\n</li>\n</ul>\n\n*Note**: itemization information included in a `Payment` object reflects\ndetails collected **at the time of the payment**. Details such as the name or\nprice of items might have changed since the payment was processed.",
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1PaymentItemization')
-
-const V1PaymentSurchargeSchema = z
-  .object({
-    amount_money: V1MoneySchema.exactOptional(),
-    applied_money: V1MoneySchema.exactOptional(),
-    name: z.string().exactOptional().openapi({ description: 'The name of the surcharge.' }),
-    rate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount of the surcharge as a percentage. The percentage is provided as a string representing the decimal equivalent of the percentage. For example, "0.7" corresponds to a 7% surcharge. Exactly one of rate or amount_money should be set.',
-      }),
-    surcharge_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A Square-issued unique identifier associated with the surcharge.' }),
-    taxable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the surcharge is taxable.' }),
-    taxes: z
-      .array(V1PaymentTaxSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of taxes that should be applied to the surcharge.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the source of the surcharge. For example, if it was applied as an automatic gratuity for a large group.',
-      }),
-  })
-  .openapi({
-    description: 'V1PaymentSurcharge',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1PaymentSurcharge')
-
-const V1RefundSchema = z
-  .object({
-    created_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the merchant initiated the refund for Square to process, in ISO 8601 format.',
-      }),
-    is_exchange: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether or not the refund is associated with an exchange. If is_exchange is true, the refund reflects the value of goods returned in the exchange not the total money refunded.',
-      }),
-    merchant_id: z.string().exactOptional().openapi({ description: '' }),
-    payment_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A Square-issued ID associated with the refund. For single-tender refunds, payment_id is the ID of the original payment ID. For split-tender refunds, payment_id is the ID of the original tender. For exchange-based refunds (is_exchange == true), payment_id is the ID of the original payment ID even if the payment includes other tenders.',
-      }),
-    processed_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when Square processed the refund on behalf of the merchant, in ISO 8601 format.',
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The merchant-specified reason for the refund.' }),
-    refunded_additive_tax: z
-      .array(V1PaymentTaxSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the additive taxes associated with the refund.' }),
-    refunded_additive_tax_money: V1MoneySchema.exactOptional(),
-    refunded_discount_money: V1MoneySchema.exactOptional(),
-    refunded_inclusive_tax: z
-      .array(V1PaymentTaxSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the inclusive taxes associated with the refund.' }),
-    refunded_inclusive_tax_money: V1MoneySchema.exactOptional(),
-    refunded_money: V1MoneySchema.exactOptional(),
-    refunded_processing_fee_money: V1MoneySchema.exactOptional(),
-    refunded_surcharge_money: V1MoneySchema.exactOptional(),
-    refunded_surcharges: z
-      .array(V1PaymentSurchargeSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of all surcharges associated with the refund.' }),
-    refunded_tax_money: V1MoneySchema.exactOptional(),
-    refunded_tip_money: V1MoneySchema.exactOptional(),
-    type: z.string().exactOptional().openapi({ description: 'The type of refund' }),
-  })
-  .openapi({
-    description: 'V1Refund',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1Refund')
-
-const V1PaymentSchema = z
-  .object({
-    additive_tax: z
-      .array(V1PaymentTaxSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the additive taxes associated with the payment.' }),
-    additive_tax_money: V1MoneySchema.exactOptional(),
-    created_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the payment was created, in ISO 8601 format. Reflects the time of the first payment if the object represents an incomplete partial payment, and the time of the last or complete payment otherwise.',
-      }),
-    creator_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of the Square account that took the payment.',
-      }),
-    device: DeviceSchema.exactOptional(),
-    discount_money: V1MoneySchema.exactOptional(),
-    gross_sales_money: V1MoneySchema.exactOptional(),
-    id: z.string().exactOptional().openapi({ description: "The payment's unique identifier." }),
-    inclusive_tax: z
-      .array(V1PaymentTaxSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the inclusive taxes associated with the payment.' }),
-    inclusive_tax_money: V1MoneySchema.exactOptional(),
-    is_partial: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether or not the payment is only partially paid for.\nIf true, this payment will have the tenders collected so far, but the\nitemizations will be empty until the payment is completed.',
-      }),
-    itemizations: z
-      .array(V1PaymentItemizationSchema)
-      .exactOptional()
-      .openapi({ description: 'The items purchased in the payment.' }),
-    merchant_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the merchant that took the payment.' }),
-    net_sales_money: V1MoneySchema.exactOptional(),
-    net_total_money: V1MoneySchema.exactOptional(),
-    payment_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL of the payment's detail page in the merchant dashboard. The merchant must be signed in to the merchant dashboard to view this page.",
-      }),
-    processing_fee_money: V1MoneySchema.exactOptional(),
-    receipt_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL of the receipt for the payment. Note that for split tender\npayments, this URL corresponds to the receipt for the first tender\nlisted in the payment's tender field. Each Tender object has its own\nreceipt_url field you can use to get the other receipts associated with\na split tender payment.",
-      }),
-    refunded_money: V1MoneySchema.exactOptional(),
-    refunds: z
-      .array(V1RefundSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All of the refunds applied to the payment. Note that the value of all refunds on a payment can exceed the value of all tenders if a merchant chooses to refund money to a tender after previously accepting returned goods as part of an exchange.',
-      }),
-    surcharge_money: V1MoneySchema.exactOptional(),
-    surcharges: z
-      .array(V1PaymentSurchargeSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of all surcharges associated with the payment.' }),
-    swedish_rounding_money: V1MoneySchema.exactOptional(),
-    tax_money: V1MoneySchema.exactOptional(),
-    tender: z
-      .array(V1TenderSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the tenders associated with the payment.' }),
-    tip_money: V1MoneySchema.exactOptional(),
-    total_collected_money: V1MoneySchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'A payment represents a paid transaction between a Square merchant and a\ncustomer. Payment details are usually available from Connect API endpoints\nwithin a few minutes after the transaction completes.\n\nEach Payment object includes several fields that end in `_money`. These fields\ndescribe the various amounts of money that contribute to the payment total:\n\n<ul>\n<li>\nMonetary values are <b>positive</b> if they represent an\n<em>increase</em> in the amount of money the merchant receives (e.g.,\n<code>tax_money</code>, <code>tip_money</code>).\n</li>\n<li>\nMonetary values are <b>negative</b> if they represent an\n<em>decrease</em> in the amount of money the merchant receives (e.g.,\n<code>discount_money</code>, <code>refunded_money</code>).\n</li>\n</ul>',
-    'x-is-deprecated': true,
-    'x-release-status': 'DEPRECATED',
-    required: [],
-  })
-  .openapi('V1Payment')
-
-const V1ListPaymentsResponseSchema = z
+const V1ListPaymentsResponseSchema: z.ZodType<V1ListPaymentsResponseType> = z
   .object({ items: z.array(V1PaymentSchema).exactOptional().openapi({ description: '' }) })
   .openapi({
     description: '',
@@ -30188,7 +30464,7 @@ const V1ListRefundsRequestSchema = z
   })
   .openapi('V1ListRefundsRequest')
 
-const V1ListRefundsResponseSchema = z
+const V1ListRefundsResponseSchema: z.ZodType<V1ListRefundsResponseType> = z
   .object({ items: z.array(V1RefundSchema).exactOptional().openapi({ description: '' }) })
   .openapi({
     description: '',
@@ -30449,17 +30725,17 @@ const V1RefundTypeSchema = z
   .openapi('V1RefundType')
 
 const V1RetrieveEmployeeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-release-status': 'PUBLIC' })
   .openapi('V1RetrieveEmployeeRequest')
 
 const V1RetrieveEmployeeRoleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-release-status': 'PUBLIC' })
   .openapi('V1RetrieveEmployeeRoleRequest')
 
 const V1RetrieveOrderRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     'x-is-deprecated': true,
@@ -30469,12 +30745,12 @@ const V1RetrieveOrderRequestSchema = z
   .openapi('V1RetrieveOrderRequest')
 
 const V1RetrievePaymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-deprecated': true, 'x-release-status': 'DEPRECATED' })
   .openapi('V1RetrievePaymentRequest')
 
 const V1RetrieveSettlementRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '', 'x-is-deprecated': true, 'x-release-status': 'DEPRECATED' })
   .openapi('V1RetrieveSettlementRequest')
 
@@ -30736,7 +31012,7 @@ const V1UpdateOrderRequestActionSchema = z
   .openapi('V1UpdateOrderRequestAction')
 
 const VoidTransactionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: '',
     example: {},

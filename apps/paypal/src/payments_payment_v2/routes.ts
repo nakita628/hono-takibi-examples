@@ -99,13 +99,9 @@ const NetworkTransactionSchema = z
         description:
           'The date that the transaction was authorized by the scheme. This field may not be returned for all networks. MasterCard refers to this field as "BankNet reference date". For some specific networks, such as MasterCard and Discover, this date field is mandatory when the `previous_network_transaction_reference_id` is passed.',
       }),
-    network: CardBrandSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Name of the card network through which the transaction was routed.',
-        }),
-    ).exactOptional(),
+    network: CardBrandSchema.exactOptional().openapi({
+      description: 'Name of the card network through which the transaction was routed.',
+    }),
     acquirer_reference_number: z
       .string()
       .regex(/^[a-zA-Z0-9]+$/)
@@ -215,7 +211,7 @@ const Phone_2Schema = z
   })
   .openapi('Phone_2')
 
-const DiscountWithBreakdownSchema = MoneySchema.and(z.object({}))
+const DiscountWithBreakdownSchema = MoneySchema.and(z.looseObject({}))
   .openapi({
     title: 'discount_with_breakdown',
     description:
@@ -225,62 +221,34 @@ const DiscountWithBreakdownSchema = MoneySchema.and(z.object({}))
 
 const AmountBreakdownSchema = z
   .object({
-    item_total: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subtotal for all items. Required if the request includes `purchase_units[].items[].unit_amount`. Must equal the sum of `(items[].unit_amount * items[].quantity)` for all items. <code>item_total.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    shipping: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The shipping fee for all items within a given `purchase_unit`. <code>shipping.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    handling: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The handling fee for all items within a given `purchase_unit`. <code>handling.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    tax_total: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total tax for all items. Required if the request includes `purchase_units.items.tax`. Must equal the sum of `(items[].tax * items[].quantity)` for all items. <code>tax_total.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    insurance: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The insurance fee for all items within a given `purchase_unit`. <code>insurance.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    shipping_discount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The shipping discount for all items within a given `purchase_unit`. <code>shipping_discount.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    discount: DiscountWithBreakdownSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The discount for all items within a given `purchase_unit`. <code>discount.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
+    item_total: MoneySchema.exactOptional().openapi({
+      description:
+        'The subtotal for all items. Required if the request includes `purchase_units[].items[].unit_amount`. Must equal the sum of `(items[].unit_amount * items[].quantity)` for all items. <code>item_total.value</code> can not be a negative number.',
+    }),
+    shipping: MoneySchema.exactOptional().openapi({
+      description:
+        'The shipping fee for all items within a given `purchase_unit`. <code>shipping.value</code> can not be a negative number.',
+    }),
+    handling: MoneySchema.exactOptional().openapi({
+      description:
+        'The handling fee for all items within a given `purchase_unit`. <code>handling.value</code> can not be a negative number.',
+    }),
+    tax_total: MoneySchema.exactOptional().openapi({
+      description:
+        'The total tax for all items. Required if the request includes `purchase_units.items.tax`. Must equal the sum of `(items[].tax * items[].quantity)` for all items. <code>tax_total.value</code> can not be a negative number.',
+    }),
+    insurance: MoneySchema.exactOptional().openapi({
+      description:
+        'The insurance fee for all items within a given `purchase_unit`. <code>insurance.value</code> can not be a negative number.',
+    }),
+    shipping_discount: MoneySchema.exactOptional().openapi({
+      description:
+        'The shipping discount for all items within a given `purchase_unit`. <code>shipping_discount.value</code> can not be a negative number.',
+    }),
+    discount: DiscountWithBreakdownSchema.exactOptional().openapi({
+      description:
+        'The discount for all items within a given `purchase_unit`. <code>discount.value</code> can not be a negative number.',
+    }),
   })
   .openapi({
     title: 'amount_breakdown',
@@ -312,12 +280,12 @@ const AccountId_2Schema = z
 
 const PayeeBaseSchema = z
   .object({
-    email_address: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of merchant.' }),
-    ).exactOptional(),
-    merchant_id: AccountId_2Schema.and(
-      z.any().openapi({ description: 'The encrypted PayPal account ID of the merchant.' }),
-    ).exactOptional(),
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of merchant.',
+    }),
+    merchant_id: AccountId_2Schema.exactOptional().openapi({
+      description: 'The encrypted PayPal account ID of the merchant.',
+    }),
   })
   .openapi({
     title: 'payee_base',
@@ -327,7 +295,7 @@ const PayeeBaseSchema = z
   })
   .openapi('PayeeBase')
 
-const PayeeSchema = PayeeBaseSchema.and(z.object({}))
+const PayeeSchema = PayeeBaseSchema.and(z.looseObject({}))
   .openapi({
     title: 'payee',
     description:
@@ -338,30 +306,30 @@ const PayeeSchema = PayeeBaseSchema.and(z.object({}))
 const LinkSchemaSchema = z
   .object({
     additionalItems: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'additional_items', description: 'Any additional items.' }),
     dependencies: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Dependencies', description: 'The dependencies.' }),
-    items: z.object({}).exactOptional().openapi({ title: 'Items', description: 'An item.' }),
+    items: z.looseObject({}).exactOptional().openapi({ title: 'Items', description: 'An item.' }),
     definitions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Definitions', description: 'Definitions.' }),
     patternProperties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'pattern_properties', description: 'The pattern properties.' }),
     properties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Properties', description: 'The properties.' }),
     allOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'all_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -377,7 +345,7 @@ const LinkSchemaSchema = z
     anyOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'any_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -394,7 +362,7 @@ const LinkSchemaSchema = z
     oneOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'one_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -407,9 +375,9 @@ const LinkSchemaSchema = z
         title: 'one_of',
         description: 'An array of sub-schemas. The data must validate against one sub-schema.',
       }),
-    not: z.object({}).exactOptional().openapi({ title: 'Not', description: 'Not.' }),
+    not: z.looseObject({}).exactOptional().openapi({ title: 'Not', description: 'Not.' }),
     links: z
-      .array(z.object({}).openapi({ title: 'link', description: 'A link.', readOnly: true }))
+      .array(z.looseObject({}).openapi({ title: 'link', description: 'A link.', readOnly: true }))
       .min(0)
       .max(32767)
       .exactOptional()
@@ -517,17 +485,13 @@ const LinkDescriptionSchema = z
         title: 'enc_type',
         description: 'The media type in which to submit the request data.',
       }),
-    schema: LinkSchemaSchema.and(
-      z.any().openapi({ description: 'The schema that describes the request data.' }),
-    ).exactOptional(),
-    targetSchema: LinkSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'target_schema',
-          description: 'The schema that describes the link target.',
-        }),
-    ).exactOptional(),
+    schema: LinkSchemaSchema.exactOptional().openapi({
+      description: 'The schema that describes the request data.',
+    }),
+    targetSchema: LinkSchemaSchema.exactOptional().openapi({
+      title: 'target_schema',
+      description: 'The schema that describes the link target.',
+    }),
   })
   .openapi({
     title: 'Link Description',
@@ -574,9 +538,7 @@ const ErrorDetailsSchema = z
       .max(2147483647)
       .openapi({ description: 'The unique, fine-grained application-level error code.' }),
     links: z
-      .array(
-        LinkDescriptionSchema.and(z.any().openapi({ title: 'link_description', readOnly: true })),
-      )
+      .array(LinkDescriptionSchema.openapi({ title: 'link_description', readOnly: true }))
       .min(1)
       .max(4)
       .exactOptional()
@@ -624,15 +586,13 @@ const ErrorSchema = z
       .max(2147483647)
       .openapi({ description: 'The PayPal internal ID. Used for correlation purposes.' }),
     details: z
-      .array(ErrorDetailsSchema.and(z.any().openapi({ title: 'error_details' })))
+      .array(ErrorDetailsSchema.openapi({ title: 'error_details' }))
       .min(0)
       .max(32767)
       .exactOptional()
       .openapi({ description: 'An array of additional details about the error.' }),
     links: z
-      .array(
-        LinkDescriptionSchema.and(z.any().openapi({ title: 'link_description', readOnly: true })),
-      )
+      .array(LinkDescriptionSchema.openapi({ title: 'link_description', readOnly: true }))
       .min(0)
       .max(32767)
       .exactOptional()
@@ -676,14 +636,10 @@ const AuthorizationStatusSchema = z
         description: 'The status for the authorized payment.',
         readOnly: true,
       }),
-    status_details: AuthorizationStatusDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The details of the authorized order pending status.',
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    status_details: AuthorizationStatusDetailsSchema.exactOptional().openapi({
+      description: 'The details of the authorized order pending status.',
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'authorization_status',
@@ -731,30 +687,30 @@ const SellerProtectionSchema = z
 const LinkSchema_2Schema = z
   .object({
     additionalItems: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'additional_items', description: 'Any additional items.' }),
     dependencies: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Dependencies', description: 'Any Dependencies.' }),
-    items: z.object({}).exactOptional().openapi({ title: 'Items', description: 'An item.' }),
+    items: z.looseObject({}).exactOptional().openapi({ title: 'Items', description: 'An item.' }),
     definitions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Definitions', description: 'Definitions.' }),
     patternProperties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'pattern_properties', description: 'The pattern properties.' }),
     properties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Properties', description: 'Properties.' }),
     allOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'all_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -770,7 +726,7 @@ const LinkSchema_2Schema = z
     anyOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'any_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -787,7 +743,7 @@ const LinkSchema_2Schema = z
     oneOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'one_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -800,9 +756,9 @@ const LinkSchema_2Schema = z
         title: 'one_of',
         description: 'An array of sub-schemas. The data must validate against one sub-schema.',
       }),
-    not: z.object({}).exactOptional().openapi({ title: 'Not', description: 'Not.' }),
+    not: z.looseObject({}).exactOptional().openapi({ title: 'Not', description: 'Not.' }),
     links: z
-      .array(z.object({}).openapi({ title: 'link', description: 'A link.', readOnly: true }))
+      .array(z.looseObject({}).openapi({ title: 'link', description: 'A link.', readOnly: true }))
       .min(0)
       .max(32767)
       .exactOptional()
@@ -910,17 +866,13 @@ const LinkDescription_2Schema = z
         title: 'enc_type',
         description: 'The media type in which to submit the request data.',
       }),
-    schema: LinkSchema_2Schema.and(
-      z.any().openapi({ description: 'The schema that describes the request data.' }),
-    ).exactOptional(),
-    targetSchema: LinkSchema_2Schema.and(
-      z
-        .any()
-        .openapi({
-          title: 'target_schema',
-          description: 'The schema that describes the link target.',
-        }),
-    ).exactOptional(),
+    schema: LinkSchema_2Schema.exactOptional().openapi({
+      description: 'The schema that describes the request data.',
+    }),
+    targetSchema: LinkSchema_2Schema.exactOptional().openapi({
+      title: 'target_schema',
+      description: 'The schema that describes the link target.',
+    }),
   })
   .openapi({
     title: 'Link Description',
@@ -932,24 +884,16 @@ const LinkDescription_2Schema = z
 
 const ActivityTimestampsSchema = z
   .object({
-    create_time: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the transaction occurred, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-          readOnly: true,
-        }),
-    ).exactOptional(),
-    update_time: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the transaction was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    create_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the transaction occurred, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+    update_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the transaction was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'activity_timestamps',
@@ -972,9 +916,10 @@ const AuthorizationSchema = AuthorizationStatusSchema.and(
           description: 'The PayPal-generated ID for the authorized payment.',
           readOnly: true,
         }),
-      amount: AmountWithBreakdownSchema.and(
-        z.any().openapi({ description: 'The amount for this authorized payment.', readOnly: true }),
-      ).exactOptional(),
+      amount: AmountWithBreakdownSchema.exactOptional().openapi({
+        description: 'The amount for this authorized payment.',
+        readOnly: true,
+      }),
       invoice_id: z
         .string()
         .regex(/^[\S\s]*$/)
@@ -997,20 +942,14 @@ const AuthorizationSchema = AuthorizationStatusSchema.and(
             'The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions. Appears in transaction and settlement reports.',
         }),
       network_transaction_reference: NetworkTransactionSchema.exactOptional(),
-      seller_protection: SellerProtectionSchema.and(
-        z.any().openapi({ readOnly: true }),
-      ).exactOptional(),
-      expiration_time: DateTimeSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The date and time when the authorized payment expires, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-            readOnly: true,
-          }),
-      ).exactOptional(),
+      seller_protection: SellerProtectionSchema.exactOptional().openapi({ readOnly: true }),
+      expiration_time: DateTimeSchema.exactOptional().openapi({
+        description:
+          'The date and time when the authorized payment expires, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+        readOnly: true,
+      }),
       links: z
-        .array(LinkDescription_2Schema.and(z.any().openapi({ title: 'link_description' })))
+        .array(LinkDescription_2Schema.openapi({ title: 'link_description' }))
         .min(0)
         .max(32767)
         .exactOptional()
@@ -1058,9 +997,7 @@ const RelatedIdsSchema = z
   .openapi('RelatedIds')
 
 const SupplementaryDataSchema = z
-  .object({
-    related_ids: RelatedIdsSchema.and(z.any().openapi({ readOnly: true })).exactOptional(),
-  })
+  .object({ related_ids: RelatedIdsSchema.exactOptional().openapi({ readOnly: true }) })
   .openapi({
     title: 'Payment Supplementary Data',
     description: 'The supplementary data.',
@@ -1071,10 +1008,8 @@ const SupplementaryDataSchema = z
 const Authorization_2Schema = AuthorizationSchema.and(
   z
     .object({
-      supplementary_data: SupplementaryDataSchema.and(
-        z.any().openapi({ readOnly: true }),
-      ).exactOptional(),
-      payee: PayeeBaseSchema.and(z.any().openapi({ readOnly: true })).exactOptional(),
+      supplementary_data: SupplementaryDataSchema.exactOptional().openapi({ readOnly: true }),
+      payee: PayeeBaseSchema.exactOptional().openapi({ readOnly: true }),
     })
     .openapi({ required: [] }),
 )
@@ -1114,14 +1049,11 @@ const SupplementaryPurchaseDataSchema = z
 
 const PlatformFeeSchema = z
   .object({
-    amount: MoneySchema.and(
-      z.any().openapi({ title: 'amount', description: 'The fee for this transaction.' }),
-    ),
-    payee: PayeeBaseSchema.and(
-      z
-        .any()
-        .openapi({ title: 'payee', description: 'The recipient of the fee for this transaction.' }),
-    ).exactOptional(),
+    amount: MoneySchema.openapi({ title: 'amount', description: 'The fee for this transaction.' }),
+    payee: PayeeBaseSchema.exactOptional().openapi({
+      title: 'payee',
+      description: 'The recipient of the fee for this transaction.',
+    }),
   })
   .openapi({
     title: 'platform_fee',
@@ -1143,7 +1075,7 @@ const DisbursementModeSchema = z
 const PaymentInstructionSchema = z
   .object({
     platform_fees: z
-      .array(PlatformFeeSchema.and(z.any().openapi({ title: 'platform_fee' })))
+      .array(PlatformFeeSchema.openapi({ title: 'platform_fee' }))
       .min(0)
       .max(1)
       .exactOptional()
@@ -1151,14 +1083,10 @@ const PaymentInstructionSchema = z
         description:
           'An array of various fees, commissions, tips, or donations. This field is only applicable to merchants that been enabled for PayPal Complete Payments Platform for Marketplaces and Platforms capability.',
       }),
-    disbursement_mode: DisbursementModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The funds that are held payee by the marketplace/platform. This field is only applicable to merchants that been enabled for PayPal Complete Payments Platform for Marketplaces and Platforms capability.',
-        }),
-    ).exactOptional(),
+    disbursement_mode: DisbursementModeSchema.exactOptional().openapi({
+      description:
+        'The funds that are held payee by the marketplace/platform. This field is only applicable to merchants that been enabled for PayPal Complete Payments Platform for Marketplaces and Platforms capability.',
+    }),
     payee_pricing_tier_id: z
       .string()
       .regex(/^.*$/)
@@ -1191,14 +1119,10 @@ const PaymentInstructionSchema = z
 const CaptureRequestSchema = SupplementaryPurchaseDataSchema.and(
   z
     .object({
-      amount: MoneySchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The amount to capture. To capture a portion of the full authorized amount, specify an amount. If amount is not specified, the full authorized amount is captured. The amount must be a positive number and in the same currency as the authorization against which the payment is being captured.',
-          }),
-      ).exactOptional(),
+      amount: MoneySchema.exactOptional().openapi({
+        description:
+          'The amount to capture. To capture a portion of the full authorized amount, specify an amount. If amount is not specified, the full authorized amount is captured. The amount must be a positive number and in the same currency as the authorization against which the payment is being captured.',
+      }),
       invoice_id: z
         .string()
         .regex(/^[\S\s]*$/)
@@ -1218,20 +1142,23 @@ const CaptureRequestSchema = SupplementaryPurchaseDataSchema.and(
             'Indicates whether you can make additional captures against the authorized payment. Set to `true` if you do not intend to capture additional payments against the authorization. Set to `false` if you intend to capture additional payments against the authorization.',
         }),
       payment_instruction: PaymentInstructionSchema.and(
-        z.any().refine(
-          (val) =>
-            !z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'payee_pricing_tier_id')) {
-                    ctx.addIssue({ code: 'custom' })
+        z
+          .any()
+          .refine(
+            (val) =>
+              !z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'payee_pricing_tier_id')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
                   }
-                }
-              })
-              .openapi({ required: ['payee_pricing_tier_id'] })
-              .safeParse(val).success,
-        ),
+                })
+                .openapi({ required: ['payee_pricing_tier_id'] })
+                .safeParse(val).success,
+          )
+          .openapi({ not: { required: ['payee_pricing_tier_id'] } }),
       ).exactOptional(),
       note_to_payer: z
         .string()
@@ -1300,11 +1227,10 @@ const CaptureStatusSchema = z
         description: 'The status of the captured payment.',
         readOnly: true,
       }),
-    status_details: CaptureStatusDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The details of the captured payment status.', readOnly: true }),
-    ).exactOptional(),
+    status_details: CaptureStatusDetailsSchema.exactOptional().openapi({
+      description: 'The details of the captured payment status.',
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'capture_status',
@@ -1315,12 +1241,12 @@ const CaptureStatusSchema = z
 
 const ExchangeRateSchema = z
   .object({
-    source_currency: CurrencyCodeSchema.and(
-      z.any().openapi({ description: 'The source currency from which to convert an amount.' }),
-    ).exactOptional(),
-    target_currency: CurrencyCodeSchema.and(
-      z.any().openapi({ description: 'The target currency to which to convert an amount.' }),
-    ).exactOptional(),
+    source_currency: CurrencyCodeSchema.exactOptional().openapi({
+      description: 'The source currency from which to convert an amount.',
+    }),
+    target_currency: CurrencyCodeSchema.exactOptional().openapi({
+      description: 'The target currency to which to convert an amount.',
+    }),
     value: z
       .string()
       .regex(/^[\S\s]*$/)
@@ -1343,55 +1269,31 @@ const ExchangeRateSchema = z
 
 const SellerReceivableBreakdownSchema = z
   .object({
-    gross_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The amount for this captured payment in the currency of the transaction.',
-        }),
-    ),
-    paypal_fee: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The applicable fee for this captured payment in the currency of the transaction.',
-        }),
-    ).exactOptional(),
-    paypal_fee_in_receivable_currency: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The applicable fee for this captured payment in the receivable currency. Returned only in cases the fee is charged in the receivable currency. Example 'CNY'.",
-        }),
-    ).exactOptional(),
-    net_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The net amount that the payee receives for this captured payment in their PayPal account. The net amount is computed as <code>gross_amount</code> minus the <code>paypal_fee</code> minus the <code>platform_fees</code>.',
-        }),
-    ).exactOptional(),
-    receivable_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The net amount that is credited to the payee's PayPal account. Returned only when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds. The amount is computed as <code>net_amount</code> times <code>exchange_rate</code>.",
-        }),
-    ).exactOptional(),
-    exchange_rate: ExchangeRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The exchange rate that determines the amount that is credited to the payee's PayPal account. Returned when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds.",
-        }),
-    ).exactOptional(),
+    gross_amount: MoneySchema.openapi({
+      description: 'The amount for this captured payment in the currency of the transaction.',
+    }),
+    paypal_fee: MoneySchema.exactOptional().openapi({
+      description:
+        'The applicable fee for this captured payment in the currency of the transaction.',
+    }),
+    paypal_fee_in_receivable_currency: MoneySchema.exactOptional().openapi({
+      description:
+        "The applicable fee for this captured payment in the receivable currency. Returned only in cases the fee is charged in the receivable currency. Example 'CNY'.",
+    }),
+    net_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'The net amount that the payee receives for this captured payment in their PayPal account. The net amount is computed as <code>gross_amount</code> minus the <code>paypal_fee</code> minus the <code>platform_fees</code>.',
+    }),
+    receivable_amount: MoneySchema.exactOptional().openapi({
+      description:
+        "The net amount that is credited to the payee's PayPal account. Returned only when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds. The amount is computed as <code>net_amount</code> times <code>exchange_rate</code>.",
+    }),
+    exchange_rate: ExchangeRateSchema.exactOptional().openapi({
+      description:
+        "The exchange rate that determines the amount that is credited to the payee's PayPal account. Returned when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds.",
+    }),
     platform_fees: z
-      .array(PlatformFeeSchema.and(z.any().openapi({ title: 'platform_fee' })))
+      .array(PlatformFeeSchema.openapi({ title: 'platform_fee' }))
       .min(0)
       .max(1)
       .exactOptional()
@@ -1659,9 +1561,10 @@ const CaptureSchema = CaptureStatusSchema.and(
           description: 'The PayPal-generated ID for the captured payment.',
           readOnly: true,
         }),
-      amount: AmountWithBreakdownSchema.and(
-        z.any().openapi({ description: 'The amount for this captured payment.', readOnly: true }),
-      ).exactOptional(),
+      amount: AmountWithBreakdownSchema.exactOptional().openapi({
+        description: 'The amount for this captured payment.',
+        readOnly: true,
+      }),
       invoice_id: z
         .string()
         .regex(/^[\S\s]*$/)
@@ -1684,9 +1587,7 @@ const CaptureSchema = CaptureStatusSchema.and(
             'The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions. Appears in transaction and settlement reports.',
         }),
       network_transaction_reference: NetworkTransactionSchema.exactOptional(),
-      seller_protection: SellerProtectionSchema.and(
-        z.any().openapi({ readOnly: true }),
-      ).exactOptional(),
+      seller_protection: SellerProtectionSchema.exactOptional().openapi({ readOnly: true }),
       final_capture: z
         .boolean()
         .default(false)
@@ -1696,12 +1597,12 @@ const CaptureSchema = CaptureStatusSchema.and(
             'Indicates whether you can make additional captures against the authorized payment. Set to `true` if you do not intend to capture additional payments against the authorization. Set to `false` if you intend to capture additional payments against the authorization.',
           readOnly: true,
         }),
-      seller_receivable_breakdown: SellerReceivableBreakdownSchema.and(
-        z.any().openapi({ readOnly: true }),
-      ).exactOptional(),
+      seller_receivable_breakdown: SellerReceivableBreakdownSchema.exactOptional().openapi({
+        readOnly: true,
+      }),
       disbursement_mode: DisbursementModeSchema.exactOptional(),
       links: z
-        .array(LinkDescription_2Schema.and(z.any().openapi({ title: 'link_description' })))
+        .array(LinkDescription_2Schema.openapi({ title: 'link_description' }))
         .min(0)
         .max(32767)
         .exactOptional()
@@ -1710,14 +1611,10 @@ const CaptureSchema = CaptureStatusSchema.and(
             'An array of related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links).',
           readOnly: true,
         }),
-      processor_response: ProcessorResponseSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'An object that provides additional processor information for a direct credit card transaction.',
-          }),
-      ).exactOptional(),
+      processor_response: ProcessorResponseSchema.exactOptional().openapi({
+        description:
+          'An object that provides additional processor information for a direct credit card transaction.',
+      }),
     })
     .openapi({ required: [] }),
 )
@@ -1728,16 +1625,12 @@ const CaptureSchema = CaptureStatusSchema.and(
 const Capture_2Schema = CaptureSchema.and(
   z
     .object({
-      supplementary_data: SupplementaryDataSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'An object that provides supplementary/additional data related to a payment transaction.',
-            readOnly: true,
-          }),
-      ).exactOptional(),
-      payee: PayeeBaseSchema.and(z.any().openapi({ readOnly: true })).exactOptional(),
+      supplementary_data: SupplementaryDataSchema.exactOptional().openapi({
+        description:
+          'An object that provides supplementary/additional data related to a payment transaction.',
+        readOnly: true,
+      }),
+      payee: PayeeBaseSchema.exactOptional().openapi({ readOnly: true }),
     })
     .openapi({ required: [] }),
 )
@@ -1746,9 +1639,9 @@ const Capture_2Schema = CaptureSchema.and(
 
 const ReauthorizeRequestSchema = z
   .object({
-    amount: MoneySchema.and(
-      z.any().openapi({ description: 'The amount to reauthorize for an authorized payment.' }),
-    ).exactOptional(),
+    amount: MoneySchema.exactOptional().openapi({
+      description: 'The amount to reauthorize for an authorized payment.',
+    }),
   })
   .openapi({
     title: 'Reauthorize Request',
@@ -1779,7 +1672,7 @@ const PaymentInstruction_2Schema = z
                   .openapi({ required: ['payee'] })
                   .safeParse(val).success,
             )
-            .openapi({ title: 'platform_fee' }),
+            .openapi({ title: 'platform_fee', not: { required: ['payee'] } }),
         ),
       )
       .min(0)
@@ -1800,14 +1693,10 @@ const PaymentInstruction_2Schema = z
 
 const RefundRequestSchema = z
   .object({
-    amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount to refund. To refund a portion of the captured amount, specify an amount. If amount is not specified, an amount equal to <code>captured amount - previous refunds</code> is refunded. The amount must be a positive number and in the same currency as the one in which the payment was captured.',
-        }),
-    ).exactOptional(),
+    amount: MoneySchema.exactOptional().openapi({
+      description:
+        'The amount to refund. To refund a portion of the captured amount, specify an amount. If amount is not specified, an amount equal to <code>captured amount - previous refunds</code> is refunded. The amount must be a positive number and in the same currency as the one in which the payment was captured.',
+    }),
     custom_id: z
       .string()
       .regex(/^.*$/)
@@ -1838,14 +1727,10 @@ const RefundRequestSchema = z
         description:
           "The reason for the refund. Appears in both the payer's transaction history and the emails that the payer receives. The pattern is defined by an external party and supports Unicode.",
       }),
-    payment_instruction: PaymentInstruction_2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Any additional refund instructions to be set during refund payment processing. This object is only applicable to merchants that have been enabled for PayPal Commerce Platform for Marketplaces and Platforms capability. Please speak to your account manager if you want to use this capability.',
-        }),
-    ).exactOptional(),
+    payment_instruction: PaymentInstruction_2Schema.exactOptional().openapi({
+      description:
+        'Any additional refund instructions to be set during refund payment processing. This object is only applicable to merchants that have been enabled for PayPal Commerce Platform for Marketplaces and Platforms capability. Please speak to your account manager if you want to use this capability.',
+    }),
   })
   .openapi({
     title: 'Refund Request',
@@ -1882,35 +1767,29 @@ const RefundStatusSchema = z
         description: 'The status of the refund.',
         readOnly: true,
       }),
-    status_details: RefundStatusDetailsSchema.and(
-      z.any().openapi({ description: 'The details of the refund status.', readOnly: true }),
-    ).exactOptional(),
+    status_details: RefundStatusDetailsSchema.exactOptional().openapi({
+      description: 'The details of the refund status.',
+      readOnly: true,
+    }),
   })
   .openapi({ title: 'refund_status', description: 'The refund status with details.', required: [] })
   .openapi('RefundStatus')
 
 const NetAmountBreakdownItemSchema = z
   .object({
-    payable_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The net amount debited from the merchant's PayPal account.",
-          readOnly: true,
-        }),
-    ).exactOptional(),
-    converted_amount: MoneySchema.and(
-      z.any().openapi({ description: 'The converted payable amount.', readOnly: true }),
-    ).exactOptional(),
-    exchange_rate: ExchangeRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The exchange rate that determines the amount that was debited from the merchant's PayPal account.",
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    payable_amount: MoneySchema.exactOptional().openapi({
+      description: "The net amount debited from the merchant's PayPal account.",
+      readOnly: true,
+    }),
+    converted_amount: MoneySchema.exactOptional().openapi({
+      description: 'The converted payable amount.',
+      readOnly: true,
+    }),
+    exchange_rate: ExchangeRateSchema.exactOptional().openapi({
+      description:
+        "The exchange rate that determines the amount that was debited from the merchant's PayPal account.",
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'net_amount_breakdown',
@@ -1930,14 +1809,10 @@ const RefundSchema = RefundStatusSchema.and(
         .max(2147483647)
         .exactOptional()
         .openapi({ description: 'The PayPal-generated ID for the refund.', readOnly: true }),
-      amount: MoneySchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The amount that the payee refunded to the payer.',
-            readOnly: true,
-          }),
-      ).exactOptional(),
+      amount: MoneySchema.exactOptional().openapi({
+        description: 'The amount that the payee refunded to the payer.',
+        readOnly: true,
+      }),
       invoice_id: z
         .string()
         .regex(/^[\S\s]*$/)
@@ -1982,52 +1857,32 @@ const RefundSchema = RefundStatusSchema.and(
         }),
       seller_payable_breakdown: z
         .object({
-          gross_amount: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description: 'The amount that the payee refunded to the payer.',
-                readOnly: true,
-              }),
-          ).exactOptional(),
-          paypal_fee: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The PayPal fee that was refunded to the payer in the currency of the transaction. This fee might not match the PayPal fee that the payee paid when the payment was captured.',
-                readOnly: true,
-              }),
-          ).exactOptional(),
-          paypal_fee_in_receivable_currency: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  "The PayPal fee that was refunded to the payer in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'.",
-                readOnly: true,
-              }),
-          ).exactOptional(),
-          net_amount: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  "The net amount that the payee's account is debited in the transaction currency. The net amount is calculated as <code>gross_amount</code> minus <code>paypal_fee</code> minus <code>platform_fees</code>.",
-                readOnly: true,
-              }),
-          ).exactOptional(),
-          net_amount_in_receivable_currency: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  "The net amount that the payee's account is debited in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'.",
-                readOnly: true,
-              }),
-          ).exactOptional(),
+          gross_amount: MoneySchema.exactOptional().openapi({
+            description: 'The amount that the payee refunded to the payer.',
+            readOnly: true,
+          }),
+          paypal_fee: MoneySchema.exactOptional().openapi({
+            description:
+              'The PayPal fee that was refunded to the payer in the currency of the transaction. This fee might not match the PayPal fee that the payee paid when the payment was captured.',
+            readOnly: true,
+          }),
+          paypal_fee_in_receivable_currency: MoneySchema.exactOptional().openapi({
+            description:
+              "The PayPal fee that was refunded to the payer in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'.",
+            readOnly: true,
+          }),
+          net_amount: MoneySchema.exactOptional().openapi({
+            description:
+              "The net amount that the payee's account is debited in the transaction currency. The net amount is calculated as <code>gross_amount</code> minus <code>paypal_fee</code> minus <code>platform_fees</code>.",
+            readOnly: true,
+          }),
+          net_amount_in_receivable_currency: MoneySchema.exactOptional().openapi({
+            description:
+              "The net amount that the payee's account is debited in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'.",
+            readOnly: true,
+          }),
           platform_fees: z
-            .array(PlatformFeeSchema.and(z.any().openapi({ title: 'platform_fee' })))
+            .array(PlatformFeeSchema.openapi({ title: 'platform_fee' }))
             .min(0)
             .max(1)
             .exactOptional()
@@ -2036,11 +1891,7 @@ const RefundSchema = RefundStatusSchema.and(
                 'An array of platform or partner fees, commissions, or brokerage fees for the refund.',
             }),
           net_amount_breakdown: z
-            .array(
-              NetAmountBreakdownItemSchema.and(
-                z.any().openapi({ title: 'net_amount_breakdown_item' }),
-              ),
-            )
+            .array(NetAmountBreakdownItemSchema.openapi({ title: 'net_amount_breakdown_item' }))
             .min(0)
             .max(32767)
             .exactOptional()
@@ -2049,14 +1900,10 @@ const RefundSchema = RefundStatusSchema.and(
                 'An array of breakdown values for the net amount. Returned when the currency of the refund is different from the currency of the PayPal account where the payee holds their funds.',
               readOnly: true,
             }),
-          total_refunded_amount: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The total amount refunded from the original capture to date. For example, if a payer makes a $100 purchase and was refunded $20 a week ago and was refunded $30 in this refund, the `gross_amount` is $30 for this refund and the `total_refunded_amount` is $50.',
-              }),
-          ).exactOptional(),
+          total_refunded_amount: MoneySchema.exactOptional().openapi({
+            description:
+              'The total amount refunded from the original capture to date. For example, if a payer makes a $100 purchase and was refunded $20 a week ago and was refunded $30 in this refund, the `gross_amount` is $30 for this refund and the `total_refunded_amount` is $50.',
+          }),
         })
         .exactOptional()
         .openapi({
@@ -2065,16 +1912,12 @@ const RefundSchema = RefundStatusSchema.and(
           readOnly: true,
           required: [],
         }),
-      payer: PayeeBaseSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The details associated with the merchant for this transaction.',
-            readOnly: true,
-          }),
-      ).exactOptional(),
+      payer: PayeeBaseSchema.exactOptional().openapi({
+        description: 'The details associated with the merchant for this transaction.',
+        readOnly: true,
+      }),
       links: z
-        .array(LinkDescription_2Schema.and(z.any().openapi({ title: 'link_description' })))
+        .array(LinkDescription_2Schema.openapi({ title: 'link_description' }))
         .min(0)
         .max(32767)
         .exactOptional()
@@ -2142,22 +1985,14 @@ const FindEligibleMethodsRequestCustomerChannelSchema = z
 
 const FindEligibleMethodsRequestCustomerSchema = z
   .object({
-    country_code: CountryCode_2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Country from which the customer is purchasing products/services from the merchant/partner. Result will factor in local payment methods that are available in the country mentioned. Value should be in the 2-character ISO 3166-1 code format.',
-        }),
-    ).exactOptional(),
-    channel: FindEligibleMethodsRequestCustomerChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Channel through which the request is being posted. This object intends to collect information such as browser, operating system, device of the buyer. If both channel and User-Agent header are passed, data passed in the channel object takes precedence and User-Agent header will be used for information not provided in channel object.',
-        }),
-    ).exactOptional(),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description:
+        'Country from which the customer is purchasing products/services from the merchant/partner. Result will factor in local payment methods that are available in the country mentioned. Value should be in the 2-character ISO 3166-1 code format.',
+    }),
+    channel: FindEligibleMethodsRequestCustomerChannelSchema.exactOptional().openapi({
+      description:
+        'Channel through which the request is being posted. This object intends to collect information such as browser, operating system, device of the buyer. If both channel and User-Agent header are passed, data passed in the channel object takes precedence and User-Agent header will be used for information not provided in channel object.',
+    }),
     id: z
       .string()
       .regex(/^[0-9a-zA-Z_-]+$/)
@@ -2169,20 +2004,23 @@ const FindEligibleMethodsRequestCustomerSchema = z
       }),
     email: EmailAddressSchema.exactOptional(),
     phone: Phone_2Schema.and(
-      z.any().refine(
-        (val) =>
-          !z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'extension_number')) {
-                  ctx.addIssue({ code: 'custom' })
+      z
+        .any()
+        .refine(
+          (val) =>
+            !z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'extension_number')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
                 }
-              }
-            })
-            .openapi({ required: ['extension_number'] })
-            .safeParse(val).success,
-      ),
+              })
+              .openapi({ required: ['extension_number'] })
+              .safeParse(val).success,
+        )
+        .openapi({ not: { required: ['extension_number'] } }),
     ).exactOptional(),
   })
   .openapi({
@@ -2306,16 +2144,12 @@ const PaymentMethodCommonSchema = z
         description:
           'Indicates if the payment method can be vaulted or not. A true value indicates the payment method can be vaulted using our vaults product. If false, vaulting is not currently supported for this payment method.',
       }),
-    country_code: CountryCode_2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: "Returns a country_code which is derived from the buyer's country.",
-        }),
-    ).exactOptional(),
-    product_code: CreditProductButtonCodeSchema.and(
-      z.any().openapi({ description: 'Returns a product code.' }),
-    ).exactOptional(),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: "Returns a country_code which is derived from the buyer's country.",
+    }),
+    product_code: CreditProductButtonCodeSchema.exactOptional().openapi({
+      description: 'Returns a product code.',
+    }),
   })
   .openapi({
     title: 'Common response fields',
@@ -2389,30 +2223,27 @@ const VenmoSchema = PaymentMethodCommonSchema.and(
 
 const PaymentMethodsSchema = z
   .object({
-    paypal: PaypalSchema.and(
-      z.any().openapi({ description: 'PayPal payment method.' }),
-    ).exactOptional(),
-    venmo: VenmoSchema.and(
-      z.any().openapi({ description: 'Venmo payment method.' }),
-    ).exactOptional(),
-    paypal_credit: PaymentMethodCommonSchema.and(
-      z.any().openapi({ description: 'PayPal Credit payment method.' }),
-    ).exactOptional(),
-    paypal_pay_later: PaymentMethodCommonSchema.and(
-      z.any().openapi({ description: 'PayPal Pay Later payment method.' }),
-    ).exactOptional(),
+    paypal: PaypalSchema.exactOptional().openapi({ description: 'PayPal payment method.' }),
+    venmo: VenmoSchema.exactOptional().openapi({ description: 'Venmo payment method.' }),
+    paypal_credit: PaymentMethodCommonSchema.exactOptional().openapi({
+      description: 'PayPal Credit payment method.',
+    }),
+    paypal_pay_later: PaymentMethodCommonSchema.exactOptional().openapi({
+      description: 'PayPal Pay Later payment method.',
+    }),
   })
   .openapi({ title: 'Payment Methods', description: 'List of payment methods.', required: [] })
   .openapi('PaymentMethods')
 
 const PayerBaseSchema = z
   .object({
-    email_address: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of the payer.' }),
-    ).exactOptional(),
-    payer_id: AccountId_2Schema.and(
-      z.any().openapi({ description: 'The PayPal-assigned ID for the payer.', readOnly: true }),
-    ).exactOptional(),
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of the payer.',
+    }),
+    payer_id: AccountId_2Schema.exactOptional().openapi({
+      description: 'The PayPal-assigned ID for the payer.',
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'payer_base',
@@ -2451,20 +2282,23 @@ const PaymentTokenSchema = z
     payment_source: z
       .object({
         paypal: PayerBaseSchema.and(
-          z.any().refine(
-            (val) =>
-              !z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'payer_id')) {
-                      ctx.addIssue({ code: 'custom' })
+          z
+            .any()
+            .refine(
+              (val) =>
+                !z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'payer_id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['payer_id'] })
-                .safeParse(val).success,
-          ),
+                  })
+                  .openapi({ required: ['payer_id'] })
+                  .safeParse(val).success,
+            )
+            .openapi({ not: { required: ['payer_id'] } }),
         ).exactOptional(),
         venmo: VenmoPaymentTokenInfoSchema.exactOptional(),
       })
@@ -2493,11 +2327,11 @@ const PaymentTokenSchema = z
 
 const FindEligibleMethodsResponseSchema = z
   .object({
-    eligible_methods: PaymentMethodsSchema.and(
-      z.any().openapi({ description: 'List of payment methods that are eligible.' }),
-    ).exactOptional(),
+    eligible_methods: PaymentMethodsSchema.exactOptional().openapi({
+      description: 'List of payment methods that are eligible.',
+    }),
     payment_tokens: z
-      .array(PaymentTokenSchema.and(z.any().openapi({ description: 'Payment Token.' })))
+      .array(PaymentTokenSchema.openapi({ description: 'Payment Token.' }))
       .min(1)
       .max(64)
       .exactOptional()

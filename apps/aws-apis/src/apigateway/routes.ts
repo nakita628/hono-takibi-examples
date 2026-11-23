@@ -2,60 +2,283 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const StringSchema = z.string().openapi('String')
 
-const BooleanSchema = z.boolean().openapi('Boolean')
+const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
 
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
-const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
+const MapOfStringToBooleanSchema = z
+  .record(z.string(), NullableBooleanSchema)
+  .openapi('MapOfStringToBoolean')
 
 const MapOfStringToStringSchema = z.record(z.string(), StringSchema).openapi('MapOfStringToString')
 
+const StatusCodeSchema = z
+  .string()
+  .regex(/[1-5]\d\d/)
+  .openapi({ description: 'The status code.' })
+  .openapi('StatusCode')
+
+const MethodResponseSchema = z
+  .object({
+    statusCode: StatusCodeSchema.exactOptional().openapi({
+      description: "The method response's status code.",
+    }),
+    responseParameters: MapOfStringToBooleanSchema.exactOptional().openapi({
+      description:
+        "A key-value map specifying required or optional response parameters that API Gateway can send back to the caller. A key defines a method response header and the value specifies whether the associated method response header is required or not. The expression of the key must match the pattern <code>method.response.header.{name}</code>, where <code>name</code> is a valid and unique header name. API Gateway passes certain integration response data to the method response headers specified here according to the mapping you prescribe in the API's IntegrationResponse. The integration response data that can be mapped include an integration response header expressed in <code>integration.response.header.{name}</code>, a static value enclosed within a pair of single quotes (e.g., <code>'application/json'</code>), or a JSON expression from the back-end response payload in the form of <code>integration.response.body.{JSON-expression}</code>, where <code>JSON-expression</code> is a valid JSON expression without the <code>$</code> prefix.)",
+    }),
+    responseModels: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        "Specifies the Model resources used for the response's content-type. Response models are represented as a key/value map, with a content-type as the key and a Model name as the value.",
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a method response of a given HTTP status code returned to the client. The method response is passed from the back end through the associated integration response that can be transformed using a mapping template. ',
+    required: [],
+  })
+  .openapi('MethodResponse')
+
+const MapOfMethodResponseSchema = z
+  .record(z.string(), MethodResponseSchema)
+  .openapi('MapOfMethodResponse')
+
+const IntegrationTypeSchema = z
+  .enum(['HTTP', 'AWS', 'MOCK', 'HTTP_PROXY', 'AWS_PROXY'])
+  .openapi({
+    description:
+      'The integration type. The valid value is <code>HTTP</code> for integrating an API method with an HTTP backend; <code>AWS</code> with any AWS service endpoints; <code>MOCK</code> for testing without actually invoking the backend; <code>HTTP_PROXY</code> for integrating with the HTTP proxy integration; <code>AWS_PROXY</code> for integrating with the Lambda proxy integration. ',
+  })
+  .openapi('IntegrationType')
+
+const ConnectionTypeSchema = z.enum(['INTERNET', 'VPC_LINK']).openapi('ConnectionType')
+
+const ContentHandlingStrategySchema = z
+  .enum(['CONVERT_TO_BINARY', 'CONVERT_TO_TEXT'])
+  .openapi('ContentHandlingStrategy')
+
+const IntegerSchema = z.int().openapi('Integer')
+
+const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
+
+const IntegrationResponseSchema = z
+  .object({
+    statusCode: StatusCodeSchema.exactOptional().openapi({
+      description:
+        'Specifies the status code that is used to map the integration response to an existing MethodResponse.',
+    }),
+    selectionPattern: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the regular expression (regex) pattern used to choose an integration response based on the response from the back end. For example, if the success response returns nothing and the error response returns some string, you could use the <code>.+</code> regex to match error response. However, make sure that the error response does not contain any newline (<code>\\n</code>) character in such cases. If the back end is an AWS Lambda function, the AWS Lambda function error header is matched. For all other HTTP and AWS back ends, the HTTP status code is matched.',
+    }),
+    responseParameters: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A key-value map specifying response parameters that are passed to the method response from the back end. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of <code>method.response.header.{name}</code>, where <code>name</code> is a valid and unique header name. The mapped non-static value must match the pattern of <code>integration.response.header.{name}</code> or <code>integration.response.body.{JSON-expression}</code>, where <code>name</code> is a valid and unique response header name and <code>JSON-expression</code> is a valid JSON expression without the <code>$</code> prefix.',
+    }),
+    responseTemplates: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'Specifies the templates used to transform the integration response body. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
+    }),
+    contentHandling: ContentHandlingStrategySchema.exactOptional().openapi({
+      description:
+        '<p>Specifies how to handle response payload content type conversions. Supported values are <code>CONVERT_TO_BINARY</code> and <code>CONVERT_TO_TEXT</code>, with the following behaviors:</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.</p>',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents an integration response. The status code must map to an existing MethodResponse, and parameters and templates can be used to transform the back-end response.',
+    required: [],
+  })
+  .openapi('IntegrationResponse')
+
+const MapOfIntegrationResponseSchema = z
+  .record(z.string(), IntegrationResponseSchema)
+  .openapi('MapOfIntegrationResponse')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const TlsConfigSchema = z
+  .object({
+    insecureSkipVerification: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies whether or not API Gateway skips verification that the certificate for an integration endpoint is issued by a supported certificate authority. This isn’t recommended, but it enables you to use certificates that are signed by private certificate authorities, or certificates that are self-signed. If enabled, API Gateway still performs basic certificate validation, which includes checking the certificate's expiration date, hostname, and presence of a root certificate authority. Supported only for <code>HTTP</code> and <code>HTTP_PROXY</code> integrations.</p> <important> <p>Enabling <code>insecureSkipVerification</code> isn't recommended, especially for integrations with public HTTPS endpoints. If you enable <code>insecureSkipVerification</code>, you increase the risk of man-in-the-middle attacks.</p> </important>",
+    }),
+  })
+  .openapi({ description: 'Specifies the TLS configuration for an integration.', required: [] })
+  .openapi('TlsConfig')
+
+const IntegrationSchema = z
+  .object({
+    type: IntegrationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies an API method integration type. The valid value is one of the following:</p> <p>For the HTTP and HTTP proxy integrations, each integration can specify a protocol (<code>http/https</code>), port and path. Standard 80 and 443 ports are supported as well as custom ports above 1024. An HTTP or HTTP proxy integration with a <code>connectionType</code> of <code>VPC_LINK</code> is referred to as a private integration and uses a VpcLink to connect API Gateway to a network load balancer of a VPC.</p>',
+    }),
+    httpMethod: StringSchema.exactOptional().openapi({
+      description: "Specifies the integration's HTTP method type.",
+    }),
+    uri: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies Uniform Resource Identifier (URI) of the integration endpoint.</p> <p>For <code>HTTP</code> or <code>HTTP_PROXY</code> integrations, the URI must be a fully formed, encoded HTTP(S) URL according to the RFC-3986 specification, for either standard integration, where <code>connectionType</code> is not <code>VPC_LINK</code>, or private integration, where <code>connectionType</code> is <code>VPC_LINK</code>. For a private HTTP integration, the URI is not used for routing. For <code>AWS</code> or <code>AWS_PROXY</code> integrations, the URI is of the form <code>arn:aws:apigateway:{region}:{subdomain.service|service}:path|action/{service_api}</code>. Here, {Region} is the API Gateway region (e.g., us-east-1); {service} is the name of the integrated Amazon Web Services service (e.g., s3); and {subdomain} is a designated subdomain supported by certain Amazon Web Services service for fast host-name lookup. action can be used for an Amazon Web Services service action-based API, using an Action={name}&amp;{p1}={v1}&amp;p2={v2}... query string. The ensuing {service_api} refers to a supported action {name} plus any required input parameters. Alternatively, path can be used for an AWS service path-based API. The ensuing service_api refers to the path to an Amazon Web Services service resource, including the region of the integrated Amazon Web Services service, if applicable. For example, for integration with the S3 API of GetObject, the uri can be either <code>arn:aws:apigateway:us-west-2:s3:action/GetObject&amp;Bucket={bucket}&amp;Key={key}</code> or <code>arn:aws:apigateway:us-west-2:s3:path/{bucket}/{key}</code> </p>',
+    }),
+    connectionType: ConnectionTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the network connection to the integration endpoint. The valid value is <code>INTERNET</code> for connections through the public routable internet or <code>VPC_LINK</code> for private connections between API Gateway and a network load balancer in a VPC. The default value is <code>INTERNET</code>.',
+    }),
+    connectionId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the VpcLink used for the integration when <code>connectionType=VPC_LINK</code> and undefined, otherwise.',
+    }),
+    credentials: StringSchema.exactOptional().openapi({
+      description:
+        "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string <code>arn:aws:iam::\\*:user/\\*</code>. To use resource-based permissions on supported AWS services, specify null.",
+    }),
+    requestParameters: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A key-value map specifying request parameters that are passed from the method request to the back end. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the back end. The method request parameter value must match the pattern of <code>method.request.{location}.{name}</code>, where <code>location</code> is <code>querystring</code>, <code>path</code>, or <code>header</code> and <code>name</code> must be a valid and unique method request parameter name.',
+    }),
+    requestTemplates: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value.',
+    }),
+    passthroughBehavior: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies how the method request body of an unmapped content type will be passed through the integration request to the back end without transformation. A content type is unmapped if no mapping template is defined in the integration or the content type does not match any of the mapped content types, as specified in <code>requestTemplates</code>. The valid value is one of the following: <code>WHEN_NO_MATCH</code>: passes the method request body through the integration request to the back end without transformation when the method request content type does not match any content type associated with the mapping templates defined in the integration request. <code>WHEN_NO_TEMPLATES</code>: passes the method request body through the integration request to the back end without transformation when no mapping template is defined in the integration request. If a template is defined when this option is selected, the method request of an unmapped content-type will be rejected with an HTTP 415 Unsupported Media Type response. <code>NEVER</code>: rejects the method request with an HTTP 415 Unsupported Media Type response when either the method request content type does not match any content type associated with the mapping templates defined in the integration request or no mapping template is defined in the integration request.',
+    }),
+    contentHandling: ContentHandlingStrategySchema.exactOptional().openapi({
+      description:
+        '<p>Specifies how to handle request payload content type conversions. Supported values are <code>CONVERT_TO_BINARY</code> and <code>CONVERT_TO_TEXT</code>, with the following behaviors:</p> <p>If this property is not defined, the request payload will be passed through from the method request to integration request without modification, provided that the <code>passthroughBehavior</code> is configured to support payload pass-through.</p>',
+    }),
+    timeoutInMillis: IntegerSchema.exactOptional().openapi({
+      description:
+        'Custom timeout between 50 and 29,000 milliseconds. The default value is 29,000 milliseconds or 29 seconds.',
+    }),
+    cacheNamespace: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the <code>cacheNamespace</code>. You can specify the same <code>cacheNamespace</code> across resources to return the same cached data for requests to different resources.',
+    }),
+    cacheKeyParameters: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'A list of request parameters whose values API Gateway caches. To be valid values for <code>cacheKeyParameters</code>, these parameters must also be specified for Method <code>requestParameters</code>.',
+    }),
+    integrationResponses: MapOfIntegrationResponseSchema.exactOptional().openapi({
+      description: "Specifies the integration's responses.",
+    }),
+    tlsConfig: TlsConfigSchema.exactOptional().openapi({
+      description: 'Specifies the TLS configuration for an integration.',
+    }),
+  })
+  .openapi({
+    description: 'Represents an HTTP, HTTP_PROXY, AWS, AWS_PROXY, or Mock integration.',
+    required: [],
+  })
+  .openapi('Integration')
+
+const MethodSchema = z
+  .object({
+    httpMethod: StringSchema.exactOptional().openapi({ description: "The method's HTTP verb." }),
+    authorizationType: StringSchema.exactOptional().openapi({
+      description:
+        "The method's authorization type. Valid values are <code>NONE</code> for open access, <code>AWS_IAM</code> for using AWS IAM permissions, <code>CUSTOM</code> for using a custom authorizer, or <code>COGNITO_USER_POOLS</code> for using a Cognito user pool.",
+    }),
+    authorizerId: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of an Authorizer to use on this method. The <code>authorizationType</code> must be <code>CUSTOM</code>.',
+    }),
+    apiKeyRequired: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean flag specifying whether a valid ApiKey is required to invoke this method.',
+    }),
+    requestValidatorId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of a RequestValidator for request validation.',
+    }),
+    operationName: StringSchema.exactOptional().openapi({
+      description:
+        'A human-friendly operation identifier for the method. For example, you can assign the <code>operationName</code> of <code>ListPets</code> for the <code>GET /pets</code> method in the <code>PetStore</code> example.',
+    }),
+    requestParameters: MapOfStringToBooleanSchema.exactOptional().openapi({
+      description:
+        'A key-value map defining required or optional method request parameters that can be accepted by API Gateway. A key is a method request parameter name matching the pattern of <code>method.request.{location}.{name}</code>, where <code>location</code> is <code>querystring</code>, <code>path</code>, or <code>header</code> and <code>name</code> is a valid and unique parameter name. The value associated with the key is a Boolean flag indicating whether the parameter is required (<code>true</code>) or optional (<code>false</code>). The method request parameter names defined here are available in Integration to be mapped to integration request parameters or templates.',
+    }),
+    requestModels: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A key-value map specifying data schemas, represented by Model resources, (as the mapped value) of the request payloads of given content types (as the mapping key).',
+    }),
+    methodResponses: MapOfMethodResponseSchema.exactOptional().openapi({
+      description: 'Gets a method response associated with a given HTTP status code. ',
+    }),
+    methodIntegration: IntegrationSchema.exactOptional().openapi({
+      description:
+        "Gets the method's integration responsible for passing the client-submitted request to the back end and performing necessary transformations to make the request compliant with the back end.",
+    }),
+    authorizationScopes: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'A list of authorization scopes configured on the method. The scopes are used with a <code>COGNITO_USER_POOLS</code> authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
+    }),
+  })
+  .openapi({
+    description:
+      ' Represents a client-facing interface by which the client calls the API to access back-end resources. A Method resource is integrated with an Integration resource. Both consist of a request and one or more responses. The method request takes the client input that is passed to the back end through the integration request. A method response returns the output from the back end to the client through an integration response. A method request is embodied in a Method resource, whereas an integration request is embodied in an Integration resource. On the other hand, a method response is represented by a MethodResponse resource, whereas an integration response is represented by an IntegrationResponse resource. ',
+    required: [],
+  })
+  .openapi('Method')
+
+const MapOfMethodSchema = z.record(z.string(), MethodSchema).openapi('MapOfMethod')
+
+const ResourceSchema = z
+  .object({
+    id: StringSchema.exactOptional().openapi({ description: "The resource's identifier." }),
+    parentId: StringSchema.exactOptional().openapi({
+      description: "The parent resource's identifier.",
+    }),
+    pathPart: StringSchema.exactOptional().openapi({
+      description: 'The last path segment for this resource.',
+    }),
+    path: StringSchema.exactOptional().openapi({ description: 'The full path for this resource.' }),
+    resourceMethods: MapOfMethodSchema.exactOptional().openapi({
+      description: "Gets an API resource's method of a given HTTP verb.",
+    }),
+  })
+  .openapi({ description: 'Represents an API resource.', required: [] })
+  .openapi('Resource')
+
+type ListOfResourceType = z.infer<typeof ResourceSchema>[]
+
+const ListOfResourceSchema: z.ZodType<ListOfResourceType> = z
+  .array(ResourceSchema)
+  .openapi('ListOfResource')
+
+type ResourcesType = {
+  position?: z.infer<typeof StringSchema>
+  items?: z.infer<typeof ListOfResourceSchema> & unknown
+}
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
 const ApiKeySchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the API Key.' }),
-    ).exactOptional(),
-    value: StringSchema.and(
-      z.any().openapi({ description: 'The value of the API Key.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the API Key.' }),
-    ).exactOptional(),
-    customerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An AWS Marketplace customer identifier , when integrating with the AWS SaaS Marketplace.',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the API Key.' }),
-    ).exactOptional(),
-    enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether the API Key can be used by callers.' }),
-    ).exactOptional(),
-    createdDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp when the API Key was created.' }),
-    ).exactOptional(),
-    lastUpdatedDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp when the API Key was last updated.' }),
-    ).exactOptional(),
-    stageKeys: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of Stage resources that are associated with the ApiKey resource.',
-        }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({ description: 'The identifier of the API Key.' }),
+    value: StringSchema.exactOptional().openapi({ description: 'The value of the API Key.' }),
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the API Key.' }),
+    customerId: StringSchema.exactOptional().openapi({
+      description:
+        'An AWS Marketplace customer identifier , when integrating with the AWS SaaS Marketplace.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the API Key.',
+    }),
+    enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the API Key can be used by callers.',
+    }),
+    createdDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp when the API Key was created.',
+    }),
+    lastUpdatedDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp when the API Key was last updated.',
+    }),
+    stageKeys: ListOfStringSchema.exactOptional().openapi({
+      description: 'A list of Stage resources that are associated with the ApiKey resource.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({
     description:
@@ -66,12 +289,12 @@ const ApiKeySchema = z
 
 const StageKeySchema = z
   .object({
-    restApiId: StringSchema.and(
-      z.any().openapi({ description: 'The string identifier of the associated RestApi.' }),
-    ).exactOptional(),
-    stageName: StringSchema.and(
-      z.any().openapi({ description: 'The stage name associated with the stage key.' }),
-    ).exactOptional(),
+    restApiId: StringSchema.exactOptional().openapi({
+      description: 'The string identifier of the associated RestApi.',
+    }),
+    stageName: StringSchema.exactOptional().openapi({
+      description: 'The stage name associated with the stage key.',
+    }),
   })
   .openapi({
     description:
@@ -108,76 +331,42 @@ const NullableIntegerSchema = z.int().openapi('NullableInteger')
 
 const AuthorizerSchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the authorizer resource.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the authorizer.' }),
-    ).exactOptional(),
-    type: AuthorizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authorizer type. Valid values are <code>TOKEN</code> for a Lambda function using a single authorization token submitted in a custom header, <code>REQUEST</code> for a Lambda function using incoming request parameters, and <code>COGNITO_USER_POOLS</code> for using an Amazon Cognito user pool.',
-        }),
-    ).exactOptional(),
-    providerARNs: ListOfARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the Amazon Cognito user pool ARNs for the <code>COGNITO_USER_POOLS</code> authorizer. Each element is of this format: <code>arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}</code>. For a <code>TOKEN</code> or <code>REQUEST</code> authorizer, this is not defined. ',
-        }),
-    ).exactOptional(),
-    authType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional customer-defined field, used in OpenAPI imports and exports without functional impact.',
-        }),
-    ).exactOptional(),
-    authorizerUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the authorizer's Uniform Resource Identifier (URI). For <code>TOKEN</code> or <code>REQUEST</code> authorizers, this must be a well-formed Lambda function URI, for example, <code>arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:{account_id}:function:{lambda_function_name}/invocations</code>. In general, the URI has this form <code>arn:aws:apigateway:{region}:lambda:path/{service_api}</code>, where <code>{region}</code> is the same as the region hosting the Lambda function, <code>path</code> indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial <code>/</code>. For Lambda functions, this is usually of the form <code>/2015-03-31/functions/[FunctionARN]/invocations</code>.",
-        }),
-    ).exactOptional(),
-    authorizerCredentials: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.",
-        }),
-    ).exactOptional(),
-    identitySource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity source for which authorization is requested. For a <code>TOKEN</code> or <code>COGNITO_USER_POOLS</code> authorizer, this is required and specifies the request header mapping expression for the custom header holding the authorization token submitted by the client. For example, if the token header name is <code>Auth</code>, the header mapping expression is <code>method.request.header.Auth</code>. For the <code>REQUEST</code> authorizer, this is required when authorization caching is enabled. The value is a comma-separated string of one or more mapping expressions of the specified request parameters. For example, if an <code>Auth</code> header, a <code>Name</code> query string parameter are defined as identity sources, this value is <code>method.request.header.Auth</code>, <code>method.request.querystring.Name</code>. These parameters will be used to derive the authorization caching key and to perform runtime validation of the <code>REQUEST</code> authorizer by verifying all of the identity-related request parameters are present, not null and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function, otherwise, it returns a 401 Unauthorized response without calling the Lambda function. The valid value is a string of comma-separated mapping expressions of the specified request parameters. When the authorization caching is not enabled, this property is optional. ',
-        }),
-    ).exactOptional(),
-    identityValidationExpression: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A validation expression for the incoming identity token. For <code>TOKEN</code> authorizers, this value is a regular expression. For <code>COGNITO_USER_POOLS</code> authorizers, API Gateway will match the <code>aud</code> field of the incoming token from the client against the specified regular expression. It will invoke the authorizer's Lambda function when there is a match. Otherwise, it will return a 401 Unauthorized response without calling the Lambda function. The validation expression does not apply to the <code>REQUEST</code> authorizer.",
-        }),
-    ).exactOptional(),
-    authorizerResultTtlInSeconds: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The TTL in seconds of cached authorizer results. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway will cache authorizer responses. If this field is not set, the default value is 300. The maximum value is 3600, or 1 hour.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the authorizer resource.',
+    }),
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the authorizer.' }),
+    type: AuthorizerTypeSchema.exactOptional().openapi({
+      description:
+        'The authorizer type. Valid values are <code>TOKEN</code> for a Lambda function using a single authorization token submitted in a custom header, <code>REQUEST</code> for a Lambda function using incoming request parameters, and <code>COGNITO_USER_POOLS</code> for using an Amazon Cognito user pool.',
+    }),
+    providerARNs: ListOfARNsSchema.exactOptional().openapi({
+      description:
+        'A list of the Amazon Cognito user pool ARNs for the <code>COGNITO_USER_POOLS</code> authorizer. Each element is of this format: <code>arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}</code>. For a <code>TOKEN</code> or <code>REQUEST</code> authorizer, this is not defined. ',
+    }),
+    authType: StringSchema.exactOptional().openapi({
+      description:
+        'Optional customer-defined field, used in OpenAPI imports and exports without functional impact.',
+    }),
+    authorizerUri: StringSchema.exactOptional().openapi({
+      description:
+        "Specifies the authorizer's Uniform Resource Identifier (URI). For <code>TOKEN</code> or <code>REQUEST</code> authorizers, this must be a well-formed Lambda function URI, for example, <code>arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:{account_id}:function:{lambda_function_name}/invocations</code>. In general, the URI has this form <code>arn:aws:apigateway:{region}:lambda:path/{service_api}</code>, where <code>{region}</code> is the same as the region hosting the Lambda function, <code>path</code> indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial <code>/</code>. For Lambda functions, this is usually of the form <code>/2015-03-31/functions/[FunctionARN]/invocations</code>.",
+    }),
+    authorizerCredentials: StringSchema.exactOptional().openapi({
+      description:
+        "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.",
+    }),
+    identitySource: StringSchema.exactOptional().openapi({
+      description:
+        'The identity source for which authorization is requested. For a <code>TOKEN</code> or <code>COGNITO_USER_POOLS</code> authorizer, this is required and specifies the request header mapping expression for the custom header holding the authorization token submitted by the client. For example, if the token header name is <code>Auth</code>, the header mapping expression is <code>method.request.header.Auth</code>. For the <code>REQUEST</code> authorizer, this is required when authorization caching is enabled. The value is a comma-separated string of one or more mapping expressions of the specified request parameters. For example, if an <code>Auth</code> header, a <code>Name</code> query string parameter are defined as identity sources, this value is <code>method.request.header.Auth</code>, <code>method.request.querystring.Name</code>. These parameters will be used to derive the authorization caching key and to perform runtime validation of the <code>REQUEST</code> authorizer by verifying all of the identity-related request parameters are present, not null and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function, otherwise, it returns a 401 Unauthorized response without calling the Lambda function. The valid value is a string of comma-separated mapping expressions of the specified request parameters. When the authorization caching is not enabled, this property is optional. ',
+    }),
+    identityValidationExpression: StringSchema.exactOptional().openapi({
+      description:
+        "A validation expression for the incoming identity token. For <code>TOKEN</code> authorizers, this value is a regular expression. For <code>COGNITO_USER_POOLS</code> authorizers, API Gateway will match the <code>aud</code> field of the incoming token from the client against the specified regular expression. It will invoke the authorizer's Lambda function when there is a match. Otherwise, it will return a 401 Unauthorized response without calling the Lambda function. The validation expression does not apply to the <code>REQUEST</code> authorizer.",
+    }),
+    authorizerResultTtlInSeconds: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The TTL in seconds of cached authorizer results. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway will cache authorizer responses. If this field is not set, the default value is 300. The maximum value is 3600, or 1 hour.',
+    }),
   })
   .openapi({
     description:
@@ -188,20 +377,16 @@ const AuthorizerSchema = z
 
 const BasePathMappingSchema = z
   .object({
-    basePath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base path name that callers of the API must provide as part of the URL after the domain name.',
-        }),
-    ).exactOptional(),
-    restApiId: StringSchema.and(
-      z.any().openapi({ description: 'The string identifier of the associated RestApi.' }),
-    ).exactOptional(),
-    stage: StringSchema.and(
-      z.any().openapi({ description: 'The name of the associated stage.' }),
-    ).exactOptional(),
+    basePath: StringSchema.exactOptional().openapi({
+      description:
+        'The base path name that callers of the API must provide as part of the URL after the domain name.',
+    }),
+    restApiId: StringSchema.exactOptional().openapi({
+      description: 'The string identifier of the associated RestApi.',
+    }),
+    stage: StringSchema.exactOptional().openapi({
+      description: 'The name of the associated stage.',
+    }),
   })
   .openapi({
     description:
@@ -212,17 +397,13 @@ const BasePathMappingSchema = z
 
 const MethodSnapshotSchema = z
   .object({
-    authorizationType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The method's authorization type. Valid values are <code>NONE</code> for open access, <code>AWS_IAM</code> for using AWS IAM permissions, <code>CUSTOM</code> for using a custom authorizer, or <code>COGNITO_USER_POOLS</code> for using a Cognito user pool.",
-        }),
-    ).exactOptional(),
-    apiKeyRequired: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether the method requires a valid ApiKey.' }),
-    ).exactOptional(),
+    authorizationType: StringSchema.exactOptional().openapi({
+      description:
+        "The method's authorization type. Valid values are <code>NONE</code> for open access, <code>AWS_IAM</code> for using AWS IAM permissions, <code>CUSTOM</code> for using a custom authorizer, or <code>COGNITO_USER_POOLS</code> for using a Cognito user pool.",
+    }),
+    apiKeyRequired: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the method requires a valid ApiKey.',
+    }),
   })
   .openapi({
     description: 'Represents a summary of a Method resource, given a particular date and time.',
@@ -240,25 +421,19 @@ const PathToMapOfMethodSnapshotSchema = z
 
 const DeploymentSchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the deployment resource.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description for the deployment resource.' }),
-    ).exactOptional(),
-    createdDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the deployment resource was created.' }),
-    ).exactOptional(),
-    apiSummary: PathToMapOfMethodSnapshotSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A summary of the RestApi at the date and time that the deployment resource was created.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the deployment resource.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description for the deployment resource.',
+    }),
+    createdDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the deployment resource was created.',
+    }),
+    apiSummary: PathToMapOfMethodSnapshotSchema.exactOptional().openapi({
+      description:
+        'A summary of the RestApi at the date and time that the deployment resource was created.',
+    }),
   })
   .openapi({
     description:
@@ -295,46 +470,26 @@ const DocumentationPartLocationStatusCodeSchema = z
 
 const DocumentationPartLocationSchema = z
   .object({
-    type: DocumentationPartTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of API entity to which the documentation content applies. Valid values are <code>API</code>, <code>AUTHORIZER</code>, <code>MODEL</code>, <code>RESOURCE</code>, <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. Content inheritance does not apply to any entity of the <code>API</code>, <code>AUTHORIZER</code>, <code>METHOD</code>, <code>MODEL</code>, <code>REQUEST_BODY</code>, or <code>RESOURCE</code> type.',
-        }),
-    ),
-    path: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The URL path of the target. It is a valid field for the API entity types of <code>RESOURCE</code>, <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>/</code> for the root resource. When an applicable child entity inherits the content of another entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>path</code> attribute must match that of the parent entity as a prefix.",
-        }),
-    ).exactOptional(),
-    method: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The HTTP verb of a method. It is a valid field for the API entity types of <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>*</code> for any method. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>method</code> attribute must match that of the parent entity exactly.",
-        }),
-    ).exactOptional(),
-    statusCode: DocumentationPartLocationStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The HTTP status code of a response. It is a valid field for the API entity types of <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>*</code> for any status code. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>statusCode</code> attribute must match that of the parent entity exactly.",
-        }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the targeted API entity. It is a valid and required field for the API entity types of <code>AUTHORIZER</code>, <code>MODEL</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code> and <code>RESPONSE_HEADER</code>. It is an invalid field for any other entity type.',
-        }),
-    ).exactOptional(),
+    type: DocumentationPartTypeSchema.openapi({
+      description:
+        'The type of API entity to which the documentation content applies. Valid values are <code>API</code>, <code>AUTHORIZER</code>, <code>MODEL</code>, <code>RESOURCE</code>, <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. Content inheritance does not apply to any entity of the <code>API</code>, <code>AUTHORIZER</code>, <code>METHOD</code>, <code>MODEL</code>, <code>REQUEST_BODY</code>, or <code>RESOURCE</code> type.',
+    }),
+    path: StringSchema.exactOptional().openapi({
+      description:
+        "The URL path of the target. It is a valid field for the API entity types of <code>RESOURCE</code>, <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>/</code> for the root resource. When an applicable child entity inherits the content of another entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>path</code> attribute must match that of the parent entity as a prefix.",
+    }),
+    method: StringSchema.exactOptional().openapi({
+      description:
+        "The HTTP verb of a method. It is a valid field for the API entity types of <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>*</code> for any method. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>method</code> attribute must match that of the parent entity exactly.",
+    }),
+    statusCode: DocumentationPartLocationStatusCodeSchema.exactOptional().openapi({
+      description:
+        "The HTTP status code of a response. It is a valid field for the API entity types of <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>*</code> for any status code. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>statusCode</code> attribute must match that of the parent entity exactly.",
+    }),
+    name: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the targeted API entity. It is a valid and required field for the API entity types of <code>AUTHORIZER</code>, <code>MODEL</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code> and <code>RESPONSE_HEADER</code>. It is an invalid field for any other entity type.',
+    }),
   })
   .openapi({
     required: ['type'],
@@ -344,22 +499,14 @@ const DocumentationPartLocationSchema = z
 
 const DocumentationPartSchema = z
   .object({
-    id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DocumentationPart identifier, generated by API Gateway when the <code>DocumentationPart</code> is created.',
-        }),
-    ).exactOptional(),
-    location: DocumentationPartLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the API entity to which the documentation applies. Valid fields depend on the targeted API entity type. All the valid location fields are not required. If not explicitly specified, a valid location field is treated as a wildcard and associated documentation content may be inherited by matching entities, unless overridden.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description:
+        'The DocumentationPart identifier, generated by API Gateway when the <code>DocumentationPart</code> is created.',
+    }),
+    location: DocumentationPartLocationSchema.exactOptional().openapi({
+      description:
+        'The location of the API entity to which the documentation applies. Valid fields depend on the targeted API entity type. All the valid location fields are not required. If not explicitly specified, a valid location field is treated as a wildcard and associated documentation content may be inherited by matching entities, unless overridden.',
+    }),
     properties: z
       .any()
       .exactOptional()
@@ -373,15 +520,15 @@ const DocumentationPartSchema = z
 
 const DocumentationVersionSchema = z
   .object({
-    version: StringSchema.and(
-      z.any().openapi({ description: 'The version identifier of the API documentation snapshot.' }),
-    ).exactOptional(),
-    createdDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the API documentation snapshot is created.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the API documentation snapshot.' }),
-    ).exactOptional(),
+    version: StringSchema.exactOptional().openapi({
+      description: 'The version identifier of the API documentation snapshot.',
+    }),
+    createdDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the API documentation snapshot is created.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the API documentation snapshot.',
+    }),
   })
   .openapi({ description: 'A snapshot of the documentation of an API.', required: [] })
   .openapi('DocumentationVersion')
@@ -398,22 +545,14 @@ const ListOfEndpointTypeSchema = z.array(EndpointTypeSchema).openapi('ListOfEndp
 
 const EndpointConfigurationSchema = z
   .object({
-    types: ListOfEndpointTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of endpoint types of an API (RestApi) or its custom domain name (DomainName). For an edge-optimized API and its custom domain name, the endpoint type is <code>"EDGE"</code>. For a regional API and its custom domain name, the endpoint type is <code>REGIONAL</code>. For a private API, the endpoint type is <code>PRIVATE</code>.',
-        }),
-    ).exactOptional(),
-    vpcEndpointIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of VpcEndpointIds of an API (RestApi) against which to create Route53 ALIASes. It is only supported for <code>PRIVATE</code> endpoint type.',
-        }),
-    ).exactOptional(),
+    types: ListOfEndpointTypeSchema.exactOptional().openapi({
+      description:
+        'A list of endpoint types of an API (RestApi) or its custom domain name (DomainName). For an edge-optimized API and its custom domain name, the endpoint type is <code>"EDGE"</code>. For a regional API and its custom domain name, the endpoint type is <code>REGIONAL</code>. For a private API, the endpoint type is <code>PRIVATE</code>.',
+    }),
+    vpcEndpointIds: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'A list of VpcEndpointIds of an API (RestApi) against which to create Route53 ALIASes. It is only supported for <code>PRIVATE</code> endpoint type.',
+    }),
   })
   .openapi({
     description:
@@ -436,30 +575,18 @@ const SecurityPolicySchema = z.enum(['TLS_1_0', 'TLS_1_2']).openapi('SecurityPol
 
 const MutualTlsAuthenticationSchema = z
   .object({
-    truststoreUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example <code>s3://bucket-name/key-name</code>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
-        }),
-    ).exactOptional(),
-    truststoreVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
-        }),
-    ).exactOptional(),
-    truststoreWarnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of warnings that API Gateway returns while processing your truststore. Invalid certificates produce warnings. Mutual TLS is still enabled, but some clients might not be able to access your API. To resolve warnings, upload a new truststore to S3, and then update you domain name to use the new version.',
-        }),
-    ).exactOptional(),
+    truststoreUri: StringSchema.exactOptional().openapi({
+      description:
+        'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example <code>s3://bucket-name/key-name</code>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
+    }),
+    truststoreVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
+    }),
+    truststoreWarnings: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'A list of warnings that API Gateway returns while processing your truststore. Invalid certificates produce warnings. Mutual TLS is still enabled, but some clients might not be able to access your API. To resolve warnings, upload a new truststore to S3, and then update you domain name to use the new version.',
+    }),
   })
   .openapi({
     description:
@@ -470,142 +597,73 @@ const MutualTlsAuthenticationSchema = z
 
 const DomainNameSchema = z
   .object({
-    domainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The custom domain name as an API host name, for example, <code>my-api.example.com</code>.',
-        }),
-    ).exactOptional(),
-    certificateName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the certificate that will be used by edge-optimized endpoint for this domain name.',
-        }),
-    ).exactOptional(),
-    certificateArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reference to an AWS-managed certificate that will be used by edge-optimized endpoint for this domain name. AWS Certificate Manager is the only supported source.',
-        }),
-    ).exactOptional(),
-    certificateUploadDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the certificate that was used by edge-optimized endpoint for this domain name was uploaded.',
-        }),
-    ).exactOptional(),
-    regionalDomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain name associated with the regional endpoint for this custom domain name. You set up this association by adding a DNS record that points the custom domain name to this regional domain name. The regional domain name is returned by API Gateway when you create a regional endpoint.',
-        }),
-    ).exactOptional(),
-    regionalHostedZoneId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The region-specific Amazon Route 53 Hosted Zone ID of the regional endpoint. For more information, see Set up a Regional Custom Domain Name and AWS Regions and Endpoints for API Gateway. ',
-        }),
-    ).exactOptional(),
-    regionalCertificateName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the certificate that will be used for validating the regional domain name.',
-        }),
-    ).exactOptional(),
-    regionalCertificateArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reference to an AWS-managed certificate that will be used for validating the regional domain name. AWS Certificate Manager is the only supported source.',
-        }),
-    ).exactOptional(),
-    distributionDomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain name of the Amazon CloudFront distribution associated with this custom domain name for an edge-optimized endpoint. You set up this association when adding a DNS record pointing the custom domain name to this distribution name. For more information about CloudFront distributions, see the Amazon CloudFront documentation.',
-        }),
-    ).exactOptional(),
-    distributionHostedZoneId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The region-agnostic Amazon Route 53 Hosted Zone ID of the edge-optimized endpoint. The valid value is <code>Z2FDTNDATAQYW2</code> for all the regions. For more information, see Set up a Regional Custom Domain Name and AWS Regions and Endpoints for API Gateway. ',
-        }),
-    ).exactOptional(),
-    endpointConfiguration: EndpointConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint configuration of this DomainName showing the endpoint types of the domain name. ',
-        }),
-    ).exactOptional(),
-    domainNameStatus: DomainNameStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the DomainName migration. The valid values are <code>AVAILABLE</code> and <code>UPDATING</code>. If the status is <code>UPDATING</code>, the domain cannot be modified further until the existing operation is complete. If it is <code>AVAILABLE</code>, the domain can be updated.',
-        }),
-    ).exactOptional(),
-    domainNameStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional text message containing detailed information about status of the DomainName migration.',
-        }),
-    ).exactOptional(),
-    securityPolicy: SecurityPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Transport Layer Security (TLS) version + cipher suite for this DomainName. The valid values are <code>TLS_1_0</code> and <code>TLS_1_2</code>.',
-        }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
-    mutualTlsAuthentication: MutualTlsAuthenticationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mutual TLS authentication configuration for a custom domain name. If specified, API Gateway performs two-way authentication between the client and the server. Clients must present a trusted certificate to access your API.',
-        }),
-    ).exactOptional(),
-    ownershipVerificationCertificateArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the public certificate issued by ACM to validate ownership of your custom domain. Only required when configuring mutual TLS and using an ACM imported or private CA certificate ARN as the regionalCertificateArn.',
-        }),
-    ).exactOptional(),
+    domainName: StringSchema.exactOptional().openapi({
+      description:
+        'The custom domain name as an API host name, for example, <code>my-api.example.com</code>.',
+    }),
+    certificateName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the certificate that will be used by edge-optimized endpoint for this domain name.',
+    }),
+    certificateArn: StringSchema.exactOptional().openapi({
+      description:
+        'The reference to an AWS-managed certificate that will be used by edge-optimized endpoint for this domain name. AWS Certificate Manager is the only supported source.',
+    }),
+    certificateUploadDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the certificate that was used by edge-optimized endpoint for this domain name was uploaded.',
+    }),
+    regionalDomainName: StringSchema.exactOptional().openapi({
+      description:
+        'The domain name associated with the regional endpoint for this custom domain name. You set up this association by adding a DNS record that points the custom domain name to this regional domain name. The regional domain name is returned by API Gateway when you create a regional endpoint.',
+    }),
+    regionalHostedZoneId: StringSchema.exactOptional().openapi({
+      description:
+        'The region-specific Amazon Route 53 Hosted Zone ID of the regional endpoint. For more information, see Set up a Regional Custom Domain Name and AWS Regions and Endpoints for API Gateway. ',
+    }),
+    regionalCertificateName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the certificate that will be used for validating the regional domain name.',
+    }),
+    regionalCertificateArn: StringSchema.exactOptional().openapi({
+      description:
+        'The reference to an AWS-managed certificate that will be used for validating the regional domain name. AWS Certificate Manager is the only supported source.',
+    }),
+    distributionDomainName: StringSchema.exactOptional().openapi({
+      description:
+        'The domain name of the Amazon CloudFront distribution associated with this custom domain name for an edge-optimized endpoint. You set up this association when adding a DNS record pointing the custom domain name to this distribution name. For more information about CloudFront distributions, see the Amazon CloudFront documentation.',
+    }),
+    distributionHostedZoneId: StringSchema.exactOptional().openapi({
+      description:
+        'The region-agnostic Amazon Route 53 Hosted Zone ID of the edge-optimized endpoint. The valid value is <code>Z2FDTNDATAQYW2</code> for all the regions. For more information, see Set up a Regional Custom Domain Name and AWS Regions and Endpoints for API Gateway. ',
+    }),
+    endpointConfiguration: EndpointConfigurationSchema.exactOptional().openapi({
+      description:
+        'The endpoint configuration of this DomainName showing the endpoint types of the domain name. ',
+    }),
+    domainNameStatus: DomainNameStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the DomainName migration. The valid values are <code>AVAILABLE</code> and <code>UPDATING</code>. If the status is <code>UPDATING</code>, the domain cannot be modified further until the existing operation is complete. If it is <code>AVAILABLE</code>, the domain can be updated.',
+    }),
+    domainNameStatusMessage: StringSchema.exactOptional().openapi({
+      description:
+        'An optional text message containing detailed information about status of the DomainName migration.',
+    }),
+    securityPolicy: SecurityPolicySchema.exactOptional().openapi({
+      description:
+        'The Transport Layer Security (TLS) version + cipher suite for this DomainName. The valid values are <code>TLS_1_0</code> and <code>TLS_1_2</code>.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
+    mutualTlsAuthentication: MutualTlsAuthenticationSchema.exactOptional().openapi({
+      description:
+        'The mutual TLS authentication configuration for a custom domain name. If specified, API Gateway performs two-way authentication between the client and the server. Clients must present a trusted certificate to access your API.',
+    }),
+    ownershipVerificationCertificateArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the public certificate issued by ACM to validate ownership of your custom domain. Only required when configuring mutual TLS and using an ACM imported or private CA certificate ARN as the regionalCertificateArn.',
+    }),
   })
   .openapi({
     description:
@@ -616,26 +674,22 @@ const DomainNameSchema = z
 
 const ModelSchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the model resource.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the model. Must be an alphanumeric string.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the model.' }),
-    ).exactOptional(),
-    schema: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The schema for the model. For <code>application/json</code> models, this should be JSON schema draft 4 model. Do not include "\\*/" characters in the description of any properties because such "\\*/" characters may be interpreted as the closing marker for comments in some languages, such as Java or JavaScript, causing the installation of your API\'s SDK generated by API Gateway to fail.',
-        }),
-    ).exactOptional(),
-    contentType: StringSchema.and(
-      z.any().openapi({ description: 'The content-type for the model.' }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the model resource.',
+    }),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name of the model. Must be an alphanumeric string.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the model.',
+    }),
+    schema: StringSchema.exactOptional().openapi({
+      description:
+        'The schema for the model. For <code>application/json</code> models, this should be JSON schema draft 4 model. Do not include "\\*/" characters in the description of any properties because such "\\*/" characters may be interpreted as the closing marker for comments in some languages, such as Java or JavaScript, causing the installation of your API\'s SDK generated by API Gateway to fail.',
+    }),
+    contentType: StringSchema.exactOptional().openapi({
+      description: 'The content-type for the model.',
+    }),
   })
   .openapi({
     description: "Represents the data structure of a method's request or response payload.",
@@ -645,473 +699,71 @@ const ModelSchema = z
 
 const RequestValidatorSchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of this RequestValidator.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of this RequestValidator' }),
-    ).exactOptional(),
-    validateRequestBody: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean flag to indicate whether to validate a request body according to the configured Model schema.',
-        }),
-    ).exactOptional(),
-    validateRequestParameters: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean flag to indicate whether to validate request parameters (<code>true</code>) or not (<code>false</code>).',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The identifier of this RequestValidator.',
+    }),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name of this RequestValidator',
+    }),
+    validateRequestBody: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean flag to indicate whether to validate a request body according to the configured Model schema.',
+    }),
+    validateRequestParameters: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean flag to indicate whether to validate request parameters (<code>true</code>) or not (<code>false</code>).',
+    }),
   })
   .openapi({ description: 'A set of validation rules for incoming Method requests.', required: [] })
   .openapi('RequestValidator')
-
-const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
-
-const MapOfStringToBooleanSchema = z
-  .record(z.string(), NullableBooleanSchema)
-  .openapi('MapOfStringToBoolean')
-
-const StatusCodeSchema = z
-  .string()
-  .regex(/[1-5]\d\d/)
-  .openapi({ description: 'The status code.' })
-  .openapi('StatusCode')
-
-const MethodResponseSchema = z
-  .object({
-    statusCode: StatusCodeSchema.and(
-      z.any().openapi({ description: "The method response's status code." }),
-    ).exactOptional(),
-    responseParameters: MapOfStringToBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A key-value map specifying required or optional response parameters that API Gateway can send back to the caller. A key defines a method response header and the value specifies whether the associated method response header is required or not. The expression of the key must match the pattern <code>method.response.header.{name}</code>, where <code>name</code> is a valid and unique header name. API Gateway passes certain integration response data to the method response headers specified here according to the mapping you prescribe in the API's IntegrationResponse. The integration response data that can be mapped include an integration response header expressed in <code>integration.response.header.{name}</code>, a static value enclosed within a pair of single quotes (e.g., <code>'application/json'</code>), or a JSON expression from the back-end response payload in the form of <code>integration.response.body.{JSON-expression}</code>, where <code>JSON-expression</code> is a valid JSON expression without the <code>$</code> prefix.)",
-        }),
-    ).exactOptional(),
-    responseModels: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the Model resources used for the response's content-type. Response models are represented as a key/value map, with a content-type as the key and a Model name as the value.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents a method response of a given HTTP status code returned to the client. The method response is passed from the back end through the associated integration response that can be transformed using a mapping template. ',
-    required: [],
-  })
-  .openapi('MethodResponse')
-
-const MapOfMethodResponseSchema = z
-  .record(z.string(), MethodResponseSchema)
-  .openapi('MapOfMethodResponse')
-
-const IntegrationTypeSchema = z
-  .enum(['HTTP', 'AWS', 'MOCK', 'HTTP_PROXY', 'AWS_PROXY'])
-  .openapi({
-    description:
-      'The integration type. The valid value is <code>HTTP</code> for integrating an API method with an HTTP backend; <code>AWS</code> with any AWS service endpoints; <code>MOCK</code> for testing without actually invoking the backend; <code>HTTP_PROXY</code> for integrating with the HTTP proxy integration; <code>AWS_PROXY</code> for integrating with the Lambda proxy integration. ',
-  })
-  .openapi('IntegrationType')
-
-const ConnectionTypeSchema = z.enum(['INTERNET', 'VPC_LINK']).openapi('ConnectionType')
-
-const ContentHandlingStrategySchema = z
-  .enum(['CONVERT_TO_BINARY', 'CONVERT_TO_TEXT'])
-  .openapi('ContentHandlingStrategy')
-
-const IntegerSchema = z.int().openapi('Integer')
-
-const IntegrationResponseSchema = z
-  .object({
-    statusCode: StatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the status code that is used to map the integration response to an existing MethodResponse.',
-        }),
-    ).exactOptional(),
-    selectionPattern: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the regular expression (regex) pattern used to choose an integration response based on the response from the back end. For example, if the success response returns nothing and the error response returns some string, you could use the <code>.+</code> regex to match error response. However, make sure that the error response does not contain any newline (<code>\\n</code>) character in such cases. If the back end is an AWS Lambda function, the AWS Lambda function error header is matched. For all other HTTP and AWS back ends, the HTTP status code is matched.',
-        }),
-    ).exactOptional(),
-    responseParameters: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map specifying response parameters that are passed to the method response from the back end. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of <code>method.response.header.{name}</code>, where <code>name</code> is a valid and unique header name. The mapped non-static value must match the pattern of <code>integration.response.header.{name}</code> or <code>integration.response.body.{JSON-expression}</code>, where <code>name</code> is a valid and unique response header name and <code>JSON-expression</code> is a valid JSON expression without the <code>$</code> prefix.',
-        }),
-    ).exactOptional(),
-    responseTemplates: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the templates used to transform the integration response body. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
-        }),
-    ).exactOptional(),
-    contentHandling: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies how to handle response payload content type conversions. Supported values are <code>CONVERT_TO_BINARY</code> and <code>CONVERT_TO_TEXT</code>, with the following behaviors:</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents an integration response. The status code must map to an existing MethodResponse, and parameters and templates can be used to transform the back-end response.',
-    required: [],
-  })
-  .openapi('IntegrationResponse')
-
-const MapOfIntegrationResponseSchema = z
-  .record(z.string(), IntegrationResponseSchema)
-  .openapi('MapOfIntegrationResponse')
-
-const TlsConfigSchema = z
-  .object({
-    insecureSkipVerification: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies whether or not API Gateway skips verification that the certificate for an integration endpoint is issued by a supported certificate authority. This isn’t recommended, but it enables you to use certificates that are signed by private certificate authorities, or certificates that are self-signed. If enabled, API Gateway still performs basic certificate validation, which includes checking the certificate's expiration date, hostname, and presence of a root certificate authority. Supported only for <code>HTTP</code> and <code>HTTP_PROXY</code> integrations.</p> <important> <p>Enabling <code>insecureSkipVerification</code> isn't recommended, especially for integrations with public HTTPS endpoints. If you enable <code>insecureSkipVerification</code>, you increase the risk of man-in-the-middle attacks.</p> </important>",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Specifies the TLS configuration for an integration.', required: [] })
-  .openapi('TlsConfig')
-
-const IntegrationSchema = z
-  .object({
-    type: IntegrationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies an API method integration type. The valid value is one of the following:</p> <p>For the HTTP and HTTP proxy integrations, each integration can specify a protocol (<code>http/https</code>), port and path. Standard 80 and 443 ports are supported as well as custom ports above 1024. An HTTP or HTTP proxy integration with a <code>connectionType</code> of <code>VPC_LINK</code> is referred to as a private integration and uses a VpcLink to connect API Gateway to a network load balancer of a VPC.</p>',
-        }),
-    ).exactOptional(),
-    httpMethod: StringSchema.and(
-      z.any().openapi({ description: "Specifies the integration's HTTP method type." }),
-    ).exactOptional(),
-    uri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies Uniform Resource Identifier (URI) of the integration endpoint.</p> <p>For <code>HTTP</code> or <code>HTTP_PROXY</code> integrations, the URI must be a fully formed, encoded HTTP(S) URL according to the RFC-3986 specification, for either standard integration, where <code>connectionType</code> is not <code>VPC_LINK</code>, or private integration, where <code>connectionType</code> is <code>VPC_LINK</code>. For a private HTTP integration, the URI is not used for routing. For <code>AWS</code> or <code>AWS_PROXY</code> integrations, the URI is of the form <code>arn:aws:apigateway:{region}:{subdomain.service|service}:path|action/{service_api}</code>. Here, {Region} is the API Gateway region (e.g., us-east-1); {service} is the name of the integrated Amazon Web Services service (e.g., s3); and {subdomain} is a designated subdomain supported by certain Amazon Web Services service for fast host-name lookup. action can be used for an Amazon Web Services service action-based API, using an Action={name}&amp;{p1}={v1}&amp;p2={v2}... query string. The ensuing {service_api} refers to a supported action {name} plus any required input parameters. Alternatively, path can be used for an AWS service path-based API. The ensuing service_api refers to the path to an Amazon Web Services service resource, including the region of the integrated Amazon Web Services service, if applicable. For example, for integration with the S3 API of GetObject, the uri can be either <code>arn:aws:apigateway:us-west-2:s3:action/GetObject&amp;Bucket={bucket}&amp;Key={key}</code> or <code>arn:aws:apigateway:us-west-2:s3:path/{bucket}/{key}</code> </p>',
-        }),
-    ).exactOptional(),
-    connectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the network connection to the integration endpoint. The valid value is <code>INTERNET</code> for connections through the public routable internet or <code>VPC_LINK</code> for private connections between API Gateway and a network load balancer in a VPC. The default value is <code>INTERNET</code>.',
-        }),
-    ).exactOptional(),
-    connectionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the VpcLink used for the integration when <code>connectionType=VPC_LINK</code> and undefined, otherwise.',
-        }),
-    ).exactOptional(),
-    credentials: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string <code>arn:aws:iam::\\*:user/\\*</code>. To use resource-based permissions on supported AWS services, specify null.",
-        }),
-    ).exactOptional(),
-    requestParameters: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map specifying request parameters that are passed from the method request to the back end. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the back end. The method request parameter value must match the pattern of <code>method.request.{location}.{name}</code>, where <code>location</code> is <code>querystring</code>, <code>path</code>, or <code>header</code> and <code>name</code> must be a valid and unique method request parameter name.',
-        }),
-    ).exactOptional(),
-    requestTemplates: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value.',
-        }),
-    ).exactOptional(),
-    passthroughBehavior: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how the method request body of an unmapped content type will be passed through the integration request to the back end without transformation. A content type is unmapped if no mapping template is defined in the integration or the content type does not match any of the mapped content types, as specified in <code>requestTemplates</code>. The valid value is one of the following: <code>WHEN_NO_MATCH</code>: passes the method request body through the integration request to the back end without transformation when the method request content type does not match any content type associated with the mapping templates defined in the integration request. <code>WHEN_NO_TEMPLATES</code>: passes the method request body through the integration request to the back end without transformation when no mapping template is defined in the integration request. If a template is defined when this option is selected, the method request of an unmapped content-type will be rejected with an HTTP 415 Unsupported Media Type response. <code>NEVER</code>: rejects the method request with an HTTP 415 Unsupported Media Type response when either the method request content type does not match any content type associated with the mapping templates defined in the integration request or no mapping template is defined in the integration request.',
-        }),
-    ).exactOptional(),
-    contentHandling: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies how to handle request payload content type conversions. Supported values are <code>CONVERT_TO_BINARY</code> and <code>CONVERT_TO_TEXT</code>, with the following behaviors:</p> <p>If this property is not defined, the request payload will be passed through from the method request to integration request without modification, provided that the <code>passthroughBehavior</code> is configured to support payload pass-through.</p>',
-        }),
-    ).exactOptional(),
-    timeoutInMillis: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom timeout between 50 and 29,000 milliseconds. The default value is 29,000 milliseconds or 29 seconds.',
-        }),
-    ).exactOptional(),
-    cacheNamespace: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the <code>cacheNamespace</code>. You can specify the same <code>cacheNamespace</code> across resources to return the same cached data for requests to different resources.',
-        }),
-    ).exactOptional(),
-    cacheKeyParameters: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of request parameters whose values API Gateway caches. To be valid values for <code>cacheKeyParameters</code>, these parameters must also be specified for Method <code>requestParameters</code>.',
-        }),
-    ).exactOptional(),
-    integrationResponses: MapOfIntegrationResponseSchema.and(
-      z.any().openapi({ description: "Specifies the integration's responses." }),
-    ).exactOptional(),
-    tlsConfig: TlsConfigSchema.and(
-      z.any().openapi({ description: 'Specifies the TLS configuration for an integration.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Represents an HTTP, HTTP_PROXY, AWS, AWS_PROXY, or Mock integration.',
-    required: [],
-  })
-  .openapi('Integration')
-
-const MethodSchema = z
-  .object({
-    httpMethod: StringSchema.and(
-      z.any().openapi({ description: "The method's HTTP verb." }),
-    ).exactOptional(),
-    authorizationType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The method's authorization type. Valid values are <code>NONE</code> for open access, <code>AWS_IAM</code> for using AWS IAM permissions, <code>CUSTOM</code> for using a custom authorizer, or <code>COGNITO_USER_POOLS</code> for using a Cognito user pool.",
-        }),
-    ).exactOptional(),
-    authorizerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of an Authorizer to use on this method. The <code>authorizationType</code> must be <code>CUSTOM</code>.',
-        }),
-    ).exactOptional(),
-    apiKeyRequired: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean flag specifying whether a valid ApiKey is required to invoke this method.',
-        }),
-    ).exactOptional(),
-    requestValidatorId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of a RequestValidator for request validation.' }),
-    ).exactOptional(),
-    operationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A human-friendly operation identifier for the method. For example, you can assign the <code>operationName</code> of <code>ListPets</code> for the <code>GET /pets</code> method in the <code>PetStore</code> example.',
-        }),
-    ).exactOptional(),
-    requestParameters: MapOfStringToBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map defining required or optional method request parameters that can be accepted by API Gateway. A key is a method request parameter name matching the pattern of <code>method.request.{location}.{name}</code>, where <code>location</code> is <code>querystring</code>, <code>path</code>, or <code>header</code> and <code>name</code> is a valid and unique parameter name. The value associated with the key is a Boolean flag indicating whether the parameter is required (<code>true</code>) or optional (<code>false</code>). The method request parameter names defined here are available in Integration to be mapped to integration request parameters or templates.',
-        }),
-    ).exactOptional(),
-    requestModels: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map specifying data schemas, represented by Model resources, (as the mapped value) of the request payloads of given content types (as the mapping key).',
-        }),
-    ).exactOptional(),
-    methodResponses: MapOfMethodResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Gets a method response associated with a given HTTP status code. ',
-        }),
-    ).exactOptional(),
-    methodIntegration: IntegrationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Gets the method's integration responsible for passing the client-submitted request to the back end and performing necessary transformations to make the request compliant with the back end.",
-        }),
-    ).exactOptional(),
-    authorizationScopes: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of authorization scopes configured on the method. The scopes are used with a <code>COGNITO_USER_POOLS</code> authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' Represents a client-facing interface by which the client calls the API to access back-end resources. A Method resource is integrated with an Integration resource. Both consist of a request and one or more responses. The method request takes the client input that is passed to the back end through the integration request. A method response returns the output from the back end to the client through an integration response. A method request is embodied in a Method resource, whereas an integration request is embodied in an Integration resource. On the other hand, a method response is represented by a MethodResponse resource, whereas an integration response is represented by an IntegrationResponse resource. ',
-    required: [],
-  })
-  .openapi('Method')
-
-const MapOfMethodSchema = z.record(z.string(), MethodSchema).openapi('MapOfMethod')
-
-const ResourceSchema = z
-  .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: "The resource's identifier." }),
-    ).exactOptional(),
-    parentId: StringSchema.and(
-      z.any().openapi({ description: "The parent resource's identifier." }),
-    ).exactOptional(),
-    pathPart: StringSchema.and(
-      z.any().openapi({ description: 'The last path segment for this resource.' }),
-    ).exactOptional(),
-    path: StringSchema.and(
-      z.any().openapi({ description: 'The full path for this resource.' }),
-    ).exactOptional(),
-    resourceMethods: MapOfMethodSchema.and(
-      z.any().openapi({ description: "Gets an API resource's method of a given HTTP verb." }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents an API resource.', required: [] })
-  .openapi('Resource')
 
 const ApiKeySourceTypeSchema = z.enum(['HEADER', 'AUTHORIZER']).openapi('ApiKeySourceType')
 
 const RestApiSchema = z
   .object({
-    id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The API's identifier. This identifier is unique across all of your APIs in API Gateway.",
-        }),
-    ).exactOptional(),
-    name: StringSchema.and(z.any().openapi({ description: "The API's name." })).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: "The API's description." }),
-    ).exactOptional(),
-    createdDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp when the API was created.' }),
-    ).exactOptional(),
-    version: StringSchema.and(
-      z.any().openapi({ description: 'A version identifier for the API.' }),
-    ).exactOptional(),
-    warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The warning messages reported when <code>failonwarnings</code> is turned on during API import.',
-        }),
-    ).exactOptional(),
-    binaryMediaTypes: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.',
-        }),
-    ).exactOptional(),
-    minimumCompressionSize: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A nullable integer that is used to enable compression (with non-negative between 0 and 10485760 (10M) bytes, inclusive) or disable compression (with a null value) on an API. When compression is enabled, compression or decompression is not applied on the payload if the payload size is smaller than this value. Setting it to zero allows compression for any payload size.',
-        }),
-    ).exactOptional(),
-    apiKeySource: ApiKeySourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source of the API key for metering requests according to a usage plan. Valid values are: &gt;<code>HEADER</code> to read the API key from the <code>X-API-Key</code> header of a request. <code>AUTHORIZER</code> to read the API key from the <code>UsageIdentifierKey</code> from a custom authorizer.',
-        }),
-    ).exactOptional(),
-    endpointConfiguration: EndpointConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint configuration of this RestApi showing the endpoint types of the API. ',
-        }),
-    ).exactOptional(),
-    policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A stringified JSON policy document that applies to this RestApi regardless of the caller and Method configuration.',
-        }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
-    disableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether clients can invoke your API by using the default <code>execute-api</code> endpoint. By default, clients can invoke your API with the default <code>https://{api_id}.execute-api.{region}.amazonaws.com</code> endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description:
+        "The API's identifier. This identifier is unique across all of your APIs in API Gateway.",
+    }),
+    name: StringSchema.exactOptional().openapi({ description: "The API's name." }),
+    description: StringSchema.exactOptional().openapi({ description: "The API's description." }),
+    createdDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp when the API was created.',
+    }),
+    version: StringSchema.exactOptional().openapi({
+      description: 'A version identifier for the API.',
+    }),
+    warnings: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'The warning messages reported when <code>failonwarnings</code> is turned on during API import.',
+    }),
+    binaryMediaTypes: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.',
+    }),
+    minimumCompressionSize: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'A nullable integer that is used to enable compression (with non-negative between 0 and 10485760 (10M) bytes, inclusive) or disable compression (with a null value) on an API. When compression is enabled, compression or decompression is not applied on the payload if the payload size is smaller than this value. Setting it to zero allows compression for any payload size.',
+    }),
+    apiKeySource: ApiKeySourceTypeSchema.exactOptional().openapi({
+      description:
+        'The source of the API key for metering requests according to a usage plan. Valid values are: &gt;<code>HEADER</code> to read the API key from the <code>X-API-Key</code> header of a request. <code>AUTHORIZER</code> to read the API key from the <code>UsageIdentifierKey</code> from a custom authorizer.',
+    }),
+    endpointConfiguration: EndpointConfigurationSchema.exactOptional().openapi({
+      description:
+        'The endpoint configuration of this RestApi showing the endpoint types of the API. ',
+    }),
+    policy: StringSchema.exactOptional().openapi({
+      description:
+        'A stringified JSON policy document that applies to this RestApi regardless of the caller and Method configuration.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
+    disableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether clients can invoke your API by using the default <code>execute-api</code> endpoint. By default, clients can invoke your API with the default <code>https://{api_id}.execute-api.{region}.amazonaws.com</code> endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
   })
   .openapi({ description: 'Represents a REST API.', required: [] })
   .openapi('RestApi')
@@ -1138,86 +790,47 @@ const UnauthorizedCacheControlHeaderStrategySchema = z
 
 const MethodSettingSchema = z
   .object({
-    metricsEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether Amazon CloudWatch metrics are enabled for this method. The PATCH path for this setting is <code>/{method_setting_key}/metrics/enabled</code>, and the value is a Boolean.',
-        }),
-    ).exactOptional(),
-    loggingLevel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the logging level for this method, which affects the log entries pushed to Amazon CloudWatch Logs. The PATCH path for this setting is <code>/{method_setting_key}/logging/loglevel</code>, and the available levels are <code>OFF</code>, <code>ERROR</code>, and <code>INFO</code>. Choose <code>ERROR</code> to write only error-level entries to CloudWatch Logs, or choose <code>INFO</code> to include all <code>ERROR</code> events as well as extra informational events.',
-        }),
-    ).exactOptional(),
-    dataTraceEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether data trace logging is enabled for this method, which affects the log entries pushed to Amazon CloudWatch Logs. The PATCH path for this setting is <code>/{method_setting_key}/logging/dataTrace</code>, and the value is a Boolean.',
-        }),
-    ).exactOptional(),
-    throttlingBurstLimit: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the throttling burst limit. The PATCH path for this setting is <code>/{method_setting_key}/throttling/burstLimit</code>, and the value is an integer.',
-        }),
-    ).exactOptional(),
-    throttlingRateLimit: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the throttling rate limit. The PATCH path for this setting is <code>/{method_setting_key}/throttling/rateLimit</code>, and the value is a double.',
-        }),
-    ).exactOptional(),
-    cachingEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether responses should be cached and returned for requests. A cache cluster must be enabled on the stage for responses to be cached. The PATCH path for this setting is <code>/{method_setting_key}/caching/enabled</code>, and the value is a Boolean.',
-        }),
-    ).exactOptional(),
-    cacheTtlInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time to live (TTL), in seconds, for cached responses. The higher the TTL, the longer the response will be cached. The PATCH path for this setting is <code>/{method_setting_key}/caching/ttlInSeconds</code>, and the value is an integer.',
-        }),
-    ).exactOptional(),
-    cacheDataEncrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the cached responses are encrypted. The PATCH path for this setting is <code>/{method_setting_key}/caching/dataEncrypted</code>, and the value is a Boolean.',
-        }),
-    ).exactOptional(),
-    requireAuthorizationForCacheControl: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether authorization is required for a cache invalidation request. The PATCH path for this setting is <code>/{method_setting_key}/caching/requireAuthorizationForCacheControl</code>, and the value is a Boolean.',
-        }),
-    ).exactOptional(),
-    unauthorizedCacheControlHeaderStrategy: UnauthorizedCacheControlHeaderStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how to handle unauthorized requests for cache invalidation. The PATCH path for this setting is <code>/{method_setting_key}/caching/unauthorizedCacheControlHeaderStrategy</code>, and the available values are <code>FAIL_WITH_403</code>, <code>SUCCEED_WITH_RESPONSE_HEADER</code>, <code>SUCCEED_WITHOUT_RESPONSE_HEADER</code>.',
-        }),
-    ).exactOptional(),
+    metricsEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether Amazon CloudWatch metrics are enabled for this method. The PATCH path for this setting is <code>/{method_setting_key}/metrics/enabled</code>, and the value is a Boolean.',
+    }),
+    loggingLevel: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the logging level for this method, which affects the log entries pushed to Amazon CloudWatch Logs. The PATCH path for this setting is <code>/{method_setting_key}/logging/loglevel</code>, and the available levels are <code>OFF</code>, <code>ERROR</code>, and <code>INFO</code>. Choose <code>ERROR</code> to write only error-level entries to CloudWatch Logs, or choose <code>INFO</code> to include all <code>ERROR</code> events as well as extra informational events.',
+    }),
+    dataTraceEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether data trace logging is enabled for this method, which affects the log entries pushed to Amazon CloudWatch Logs. The PATCH path for this setting is <code>/{method_setting_key}/logging/dataTrace</code>, and the value is a Boolean.',
+    }),
+    throttlingBurstLimit: IntegerSchema.exactOptional().openapi({
+      description:
+        'Specifies the throttling burst limit. The PATCH path for this setting is <code>/{method_setting_key}/throttling/burstLimit</code>, and the value is an integer.',
+    }),
+    throttlingRateLimit: DoubleSchema.exactOptional().openapi({
+      description:
+        'Specifies the throttling rate limit. The PATCH path for this setting is <code>/{method_setting_key}/throttling/rateLimit</code>, and the value is a double.',
+    }),
+    cachingEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether responses should be cached and returned for requests. A cache cluster must be enabled on the stage for responses to be cached. The PATCH path for this setting is <code>/{method_setting_key}/caching/enabled</code>, and the value is a Boolean.',
+    }),
+    cacheTtlInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        'Specifies the time to live (TTL), in seconds, for cached responses. The higher the TTL, the longer the response will be cached. The PATCH path for this setting is <code>/{method_setting_key}/caching/ttlInSeconds</code>, and the value is an integer.',
+    }),
+    cacheDataEncrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the cached responses are encrypted. The PATCH path for this setting is <code>/{method_setting_key}/caching/dataEncrypted</code>, and the value is a Boolean.',
+    }),
+    requireAuthorizationForCacheControl: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether authorization is required for a cache invalidation request. The PATCH path for this setting is <code>/{method_setting_key}/caching/requireAuthorizationForCacheControl</code>, and the value is a Boolean.',
+    }),
+    unauthorizedCacheControlHeaderStrategy:
+      UnauthorizedCacheControlHeaderStrategySchema.exactOptional().openapi({
+        description:
+          'Specifies how to handle unauthorized requests for cache invalidation. The PATCH path for this setting is <code>/{method_setting_key}/caching/unauthorizedCacheControlHeaderStrategy</code>, and the available values are <code>FAIL_WITH_403</code>, <code>SUCCEED_WITH_RESPONSE_HEADER</code>, <code>SUCCEED_WITHOUT_RESPONSE_HEADER</code>.',
+      }),
   })
   .openapi({ description: 'Specifies the method setting properties.', required: [] })
   .openapi('MethodSetting')
@@ -1228,22 +841,14 @@ const MapOfMethodSettingsSchema = z
 
 const AccessLogSettingsSchema = z
   .object({
-    format: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single line format of the access logs of data, as specified by selected $context variables. The format must include at least <code>$context.requestId</code>.',
-        }),
-    ).exactOptional(),
-    destinationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the CloudWatch Logs log group or Kinesis Data Firehose delivery stream to receive access logs. If you specify a Kinesis Data Firehose delivery stream, the stream name must begin with <code>amazon-apigateway-</code>.',
-        }),
-    ).exactOptional(),
+    format: StringSchema.exactOptional().openapi({
+      description:
+        'A single line format of the access logs of data, as specified by selected $context variables. The format must include at least <code>$context.requestId</code>.',
+    }),
+    destinationArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the CloudWatch Logs log group or Kinesis Data Firehose delivery stream to receive access logs. If you specify a Kinesis Data Firehose delivery stream, the stream name must begin with <code>amazon-apigateway-</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1254,124 +859,79 @@ const AccessLogSettingsSchema = z
 
 const CanarySettingsSchema = z
   .object({
-    percentTraffic: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The percent (0-100) of traffic diverted to a canary deployment.',
-        }),
-    ).exactOptional(),
-    deploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the canary deployment.' }),
-    ).exactOptional(),
-    stageVariableOverrides: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Stage variables overridden for a canary release deployment, including new stage variables introduced in the canary. These stage variables are represented as a string-to-string map between stage variable names and their values.',
-        }),
-    ).exactOptional(),
-    useStageCache: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean flag to indicate whether the canary deployment uses the stage cache or not.',
-        }),
-    ).exactOptional(),
+    percentTraffic: DoubleSchema.exactOptional().openapi({
+      description: 'The percent (0-100) of traffic diverted to a canary deployment.',
+    }),
+    deploymentId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the canary deployment.',
+    }),
+    stageVariableOverrides: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'Stage variables overridden for a canary release deployment, including new stage variables introduced in the canary. These stage variables are represented as a string-to-string map between stage variable names and their values.',
+    }),
+    useStageCache: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean flag to indicate whether the canary deployment uses the stage cache or not.',
+    }),
   })
   .openapi({ description: 'Configuration settings of a canary deployment.', required: [] })
   .openapi('CanarySettings')
 
 const StageSchema = z
   .object({
-    deploymentId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the Deployment that the stage points to.' }),
-    ).exactOptional(),
-    clientCertificateId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of a client certificate for an API stage.' }),
-    ).exactOptional(),
-    stageName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stage is the first path segment in the Uniform Resource Identifier (URI) of a call to API Gateway. Stage names can only contain alphanumeric characters, hyphens, and underscores. Maximum length is 128 characters.',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: "The stage's description." }),
-    ).exactOptional(),
-    cacheClusterEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies whether a cache cluster is enabled for the stage.' }),
-    ).exactOptional(),
-    cacheClusterSize: CacheClusterSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stage\'s cache capacity in GB. For more information about choosing a cache size, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html">Enabling API caching to enhance responsiveness</a>.',
-        }),
-    ).exactOptional(),
-    cacheClusterStatus: CacheClusterStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status of the cache cluster for the stage, if enabled.' }),
-    ).exactOptional(),
-    methodSettings: MapOfMethodSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map that defines the method settings for a Stage resource. Keys (designated as <code>/{method_setting_key</code> below) are method paths defined as <code>{resource_path}/{http_method}</code> for an individual method override, or <code>/\\*/\\*</code> for overriding all methods in the stage. ',
-        }),
-    ).exactOptional(),
-    variables: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map that defines the stage variables for a Stage resource. Variable names can have alphanumeric and underscore characters, and the values must match <code>[A-Za-z0-9-._~:/?#&amp;=,]+</code>.',
-        }),
-    ).exactOptional(),
-    documentationVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version of the associated API documentation.' }),
-    ).exactOptional(),
-    accessLogSettings: AccessLogSettingsSchema.and(
-      z.any().openapi({ description: 'Settings for logging access in this stage.' }),
-    ).exactOptional(),
-    canarySettings: CanarySettingsSchema.and(
-      z.any().openapi({ description: 'Settings for the canary deployment in this stage.' }),
-    ).exactOptional(),
-    tracingEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether active tracing with X-ray is enabled for the Stage.',
-        }),
-    ).exactOptional(),
-    webAclArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the WebAcl associated with the Stage.' }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
-    createdDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp when the stage was created.' }),
-    ).exactOptional(),
-    lastUpdatedDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp when the stage last updated.' }),
-    ).exactOptional(),
+    deploymentId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the Deployment that the stage points to.',
+    }),
+    clientCertificateId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of a client certificate for an API stage.',
+    }),
+    stageName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the stage is the first path segment in the Uniform Resource Identifier (URI) of a call to API Gateway. Stage names can only contain alphanumeric characters, hyphens, and underscores. Maximum length is 128 characters.',
+    }),
+    description: StringSchema.exactOptional().openapi({ description: "The stage's description." }),
+    cacheClusterEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether a cache cluster is enabled for the stage.',
+    }),
+    cacheClusterSize: CacheClusterSizeSchema.exactOptional().openapi({
+      description:
+        'The stage\'s cache capacity in GB. For more information about choosing a cache size, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html">Enabling API caching to enhance responsiveness</a>.',
+    }),
+    cacheClusterStatus: CacheClusterStatusSchema.exactOptional().openapi({
+      description: 'The status of the cache cluster for the stage, if enabled.',
+    }),
+    methodSettings: MapOfMethodSettingsSchema.exactOptional().openapi({
+      description:
+        'A map that defines the method settings for a Stage resource. Keys (designated as <code>/{method_setting_key</code> below) are method paths defined as <code>{resource_path}/{http_method}</code> for an individual method override, or <code>/\\*/\\*</code> for overriding all methods in the stage. ',
+    }),
+    variables: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A map that defines the stage variables for a Stage resource. Variable names can have alphanumeric and underscore characters, and the values must match <code>[A-Za-z0-9-._~:/?#&amp;=,]+</code>.',
+    }),
+    documentationVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the associated API documentation.',
+    }),
+    accessLogSettings: AccessLogSettingsSchema.exactOptional().openapi({
+      description: 'Settings for logging access in this stage.',
+    }),
+    canarySettings: CanarySettingsSchema.exactOptional().openapi({
+      description: 'Settings for the canary deployment in this stage.',
+    }),
+    tracingEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether active tracing with X-ray is enabled for the Stage.',
+    }),
+    webAclArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the WebAcl associated with the Stage.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
+    createdDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp when the stage was created.',
+    }),
+    lastUpdatedDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp when the stage last updated.',
+    }),
   })
   .openapi({
     description:
@@ -1382,17 +942,13 @@ const StageSchema = z
 
 const ThrottleSettingsSchema = z
   .object({
-    burstLimit: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The API target request burst rate limit. This allows more requests through for a period of time than the target rate limit.',
-        }),
-    ).exactOptional(),
-    rateLimit: DoubleSchema.and(
-      z.any().openapi({ description: 'The API target request rate limit.' }),
-    ).exactOptional(),
+    burstLimit: IntegerSchema.exactOptional().openapi({
+      description:
+        'The API target request burst rate limit. This allows more requests through for a period of time than the target rate limit.',
+    }),
+    rateLimit: DoubleSchema.exactOptional().openapi({
+      description: 'The API target request rate limit.',
+    }),
   })
   .openapi({ description: ' The API request rate limits.', required: [] })
   .openapi('ThrottleSettings')
@@ -1403,22 +959,16 @@ const MapOfApiStageThrottleSettingsSchema = z
 
 const ApiStageSchema = z
   .object({
-    apiId: StringSchema.and(
-      z.any().openapi({ description: 'API Id of the associated API stage in a usage plan.' }),
-    ).exactOptional(),
-    stage: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'API stage name of the associated API stage in a usage plan.' }),
-    ).exactOptional(),
-    throttle: MapOfApiStageThrottleSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map containing method level throttling information for API stage in a usage plan.',
-        }),
-    ).exactOptional(),
+    apiId: StringSchema.exactOptional().openapi({
+      description: 'API Id of the associated API stage in a usage plan.',
+    }),
+    stage: StringSchema.exactOptional().openapi({
+      description: 'API stage name of the associated API stage in a usage plan.',
+    }),
+    throttle: MapOfApiStageThrottleSettingsSchema.exactOptional().openapi({
+      description:
+        'Map containing method level throttling information for API stage in a usage plan.',
+    }),
   })
   .openapi({
     description: 'API stage name of the associated API stage in a usage plan.',
@@ -1432,80 +982,48 @@ const QuotaPeriodTypeSchema = z.enum(['DAY', 'WEEK', 'MONTH']).openapi('QuotaPer
 
 const QuotaSettingsSchema = z
   .object({
-    limit: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target maximum number of requests that can be made in a given time period.',
-        }),
-    ).exactOptional(),
-    offset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of requests subtracted from the given limit in the initial time period.',
-        }),
-    ).exactOptional(),
-    period: QuotaPeriodTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time period in which the limit applies. Valid values are "DAY", "WEEK" or "MONTH".',
-        }),
-    ).exactOptional(),
+    limit: IntegerSchema.exactOptional().openapi({
+      description: 'The target maximum number of requests that can be made in a given time period.',
+    }),
+    offset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of requests subtracted from the given limit in the initial time period.',
+    }),
+    period: QuotaPeriodTypeSchema.exactOptional().openapi({
+      description:
+        'The time period in which the limit applies. Valid values are "DAY", "WEEK" or "MONTH".',
+    }),
   })
   .openapi({ description: 'Quotas configured for a usage plan.', required: [] })
   .openapi('QuotaSettings')
 
 const UsagePlanSchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of a UsagePlan resource.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of a usage plan.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of a usage plan.' }),
-    ).exactOptional(),
-    apiStages: ListOfApiStageSchema.and(
-      z.any().openapi({ description: 'The associated API stages of a usage plan.' }),
-    ).exactOptional(),
-    throttle: ThrottleSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map containing method level throttling information for API stage in a usage plan.',
-        }),
-    ).exactOptional(),
-    quota: QuotaSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target maximum number of permitted requests per a given unit time interval.',
-        }),
-    ).exactOptional(),
-    productCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Markeplace product identifier to associate with the usage plan as a SaaS product on AWS Marketplace.',
-        }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The identifier of a UsagePlan resource.',
+    }),
+    name: StringSchema.exactOptional().openapi({ description: 'The name of a usage plan.' }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of a usage plan.',
+    }),
+    apiStages: ListOfApiStageSchema.exactOptional().openapi({
+      description: 'The associated API stages of a usage plan.',
+    }),
+    throttle: ThrottleSettingsSchema.exactOptional().openapi({
+      description:
+        'A map containing method level throttling information for API stage in a usage plan.',
+    }),
+    quota: QuotaSettingsSchema.exactOptional().openapi({
+      description:
+        'The target maximum number of permitted requests per a given unit time interval.',
+    }),
+    productCode: StringSchema.exactOptional().openapi({
+      description:
+        'The AWS Markeplace product identifier to associate with the usage plan as a SaaS product on AWS Marketplace.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({
     description:
@@ -1516,23 +1034,13 @@ const UsagePlanSchema = z
 
 const UsagePlanKeySchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The Id of a usage plan key.' }),
-    ).exactOptional(),
-    type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of a usage plan key. Currently, the valid key type is <code>API_KEY</code>.',
-        }),
-    ).exactOptional(),
-    value: StringSchema.and(
-      z.any().openapi({ description: 'The value of a usage plan key.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of a usage plan key.' }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({ description: 'The Id of a usage plan key.' }),
+    type: StringSchema.exactOptional().openapi({
+      description:
+        'The type of a usage plan key. Currently, the valid key type is <code>API_KEY</code>.',
+    }),
+    value: StringSchema.exactOptional().openapi({ description: 'The value of a usage plan key.' }),
+    name: StringSchema.exactOptional().openapi({ description: 'The name of a usage plan key.' }),
   })
   .openapi({
     description: 'Represents a usage plan key to identify a plan customer.',
@@ -1546,47 +1054,30 @@ const VpcLinkStatusSchema = z
 
 const VpcLinkSchema = z
   .object({
-    id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.',
-        }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name used to label and identify the VPC link.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the VPC link.' }),
-    ).exactOptional(),
-    targetArns: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the network load balancer of the VPC targeted by the VPC link. The network load balancer must be owned by the same AWS account of the API owner.',
-        }),
-    ).exactOptional(),
-    status: VpcLinkStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the VPC link. The valid values are <code>AVAILABLE</code>, <code>PENDING</code>, <code>DELETING</code>, or <code>FAILED</code>. Deploying an API will wait if the status is <code>PENDING</code> and will fail if the status is <code>DELETING</code>. ',
-        }),
-    ).exactOptional(),
-    statusMessage: StringSchema.and(
-      z.any().openapi({ description: 'A description about the VPC link status.' }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.',
+    }),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name used to label and identify the VPC link.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the VPC link.',
+    }),
+    targetArns: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the network load balancer of the VPC targeted by the VPC link. The network load balancer must be owned by the same AWS account of the API owner.',
+    }),
+    status: VpcLinkStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the VPC link. The valid values are <code>AVAILABLE</code>, <code>PENDING</code>, <code>DELETING</code>, or <code>FAILED</code>. Deploying an API will wait if the status is <code>PENDING</code> and will fail if the status is <code>DELETING</code>. ',
+    }),
+    statusMessage: StringSchema.exactOptional().openapi({
+      description: 'A description about the VPC link status.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({
     description:
@@ -1597,34 +1088,25 @@ const VpcLinkSchema = z
 
 const ClientCertificateSchema = z
   .object({
-    clientCertificateId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the client certificate.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the client certificate.' }),
-    ).exactOptional(),
-    pemEncodedCertificate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The PEM-encoded public key of the client certificate, which can be used to configure certificate authentication in the integration endpoint .',
-        }),
-    ).exactOptional(),
-    createdDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp when the client certificate was created.' }),
-    ).exactOptional(),
-    expirationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp when the client certificate will expire.' }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    clientCertificateId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the client certificate.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the client certificate.',
+    }),
+    pemEncodedCertificate: StringSchema.exactOptional().openapi({
+      description:
+        'The PEM-encoded public key of the client certificate, which can be used to configure certificate authentication in the integration endpoint .',
+    }),
+    createdDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp when the client certificate was created.',
+    }),
+    expirationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp when the client certificate will expire.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({
     description:
@@ -1635,29 +1117,19 @@ const ClientCertificateSchema = z
 
 const AccountSchema = z
   .object({
-    cloudwatchRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of an Amazon CloudWatch role for the current Account. ' }),
-    ).exactOptional(),
-    throttleSettings: ThrottleSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the API request limits configured for the current Account.',
-        }),
-    ).exactOptional(),
-    features: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of features supported for the account. When usage plans are enabled, the features list will include an entry of <code>"UsagePlans"</code>.',
-        }),
-    ).exactOptional(),
-    apiKeyVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version of the API keys used for the account.' }),
-    ).exactOptional(),
+    cloudwatchRoleArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of an Amazon CloudWatch role for the current Account. ',
+    }),
+    throttleSettings: ThrottleSettingsSchema.exactOptional().openapi({
+      description: 'Specifies the API request limits configured for the current Account.',
+    }),
+    features: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'A list of features supported for the account. When usage plans are enabled, the features list will include an entry of <code>"UsagePlans"</code>.',
+    }),
+    apiKeyVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the API keys used for the account.',
+    }),
   })
   .openapi({
     description: 'Represents an AWS account that is associated with API Gateway.',
@@ -1669,23 +1141,15 @@ const ListOfApiKeySchema = z.array(ApiKeySchema).openapi('ListOfApiKey')
 
 const ApiKeysSchema = z
   .object({
-    warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of warning messages logged during the import of API keys when the <code>failOnWarnings</code> option is set to true.',
-        }),
-    ).exactOptional(),
+    warnings: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'A list of warning messages logged during the import of API keys when the <code>failOnWarnings</code> option is set to true.',
+    }),
     position: StringSchema.exactOptional(),
-    items: ListOfApiKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfApiKeySchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({
     description: 'Represents a collection of API keys as represented by an ApiKeys resource.',
@@ -1698,14 +1162,10 @@ const ListOfAuthorizerSchema = z.array(AuthorizerSchema).openapi('ListOfAuthoriz
 const AuthorizersSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfAuthorizerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfAuthorizerSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'Represents a collection of Authorizer resources.', required: [] })
   .openapi('Authorizers')
@@ -1715,14 +1175,10 @@ const ListOfBasePathMappingSchema = z.array(BasePathMappingSchema).openapi('List
 const BasePathMappingsSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfBasePathMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfBasePathMappingSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'Represents a collection of BasePathMapping resources.', required: [] })
   .openapi('BasePathMappings')
@@ -1734,14 +1190,10 @@ const ListOfClientCertificateSchema = z
 const ClientCertificatesSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfClientCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfClientCertificateSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'Represents a collection of ClientCertificate resources.', required: [] })
   .openapi('ClientCertificates')
@@ -1751,14 +1203,10 @@ const ListOfDeploymentSchema = z.array(DeploymentSchema).openapi('ListOfDeployme
 const DeploymentsSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfDeploymentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfDeploymentSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({
     description:
@@ -1774,14 +1222,10 @@ const ListOfDocumentationPartSchema = z
 const DocumentationPartsSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfDocumentationPartSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfDocumentationPartSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'The collection of documentation parts of an API.', required: [] })
   .openapi('DocumentationParts')
@@ -1793,14 +1237,10 @@ const ListOfDocumentationVersionSchema = z
 const DocumentationVersionsSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfDocumentationVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfDocumentationVersionSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'The collection of documentation snapshots of an API. ', required: [] })
   .openapi('DocumentationVersions')
@@ -1810,14 +1250,10 @@ const ListOfDomainNameSchema = z.array(DomainNameSchema).openapi('ListOfDomainNa
 const DomainNamesSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfDomainNameSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'Represents a collection of DomainName resources.', required: [] })
   .openapi('DomainNames')
@@ -1826,13 +1262,9 @@ const BlobSchema = z.string().openapi('Blob')
 
 const ExportResponseSchema = z
   .object({
-    body: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The binary blob response to GetExport, which contains the export.',
-        }),
-    ).exactOptional(),
+    body: BlobSchema.exactOptional().openapi({
+      description: 'The binary blob response to GetExport, which contains the export.',
+    }),
   })
   .openapi({
     description: 'The binary blob response to GetExport, which contains the generated SDK.',
@@ -1868,36 +1300,24 @@ const GatewayResponseTypeSchema = z
 
 const GatewayResponseSchema = z
   .object({
-    responseType: GatewayResponseTypeSchema.and(
-      z.any().openapi({ description: 'The response type of the associated GatewayResponse.' }),
-    ).exactOptional(),
-    statusCode: StatusCodeSchema.and(
-      z.any().openapi({ description: 'The HTTP status code for this GatewayResponse.' }),
-    ).exactOptional(),
-    responseParameters: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.',
-        }),
-    ).exactOptional(),
-    responseTemplates: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Response templates of the GatewayResponse as a string-to-string map of key-value pairs.',
-        }),
-    ).exactOptional(),
-    defaultResponse: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean flag to indicate whether this GatewayResponse is the default gateway response (<code>true</code>) or not (<code>false</code>). A default gateway response is one generated by API Gateway without any customization by an API developer. ',
-        }),
-    ).exactOptional(),
+    responseType: GatewayResponseTypeSchema.exactOptional().openapi({
+      description: 'The response type of the associated GatewayResponse.',
+    }),
+    statusCode: StatusCodeSchema.exactOptional().openapi({
+      description: 'The HTTP status code for this GatewayResponse.',
+    }),
+    responseParameters: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.',
+    }),
+    responseTemplates: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'Response templates of the GatewayResponse as a string-to-string map of key-value pairs.',
+    }),
+    defaultResponse: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean flag to indicate whether this GatewayResponse is the default gateway response (<code>true</code>) or not (<code>false</code>). A default gateway response is one generated by API Gateway without any customization by an API developer. ',
+    }),
   })
   .openapi({
     description:
@@ -1911,14 +1331,10 @@ const ListOfGatewayResponseSchema = z.array(GatewayResponseSchema).openapi('List
 const GatewayResponsesSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfGatewayResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'Returns the entire collection, because of no pagination support.',
-        }),
-    ).exactOptional(),
+    items: ListOfGatewayResponseSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'Returns the entire collection, because of no pagination support.',
+    }),
   })
   .openapi({
     description:
@@ -1929,14 +1345,10 @@ const GatewayResponsesSchema = z
 
 const TemplateSchema = z
   .object({
-    value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Apache Velocity Template Language (VTL) template content used for the template resource.',
-        }),
-    ).exactOptional(),
+    value: StringSchema.exactOptional().openapi({
+      description:
+        'The Apache Velocity Template Language (VTL) template content used for the template resource.',
+    }),
   })
   .openapi({
     description: 'Represents a mapping template used to transform a payload.',
@@ -1949,14 +1361,10 @@ const ListOfModelSchema = z.array(ModelSchema).openapi('ListOfModel')
 const ModelsSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfModelSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfModelSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'Represents a collection of Model resources.', required: [] })
   .openapi('Models')
@@ -1968,14 +1376,10 @@ const ListOfRequestValidatorSchema = z
 const RequestValidatorsSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfRequestValidatorSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfRequestValidatorSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({
     description: 'A collection of RequestValidator resources of a given RestApi.',
@@ -1983,19 +1387,13 @@ const RequestValidatorsSchema = z
   })
   .openapi('RequestValidators')
 
-const ListOfResourceSchema = z.array(ResourceSchema).openapi('ListOfResource')
-
-const ResourcesSchema = z
+const ResourcesSchema: z.ZodType<ResourcesType> = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfResourceSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'Represents a collection of Resource resources.', required: [] })
   .openapi('Resources')
@@ -2005,14 +1403,10 @@ const ListOfRestApiSchema = z.array(RestApiSchema).openapi('ListOfRestApi')
 const RestApisSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfRestApiSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfRestApiSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({
     description:
@@ -2023,13 +1417,9 @@ const RestApisSchema = z
 
 const SdkResponseSchema = z
   .object({
-    body: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The binary blob response to GetSdk, which contains the generated SDK.',
-        }),
-    ).exactOptional(),
+    body: BlobSchema.exactOptional().openapi({
+      description: 'The binary blob response to GetSdk, which contains the generated SDK.',
+    }),
   })
   .openapi({
     description: 'The binary blob response to GetSdk, which contains the generated SDK.',
@@ -2039,28 +1429,22 @@ const SdkResponseSchema = z
 
 const SdkConfigurationPropertySchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of a an SdkType configuration property.' }),
-    ).exactOptional(),
-    friendlyName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user-friendly name of an SdkType configuration property.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of an SdkType configuration property.' }),
-    ).exactOptional(),
-    required: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean flag of an SdkType configuration property to indicate if the associated SDK configuration property is required (<code>true</code>) or not (<code>false</code>).',
-        }),
-    ).exactOptional(),
-    defaultValue: StringSchema.and(
-      z.any().openapi({ description: 'The default value of an SdkType configuration property.' }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name of a an SdkType configuration property.',
+    }),
+    friendlyName: StringSchema.exactOptional().openapi({
+      description: 'The user-friendly name of an SdkType configuration property.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of an SdkType configuration property.',
+    }),
+    required: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean flag of an SdkType configuration property to indicate if the associated SDK configuration property is required (<code>true</code>) or not (<code>false</code>).',
+    }),
+    defaultValue: StringSchema.exactOptional().openapi({
+      description: 'The default value of an SdkType configuration property.',
+    }),
   })
   .openapi({ description: 'A configuration property of an SDK type.', required: [] })
   .openapi('SdkConfigurationProperty')
@@ -2071,18 +1455,18 @@ const ListOfSdkConfigurationPropertySchema = z
 
 const SdkTypeSchema = z
   .object({
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of an SdkType instance.' }),
-    ).exactOptional(),
-    friendlyName: StringSchema.and(
-      z.any().openapi({ description: 'The user-friendly name of an SdkType instance.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of an SdkType.' }),
-    ).exactOptional(),
-    configurationProperties: ListOfSdkConfigurationPropertySchema.and(
-      z.any().openapi({ description: 'A list of configuration properties of an SdkType.' }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The identifier of an SdkType instance.',
+    }),
+    friendlyName: StringSchema.exactOptional().openapi({
+      description: 'The user-friendly name of an SdkType instance.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of an SdkType.',
+    }),
+    configurationProperties: ListOfSdkConfigurationPropertySchema.exactOptional().openapi({
+      description: 'A list of configuration properties of an SdkType.',
+    }),
   })
   .openapi({ description: 'A type of SDK that API Gateway can generate.', required: [] })
   .openapi('SdkType')
@@ -2092,14 +1476,10 @@ const ListOfSdkTypeSchema = z.array(SdkTypeSchema).openapi('ListOfSdkType')
 const SdkTypesSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfSdkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfSdkTypeSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({ description: 'The collection of SdkType instances.', required: [] })
   .openapi('SdkTypes')
@@ -2108,9 +1488,9 @@ const ListOfStageSchema = z.array(StageSchema).openapi('ListOfStage')
 
 const StagesSchema = z
   .object({
-    item: ListOfStageSchema.and(
-      z.any().openapi({ description: 'The current page of elements from this collection.' }),
-    ).exactOptional(),
+    item: ListOfStageSchema.exactOptional().openapi({
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({
     description: 'A list of Stage resources that are associated with the ApiKey resource.',
@@ -2120,14 +1500,9 @@ const StagesSchema = z
 
 const TagsSchema = z
   .object({
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({
     description: 'The collection of tags. Each tag element is associated with a given resource.',
@@ -2145,25 +1520,21 @@ const MapOfKeyUsagesSchema = z.record(z.string(), ListOfUsageSchema).openapi('Ma
 
 const UsageSchema = z
   .object({
-    usagePlanId: StringSchema.and(
-      z.any().openapi({ description: 'The plan Id associated with this usage data.' }),
-    ).exactOptional(),
-    startDate: StringSchema.and(
-      z.any().openapi({ description: 'The starting date of the usage data.' }),
-    ).exactOptional(),
-    endDate: StringSchema.and(
-      z.any().openapi({ description: 'The ending date of the usage data.' }),
-    ).exactOptional(),
+    usagePlanId: StringSchema.exactOptional().openapi({
+      description: 'The plan Id associated with this usage data.',
+    }),
+    startDate: StringSchema.exactOptional().openapi({
+      description: 'The starting date of the usage data.',
+    }),
+    endDate: StringSchema.exactOptional().openapi({
+      description: 'The ending date of the usage data.',
+    }),
     position: StringSchema.exactOptional(),
-    items: MapOfKeyUsagesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'values' },
-          description:
-            'The usage data, as daily logs of used and remaining quotas, over the specified time interval indexed over the API keys in a usage plan. For example, <code>{..., "values" : { "{api_key}" : [ [0, 100], [10, 90], [100, 10]]}</code>, where <code>{api_key}</code> stands for an API key value and the daily log entry is of the format <code>[used quota, remaining quota]</code>.',
-        }),
-    ).exactOptional(),
+    items: MapOfKeyUsagesSchema.exactOptional().openapi({
+      xml: { name: 'values' },
+      description:
+        'The usage data, as daily logs of used and remaining quotas, over the specified time interval indexed over the API keys in a usage plan. For example, <code>{..., "values" : { "{api_key}" : [ [0, 100], [10, 90], [100, 10]]}</code>, where <code>{api_key}</code> stands for an API key value and the daily log entry is of the format <code>[used quota, remaining quota]</code>.',
+    }),
   })
   .openapi({ description: 'Represents the usage data of a usage plan.', required: [] })
   .openapi('Usage')
@@ -2173,14 +1544,10 @@ const ListOfUsagePlanKeySchema = z.array(UsagePlanKeySchema).openapi('ListOfUsag
 const UsagePlanKeysSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfUsagePlanKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfUsagePlanKeySchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({
     description:
@@ -2194,14 +1561,10 @@ const ListOfUsagePlanSchema = z.array(UsagePlanSchema).openapi('ListOfUsagePlan'
 const UsagePlansSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfUsagePlanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfUsagePlanSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({
     description: 'Represents a collection of usage plans for an AWS account.',
@@ -2214,14 +1577,10 @@ const ListOfVpcLinkSchema = z.array(VpcLinkSchema).openapi('ListOfVpcLink')
 const VpcLinksSchema = z
   .object({
     position: StringSchema.exactOptional(),
-    items: ListOfVpcLinkSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'item' },
-          description: 'The current page of elements from this collection.',
-        }),
-    ).exactOptional(),
+    items: ListOfVpcLinkSchema.exactOptional().openapi({
+      xml: { name: 'item' },
+      description: 'The current page of elements from this collection.',
+    }),
   })
   .openapi({
     description: "The collection of VPC links under the caller's account in a region.",
@@ -2231,28 +1590,24 @@ const VpcLinksSchema = z
 
 const ApiKeyIdsSchema = z
   .object({
-    ids: ListOfStringSchema.and(
-      z.any().openapi({ description: 'A list of all the ApiKey identifiers.' }),
-    ).exactOptional(),
-    warnings: ListOfStringSchema.and(
-      z.any().openapi({ description: 'A list of warning messages.' }),
-    ).exactOptional(),
+    ids: ListOfStringSchema.exactOptional().openapi({
+      description: 'A list of all the ApiKey identifiers.',
+    }),
+    warnings: ListOfStringSchema.exactOptional().openapi({
+      description: 'A list of warning messages.',
+    }),
   })
   .openapi({ description: 'The identifier of an ApiKey used in a UsagePlan.', required: [] })
   .openapi('ApiKeyIds')
 
 const DocumentationPartIdsSchema = z
   .object({
-    ids: ListOfStringSchema.and(
-      z.any().openapi({ description: 'A list of the returned documentation part identifiers.' }),
-    ).exactOptional(),
-    warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of warning messages reported during import of documentation parts.',
-        }),
-    ).exactOptional(),
+    ids: ListOfStringSchema.exactOptional().openapi({
+      description: 'A list of the returned documentation part identifiers.',
+    }),
+    warnings: ListOfStringSchema.exactOptional().openapi({
+      description: 'A list of warning messages reported during import of documentation parts.',
+    }),
   })
   .openapi({
     description: 'A collection of the imported DocumentationPart identifiers.',
@@ -2266,39 +1621,29 @@ const MapOfStringToListSchema = z
 
 const TestInvokeAuthorizerResponseSchema = z
   .object({
-    clientStatus: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP status code that the client would have received. Value is 0 if the authorizer succeeded.',
-        }),
-    ).exactOptional(),
-    log: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The API Gateway execution log for the test authorizer request.' }),
-    ).exactOptional(),
-    latency: LongSchema.and(
-      z.any().openapi({ description: 'The execution latency of the test authorizer request.' }),
-    ).exactOptional(),
-    principalId: StringSchema.and(
-      z.any().openapi({ description: 'The principal identity returned by the Authorizer' }),
-    ).exactOptional(),
-    policy: StringSchema.and(
-      z.any().openapi({ description: 'The JSON policy document returned by the Authorizer' }),
-    ).exactOptional(),
-    authorization: MapOfStringToListSchema.and(
-      z.any().openapi({ description: 'The authorization response.' }),
-    ).exactOptional(),
-    claims: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The open identity claims, with any supported custom attributes, returned from the Cognito Your User Pool configured for the API.',
-        }),
-    ).exactOptional(),
+    clientStatus: IntegerSchema.exactOptional().openapi({
+      description:
+        'The HTTP status code that the client would have received. Value is 0 if the authorizer succeeded.',
+    }),
+    log: StringSchema.exactOptional().openapi({
+      description: 'The API Gateway execution log for the test authorizer request.',
+    }),
+    latency: LongSchema.exactOptional().openapi({
+      description: 'The execution latency of the test authorizer request.',
+    }),
+    principalId: StringSchema.exactOptional().openapi({
+      description: 'The principal identity returned by the Authorizer',
+    }),
+    policy: StringSchema.exactOptional().openapi({
+      description: 'The JSON policy document returned by the Authorizer',
+    }),
+    authorization: MapOfStringToListSchema.exactOptional().openapi({
+      description: 'The authorization response.',
+    }),
+    claims: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'The open identity claims, with any supported custom attributes, returned from the Cognito Your User Pool configured for the API.',
+    }),
   })
   .openapi({
     description: 'Represents the response of the test invoke request for a custom Authorizer',
@@ -2308,30 +1653,20 @@ const TestInvokeAuthorizerResponseSchema = z
 
 const TestInvokeMethodResponseSchema = z
   .object({
-    status: IntegerSchema.and(
-      z.any().openapi({ description: 'The HTTP status code.' }),
-    ).exactOptional(),
-    body: StringSchema.and(
-      z.any().openapi({ description: 'The body of the HTTP response.' }),
-    ).exactOptional(),
-    headers: MapOfStringToStringSchema.and(
-      z.any().openapi({ description: 'The headers of the HTTP response.' }),
-    ).exactOptional(),
-    multiValueHeaders: MapOfStringToListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The headers of the HTTP response as a map from string to list of values.',
-        }),
-    ).exactOptional(),
-    log: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The API Gateway execution log for the test invoke request.' }),
-    ).exactOptional(),
-    latency: LongSchema.and(
-      z.any().openapi({ description: 'The execution latency of the test invoke request.' }),
-    ).exactOptional(),
+    status: IntegerSchema.exactOptional().openapi({ description: 'The HTTP status code.' }),
+    body: StringSchema.exactOptional().openapi({ description: 'The body of the HTTP response.' }),
+    headers: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'The headers of the HTTP response.',
+    }),
+    multiValueHeaders: MapOfStringToListSchema.exactOptional().openapi({
+      description: 'The headers of the HTTP response as a map from string to list of values.',
+    }),
+    log: StringSchema.exactOptional().openapi({
+      description: 'The API Gateway execution log for the test invoke request.',
+    }),
+    latency: LongSchema.exactOptional().openapi({
+      description: 'The execution latency of the test invoke request.',
+    }),
   })
   .openapi({
     description: 'Represents the response of the test invoke request in the HTTP method.',
@@ -2343,38 +1678,22 @@ const OpSchema = z.enum(['add', 'remove', 'replace', 'move', 'copy', 'test']).op
 
 const PatchOperationSchema = z
   .object({
-    op: OpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An update operation to be performed with this PATCH request. The valid value can be add, remove, replace or copy. Not all valid operations are supported for a given resource. Support of the operations depends on specific operational contexts. Attempts to apply an unsupported operation on a resource will return an error message..',
-        }),
-    ).exactOptional(),
-    path: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The op operation\'s target, as identified by a JSON Pointer value that references a location within the targeted resource. For example, if the target resource has an updateable property of {"name":"value"}, the path for this property is /name. If the name property value is a JSON object (e.g., {"name": {"child/name": "child-value"}}), the path for the child/name property will be /name/child~1name. Any slash ("/") character appearing in path names must be escaped with "~1", as shown in the example above. Each op operation can have only one path associated with it.',
-        }),
-    ).exactOptional(),
-    value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new target value of the update operation. It is applicable for the add or replace operation. When using AWS CLI to update a property of a JSON value, enclose the JSON object with a pair of single quotes in a Linux shell, e.g., \'{"a": ...}\'.',
-        }),
-    ).exactOptional(),
-    from: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The copy update operation\'s source as identified by a JSON-Pointer value referencing the location within the targeted resource to copy the value from. For example, to promote a canary deployment, you copy the canary deployment ID to the affiliated deployment ID by calling a PATCH request on a Stage resource with "op":"copy", "from":"/canarySettings/deploymentId" and "path":"/deploymentId".',
-        }),
-    ).exactOptional(),
+    op: OpSchema.exactOptional().openapi({
+      description:
+        'An update operation to be performed with this PATCH request. The valid value can be add, remove, replace or copy. Not all valid operations are supported for a given resource. Support of the operations depends on specific operational contexts. Attempts to apply an unsupported operation on a resource will return an error message..',
+    }),
+    path: StringSchema.exactOptional().openapi({
+      description:
+        'The op operation\'s target, as identified by a JSON Pointer value that references a location within the targeted resource. For example, if the target resource has an updateable property of {"name":"value"}, the path for this property is /name. If the name property value is a JSON object (e.g., {"name": {"child/name": "child-value"}}), the path for the child/name property will be /name/child~1name. Any slash ("/") character appearing in path names must be escaped with "~1", as shown in the example above. Each op operation can have only one path associated with it.',
+    }),
+    value: StringSchema.exactOptional().openapi({
+      description:
+        'The new target value of the update operation. It is applicable for the add or replace operation. When using AWS CLI to update a property of a JSON value, enclose the JSON object with a pair of single quotes in a Linux shell, e.g., \'{"a": ...}\'.',
+    }),
+    from: StringSchema.exactOptional().openapi({
+      description:
+        'The copy update operation\'s source as identified by a JSON-Pointer value referencing the location within the targeted resource to copy the value from. For example, to promote a canary deployment, you copy the canary deployment ID to the affiliated deployment ID by calling a PATCH request on a Stage resource with "op":"copy", "from":"/canarySettings/deploymentId" and "path":"/deploymentId".',
+    }),
   })
   .openapi({
     description:
@@ -2389,49 +1708,31 @@ const ListOfStageKeysSchema = z.array(StageKeySchema).openapi('ListOfStageKeys')
 
 const CreateApiKeyRequestSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the ApiKey.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the ApiKey.' }),
-    ).exactOptional(),
-    enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether the ApiKey can be used by callers.' }),
-    ).exactOptional(),
-    generateDistinctId: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether (<code>true</code>) or not (<code>false</code>) the key identifier is distinct from the created API key value. This parameter is deprecated and should not be used.',
-        }),
-    ).exactOptional(),
-    value: StringSchema.and(
-      z.any().openapi({ description: 'Specifies a value of the API key.' }),
-    ).exactOptional(),
-    stageKeys: ListOfStageKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'DEPRECATED FOR USAGE PLANS - Specifies stages associated with the API key.',
-        }),
-    ).exactOptional(),
-    customerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An AWS Marketplace customer identifier , when integrating with the AWS SaaS Marketplace.',
-        }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the ApiKey.' }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the ApiKey.',
+    }),
+    enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the ApiKey can be used by callers.',
+    }),
+    generateDistinctId: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether (<code>true</code>) or not (<code>false</code>) the key identifier is distinct from the created API key value. This parameter is deprecated and should not be used.',
+    }),
+    value: StringSchema.exactOptional().openapi({
+      description: 'Specifies a value of the API key.',
+    }),
+    stageKeys: ListOfStageKeysSchema.exactOptional().openapi({
+      description: 'DEPRECATED FOR USAGE PLANS - Specifies stages associated with the API key.',
+    }),
+    customerId: StringSchema.exactOptional().openapi({
+      description:
+        'An AWS Marketplace customer identifier , when integrating with the AWS SaaS Marketplace.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
   })
   .openapi({
     title: 'CreateApiKeyRequest',
@@ -2442,71 +1743,39 @@ const CreateApiKeyRequestSchema = z
 
 const CreateAuthorizerRequestSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The name of the authorizer.' })),
-    type: AuthorizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authorizer type. Valid values are <code>TOKEN</code> for a Lambda function using a single authorization token submitted in a custom header, <code>REQUEST</code> for a Lambda function using incoming request parameters, and <code>COGNITO_USER_POOLS</code> for using an Amazon Cognito user pool.',
-        }),
-    ),
-    providerARNs: ListOfARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the Amazon Cognito user pool ARNs for the <code>COGNITO_USER_POOLS</code> authorizer. Each element is of this format: <code>arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}</code>. For a <code>TOKEN</code> or <code>REQUEST</code> authorizer, this is not defined. ',
-        }),
-    ).exactOptional(),
-    authType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional customer-defined field, used in OpenAPI imports and exports without functional impact.',
-        }),
-    ).exactOptional(),
-    authorizerUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the authorizer's Uniform Resource Identifier (URI). For <code>TOKEN</code> or <code>REQUEST</code> authorizers, this must be a well-formed Lambda function URI, for example, <code>arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:{account_id}:function:{lambda_function_name}/invocations</code>. In general, the URI has this form <code>arn:aws:apigateway:{region}:lambda:path/{service_api}</code>, where <code>{region}</code> is the same as the region hosting the Lambda function, <code>path</code> indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial <code>/</code>. For Lambda functions, this is usually of the form <code>/2015-03-31/functions/[FunctionARN]/invocations</code>.",
-        }),
-    ).exactOptional(),
-    authorizerCredentials: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.",
-        }),
-    ).exactOptional(),
-    identitySource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity source for which authorization is requested. For a <code>TOKEN</code> or <code>COGNITO_USER_POOLS</code> authorizer, this is required and specifies the request header mapping expression for the custom header holding the authorization token submitted by the client. For example, if the token header name is <code>Auth</code>, the header mapping expression is <code>method.request.header.Auth</code>. For the <code>REQUEST</code> authorizer, this is required when authorization caching is enabled. The value is a comma-separated string of one or more mapping expressions of the specified request parameters. For example, if an <code>Auth</code> header, a <code>Name</code> query string parameter are defined as identity sources, this value is <code>method.request.header.Auth, method.request.querystring.Name</code>. These parameters will be used to derive the authorization caching key and to perform runtime validation of the <code>REQUEST</code> authorizer by verifying all of the identity-related request parameters are present, not null and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function, otherwise, it returns a 401 Unauthorized response without calling the Lambda function. The valid value is a string of comma-separated mapping expressions of the specified request parameters. When the authorization caching is not enabled, this property is optional.',
-        }),
-    ).exactOptional(),
-    identityValidationExpression: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A validation expression for the incoming identity token. For <code>TOKEN</code> authorizers, this value is a regular expression. For <code>COGNITO_USER_POOLS</code> authorizers, API Gateway will match the <code>aud</code> field of the incoming token from the client against the specified regular expression. It will invoke the authorizer's Lambda function when there is a match. Otherwise, it will return a 401 Unauthorized response without calling the Lambda function. The validation expression does not apply to the <code>REQUEST</code> authorizer.",
-        }),
-    ).exactOptional(),
-    authorizerResultTtlInSeconds: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The TTL in seconds of cached authorizer results. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway will cache authorizer responses. If this field is not set, the default value is 300. The maximum value is 3600, or 1 hour.',
-        }),
-    ).exactOptional(),
+    name: StringSchema.openapi({ description: 'The name of the authorizer.' }),
+    type: AuthorizerTypeSchema.openapi({
+      description:
+        'The authorizer type. Valid values are <code>TOKEN</code> for a Lambda function using a single authorization token submitted in a custom header, <code>REQUEST</code> for a Lambda function using incoming request parameters, and <code>COGNITO_USER_POOLS</code> for using an Amazon Cognito user pool.',
+    }),
+    providerARNs: ListOfARNsSchema.exactOptional().openapi({
+      description:
+        'A list of the Amazon Cognito user pool ARNs for the <code>COGNITO_USER_POOLS</code> authorizer. Each element is of this format: <code>arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}</code>. For a <code>TOKEN</code> or <code>REQUEST</code> authorizer, this is not defined. ',
+    }),
+    authType: StringSchema.exactOptional().openapi({
+      description:
+        'Optional customer-defined field, used in OpenAPI imports and exports without functional impact.',
+    }),
+    authorizerUri: StringSchema.exactOptional().openapi({
+      description:
+        "Specifies the authorizer's Uniform Resource Identifier (URI). For <code>TOKEN</code> or <code>REQUEST</code> authorizers, this must be a well-formed Lambda function URI, for example, <code>arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:{account_id}:function:{lambda_function_name}/invocations</code>. In general, the URI has this form <code>arn:aws:apigateway:{region}:lambda:path/{service_api}</code>, where <code>{region}</code> is the same as the region hosting the Lambda function, <code>path</code> indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial <code>/</code>. For Lambda functions, this is usually of the form <code>/2015-03-31/functions/[FunctionARN]/invocations</code>.",
+    }),
+    authorizerCredentials: StringSchema.exactOptional().openapi({
+      description:
+        "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.",
+    }),
+    identitySource: StringSchema.exactOptional().openapi({
+      description:
+        'The identity source for which authorization is requested. For a <code>TOKEN</code> or <code>COGNITO_USER_POOLS</code> authorizer, this is required and specifies the request header mapping expression for the custom header holding the authorization token submitted by the client. For example, if the token header name is <code>Auth</code>, the header mapping expression is <code>method.request.header.Auth</code>. For the <code>REQUEST</code> authorizer, this is required when authorization caching is enabled. The value is a comma-separated string of one or more mapping expressions of the specified request parameters. For example, if an <code>Auth</code> header, a <code>Name</code> query string parameter are defined as identity sources, this value is <code>method.request.header.Auth, method.request.querystring.Name</code>. These parameters will be used to derive the authorization caching key and to perform runtime validation of the <code>REQUEST</code> authorizer by verifying all of the identity-related request parameters are present, not null and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function, otherwise, it returns a 401 Unauthorized response without calling the Lambda function. The valid value is a string of comma-separated mapping expressions of the specified request parameters. When the authorization caching is not enabled, this property is optional.',
+    }),
+    identityValidationExpression: StringSchema.exactOptional().openapi({
+      description:
+        "A validation expression for the incoming identity token. For <code>TOKEN</code> authorizers, this value is a regular expression. For <code>COGNITO_USER_POOLS</code> authorizers, API Gateway will match the <code>aud</code> field of the incoming token from the client against the specified regular expression. It will invoke the authorizer's Lambda function when there is a match. Otherwise, it will return a 401 Unauthorized response without calling the Lambda function. The validation expression does not apply to the <code>REQUEST</code> authorizer.",
+    }),
+    authorizerResultTtlInSeconds: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The TTL in seconds of cached authorizer results. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway will cache authorizer responses. If this field is not set, the default value is 300. The maximum value is 3600, or 1 hour.',
+    }),
   })
   .openapi({
     required: ['name', 'type'],
@@ -2517,25 +1786,17 @@ const CreateAuthorizerRequestSchema = z
 
 const CreateBasePathMappingRequestSchema = z
   .object({
-    basePath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The base path name that callers of the API must provide as part of the URL after the domain name. This value must be unique for all of the mappings across a single API. Specify '(none)' if you do not want callers to specify a base path name after the domain name.",
-        }),
-    ).exactOptional(),
-    restApiId: StringSchema.and(
-      z.any().openapi({ description: 'The string identifier of the associated RestApi.' }),
-    ),
-    stage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the API's stage that you want to use for this mapping. Specify '(none)' if you want callers to explicitly specify the stage name after any base path name.",
-        }),
-    ).exactOptional(),
+    basePath: StringSchema.exactOptional().openapi({
+      description:
+        "The base path name that callers of the API must provide as part of the URL after the domain name. This value must be unique for all of the mappings across a single API. Specify '(none)' if you do not want callers to specify a base path name after the domain name.",
+    }),
+    restApiId: StringSchema.openapi({
+      description: 'The string identifier of the associated RestApi.',
+    }),
+    stage: StringSchema.exactOptional().openapi({
+      description:
+        "The name of the API's stage that you want to use for this mapping. Specify '(none)' if you want callers to explicitly specify the stage name after any base path name.",
+    }),
   })
   .openapi({
     required: ['restApiId'],
@@ -2546,91 +1807,50 @@ const CreateBasePathMappingRequestSchema = z
 
 const DeploymentCanarySettingsSchema = z
   .object({
-    percentTraffic: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The percentage (0.0-100.0) of traffic routed to the canary deployment.',
-        }),
-    ).exactOptional(),
-    stageVariableOverrides: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A stage variable overrides used for the canary release deployment. They can override existing stage variables or add new stage variables for the canary release deployment. These stage variables are represented as a string-to-string map between stage variable names and their values.',
-        }),
-    ).exactOptional(),
-    useStageCache: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean flag to indicate whether the canary release deployment uses the stage cache or not.',
-        }),
-    ).exactOptional(),
+    percentTraffic: DoubleSchema.exactOptional().openapi({
+      description: 'The percentage (0.0-100.0) of traffic routed to the canary deployment.',
+    }),
+    stageVariableOverrides: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A stage variable overrides used for the canary release deployment. They can override existing stage variables or add new stage variables for the canary release deployment. These stage variables are represented as a string-to-string map between stage variable names and their values.',
+    }),
+    useStageCache: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean flag to indicate whether the canary release deployment uses the stage cache or not.',
+    }),
   })
   .openapi({ description: 'The input configuration for a canary deployment.', required: [] })
   .openapi('DeploymentCanarySettings')
 
 const CreateDeploymentRequestSchema = z
   .object({
-    stageName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Stage resource for the Deployment resource to create.',
-        }),
-    ).exactOptional(),
-    stageDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the Stage resource for the Deployment resource to create.',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description for the Deployment resource to create.' }),
-    ).exactOptional(),
-    cacheClusterEnabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Enables a cache cluster for the Stage resource specified in the input.',
-        }),
-    ).exactOptional(),
-    cacheClusterSize: CacheClusterSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stage\'s cache capacity in GB. For more information about choosing a cache size, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html">Enabling API caching to enhance responsiveness</a>.',
-        }),
-    ).exactOptional(),
-    variables: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map that defines the stage variables for the Stage resource that is associated with the new deployment. Variable names can have alphanumeric and underscore characters, and the values must match <code>[A-Za-z0-9-._~:/?#&amp;=,]+</code>.',
-        }),
-    ).exactOptional(),
-    canarySettings: DeploymentCanarySettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input configuration for the canary deployment when the deployment is a canary release deployment. ',
-        }),
-    ).exactOptional(),
-    tracingEnabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether active tracing with X-ray is enabled for the Stage.',
-        }),
-    ).exactOptional(),
+    stageName: StringSchema.exactOptional().openapi({
+      description: 'The name of the Stage resource for the Deployment resource to create.',
+    }),
+    stageDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the Stage resource for the Deployment resource to create.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description for the Deployment resource to create.',
+    }),
+    cacheClusterEnabled: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Enables a cache cluster for the Stage resource specified in the input.',
+    }),
+    cacheClusterSize: CacheClusterSizeSchema.exactOptional().openapi({
+      description:
+        'The stage\'s cache capacity in GB. For more information about choosing a cache size, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html">Enabling API caching to enhance responsiveness</a>.',
+    }),
+    variables: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A map that defines the stage variables for the Stage resource that is associated with the new deployment. Variable names can have alphanumeric and underscore characters, and the values must match <code>[A-Za-z0-9-._~:/?#&amp;=,]+</code>.',
+    }),
+    canarySettings: DeploymentCanarySettingsSchema.exactOptional().openapi({
+      description:
+        'The input configuration for the canary deployment when the deployment is a canary release deployment. ',
+    }),
+    tracingEnabled: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether active tracing with X-ray is enabled for the Stage.',
+    }),
   })
   .openapi({
     title: 'CreateDeploymentRequest',
@@ -2641,14 +1861,10 @@ const CreateDeploymentRequestSchema = z
 
 const CreateDocumentationPartRequestSchema = z
   .object({
-    location: DocumentationPartLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the targeted API entity of the to-be-created documentation part.',
-        }),
-    ),
+    location: DocumentationPartLocationSchema.openapi({
+      description:
+        'The location of the targeted API entity of the to-be-created documentation part.',
+    }),
     properties: z
       .any()
       .openapi({
@@ -2665,19 +1881,15 @@ const CreateDocumentationPartRequestSchema = z
 
 const CreateDocumentationVersionRequestSchema = z
   .object({
-    documentationVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version identifier of the new snapshot.' }),
-    ),
-    stageName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The stage name to be associated with the new documentation snapshot.',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'A description about the new documentation snapshot.' }),
-    ).exactOptional(),
+    documentationVersion: StringSchema.openapi({
+      description: 'The version identifier of the new snapshot.',
+    }),
+    stageName: StringSchema.exactOptional().openapi({
+      description: 'The stage name to be associated with the new documentation snapshot.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'A description about the new documentation snapshot.',
+    }),
   })
   .openapi({
     required: ['documentationVersion'],
@@ -2688,22 +1900,14 @@ const CreateDocumentationVersionRequestSchema = z
 
 const MutualTlsAuthenticationInputSchema = z
   .object({
-    truststoreUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example <code>s3://bucket-name/key-name</code>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
-        }),
-    ).exactOptional(),
-    truststoreVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket',
-        }),
-    ).exactOptional(),
+    truststoreUri: StringSchema.exactOptional().openapi({
+      description:
+        'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example <code>s3://bucket-name/key-name</code>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
+    }),
+    truststoreVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket',
+    }),
   })
   .openapi({
     description:
@@ -2714,98 +1918,52 @@ const MutualTlsAuthenticationInputSchema = z
 
 const CreateDomainNameRequestSchema = z
   .object({
-    domainName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the DomainName resource.' }),
-    ),
-    certificateName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-friendly name of the certificate that will be used by edge-optimized endpoint for this domain name.',
-        }),
-    ).exactOptional(),
-    certificateBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Deprecated] The body of the server certificate that will be used by edge-optimized endpoint for this domain name provided by your certificate authority.',
-        }),
-    ).exactOptional(),
-    certificatePrivateKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "[Deprecated] Your edge-optimized endpoint's domain name certificate's private key.",
-        }),
-    ).exactOptional(),
-    certificateChain: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Deprecated] The intermediate certificates and optionally the root certificate, one after the other without any blank lines, used by an edge-optimized endpoint for this domain name. If you include the root certificate, your certificate chain must start with intermediate certificates and end with the root certificate. Use the intermediate certificates that were provided by your certificate authority. Do not include any intermediaries that are not in the chain of trust path.',
-        }),
-    ).exactOptional(),
-    certificateArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reference to an AWS-managed certificate that will be used by edge-optimized endpoint for this domain name. AWS Certificate Manager is the only supported source.',
-        }),
-    ).exactOptional(),
-    regionalCertificateName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-friendly name of the certificate that will be used by regional endpoint for this domain name.',
-        }),
-    ).exactOptional(),
-    regionalCertificateArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reference to an AWS-managed certificate that will be used by regional endpoint for this domain name. AWS Certificate Manager is the only supported source.',
-        }),
-    ).exactOptional(),
-    endpointConfiguration: EndpointConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint configuration of this DomainName showing the endpoint types of the domain name. ',
-        }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ).exactOptional(),
-    securityPolicy: SecurityPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Transport Layer Security (TLS) version + cipher suite for this DomainName. The valid values are <code>TLS_1_0</code> and <code>TLS_1_2</code>.',
-        }),
-    ).exactOptional(),
+    domainName: StringSchema.openapi({ description: 'The name of the DomainName resource.' }),
+    certificateName: StringSchema.exactOptional().openapi({
+      description:
+        'The user-friendly name of the certificate that will be used by edge-optimized endpoint for this domain name.',
+    }),
+    certificateBody: StringSchema.exactOptional().openapi({
+      description:
+        '[Deprecated] The body of the server certificate that will be used by edge-optimized endpoint for this domain name provided by your certificate authority.',
+    }),
+    certificatePrivateKey: StringSchema.exactOptional().openapi({
+      description:
+        "[Deprecated] Your edge-optimized endpoint's domain name certificate's private key.",
+    }),
+    certificateChain: StringSchema.exactOptional().openapi({
+      description:
+        '[Deprecated] The intermediate certificates and optionally the root certificate, one after the other without any blank lines, used by an edge-optimized endpoint for this domain name. If you include the root certificate, your certificate chain must start with intermediate certificates and end with the root certificate. Use the intermediate certificates that were provided by your certificate authority. Do not include any intermediaries that are not in the chain of trust path.',
+    }),
+    certificateArn: StringSchema.exactOptional().openapi({
+      description:
+        'The reference to an AWS-managed certificate that will be used by edge-optimized endpoint for this domain name. AWS Certificate Manager is the only supported source.',
+    }),
+    regionalCertificateName: StringSchema.exactOptional().openapi({
+      description:
+        'The user-friendly name of the certificate that will be used by regional endpoint for this domain name.',
+    }),
+    regionalCertificateArn: StringSchema.exactOptional().openapi({
+      description:
+        'The reference to an AWS-managed certificate that will be used by regional endpoint for this domain name. AWS Certificate Manager is the only supported source.',
+    }),
+    endpointConfiguration: EndpointConfigurationSchema.exactOptional().openapi({
+      description:
+        'The endpoint configuration of this DomainName showing the endpoint types of the domain name. ',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
+    securityPolicy: SecurityPolicySchema.exactOptional().openapi({
+      description:
+        'The Transport Layer Security (TLS) version + cipher suite for this DomainName. The valid values are <code>TLS_1_0</code> and <code>TLS_1_2</code>.',
+    }),
     mutualTlsAuthentication: MutualTlsAuthenticationInputSchema.exactOptional(),
-    ownershipVerificationCertificateArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the public certificate issued by ACM to validate ownership of your custom domain. Only required when configuring mutual TLS and using an ACM imported or private CA certificate ARN as the regionalCertificateArn.',
-        }),
-    ).exactOptional(),
+    ownershipVerificationCertificateArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the public certificate issued by ACM to validate ownership of your custom domain. Only required when configuring mutual TLS and using an ACM imported or private CA certificate ARN as the regionalCertificateArn.',
+    }),
   })
   .openapi({
     required: ['domainName'],
@@ -2816,23 +1974,15 @@ const CreateDomainNameRequestSchema = z
 
 const CreateModelRequestSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the model. Must be alphanumeric.' }),
-    ),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the model.' }),
-    ).exactOptional(),
-    schema: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The schema for the model. For <code>application/json</code> models, this should be JSON schema draft 4 model.',
-        }),
-    ).exactOptional(),
-    contentType: StringSchema.and(
-      z.any().openapi({ description: 'The content-type for the model.' }),
-    ),
+    name: StringSchema.openapi({ description: 'The name of the model. Must be alphanumeric.' }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the model.',
+    }),
+    schema: StringSchema.exactOptional().openapi({
+      description:
+        'The schema for the model. For <code>application/json</code> models, this should be JSON schema draft 4 model.',
+    }),
+    contentType: StringSchema.openapi({ description: 'The content-type for the model.' }),
   })
   .openapi({
     required: ['name', 'contentType'],
@@ -2843,25 +1993,17 @@ const CreateModelRequestSchema = z
 
 const CreateRequestValidatorRequestSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the to-be-created RequestValidator.' }),
-    ).exactOptional(),
-    validateRequestBody: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean flag to indicate whether to validate request body according to the configured model schema for the method (<code>true</code>) or not (<code>false</code>).',
-        }),
-    ).exactOptional(),
-    validateRequestParameters: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean flag to indicate whether to validate request parameters, <code>true</code>, or not <code>false</code>.',
-        }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name of the to-be-created RequestValidator.',
+    }),
+    validateRequestBody: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean flag to indicate whether to validate request body according to the configured model schema for the method (<code>true</code>) or not (<code>false</code>).',
+    }),
+    validateRequestParameters: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean flag to indicate whether to validate request parameters, <code>true</code>, or not <code>false</code>.',
+    }),
   })
   .openapi({
     title: 'CreateRequestValidatorRequest',
@@ -2872,9 +2014,7 @@ const CreateRequestValidatorRequestSchema = z
 
 const CreateResourceRequestSchema = z
   .object({
-    pathPart: StringSchema.and(
-      z.any().openapi({ description: 'The last path segment for this resource.' }),
-    ),
+    pathPart: StringSchema.openapi({ description: 'The last path segment for this resource.' }),
   })
   .openapi({
     required: ['pathPart'],
@@ -2885,72 +2025,44 @@ const CreateResourceRequestSchema = z
 
 const CreateRestApiRequestSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The name of the RestApi.' })),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the RestApi.' }),
-    ).exactOptional(),
-    version: StringSchema.and(
-      z.any().openapi({ description: 'A version identifier for the API.' }),
-    ).exactOptional(),
-    cloneFrom: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the RestApi that you want to clone from.' }),
-    ).exactOptional(),
-    binaryMediaTypes: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.',
-        }),
-    ).exactOptional(),
-    minimumCompressionSize: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A nullable integer that is used to enable compression (with non-negative between 0 and 10485760 (10M) bytes, inclusive) or disable compression (with a null value) on an API. When compression is enabled, compression or decompression is not applied on the payload if the payload size is smaller than this value. Setting it to zero allows compression for any payload size.',
-        }),
-    ).exactOptional(),
-    apiKeySource: ApiKeySourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source of the API key for metering requests according to a usage plan. Valid values are: &gt;<code>HEADER</code> to read the API key from the <code>X-API-Key</code> header of a request. <code>AUTHORIZER</code> to read the API key from the <code>UsageIdentifierKey</code> from a custom authorizer.',
-        }),
-    ).exactOptional(),
-    endpointConfiguration: EndpointConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint configuration of this RestApi showing the endpoint types of the API. ',
-        }),
-    ).exactOptional(),
-    policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A stringified JSON policy document that applies to this RestApi regardless of the caller and Method configuration.',
-        }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ).exactOptional(),
-    disableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether clients can invoke your API by using the default <code>execute-api</code> endpoint. By default, clients can invoke your API with the default <code>https://{api_id}.execute-api.{region}.amazonaws.com</code> endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint',
-        }),
-    ).exactOptional(),
+    name: StringSchema.openapi({ description: 'The name of the RestApi.' }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the RestApi.',
+    }),
+    version: StringSchema.exactOptional().openapi({
+      description: 'A version identifier for the API.',
+    }),
+    cloneFrom: StringSchema.exactOptional().openapi({
+      description: 'The ID of the RestApi that you want to clone from.',
+    }),
+    binaryMediaTypes: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.',
+    }),
+    minimumCompressionSize: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'A nullable integer that is used to enable compression (with non-negative between 0 and 10485760 (10M) bytes, inclusive) or disable compression (with a null value) on an API. When compression is enabled, compression or decompression is not applied on the payload if the payload size is smaller than this value. Setting it to zero allows compression for any payload size.',
+    }),
+    apiKeySource: ApiKeySourceTypeSchema.exactOptional().openapi({
+      description:
+        'The source of the API key for metering requests according to a usage plan. Valid values are: &gt;<code>HEADER</code> to read the API key from the <code>X-API-Key</code> header of a request. <code>AUTHORIZER</code> to read the API key from the <code>UsageIdentifierKey</code> from a custom authorizer.',
+    }),
+    endpointConfiguration: EndpointConfigurationSchema.exactOptional().openapi({
+      description:
+        'The endpoint configuration of this RestApi showing the endpoint types of the API. ',
+    }),
+    policy: StringSchema.exactOptional().openapi({
+      description:
+        'A stringified JSON policy document that applies to this RestApi regardless of the caller and Method configuration.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
+    disableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether clients can invoke your API by using the default <code>execute-api</code> endpoint. By default, clients can invoke your API with the default <code>https://{api_id}.execute-api.{region}.amazonaws.com</code> endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -2961,64 +2073,40 @@ const CreateRestApiRequestSchema = z
 
 const CreateStageRequestSchema = z
   .object({
-    stageName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the Stage resource. Stage names can only contain alphanumeric characters, hyphens, and underscores. Maximum length is 128 characters.',
-        }),
-    ),
-    deploymentId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the Deployment resource for the Stage resource.',
-        }),
-    ),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the Stage resource.' }),
-    ).exactOptional(),
-    cacheClusterEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether cache clustering is enabled for the stage.' }),
-    ).exactOptional(),
-    cacheClusterSize: CacheClusterSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stage\'s cache capacity in GB. For more information about choosing a cache size, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html">Enabling API caching to enhance responsiveness</a>.',
-        }),
-    ).exactOptional(),
-    variables: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map that defines the stage variables for the new Stage resource. Variable names can have alphanumeric and underscore characters, and the values must match <code>[A-Za-z0-9-._~:/?#&amp;=,]+</code>.',
-        }),
-    ).exactOptional(),
-    documentationVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version of the associated API documentation.' }),
-    ).exactOptional(),
-    canarySettings: CanarySettingsSchema.and(
-      z.any().openapi({ description: 'The canary deployment settings of this stage.' }),
-    ).exactOptional(),
-    tracingEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether active tracing with X-ray is enabled for the Stage.',
-        }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ).exactOptional(),
+    stageName: StringSchema.openapi({
+      description:
+        'The name for the Stage resource. Stage names can only contain alphanumeric characters, hyphens, and underscores. Maximum length is 128 characters.',
+    }),
+    deploymentId: StringSchema.openapi({
+      description: 'The identifier of the Deployment resource for the Stage resource.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the Stage resource.',
+    }),
+    cacheClusterEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether cache clustering is enabled for the stage.',
+    }),
+    cacheClusterSize: CacheClusterSizeSchema.exactOptional().openapi({
+      description:
+        'The stage\'s cache capacity in GB. For more information about choosing a cache size, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html">Enabling API caching to enhance responsiveness</a>.',
+    }),
+    variables: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A map that defines the stage variables for the new Stage resource. Variable names can have alphanumeric and underscore characters, and the values must match <code>[A-Za-z0-9-._~:/?#&amp;=,]+</code>.',
+    }),
+    documentationVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the associated API documentation.',
+    }),
+    canarySettings: CanarySettingsSchema.exactOptional().openapi({
+      description: 'The canary deployment settings of this stage.',
+    }),
+    tracingEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether active tracing with X-ray is enabled for the Stage.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
   })
   .openapi({
     required: ['stageName', 'deploymentId'],
@@ -3029,14 +2117,12 @@ const CreateStageRequestSchema = z
 
 const CreateUsagePlanKeyRequestSchema = z
   .object({
-    keyId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of a UsagePlanKey resource for a plan customer.' }),
-    ),
-    keyType: StringSchema.and(
-      z.any().openapi({ description: 'The type of a UsagePlanKey resource for a plan customer.' }),
-    ),
+    keyId: StringSchema.openapi({
+      description: 'The identifier of a UsagePlanKey resource for a plan customer.',
+    }),
+    keyType: StringSchema.openapi({
+      description: 'The type of a UsagePlanKey resource for a plan customer.',
+    }),
   })
   .openapi({
     required: ['keyId', 'keyType'],
@@ -3048,27 +2134,23 @@ const CreateUsagePlanKeyRequestSchema = z
 
 const CreateUsagePlanRequestSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The name of the usage plan.' })),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the usage plan.' }),
-    ).exactOptional(),
-    apiStages: ListOfApiStageSchema.and(
-      z.any().openapi({ description: 'The associated API stages of the usage plan.' }),
-    ).exactOptional(),
-    throttle: ThrottleSettingsSchema.and(
-      z.any().openapi({ description: 'The throttling limits of the usage plan.' }),
-    ).exactOptional(),
-    quota: QuotaSettingsSchema.and(
-      z.any().openapi({ description: 'The quota of the usage plan.' }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ).exactOptional(),
+    name: StringSchema.openapi({ description: 'The name of the usage plan.' }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the usage plan.',
+    }),
+    apiStages: ListOfApiStageSchema.exactOptional().openapi({
+      description: 'The associated API stages of the usage plan.',
+    }),
+    throttle: ThrottleSettingsSchema.exactOptional().openapi({
+      description: 'The throttling limits of the usage plan.',
+    }),
+    quota: QuotaSettingsSchema.exactOptional().openapi({
+      description: 'The quota of the usage plan.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -3080,28 +2162,20 @@ const CreateUsagePlanRequestSchema = z
 
 const CreateVpcLinkRequestSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name used to label and identify the VPC link.' }),
-    ),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the VPC link.' }),
-    ).exactOptional(),
-    targetArns: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the network load balancer of the VPC targeted by the VPC link. The network load balancer must be owned by the same AWS account of the API owner.',
-        }),
-    ),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ).exactOptional(),
+    name: StringSchema.openapi({
+      description: 'The name used to label and identify the VPC link.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the VPC link.',
+    }),
+    targetArns: ListOfStringSchema.openapi({
+      description:
+        'The ARN of the network load balancer of the VPC targeted by the VPC link. The network load balancer must be owned by the same AWS account of the API owner.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
   })
   .openapi({
     required: ['name', 'targetArns'],
@@ -3112,7 +2186,7 @@ const CreateVpcLinkRequestSchema = z
   .openapi('CreateVpcLinkRequest')
 
 const DeleteApiKeyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteApiKeyRequest',
     description: 'A request to delete the ApiKey resource.',
@@ -3120,7 +2194,7 @@ const DeleteApiKeyRequestSchema = z
   .openapi('DeleteApiKeyRequest')
 
 const DeleteAuthorizerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteAuthorizerRequest',
     description: 'Request to delete an existing Authorizer resource.',
@@ -3128,7 +2202,7 @@ const DeleteAuthorizerRequestSchema = z
   .openapi('DeleteAuthorizerRequest')
 
 const DeleteBasePathMappingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteBasePathMappingRequest',
     description: 'A request to delete the BasePathMapping resource.',
@@ -3136,7 +2210,7 @@ const DeleteBasePathMappingRequestSchema = z
   .openapi('DeleteBasePathMappingRequest')
 
 const DeleteClientCertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteClientCertificateRequest',
     description: 'A request to delete the ClientCertificate resource.',
@@ -3144,7 +2218,7 @@ const DeleteClientCertificateRequestSchema = z
   .openapi('DeleteClientCertificateRequest')
 
 const DeleteDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteDeploymentRequest',
     description: 'Requests API Gateway to delete a Deployment resource.',
@@ -3152,7 +2226,7 @@ const DeleteDeploymentRequestSchema = z
   .openapi('DeleteDeploymentRequest')
 
 const DeleteDocumentationPartRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteDocumentationPartRequest',
     description: 'Deletes an existing documentation part of an API.',
@@ -3160,7 +2234,7 @@ const DeleteDocumentationPartRequestSchema = z
   .openapi('DeleteDocumentationPartRequest')
 
 const DeleteDocumentationVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteDocumentationVersionRequest',
     description: 'Deletes an existing documentation version of an API.',
@@ -3168,7 +2242,7 @@ const DeleteDocumentationVersionRequestSchema = z
   .openapi('DeleteDocumentationVersionRequest')
 
 const DeleteDomainNameRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteDomainNameRequest',
     description: 'A request to delete the DomainName resource.',
@@ -3176,7 +2250,7 @@ const DeleteDomainNameRequestSchema = z
   .openapi('DeleteDomainNameRequest')
 
 const DeleteGatewayResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteGatewayResponseRequest',
     description:
@@ -3185,7 +2259,7 @@ const DeleteGatewayResponseRequestSchema = z
   .openapi('DeleteGatewayResponseRequest')
 
 const DeleteIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteIntegrationRequest',
     description: 'Represents a delete integration request.',
@@ -3193,7 +2267,7 @@ const DeleteIntegrationRequestSchema = z
   .openapi('DeleteIntegrationRequest')
 
 const DeleteIntegrationResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteIntegrationResponseRequest',
     description: 'Represents a delete integration response request.',
@@ -3201,7 +2275,7 @@ const DeleteIntegrationResponseRequestSchema = z
   .openapi('DeleteIntegrationResponseRequest')
 
 const DeleteMethodRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteMethodRequest',
     description: 'Request to delete an existing Method resource.',
@@ -3209,7 +2283,7 @@ const DeleteMethodRequestSchema = z
   .openapi('DeleteMethodRequest')
 
 const DeleteMethodResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteMethodResponseRequest',
     description: 'A request to delete an existing MethodResponse resource.',
@@ -3217,7 +2291,7 @@ const DeleteMethodResponseRequestSchema = z
   .openapi('DeleteMethodResponseRequest')
 
 const DeleteModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteModelRequest',
     description: 'Request to delete an existing model in an existing RestApi resource.',
@@ -3225,7 +2299,7 @@ const DeleteModelRequestSchema = z
   .openapi('DeleteModelRequest')
 
 const DeleteRequestValidatorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteRequestValidatorRequest',
     description: 'Deletes a specified RequestValidator of a given RestApi.',
@@ -3233,12 +2307,12 @@ const DeleteRequestValidatorRequestSchema = z
   .openapi('DeleteRequestValidatorRequest')
 
 const DeleteResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteResourceRequest', description: 'Request to delete a Resource.' })
   .openapi('DeleteResourceRequest')
 
 const DeleteRestApiRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteRestApiRequest',
     description: 'Request to delete the specified API from your collection.',
@@ -3246,7 +2320,7 @@ const DeleteRestApiRequestSchema = z
   .openapi('DeleteRestApiRequest')
 
 const DeleteStageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteStageRequest',
     description: 'Requests API Gateway to delete a Stage resource.',
@@ -3254,7 +2328,7 @@ const DeleteStageRequestSchema = z
   .openapi('DeleteStageRequest')
 
 const DeleteUsagePlanKeyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteUsagePlanKeyRequest',
     description:
@@ -3263,7 +2337,7 @@ const DeleteUsagePlanKeyRequestSchema = z
   .openapi('DeleteUsagePlanKeyRequest')
 
 const DeleteUsagePlanRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteUsagePlanRequest',
     description: 'The DELETE request to delete a usage plan of a given plan Id.',
@@ -3271,7 +2345,7 @@ const DeleteUsagePlanRequestSchema = z
   .openapi('DeleteUsagePlanRequest')
 
 const DeleteVpcLinkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteVpcLinkRequest',
     description: 'Deletes an existing VpcLink of a specified identifier.',
@@ -3279,7 +2353,7 @@ const DeleteVpcLinkRequestSchema = z
   .openapi('DeleteVpcLinkRequest')
 
 const FlushStageAuthorizersCacheRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'FlushStageAuthorizersCacheRequest',
     description: 'Request to flush authorizer cache entries on a specified stage.',
@@ -3287,7 +2361,7 @@ const FlushStageAuthorizersCacheRequestSchema = z
   .openapi('FlushStageAuthorizersCacheRequest')
 
 const FlushStageCacheRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'FlushStageCacheRequest',
     description: "Requests API Gateway to flush a stage's cache.",
@@ -3296,17 +2370,13 @@ const FlushStageCacheRequestSchema = z
 
 const GenerateClientCertificateRequestSchema = z
   .object({
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the ClientCertificate.' }),
-    ).exactOptional(),
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ).exactOptional(),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the ClientCertificate.',
+    }),
+    tags: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
   })
   .openapi({
     title: 'GenerateClientCertificateRequest',
@@ -3316,7 +2386,7 @@ const GenerateClientCertificateRequestSchema = z
   .openapi('GenerateClientCertificateRequest')
 
 const GetAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetAccountRequest',
     description: 'Requests API Gateway to get information about the current Account resource.',
@@ -3324,7 +2394,7 @@ const GetAccountRequestSchema = z
   .openapi('GetAccountRequest')
 
 const GetApiKeyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetApiKeyRequest',
     description: 'A request to get information about the current ApiKey resource.',
@@ -3332,7 +2402,7 @@ const GetApiKeyRequestSchema = z
   .openapi('GetApiKeyRequest')
 
 const GetApiKeysRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetApiKeysRequest',
     description: 'A request to get information about the current ApiKeys resource.',
@@ -3340,7 +2410,7 @@ const GetApiKeysRequestSchema = z
   .openapi('GetApiKeysRequest')
 
 const GetAuthorizerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetAuthorizerRequest',
     description: 'Request to describe an existing Authorizer resource.',
@@ -3348,7 +2418,7 @@ const GetAuthorizerRequestSchema = z
   .openapi('GetAuthorizerRequest')
 
 const GetAuthorizersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetAuthorizersRequest',
     description: 'Request to describe an existing Authorizers resource.',
@@ -3356,7 +2426,7 @@ const GetAuthorizersRequestSchema = z
   .openapi('GetAuthorizersRequest')
 
 const GetBasePathMappingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetBasePathMappingRequest',
     description: 'Request to describe a BasePathMapping resource.',
@@ -3364,7 +2434,7 @@ const GetBasePathMappingRequestSchema = z
   .openapi('GetBasePathMappingRequest')
 
 const GetBasePathMappingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetBasePathMappingsRequest',
     description: 'A request to get information about a collection of BasePathMapping resources.',
@@ -3372,7 +2442,7 @@ const GetBasePathMappingsRequestSchema = z
   .openapi('GetBasePathMappingsRequest')
 
 const GetClientCertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetClientCertificateRequest',
     description: 'A request to get information about the current ClientCertificate resource.',
@@ -3380,7 +2450,7 @@ const GetClientCertificateRequestSchema = z
   .openapi('GetClientCertificateRequest')
 
 const GetClientCertificatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetClientCertificatesRequest',
     description: 'A request to get information about a collection of ClientCertificate resources.',
@@ -3388,7 +2458,7 @@ const GetClientCertificatesRequestSchema = z
   .openapi('GetClientCertificatesRequest')
 
 const GetDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDeploymentRequest',
     description: 'Requests API Gateway to get information about a Deployment resource.',
@@ -3396,7 +2466,7 @@ const GetDeploymentRequestSchema = z
   .openapi('GetDeploymentRequest')
 
 const GetDeploymentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDeploymentsRequest',
     description: 'Requests API Gateway to get information about a Deployments collection.',
@@ -3404,7 +2474,7 @@ const GetDeploymentsRequestSchema = z
   .openapi('GetDeploymentsRequest')
 
 const GetDocumentationPartRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDocumentationPartRequest',
     description: 'Gets a specified documentation part of a given API.',
@@ -3416,7 +2486,7 @@ const LocationStatusTypeSchema = z
   .openapi('LocationStatusType')
 
 const GetDocumentationPartsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDocumentationPartsRequest',
     description:
@@ -3425,7 +2495,7 @@ const GetDocumentationPartsRequestSchema = z
   .openapi('GetDocumentationPartsRequest')
 
 const GetDocumentationVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDocumentationVersionRequest',
     description: 'Gets a documentation snapshot of an API.',
@@ -3433,7 +2503,7 @@ const GetDocumentationVersionRequestSchema = z
   .openapi('GetDocumentationVersionRequest')
 
 const GetDocumentationVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDocumentationVersionsRequest',
     description: 'Gets the documentation versions of an API.',
@@ -3441,7 +2511,7 @@ const GetDocumentationVersionsRequestSchema = z
   .openapi('GetDocumentationVersionsRequest')
 
 const GetDomainNameRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDomainNameRequest',
     description: 'Request to get the name of a DomainName resource.',
@@ -3449,7 +2519,7 @@ const GetDomainNameRequestSchema = z
   .openapi('GetDomainNameRequest')
 
 const GetDomainNamesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDomainNamesRequest',
     description: 'Request to describe a collection of DomainName resources.',
@@ -3457,7 +2527,7 @@ const GetDomainNamesRequestSchema = z
   .openapi('GetDomainNamesRequest')
 
 const GetExportRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetExportRequest',
     description: 'Request a new export of a RestApi for a particular Stage.',
@@ -3465,7 +2535,7 @@ const GetExportRequestSchema = z
   .openapi('GetExportRequest')
 
 const GetGatewayResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetGatewayResponseRequest',
     description: 'Gets a GatewayResponse of a specified response type on the given RestApi.',
@@ -3473,7 +2543,7 @@ const GetGatewayResponseRequestSchema = z
   .openapi('GetGatewayResponseRequest')
 
 const GetGatewayResponsesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetGatewayResponsesRequest',
     description:
@@ -3482,7 +2552,7 @@ const GetGatewayResponsesRequestSchema = z
   .openapi('GetGatewayResponsesRequest')
 
 const GetIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetIntegrationRequest',
     description: 'Represents a request to get the integration configuration.',
@@ -3490,7 +2560,7 @@ const GetIntegrationRequestSchema = z
   .openapi('GetIntegrationRequest')
 
 const GetIntegrationResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetIntegrationResponseRequest',
     description: 'Represents a get integration response request.',
@@ -3498,7 +2568,7 @@ const GetIntegrationResponseRequestSchema = z
   .openapi('GetIntegrationResponseRequest')
 
 const GetMethodRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetMethodRequest',
     description: 'Request to describe an existing Method resource.',
@@ -3506,7 +2576,7 @@ const GetMethodRequestSchema = z
   .openapi('GetMethodRequest')
 
 const GetMethodResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetMethodResponseRequest',
     description: 'Request to describe a MethodResponse resource.',
@@ -3514,7 +2584,7 @@ const GetMethodResponseRequestSchema = z
   .openapi('GetMethodResponseRequest')
 
 const GetModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetModelRequest',
     description: 'Request to list information about a model in an existing RestApi resource.',
@@ -3522,7 +2592,7 @@ const GetModelRequestSchema = z
   .openapi('GetModelRequest')
 
 const GetModelTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetModelTemplateRequest',
     description: 'Request to generate a sample mapping template used to transform the payload.',
@@ -3530,7 +2600,7 @@ const GetModelTemplateRequestSchema = z
   .openapi('GetModelTemplateRequest')
 
 const GetModelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetModelsRequest',
     description: 'Request to list existing Models defined for a RestApi resource.',
@@ -3538,7 +2608,7 @@ const GetModelsRequestSchema = z
   .openapi('GetModelsRequest')
 
 const GetRequestValidatorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetRequestValidatorRequest',
     description: 'Gets a RequestValidator of a given RestApi.',
@@ -3546,7 +2616,7 @@ const GetRequestValidatorRequestSchema = z
   .openapi('GetRequestValidatorRequest')
 
 const GetRequestValidatorsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetRequestValidatorsRequest',
     description: 'Gets the RequestValidators collection of a given RestApi.',
@@ -3554,7 +2624,7 @@ const GetRequestValidatorsRequestSchema = z
   .openapi('GetRequestValidatorsRequest')
 
 const GetResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetResourceRequest',
     description: 'Request to list information about a resource.',
@@ -3562,7 +2632,7 @@ const GetResourceRequestSchema = z
   .openapi('GetResourceRequest')
 
 const GetResourcesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetResourcesRequest',
     description: 'Request to list information about a collection of resources.',
@@ -3570,7 +2640,7 @@ const GetResourcesRequestSchema = z
   .openapi('GetResourcesRequest')
 
 const GetRestApiRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetRestApiRequest',
     description: 'The GET request to list an existing RestApi defined for your collection. ',
@@ -3578,7 +2648,7 @@ const GetRestApiRequestSchema = z
   .openapi('GetRestApiRequest')
 
 const GetRestApisRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetRestApisRequest',
     description: 'The GET request to list existing RestApis defined for your collection.',
@@ -3586,7 +2656,7 @@ const GetRestApisRequestSchema = z
   .openapi('GetRestApisRequest')
 
 const GetSdkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetSdkRequest',
     description: 'Request a new generated client SDK for a RestApi and Stage.',
@@ -3594,17 +2664,17 @@ const GetSdkRequestSchema = z
   .openapi('GetSdkRequest')
 
 const GetSdkTypeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSdkTypeRequest', description: 'Get an SdkType instance.' })
   .openapi('GetSdkTypeRequest')
 
 const GetSdkTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSdkTypesRequest', description: 'Get the SdkTypes collection.' })
   .openapi('GetSdkTypesRequest')
 
 const GetStageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetStageRequest',
     description: 'Requests API Gateway to get information about a Stage resource.',
@@ -3612,7 +2682,7 @@ const GetStageRequestSchema = z
   .openapi('GetStageRequest')
 
 const GetStagesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetStagesRequest',
     description: 'Requests API Gateway to get information about one or more Stage resources.',
@@ -3620,7 +2690,7 @@ const GetStagesRequestSchema = z
   .openapi('GetStagesRequest')
 
 const GetTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetTagsRequest',
     description: 'Gets the Tags collection for a given resource.',
@@ -3628,7 +2698,7 @@ const GetTagsRequestSchema = z
   .openapi('GetTagsRequest')
 
 const GetUsagePlanKeyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetUsagePlanKeyRequest',
     description: 'The GET request to get a usage plan key of a given key identifier.',
@@ -3636,7 +2706,7 @@ const GetUsagePlanKeyRequestSchema = z
   .openapi('GetUsagePlanKeyRequest')
 
 const GetUsagePlanKeysRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetUsagePlanKeysRequest',
     description:
@@ -3645,7 +2715,7 @@ const GetUsagePlanKeysRequestSchema = z
   .openapi('GetUsagePlanKeysRequest')
 
 const GetUsagePlanRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetUsagePlanRequest',
     description: 'The GET request to get a usage plan of a given plan identifier.',
@@ -3653,7 +2723,7 @@ const GetUsagePlanRequestSchema = z
   .openapi('GetUsagePlanRequest')
 
 const GetUsagePlansRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetUsagePlansRequest',
     description: "The GET request to get all the usage plans of the caller's account.",
@@ -3661,7 +2731,7 @@ const GetUsagePlansRequestSchema = z
   .openapi('GetUsagePlansRequest')
 
 const GetUsageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetUsageRequest',
     description:
@@ -3670,7 +2740,7 @@ const GetUsageRequestSchema = z
   .openapi('GetUsageRequest')
 
 const GetVpcLinkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetVpcLinkRequest',
     description: "Gets a specified VPC link under the caller's account in a region.",
@@ -3678,7 +2748,7 @@ const GetVpcLinkRequestSchema = z
   .openapi('GetVpcLinkRequest')
 
 const GetVpcLinksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetVpcLinksRequest',
     description: "Gets the VpcLinks collection under the caller's account in a selected region.",
@@ -3687,14 +2757,10 @@ const GetVpcLinksRequestSchema = z
 
 const ImportApiKeysRequestSchema = z
   .object({
-    body: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The payload of the POST request to import API keys. For the payload format, see API Key File Format.',
-        }),
-    ),
+    body: BlobSchema.openapi({
+      description:
+        'The payload of the POST request to import API keys. For the payload format, see API Key File Format.',
+    }),
   })
   .openapi({
     required: ['body'],
@@ -3708,14 +2774,10 @@ const PutModeSchema = z.enum(['merge', 'overwrite']).openapi('PutMode')
 
 const ImportDocumentationPartsRequestSchema = z
   .object({
-    body: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Raw byte array representing the to-be-imported documentation parts. To import from an OpenAPI file, this is a JSON object.',
-        }),
-    ),
+    body: BlobSchema.openapi({
+      description:
+        'Raw byte array representing the to-be-imported documentation parts. To import from an OpenAPI file, this is a JSON object.',
+    }),
   })
   .openapi({
     required: ['body'],
@@ -3726,14 +2788,10 @@ const ImportDocumentationPartsRequestSchema = z
 
 const ImportRestApiRequestSchema = z
   .object({
-    body: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The POST request body containing external API definitions. Currently, only OpenAPI definition JSON/YAML files are supported. The maximum size of the API definition file is 6MB.',
-        }),
-    ),
+    body: BlobSchema.openapi({
+      description:
+        'The POST request body containing external API definitions. Currently, only OpenAPI definition JSON/YAML files are supported. The maximum size of the API definition file is 6MB.',
+    }),
   })
   .openapi({
     required: ['body'],
@@ -3753,25 +2811,17 @@ const ListOfPatchOperationSchema = z
 
 const PutGatewayResponseRequestSchema = z
   .object({
-    statusCode: StatusCodeSchema.and(
-      z.any().openapi({ description: 'The HTTP status code of the GatewayResponse.' }),
-    ).exactOptional(),
-    responseParameters: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.',
-        }),
-    ).exactOptional(),
-    responseTemplates: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Response templates of the GatewayResponse as a string-to-string map of key-value pairs.',
-        }),
-    ).exactOptional(),
+    statusCode: StatusCodeSchema.exactOptional().openapi({
+      description: 'The HTTP status code of the GatewayResponse.',
+    }),
+    responseParameters: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.',
+    }),
+    responseTemplates: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'Response templates of the GatewayResponse as a string-to-string map of key-value pairs.',
+    }),
   })
   .openapi({
     title: 'PutGatewayResponseRequest',
@@ -3783,104 +2833,56 @@ const PutGatewayResponseRequestSchema = z
 
 const PutIntegrationRequestSchema = z
   .object({
-    type: IntegrationTypeSchema.and(
-      z.any().openapi({ description: "Specifies a put integration input's type." }),
-    ),
-    integrationHttpMethod: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'httpMethod' },
-          description: 'The HTTP method for the integration.',
-        }),
-    ).exactOptional(),
-    uri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies Uniform Resource Identifier (URI) of the integration endpoint. For HTTP or <code>HTTP_PROXY</code> integrations, the URI must be a fully formed, encoded HTTP(S) URL according to the RFC-3986 specification, for either standard integration, where <code>connectionType</code> is not <code>VPC_LINK</code>, or private integration, where <code>connectionType</code> is <code>VPC_LINK</code>. For a private HTTP integration, the URI is not used for routing. For <code>AWS</code> or <code>AWS_PROXY</code> integrations, the URI is of the form <code>arn:aws:apigateway:{region}:{subdomain.service|service}:path|action/{service_api</code>}. Here, {Region} is the API Gateway region (e.g., us-east-1); {service} is the name of the integrated Amazon Web Services service (e.g., s3); and {subdomain} is a designated subdomain supported by certain Amazon Web Services service for fast host-name lookup. action can be used for an Amazon Web Services service action-based API, using an Action={name}&amp;{p1}={v1}&amp;p2={v2}... query string. The ensuing {service_api} refers to a supported action {name} plus any required input parameters. Alternatively, path can be used for an Amazon Web Services service path-based API. The ensuing service_api refers to the path to an Amazon Web Services service resource, including the region of the integrated Amazon Web Services service, if applicable. For example, for integration with the S3 API of <code>GetObject</code>, the <code>uri</code> can be either <code>arn:aws:apigateway:us-west-2:s3:action/GetObject&amp;Bucket={bucket}&amp;Key={key}</code> or <code>arn:aws:apigateway:us-west-2:s3:path/{bucket}/{key}</code>.',
-        }),
-    ).exactOptional(),
-    connectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the network connection to the integration endpoint. The valid value is <code>INTERNET</code> for connections through the public routable internet or <code>VPC_LINK</code> for private connections between API Gateway and a network load balancer in a VPC. The default value is <code>INTERNET</code>.',
-        }),
-    ).exactOptional(),
-    connectionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the VpcLink used for the integration. Specify this value only if you specify <code>VPC_LINK</code> as the connection type.',
-        }),
-    ).exactOptional(),
-    credentials: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether credentials are required for a put integration.',
-        }),
-    ).exactOptional(),
-    requestParameters: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map specifying request parameters that are passed from the method request to the back end. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the back end. The method request parameter value must match the pattern of <code>method.request.{location}.{name}</code>, where <code>location</code> is <code>querystring</code>, <code>path</code>, or <code>header</code> and <code>name</code> must be a valid and unique method request parameter name.',
-        }),
-    ).exactOptional(),
-    requestTemplates: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value.',
-        }),
-    ).exactOptional(),
-    passthroughBehavior: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the <code>requestTemplates</code> property on the Integration resource. There are three valid values: <code>WHEN_NO_MATCH</code>, <code>WHEN_NO_TEMPLATES</code>, and <code>NEVER</code>. ',
-        }),
-    ).exactOptional(),
-    cacheNamespace: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the <code>cacheNamespace</code>. You can specify the same <code>cacheNamespace</code> across resources to return the same cached data for requests to different resources.',
-        }),
-    ).exactOptional(),
-    cacheKeyParameters: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of request parameters whose values API Gateway caches. To be valid values for <code>cacheKeyParameters</code>, these parameters must also be specified for Method <code>requestParameters</code>.',
-        }),
-    ).exactOptional(),
-    contentHandling: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies how to handle request payload content type conversions. Supported values are <code>CONVERT_TO_BINARY</code> and <code>CONVERT_TO_TEXT</code>, with the following behaviors:</p> <p>If this property is not defined, the request payload will be passed through from the method request to integration request without modification, provided that the <code>passthroughBehavior</code> is configured to support payload pass-through.</p>',
-        }),
-    ).exactOptional(),
-    timeoutInMillis: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom timeout between 50 and 29,000 milliseconds. The default value is 29,000 milliseconds or 29 seconds.',
-        }),
-    ).exactOptional(),
+    type: IntegrationTypeSchema.openapi({
+      description: "Specifies a put integration input's type.",
+    }),
+    integrationHttpMethod: StringSchema.exactOptional().openapi({
+      xml: { name: 'httpMethod' },
+      description: 'The HTTP method for the integration.',
+    }),
+    uri: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies Uniform Resource Identifier (URI) of the integration endpoint. For HTTP or <code>HTTP_PROXY</code> integrations, the URI must be a fully formed, encoded HTTP(S) URL according to the RFC-3986 specification, for either standard integration, where <code>connectionType</code> is not <code>VPC_LINK</code>, or private integration, where <code>connectionType</code> is <code>VPC_LINK</code>. For a private HTTP integration, the URI is not used for routing. For <code>AWS</code> or <code>AWS_PROXY</code> integrations, the URI is of the form <code>arn:aws:apigateway:{region}:{subdomain.service|service}:path|action/{service_api</code>}. Here, {Region} is the API Gateway region (e.g., us-east-1); {service} is the name of the integrated Amazon Web Services service (e.g., s3); and {subdomain} is a designated subdomain supported by certain Amazon Web Services service for fast host-name lookup. action can be used for an Amazon Web Services service action-based API, using an Action={name}&amp;{p1}={v1}&amp;p2={v2}... query string. The ensuing {service_api} refers to a supported action {name} plus any required input parameters. Alternatively, path can be used for an Amazon Web Services service path-based API. The ensuing service_api refers to the path to an Amazon Web Services service resource, including the region of the integrated Amazon Web Services service, if applicable. For example, for integration with the S3 API of <code>GetObject</code>, the <code>uri</code> can be either <code>arn:aws:apigateway:us-west-2:s3:action/GetObject&amp;Bucket={bucket}&amp;Key={key}</code> or <code>arn:aws:apigateway:us-west-2:s3:path/{bucket}/{key}</code>.',
+    }),
+    connectionType: ConnectionTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the network connection to the integration endpoint. The valid value is <code>INTERNET</code> for connections through the public routable internet or <code>VPC_LINK</code> for private connections between API Gateway and a network load balancer in a VPC. The default value is <code>INTERNET</code>.',
+    }),
+    connectionId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the VpcLink used for the integration. Specify this value only if you specify <code>VPC_LINK</code> as the connection type.',
+    }),
+    credentials: StringSchema.exactOptional().openapi({
+      description: 'Specifies whether credentials are required for a put integration.',
+    }),
+    requestParameters: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A key-value map specifying request parameters that are passed from the method request to the back end. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the back end. The method request parameter value must match the pattern of <code>method.request.{location}.{name}</code>, where <code>location</code> is <code>querystring</code>, <code>path</code>, or <code>header</code> and <code>name</code> must be a valid and unique method request parameter name.',
+    }),
+    requestTemplates: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value.',
+    }),
+    passthroughBehavior: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the <code>requestTemplates</code> property on the Integration resource. There are three valid values: <code>WHEN_NO_MATCH</code>, <code>WHEN_NO_TEMPLATES</code>, and <code>NEVER</code>. ',
+    }),
+    cacheNamespace: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the <code>cacheNamespace</code>. You can specify the same <code>cacheNamespace</code> across resources to return the same cached data for requests to different resources.',
+    }),
+    cacheKeyParameters: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'A list of request parameters whose values API Gateway caches. To be valid values for <code>cacheKeyParameters</code>, these parameters must also be specified for Method <code>requestParameters</code>.',
+    }),
+    contentHandling: ContentHandlingStrategySchema.exactOptional().openapi({
+      description:
+        '<p>Specifies how to handle request payload content type conversions. Supported values are <code>CONVERT_TO_BINARY</code> and <code>CONVERT_TO_TEXT</code>, with the following behaviors:</p> <p>If this property is not defined, the request payload will be passed through from the method request to integration request without modification, provided that the <code>passthroughBehavior</code> is configured to support payload pass-through.</p>',
+    }),
+    timeoutInMillis: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'Custom timeout between 50 and 29,000 milliseconds. The default value is 29,000 milliseconds or 29 seconds.',
+    }),
     tlsConfig: TlsConfigSchema.exactOptional(),
   })
   .openapi({
@@ -3892,30 +2894,20 @@ const PutIntegrationRequestSchema = z
 
 const PutIntegrationResponseRequestSchema = z
   .object({
-    selectionPattern: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the selection pattern of a put integration response.' }),
-    ).exactOptional(),
-    responseParameters: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map specifying response parameters that are passed to the method response from the back end. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of <code>method.response.header.{name}</code>, where <code>name</code> is a valid and unique header name. The mapped non-static value must match the pattern of <code>integration.response.header.{name}</code> or <code>integration.response.body.{JSON-expression}</code>, where <code>name</code> must be a valid and unique response header name and <code>JSON-expression</code> a valid JSON expression without the <code>$</code> prefix.',
-        }),
-    ).exactOptional(),
-    responseTemplates: MapOfStringToStringSchema.and(
-      z.any().openapi({ description: "Specifies a put integration response's templates." }),
-    ).exactOptional(),
-    contentHandling: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies how to handle response payload content type conversions. Supported values are <code>CONVERT_TO_BINARY</code> and <code>CONVERT_TO_TEXT</code>, with the following behaviors:</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.</p>',
-        }),
-    ).exactOptional(),
+    selectionPattern: StringSchema.exactOptional().openapi({
+      description: 'Specifies the selection pattern of a put integration response.',
+    }),
+    responseParameters: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A key-value map specifying response parameters that are passed to the method response from the back end. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of <code>method.response.header.{name}</code>, where <code>name</code> is a valid and unique header name. The mapped non-static value must match the pattern of <code>integration.response.header.{name}</code> or <code>integration.response.body.{JSON-expression}</code>, where <code>name</code> must be a valid and unique response header name and <code>JSON-expression</code> a valid JSON expression without the <code>$</code> prefix.',
+    }),
+    responseTemplates: MapOfStringToStringSchema.exactOptional().openapi({
+      description: "Specifies a put integration response's templates.",
+    }),
+    contentHandling: ContentHandlingStrategySchema.exactOptional().openapi({
+      description:
+        '<p>Specifies how to handle response payload content type conversions. Supported values are <code>CONVERT_TO_BINARY</code> and <code>CONVERT_TO_TEXT</code>, with the following behaviors:</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.</p>',
+    }),
   })
   .openapi({
     title: 'PutIntegrationResponseRequest',
@@ -3926,64 +2918,36 @@ const PutIntegrationResponseRequestSchema = z
 
 const PutMethodRequestSchema = z
   .object({
-    authorizationType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The method's authorization type. Valid values are <code>NONE</code> for open access, <code>AWS_IAM</code> for using AWS IAM permissions, <code>CUSTOM</code> for using a custom authorizer, or <code>COGNITO_USER_POOLS</code> for using a Cognito user pool.",
-        }),
-    ),
-    authorizerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the identifier of an Authorizer to use on this Method, if the type is CUSTOM or COGNITO_USER_POOLS. The authorizer identifier is generated by API Gateway when you created the authorizer.',
-        }),
-    ).exactOptional(),
-    apiKeyRequired: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether the method required a valid ApiKey.' }),
-    ).exactOptional(),
-    operationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A human-friendly operation identifier for the method. For example, you can assign the <code>operationName</code> of <code>ListPets</code> for the <code>GET /pets</code> method in the <code>PetStore</code> example.',
-        }),
-    ).exactOptional(),
-    requestParameters: MapOfStringToBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map defining required or optional method request parameters that can be accepted by API Gateway. A key defines a method request parameter name matching the pattern of <code>method.request.{location}.{name}</code>, where <code>location</code> is <code>querystring</code>, <code>path</code>, or <code>header</code> and <code>name</code> is a valid and unique parameter name. The value associated with the key is a Boolean flag indicating whether the parameter is required (<code>true</code>) or optional (<code>false</code>). The method request parameter names defined here are available in Integration to be mapped to integration request parameters or body-mapping templates.',
-        }),
-    ).exactOptional(),
-    requestModels: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the Model resources used for the request's content type. Request models are represented as a key/value map, with a content type as the key and a Model name as the value.",
-        }),
-    ).exactOptional(),
-    requestValidatorId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of a RequestValidator for validating the method request.',
-        }),
-    ).exactOptional(),
-    authorizationScopes: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of authorization scopes configured on the method. The scopes are used with a <code>COGNITO_USER_POOLS</code> authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
-        }),
-    ).exactOptional(),
+    authorizationType: StringSchema.openapi({
+      description:
+        "The method's authorization type. Valid values are <code>NONE</code> for open access, <code>AWS_IAM</code> for using AWS IAM permissions, <code>CUSTOM</code> for using a custom authorizer, or <code>COGNITO_USER_POOLS</code> for using a Cognito user pool.",
+    }),
+    authorizerId: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the identifier of an Authorizer to use on this Method, if the type is CUSTOM or COGNITO_USER_POOLS. The authorizer identifier is generated by API Gateway when you created the authorizer.',
+    }),
+    apiKeyRequired: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the method required a valid ApiKey.',
+    }),
+    operationName: StringSchema.exactOptional().openapi({
+      description:
+        'A human-friendly operation identifier for the method. For example, you can assign the <code>operationName</code> of <code>ListPets</code> for the <code>GET /pets</code> method in the <code>PetStore</code> example.',
+    }),
+    requestParameters: MapOfStringToBooleanSchema.exactOptional().openapi({
+      description:
+        'A key-value map defining required or optional method request parameters that can be accepted by API Gateway. A key defines a method request parameter name matching the pattern of <code>method.request.{location}.{name}</code>, where <code>location</code> is <code>querystring</code>, <code>path</code>, or <code>header</code> and <code>name</code> is a valid and unique parameter name. The value associated with the key is a Boolean flag indicating whether the parameter is required (<code>true</code>) or optional (<code>false</code>). The method request parameter names defined here are available in Integration to be mapped to integration request parameters or body-mapping templates.',
+    }),
+    requestModels: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        "Specifies the Model resources used for the request's content type. Request models are represented as a key/value map, with a content type as the key and a Model name as the value.",
+    }),
+    requestValidatorId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of a RequestValidator for validating the method request.',
+    }),
+    authorizationScopes: ListOfStringSchema.exactOptional().openapi({
+      description:
+        'A list of authorization scopes configured on the method. The scopes are used with a <code>COGNITO_USER_POOLS</code> authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
+    }),
   })
   .openapi({
     required: ['authorizationType'],
@@ -3994,22 +2958,14 @@ const PutMethodRequestSchema = z
 
 const PutMethodResponseRequestSchema = z
   .object({
-    responseParameters: MapOfStringToBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A key-value map specifying required or optional response parameters that API Gateway can send back to the caller. A key defines a method response header name and the associated value is a Boolean flag indicating whether the method response parameter is required or not. The method response header names must match the pattern of <code>method.response.header.{name}</code>, where <code>name</code> is a valid and unique header name. The response parameter names defined here are available in the integration response to be mapped from an integration response header expressed in <code>integration.response.header.{name}</code>, a static value enclosed within a pair of single quotes (e.g., <code>'application/json'</code>), or a JSON expression from the back-end response payload in the form of <code>integration.response.body.{JSON-expression}</code>, where <code>JSON-expression</code> is a valid JSON expression without the <code>$</code> prefix.)",
-        }),
-    ).exactOptional(),
-    responseModels: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the Model resources used for the response's content type. Response models are represented as a key/value map, with a content type as the key and a Model name as the value.",
-        }),
-    ).exactOptional(),
+    responseParameters: MapOfStringToBooleanSchema.exactOptional().openapi({
+      description:
+        "A key-value map specifying required or optional response parameters that API Gateway can send back to the caller. A key defines a method response header name and the associated value is a Boolean flag indicating whether the method response parameter is required or not. The method response header names must match the pattern of <code>method.response.header.{name}</code>, where <code>name</code> is a valid and unique header name. The response parameter names defined here are available in the integration response to be mapped from an integration response header expressed in <code>integration.response.header.{name}</code>, a static value enclosed within a pair of single quotes (e.g., <code>'application/json'</code>), or a JSON expression from the back-end response payload in the form of <code>integration.response.body.{JSON-expression}</code>, where <code>JSON-expression</code> is a valid JSON expression without the <code>$</code> prefix.)",
+    }),
+    responseModels: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        "Specifies the Model resources used for the response's content type. Response models are represented as a key/value map, with a content type as the key and a Model name as the value.",
+    }),
   })
   .openapi({
     title: 'PutMethodResponseRequest',
@@ -4020,14 +2976,10 @@ const PutMethodResponseRequestSchema = z
 
 const PutRestApiRequestSchema = z
   .object({
-    body: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The PUT request body containing external API definitions. Currently, only OpenAPI definition JSON/YAML files are supported. The maximum size of the API definition file is 6MB.',
-        }),
-    ),
+    body: BlobSchema.openapi({
+      description:
+        'The PUT request body containing external API definitions. Currently, only OpenAPI definition JSON/YAML files are supported. The maximum size of the API definition file is 6MB.',
+    }),
   })
   .openapi({
     required: ['body'],
@@ -4039,14 +2991,10 @@ const PutRestApiRequestSchema = z
 
 const TagResourceRequestSchema = z
   .object({
-    tags: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ),
+    tags: MapOfStringToStringSchema.openapi({
+      description:
+        'The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
   })
   .openapi({
     required: ['tags'],
@@ -4057,46 +3005,28 @@ const TagResourceRequestSchema = z
 
 const TestInvokeAuthorizerRequestSchema = z
   .object({
-    headers: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map of headers to simulate an incoming invocation request. This is where the incoming authorization token, or identity source, should be specified.',
-        }),
-    ).exactOptional(),
-    multiValueHeaders: MapOfStringToListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The headers as a map from string to list of values to simulate an incoming invocation request. This is where the incoming authorization token, or identity source, may be specified.',
-        }),
-    ).exactOptional(),
-    pathWithQueryString: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI path, including query string, of the simulated invocation request. Use this to specify path parameters and query string parameters.',
-        }),
-    ).exactOptional(),
-    body: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The simulated request body of an incoming invocation request.' }),
-    ).exactOptional(),
-    stageVariables: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map of stage variables to simulate an invocation on a deployed Stage.',
-        }),
-    ).exactOptional(),
-    additionalContext: MapOfStringToStringSchema.and(
-      z.any().openapi({ description: 'A key-value map of additional context variables.' }),
-    ).exactOptional(),
+    headers: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A key-value map of headers to simulate an incoming invocation request. This is where the incoming authorization token, or identity source, should be specified.',
+    }),
+    multiValueHeaders: MapOfStringToListSchema.exactOptional().openapi({
+      description:
+        'The headers as a map from string to list of values to simulate an incoming invocation request. This is where the incoming authorization token, or identity source, may be specified.',
+    }),
+    pathWithQueryString: StringSchema.exactOptional().openapi({
+      description:
+        'The URI path, including query string, of the simulated invocation request. Use this to specify path parameters and query string parameters.',
+    }),
+    body: StringSchema.exactOptional().openapi({
+      description: 'The simulated request body of an incoming invocation request.',
+    }),
+    stageVariables: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A key-value map of stage variables to simulate an invocation on a deployed Stage.',
+    }),
+    additionalContext: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'A key-value map of additional context variables.',
+    }),
   })
   .openapi({
     title: 'TestInvokeAuthorizerRequest',
@@ -4107,50 +3037,28 @@ const TestInvokeAuthorizerRequestSchema = z
 
 const TestInvokeMethodRequestSchema = z
   .object({
-    pathWithQueryString: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI path, including query string, of the simulated invocation request. Use this to specify path parameters and query string parameters.',
-        }),
-    ).exactOptional(),
-    body: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The simulated request body of an incoming invocation request.' }),
-    ).exactOptional(),
-    headers: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A key-value map of headers to simulate an incoming invocation request.',
-        }),
-    ).exactOptional(),
-    multiValueHeaders: MapOfStringToListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The headers as a map from string to list of values to simulate an incoming invocation request.',
-        }),
-    ).exactOptional(),
-    clientCertificateId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A ClientCertificate identifier to use in the test invocation. API Gateway will use the certificate when making the HTTPS request to the defined back-end endpoint.',
-        }),
-    ).exactOptional(),
-    stageVariables: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map of stage variables to simulate an invocation on a deployed Stage.',
-        }),
-    ).exactOptional(),
+    pathWithQueryString: StringSchema.exactOptional().openapi({
+      description:
+        'The URI path, including query string, of the simulated invocation request. Use this to specify path parameters and query string parameters.',
+    }),
+    body: StringSchema.exactOptional().openapi({
+      description: 'The simulated request body of an incoming invocation request.',
+    }),
+    headers: MapOfStringToStringSchema.exactOptional().openapi({
+      description: 'A key-value map of headers to simulate an incoming invocation request.',
+    }),
+    multiValueHeaders: MapOfStringToListSchema.exactOptional().openapi({
+      description:
+        'The headers as a map from string to list of values to simulate an incoming invocation request.',
+    }),
+    clientCertificateId: StringSchema.exactOptional().openapi({
+      description:
+        'A ClientCertificate identifier to use in the test invocation. API Gateway will use the certificate when making the HTTPS request to the defined back-end endpoint.',
+    }),
+    stageVariables: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        'A key-value map of stage variables to simulate an invocation on a deployed Stage.',
+    }),
   })
   .openapi({
     title: 'TestInvokeMethodRequest',
@@ -4160,20 +3068,16 @@ const TestInvokeMethodRequestSchema = z
   .openapi('TestInvokeMethodRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest', description: 'Removes a tag from a given resource.' })
   .openapi('UntagResourceRequest')
 
 const UpdateAccountRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateAccountRequest',
@@ -4184,14 +3088,10 @@ const UpdateAccountRequestSchema = z
 
 const UpdateApiKeyRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateApiKeyRequest',
@@ -4202,14 +3102,10 @@ const UpdateApiKeyRequestSchema = z
 
 const UpdateAuthorizerRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateAuthorizerRequest',
@@ -4220,14 +3116,10 @@ const UpdateAuthorizerRequestSchema = z
 
 const UpdateBasePathMappingRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateBasePathMappingRequest',
@@ -4238,14 +3130,10 @@ const UpdateBasePathMappingRequestSchema = z
 
 const UpdateClientCertificateRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateClientCertificateRequest',
@@ -4256,14 +3144,10 @@ const UpdateClientCertificateRequestSchema = z
 
 const UpdateDeploymentRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateDeploymentRequest',
@@ -4274,14 +3158,10 @@ const UpdateDeploymentRequestSchema = z
 
 const UpdateDocumentationPartRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateDocumentationPartRequest',
@@ -4292,14 +3172,10 @@ const UpdateDocumentationPartRequestSchema = z
 
 const UpdateDocumentationVersionRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateDocumentationVersionRequest',
@@ -4310,14 +3186,10 @@ const UpdateDocumentationVersionRequestSchema = z
 
 const UpdateDomainNameRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateDomainNameRequest',
@@ -4328,14 +3200,10 @@ const UpdateDomainNameRequestSchema = z
 
 const UpdateGatewayResponseRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateGatewayResponseRequest',
@@ -4346,14 +3214,10 @@ const UpdateGatewayResponseRequestSchema = z
 
 const UpdateIntegrationRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateIntegrationRequest',
@@ -4364,14 +3228,10 @@ const UpdateIntegrationRequestSchema = z
 
 const UpdateIntegrationResponseRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateIntegrationResponseRequest',
@@ -4382,14 +3242,10 @@ const UpdateIntegrationResponseRequestSchema = z
 
 const UpdateMethodRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateMethodRequest',
@@ -4400,14 +3256,10 @@ const UpdateMethodRequestSchema = z
 
 const UpdateMethodResponseRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateMethodResponseRequest',
@@ -4418,14 +3270,10 @@ const UpdateMethodResponseRequestSchema = z
 
 const UpdateModelRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateModelRequest',
@@ -4436,14 +3284,10 @@ const UpdateModelRequestSchema = z
 
 const UpdateRequestValidatorRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateRequestValidatorRequest',
@@ -4454,14 +3298,10 @@ const UpdateRequestValidatorRequestSchema = z
 
 const UpdateResourceRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateResourceRequest',
@@ -4472,14 +3312,10 @@ const UpdateResourceRequestSchema = z
 
 const UpdateRestApiRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateRestApiRequest',
@@ -4490,14 +3326,10 @@ const UpdateRestApiRequestSchema = z
 
 const UpdateStageRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateStageRequest',
@@ -4508,14 +3340,10 @@ const UpdateStageRequestSchema = z
 
 const UpdateUsagePlanRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateUsagePlanRequest',
@@ -4526,14 +3354,10 @@ const UpdateUsagePlanRequestSchema = z
 
 const UpdateUsageRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateUsageRequest',
@@ -4545,14 +3369,10 @@ const UpdateUsageRequestSchema = z
 
 const UpdateVpcLinkRequestSchema = z
   .object({
-    patchOperations: ListOfPatchOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
-        }),
-    ).exactOptional(),
+    patchOperations: ListOfPatchOperationSchema.exactOptional().openapi({
+      description:
+        'For more information about supported patch operations, see <a href="https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html">Patch Operations</a>.',
+    }),
   })
   .openapi({
     title: 'UpdateVpcLinkRequest',
@@ -5388,30 +4208,18 @@ export const postRestapisRestapiIdDeploymentsRoute = createRoute({
                 }),
               canarySettings: z
                 .object({
-                  percentTraffic: DoubleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The percentage (0.0-100.0) of traffic routed to the canary deployment.',
-                      }),
-                  ).exactOptional(),
-                  stageVariableOverrides: MapOfStringToStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A stage variable overrides used for the canary release deployment. They can override existing stage variables or add new stage variables for the canary release deployment. These stage variables are represented as a string-to-string map between stage variable names and their values.',
-                      }),
-                  ).exactOptional(),
-                  useStageCache: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A Boolean flag to indicate whether the canary release deployment uses the stage cache or not.',
-                      }),
-                  ).exactOptional(),
+                  percentTraffic: DoubleSchema.exactOptional().openapi({
+                    description:
+                      'The percentage (0.0-100.0) of traffic routed to the canary deployment.',
+                  }),
+                  stageVariableOverrides: MapOfStringToStringSchema.exactOptional().openapi({
+                    description:
+                      'A stage variable overrides used for the canary release deployment. They can override existing stage variables or add new stage variables for the canary release deployment. These stage variables are represented as a string-to-string map between stage variable names and their values.',
+                  }),
+                  useStageCache: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'A Boolean flag to indicate whether the canary release deployment uses the stage cache or not.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5772,46 +4580,26 @@ export const postRestapisRestapiIdDocumentationPartsRoute = createRoute({
             .object({
               location: z
                 .object({
-                  type: DocumentationPartTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The type of API entity to which the documentation content applies. Valid values are <code>API</code>, <code>AUTHORIZER</code>, <code>MODEL</code>, <code>RESOURCE</code>, <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. Content inheritance does not apply to any entity of the <code>API</code>, <code>AUTHORIZER</code>, <code>METHOD</code>, <code>MODEL</code>, <code>REQUEST_BODY</code>, or <code>RESOURCE</code> type.',
-                      }),
-                  ).exactOptional(),
-                  path: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The URL path of the target. It is a valid field for the API entity types of <code>RESOURCE</code>, <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>/</code> for the root resource. When an applicable child entity inherits the content of another entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>path</code> attribute must match that of the parent entity as a prefix.",
-                      }),
-                  ).exactOptional(),
-                  method: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The HTTP verb of a method. It is a valid field for the API entity types of <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>*</code> for any method. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>method</code> attribute must match that of the parent entity exactly.",
-                      }),
-                  ).exactOptional(),
-                  statusCode: DocumentationPartLocationStatusCodeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The HTTP status code of a response. It is a valid field for the API entity types of <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>*</code> for any status code. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>statusCode</code> attribute must match that of the parent entity exactly.",
-                      }),
-                  ).exactOptional(),
-                  name: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the targeted API entity. It is a valid and required field for the API entity types of <code>AUTHORIZER</code>, <code>MODEL</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code> and <code>RESPONSE_HEADER</code>. It is an invalid field for any other entity type.',
-                      }),
-                  ).exactOptional(),
+                  type: DocumentationPartTypeSchema.exactOptional().openapi({
+                    description:
+                      'The type of API entity to which the documentation content applies. Valid values are <code>API</code>, <code>AUTHORIZER</code>, <code>MODEL</code>, <code>RESOURCE</code>, <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. Content inheritance does not apply to any entity of the <code>API</code>, <code>AUTHORIZER</code>, <code>METHOD</code>, <code>MODEL</code>, <code>REQUEST_BODY</code>, or <code>RESOURCE</code> type.',
+                  }),
+                  path: StringSchema.exactOptional().openapi({
+                    description:
+                      "The URL path of the target. It is a valid field for the API entity types of <code>RESOURCE</code>, <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>/</code> for the root resource. When an applicable child entity inherits the content of another entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>path</code> attribute must match that of the parent entity as a prefix.",
+                  }),
+                  method: StringSchema.exactOptional().openapi({
+                    description:
+                      "The HTTP verb of a method. It is a valid field for the API entity types of <code>METHOD</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code>, <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>*</code> for any method. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>method</code> attribute must match that of the parent entity exactly.",
+                  }),
+                  statusCode: DocumentationPartLocationStatusCodeSchema.exactOptional().openapi({
+                    description:
+                      "The HTTP status code of a response. It is a valid field for the API entity types of <code>RESPONSE</code>, <code>RESPONSE_HEADER</code>, and <code>RESPONSE_BODY</code>. The default value is <code>*</code> for any status code. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other <code>location</code> attributes, the child entity's <code>statusCode</code> attribute must match that of the parent entity exactly.",
+                  }),
+                  name: StringSchema.exactOptional().openapi({
+                    description:
+                      'The name of the targeted API entity. It is a valid and required field for the API entity types of <code>AUTHORIZER</code>, <code>MODEL</code>, <code>PATH_PARAMETER</code>, <code>QUERY_PARAMETER</code>, <code>REQUEST_HEADER</code>, <code>REQUEST_BODY</code> and <code>RESPONSE_HEADER</code>. It is an invalid field for any other entity type.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6183,22 +4971,14 @@ export const postDomainnamesRoute = createRoute({
                 }),
               endpointConfiguration: z
                 .object({
-                  types: ListOfEndpointTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of endpoint types of an API (RestApi) or its custom domain name (DomainName). For an edge-optimized API and its custom domain name, the endpoint type is <code>"EDGE"</code>. For a regional API and its custom domain name, the endpoint type is <code>REGIONAL</code>. For a private API, the endpoint type is <code>PRIVATE</code>.',
-                      }),
-                  ).exactOptional(),
-                  vpcEndpointIds: ListOfStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of VpcEndpointIds of an API (RestApi) against which to create Route53 ALIASes. It is only supported for <code>PRIVATE</code> endpoint type.',
-                      }),
-                  ).exactOptional(),
+                  types: ListOfEndpointTypeSchema.exactOptional().openapi({
+                    description:
+                      'A list of endpoint types of an API (RestApi) or its custom domain name (DomainName). For an edge-optimized API and its custom domain name, the endpoint type is <code>"EDGE"</code>. For a regional API and its custom domain name, the endpoint type is <code>REGIONAL</code>. For a private API, the endpoint type is <code>PRIVATE</code>.',
+                  }),
+                  vpcEndpointIds: ListOfStringSchema.exactOptional().openapi({
+                    description:
+                      'A list of VpcEndpointIds of an API (RestApi) against which to create Route53 ALIASes. It is only supported for <code>PRIVATE</code> endpoint type.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6222,22 +5002,14 @@ export const postDomainnamesRoute = createRoute({
                 }),
               mutualTlsAuthentication: z
                 .object({
-                  truststoreUri: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example <code>s3://bucket-name/key-name</code>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
-                      }),
-                  ).exactOptional(),
-                  truststoreVersion: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket',
-                      }),
-                  ).exactOptional(),
+                  truststoreUri: StringSchema.exactOptional().openapi({
+                    description:
+                      'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example <code>s3://bucket-name/key-name</code>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
+                  }),
+                  truststoreVersion: StringSchema.exactOptional().openapi({
+                    description:
+                      'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6842,22 +5614,14 @@ export const postRestapisRoute = createRoute({
                 }),
               endpointConfiguration: z
                 .object({
-                  types: ListOfEndpointTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of endpoint types of an API (RestApi) or its custom domain name (DomainName). For an edge-optimized API and its custom domain name, the endpoint type is <code>"EDGE"</code>. For a regional API and its custom domain name, the endpoint type is <code>REGIONAL</code>. For a private API, the endpoint type is <code>PRIVATE</code>.',
-                      }),
-                  ).exactOptional(),
-                  vpcEndpointIds: ListOfStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of VpcEndpointIds of an API (RestApi) against which to create Route53 ALIASes. It is only supported for <code>PRIVATE</code> endpoint type.',
-                      }),
-                  ).exactOptional(),
+                  types: ListOfEndpointTypeSchema.exactOptional().openapi({
+                    description:
+                      'A list of endpoint types of an API (RestApi) or its custom domain name (DomainName). For an edge-optimized API and its custom domain name, the endpoint type is <code>"EDGE"</code>. For a regional API and its custom domain name, the endpoint type is <code>REGIONAL</code>. For a private API, the endpoint type is <code>PRIVATE</code>.',
+                  }),
+                  vpcEndpointIds: ListOfStringSchema.exactOptional().openapi({
+                    description:
+                      'A list of VpcEndpointIds of an API (RestApi) against which to create Route53 ALIASes. It is only supported for <code>PRIVATE</code> endpoint type.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7060,33 +5824,20 @@ export const postRestapisRestapiIdStagesRoute = createRoute({
                 .openapi({ description: 'The version of the associated API documentation.' }),
               canarySettings: z
                 .object({
-                  percentTraffic: DoubleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The percent (0-100) of traffic diverted to a canary deployment.',
-                      }),
-                  ).exactOptional(),
-                  deploymentId: StringSchema.and(
-                    z.any().openapi({ description: 'The ID of the canary deployment.' }),
-                  ).exactOptional(),
-                  stageVariableOverrides: MapOfStringToStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Stage variables overridden for a canary release deployment, including new stage variables introduced in the canary. These stage variables are represented as a string-to-string map between stage variable names and their values.',
-                      }),
-                  ).exactOptional(),
-                  useStageCache: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A Boolean flag to indicate whether the canary deployment uses the stage cache or not.',
-                      }),
-                  ).exactOptional(),
+                  percentTraffic: DoubleSchema.exactOptional().openapi({
+                    description: 'The percent (0-100) of traffic diverted to a canary deployment.',
+                  }),
+                  deploymentId: StringSchema.exactOptional().openapi({
+                    description: 'The ID of the canary deployment.',
+                  }),
+                  stageVariableOverrides: MapOfStringToStringSchema.exactOptional().openapi({
+                    description:
+                      'Stage variables overridden for a canary release deployment, including new stage variables introduced in the canary. These stage variables are represented as a string-to-string map between stage variable names and their values.',
+                  }),
+                  useStageCache: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'A Boolean flag to indicate whether the canary deployment uses the stage cache or not.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7259,46 +6010,30 @@ export const postUsageplansRoute = createRoute({
                 .openapi({ description: 'The associated API stages of the usage plan.' }),
               throttle: z
                 .object({
-                  burstLimit: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The API target request burst rate limit. This allows more requests through for a period of time than the target rate limit.',
-                      }),
-                  ).exactOptional(),
-                  rateLimit: DoubleSchema.and(
-                    z.any().openapi({ description: 'The API target request rate limit.' }),
-                  ).exactOptional(),
+                  burstLimit: IntegerSchema.exactOptional().openapi({
+                    description:
+                      'The API target request burst rate limit. This allows more requests through for a period of time than the target rate limit.',
+                  }),
+                  rateLimit: DoubleSchema.exactOptional().openapi({
+                    description: 'The API target request rate limit.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: ' The API request rate limits.', required: [] }),
               quota: z
                 .object({
-                  limit: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The target maximum number of requests that can be made in a given time period.',
-                      }),
-                  ).exactOptional(),
-                  offset: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of requests subtracted from the given limit in the initial time period.',
-                      }),
-                  ).exactOptional(),
-                  period: QuotaPeriodTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The time period in which the limit applies. Valid values are "DAY", "WEEK" or "MONTH".',
-                      }),
-                  ).exactOptional(),
+                  limit: IntegerSchema.exactOptional().openapi({
+                    description:
+                      'The target maximum number of requests that can be made in a given time period.',
+                  }),
+                  offset: IntegerSchema.exactOptional().openapi({
+                    description:
+                      'The number of requests subtracted from the given limit in the initial time period.',
+                  }),
+                  period: QuotaPeriodTypeSchema.exactOptional().openapi({
+                    description:
+                      'The time period in which the limit applies. Valid values are "DAY", "WEEK" or "MONTH".',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Quotas configured for a usage plan.', required: [] }),
@@ -10199,14 +8934,10 @@ export const putRestapisRestapiIdResourcesResourceIdMethodsHttpMethodIntegration
                   }),
                 tlsConfig: z
                   .object({
-                    insecureSkipVerification: BooleanSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "<p>Specifies whether or not API Gateway skips verification that the certificate for an integration endpoint is issued by a supported certificate authority. This isn’t recommended, but it enables you to use certificates that are signed by private certificate authorities, or certificates that are self-signed. If enabled, API Gateway still performs basic certificate validation, which includes checking the certificate's expiration date, hostname, and presence of a root certificate authority. Supported only for <code>HTTP</code> and <code>HTTP_PROXY</code> integrations.</p> <important> <p>Enabling <code>insecureSkipVerification</code> isn't recommended, especially for integrations with public HTTPS endpoints. If you enable <code>insecureSkipVerification</code>, you increase the risk of man-in-the-middle attacks.</p> </important>",
-                        }),
-                    ).exactOptional(),
+                    insecureSkipVerification: BooleanSchema.exactOptional().openapi({
+                      description:
+                        "<p>Specifies whether or not API Gateway skips verification that the certificate for an integration endpoint is issued by a supported certificate authority. This isn’t recommended, but it enables you to use certificates that are signed by private certificate authorities, or certificates that are self-signed. If enabled, API Gateway still performs basic certificate validation, which includes checking the certificate's expiration date, hostname, and presence of a root certificate authority. Supported only for <code>HTTP</code> and <code>HTTP_PROXY</code> integrations.</p> <important> <p>Enabling <code>insecureSkipVerification</code> isn't recommended, especially for integrations with public HTTPS endpoints. If you enable <code>insecureSkipVerification</code>, you increase the risk of man-in-the-middle attacks.</p> </important>",
+                    }),
                   })
                   .exactOptional()
                   .openapi({

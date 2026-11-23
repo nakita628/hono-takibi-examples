@@ -284,7 +284,7 @@ const DisplayNameUserSchema = z
   .openapi('DisplayNameUser')
 
 const EventBodySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Event Body', example: { text: 'My Text' } })
   .openapi('EventBody')
 
@@ -448,7 +448,7 @@ const LegStateSchema = z
   .openapi('LegState')
 
 const MediaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Media Object',
     example: { audio_settings: { earmuffed: false, enabled: false, muted: false } },
@@ -591,7 +591,7 @@ const SuccessEmptyJSONResponse = {
   description: 'Success response with empty JSON',
   content: {
     'application/json': {
-      schema: z.object({}).openapi({ description: 'Empty JSON payload', example: {} }),
+      schema: z.looseObject({}).openapi({ description: 'Empty JSON payload', example: {} }),
     },
   },
 }
@@ -757,7 +757,7 @@ const ConversationRequestBody = {
 
 const EmptyBodyRequestBody = {
   description: 'Conversation Request Payload Object',
-  content: { 'application/json': { schema: z.object({}).openapi({ example: {} }) } },
+  content: { 'application/json': { schema: z.looseObject({}).openapi({ example: {} }) } },
   required: true,
 }
 
@@ -894,7 +894,7 @@ export const getConversationsConversationIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Users associated to this conversation as members' }),
               name: NameConversationSchema.exactOptional(),
-              numbers: z.object({}).exactOptional(),
+              numbers: z.looseObject({}).exactOptional(),
               properties: z
                 .object({ video: z.boolean().exactOptional().openapi({ example: false }) })
                 .exactOptional()
@@ -1233,14 +1233,14 @@ export const getLegsRoute = createRoute({
                   legs: z.array(
                     z
                       .object({
-                        _embedded: z.object({}).exactOptional(),
-                        _links: z.object({}).exactOptional(),
+                        _embedded: z.looseObject({}).exactOptional(),
+                        _links: z.looseObject({}).exactOptional(),
                         conversation_uuid: ConversationIdSchema.exactOptional(),
-                        from: z.object({}).exactOptional(),
+                        from: z.looseObject({}).exactOptional(),
                         start_end: TimestampLegEndTimeSchema.exactOptional(),
                         start_time: TimestampLegStartTimeSchema.exactOptional(),
                         state: LegStateSchema.exactOptional(),
-                        to: z.object({}).exactOptional(),
+                        to: z.looseObject({}).exactOptional(),
                         type: ChannelTypeSchema.exactOptional(),
                         uuid: LegIdSchema,
                       })

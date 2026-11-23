@@ -120,7 +120,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'A string indicating the status of the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object providing more specific details about the error category.',
@@ -398,10 +398,10 @@ const TeamCreateRequestSchema = z
 const TeamUpdateRequestSchema = z
   .object({
     name: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'An object representing the new name for the team.', example: null }),
     parentTeamId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the ID of the parent team to which this team will be associated.',
@@ -427,11 +427,15 @@ const Oauth2SecurityScheme = {
       scopes: { 'settings.users.teams.read': '', 'settings.users.teams.write': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'settings.users.teams.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'settings.users.teams.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getSettingsTeams202609Route = createRoute({
   method: 'get',
@@ -518,18 +522,14 @@ export const postSettingsTeams202609Route = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: TeamResponseSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -760,18 +760,14 @@ export const postSettingsTeams202609TeamIdMembersRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: TeamMemberResponseSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

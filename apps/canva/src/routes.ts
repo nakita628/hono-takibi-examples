@@ -1,969 +1,73 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ThumbnailSchema = z
+const DatasetImageValueSchema = z
   .object({
-    width: z
-      .int32()
-      .openapi({ description: 'The width of the thumbnail image in pixels.', example: 595 }),
-    height: z
-      .int32()
-      .openapi({ description: 'The height of the thumbnail image in pixels.', example: 335 }),
-    url: z
+    type: z.literal('image'),
+    asset_id: z
       .string()
       .openapi({
-        description:
-          "A URL for retrieving the thumbnail image.\nThis URL expires after 15 minutes. This URL includes a query string\nthat's required for retrieving the thumbnail.",
-        example:
-          'https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>',
+        description: '`asset_id` of the image to insert into the template element.',
+        example: 'Msd59349ff',
       }),
   })
-  .openapi({
-    description: 'A thumbnail image representing the object.',
-    required: ['height', 'url', 'width'],
-  })
-  .openapi('Thumbnail')
+  .openapi({ description: 'If the data field is an image field.', required: ['asset_id', 'type'] })
+  .openapi('DatasetImageValue')
 
-const DesignLinksSchema = z
+const DatasetVideoValueSchema = z
   .object({
-    edit_url: z
+    type: z.literal('video'),
+    asset_id: z
       .string()
+      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
       .openapi({
-        description:
-          'A temporary editing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/apps/rest-apis/return-navigation-guide/) workflows.\n\nNOTE: This is not a permanent URL, it is only valid for 30 days.',
-        example:
-          'https://www.canva.com/api/design/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiZXhwaXJ5IjoxNzQyMDk5NDAzMDc5fQ..GKLx2hrJa3wSSDKQ.hk3HA59qJyxehR-ejzt2DThBW0cbRdMBz7Fb5uCpwD-4o485pCf4kcXt_ypUYX0qMHVeZ131YvfwGPIhbk-C245D8c12IIJSDbZUZTS7WiCOJZQ.sNz3mPSQxsETBvl_-upMYA/edit',
-      }),
-    view_url: z
-      .string()
-      .openapi({
-        description:
-          'A temporary viewing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/apps/rest-apis/return-navigation-guide/) workflows.\n\nNOTE: This is not a permanent URL, it is only valid for 30 days.\n',
-        example:
-          'https://www.canva.com/api/design/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiZXhwaXJ5IjoxNzQyMDk5NDAzMDc5fQ..GKLx2hrJa3wSSDKQ.hk3HA59qJyxehR-ejzt2DThBW0cbRdMBz7Fb5uCpwD-4o485pCf4kcXt_ypUYX0qMHVeZ131YvfwGPIhbk-C245D8c12IIJSDbZUZTS7WiCOJZQ.sNz3mPSQxsETBvl_-upMYA/view',
+        description: '`asset_id` of the video to insert into the template element.',
+        example: 'VAHCkrNUANI',
       }),
   })
   .openapi({
-    description: 'A temporary set of URLs for viewing or editing the design.',
-    required: ['edit_url', 'view_url'],
+    description: 'If autofilling a video into an image data field.',
+    required: ['asset_id', 'type'],
   })
-  .openapi('DesignLinks')
+  .openapi('DatasetVideoValue')
 
-const DesignSummarySchema = z
+const DatasetTextValueSchema = z
   .object({
-    id: z.string().openapi({ description: 'The design ID.', example: 'DAFVztcvd9z' }),
-    title: z
+    type: z.literal('text'),
+    text: z
       .string()
-      .exactOptional()
-      .openapi({ description: 'The design title.', example: 'My summer holiday' }),
-    url: z
-      .string()
-      .exactOptional()
       .openapi({
-        description: 'URL of the design.',
-        example: 'https://www.canva.com/design/DAFVztcvd9z/edit',
-      }),
-    thumbnail: ThumbnailSchema.exactOptional(),
-    urls: DesignLinksSchema,
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the design was created in Canva, as a Unix timestamp (in seconds since the Unix\nEpoch).',
-        example: 1377396000,
-      }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the design was last updated in Canva, as a Unix timestamp (in seconds since the\nUnix Epoch).',
-        example: 1692928800,
-      }),
-    page_count: z
-      .int32()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          "The total number of pages in the design. Some design types don't have pages (for example, Canva docs).",
-        example: 3,
+        description: 'Text to insert into the template element.',
+        example: 'It was like this when I got here!',
       }),
   })
+  .openapi({ description: 'If the data field is a text field.', required: ['text', 'type'] })
+  .openapi('DatasetTextValue')
+
+const ColumnDataTypeSchema = z
+  .enum(['string', 'number', 'date', 'boolean', 'media', 'variant'])
   .openapi({
-    description: "Basic details about the design, such as the design's ID, title, and URL.",
-    required: ['created_at', 'id', 'updated_at', 'urls'],
-  })
-  .openapi('DesignSummary')
-
-const AutofillTrialInformationSchema = z
-  .object({
-    uses_remaining: z
-      .int32()
-      .min(0)
-      .openapi({ description: 'The number of uses remaining in the free trial.', example: 0 }),
-    upgrade_url: z
-      .string()
-      .openapi({
-        description:
-          'The URL for a user to upgrade their Canva account to a plan with autofill access.',
-        example: 'https://www.canva.com/pro/',
-      }),
-  })
-  .openapi({
-    description:
-      "WARNING: Trials and trial information are a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis).\nThere might be unannounced breaking changes to this feature which won't produce a new API version.\n\nTrial information for users on a Canva plan that doesn't include autofill access. These\nusers have a limited number of autofill uses. Once the trial is exhausted, users must\nupgrade their Canva plan (such as to Canva Pro, Canva Teams, or Canva Enterprise) to\ncontinue using the Autofill API.",
-    required: ['upgrade_url', 'uses_remaining'],
-  })
-  .openapi('AutofillTrialInformation')
-
-const CreateDesignAutofillJobResultSchema = z
-  .object({
-    type: z.literal('create_design'),
-    design: DesignSummarySchema,
-    trial_information: AutofillTrialInformationSchema.exactOptional(),
-  })
-  .openapi({
-    description: "A new autofilled design has been created and saved to the user's root folder.",
-    required: ['design', 'type'],
-  })
-  .openapi('CreateDesignAutofillJobResult')
-
-const UpdateDesignAutofillJobResultSchema = z
-  .object({ type: z.literal('update_design'), design: DesignSummarySchema })
-  .openapi({
-    description: 'The existing design has been autofilled in place.',
-    required: ['design', 'type'],
-  })
-  .openapi('UpdateDesignAutofillJobResult')
-
-type DesignAutofillJobResultType =
-  | z.infer<typeof CreateDesignAutofillJobResultSchema>
-  | z.infer<typeof UpdateDesignAutofillJobResultSchema>
-
-const CommentObjectSchema: z.ZodType<CommentObjectType> = z
-  .lazy(() =>
-    z
-      .xor([DesignCommentObjectSchema])
-      .openapi({
-        deprecated: true,
-        description:
-          'Identifying information about the object (such as a design) that the comment is attached to.',
-        discriminator: {
-          mapping: { design: '#/components/schemas/DesignCommentObject' },
-          propertyName: 'type',
-        },
-        example: { design_id: 'DAFVztcvd9z', type: 'design' },
-      }),
-  )
-  .openapi('CommentObject')
-
-const UserSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'The ID of the user.', example: 'uKakKUfI03Fg8k2gZ6OkT' }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the user as shown in the Canva UI.',
-        example: 'John Doe',
-      }),
-  })
-  .openapi({
-    description: 'Metadata for the user, consisting of the User ID and display name.',
-    required: ['id'],
-  })
-  .openapi('User')
-
-const TeamUserSchema = z
-  .object({
-    user_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the user.', example: 'auDAbliZ2rQNNOsUl5OLu' }),
-    team_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The ID of the user's Canva Team.",
-        example: 'Oi2RJILTrKk0KRhRUZozX',
-      }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the user as shown in the Canva UI.',
-        example: 'Jane Doe',
-      }),
-  })
-  .openapi({
-    description: 'Metadata for the user, consisting of the User ID, Team ID, and display name.',
-    required: [],
-  })
-  .openapi('TeamUser')
-
-const ParentCommentSchema = z
-  .object({
-    type: z.literal('parent'),
-    id: z
-      .string()
-      .openapi({
-        description:
-          'The ID of the comment.\n\nYou can use this ID to create replies to the comment using the [Create reply API](https://www.canva.dev/docs/apps/rest-apis/reference/comments/create-reply/).',
-        example: 'KeAbiEAjZEj',
-      }),
-    attached_to: CommentObjectSchema.exactOptional(),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'The comment message. This is the comment body shown in the Canva UI.\nUser mentions are shown here in the format `[user_id:team_id]`.',
-        example: 'Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!',
-      }),
-    author: UserSchema,
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the comment or reply was created, as a Unix timestamp\n(in seconds since the Unix Epoch).',
-        example: 1692928800,
-      }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the comment or reply was last updated, as a Unix timestamp\n(in seconds since the Unix Epoch).',
-        example: 1692928900,
-      }),
-    mentions: z
-      .record(z.string(), TeamUserSchema)
-      .openapi({
-        deprecated: true,
-        description: 'The Canva users mentioned in the comment.',
-        example: {
-          'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP': {
-            user_id: 'oUnPjZ2k2yuhftbWF7873o',
-            team_id: 'oBpVhLW22VrqtwKgaayRbP',
-            display_name: 'John Doe',
-          },
-        },
-      }),
-    assignee: UserSchema.exactOptional(),
-    resolver: UserSchema.exactOptional(),
-  })
-  .openapi({
-    deprecated: true,
-    description:
-      'Data about the comment, including the message, author, and\nthe object (such as a design) the comment is attached to.',
-    required: ['author', 'id', 'mentions', 'message', 'type'],
-  })
-  .openapi('ParentComment')
-
-const ReplyCommentSchema = z
-  .object({
-    type: z.literal('reply'),
-    id: z.string().openapi({ description: 'The ID of the comment.', example: 'KeAZEAjijEb' }),
-    attached_to: CommentObjectSchema.exactOptional(),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'The comment message. This is the comment body shown in the Canva UI.\nUser mentions are shown here in the format `[user_id:team_id]`.',
-        example: 'Thanks!',
-      }),
-    author: UserSchema,
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the comment or reply was created, as a Unix timestamp\n(in seconds since the Unix Epoch).',
-        example: 1692929800,
-      }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the comment or reply was last updated, as a Unix timestamp\n(in seconds since the Unix Epoch).',
-        example: 1692929900,
-      }),
-    mentions: z
-      .record(z.string(), TeamUserSchema)
-      .openapi({
-        deprecated: true,
-        description: 'The Canva users mentioned in the comment.',
-        example: {
-          'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP': {
-            user_id: 'oUnPjZ2k2yuhftbWF7873o',
-            team_id: 'oBpVhLW22VrqtwKgaayRbP',
-            display_name: 'John Doe',
-          },
-        },
-      }),
-    thread_id: z
-      .string()
-      .openapi({
-        description:
-          'The ID of the comment thread this reply is in. This ID is the same as the `id` of the\nparent comment.',
-        example: 'KeAbiEAjZEj',
-      }),
-  })
-  .openapi({
-    deprecated: true,
-    description:
-      'Data about the reply comment, including the message, author, and\nthe object (such as a design) the comment is attached to.',
-    required: ['author', 'id', 'mentions', 'message', 'thread_id', 'type'],
-  })
-  .openapi('ReplyComment')
-
-type CommentType = z.infer<typeof ParentCommentSchema> | z.infer<typeof ReplyCommentSchema>
-
-const DesignCommentObjectSchema = z
-  .object({
-    type: z.literal('design'),
-    design_id: z
-      .string()
-      .openapi({
-        description: 'The ID of the design this comment is attached to.',
-        example: 'DAFVztcvd9z',
-      }),
-  })
-  .openapi({
-    deprecated: true,
-    description: 'If the comment is attached to a Canva Design.',
-    required: ['design_id', 'type'],
-  })
-  .openapi('DesignCommentObject')
-
-type CommentObjectType = z.infer<typeof DesignCommentObjectSchema>
-
-const DesignCommentObjectInputSchema = z
-  .object({
-    type: z.literal('design'),
-    design_id: z
-      .string()
-      .openapi({
-        description: 'The ID of the design you want to attach this comment to.',
-        example: 'DAFVztcvd9z',
-      }),
-  })
-  .openapi({
-    description: 'If the comment is attached to a Canva Design.',
-    required: ['design_id', 'type'],
-  })
-  .openapi('DesignCommentObjectInput')
-
-type CommentObjectInputType = z.infer<typeof DesignCommentObjectInputSchema>
-
-const ThreadTypeSchema: z.ZodType<ThreadTypeType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [CommentThreadTypeSchema, SuggestionThreadTypeSchema])
-      .openapi({
-        description:
-          'The type of the discussion thread, along with additional type-specific properties.',
-        discriminator: {
-          mapping: {
-            comment: '#/components/schemas/CommentThreadType',
-            suggestion: '#/components/schemas/SuggestionThreadType',
-          },
-          propertyName: 'type',
-        },
-      }),
-  )
-  .openapi('ThreadType')
-
-const ThreadSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description:
-          'The ID of the thread.\n\nYou can use this ID to create replies to the thread using the [Create reply API](https://www.canva.dev/docs/apps/rest-apis/reference/comments/create-reply/).',
-        example: 'KeAbiEAjZEj',
-      }),
-    design_id: z
-      .string()
-      .openapi({
-        description: 'The ID of the design that the discussion thread is on.',
-        example: 'DAFVztcvd9z',
-      }),
-    thread_type: ThreadTypeSchema,
-    author: UserSchema.exactOptional(),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the thread was created, as a Unix timestamp\n(in seconds since the Unix Epoch).',
-        example: 1692928800,
-      }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the thread was last updated, as a Unix timestamp\n(in seconds since the Unix Epoch).',
-        example: 1692928900,
-      }),
-  })
-  .openapi({
-    description:
-      'A discussion thread on a design.\n\nThe `type` of the thread can be found in the `thread_type` object, along with additional type-specific properties.\nThe `author` of the thread might be missing if that user account no longer exists.',
-    required: ['created_at', 'design_id', 'id', 'thread_type', 'updated_at'],
-  })
-  .openapi('Thread')
-
-const NewCommentEventSchema = z
-  .object({
-    type: z.literal('new'),
-    comment_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the comment thread.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    comment: ThreadSchema,
-  })
-  .openapi({
-    description: 'Event type for a new comment thread.',
-    required: ['comment', 'comment_url', 'type'],
-  })
-  .openapi('NewCommentEvent')
-
-const AssignedCommentEventSchema = z
-  .object({
-    type: z.literal('assigned'),
-    comment_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the comment thread.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    comment: ThreadSchema,
-  })
-  .openapi({
-    description: 'Event type for a comment thread that has been assigned.',
-    required: ['comment', 'comment_url', 'type'],
-  })
-  .openapi('AssignedCommentEvent')
-
-const ResolvedCommentEventSchema = z
-  .object({
-    type: z.literal('resolved'),
-    comment_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the comment thread.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    comment: ThreadSchema,
-  })
-  .openapi({
-    description: 'Event type for a comment thread that has been resolved.',
-    required: ['comment', 'comment_url', 'type'],
-  })
-  .openapi('ResolvedCommentEvent')
-
-const CommentContentSchema = z
-  .object({
-    plaintext: z
-      .string()
-      .openapi({
-        description:
-          'The content in plaintext.\nAny user mention tags are shown in the format `[user_id:team_id]`.',
-        example: 'Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!',
-      }),
-    markdown: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content in markdown.\nAny user mention tags are shown in the format `[user_id:team_id]`',
-        example: '*_Great work_* [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!',
-      }),
-  })
-  .openapi({ description: 'The content of a comment thread or reply.', required: ['plaintext'] })
-  .openapi('CommentContent')
-
-const UserMentionSchema = z
-  .object({
-    tag: z
-      .string()
-      .openapi({
-        description:
-          "The mention tag for the user mentioned in the comment thread or reply content. This has the format of the user's user ID and team ID separated by a colon (`user_id:team_id`).",
-        example: 'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP',
-      }),
-    user: TeamUserSchema,
-  })
-  .openapi({
-    description:
-      "Information about the user mentioned in a comment thread or reply. Each user mention is keyed using the user's user ID and team ID separated by a colon (`user_id:team_id`).",
-    required: ['tag', 'user'],
-  })
-  .openapi('UserMention')
-
-const ReplySchema = z
-  .object({
-    id: z.string().openapi({ description: 'The ID of the reply.', example: 'KeAZEAjijEb' }),
-    design_id: z
-      .string()
-      .openapi({
-        description: 'The ID of the design that the thread for this reply is attached to.',
-        example: 'DAFVztcvd9z',
-      }),
-    thread_id: z
-      .string()
-      .openapi({ description: 'The ID of the thread this reply is in.', example: 'KeAbiEAjZEj' }),
-    author: UserSchema.exactOptional(),
-    content: CommentContentSchema,
-    mentions: z
-      .record(z.string(), UserMentionSchema)
-      .openapi({
-        description: 'The Canva users mentioned in the comment thread or reply.',
-        example: {
-          'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP': {
-            tag: 'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP',
-            user: {
-              user_id: 'oUnPjZ2k2yuhftbWF7873o',
-              team_id: 'oBpVhLW22VrqtwKgaayRbP',
-              display_name: 'John Doe',
-            },
-          },
-        },
-      }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the reply was created, as a Unix timestamp\n(in seconds since the Unix Epoch).',
-        example: 1692929800,
-      }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'When the reply was last updated, as a Unix timestamp\n(in seconds since the Unix Epoch).',
-        example: 1692929900,
-      }),
-  })
-  .openapi({
-    description:
-      'A reply to a thread.\n\nThe `author` of the reply might be missing if that user account no longer exists.',
-    required: ['content', 'created_at', 'design_id', 'id', 'mentions', 'thread_id', 'updated_at'],
-  })
-  .openapi('Reply')
-
-const ReplyCommentEventSchema = z
-  .object({
-    type: z.literal('reply'),
-    reply_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the comment reply.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    reply: ReplySchema,
-  })
-  .openapi({
-    description: 'Event type for a reply to a comment thread.',
-    required: ['reply', 'reply_url', 'type'],
-  })
-  .openapi('ReplyCommentEvent')
-
-const MentionEventContentSchema: z.ZodType<MentionEventContentType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [ThreadMentionEventContentSchema, ReplyMentionEventContentSchema])
-      .openapi({
-        description:
-          'The type of mention event content, along with additional type-specific properties.',
-        discriminator: {
-          mapping: {
-            thread: '#/components/schemas/ThreadMentionEventContent',
-            reply: '#/components/schemas/ReplyMentionEventContent',
-          },
-          propertyName: 'type',
-        },
-      }),
-  )
-  .openapi('MentionEventContent')
-
-const MentionCommentEventSchema = z
-  .object({ type: z.literal('mention'), content: MentionEventContentSchema })
-  .openapi({
-    description: 'Event type for a mention in a comment thread or reply.',
-    required: ['content', 'type'],
-  })
-  .openapi('MentionCommentEvent')
-
-type CommentEventType =
-  | z.infer<typeof NewCommentEventSchema>
-  | z.infer<typeof AssignedCommentEventSchema>
-  | z.infer<typeof ResolvedCommentEventSchema>
-  | z.infer<typeof ReplyCommentEventSchema>
-  | z.infer<typeof MentionCommentEventSchema>
-
-const ThreadMentionEventContentSchema = z
-  .object({
-    type: z.literal('thread'),
-    comment_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the comment thread.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    comment: ThreadSchema,
-  })
-  .openapi({
-    description: 'Content for a mention in a comment thread.',
-    required: ['comment', 'comment_url', 'type'],
-  })
-  .openapi('ThreadMentionEventContent')
-
-const ReplyMentionEventContentSchema = z
-  .object({
-    type: z.literal('reply'),
-    reply_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the comment reply.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    reply: ReplySchema,
-  })
-  .openapi({
-    description: 'Content for a mention in a comment reply.',
-    required: ['reply', 'reply_url', 'type'],
-  })
-  .openapi('ReplyMentionEventContent')
-
-type MentionEventContentType =
-  | z.infer<typeof ThreadMentionEventContentSchema>
-  | z.infer<typeof ReplyMentionEventContentSchema>
-
-const CommentThreadTypeSchema = z
-  .object({
-    type: z.literal('comment'),
-    content: CommentContentSchema,
-    mentions: z
-      .record(z.string(), UserMentionSchema)
-      .openapi({
-        description: 'The Canva users mentioned in the comment thread or reply.',
-        example: {
-          'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP': {
-            tag: 'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP',
-            user: {
-              user_id: 'oUnPjZ2k2yuhftbWF7873o',
-              team_id: 'oBpVhLW22VrqtwKgaayRbP',
-              display_name: 'John Doe',
-            },
-          },
-        },
-      }),
-    assignee: UserSchema.exactOptional(),
-    resolver: UserSchema.exactOptional(),
-  })
-  .openapi({ description: 'A comment thread.', required: ['content', 'mentions', 'type'] })
-  .openapi('CommentThreadType')
-
-const SuggestedEditSchema: z.ZodType<SuggestedEditType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        AddSuggestedEditSchema,
-        DeleteSuggestedEditSchema,
-        FormatSuggestedEditSchema,
-      ])
-      .openapi({
-        description:
-          'The type of the suggested edit, along with additional type-specific properties.',
-        discriminator: {
-          mapping: {
-            add: '#/components/schemas/AddSuggestedEdit',
-            delete: '#/components/schemas/DeleteSuggestedEdit',
-            format: '#/components/schemas/FormatSuggestedEdit',
-          },
-          propertyName: 'type',
-        },
-      }),
-  )
-  .openapi('SuggestedEdit')
-
-const SuggestionStatusSchema = z
-  .enum(['open', 'accepted', 'rejected'])
-  .openapi({
-    description: 'The current status of the suggestion.',
+    description: 'Expected data type for cells in this column.',
     'x-enum-descriptions': [
-      "A suggestion was made, but it hasn't been accepted or rejected yet.",
-      'A suggestion was accepted and applied to the design.',
-      'A suggestion was rejected and not applied to the design.',
+      'String data',
+      'Numeric data',
+      'Date data',
+      'Boolean data',
+      'Media data (such as images, videos, or combinations of both)',
+      'Mixed data types (use where the column contains cells of a combination of data types)',
     ],
   })
-  .openapi('SuggestionStatus')
+  .openapi('ColumnDataType')
 
-const SuggestionThreadTypeSchema = z
+const ColumnConfigSchema = z
   .object({
-    type: z.literal('suggestion'),
-    suggested_edits: z.array(SuggestedEditSchema).min(1),
-    status: SuggestionStatusSchema,
-  })
-  .openapi({ description: 'A suggestion thread.', required: ['status', 'suggested_edits', 'type'] })
-  .openapi('SuggestionThreadType')
-
-type ThreadTypeType =
-  | z.infer<typeof CommentThreadTypeSchema>
-  | z.infer<typeof SuggestionThreadTypeSchema>
-
-const AddSuggestedEditSchema = z
-  .object({ type: z.literal('add'), text: z.string().openapi({ example: 'fantastic' }) })
-  .openapi({ description: 'A suggestion to add some text.', required: ['text', 'type'] })
-  .openapi('AddSuggestedEdit')
-
-const DeleteSuggestedEditSchema = z
-  .object({ type: z.literal('delete'), text: z.string().openapi({ example: 'just' }) })
-  .openapi({ description: 'A suggestion to delete some text.', required: ['text', 'type'] })
-  .openapi('DeleteSuggestedEdit')
-
-const SuggestionFormatSchema = z
-  .enum([
-    'font_family',
-    'font_size',
-    'font_weight',
-    'font_style',
-    'color',
-    'background_color',
-    'decoration',
-    'strikethrough',
-    'link',
-    'letter_spacing',
-    'line_height',
-    'direction',
-    'text_align',
-    'list_marker',
-    'list_level',
-    'margin_inline_start',
-    'text_indent',
-    'font_size_modifier',
-    'vertical_align',
-  ])
-  .openapi({ description: 'The suggested format change.', example: 'font_style' })
-  .openapi('SuggestionFormat')
-
-const FormatSuggestedEditSchema = z
-  .object({ type: z.literal('format'), format: SuggestionFormatSchema })
-  .openapi({ description: 'A suggestion to format some text.', required: ['format', 'type'] })
-  .openapi('FormatSuggestedEdit')
-
-type SuggestedEditType =
-  | z.infer<typeof AddSuggestedEditSchema>
-  | z.infer<typeof DeleteSuggestedEditSchema>
-  | z.infer<typeof FormatSuggestedEditSchema>
-
-const NewSuggestionEventTypeSchema = z
-  .object({
-    type: z.literal('new'),
-    suggestion_url: z
+    name: z
       .string()
-      .openapi({
-        description: 'A URL to the design, focused on the suggestion.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    suggestion: ThreadSchema,
+      .exactOptional()
+      .openapi({ description: 'Name for the column, displayed as header text.' }),
+    type: ColumnDataTypeSchema,
   })
-  .openapi({
-    description: 'Event type for a new suggestion.',
-    required: ['suggestion', 'suggestion_url', 'type'],
-  })
-  .openapi('NewSuggestionEventType')
-
-const AcceptedSuggestionEventTypeSchema = z
-  .object({
-    type: z.literal('accepted'),
-    suggestion_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the suggestion.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    suggestion: ThreadSchema,
-  })
-  .openapi({
-    description: 'Event type for a suggestion that has been accepted.',
-    required: ['suggestion', 'suggestion_url', 'type'],
-  })
-  .openapi('AcceptedSuggestionEventType')
-
-const RejectedSuggestionEventTypeSchema = z
-  .object({
-    type: z.literal('rejected'),
-    suggestion_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the suggestion.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    suggestion: ThreadSchema,
-  })
-  .openapi({
-    description: 'Event type for a suggestion that has been rejected.',
-    required: ['suggestion', 'suggestion_url', 'type'],
-  })
-  .openapi('RejectedSuggestionEventType')
-
-const ReplySuggestionEventTypeSchema = z
-  .object({
-    type: z.literal('reply'),
-    reply_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the suggestion reply.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    reply: ReplySchema,
-  })
-  .openapi({
-    description: 'Event type for a reply to a suggestion.',
-    required: ['reply', 'reply_url', 'type'],
-  })
-  .openapi('ReplySuggestionEventType')
-
-const MentionSuggestionEventTypeSchema = z
-  .object({
-    type: z.literal('mention'),
-    reply_url: z
-      .string()
-      .openapi({
-        description: 'A URL to the design, focused on the suggestion reply.',
-        example:
-          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
-      }),
-    reply: ReplySchema,
-  })
-  .openapi({
-    description: 'Event type for a mention in a reply to a suggestion.',
-    required: ['reply', 'reply_url', 'type'],
-  })
-  .openapi('MentionSuggestionEventType')
-
-type SuggestionEventTypeType =
-  | z.infer<typeof NewSuggestionEventTypeSchema>
-  | z.infer<typeof AcceptedSuggestionEventTypeSchema>
-  | z.infer<typeof RejectedSuggestionEventTypeSchema>
-  | z.infer<typeof ReplySuggestionEventTypeSchema>
-  | z.infer<typeof MentionSuggestionEventTypeSchema>
+  .openapi({ description: 'Configuration for a data table column.', required: ['type'] })
+  .openapi('ColumnConfig')
 
 const StringDataTableCellSchema = z
   .object({ type: z.literal('string'), value: z.string().max(10000).exactOptional() })
@@ -1130,11 +234,11 @@ const DataTableMediaSchema = z
   .discriminatedUnion('type', [DataTableImageUploadSchema, DataTableVideoUploadSchema])
   .openapi({
     discriminator: {
+      propertyName: 'type',
       mapping: {
         image_upload: '#/components/schemas/DataTableImageUpload',
         video_upload: '#/components/schemas/DataTableVideoUpload',
       },
-      propertyName: 'type',
     },
   })
   .openapi('DataTableMedia')
@@ -1152,740 +256,633 @@ const MediaCollectionDataTableCellSchema = z
   .openapi({ description: 'Cell containing a media collection.', required: ['type', 'value'] })
   .openapi('MediaCollectionDataTableCell')
 
-type DataTableCellType =
-  | z.infer<typeof StringDataTableCellSchema>
-  | z.infer<typeof NumberDataTableCellSchema>
-  | z.infer<typeof BooleanDataTableCellSchema>
-  | z.infer<typeof DateDataTableCellSchema>
-  | z.infer<typeof MediaCollectionDataTableCellSchema>
-
-const DesignTypeInputSchema: z.ZodType<DesignTypeInputType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [PresetDesignTypeInputSchema, CustomDesignTypeInputSchema])
-      .openapi({
-        description: 'The desired design type.',
-        discriminator: {
-          mapping: {
-            preset: '#/components/schemas/PresetDesignTypeInput',
-            custom: '#/components/schemas/CustomDesignTypeInput',
-          },
-          propertyName: 'type',
-        },
-      }),
-  )
-  .openapi('DesignTypeInput')
-
-const DesignTypeCreateDesignRequestSchema = z
-  .object({
-    type: z
-      .literal('type_and_asset')
-      .openapi({
-        description:
-          "For backward compatibility, if `type` isn't specified in the request, the request type will be assumed to be `type_and_asset`.",
-      }),
-    design_type: DesignTypeInputSchema.exactOptional(),
-    asset_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of an asset to insert into the created design. Currently, this only supports image assets.',
-        example: 'Msd59349ff',
-      }),
-    title: z
-      .string()
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The name of the design.', example: 'My Holiday Presentation' }),
-  })
-  .openapi({
-    description:
-      'Create a design by specifying the design type and/or an asset.\nAt least one of `design_type` or `asset_id` must be defined.',
-    required: ['type'],
-  })
-  .openapi('DesignTypeCreateDesignRequest')
-
-const DesignCreateDesignRequestSchema = z
-  .object({
-    type: z.literal('design'),
-    design_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
-      .openapi({ description: 'The ID of the design to copy.', example: 'DAFVztcvetc' }),
-    page_numbers: z
-      .array(z.int32().min(1))
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The pages to copy from the source design. If not specified, all pages are copied.\nPages are indexed using one-based numbering.',
-      }),
-  })
-  .openapi({
-    description:
-      "<Warning>\n\nCreating a copy of an existing design is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview features won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview features will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nBody parameters for creating a copy of an existing design.",
-    required: ['design_id', 'type'],
-  })
-  .openapi('DesignCreateDesignRequest')
-
-const BrandTemplateCreateDesignRequestSchema = z
-  .object({
-    type: z.literal('brand_template'),
-    brand_template_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
-      .openapi({
-        description: 'The ID of the brand template used to create a design copy.',
-        example: 'EDMzWSwy3BI',
-      }),
-    page_numbers: z
-      .array(z.int32().min(1))
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The pages to copy from the brand template. If not specified, all pages are copied.\nPages are indexed using one-based numbering.',
-      }),
-  })
-  .openapi({
-    description:
-      "<Warning>\n\nCreating a copy from a brand template is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview features won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview features will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nBody parameters for creating a copy from a brand template.",
-    required: ['brand_template_id', 'type'],
-  })
-  .openapi('BrandTemplateCreateDesignRequest')
-
-type CreateDesignRequestType =
-  | z.infer<typeof DesignTypeCreateDesignRequestSchema>
-  | z.infer<typeof DesignCreateDesignRequestSchema>
-  | z.infer<typeof BrandTemplateCreateDesignRequestSchema>
-
-const ImageDataFieldSchema = z
-  .object({ type: z.literal('image') })
-  .openapi({
-    description:
-      'An image data field. You can autofill it with an image by providing its `asset_id`.\n\nYou can also autofill it with a video asset.',
-    required: ['type'],
-  })
-  .openapi('ImageDataField')
-
-const TextDataFieldSchema = z
-  .object({ type: z.literal('text') })
-  .openapi({
-    description: 'A text data field. You can autofill it with a text value.',
-    required: ['type'],
-  })
-  .openapi('TextDataField')
-
-const ChartDataFieldSchema = z
-  .object({ type: z.literal('chart') })
-  .openapi({
-    description: 'A chart data field. You can autofill it with tabular data.',
-    required: ['type'],
-  })
-  .openapi('ChartDataField')
-
-const SheetDataFieldSchema = z
-  .object({ type: z.literal('sheet') })
-  .openapi({
-    description: 'A sheet data field. You can autofill it with tabular sheet data.',
-    required: ['type'],
-  })
-  .openapi('SheetDataField')
-
-type DataFieldType =
-  | z.infer<typeof ImageDataFieldSchema>
-  | z.infer<typeof TextDataFieldSchema>
-  | z.infer<typeof ChartDataFieldSchema>
-  | z.infer<typeof SheetDataFieldSchema>
-
-const PresetDesignTypeNameSchema = z
-  .enum(['doc', 'email', 'presentation', 'whiteboard'])
-  .openapi({
-    description: 'The name of the design type.',
-    'x-enum-descriptions': [
-      "A [Canva doc](https://www.canva.com/docs/); a document for Canva's online text editor.",
-      'An [email](https://www.canva.com/emails/); for creating email campaign designs.',
-      'A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.',
-      'A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.',
-    ],
-  })
-  .openapi('PresetDesignTypeName')
-
-const PresetDesignTypeInputSchema = z
-  .object({ type: z.literal('preset'), name: PresetDesignTypeNameSchema })
-  .openapi({ description: 'Provide the common design type.', required: ['name', 'type'] })
-  .openapi('PresetDesignTypeInput')
-
-const CustomDesignTypeInputSchema = z
-  .object({
-    type: z.literal('custom'),
-    width: z
-      .int32()
-      .min(40)
-      .max(8000)
-      .openapi({ description: 'The width of the design, in pixels.', example: 320 }),
-    height: z
-      .int32()
-      .min(40)
-      .max(8000)
-      .openapi({ description: 'The height of the design, in pixels.', example: 200 }),
-  })
-  .openapi({
-    description:
-      'Provide the width and height to define a custom design type.\n\nEach dimension must be between 40 and 8000 pixels, and the\ntotal area (width × height) must not exceed 25,000,000 pixels\nsquared. For example, a design with a width of 8000 pixels can\nhave a maximum height of 3125 pixels.',
-    required: ['height', 'type', 'width'],
-  })
-  .openapi('CustomDesignTypeInput')
-
-type DesignTypeInputType =
-  | z.infer<typeof PresetDesignTypeInputSchema>
-  | z.infer<typeof CustomDesignTypeInputSchema>
-
-const ExportQualitySchema = z
-  .enum(['regular', 'pro'])
-  .default('regular')
-  .openapi({
-    description: 'Specifies the export quality of the design.',
-    'x-enum-descriptions': [
-      'Regular quality export.',
-      "Premium quality export.\n\nNOTE: A `pro` export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/) and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.",
-    ],
-  })
-  .openapi('ExportQuality')
-
-const ExportPageSizeSchema = z
-  .enum(['a4', 'a3', 'letter', 'legal'])
-  .default('a4')
-  .openapi({
-    description:
-      'The paper size of the export PDF file. The `size` attribute is only supported for Documents (Canva Docs).',
-    example: 'a4',
-  })
-  .openapi('ExportPageSize')
-
-const PdfExportFormatSchema = z
-  .object({
-    type: z.literal('pdf'),
-    export_quality: ExportQualitySchema.exactOptional(),
-    size: ExportPageSizeSchema.exactOptional(),
-    pages: z
-      .array(z.int32().min(1))
-      .exactOptional()
-      .openapi({
-        description:
-          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
-        example: [2, 3, 4],
-      }),
-  })
-  .openapi({
-    description: 'Export the design as a PDF. Providing a paper size is optional.',
-    required: ['type'],
-  })
-  .openapi('PdfExportFormat')
-
-const JpgExportFormatSchema = z
-  .object({
-    type: z.literal('jpg'),
-    export_quality: ExportQualitySchema.exactOptional(),
-    quality: z
-      .int32()
-      .min(1)
-      .max(100)
-      .openapi({
-        description:
-          'For the `jpg` type, the `quality` of the exported JPEG determines how compressed the exported file should be. A _low_ `quality` value will create a file with a smaller file size, but the resulting file will have pixelated artifacts when compared to a file created with a _high_ `quality` value.',
-        example: 80,
-      }),
-    height: z
-      .int32()
-      .min(40)
-      .max(25000)
-      .exactOptional()
-      .openapi({
-        description:
-          "Specify the height in pixels of the exported image. Note the following behavior:\n\n- If no height or width is specified, the image is exported using the dimensions of the design.\n- If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
-        example: 400,
-      }),
-    width: z
-      .int32()
-      .min(40)
-      .max(25000)
-      .exactOptional()
-      .openapi({
-        description:
-          "Specify the width in pixels of the exported image. Note the following behavior:\n\n- If no width or height is specified, the image is exported using the dimensions of the design.\n- If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
-        example: 400,
-      }),
-    pages: z
-      .array(z.int32().min(1))
-      .exactOptional()
-      .openapi({
-        description:
-          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
-        example: [2, 3, 4],
-      }),
-  })
-  .openapi({
-    description:
-      "Export the design as a JPEG. Compression quality must be provided. Height or width (or both)\nmay be specified, otherwise the file will be exported at it's default size.\n\nIf the user is on the Canva Free plan, the export height and width for a fixed-dimension design can't be upscaled by more than a factor of `1.125`.",
-    required: ['quality', 'type'],
-  })
-  .openapi('JpgExportFormat')
-
-const PngExportFormatSchema = z
-  .object({
-    type: z.literal('png'),
-    export_quality: ExportQualitySchema.exactOptional(),
-    height: z
-      .int32()
-      .min(40)
-      .max(25000)
-      .exactOptional()
-      .openapi({
-        description:
-          "Specify the height in pixels of the exported image. Note the following behavior:\n\n- If no height or width is specified, the image is exported using the dimensions of the design.\n- If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
-        example: 400,
-      }),
-    width: z
-      .int32()
-      .min(40)
-      .max(25000)
-      .exactOptional()
-      .openapi({
-        description:
-          "Specify the width in pixels of the exported image. Note the following behavior:\n\n- If no width or height is specified, the image is exported using the dimensions of the design.\n- If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
-        example: 400,
-      }),
-    lossless: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to `true` (default), the PNG is exported without compression.\n\nIf set to `false`, the PNG is compressed using a lossy compression algorithm.\n\nAVAILABILITY: Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.',
-      }),
-    transparent_background: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to `true`, the PNG is exported with a transparent background.\n\nAVAILABILITY: This option is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `true`, the export operation will fail.',
-      }),
-    as_single_image: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'When `true`, multi-page designs are merged into a single image.\nWhen `false` (default), each page is exported as a separate image.',
-      }),
-    pages: z
-      .array(z.int32().min(1))
-      .exactOptional()
-      .openapi({
-        description:
-          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
-        example: [2, 3, 4],
-      }),
-  })
-  .openapi({
-    description:
-      "Export the design as a PNG. Height or width (or both) may be specified, otherwise\nthe file will be exported at it's default size. You may also specify whether to export the\nfile losslessly, and whether to export a multi-page design as a single image.\n\nIf the user is on the Canva Free plan, the export height and width for a fixed-dimension design can't be upscaled by more than a factor of `1.125`.",
-    required: ['type'],
-  })
-  .openapi('PngExportFormat')
-
-const PptxExportFormatSchema = z
-  .object({
-    type: z.literal('pptx'),
-    pages: z
-      .array(z.int32().min(1))
-      .exactOptional()
-      .openapi({
-        description:
-          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
-        example: [2, 3, 4],
-      }),
-  })
-  .openapi({ description: 'Export the design as a PPTX.', required: ['type'] })
-  .openapi('PptxExportFormat')
-
-const GifExportFormatSchema = z
-  .object({
-    type: z.literal('gif'),
-    export_quality: ExportQualitySchema.exactOptional(),
-    height: z
-      .int32()
-      .min(40)
-      .max(25000)
-      .exactOptional()
-      .openapi({
-        description:
-          "Specify the height in pixels of the exported image. Note the following behavior:\n\n- If no height or width is specified, the image is exported using the dimensions of the design.\n- If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
-        example: 400,
-      }),
-    width: z
-      .int32()
-      .min(40)
-      .max(25000)
-      .exactOptional()
-      .openapi({
-        description:
-          "Specify the width in pixels of the exported image. Note the following behavior:\n\n- If no width or height is specified, the image is exported using the dimensions of the design.\n- If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
-        example: 400,
-      }),
-    pages: z
-      .array(z.int32().min(1))
-      .exactOptional()
-      .openapi({
-        description:
-          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
-        example: [2, 3, 4],
-      }),
-  })
-  .openapi({
-    description:
-      "Export the design as a GIF. Height or width (or both) may be specified, otherwise the file\nwill be exported at it's default size. Large designs will be scaled down, and aspect ratio\nwill always be maintained.",
-    required: ['type'],
-  })
-  .openapi('GifExportFormat')
-
-const Mp4ExportQualitySchema = z
-  .enum([
-    'horizontal_480p',
-    'horizontal_720p',
-    'horizontal_1080p',
-    'horizontal_4k',
-    'vertical_480p',
-    'vertical_720p',
-    'vertical_1080p',
-    'vertical_4k',
+const DataTableCellSchema = z
+  .discriminatedUnion('type', [
+    StringDataTableCellSchema,
+    NumberDataTableCellSchema,
+    BooleanDataTableCellSchema,
+    DateDataTableCellSchema,
+    MediaCollectionDataTableCellSchema,
   ])
   .openapi({
-    description:
-      "The resolution of the exported video, as a target number of pixels. The resolution is one of\n`480p`, `720p`, `1080p` or `4k`.\n\nThe exported video always has the same aspect ratio as the design, which matches creating a\ndownload from the Canva editor. The resolution sets how many pixels to target, and the\ndesign's aspect ratio decides how they're split between width and height, so the\n`horizontal` and `vertical` values of a given resolution produce the same output:\n\n- A 2160x3840 portrait design exported as `horizontal_4k` is 2160x3840, not 3840x2160. The\n  orientation in the value's name doesn't rotate or crop the design.\n- A 1000x2000 design exported as `horizontal_720p` is 678x1357, the 1:2 size closest to the\n  921,600 pixels of 1280x720. Aspect ratios that don't match a standard video size aren't\n  rounded to one.\n- A square design exported as `horizontal_4k` or `vertical_4k` is 2880x2880, the square with\n  the same number of pixels as 3840x2160.",
+    description: 'A single tabular data cell.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        string: '#/components/schemas/StringDataTableCell',
+        number: '#/components/schemas/NumberDataTableCell',
+        boolean: '#/components/schemas/BooleanDataTableCell',
+        date: '#/components/schemas/DateDataTableCell',
+        media: '#/components/schemas/MediaCollectionDataTableCell',
+      },
+    },
   })
-  .openapi('Mp4ExportQuality')
+  .openapi('DataTableCell')
 
-const Mp4ExportFormatSchema = z
+const DataTableRowSchema = z
   .object({
-    type: z.literal('mp4'),
-    export_quality: ExportQualitySchema.exactOptional(),
-    quality: Mp4ExportQualitySchema,
-    pages: z
-      .array(z.int32().min(1))
-      .exactOptional()
+    cells: z
+      .array(DataTableCellSchema)
       .openapi({
-        description:
-          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
-        example: [2, 3, 4],
+        description: 'Cells of data in row.\n\nAll rows must have the same number of cells.',
       }),
   })
-  .openapi({
-    description: 'Export the design as an MP4. You must specify the quality of the exported video.',
-    required: ['quality', 'type'],
-  })
-  .openapi('Mp4ExportFormat')
+  .openapi({ description: 'A single row of tabular data.', required: ['cells'] })
+  .openapi('DataTableRow')
 
-const HtmlBundleExportFormatSchema = z
+const DataTableSchema = z
   .object({
-    type: z.literal('html_bundle'),
-    pages: z
-      .array(z.int32().min(1))
-      .length(1)
+    column_configs: z
+      .array(ColumnConfigSchema)
       .exactOptional()
-      .openapi({
-        description:
-          'The pages of the design to export. Currently only a single page can be exported. If not provided,\nthe first page of the design is used.',
-        example: [1],
-      }),
+      .openapi({ description: 'Column definitions with names and data types.' }),
+    rows: z.array(DataTableRowSchema).openapi({ description: 'Rows of data.' }),
   })
   .openapi({
     description:
-      'Export the email design as an HTML bundle. An HTML bundle is a zip file that contains an HTML file and the associated assets.',
-    required: ['type'],
-  })
-  .openapi('HtmlBundleExportFormat')
-
-const HtmlStandaloneExportFormatSchema = z
-  .object({
-    type: z.literal('html_standalone'),
-    pages: z
-      .array(z.int32().min(1))
-      .length(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The pages of the design to export. Currently only a single page can be exported. If not provided,\nthe first page of the design is used.',
-        example: [1],
-      }),
-  })
-  .openapi({
-    description: 'Export the email design as a standalone HTML file with hosted assets.',
-    required: ['type'],
-  })
-  .openapi('HtmlStandaloneExportFormat')
-
-const CsvExportFormatSchema = z
-  .object({
-    type: z.literal('csv'),
-    pages: z
-      .array(z.int32().min(1))
-      .exactOptional()
-      .openapi({
-        description:
-          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
-        example: [2, 3, 4],
-      }),
-  })
-  .openapi({
-    description:
-      'Export the design as a CSV file. CSV export is only available for designs that contain\ntabular data, such as Canva Sheets.',
-    required: ['type'],
-  })
-  .openapi('CsvExportFormat')
-
-type ExportFormatType =
-  | z.infer<typeof PdfExportFormatSchema>
-  | z.infer<typeof JpgExportFormatSchema>
-  | z.infer<typeof PngExportFormatSchema>
-  | z.infer<typeof PptxExportFormatSchema>
-  | z.infer<typeof GifExportFormatSchema>
-  | z.infer<typeof Mp4ExportFormatSchema>
-  | z.infer<typeof HtmlBundleExportFormatSchema>
-  | z.infer<typeof HtmlStandaloneExportFormatSchema>
-  | z.infer<typeof CsvExportFormatSchema>
-
-const NoneImageGenerationAssetUploadSchema = z
-  .object({ type: z.literal('none') })
-  .openapi({
-    description: "Don't save the generated image. The result contains only its download URL.",
-    required: ['type'],
-  })
-  .openapi('NoneImageGenerationAssetUpload')
-
-const UploadImageGenerationAssetUploadSchema = z
-  .object({
-    type: z.literal('upload'),
-    asset_name: z
-      .string()
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          "A name for the image asset. Canva doesn't localize this value, so provide a name in\nthe user's language. If omitted, Canva generates a name for the asset.",
-        example: 'Red apple on a wooden table',
-      }),
-  })
-  .openapi({
-    description:
-      "Save the generated image as an image asset in the user's Canva account. The asset appears\nin the user's Uploads, and the generated image in the result includes the `asset`\nalongside its download `url`.",
-    required: ['type'],
-  })
-  .openapi('UploadImageGenerationAssetUpload')
-
-type ImageGenerationAssetUploadType =
-  | z.infer<typeof NoneImageGenerationAssetUploadSchema>
-  | z.infer<typeof UploadImageGenerationAssetUploadSchema>
-
-const DesignMergeOperationSchema: z.ZodType<DesignMergeOperationType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        InsertPagesDesignMergeOperationSchema,
-        MovePagesDesignMergeOperationSchema,
-        DeletePagesDesignMergeOperationSchema,
-      ])
-      .openapi({
-        discriminator: {
-          mapping: {
-            insert_pages: '#/components/schemas/InsertPagesDesignMergeOperation',
-            move_pages: '#/components/schemas/MovePagesDesignMergeOperation',
-            delete_pages: '#/components/schemas/DeletePagesDesignMergeOperation',
-          },
-          propertyName: 'type',
+      'Tabular data, structured in rows of cells.\n\n- Each cell must have a data type configured.\n- All rows must have the same number of cells.\n- The number of entries in `column_configs` must match the number of columns in the data.',
+    example: {
+      column_configs: [
+        { name: 'Geographic Region', type: 'string' },
+        { name: 'Sales (millions AUD)', type: 'number' },
+        { name: 'Target (millions AUD)', type: 'number' },
+        { name: 'Target met?', type: 'boolean' },
+        { name: 'Date met', type: 'date' },
+        { name: 'Logo', type: 'media' },
+      ],
+      rows: [
+        {
+          cells: [
+            { type: 'string', value: 'Asia Pacific' },
+            { type: 'number', value: 10.2, metadata: { formatting: '#,##0.0' } },
+            { type: 'number', value: 10, metadata: { formatting: '#,##0.0' } },
+            { type: 'boolean', value: true },
+            { type: 'date', value: 1721944387 },
+            {
+              type: 'media',
+              value: [
+                {
+                  type: 'image_upload',
+                  url: 'https://example.com/apac-logo.png',
+                  thumbnail_url: 'https://example.com/apac-logo-thumb.png',
+                  mime_type: 'image/png',
+                  ai_disclosure: 'none',
+                },
+                {
+                  type: 'video_upload',
+                  url: 'https://example.com/apac-logo.mp4',
+                  thumbnail_image_url: 'https://example.com/apac-logo-thumb.png',
+                  thumbnail_video_url: 'https://example.com/apac-logo-thumb.mp4',
+                  mime_type: 'video/mp4',
+                  ai_disclosure: 'none',
+                },
+              ],
+            },
+          ],
         },
-      }),
-  )
-  .openapi('DesignMergeOperation')
-
-const NewDesignCreateDesignMergeJobRequestSchema = z
-  .object({
-    type: z
-      .literal('create_new_design')
-      .openapi({ description: 'The type of merge job to create.', example: 'create_new_design' }),
-    operations: z
-      .array(DesignMergeOperationSchema)
-      .min(1)
-      .max(500)
-      .openapi({ description: 'For this job type, only insert operations are supported.' }),
-    title: z
-      .string()
-      .min(1)
-      .max(255)
-      .openapi({ description: 'Title for the new design.', example: 'My merged design' }),
+        {
+          cells: [
+            { type: 'string', value: 'EMEA' },
+            { type: 'number', value: 13.8, metadata: { formatting: '#,##0.0' } },
+            { type: 'number', value: 14, metadata: { formatting: '#,##0.0' } },
+            { type: 'boolean', value: false },
+            { type: 'date' },
+            { type: 'media', value: [] },
+          ],
+        },
+      ],
+    },
+    required: ['rows'],
   })
+  .openapi('DataTable')
+
+type DatasetChartValueType = { type: 'chart'; chart_data: z.infer<typeof DataTableSchema> }
+
+const DatasetChartValueSchema: z.ZodType<DatasetChartValueType> & z.core.$ZodTypeDiscriminable = z
+  .object({ type: z.literal('chart'), chart_data: DataTableSchema })
   .openapi({
-    description: 'Creates a new design by inserting pages from other designs.',
-    required: ['operations', 'title', 'type'],
+    description:
+      'If the data field is a chart.\n\nNote the following behavior:\n- If `column_configs` is not provided, the first row is assumed to contain column headers where applicable.\n- Chart autofill supports a maximum of 100 rows and 20 columns.\n- `number` cells with formatting metadata are not currently supported for autofill and will result in an error response.\n- `media` cells are not supported for chart autofill and will result in an error response.',
+    required: ['chart_data', 'type'],
   })
-  .openapi('NewDesignCreateDesignMergeJobRequest')
+  .openapi('DatasetChartValue')
 
-const ModifyDesignCreateDesignMergeJobRequestSchema = z
+type DatasetSheetValueType = { type: 'sheet'; sheet_data: z.infer<typeof DataTableSchema> }
+
+const DatasetSheetValueSchema: z.ZodType<DatasetSheetValueType> & z.core.$ZodTypeDiscriminable = z
+  .object({ type: z.literal('sheet'), sheet_data: DataTableSchema })
+  .openapi({
+    description:
+      'If the data field is a sheet element.\n\nNote the following behavior:\n- `number` cells with formatting metadata are not currently supported for autofill and will result in an error response.\n- `media` cells are not supported for sheet autofill and will result in an error response.',
+    required: ['sheet_data', 'type'],
+  })
+  .openapi('DatasetSheetValue')
+
+type DatasetValueType =
+  | z.infer<typeof DatasetImageValueSchema>
+  | z.infer<typeof DatasetVideoValueSchema>
+  | z.infer<typeof DatasetTextValueSchema>
+  | z.infer<typeof DatasetChartValueSchema>
+  | z.infer<typeof DatasetSheetValueSchema>
+
+const DatasetValueSchema: z.ZodType<DatasetValueType> = z
+  .discriminatedUnion('type', [
+    DatasetImageValueSchema,
+    DatasetVideoValueSchema,
+    DatasetTextValueSchema,
+    DatasetChartValueSchema,
+    DatasetSheetValueSchema,
+  ])
+  .openapi({
+    description: 'The data field to autofill.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        image: '#/components/schemas/DatasetImageValue',
+        video: '#/components/schemas/DatasetVideoValue',
+        text: '#/components/schemas/DatasetTextValue',
+        chart: '#/components/schemas/DatasetChartValue',
+        sheet: '#/components/schemas/DatasetSheetValue',
+      },
+    },
+  })
+  .openapi('DatasetValue')
+
+type CreateFromBrandTemplateAutofillJobRequestType = {
+  type: 'create_from_brand_template'
+  brand_template_id: string
+  title?: string
+  data: { [key: string]: z.infer<typeof DatasetValueSchema> }
+}
+
+const CreateFromBrandTemplateAutofillJobRequestSchema: z.ZodType<CreateFromBrandTemplateAutofillJobRequestType> &
+  z.core.$ZodTypeDiscriminable = z
   .object({
     type: z
-      .literal('modify_existing_design')
+      .literal('create_from_brand_template')
       .openapi({
-        description: 'The type of merge job to create.',
-        example: 'modify_existing_design',
+        description:
+          "For backward compatibility, if `type` isn't specified in the request, the request type is assumed to be `create_from_brand_template`.",
       }),
-    design_id: z
+    brand_template_id: z
       .string()
-      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
-      .openapi({ description: 'The ID of the design to modify.', example: 'DAFVztcvd9z' }),
-    operations: z
-      .array(DesignMergeOperationSchema)
-      .min(1)
-      .max(500)
-      .openapi({ description: 'Supports insert, move, and delete operations.' }),
+      .openapi({ description: 'ID of the input brand template.', example: 'DAFVztcvd9z' }),
     title: z
       .string()
       .min(1)
       .max(255)
       .exactOptional()
-      .openapi({ description: 'Optional new title for the design.', example: 'My updated design' }),
-  })
-  .openapi({
-    description: 'Modifies an existing design by inserting, moving, or deleting pages.',
-    required: ['design_id', 'operations', 'type'],
-  })
-  .openapi('ModifyDesignCreateDesignMergeJobRequest')
-
-type CreateDesignMergeJobRequestType =
-  | z.infer<typeof NewDesignCreateDesignMergeJobRequestSchema>
-  | z.infer<typeof ModifyDesignCreateDesignMergeJobRequestSchema>
-
-const MergeSourceForInsertPagesOperationSchema: z.ZodType<MergeSourceForInsertPagesOperationType> =
-  z
-    .lazy(() =>
-      z
-        .xor([DesignMergeSourceForInsertPagesOperationSchema])
-        .openapi({
-          discriminator: {
-            mapping: { design: '#/components/schemas/DesignMergeSourceForInsertPagesOperation' },
-            propertyName: 'type',
+      .openapi({
+        description:
+          'Title to use for the autofilled design.\n\nIf no design title is provided, the autofilled design will have the same title as the brand template.',
+        example: 'My autofilled design',
+      }),
+    data: z.record(z.string(), DatasetValueSchema).openapi({
+      description: 'Data object containing the data fields and values to autofill.',
+      example: {
+        cute_pet_image_of_the_day: { type: 'image', asset_id: 'Msd59349ff' },
+        cute_pet_video_of_the_day: { type: 'video', asset_id: 'VAHCkrNUANI' },
+        cute_pet_witty_pet_says: { type: 'text', text: 'It was like this when I got here!' },
+        cute_pet_sales_chart: {
+          type: 'chart',
+          chart_data: {
+            column_configs: [
+              { name: 'Geographic Region', type: 'string' },
+              { name: 'Sales (millions AUD)', type: 'number' },
+              { name: 'Target (millions AUD)', type: 'number' },
+              { name: 'Target met?', type: 'boolean' },
+              { name: 'Date met', type: 'date' },
+            ],
+            rows: [
+              {
+                cells: [
+                  { type: 'string', value: 'Asia Pacific' },
+                  { type: 'number', value: 10.2 },
+                  { type: 'number', value: 10 },
+                  { type: 'boolean', value: true },
+                  { type: 'date', value: 1721944387 },
+                ],
+              },
+              {
+                cells: [
+                  { type: 'string', value: 'EMEA' },
+                  { type: 'number', value: 13.8 },
+                  { type: 'number', value: 14 },
+                  { type: 'boolean', value: false },
+                  { type: 'date' },
+                ],
+              },
+            ],
           },
-        }),
-    )
-    .openapi('MergeSourceForInsertPagesOperation')
-
-const InsertPagesDesignMergeOperationSchema = z
-  .object({
-    type: z
-      .literal('insert_pages')
-      .openapi({ description: 'The type of merge operation.', example: 'insert_pages' }),
-    source: MergeSourceForInsertPagesOperationSchema,
-    after_page_number: z
-      .int32()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Insert after this one-based page number in the evolving target layout. Use 0 to insert at the beginning, and the default is inserting at the end (append).\n',
-        example: 2,
-      }),
+        },
+        cute_pet_sales_sheet: {
+          type: 'sheet',
+          sheet_data: {
+            column_configs: [
+              { name: 'Geographic Region', type: 'string' },
+              { name: 'Sales (millions AUD)', type: 'number' },
+              { name: 'Target (millions AUD)', type: 'number' },
+              { name: 'Target met?', type: 'boolean' },
+              { name: 'Date met', type: 'date' },
+            ],
+            rows: [
+              {
+                cells: [
+                  { type: 'string', value: 'Asia Pacific' },
+                  { type: 'number', value: 10.2 },
+                  { type: 'number', value: 10 },
+                  { type: 'boolean', value: true },
+                  { type: 'date', value: 1721944387 },
+                ],
+              },
+              {
+                cells: [
+                  { type: 'string', value: 'EMEA' },
+                  { type: 'number', value: 13.8 },
+                  { type: 'number', value: 14 },
+                  { type: 'boolean', value: false },
+                  { type: 'date' },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    }),
   })
   .openapi({
-    description: 'Inserts pages from a source design into the target design.',
-    required: ['source', 'type'],
+    description: 'Create a new autofilled design from a brand template.',
+    required: ['brand_template_id', 'data', 'type'],
   })
-  .openapi('InsertPagesDesignMergeOperation')
+  .openapi('CreateFromBrandTemplateAutofillJobRequest')
 
-const MovePagesDesignMergeOperationSchema = z
+type CreateFromDesignAutofillJobRequestType = {
+  type: 'create_from_design'
+  design_id: string
+  title?: string
+  data: { [key: string]: z.infer<typeof DatasetValueSchema> }
+}
+
+const CreateFromDesignAutofillJobRequestSchema: z.ZodType<CreateFromDesignAutofillJobRequestType> &
+  z.core.$ZodTypeDiscriminable = z
   .object({
-    type: z
-      .literal('move_pages')
-      .openapi({ description: 'The type of merge operation.', example: 'move_pages' }),
-    from_page_numbers: z
-      .array(z.int32().min(1))
-      .min(1)
-      .openapi({
-        description:
-          'One-based number of the pages to move (evaluated at the time this operation runs). Pages are moved in order.',
-        example: [1, 3],
-      }),
-    to_after_page_number: z
-      .int32()
-      .min(0)
-      .openapi({
-        description:
-          'Destination position: insert the moved pages after this one-based page number. Use 0 to move to the beginning.\n',
-        example: 2,
-      }),
-  })
-  .openapi({
-    description: 'Moves pages within the target design to a new position.',
-    required: ['from_page_numbers', 'to_after_page_number', 'type'],
-  })
-  .openapi('MovePagesDesignMergeOperation')
-
-const DeletePagesDesignMergeOperationSchema = z
-  .object({
-    type: z
-      .literal('delete_pages')
-      .openapi({ description: 'The type of merge operation.', example: 'delete_pages' }),
-    page_numbers: z
-      .array(z.int32().min(1))
-      .min(1)
-      .openapi({
-        description:
-          'One-based numbers of the pages to delete (evaluated at the time this operation runs). Pages are deleted in reverse order to maintain page numbers.',
-        example: [2, 4],
-      }),
-  })
-  .openapi({
-    description: 'Deletes pages from the target design.',
-    required: ['page_numbers', 'type'],
-  })
-  .openapi('DeletePagesDesignMergeOperation')
-
-type DesignMergeOperationType =
-  | z.infer<typeof InsertPagesDesignMergeOperationSchema>
-  | z.infer<typeof MovePagesDesignMergeOperationSchema>
-  | z.infer<typeof DeletePagesDesignMergeOperationSchema>
-
-const DesignMergeSourceForInsertPagesOperationSchema = z
-  .object({
-    type: z
-      .literal('design')
-      .openapi({ description: 'The type of source to insert pages from.', example: 'design' }),
+    type: z.literal('create_from_design'),
     design_id: z
       .string()
       .regex(/^[a-zA-Z0-9_-]{1,50}$/)
-      .openapi({ description: 'The ID of the source design.', example: 'DAFVztcvd9z' }),
-    page_numbers: z
-      .array(z.int32().min(1))
+      .openapi({
+        description: 'ID of the design to use as the autofill source.',
+        example: 'DAFVztcvd9z',
+      }),
+    title: z
+      .string()
       .min(1)
+      .max(255)
       .exactOptional()
       .openapi({
         description:
-          'One-based page numbers to insert from the source design. If omitted, all pages from the design are inserted.',
-        example: [1, 2],
+          'Title to use for the autofilled design.\n\nIf no design title is provided, the autofilled design will have the same title as the source design.',
+        example: 'My autofilled design',
+      }),
+    data: z.record(z.string(), DatasetValueSchema).openapi({
+      description: 'Data object containing the data fields and values to autofill.',
+      example: {
+        cute_pet_image_of_the_day: { type: 'image', asset_id: 'Msd59349ff' },
+        cute_pet_video_of_the_day: { type: 'video', asset_id: 'VAHCkrNUANI' },
+        cute_pet_witty_pet_says: { type: 'text', text: 'It was like this when I got here!' },
+        cute_pet_sales_chart: {
+          type: 'chart',
+          chart_data: {
+            column_configs: [
+              { name: 'Geographic Region', type: 'string' },
+              { name: 'Sales (millions AUD)', type: 'number' },
+              { name: 'Target (millions AUD)', type: 'number' },
+              { name: 'Target met?', type: 'boolean' },
+              { name: 'Date met', type: 'date' },
+            ],
+            rows: [
+              {
+                cells: [
+                  { type: 'string', value: 'Asia Pacific' },
+                  { type: 'number', value: 10.2 },
+                  { type: 'number', value: 10 },
+                  { type: 'boolean', value: true },
+                  { type: 'date', value: 1721944387 },
+                ],
+              },
+              {
+                cells: [
+                  { type: 'string', value: 'EMEA' },
+                  { type: 'number', value: 13.8 },
+                  { type: 'number', value: 14 },
+                  { type: 'boolean', value: false },
+                  { type: 'date' },
+                ],
+              },
+            ],
+          },
+        },
+        cute_pet_sales_sheet: {
+          type: 'sheet',
+          sheet_data: {
+            column_configs: [
+              { name: 'Geographic Region', type: 'string' },
+              { name: 'Sales (millions AUD)', type: 'number' },
+              { name: 'Target (millions AUD)', type: 'number' },
+              { name: 'Target met?', type: 'boolean' },
+              { name: 'Date met', type: 'date' },
+            ],
+            rows: [
+              {
+                cells: [
+                  { type: 'string', value: 'Asia Pacific' },
+                  { type: 'number', value: 10.2 },
+                  { type: 'number', value: 10 },
+                  { type: 'boolean', value: true },
+                  { type: 'date', value: 1721944387 },
+                ],
+              },
+              {
+                cells: [
+                  { type: 'string', value: 'EMEA' },
+                  { type: 'number', value: 13.8 },
+                  { type: 'number', value: 14 },
+                  { type: 'boolean', value: false },
+                  { type: 'date' },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    }),
+  })
+  .openapi({
+    description:
+      'Create a new autofilled design from an existing design that contains autofill data fields.',
+    required: ['data', 'design_id', 'type'],
+  })
+  .openapi('CreateFromDesignAutofillJobRequest')
+
+type UpdateDesignAutofillJobRequestType = {
+  type: 'update_design'
+  design_id: string
+  data: { [key: string]: z.infer<typeof DatasetValueSchema> }
+}
+
+const UpdateDesignAutofillJobRequestSchema: z.ZodType<UpdateDesignAutofillJobRequestType> &
+  z.core.$ZodTypeDiscriminable = z
+  .object({
+    type: z.literal('update_design'),
+    design_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
+      .openapi({ description: 'ID of the design to autofill in place.', example: 'DAFVztcvd9z' }),
+    data: z.record(z.string(), DatasetValueSchema).openapi({
+      description: 'Data object containing the data fields and values to autofill.',
+      example: {
+        cute_pet_image_of_the_day: { type: 'image', asset_id: 'Msd59349ff' },
+        cute_pet_video_of_the_day: { type: 'video', asset_id: 'VAHCkrNUANI' },
+        cute_pet_witty_pet_says: { type: 'text', text: 'It was like this when I got here!' },
+        cute_pet_sales_chart: {
+          type: 'chart',
+          chart_data: {
+            column_configs: [
+              { name: 'Geographic Region', type: 'string' },
+              { name: 'Sales (millions AUD)', type: 'number' },
+              { name: 'Target (millions AUD)', type: 'number' },
+              { name: 'Target met?', type: 'boolean' },
+              { name: 'Date met', type: 'date' },
+            ],
+            rows: [
+              {
+                cells: [
+                  { type: 'string', value: 'Asia Pacific' },
+                  { type: 'number', value: 10.2 },
+                  { type: 'number', value: 10 },
+                  { type: 'boolean', value: true },
+                  { type: 'date', value: 1721944387 },
+                ],
+              },
+              {
+                cells: [
+                  { type: 'string', value: 'EMEA' },
+                  { type: 'number', value: 13.8 },
+                  { type: 'number', value: 14 },
+                  { type: 'boolean', value: false },
+                  { type: 'date' },
+                ],
+              },
+            ],
+          },
+        },
+        cute_pet_sales_sheet: {
+          type: 'sheet',
+          sheet_data: {
+            column_configs: [
+              { name: 'Geographic Region', type: 'string' },
+              { name: 'Sales (millions AUD)', type: 'number' },
+              { name: 'Target (millions AUD)', type: 'number' },
+              { name: 'Target met?', type: 'boolean' },
+              { name: 'Date met', type: 'date' },
+            ],
+            rows: [
+              {
+                cells: [
+                  { type: 'string', value: 'Asia Pacific' },
+                  { type: 'number', value: 10.2 },
+                  { type: 'number', value: 10 },
+                  { type: 'boolean', value: true },
+                  { type: 'date', value: 1721944387 },
+                ],
+              },
+              {
+                cells: [
+                  { type: 'string', value: 'EMEA' },
+                  { type: 'number', value: 13.8 },
+                  { type: 'number', value: 14 },
+                  { type: 'boolean', value: false },
+                  { type: 'date' },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    }),
+  })
+  .openapi({
+    description: 'Autofill an existing design in place with the provided data.',
+    required: ['data', 'design_id', 'type'],
+  })
+  .openapi('UpdateDesignAutofillJobRequest')
+
+type CreateDesignAutofillJobRequestType =
+  | z.infer<typeof CreateFromBrandTemplateAutofillJobRequestSchema>
+  | z.infer<typeof CreateFromDesignAutofillJobRequestSchema>
+  | z.infer<typeof UpdateDesignAutofillJobRequestSchema>
+
+type DatasetType = { [key: string]: z.infer<typeof DatasetValueSchema> }
+
+const UserSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'The ID of the user.', example: 'uKakKUfI03Fg8k2gZ6OkT' }),
+    display_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the user as shown in the Canva UI.',
+        example: 'John Doe',
       }),
   })
   .openapi({
-    description: 'A design source from which pages are inserted.',
-    required: ['design_id', 'type'],
+    description: 'Metadata for the user, consisting of the User ID and display name.',
+    required: ['id'],
   })
-  .openapi('DesignMergeSourceForInsertPagesOperation')
+  .openapi('User')
 
-type MergeSourceForInsertPagesOperationType = z.infer<
-  typeof DesignMergeSourceForInsertPagesOperationSchema
->
+const TeamUserSchema = z
+  .object({
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the user.', example: 'auDAbliZ2rQNNOsUl5OLu' }),
+    team_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The ID of the user's Canva Team.",
+        example: 'Oi2RJILTrKk0KRhRUZozX',
+      }),
+    display_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the user as shown in the Canva UI.',
+        example: 'Jane Doe',
+      }),
+  })
+  .openapi({
+    description: 'Metadata for the user, consisting of the User ID, Team ID, and display name.',
+    required: [],
+  })
+  .openapi('TeamUser')
+
+const ThumbnailSchema = z
+  .object({
+    width: z
+      .int32()
+      .openapi({ description: 'The width of the thumbnail image in pixels.', example: 595 }),
+    height: z
+      .int32()
+      .openapi({ description: 'The height of the thumbnail image in pixels.', example: 335 }),
+    url: z
+      .string()
+      .openapi({
+        description:
+          "A URL for retrieving the thumbnail image.\nThis URL expires after 15 minutes. This URL includes a query string\nthat's required for retrieving the thumbnail.",
+        example:
+          'https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>',
+      }),
+  })
+  .openapi({
+    description: 'A thumbnail image representing the object.',
+    required: ['height', 'url', 'width'],
+  })
+  .openapi('Thumbnail')
+
+const DesignLinksSchema = z
+  .object({
+    edit_url: z
+      .string()
+      .openapi({
+        description:
+          'A temporary editing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/apps/rest-apis/return-navigation-guide/) workflows.\n\nNOTE: This is not a permanent URL, it is only valid for 30 days.',
+        example:
+          'https://www.canva.com/api/design/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiZXhwaXJ5IjoxNzQyMDk5NDAzMDc5fQ..GKLx2hrJa3wSSDKQ.hk3HA59qJyxehR-ejzt2DThBW0cbRdMBz7Fb5uCpwD-4o485pCf4kcXt_ypUYX0qMHVeZ131YvfwGPIhbk-C245D8c12IIJSDbZUZTS7WiCOJZQ.sNz3mPSQxsETBvl_-upMYA/edit',
+      }),
+    view_url: z
+      .string()
+      .openapi({
+        description:
+          'A temporary viewing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/apps/rest-apis/return-navigation-guide/) workflows.\n\nNOTE: This is not a permanent URL, it is only valid for 30 days.\n',
+        example:
+          'https://www.canva.com/api/design/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiZXhwaXJ5IjoxNzQyMDk5NDAzMDc5fQ..GKLx2hrJa3wSSDKQ.hk3HA59qJyxehR-ejzt2DThBW0cbRdMBz7Fb5uCpwD-4o485pCf4kcXt_ypUYX0qMHVeZ131YvfwGPIhbk-C245D8c12IIJSDbZUZTS7WiCOJZQ.sNz3mPSQxsETBvl_-upMYA/view',
+      }),
+  })
+  .openapi({
+    description: 'A temporary set of URLs for viewing or editing the design.',
+    required: ['edit_url', 'view_url'],
+  })
+  .openapi('DesignLinks')
+
+const DesignSummarySchema = z
+  .object({
+    id: z.string().openapi({ description: 'The design ID.', example: 'DAFVztcvd9z' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The design title.', example: 'My summer holiday' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'URL of the design.',
+        example: 'https://www.canva.com/design/DAFVztcvd9z/edit',
+      }),
+    thumbnail: ThumbnailSchema.exactOptional(),
+    urls: DesignLinksSchema,
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the design was created in Canva, as a Unix timestamp (in seconds since the Unix\nEpoch).',
+        example: 1377396000,
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the design was last updated in Canva, as a Unix timestamp (in seconds since the\nUnix Epoch).',
+        example: 1692928800,
+      }),
+    page_count: z
+      .int32()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          "The total number of pages in the design. Some design types don't have pages (for example, Canva docs).",
+        example: 3,
+      }),
+  })
+  .openapi({
+    description: "Basic details about the design, such as the design's ID, title, and URL.",
+    required: ['created_at', 'id', 'updated_at', 'urls'],
+  })
+  .openapi('DesignSummary')
 
 const ShareActionSchema = z
   .object({
@@ -2008,23 +1005,208 @@ const CommentEventTypeEnumSchema = z
   .openapi({ deprecated: true, description: 'The type of comment event.' })
   .openapi('CommentEventTypeEnum')
 
-const CommentSchema: z.ZodType<CommentType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [ParentCommentSchema, ReplyCommentSchema])
+const DesignCommentObjectSchema = z
+  .object({
+    type: z.literal('design'),
+    design_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the design this comment is attached to.',
+        example: 'DAFVztcvd9z',
+      }),
+  })
+  .openapi({
+    deprecated: true,
+    description: 'If the comment is attached to a Canva Design.',
+    required: ['design_id', 'type'],
+  })
+  .openapi('DesignCommentObject')
+
+const CommentObjectSchema = z
+  .xor([DesignCommentObjectSchema])
+  .openapi({
+    deprecated: true,
+    description:
+      'Identifying information about the object (such as a design) that the comment is attached to.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: { design: '#/components/schemas/DesignCommentObject' },
+    },
+    example: { design_id: 'DAFVztcvd9z', type: 'design' },
+  })
+  .openapi('CommentObject')
+
+const ParentCommentSchema = z
+  .object({
+    type: z.literal('parent'),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The ID of the comment.\n\nYou can use this ID to create replies to the comment using the [Create reply API](https://www.canva.dev/docs/apps/rest-apis/reference/comments/create-reply/).',
+        example: 'KeAbiEAjZEj',
+      }),
+    attached_to: CommentObjectSchema.exactOptional(),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'The comment message. This is the comment body shown in the Canva UI.\nUser mentions are shown here in the format `[user_id:team_id]`.',
+        example: 'Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!',
+      }),
+    author: UserSchema,
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the comment or reply was created, as a Unix timestamp\n(in seconds since the Unix Epoch).',
+        example: 1692928800,
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the comment or reply was last updated, as a Unix timestamp\n(in seconds since the Unix Epoch).',
+        example: 1692928900,
+      }),
+    mentions: z
+      .record(z.string(), TeamUserSchema)
       .openapi({
         deprecated: true,
-        description:
-          'The comment object, which contains metadata about the comment.\nDeprecated in favor of the new `thread` object.',
-        discriminator: {
-          mapping: {
-            parent: '#/components/schemas/ParentComment',
-            reply: '#/components/schemas/ReplyComment',
+        description: 'The Canva users mentioned in the comment.',
+        example: {
+          'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP': {
+            user_id: 'oUnPjZ2k2yuhftbWF7873o',
+            team_id: 'oBpVhLW22VrqtwKgaayRbP',
+            display_name: 'John Doe',
           },
-          propertyName: 'type',
         },
       }),
-  )
+    assignee: UserSchema.exactOptional(),
+    resolver: UserSchema.exactOptional(),
+  })
+  .openapi({
+    deprecated: true,
+    description:
+      'Data about the comment, including the message, author, and\nthe object (such as a design) the comment is attached to.',
+    required: ['author', 'id', 'mentions', 'message', 'type'],
+  })
+  .openapi('ParentComment')
+
+const ReplyCommentSchema = z
+  .object({
+    type: z.literal('reply'),
+    id: z.string().openapi({ description: 'The ID of the comment.', example: 'KeAZEAjijEb' }),
+    attached_to: CommentObjectSchema.exactOptional(),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'The comment message. This is the comment body shown in the Canva UI.\nUser mentions are shown here in the format `[user_id:team_id]`.',
+        example: 'Thanks!',
+      }),
+    author: UserSchema,
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the comment or reply was created, as a Unix timestamp\n(in seconds since the Unix Epoch).',
+        example: 1692929800,
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the comment or reply was last updated, as a Unix timestamp\n(in seconds since the Unix Epoch).',
+        example: 1692929900,
+      }),
+    mentions: z
+      .record(z.string(), TeamUserSchema)
+      .openapi({
+        deprecated: true,
+        description: 'The Canva users mentioned in the comment.',
+        example: {
+          'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP': {
+            user_id: 'oUnPjZ2k2yuhftbWF7873o',
+            team_id: 'oBpVhLW22VrqtwKgaayRbP',
+            display_name: 'John Doe',
+          },
+        },
+      }),
+    thread_id: z
+      .string()
+      .openapi({
+        description:
+          'The ID of the comment thread this reply is in. This ID is the same as the `id` of the\nparent comment.',
+        example: 'KeAbiEAjZEj',
+      }),
+  })
+  .openapi({
+    deprecated: true,
+    description:
+      'Data about the reply comment, including the message, author, and\nthe object (such as a design) the comment is attached to.',
+    required: ['author', 'id', 'mentions', 'message', 'thread_id', 'type'],
+  })
+  .openapi('ReplyComment')
+
+const CommentSchema = z
+  .discriminatedUnion('type', [ParentCommentSchema, ReplyCommentSchema])
+  .openapi({
+    deprecated: true,
+    description:
+      'The comment object, which contains metadata about the comment.\nDeprecated in favor of the new `thread` object.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        parent: '#/components/schemas/ParentComment',
+        reply: '#/components/schemas/ReplyComment',
+      },
+    },
+  })
   .openapi('Comment')
 
 const CommentEventDeprecatedSchema = z
@@ -2037,33 +1219,461 @@ const CommentEventDeprecatedSchema = z
   })
   .openapi('CommentEventDeprecated')
 
-const CommentEventSchema: z.ZodType<CommentEventType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        NewCommentEventSchema,
-        AssignedCommentEventSchema,
-        ResolvedCommentEventSchema,
-        ReplyCommentEventSchema,
-        MentionCommentEventSchema,
-      ])
+const CommentContentSchema = z
+  .object({
+    plaintext: z
+      .string()
       .openapi({
-        description: 'The type of comment event, including additional type-specific properties.',
-        discriminator: {
-          mapping: {
-            new: '#/components/schemas/NewCommentEvent',
-            assigned: '#/components/schemas/AssignedCommentEvent',
-            resolved: '#/components/schemas/ResolvedCommentEvent',
-            reply: '#/components/schemas/ReplyCommentEvent',
-            mention: '#/components/schemas/MentionCommentEvent',
+        description:
+          'The content in plaintext.\nAny user mention tags are shown in the format `[user_id:team_id]`.',
+        example: 'Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!',
+      }),
+    markdown: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content in markdown.\nAny user mention tags are shown in the format `[user_id:team_id]`',
+        example: '*_Great work_* [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!',
+      }),
+  })
+  .openapi({ description: 'The content of a comment thread or reply.', required: ['plaintext'] })
+  .openapi('CommentContent')
+
+const UserMentionSchema = z
+  .object({
+    tag: z
+      .string()
+      .openapi({
+        description:
+          "The mention tag for the user mentioned in the comment thread or reply content. This has the format of the user's user ID and team ID separated by a colon (`user_id:team_id`).",
+        example: 'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP',
+      }),
+    user: TeamUserSchema,
+  })
+  .openapi({
+    description:
+      "Information about the user mentioned in a comment thread or reply. Each user mention is keyed using the user's user ID and team ID separated by a colon (`user_id:team_id`).",
+    required: ['tag', 'user'],
+  })
+  .openapi('UserMention')
+
+const CommentThreadTypeSchema = z
+  .object({
+    type: z.literal('comment'),
+    content: CommentContentSchema,
+    mentions: z
+      .record(z.string(), UserMentionSchema)
+      .openapi({
+        description: 'The Canva users mentioned in the comment thread or reply.',
+        example: {
+          'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP': {
+            tag: 'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP',
+            user: {
+              user_id: 'oUnPjZ2k2yuhftbWF7873o',
+              team_id: 'oBpVhLW22VrqtwKgaayRbP',
+              display_name: 'John Doe',
+            },
           },
-          propertyName: 'type',
         },
       }),
-  )
+    assignee: UserSchema.exactOptional(),
+    resolver: UserSchema.exactOptional(),
+  })
+  .openapi({ description: 'A comment thread.', required: ['content', 'mentions', 'type'] })
+  .openapi('CommentThreadType')
+
+const AddSuggestedEditSchema = z
+  .object({ type: z.literal('add'), text: z.string().openapi({ example: 'fantastic' }) })
+  .openapi({ description: 'A suggestion to add some text.', required: ['text', 'type'] })
+  .openapi('AddSuggestedEdit')
+
+const DeleteSuggestedEditSchema = z
+  .object({ type: z.literal('delete'), text: z.string().openapi({ example: 'just' }) })
+  .openapi({ description: 'A suggestion to delete some text.', required: ['text', 'type'] })
+  .openapi('DeleteSuggestedEdit')
+
+const SuggestionFormatSchema = z
+  .enum([
+    'font_family',
+    'font_size',
+    'font_weight',
+    'font_style',
+    'color',
+    'background_color',
+    'decoration',
+    'strikethrough',
+    'link',
+    'letter_spacing',
+    'line_height',
+    'direction',
+    'text_align',
+    'list_marker',
+    'list_level',
+    'margin_inline_start',
+    'text_indent',
+    'font_size_modifier',
+    'vertical_align',
+  ])
+  .openapi({ description: 'The suggested format change.', example: 'font_style' })
+  .openapi('SuggestionFormat')
+
+const FormatSuggestedEditSchema = z
+  .object({ type: z.literal('format'), format: SuggestionFormatSchema })
+  .openapi({ description: 'A suggestion to format some text.', required: ['format', 'type'] })
+  .openapi('FormatSuggestedEdit')
+
+const SuggestedEditSchema = z
+  .discriminatedUnion('type', [
+    AddSuggestedEditSchema,
+    DeleteSuggestedEditSchema,
+    FormatSuggestedEditSchema,
+  ])
+  .openapi({
+    description: 'The type of the suggested edit, along with additional type-specific properties.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        add: '#/components/schemas/AddSuggestedEdit',
+        delete: '#/components/schemas/DeleteSuggestedEdit',
+        format: '#/components/schemas/FormatSuggestedEdit',
+      },
+    },
+  })
+  .openapi('SuggestedEdit')
+
+const SuggestionStatusSchema = z
+  .enum(['open', 'accepted', 'rejected'])
+  .openapi({
+    description: 'The current status of the suggestion.',
+    'x-enum-descriptions': [
+      "A suggestion was made, but it hasn't been accepted or rejected yet.",
+      'A suggestion was accepted and applied to the design.',
+      'A suggestion was rejected and not applied to the design.',
+    ],
+  })
+  .openapi('SuggestionStatus')
+
+const SuggestionThreadTypeSchema = z
+  .object({
+    type: z.literal('suggestion'),
+    suggested_edits: z.array(SuggestedEditSchema).min(1),
+    status: SuggestionStatusSchema,
+  })
+  .openapi({ description: 'A suggestion thread.', required: ['status', 'suggested_edits', 'type'] })
+  .openapi('SuggestionThreadType')
+
+const ThreadTypeSchema = z
+  .discriminatedUnion('type', [CommentThreadTypeSchema, SuggestionThreadTypeSchema])
+  .openapi({
+    description:
+      'The type of the discussion thread, along with additional type-specific properties.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        comment: '#/components/schemas/CommentThreadType',
+        suggestion: '#/components/schemas/SuggestionThreadType',
+      },
+    },
+  })
+  .openapi('ThreadType')
+
+const ThreadSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The ID of the thread.\n\nYou can use this ID to create replies to the thread using the [Create reply API](https://www.canva.dev/docs/apps/rest-apis/reference/comments/create-reply/).',
+        example: 'KeAbiEAjZEj',
+      }),
+    design_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the design that the discussion thread is on.',
+        example: 'DAFVztcvd9z',
+      }),
+    thread_type: ThreadTypeSchema,
+    author: UserSchema.exactOptional(),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the thread was created, as a Unix timestamp\n(in seconds since the Unix Epoch).',
+        example: 1692928800,
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the thread was last updated, as a Unix timestamp\n(in seconds since the Unix Epoch).',
+        example: 1692928900,
+      }),
+  })
+  .openapi({
+    description:
+      'A discussion thread on a design.\n\nThe `type` of the thread can be found in the `thread_type` object, along with additional type-specific properties.\nThe `author` of the thread might be missing if that user account no longer exists.',
+    required: ['created_at', 'design_id', 'id', 'thread_type', 'updated_at'],
+  })
+  .openapi('Thread')
+
+const NewCommentEventSchema = z
+  .object({
+    type: z.literal('new'),
+    comment_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the comment thread.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    comment: ThreadSchema,
+  })
+  .openapi({
+    description: 'Event type for a new comment thread.',
+    required: ['comment', 'comment_url', 'type'],
+  })
+  .openapi('NewCommentEvent')
+
+const AssignedCommentEventSchema = z
+  .object({
+    type: z.literal('assigned'),
+    comment_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the comment thread.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    comment: ThreadSchema,
+  })
+  .openapi({
+    description: 'Event type for a comment thread that has been assigned.',
+    required: ['comment', 'comment_url', 'type'],
+  })
+  .openapi('AssignedCommentEvent')
+
+const ResolvedCommentEventSchema = z
+  .object({
+    type: z.literal('resolved'),
+    comment_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the comment thread.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    comment: ThreadSchema,
+  })
+  .openapi({
+    description: 'Event type for a comment thread that has been resolved.',
+    required: ['comment', 'comment_url', 'type'],
+  })
+  .openapi('ResolvedCommentEvent')
+
+const ReplySchema = z
+  .object({
+    id: z.string().openapi({ description: 'The ID of the reply.', example: 'KeAZEAjijEb' }),
+    design_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the design that the thread for this reply is attached to.',
+        example: 'DAFVztcvd9z',
+      }),
+    thread_id: z
+      .string()
+      .openapi({ description: 'The ID of the thread this reply is in.', example: 'KeAbiEAjZEj' }),
+    author: UserSchema.exactOptional(),
+    content: CommentContentSchema,
+    mentions: z
+      .record(z.string(), UserMentionSchema)
+      .openapi({
+        description: 'The Canva users mentioned in the comment thread or reply.',
+        example: {
+          'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP': {
+            tag: 'oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP',
+            user: {
+              user_id: 'oUnPjZ2k2yuhftbWF7873o',
+              team_id: 'oBpVhLW22VrqtwKgaayRbP',
+              display_name: 'John Doe',
+            },
+          },
+        },
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the reply was created, as a Unix timestamp\n(in seconds since the Unix Epoch).',
+        example: 1692929800,
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the reply was last updated, as a Unix timestamp\n(in seconds since the Unix Epoch).',
+        example: 1692929900,
+      }),
+  })
+  .openapi({
+    description:
+      'A reply to a thread.\n\nThe `author` of the reply might be missing if that user account no longer exists.',
+    required: ['content', 'created_at', 'design_id', 'id', 'mentions', 'thread_id', 'updated_at'],
+  })
+  .openapi('Reply')
+
+const ReplyCommentEventSchema = z
+  .object({
+    type: z.literal('reply'),
+    reply_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the comment reply.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    reply: ReplySchema,
+  })
+  .openapi({
+    description: 'Event type for a reply to a comment thread.',
+    required: ['reply', 'reply_url', 'type'],
+  })
+  .openapi('ReplyCommentEvent')
+
+const ThreadMentionEventContentSchema = z
+  .object({
+    type: z.literal('thread'),
+    comment_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the comment thread.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    comment: ThreadSchema,
+  })
+  .openapi({
+    description: 'Content for a mention in a comment thread.',
+    required: ['comment', 'comment_url', 'type'],
+  })
+  .openapi('ThreadMentionEventContent')
+
+const ReplyMentionEventContentSchema = z
+  .object({
+    type: z.literal('reply'),
+    reply_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the comment reply.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    reply: ReplySchema,
+  })
+  .openapi({
+    description: 'Content for a mention in a comment reply.',
+    required: ['reply', 'reply_url', 'type'],
+  })
+  .openapi('ReplyMentionEventContent')
+
+const MentionEventContentSchema = z
+  .discriminatedUnion('type', [ThreadMentionEventContentSchema, ReplyMentionEventContentSchema])
+  .openapi({
+    description:
+      'The type of mention event content, along with additional type-specific properties.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        thread: '#/components/schemas/ThreadMentionEventContent',
+        reply: '#/components/schemas/ReplyMentionEventContent',
+      },
+    },
+  })
+  .openapi('MentionEventContent')
+
+const MentionCommentEventSchema = z
+  .object({ type: z.literal('mention'), content: MentionEventContentSchema })
+  .openapi({
+    description: 'Event type for a mention in a comment thread or reply.',
+    required: ['content', 'type'],
+  })
+  .openapi('MentionCommentEvent')
+
+const CommentEventSchema = z
+  .discriminatedUnion('type', [
+    NewCommentEventSchema,
+    AssignedCommentEventSchema,
+    ResolvedCommentEventSchema,
+    ReplyCommentEventSchema,
+    MentionCommentEventSchema,
+  ])
+  .openapi({
+    description: 'The type of comment event, including additional type-specific properties.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        new: '#/components/schemas/NewCommentEvent',
+        assigned: '#/components/schemas/AssignedCommentEvent',
+        resolved: '#/components/schemas/ResolvedCommentEvent',
+        reply: '#/components/schemas/ReplyCommentEvent',
+        mention: '#/components/schemas/MentionCommentEvent',
+      },
+    },
+  })
   .openapi('CommentEvent')
 
-const CommentNotificationContentSchema = z
+type CommentNotificationContentType = {
+  type: 'comment'
+  triggering_user: z.infer<typeof UserSchema>
+  receiving_team_user: z.infer<typeof TeamUserSchema>
+  design: z.infer<typeof DesignSummarySchema>
+  comment_url?: string
+  comment?: z.infer<typeof CommentEventDeprecatedSchema>
+  comment_event?: z.infer<typeof CommentEventSchema>
+}
+
+const CommentNotificationContentSchema: z.ZodType<CommentNotificationContentType> &
+  z.core.$ZodTypeDiscriminable = z
   .object({
     type: z.literal('comment').openapi({ example: 'comment' }),
     triggering_user: UserSchema,
@@ -2328,31 +1938,117 @@ const FolderAccessRequestedNotificationContentSchema = z
   })
   .openapi('FolderAccessRequestedNotificationContent')
 
-const SuggestionEventTypeSchema: z.ZodType<SuggestionEventTypeType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        NewSuggestionEventTypeSchema,
-        AcceptedSuggestionEventTypeSchema,
-        RejectedSuggestionEventTypeSchema,
-        ReplySuggestionEventTypeSchema,
-        MentionSuggestionEventTypeSchema,
-      ])
+const NewSuggestionEventTypeSchema = z
+  .object({
+    type: z.literal('new'),
+    suggestion_url: z
+      .string()
       .openapi({
-        description:
-          'The type of suggestion event, along with additional type-specific properties.',
-        discriminator: {
-          mapping: {
-            new: '#/components/schemas/NewSuggestionEventType',
-            accepted: '#/components/schemas/AcceptedSuggestionEventType',
-            rejected: '#/components/schemas/RejectedSuggestionEventType',
-            reply: '#/components/schemas/ReplySuggestionEventType',
-            mention: '#/components/schemas/MentionSuggestionEventType',
-          },
-          propertyName: 'type',
-        },
+        description: 'A URL to the design, focused on the suggestion.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
       }),
-  )
+    suggestion: ThreadSchema,
+  })
+  .openapi({
+    description: 'Event type for a new suggestion.',
+    required: ['suggestion', 'suggestion_url', 'type'],
+  })
+  .openapi('NewSuggestionEventType')
+
+const AcceptedSuggestionEventTypeSchema = z
+  .object({
+    type: z.literal('accepted'),
+    suggestion_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the suggestion.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    suggestion: ThreadSchema,
+  })
+  .openapi({
+    description: 'Event type for a suggestion that has been accepted.',
+    required: ['suggestion', 'suggestion_url', 'type'],
+  })
+  .openapi('AcceptedSuggestionEventType')
+
+const RejectedSuggestionEventTypeSchema = z
+  .object({
+    type: z.literal('rejected'),
+    suggestion_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the suggestion.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    suggestion: ThreadSchema,
+  })
+  .openapi({
+    description: 'Event type for a suggestion that has been rejected.',
+    required: ['suggestion', 'suggestion_url', 'type'],
+  })
+  .openapi('RejectedSuggestionEventType')
+
+const ReplySuggestionEventTypeSchema = z
+  .object({
+    type: z.literal('reply'),
+    reply_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the suggestion reply.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    reply: ReplySchema,
+  })
+  .openapi({
+    description: 'Event type for a reply to a suggestion.',
+    required: ['reply', 'reply_url', 'type'],
+  })
+  .openapi('ReplySuggestionEventType')
+
+const MentionSuggestionEventTypeSchema = z
+  .object({
+    type: z.literal('mention'),
+    reply_url: z
+      .string()
+      .openapi({
+        description: 'A URL to the design, focused on the suggestion reply.',
+        example:
+          'https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA',
+      }),
+    reply: ReplySchema,
+  })
+  .openapi({
+    description: 'Event type for a mention in a reply to a suggestion.',
+    required: ['reply', 'reply_url', 'type'],
+  })
+  .openapi('MentionSuggestionEventType')
+
+const SuggestionEventTypeSchema = z
+  .discriminatedUnion('type', [
+    NewSuggestionEventTypeSchema,
+    AcceptedSuggestionEventTypeSchema,
+    RejectedSuggestionEventTypeSchema,
+    ReplySuggestionEventTypeSchema,
+    MentionSuggestionEventTypeSchema,
+  ])
+  .openapi({
+    description: 'The type of suggestion event, along with additional type-specific properties.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        new: '#/components/schemas/NewSuggestionEventType',
+        accepted: '#/components/schemas/AcceptedSuggestionEventType',
+        rejected: '#/components/schemas/RejectedSuggestionEventType',
+        reply: '#/components/schemas/ReplySuggestionEventType',
+        mention: '#/components/schemas/MentionSuggestionEventType',
+      },
+    },
+  })
   .openapi('SuggestionEventType')
 
 const SuggestionNotificationContentSchema = z
@@ -2382,6 +2078,49 @@ type NotificationContentType =
   | z.infer<typeof TeamInviteNotificationContentSchema>
   | z.infer<typeof FolderAccessRequestedNotificationContentSchema>
   | z.infer<typeof SuggestionNotificationContentSchema>
+
+const NotificationContentSchema: z.ZodType<NotificationContentType> = z
+  .discriminatedUnion('type', [
+    ShareDesignNotificationContentSchema,
+    ShareFolderNotificationContentSchema,
+    CommentNotificationContentSchema,
+    DesignAccessRequestedNotificationContentSchema,
+    DesignApprovalRequestedNotificationContentSchema,
+    DesignApprovalResponseNotificationContentSchema,
+    DesignApprovalReviewerInvalidatedNotificationContentSchema,
+    DesignMentionNotificationContentSchema,
+    TeamInviteNotificationContentSchema,
+    FolderAccessRequestedNotificationContentSchema,
+    SuggestionNotificationContentSchema,
+  ])
+  .openapi({
+    description: 'The notification content object, which contains metadata about the event.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        share_design: '#/components/schemas/ShareDesignNotificationContent',
+        share_folder: '#/components/schemas/ShareFolderNotificationContent',
+        comment: '#/components/schemas/CommentNotificationContent',
+        design_access_requested: '#/components/schemas/DesignAccessRequestedNotificationContent',
+        design_approval_requested:
+          '#/components/schemas/DesignApprovalRequestedNotificationContent',
+        design_approval_response: '#/components/schemas/DesignApprovalResponseNotificationContent',
+        design_approval_reviewer_invalidated:
+          '#/components/schemas/DesignApprovalReviewerInvalidatedNotificationContent',
+        design_mention: '#/components/schemas/DesignMentionNotificationContent',
+        team_invite: '#/components/schemas/TeamInviteNotificationContent',
+        folder_access_requested: '#/components/schemas/FolderAccessRequestedNotificationContent',
+        suggestion: '#/components/schemas/SuggestionNotificationContent',
+      },
+    },
+  })
+  .openapi('NotificationContent')
+
+type NotificationType = {
+  id: string
+  created_at: bigint
+  content: z.infer<typeof NotificationContentSchema>
+}
 
 const CreditQuotaUsageSummarySchema = z
   .object({
@@ -2523,8 +2262,10 @@ const ErrorCodeSchema = z
     'quota_exceeded',
     'credit_quota_exceeded',
     'credit_quota_cooldown',
+    'app_credit_quota_exceeded',
     'unsupported_content_type',
     'request_too_large',
+    'model_capacity_reached',
     'folder_not_found',
     'item_in_multiple_folders',
     'asset_not_found',
@@ -2969,12 +2710,12 @@ const PageViewFilterSchema = z
   .openapi({
     description: 'A filter for page view data.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         by_viewer: '#/components/schemas/PageViewFilterByViewer',
         for_editor: '#/components/schemas/PageViewFilterForEditor',
         by_link: '#/components/schemas/PageViewFilterByLink',
       },
-      propertyName: 'type',
     },
   })
   .openapi('PageViewFilter')
@@ -3409,11 +3150,11 @@ const AssetMetadataSchema = z
   .openapi({
     description: 'Type-specific metadata for the asset.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         image: '#/components/schemas/ImageMetadata',
         video: '#/components/schemas/VideoMetadata',
       },
-      propertyName: 'type',
     },
   })
   .openapi('AssetMetadata')
@@ -3637,506 +3378,7 @@ const AssetUploadMetadataSchema = z
   .openapi({ description: 'Metadata for the asset being uploaded.', required: ['name_base64'] })
   .openapi('AssetUploadMetadata')
 
-const DatasetImageValueSchema = z
-  .object({
-    type: z.literal('image'),
-    asset_id: z
-      .string()
-      .openapi({
-        description: '`asset_id` of the image to insert into the template element.',
-        example: 'Msd59349ff',
-      }),
-  })
-  .openapi({ description: 'If the data field is an image field.', required: ['asset_id', 'type'] })
-  .openapi('DatasetImageValue')
-
-const DatasetVideoValueSchema = z
-  .object({
-    type: z.literal('video'),
-    asset_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
-      .openapi({
-        description: '`asset_id` of the video to insert into the template element.',
-        example: 'VAHCkrNUANI',
-      }),
-  })
-  .openapi({
-    description: 'If autofilling a video into an image data field.',
-    required: ['asset_id', 'type'],
-  })
-  .openapi('DatasetVideoValue')
-
-const DatasetTextValueSchema = z
-  .object({
-    type: z.literal('text'),
-    text: z
-      .string()
-      .openapi({
-        description: 'Text to insert into the template element.',
-        example: 'It was like this when I got here!',
-      }),
-  })
-  .openapi({ description: 'If the data field is a text field.', required: ['text', 'type'] })
-  .openapi('DatasetTextValue')
-
-const ColumnDataTypeSchema = z
-  .enum(['string', 'number', 'date', 'boolean', 'media', 'variant'])
-  .openapi({
-    description: 'Expected data type for cells in this column.',
-    'x-enum-descriptions': [
-      'String data',
-      'Numeric data',
-      'Date data',
-      'Boolean data',
-      'Media data (such as images, videos, or combinations of both)',
-      'Mixed data types (use where the column contains cells of a combination of data types)',
-    ],
-  })
-  .openapi('ColumnDataType')
-
-const ColumnConfigSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name for the column, displayed as header text.' }),
-    type: ColumnDataTypeSchema,
-  })
-  .openapi({ description: 'Configuration for a data table column.', required: ['type'] })
-  .openapi('ColumnConfig')
-
-const DataTableCellSchema: z.ZodType<DataTableCellType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        StringDataTableCellSchema,
-        NumberDataTableCellSchema,
-        BooleanDataTableCellSchema,
-        DateDataTableCellSchema,
-        MediaCollectionDataTableCellSchema,
-      ])
-      .openapi({
-        description: 'A single tabular data cell.',
-        discriminator: {
-          mapping: {
-            string: '#/components/schemas/StringDataTableCell',
-            number: '#/components/schemas/NumberDataTableCell',
-            boolean: '#/components/schemas/BooleanDataTableCell',
-            date: '#/components/schemas/DateDataTableCell',
-            media: '#/components/schemas/MediaCollectionDataTableCell',
-          },
-          propertyName: 'type',
-        },
-      }),
-  )
-  .openapi('DataTableCell')
-
-const DataTableRowSchema = z
-  .object({
-    cells: z
-      .array(DataTableCellSchema)
-      .openapi({
-        description: 'Cells of data in row.\n\nAll rows must have the same number of cells.',
-      }),
-  })
-  .openapi({ description: 'A single row of tabular data.', required: ['cells'] })
-  .openapi('DataTableRow')
-
-const DataTableSchema = z
-  .object({
-    column_configs: z
-      .array(ColumnConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Column definitions with names and data types.' }),
-    rows: z.array(DataTableRowSchema).openapi({ description: 'Rows of data.' }),
-  })
-  .openapi({
-    description:
-      'Tabular data, structured in rows of cells.\n\n- Each cell must have a data type configured.\n- All rows must have the same number of cells.\n- The number of entries in `column_configs` must match the number of columns in the data.',
-    example: {
-      column_configs: [
-        { name: 'Geographic Region', type: 'string' },
-        { name: 'Sales (millions AUD)', type: 'number' },
-        { name: 'Target (millions AUD)', type: 'number' },
-        { name: 'Target met?', type: 'boolean' },
-        { name: 'Date met', type: 'date' },
-        { name: 'Logo', type: 'media' },
-      ],
-      rows: [
-        {
-          cells: [
-            { type: 'string', value: 'Asia Pacific' },
-            { type: 'number', value: 10.2, metadata: { formatting: '#,##0.0' } },
-            { type: 'number', value: 10, metadata: { formatting: '#,##0.0' } },
-            { type: 'boolean', value: true },
-            { type: 'date', value: 1721944387 },
-            {
-              type: 'media',
-              value: [
-                {
-                  type: 'image_upload',
-                  url: 'https://example.com/apac-logo.png',
-                  thumbnail_url: 'https://example.com/apac-logo-thumb.png',
-                  mime_type: 'image/png',
-                  ai_disclosure: 'none',
-                },
-                {
-                  type: 'video_upload',
-                  url: 'https://example.com/apac-logo.mp4',
-                  thumbnail_image_url: 'https://example.com/apac-logo-thumb.png',
-                  thumbnail_video_url: 'https://example.com/apac-logo-thumb.mp4',
-                  mime_type: 'video/mp4',
-                  ai_disclosure: 'none',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          cells: [
-            { type: 'string', value: 'EMEA' },
-            { type: 'number', value: 13.8, metadata: { formatting: '#,##0.0' } },
-            { type: 'number', value: 14, metadata: { formatting: '#,##0.0' } },
-            { type: 'boolean', value: false },
-            { type: 'date' },
-            { type: 'media', value: [] },
-          ],
-        },
-      ],
-    },
-    required: ['rows'],
-  })
-  .openapi('DataTable')
-
-const DatasetChartValueSchema = z
-  .object({ type: z.literal('chart'), chart_data: DataTableSchema })
-  .openapi({
-    description:
-      'If the data field is a chart.\n\nNote the following behavior:\n- If `column_configs` is not provided, the first row is assumed to contain column headers where applicable.\n- Chart autofill supports a maximum of 100 rows and 20 columns.\n- `number` cells with formatting metadata are not currently supported for autofill and will result in an error response.\n- `media` cells are not supported for chart autofill and will result in an error response.',
-    required: ['chart_data', 'type'],
-  })
-  .openapi('DatasetChartValue')
-
-const DatasetSheetValueSchema = z
-  .object({ type: z.literal('sheet'), sheet_data: DataTableSchema })
-  .openapi({
-    description:
-      'If the data field is a sheet element.\n\nNote the following behavior:\n- `number` cells with formatting metadata are not currently supported for autofill and will result in an error response.\n- `media` cells are not supported for sheet autofill and will result in an error response.',
-    required: ['sheet_data', 'type'],
-  })
-  .openapi('DatasetSheetValue')
-
-const DatasetValueSchema = z
-  .discriminatedUnion('type', [
-    DatasetImageValueSchema,
-    DatasetVideoValueSchema,
-    DatasetTextValueSchema,
-    DatasetChartValueSchema,
-    DatasetSheetValueSchema,
-  ])
-  .openapi({
-    description: 'The data field to autofill.',
-    discriminator: {
-      mapping: {
-        image: '#/components/schemas/DatasetImageValue',
-        video: '#/components/schemas/DatasetVideoValue',
-        text: '#/components/schemas/DatasetTextValue',
-        chart: '#/components/schemas/DatasetChartValue',
-        sheet: '#/components/schemas/DatasetSheetValue',
-      },
-      propertyName: 'type',
-    },
-  })
-  .openapi('DatasetValue')
-
-const CreateFromBrandTemplateAutofillJobRequestSchema = z
-  .object({
-    type: z
-      .literal('create_from_brand_template')
-      .openapi({
-        description:
-          "For backward compatibility, if `type` isn't specified in the request, the request type is assumed to be `create_from_brand_template`.",
-      }),
-    brand_template_id: z
-      .string()
-      .openapi({ description: 'ID of the input brand template.', example: 'DAFVztcvd9z' }),
-    title: z
-      .string()
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'Title to use for the autofilled design.\n\nIf no design title is provided, the autofilled design will have the same title as the brand template.',
-        example: 'My autofilled design',
-      }),
-    data: z.record(z.string(), DatasetValueSchema).openapi({
-      description: 'Data object containing the data fields and values to autofill.',
-      example: {
-        cute_pet_image_of_the_day: { type: 'image', asset_id: 'Msd59349ff' },
-        cute_pet_video_of_the_day: { type: 'video', asset_id: 'VAHCkrNUANI' },
-        cute_pet_witty_pet_says: { type: 'text', text: 'It was like this when I got here!' },
-        cute_pet_sales_chart: {
-          type: 'chart',
-          chart_data: {
-            column_configs: [
-              { name: 'Geographic Region', type: 'string' },
-              { name: 'Sales (millions AUD)', type: 'number' },
-              { name: 'Target (millions AUD)', type: 'number' },
-              { name: 'Target met?', type: 'boolean' },
-              { name: 'Date met', type: 'date' },
-            ],
-            rows: [
-              {
-                cells: [
-                  { type: 'string', value: 'Asia Pacific' },
-                  { type: 'number', value: 10.2 },
-                  { type: 'number', value: 10 },
-                  { type: 'boolean', value: true },
-                  { type: 'date', value: 1721944387 },
-                ],
-              },
-              {
-                cells: [
-                  { type: 'string', value: 'EMEA' },
-                  { type: 'number', value: 13.8 },
-                  { type: 'number', value: 14 },
-                  { type: 'boolean', value: false },
-                  { type: 'date' },
-                ],
-              },
-            ],
-          },
-        },
-        cute_pet_sales_sheet: {
-          type: 'sheet',
-          sheet_data: {
-            column_configs: [
-              { name: 'Geographic Region', type: 'string' },
-              { name: 'Sales (millions AUD)', type: 'number' },
-              { name: 'Target (millions AUD)', type: 'number' },
-              { name: 'Target met?', type: 'boolean' },
-              { name: 'Date met', type: 'date' },
-            ],
-            rows: [
-              {
-                cells: [
-                  { type: 'string', value: 'Asia Pacific' },
-                  { type: 'number', value: 10.2 },
-                  { type: 'number', value: 10 },
-                  { type: 'boolean', value: true },
-                  { type: 'date', value: 1721944387 },
-                ],
-              },
-              {
-                cells: [
-                  { type: 'string', value: 'EMEA' },
-                  { type: 'number', value: 13.8 },
-                  { type: 'number', value: 14 },
-                  { type: 'boolean', value: false },
-                  { type: 'date' },
-                ],
-              },
-            ],
-          },
-        },
-      },
-    }),
-  })
-  .openapi({
-    description: 'Create a new autofilled design from a brand template.',
-    required: ['brand_template_id', 'data', 'type'],
-  })
-  .openapi('CreateFromBrandTemplateAutofillJobRequest')
-
-const CreateFromDesignAutofillJobRequestSchema = z
-  .object({
-    type: z.literal('create_from_design'),
-    design_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
-      .openapi({
-        description: 'ID of the design to use as the autofill source.',
-        example: 'DAFVztcvd9z',
-      }),
-    title: z
-      .string()
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'Title to use for the autofilled design.\n\nIf no design title is provided, the autofilled design will have the same title as the source design.',
-        example: 'My autofilled design',
-      }),
-    data: z.record(z.string(), DatasetValueSchema).openapi({
-      description: 'Data object containing the data fields and values to autofill.',
-      example: {
-        cute_pet_image_of_the_day: { type: 'image', asset_id: 'Msd59349ff' },
-        cute_pet_video_of_the_day: { type: 'video', asset_id: 'VAHCkrNUANI' },
-        cute_pet_witty_pet_says: { type: 'text', text: 'It was like this when I got here!' },
-        cute_pet_sales_chart: {
-          type: 'chart',
-          chart_data: {
-            column_configs: [
-              { name: 'Geographic Region', type: 'string' },
-              { name: 'Sales (millions AUD)', type: 'number' },
-              { name: 'Target (millions AUD)', type: 'number' },
-              { name: 'Target met?', type: 'boolean' },
-              { name: 'Date met', type: 'date' },
-            ],
-            rows: [
-              {
-                cells: [
-                  { type: 'string', value: 'Asia Pacific' },
-                  { type: 'number', value: 10.2 },
-                  { type: 'number', value: 10 },
-                  { type: 'boolean', value: true },
-                  { type: 'date', value: 1721944387 },
-                ],
-              },
-              {
-                cells: [
-                  { type: 'string', value: 'EMEA' },
-                  { type: 'number', value: 13.8 },
-                  { type: 'number', value: 14 },
-                  { type: 'boolean', value: false },
-                  { type: 'date' },
-                ],
-              },
-            ],
-          },
-        },
-        cute_pet_sales_sheet: {
-          type: 'sheet',
-          sheet_data: {
-            column_configs: [
-              { name: 'Geographic Region', type: 'string' },
-              { name: 'Sales (millions AUD)', type: 'number' },
-              { name: 'Target (millions AUD)', type: 'number' },
-              { name: 'Target met?', type: 'boolean' },
-              { name: 'Date met', type: 'date' },
-            ],
-            rows: [
-              {
-                cells: [
-                  { type: 'string', value: 'Asia Pacific' },
-                  { type: 'number', value: 10.2 },
-                  { type: 'number', value: 10 },
-                  { type: 'boolean', value: true },
-                  { type: 'date', value: 1721944387 },
-                ],
-              },
-              {
-                cells: [
-                  { type: 'string', value: 'EMEA' },
-                  { type: 'number', value: 13.8 },
-                  { type: 'number', value: 14 },
-                  { type: 'boolean', value: false },
-                  { type: 'date' },
-                ],
-              },
-            ],
-          },
-        },
-      },
-    }),
-  })
-  .openapi({
-    description:
-      'Create a new autofilled design from an existing design that contains autofill data fields.',
-    required: ['data', 'design_id', 'type'],
-  })
-  .openapi('CreateFromDesignAutofillJobRequest')
-
-const UpdateDesignAutofillJobRequestSchema = z
-  .object({
-    type: z.literal('update_design'),
-    design_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
-      .openapi({ description: 'ID of the design to autofill in place.', example: 'DAFVztcvd9z' }),
-    data: z.record(z.string(), DatasetValueSchema).openapi({
-      description: 'Data object containing the data fields and values to autofill.',
-      example: {
-        cute_pet_image_of_the_day: { type: 'image', asset_id: 'Msd59349ff' },
-        cute_pet_video_of_the_day: { type: 'video', asset_id: 'VAHCkrNUANI' },
-        cute_pet_witty_pet_says: { type: 'text', text: 'It was like this when I got here!' },
-        cute_pet_sales_chart: {
-          type: 'chart',
-          chart_data: {
-            column_configs: [
-              { name: 'Geographic Region', type: 'string' },
-              { name: 'Sales (millions AUD)', type: 'number' },
-              { name: 'Target (millions AUD)', type: 'number' },
-              { name: 'Target met?', type: 'boolean' },
-              { name: 'Date met', type: 'date' },
-            ],
-            rows: [
-              {
-                cells: [
-                  { type: 'string', value: 'Asia Pacific' },
-                  { type: 'number', value: 10.2 },
-                  { type: 'number', value: 10 },
-                  { type: 'boolean', value: true },
-                  { type: 'date', value: 1721944387 },
-                ],
-              },
-              {
-                cells: [
-                  { type: 'string', value: 'EMEA' },
-                  { type: 'number', value: 13.8 },
-                  { type: 'number', value: 14 },
-                  { type: 'boolean', value: false },
-                  { type: 'date' },
-                ],
-              },
-            ],
-          },
-        },
-        cute_pet_sales_sheet: {
-          type: 'sheet',
-          sheet_data: {
-            column_configs: [
-              { name: 'Geographic Region', type: 'string' },
-              { name: 'Sales (millions AUD)', type: 'number' },
-              { name: 'Target (millions AUD)', type: 'number' },
-              { name: 'Target met?', type: 'boolean' },
-              { name: 'Date met', type: 'date' },
-            ],
-            rows: [
-              {
-                cells: [
-                  { type: 'string', value: 'Asia Pacific' },
-                  { type: 'number', value: 10.2 },
-                  { type: 'number', value: 10 },
-                  { type: 'boolean', value: true },
-                  { type: 'date', value: 1721944387 },
-                ],
-              },
-              {
-                cells: [
-                  { type: 'string', value: 'EMEA' },
-                  { type: 'number', value: 13.8 },
-                  { type: 'number', value: 14 },
-                  { type: 'boolean', value: false },
-                  { type: 'date' },
-                ],
-              },
-            ],
-          },
-        },
-      },
-    }),
-  })
-  .openapi({
-    description: 'Autofill an existing design in place with the provided data.',
-    required: ['data', 'design_id', 'type'],
-  })
-  .openapi('UpdateDesignAutofillJobRequest')
-
-const CreateDesignAutofillJobRequestSchema = z
+const CreateDesignAutofillJobRequestSchema: z.ZodType<CreateDesignAutofillJobRequestType> = z
   .discriminatedUnion('type', [
     CreateFromBrandTemplateAutofillJobRequestSchema,
     CreateFromDesignAutofillJobRequestSchema,
@@ -4146,13 +3388,13 @@ const CreateDesignAutofillJobRequestSchema = z
     description:
       "Body parameters for creating a new autofill job. Use the `type` discriminator to choose\nthe autofill mode:\n\n- Use `create_from_brand_template` to create a new design from a brand template.\n\nNOTE: For backward compatibility, if `type` isn't specified in the request,\nthe request type is assumed to be `create_from_brand_template`.",
     discriminator: {
+      propertyName: 'type',
       mapping: {
         create_from_brand_template:
           '#/components/schemas/CreateFromBrandTemplateAutofillJobRequest',
         create_from_design: '#/components/schemas/CreateFromDesignAutofillJobRequest',
         update_design: '#/components/schemas/UpdateDesignAutofillJobRequest',
       },
-      propertyName: 'type',
     },
   })
   .openapi('CreateDesignAutofillJobRequest')
@@ -4162,24 +3404,62 @@ const DesignAutofillStatusSchema = z
   .openapi({ description: 'Status of the design autofill job.', example: 'success' })
   .openapi('DesignAutofillStatus')
 
-const DesignAutofillJobResultSchema: z.ZodType<DesignAutofillJobResultType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        CreateDesignAutofillJobResultSchema,
-        UpdateDesignAutofillJobResultSchema,
-      ])
+const AutofillTrialInformationSchema = z
+  .object({
+    uses_remaining: z
+      .int32()
+      .min(0)
+      .openapi({ description: 'The number of uses remaining in the free trial.', example: 0 }),
+    upgrade_url: z
+      .string()
       .openapi({
-        description: 'Result of the design autofill job. Only present if job status is `success`.',
-        discriminator: {
-          mapping: {
-            create_design: '#/components/schemas/CreateDesignAutofillJobResult',
-            update_design: '#/components/schemas/UpdateDesignAutofillJobResult',
-          },
-          propertyName: 'type',
-        },
+        description:
+          'The URL for a user to upgrade their Canva account to a plan with autofill access.',
+        example: 'https://www.canva.com/pro/',
       }),
-  )
+  })
+  .openapi({
+    description:
+      "WARNING: Trials and trial information are a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis).\nThere might be unannounced breaking changes to this feature which won't produce a new API version.\n\nTrial information for users on a Canva plan that doesn't include autofill access. These\nusers have a limited number of autofill uses. Once the trial is exhausted, users must\nupgrade their Canva plan (such as to Canva Pro, Canva Teams, or Canva Enterprise) to\ncontinue using the Autofill API.",
+    required: ['upgrade_url', 'uses_remaining'],
+  })
+  .openapi('AutofillTrialInformation')
+
+const CreateDesignAutofillJobResultSchema = z
+  .object({
+    type: z.literal('create_design'),
+    design: DesignSummarySchema,
+    trial_information: AutofillTrialInformationSchema.exactOptional(),
+  })
+  .openapi({
+    description: "A new autofilled design has been created and saved to the user's root folder.",
+    required: ['design', 'type'],
+  })
+  .openapi('CreateDesignAutofillJobResult')
+
+const UpdateDesignAutofillJobResultSchema = z
+  .object({ type: z.literal('update_design'), design: DesignSummarySchema })
+  .openapi({
+    description: 'The existing design has been autofilled in place.',
+    required: ['design', 'type'],
+  })
+  .openapi('UpdateDesignAutofillJobResult')
+
+const DesignAutofillJobResultSchema = z
+  .discriminatedUnion('type', [
+    CreateDesignAutofillJobResultSchema,
+    UpdateDesignAutofillJobResultSchema,
+  ])
+  .openapi({
+    description: 'Result of the design autofill job. Only present if job status is `success`.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        create_design: '#/components/schemas/CreateDesignAutofillJobResult',
+        update_design: '#/components/schemas/UpdateDesignAutofillJobResult',
+      },
+    },
+  })
   .openapi('DesignAutofillJobResult')
 
 const AutofillErrorCodeSchema = z
@@ -4237,7 +3517,7 @@ const CreateDesignAutofillJobResponseSchema = z
   .openapi({ required: ['job'] })
   .openapi('CreateDesignAutofillJobResponse')
 
-const DatasetSchema = z
+const DatasetSchema: z.ZodType<DatasetType> = z
   .record(z.string(), DatasetValueSchema)
   .openapi({
     description: 'Data object containing the data fields and values to autofill.',
@@ -4484,28 +3764,58 @@ const BrandTemplateSummarySchema = z
   })
   .openapi('BrandTemplateSummary')
 
-const DataFieldSchema: z.ZodType<DataFieldType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        ImageDataFieldSchema,
-        TextDataFieldSchema,
-        ChartDataFieldSchema,
-        SheetDataFieldSchema,
-      ])
-      .openapi({
-        description: 'A named data field that can be autofilled.',
-        discriminator: {
-          mapping: {
-            image: '#/components/schemas/ImageDataField',
-            text: '#/components/schemas/TextDataField',
-            chart: '#/components/schemas/ChartDataField',
-            sheet: '#/components/schemas/SheetDataField',
-          },
-          propertyName: 'type',
-        },
-      }),
-  )
+const ImageDataFieldSchema = z
+  .object({ type: z.literal('image') })
+  .openapi({
+    description:
+      'An image data field. You can autofill it with an image by providing its `asset_id`.\n\nYou can also autofill it with a video asset.',
+    required: ['type'],
+  })
+  .openapi('ImageDataField')
+
+const TextDataFieldSchema = z
+  .object({ type: z.literal('text') })
+  .openapi({
+    description: 'A text data field. You can autofill it with a text value.',
+    required: ['type'],
+  })
+  .openapi('TextDataField')
+
+const ChartDataFieldSchema = z
+  .object({ type: z.literal('chart') })
+  .openapi({
+    description: 'A chart data field. You can autofill it with tabular data.',
+    required: ['type'],
+  })
+  .openapi('ChartDataField')
+
+const SheetDataFieldSchema = z
+  .object({ type: z.literal('sheet') })
+  .openapi({
+    description: 'A sheet data field. You can autofill it with tabular sheet data.',
+    required: ['type'],
+  })
+  .openapi('SheetDataField')
+
+const DataFieldSchema = z
+  .discriminatedUnion('type', [
+    ImageDataFieldSchema,
+    TextDataFieldSchema,
+    ChartDataFieldSchema,
+    SheetDataFieldSchema,
+  ])
+  .openapi({
+    description: 'A named data field that can be autofilled.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        image: '#/components/schemas/ImageDataField',
+        text: '#/components/schemas/TextDataField',
+        chart: '#/components/schemas/ChartDataField',
+        sheet: '#/components/schemas/SheetDataField',
+      },
+    },
+  })
   .openapi('DataField')
 
 const GetBrandTemplateDatasetResponseSchema = z
@@ -4586,20 +3896,33 @@ const CapabilitySchema = z
   })
   .openapi('Capability')
 
-const CommentObjectInputSchema: z.ZodType<CommentObjectInputType> = z
-  .lazy(() =>
-    z
-      .xor([DesignCommentObjectInputSchema])
+const DesignCommentObjectInputSchema = z
+  .object({
+    type: z.literal('design'),
+    design_id: z
+      .string()
       .openapi({
-        description:
-          'An object containing identifying information for the design or other object you want to\nattach the comment to.',
-        discriminator: {
-          mapping: { design: '#/components/schemas/DesignCommentObjectInput' },
-          propertyName: 'type',
-        },
-        example: { design_id: 'DAFVztcvd9z', type: 'design' },
+        description: 'The ID of the design you want to attach this comment to.',
+        example: 'DAFVztcvd9z',
       }),
-  )
+  })
+  .openapi({
+    description: 'If the comment is attached to a Canva Design.',
+    required: ['design_id', 'type'],
+  })
+  .openapi('DesignCommentObjectInput')
+
+const CommentObjectInputSchema = z
+  .xor([DesignCommentObjectInputSchema])
+  .openapi({
+    description:
+      'An object containing identifying information for the design or other object you want to\nattach the comment to.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: { design: '#/components/schemas/DesignCommentObjectInput' },
+    },
+    example: { design_id: 'DAFVztcvd9z', type: 'design' },
+  })
   .openapi('CommentObjectInput')
 
 const CreateCommentRequestSchema = z
@@ -4924,27 +4247,157 @@ const GetListDesignResponseSchema = z
   .openapi({ required: ['items'] })
   .openapi('GetListDesignResponse')
 
-const CreateDesignRequestSchema: z.ZodType<CreateDesignRequestType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        DesignTypeCreateDesignRequestSchema,
-        DesignCreateDesignRequestSchema,
-        BrandTemplateCreateDesignRequestSchema,
-      ])
+const PresetDesignTypeNameSchema = z
+  .enum(['doc', 'email', 'presentation', 'whiteboard'])
+  .openapi({
+    description: 'The name of the design type.',
+    'x-enum-descriptions': [
+      "A [Canva doc](https://www.canva.com/docs/); a document for Canva's online text editor.",
+      'An [email](https://www.canva.com/emails/); for creating email campaign designs.',
+      'A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.',
+      'A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.',
+    ],
+  })
+  .openapi('PresetDesignTypeName')
+
+const PresetDesignTypeInputSchema = z
+  .object({ type: z.literal('preset'), name: PresetDesignTypeNameSchema })
+  .openapi({ description: 'Provide the common design type.', required: ['name', 'type'] })
+  .openapi('PresetDesignTypeInput')
+
+const CustomDesignTypeInputSchema = z
+  .object({
+    type: z.literal('custom'),
+    width: z
+      .int32()
+      .min(40)
+      .max(8000)
+      .openapi({ description: 'The width of the design, in pixels.', example: 320 }),
+    height: z
+      .int32()
+      .min(40)
+      .max(8000)
+      .openapi({ description: 'The height of the design, in pixels.', example: 200 }),
+  })
+  .openapi({
+    description:
+      'Provide the width and height to define a custom design type.\n\nEach dimension must be between 40 and 8000 pixels, and the\ntotal area (width × height) must not exceed 25,000,000 pixels\nsquared. For example, a design with a width of 8000 pixels can\nhave a maximum height of 3125 pixels.',
+    required: ['height', 'type', 'width'],
+  })
+  .openapi('CustomDesignTypeInput')
+
+const DesignTypeInputSchema = z
+  .discriminatedUnion('type', [PresetDesignTypeInputSchema, CustomDesignTypeInputSchema])
+  .openapi({
+    description: 'The desired design type.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        preset: '#/components/schemas/PresetDesignTypeInput',
+        custom: '#/components/schemas/CustomDesignTypeInput',
+      },
+    },
+  })
+  .openapi('DesignTypeInput')
+
+const DesignTypeCreateDesignRequestSchema = z
+  .object({
+    type: z
+      .literal('type_and_asset')
       .openapi({
         description:
-          "Body parameters for creating a new design. Use the `type` discriminator to choose the creation mode:\n\n- Use `type_and_asset` to create a design by specifying the design type and/or an asset.\n- Use `design` to create a copy of an existing design (currently a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis)).\n- Use `brand_template` to create a design from a brand template (currently a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis)).\n\nNOTE: For backward compatibility, if `type` isn't specified in the request,\nthe request type will be assumed to be `type_and_asset`.",
-        discriminator: {
-          mapping: {
-            type_and_asset: '#/components/schemas/DesignTypeCreateDesignRequest',
-            design: '#/components/schemas/DesignCreateDesignRequest',
-            brand_template: '#/components/schemas/BrandTemplateCreateDesignRequest',
-          },
-          propertyName: 'type',
-        },
+          "For backward compatibility, if `type` isn't specified in the request, the request type will be assumed to be `type_and_asset`.",
       }),
-  )
+    design_type: DesignTypeInputSchema.exactOptional(),
+    asset_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of an asset to insert into the created design. Currently, this only supports image assets.',
+        example: 'Msd59349ff',
+      }),
+    title: z
+      .string()
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The name of the design.', example: 'My Holiday Presentation' }),
+  })
+  .openapi({
+    description:
+      'Create a design by specifying the design type and/or an asset.\nAt least one of `design_type` or `asset_id` must be defined.',
+    required: ['type'],
+  })
+  .openapi('DesignTypeCreateDesignRequest')
+
+const DesignCreateDesignRequestSchema = z
+  .object({
+    type: z.literal('design'),
+    design_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
+      .openapi({ description: 'The ID of the design to copy.', example: 'DAFVztcvetc' }),
+    page_numbers: z
+      .array(z.int32().min(1))
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The pages to copy from the source design. If not specified, all pages are copied.\nPages are indexed using one-based numbering.',
+      }),
+  })
+  .openapi({
+    description:
+      "<Warning>\n\nCreating a copy of an existing design is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview features won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview features will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nBody parameters for creating a copy of an existing design.",
+    required: ['design_id', 'type'],
+  })
+  .openapi('DesignCreateDesignRequest')
+
+const BrandTemplateCreateDesignRequestSchema = z
+  .object({
+    type: z.literal('brand_template'),
+    brand_template_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
+      .openapi({
+        description: 'The ID of the brand template used to create a design copy.',
+        example: 'EDMzWSwy3BI',
+      }),
+    page_numbers: z
+      .array(z.int32().min(1))
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The pages to copy from the brand template. If not specified, all pages are copied.\nPages are indexed using one-based numbering.',
+      }),
+  })
+  .openapi({
+    description:
+      "<Warning>\n\nCreating a copy from a brand template is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview features won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview features will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nBody parameters for creating a copy from a brand template.",
+    required: ['brand_template_id', 'type'],
+  })
+  .openapi('BrandTemplateCreateDesignRequest')
+
+const CreateDesignRequestSchema = z
+  .discriminatedUnion('type', [
+    DesignTypeCreateDesignRequestSchema,
+    DesignCreateDesignRequestSchema,
+    BrandTemplateCreateDesignRequestSchema,
+  ])
+  .openapi({
+    description:
+      "Body parameters for creating a new design. Use the `type` discriminator to choose the creation mode:\n\n- Use `type_and_asset` to create a design by specifying the design type and/or an asset.\n- Use `design` to create a copy of an existing design (currently a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis)).\n- Use `brand_template` to create a design from a brand template (currently a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis)).\n\nNOTE: For backward compatibility, if `type` isn't specified in the request,\nthe request type will be assumed to be `type_and_asset`.",
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        type_and_asset: '#/components/schemas/DesignTypeCreateDesignRequest',
+        design: '#/components/schemas/DesignCreateDesignRequest',
+        brand_template: '#/components/schemas/BrandTemplateCreateDesignRequest',
+      },
+    },
+  })
   .openapi('CreateDesignRequest')
 
 const CreateDesignResponseSchema = z
@@ -4965,7 +4418,7 @@ const PrintPartnerDesignDimensionsSchema = z
   })
   .openapi({
     description:
-      'Dimensions of the design. Used to match a product type, or to create a custom-size design if\nno product matches.',
+      'Dimensions of the design. Used to match a product type, or to create a custom-size design if\nno product matches.\n\nWhen no matching product is found, the dimensions of each side, converted to pixels, must be\nbetween 40 and 8000, and the total area (width × height) must not exceed 25,000,000 pixels\nsquared.',
     required: ['height', 'units', 'width'],
   })
   .openapi('PrintPartnerDesignDimensions')
@@ -5012,11 +4465,11 @@ const PrintPartnerDesignSourceSchema = z
   .openapi({
     description: 'The desired source for the design creation.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         dimensions: '#/components/schemas/PrintPartnerDimensionsDesignSource',
         partner_product_id: '#/components/schemas/PrintPartnerProductIdDesignSource',
       },
-      propertyName: 'type',
     },
   })
   .openapi('PrintPartnerDesignSource')
@@ -5502,24 +4955,12 @@ const DesignGenerationJobV2Schema = z
   .openapi('DesignGenerationJobV2')
 
 const CreateDesignGenerationJobResponseV2Schema = z
-  .object({
-    job: DesignGenerationJobV2Schema,
-    quota_usage: CreditQuotaSuccessInfoSchema.exactOptional().openapi({
-      description:
-        'Credit quota usage after reserving credits for this job. Omitted if unavailable.',
-    }),
-  })
+  .object({ job: DesignGenerationJobV2Schema })
   .openapi({ required: ['job'] })
   .openapi('CreateDesignGenerationJobResponseV2')
 
 const GetDesignGenerationJobResponseV2Schema = z
-  .object({
-    job: DesignGenerationJobV2Schema,
-    quota_usage: CreditQuotaSuccessInfoSchema.exactOptional().openapi({
-      description:
-        'Credit quota snapshot when available. Polling does not reserve or consume credits; omitted if unavailable.',
-    }),
-  })
+  .object({ job: DesignGenerationJobV2Schema })
   .openapi({ required: ['job'] })
   .openapi('GetDesignGenerationJobResponseV2')
 
@@ -5783,38 +5224,340 @@ const OauthErrorSchema = z
   .openapi({ required: ['error', 'error_description'] })
   .openapi('OauthError')
 
-const ExportFormatSchema: z.ZodType<ExportFormatType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        PdfExportFormatSchema,
-        JpgExportFormatSchema,
-        PngExportFormatSchema,
-        PptxExportFormatSchema,
-        GifExportFormatSchema,
-        Mp4ExportFormatSchema,
-        HtmlBundleExportFormatSchema,
-        HtmlStandaloneExportFormatSchema,
-        CsvExportFormatSchema,
-      ])
+const ExportQualitySchema = z
+  .enum(['regular', 'pro'])
+  .default('regular')
+  .openapi({
+    description: 'Specifies the export quality of the design.',
+    'x-enum-descriptions': [
+      'Regular quality export.',
+      "Premium quality export.\n\nNOTE: A `pro` export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/) and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.",
+    ],
+  })
+  .openapi('ExportQuality')
+
+const ExportPageSizeSchema = z
+  .enum(['a4', 'a3', 'letter', 'legal'])
+  .default('a4')
+  .openapi({
+    description:
+      'The paper size of the export PDF file. The `size` attribute is only supported for Documents (Canva Docs).',
+    example: 'a4',
+  })
+  .openapi('ExportPageSize')
+
+const PdfExportFormatSchema = z
+  .object({
+    type: z.literal('pdf'),
+    export_quality: ExportQualitySchema.exactOptional(),
+    size: ExportPageSizeSchema.exactOptional(),
+    pages: z
+      .array(z.int32().min(1))
+      .exactOptional()
       .openapi({
-        description: 'Details about the desired export format.',
-        discriminator: {
-          mapping: {
-            pdf: '#/components/schemas/PdfExportFormat',
-            jpg: '#/components/schemas/JpgExportFormat',
-            png: '#/components/schemas/PngExportFormat',
-            pptx: '#/components/schemas/PptxExportFormat',
-            gif: '#/components/schemas/GifExportFormat',
-            mp4: '#/components/schemas/Mp4ExportFormat',
-            html_bundle: '#/components/schemas/HtmlBundleExportFormat',
-            html_standalone: '#/components/schemas/HtmlStandaloneExportFormat',
-            csv: '#/components/schemas/CsvExportFormat',
-          },
-          propertyName: 'type',
-        },
+        description:
+          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
+        example: [2, 3, 4],
       }),
-  )
+  })
+  .openapi({
+    description: 'Export the design as a PDF. Providing a paper size is optional.',
+    required: ['type'],
+  })
+  .openapi('PdfExportFormat')
+
+const JpgExportFormatSchema = z
+  .object({
+    type: z.literal('jpg'),
+    export_quality: ExportQualitySchema.exactOptional(),
+    quality: z
+      .int32()
+      .min(1)
+      .max(100)
+      .openapi({
+        description:
+          'For the `jpg` type, the `quality` of the exported JPEG determines how compressed the exported file should be. A _low_ `quality` value will create a file with a smaller file size, but the resulting file will have pixelated artifacts when compared to a file created with a _high_ `quality` value.',
+        example: 80,
+      }),
+    height: z
+      .int32()
+      .min(40)
+      .max(25000)
+      .exactOptional()
+      .openapi({
+        description:
+          "Specify the height in pixels of the exported image. Note the following behavior:\n\n- If no height or width is specified, the image is exported using the dimensions of the design.\n- If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
+        example: 400,
+      }),
+    width: z
+      .int32()
+      .min(40)
+      .max(25000)
+      .exactOptional()
+      .openapi({
+        description:
+          "Specify the width in pixels of the exported image. Note the following behavior:\n\n- If no width or height is specified, the image is exported using the dimensions of the design.\n- If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
+        example: 400,
+      }),
+    pages: z
+      .array(z.int32().min(1))
+      .exactOptional()
+      .openapi({
+        description:
+          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
+        example: [2, 3, 4],
+      }),
+  })
+  .openapi({
+    description:
+      "Export the design as a JPEG. Compression quality must be provided. Height or width (or both)\nmay be specified, otherwise the file will be exported at it's default size.\n\nIf the user is on the Canva Free plan, the export height and width for a fixed-dimension design can't be upscaled by more than a factor of `1.125`.",
+    required: ['quality', 'type'],
+  })
+  .openapi('JpgExportFormat')
+
+const PngExportFormatSchema = z
+  .object({
+    type: z.literal('png'),
+    export_quality: ExportQualitySchema.exactOptional(),
+    height: z
+      .int32()
+      .min(40)
+      .max(25000)
+      .exactOptional()
+      .openapi({
+        description:
+          "Specify the height in pixels of the exported image. Note the following behavior:\n\n- If no height or width is specified, the image is exported using the dimensions of the design.\n- If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
+        example: 400,
+      }),
+    width: z
+      .int32()
+      .min(40)
+      .max(25000)
+      .exactOptional()
+      .openapi({
+        description:
+          "Specify the width in pixels of the exported image. Note the following behavior:\n\n- If no width or height is specified, the image is exported using the dimensions of the design.\n- If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
+        example: 400,
+      }),
+    lossless: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to `true` (default), the PNG is exported without compression.\n\nIf set to `false`, the PNG is compressed using a lossy compression algorithm.\n\nAVAILABILITY: Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.',
+      }),
+    transparent_background: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to `true`, the PNG is exported with a transparent background.\n\nAVAILABILITY: This option is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `true`, the export operation will fail.',
+      }),
+    as_single_image: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'When `true`, multi-page designs are merged into a single image.\nWhen `false` (default), each page is exported as a separate image.',
+      }),
+    pages: z
+      .array(z.int32().min(1))
+      .exactOptional()
+      .openapi({
+        description:
+          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
+        example: [2, 3, 4],
+      }),
+  })
+  .openapi({
+    description:
+      "Export the design as a PNG. Height or width (or both) may be specified, otherwise\nthe file will be exported at it's default size. You may also specify whether to export the\nfile losslessly, and whether to export a multi-page design as a single image.\n\nIf the user is on the Canva Free plan, the export height and width for a fixed-dimension design can't be upscaled by more than a factor of `1.125`.",
+    required: ['type'],
+  })
+  .openapi('PngExportFormat')
+
+const PptxExportFormatSchema = z
+  .object({
+    type: z.literal('pptx'),
+    pages: z
+      .array(z.int32().min(1))
+      .exactOptional()
+      .openapi({
+        description:
+          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
+        example: [2, 3, 4],
+      }),
+  })
+  .openapi({ description: 'Export the design as a PPTX.', required: ['type'] })
+  .openapi('PptxExportFormat')
+
+const GifExportFormatSchema = z
+  .object({
+    type: z.literal('gif'),
+    export_quality: ExportQualitySchema.exactOptional(),
+    height: z
+      .int32()
+      .min(40)
+      .max(25000)
+      .exactOptional()
+      .openapi({
+        description:
+          "Specify the height in pixels of the exported image. Note the following behavior:\n\n- If no height or width is specified, the image is exported using the dimensions of the design.\n- If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
+        example: 400,
+      }),
+    width: z
+      .int32()
+      .min(40)
+      .max(25000)
+      .exactOptional()
+      .openapi({
+        description:
+          "Specify the width in pixels of the exported image. Note the following behavior:\n\n- If no width or height is specified, the image is exported using the dimensions of the design.\n- If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.\n- If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.",
+        example: 400,
+      }),
+    pages: z
+      .array(z.int32().min(1))
+      .exactOptional()
+      .openapi({
+        description:
+          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
+        example: [2, 3, 4],
+      }),
+  })
+  .openapi({
+    description:
+      "Export the design as a GIF. Height or width (or both) may be specified, otherwise the file\nwill be exported at it's default size. Large designs will be scaled down, and aspect ratio\nwill always be maintained.",
+    required: ['type'],
+  })
+  .openapi('GifExportFormat')
+
+const Mp4ExportQualitySchema = z
+  .enum([
+    'horizontal_480p',
+    'horizontal_720p',
+    'horizontal_1080p',
+    'horizontal_4k',
+    'vertical_480p',
+    'vertical_720p',
+    'vertical_1080p',
+    'vertical_4k',
+  ])
+  .openapi({
+    description:
+      "The resolution of the exported video, as a target number of pixels. The resolution is one of\n`480p`, `720p`, `1080p` or `4k`.\n\nThe exported video always has the same aspect ratio as the design, which matches creating a\ndownload from the Canva editor. The resolution sets how many pixels to target, and the\ndesign's aspect ratio decides how they're split between width and height, so the\n`horizontal` and `vertical` values of a given resolution produce the same output:\n\n- A 2160x3840 portrait design exported as `horizontal_4k` is 2160x3840, not 3840x2160. The\n  orientation in the value's name doesn't rotate or crop the design.\n- A 1000x2000 design exported as `horizontal_720p` is 678x1357, the 1:2 size closest to the\n  921,600 pixels of 1280x720. Aspect ratios that don't match a standard video size aren't\n  rounded to one.\n- A square design exported as `horizontal_4k` or `vertical_4k` is 2880x2880, the square with\n  the same number of pixels as 3840x2160.",
+  })
+  .openapi('Mp4ExportQuality')
+
+const Mp4ExportFormatSchema = z
+  .object({
+    type: z.literal('mp4'),
+    export_quality: ExportQualitySchema.exactOptional(),
+    quality: Mp4ExportQualitySchema,
+    pages: z
+      .array(z.int32().min(1))
+      .exactOptional()
+      .openapi({
+        description:
+          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
+        example: [2, 3, 4],
+      }),
+  })
+  .openapi({
+    description: 'Export the design as an MP4. You must specify the quality of the exported video.',
+    required: ['quality', 'type'],
+  })
+  .openapi('Mp4ExportFormat')
+
+const HtmlBundleExportFormatSchema = z
+  .object({
+    type: z.literal('html_bundle'),
+    pages: z
+      .array(z.int32().min(1))
+      .length(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The pages of the design to export. Currently only a single page can be exported. If not provided,\nthe first page of the design is used.',
+        example: [1],
+      }),
+  })
+  .openapi({
+    description:
+      'Export the email design as an HTML bundle. An HTML bundle is a zip file that contains an HTML file and the associated assets.',
+    required: ['type'],
+  })
+  .openapi('HtmlBundleExportFormat')
+
+const HtmlStandaloneExportFormatSchema = z
+  .object({
+    type: z.literal('html_standalone'),
+    pages: z
+      .array(z.int32().min(1))
+      .length(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The pages of the design to export. Currently only a single page can be exported. If not provided,\nthe first page of the design is used.',
+        example: [1],
+      }),
+  })
+  .openapi({
+    description: 'Export the email design as a standalone HTML file with hosted assets.',
+    required: ['type'],
+  })
+  .openapi('HtmlStandaloneExportFormat')
+
+const CsvExportFormatSchema = z
+  .object({
+    type: z.literal('csv'),
+    pages: z
+      .array(z.int32().min(1))
+      .exactOptional()
+      .openapi({
+        description:
+          "To specify which pages to export in a multi-page design, provide the page numbers as\nan array. The first page in a design is page `1`.\nIf `pages` isn't specified, all the pages are exported.",
+        example: [2, 3, 4],
+      }),
+  })
+  .openapi({
+    description:
+      'Export the design as a CSV file. CSV export is only available for designs that contain\ntabular data, such as Canva Sheets.',
+    required: ['type'],
+  })
+  .openapi('CsvExportFormat')
+
+const ExportFormatSchema = z
+  .discriminatedUnion('type', [
+    PdfExportFormatSchema,
+    JpgExportFormatSchema,
+    PngExportFormatSchema,
+    PptxExportFormatSchema,
+    GifExportFormatSchema,
+    Mp4ExportFormatSchema,
+    HtmlBundleExportFormatSchema,
+    HtmlStandaloneExportFormatSchema,
+    CsvExportFormatSchema,
+  ])
+  .openapi({
+    description: 'Details about the desired export format.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        pdf: '#/components/schemas/PdfExportFormat',
+        jpg: '#/components/schemas/JpgExportFormat',
+        png: '#/components/schemas/PngExportFormat',
+        pptx: '#/components/schemas/PptxExportFormat',
+        gif: '#/components/schemas/GifExportFormat',
+        mp4: '#/components/schemas/Mp4ExportFormat',
+        html_bundle: '#/components/schemas/HtmlBundleExportFormat',
+        html_standalone: '#/components/schemas/HtmlStandaloneExportFormat',
+        csv: '#/components/schemas/CsvExportFormat',
+      },
+    },
+  })
   .openapi('ExportFormat')
 
 const CreateDesignExportJobRequestSchema = z
@@ -5979,12 +5722,12 @@ const PrintPartnerExportFormatSchema = z
   .openapi({
     description: 'Details about the desired export format.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         pdf: '#/components/schemas/PrintPartnerPdfExportFormat',
         jpg: '#/components/schemas/PrintPartnerJpgExportFormat',
         png: '#/components/schemas/PrintPartnerPngExportFormat',
       },
-      propertyName: 'type',
     },
   })
   .openapi('PrintPartnerExportFormat')
@@ -6220,13 +5963,13 @@ const FolderItemSummarySchema = z
   .openapi({
     description: 'Details about the folder item.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         folder: '#/components/schemas/FolderItem',
         design: '#/components/schemas/DesignItem',
         image: '#/components/schemas/ImageItem',
         brand_template: '#/components/schemas/BrandTemplateItem',
       },
-      propertyName: 'type',
     },
   })
   .openapi('FolderItemSummary')
@@ -6280,11 +6023,22 @@ const MoveFolderItemRequestSchema = z
   .openapi('MoveFolderItemRequest')
 
 const ImageGenerationAspectRatioSchema = z
-  .enum(['square', 'landscape', 'portrait', 'landscape_3_2', 'portrait_2_3', 'portrait_4_5'])
-  .default('square')
+  .enum([
+    'square',
+    'landscape',
+    'portrait',
+    'landscape_3_2',
+    'portrait_2_3',
+    'portrait_4_5',
+    'landscape_4_3',
+    'portrait_3_4',
+    'landscape_5_4',
+    'landscape_2_1',
+    'portrait_1_2',
+  ])
   .openapi({
     description:
-      'The aspect ratio of the generated image. Every aspect ratio is supported by every model\nyou can select with `model`, so the choice of model never limits the aspect ratios you\ncan use. The pixel dimensions of the output depend on the model. The job result reports\nthe actual `width` and `height`.',
+      "The aspect ratio of the generated image. Every aspect ratio is supported by every model\nyou can select with `model`, so the choice of model never limits the aspect ratios you\ncan use. The pixel dimensions of the output depend on the model. The job result reports\nthe actual `width` and `height`. If you omit the aspect ratio, Canva chooses one for the\nimage. Don't rely on a specific default: set the aspect ratio when the shape matters.",
     'x-enum-descriptions': [
       'A square (1:1) image.',
       'A wide (16:9) image, suitable for landscape-oriented content.',
@@ -6292,6 +6046,11 @@ const ImageGenerationAspectRatioSchema = z
       'A wide (3:2) image, suitable for photos and print.',
       'A tall (2:3) image, suitable for posters and portrait photos.',
       'A tall (4:5) image, suitable for social media feed posts.',
+      'A wide (4:3) image, suitable for presentations and classic photos.',
+      'A tall (3:4) image, suitable for portrait prints and social media.',
+      'A wide (5:4) image, suitable for prints and framed photos.',
+      'A wide (2:1) image, suitable for banners and panoramic headers.',
+      'A tall (1:2) image, suitable for tall banners and pins.',
     ],
   })
   .openapi('ImageGenerationAspectRatio')
@@ -6309,25 +6068,51 @@ const ImageGenerationModelSchema = z
   })
   .openapi('ImageGenerationModel')
 
-const ImageGenerationAssetUploadSchema: z.ZodType<ImageGenerationAssetUploadType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        NoneImageGenerationAssetUploadSchema,
-        UploadImageGenerationAssetUploadSchema,
-      ])
+const NoneImageGenerationAssetUploadSchema = z
+  .object({ type: z.literal('none') })
+  .openapi({
+    description: "Don't save the generated image. The result contains only its download URL.",
+    required: ['type'],
+  })
+  .openapi('NoneImageGenerationAssetUpload')
+
+const UploadImageGenerationAssetUploadSchema = z
+  .object({
+    type: z.literal('upload'),
+    asset_name: z
+      .string()
+      .min(1)
+      .max(255)
+      .exactOptional()
       .openapi({
         description:
-          "Whether to save the generated image as an image asset in the user's Canva account.\nOmitting `asset_upload` (or using `type: none`) returns only a download URL.\n\nSaving the asset (`type: upload`) requires a user access token.",
-        discriminator: {
-          mapping: {
-            none: '#/components/schemas/NoneImageGenerationAssetUpload',
-            upload: '#/components/schemas/UploadImageGenerationAssetUpload',
-          },
-          propertyName: 'type',
-        },
+          "A name for the image asset. Canva doesn't localize this value, so provide a name in\nthe user's language. If omitted, Canva generates a name for the asset.",
+        example: 'Red apple on a wooden table',
       }),
-  )
+  })
+  .openapi({
+    description:
+      "Save the generated image as an image asset in the user's Canva account. The asset appears\nin the user's Uploads, and the generated image in the result includes the `asset`\nalongside its download `url`.",
+    required: ['type'],
+  })
+  .openapi('UploadImageGenerationAssetUpload')
+
+const ImageGenerationAssetUploadSchema = z
+  .discriminatedUnion('type', [
+    NoneImageGenerationAssetUploadSchema,
+    UploadImageGenerationAssetUploadSchema,
+  ])
+  .openapi({
+    description:
+      "Whether to save the generated image as an image asset in the user's Canva account.\nOmitting `asset_upload` (or using `type: none`) returns only a download URL.\n\nSaving the asset (`type: upload`) requires a user access token.",
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        none: '#/components/schemas/NoneImageGenerationAssetUpload',
+        upload: '#/components/schemas/UploadImageGenerationAssetUpload',
+      },
+    },
+  })
   .openapi('ImageGenerationAssetUpload')
 
 const CreateImageGenerationJobRequestSchema = z
@@ -6435,13 +6220,7 @@ const ImageGenerationJobSchema = z
   .openapi('ImageGenerationJob')
 
 const CreateImageGenerationJobResponseSchema = z
-  .object({
-    job: ImageGenerationJobSchema,
-    quota_usage: CreditQuotaSuccessInfoSchema.exactOptional().openapi({
-      description:
-        'Credit quota usage after reserving credits for this job. Not present if quota data is unavailable.',
-    }),
-  })
+  .object({ job: ImageGenerationJobSchema })
   .openapi({ required: ['job'] })
   .openapi('CreateImageGenerationJobResponse')
 
@@ -6462,7 +6241,7 @@ const BackgroundRemovalImageTransformationSchema = z
   })
   .openapi({
     description:
-      'Removes the background from an image, keeping the foreground subject. The resulting\nimage has a transparent background. This transformation takes no parameters.\n\nThe output image is limited to a maximum of 10 megapixels. If the source image is\nlarger, the output image is scaled down to stay within this limit.\n\nRequires the user to have the `background_removal` capability. To check this before\ncreating a job, use the\n[Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).',
+      'Removes the background from an image, keeping the foreground subject. The resulting\nimage has a transparent background. This transformation takes no parameters.\n\nThe output image is limited to a maximum of 25 megapixels. If the source image is\nlarger, the output image is scaled down to stay within this limit.\n\nRequires the user to have the `background_removal` capability. To check this before\ncreating a job, use the\n[Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).',
     required: ['type'],
   })
   .openapi('BackgroundRemovalImageTransformation')
@@ -6473,8 +6252,8 @@ const ImageTransformationTypeSchema = z
     description:
       'A transformation to apply to the image asset. Each transformation type is identified\nby its `type` value and declares its own parameters; `background_removal` takes no\nparameters.',
     discriminator: {
-      mapping: { background_removal: '#/components/schemas/BackgroundRemovalImageTransformation' },
       propertyName: 'type',
+      mapping: { background_removal: '#/components/schemas/BackgroundRemovalImageTransformation' },
     },
   })
   .openapi('ImageTransformationType')
@@ -6524,6 +6303,14 @@ const ImageTransformationJobResultSchema = z
     asset: AssetSchema.openapi({
       description: 'The new image asset produced by applying all of the requested transformations.',
     }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A URL for retrieving the transformed image at full resolution.\nThis URL is temporary and includes a query string that's required for retrieving the\nimage. To get a new URL, call the\n[Get image transformation job](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/)\nAPI again.\n\nOnly present if the user is allowed to access the transformed image at full\nresolution. For example, it's omitted if the source asset contains premium content\nthat the user doesn't have a license for.",
+        example: 'https://media-private.canva.com/Vczz9/zF9vzVtdADc/1/p.png?<query-string>',
+      }),
   })
   .openapi({
     description:
@@ -6600,23 +6387,195 @@ const JsonWebKeySetSchema = z
   .openapi({ required: ['keys'] })
   .openapi('JsonWebKeySet')
 
-const CreateDesignMergeJobRequestSchema: z.ZodType<CreateDesignMergeJobRequestType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        NewDesignCreateDesignMergeJobRequestSchema,
-        ModifyDesignCreateDesignMergeJobRequestSchema,
-      ])
+const DesignMergeSourceForInsertPagesOperationSchema = z
+  .object({
+    type: z
+      .literal('design')
+      .openapi({ description: 'The type of source to insert pages from.', example: 'design' }),
+    design_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
+      .openapi({ description: 'The ID of the source design.', example: 'DAFVztcvd9z' }),
+    page_numbers: z
+      .array(z.int32().min(1))
+      .min(1)
+      .exactOptional()
       .openapi({
-        discriminator: {
-          mapping: {
-            create_new_design: '#/components/schemas/NewDesignCreateDesignMergeJobRequest',
-            modify_existing_design: '#/components/schemas/ModifyDesignCreateDesignMergeJobRequest',
-          },
-          propertyName: 'type',
-        },
+        description:
+          'One-based page numbers to insert from the source design. If omitted, all pages from the design are inserted.',
+        example: [1, 2],
       }),
-  )
+  })
+  .openapi({
+    description: 'A design source from which pages are inserted.',
+    required: ['design_id', 'type'],
+  })
+  .openapi('DesignMergeSourceForInsertPagesOperation')
+
+const MergeSourceForInsertPagesOperationSchema = z
+  .xor([DesignMergeSourceForInsertPagesOperationSchema])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: { design: '#/components/schemas/DesignMergeSourceForInsertPagesOperation' },
+    },
+  })
+  .openapi('MergeSourceForInsertPagesOperation')
+
+const InsertPagesDesignMergeOperationSchema = z
+  .object({
+    type: z
+      .literal('insert_pages')
+      .openapi({ description: 'The type of merge operation.', example: 'insert_pages' }),
+    source: MergeSourceForInsertPagesOperationSchema,
+    after_page_number: z
+      .int32()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Insert after this one-based page number in the evolving target layout. Use 0 to insert at the beginning, and the default is inserting at the end (append).\n',
+        example: 2,
+      }),
+  })
+  .openapi({
+    description: 'Inserts pages from a source design into the target design.',
+    required: ['source', 'type'],
+  })
+  .openapi('InsertPagesDesignMergeOperation')
+
+const MovePagesDesignMergeOperationSchema = z
+  .object({
+    type: z
+      .literal('move_pages')
+      .openapi({ description: 'The type of merge operation.', example: 'move_pages' }),
+    from_page_numbers: z
+      .array(z.int32().min(1))
+      .min(1)
+      .openapi({
+        description:
+          'One-based number of the pages to move (evaluated at the time this operation runs). Pages are moved in order.',
+        example: [1, 3],
+      }),
+    to_after_page_number: z
+      .int32()
+      .min(0)
+      .openapi({
+        description:
+          'Destination position: insert the moved pages after this one-based page number. Use 0 to move to the beginning.\n',
+        example: 2,
+      }),
+  })
+  .openapi({
+    description: 'Moves pages within the target design to a new position.',
+    required: ['from_page_numbers', 'to_after_page_number', 'type'],
+  })
+  .openapi('MovePagesDesignMergeOperation')
+
+const DeletePagesDesignMergeOperationSchema = z
+  .object({
+    type: z
+      .literal('delete_pages')
+      .openapi({ description: 'The type of merge operation.', example: 'delete_pages' }),
+    page_numbers: z
+      .array(z.int32().min(1))
+      .min(1)
+      .openapi({
+        description:
+          'One-based numbers of the pages to delete (evaluated at the time this operation runs). Pages are deleted in reverse order to maintain page numbers.',
+        example: [2, 4],
+      }),
+  })
+  .openapi({
+    description: 'Deletes pages from the target design.',
+    required: ['page_numbers', 'type'],
+  })
+  .openapi('DeletePagesDesignMergeOperation')
+
+const DesignMergeOperationSchema = z
+  .discriminatedUnion('type', [
+    InsertPagesDesignMergeOperationSchema,
+    MovePagesDesignMergeOperationSchema,
+    DeletePagesDesignMergeOperationSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        insert_pages: '#/components/schemas/InsertPagesDesignMergeOperation',
+        move_pages: '#/components/schemas/MovePagesDesignMergeOperation',
+        delete_pages: '#/components/schemas/DeletePagesDesignMergeOperation',
+      },
+    },
+  })
+  .openapi('DesignMergeOperation')
+
+const NewDesignCreateDesignMergeJobRequestSchema = z
+  .object({
+    type: z
+      .literal('create_new_design')
+      .openapi({ description: 'The type of merge job to create.', example: 'create_new_design' }),
+    operations: z
+      .array(DesignMergeOperationSchema)
+      .min(1)
+      .max(500)
+      .openapi({ description: 'For this job type, only insert operations are supported.' }),
+    title: z
+      .string()
+      .min(1)
+      .max(255)
+      .openapi({ description: 'Title for the new design.', example: 'My merged design' }),
+  })
+  .openapi({
+    description: 'Creates a new design by inserting pages from other designs.',
+    required: ['operations', 'title', 'type'],
+  })
+  .openapi('NewDesignCreateDesignMergeJobRequest')
+
+const ModifyDesignCreateDesignMergeJobRequestSchema = z
+  .object({
+    type: z
+      .literal('modify_existing_design')
+      .openapi({
+        description: 'The type of merge job to create.',
+        example: 'modify_existing_design',
+      }),
+    design_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]{1,50}$/)
+      .openapi({ description: 'The ID of the design to modify.', example: 'DAFVztcvd9z' }),
+    operations: z
+      .array(DesignMergeOperationSchema)
+      .min(1)
+      .max(500)
+      .openapi({ description: 'Supports insert, move, and delete operations.' }),
+    title: z
+      .string()
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'Optional new title for the design.', example: 'My updated design' }),
+  })
+  .openapi({
+    description: 'Modifies an existing design by inserting, moving, or deleting pages.',
+    required: ['design_id', 'operations', 'type'],
+  })
+  .openapi('ModifyDesignCreateDesignMergeJobRequest')
+
+const CreateDesignMergeJobRequestSchema = z
+  .discriminatedUnion('type', [
+    NewDesignCreateDesignMergeJobRequestSchema,
+    ModifyDesignCreateDesignMergeJobRequestSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        create_new_design: '#/components/schemas/NewDesignCreateDesignMergeJobRequest',
+        modify_existing_design: '#/components/schemas/ModifyDesignCreateDesignMergeJobRequest',
+      },
+    },
+  })
   .openapi('CreateDesignMergeJobRequest')
 
 const DesignMergeJobStatusSchema = z
@@ -6771,18 +6730,57 @@ const ExchangeRefreshTokenRequestSchema = z
   .openapi({ required: ['grant_type', 'refresh_token'] })
   .openapi('ExchangeRefreshTokenRequest')
 
+const ExchangeClientCredentialsRequestSchema = z
+  .object({
+    grant_type: z
+      .literal('client_credentials')
+      .openapi({
+        description:
+          "For generating an access token using your app's client credentials. Only service apps can use this grant type.",
+        example: 'client_credentials',
+      }),
+    client_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Your app's unique ID, for authenticating the request.\n\nNOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.\n",
+        example: 'OC-FAB12-AbCdEf',
+      }),
+    client_secret: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Your app's client secret, for authenticating the request. Begins with `cnvca`.\n\nNOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.\n",
+        example: 'cnvcaAbcdefg12345_hijklm6789',
+      }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional scope value when generating an access token using client credentials. Separate multiple [scopes for service apps](https://www.canva.dev/docs/apps/rest-apis/scopes/#scopes-for-service-apps) with a single space between each scope.\n\nThe requested scopes must be enabled for your app in the Developer Portal. If omitted, the token is granted all the scopes that are enabled for your app.\n',
+        example: 'service:design:meta:read',
+      }),
+  })
+  .openapi({ required: ['grant_type'] })
+  .openapi('ExchangeClientCredentialsRequest')
+
 const ExchangeAccessTokenRequestSchema = z
   .discriminatedUnion('grant_type', [
     ExchangeAuthCodeRequestSchema,
     ExchangeRefreshTokenRequestSchema,
+    ExchangeClientCredentialsRequestSchema,
   ])
   .openapi({
     discriminator: {
+      propertyName: 'grant_type',
       mapping: {
         authorization_code: '#/components/schemas/ExchangeAuthCodeRequest',
         refresh_token: '#/components/schemas/ExchangeRefreshTokenRequest',
+        client_credentials: '#/components/schemas/ExchangeClientCredentialsRequest',
       },
-      propertyName: 'grant_type',
     },
   })
   .openapi('ExchangeAccessTokenRequest')
@@ -6793,14 +6791,15 @@ const ExchangeAccessTokenResponseSchema = z
       .string()
       .openapi({
         description:
-          'The bearer access token to use to authenticate to Canva REST API endpoints. If requested using a `authorization_code` or `refresh_token`, this allows you to act on behalf of a user.',
+          'The bearer access token to use to authenticate to Canva REST API endpoints. If requested using `authorization_code` or `refresh_token`, this allows you to act on behalf of a user. If requested using `client_credentials`, this allows your service app to act on its own behalf.',
         example:
           'JagALLazU0i2ld9WW4zTO4kaG0lkvP8Y5sSO206ZwxNF4E1y3xKJKF7TzN17BXTfaNOeY0P88AeRCE6cRF7SJzvf3Sx97rA80sGHtFplFo',
       }),
     refresh_token: z
       .string()
       .openapi({
-        description: 'The token that you can use to refresh the access token.',
+        description:
+          "The token that you can use to refresh the access token.\n\nThis is only returned when the access token was requested using `authorization_code` or `refresh_token`. Access tokens requested using `client_credentials` don't have a refresh token, so service apps generate a new access token instead.\n",
         example:
           'JABix5nolsk9k8n2r0f8nq1gw4zjo40ht6sb4i573wgdzmkwdmiy6muh897hp0bxyab276wtgqkvtob2mg9aidt5d6rcltcbcgs101',
       }),
@@ -7003,7 +7002,7 @@ const RevokeTokensRequestSchema = z
   .openapi('RevokeTokensRequest')
 
 const RevokeTokensResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response on a successful token revocation.' })
   .openapi('RevokeTokensResponse')
 
@@ -7240,50 +7239,7 @@ const GetUserCapabilitiesResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUserCapabilitiesResponse')
 
-const NotificationContentSchema: z.ZodType<NotificationContentType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        ShareDesignNotificationContentSchema,
-        ShareFolderNotificationContentSchema,
-        CommentNotificationContentSchema,
-        DesignAccessRequestedNotificationContentSchema,
-        DesignApprovalRequestedNotificationContentSchema,
-        DesignApprovalResponseNotificationContentSchema,
-        DesignApprovalReviewerInvalidatedNotificationContentSchema,
-        DesignMentionNotificationContentSchema,
-        TeamInviteNotificationContentSchema,
-        FolderAccessRequestedNotificationContentSchema,
-        SuggestionNotificationContentSchema,
-      ])
-      .openapi({
-        description: 'The notification content object, which contains metadata about the event.',
-        discriminator: {
-          mapping: {
-            share_design: '#/components/schemas/ShareDesignNotificationContent',
-            share_folder: '#/components/schemas/ShareFolderNotificationContent',
-            comment: '#/components/schemas/CommentNotificationContent',
-            design_access_requested:
-              '#/components/schemas/DesignAccessRequestedNotificationContent',
-            design_approval_requested:
-              '#/components/schemas/DesignApprovalRequestedNotificationContent',
-            design_approval_response:
-              '#/components/schemas/DesignApprovalResponseNotificationContent',
-            design_approval_reviewer_invalidated:
-              '#/components/schemas/DesignApprovalReviewerInvalidatedNotificationContent',
-            design_mention: '#/components/schemas/DesignMentionNotificationContent',
-            team_invite: '#/components/schemas/TeamInviteNotificationContent',
-            folder_access_requested:
-              '#/components/schemas/FolderAccessRequestedNotificationContent',
-            suggestion: '#/components/schemas/SuggestionNotificationContent',
-          },
-          propertyName: 'type',
-        },
-      }),
-  )
-  .openapi('NotificationContent')
-
-const NotificationSchema = z
+const NotificationSchema: z.ZodType<NotificationType> = z
   .object({
     id: z
       .string()
@@ -7351,6 +7307,29 @@ const CommonCreditQuotaErrorResponse = {
       examples: {
         credit_quota_exceeded: CreditQuotaExceededErrorExample,
         credit_quota_cooldown: CreditQuotaCooldownErrorExample,
+      },
+    },
+  },
+}
+
+const UserPaymentRequiredErrorExample = {
+  summary: 'User has reached their credit quota limit',
+  value: { code: 'credit_quota_exceeded', message: 'User has exceeded their credit quota' },
+}
+
+const AppPaymentRequiredErrorExample = {
+  summary: 'App has reached its credit quota limit',
+  value: { code: 'app_credit_quota_exceeded', message: 'App has exceeded its credit quota' },
+}
+
+const CommonPaymentRequiredErrorResponse = {
+  description: 'Payment Required',
+  content: {
+    'application/json': {
+      schema: ErrorSchema,
+      examples: {
+        user_payment_required: UserPaymentRequiredErrorExample,
+        app_payment_required: AppPaymentRequiredErrorExample,
       },
     },
   },
@@ -8562,7 +8541,6 @@ const SuccessDesignGenerationJobExampleV2Example = {
         },
       },
     },
-    quota_usage: { used_percentage: 25, resets_at: 1789257600, using_bonus_credits: false },
   },
 }
 
@@ -8664,11 +8642,8 @@ const DesignGenerationJobNotFoundErrorV2Example = {
 }
 
 const AcceptedDesignGenerationJobExampleV2Example = {
-  summary: 'Accepted job with available credit quota information',
-  value: {
-    job: { id: 'f81b26fd-a33d-4c2d-9e8c-4a7aca798b17', status: 'in_progress' },
-    quota_usage: { used_percentage: 25, resets_at: 1789257600, using_bonus_credits: false },
-  },
+  summary: 'Accepted job',
+  value: { job: { id: 'f81b26fd-a33d-4c2d-9e8c-4a7aca798b17', status: 'in_progress' } },
 }
 
 const JobIdInvalidErrorExample = {
@@ -8725,11 +8700,6 @@ const DesignCreationThrottledErrorExample = {
     code: 'too_many_requests',
     message: 'You have reached the design creation throttling threshold.',
   },
-}
-
-const ImageToDesignCreditQuotaExceededErrorExample = {
-  summary: 'User has reached their credit quota limit',
-  value: { code: 'credit_quota_exceeded', message: 'User has exceeded their credit quota' },
 }
 
 const InProgressDesignImportJobExampleExample = {
@@ -9108,6 +9078,15 @@ const FolderItemAccessNotAllowedErrorExample = {
   value: { code: 'permission_denied', message: "Not allowed to access folder item '{itemId}'" },
 }
 
+const ModelCapacityReachedExample = {
+  summary: 'The requested image generation model has reached capacity',
+  value: {
+    code: 'model_capacity_reached',
+    message:
+      'The requested model has reached capacity. Try again later or choose a different model.',
+  },
+}
+
 const ImageGenerationNotEnabledErrorExample = {
   summary: 'Image generation is not enabled for this client',
   value: { code: 'permission_denied', message: 'Image generation is not enabled' },
@@ -9143,6 +9122,7 @@ const SuccessImageTransformationJobExampleExample = {
             url: 'https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>',
           },
         },
+        url: 'https://media-transformation.canva.com/Vczz9/zF9vzVtdADc/result.png?<query-string>',
       },
     },
   },
@@ -9531,6 +9511,28 @@ const UserNotFoundErrorExample = {
 }
 
 const BasicAuthSecurityScheme = { scheme: 'basic', type: 'http' }
+
+const OauthClientCredentialsSecurityScheme = {
+  flows: {
+    clientCredentials: {
+      scopes: {
+        'service:design:content:write': "Create designs on the app's behalf.",
+        'service:design:content:read': "View the contents of the app's designs.",
+        'service:design:meta:read': "View the metadata of the app's designs.",
+        'service:folder:write':
+          "Move designs, assets, and folders between folders on the app's behalf.",
+        'service:asset:write': "Upload assets on the app's behalf.",
+        'service:asset:read': "View the metadata for the app's assets, such as uploaded images.",
+        'service:brandtemplate:meta:read':
+          "View the metadata of the brand templates associated with the developer's brand.",
+        'service:brandtemplate:content:read':
+          "Read the content of the brand templates associated with the developer's brand.",
+      },
+      tokenUrl: 'https://api.canva.com/auth/v1/oauth/token',
+    },
+  },
+  type: 'oauth2',
+}
 
 const OauthAuthCodeSecurityScheme = {
   flows: {
@@ -10527,7 +10529,10 @@ export const postV1AssetUploadsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['asset:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:asset:write'] },
+    { oauthAuthCode: ['asset:write'] },
+  ],
 })
 
 export const getV1AssetUploadsJobIdRoute = createRoute({
@@ -10599,7 +10604,7 @@ export const getV1AssetUploadsJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['asset:read'] }],
+  security: [{ oauthClientCredentials: ['service:asset:read'] }, { oauthAuthCode: ['asset:read'] }],
 })
 
 export const postV1UrlAssetUploadsRoute = createRoute({
@@ -10655,7 +10660,10 @@ export const postV1UrlAssetUploadsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['asset:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:asset:write'] },
+    { oauthAuthCode: ['asset:write'] },
+  ],
 })
 
 export const getV1UrlAssetUploadsJobIdRoute = createRoute({
@@ -10720,7 +10728,7 @@ export const getV1UrlAssetUploadsJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['asset:read'] }],
+  security: [{ oauthClientCredentials: ['service:asset:read'] }, { oauthAuthCode: ['asset:read'] }],
 })
 
 export const postV1AutofillsRoute = createRoute({
@@ -10801,7 +10809,10 @@ export const postV1AutofillsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const getV1AutofillsJobIdRoute = createRoute({
@@ -10866,7 +10877,10 @@ export const getV1AutofillsJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:meta:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:meta:read'] },
+    { oauthAuthCode: ['design:meta:read'] },
+  ],
 })
 
 export const getV1BrandTemplatesRoute = createRoute({
@@ -11003,7 +11017,10 @@ export const getV1BrandTemplatesRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['brandtemplate:meta:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:brandtemplate:meta:read'] },
+    { oauthAuthCode: ['brandtemplate:meta:read'] },
+  ],
 })
 
 export const postV1BrandTemplatesRoute = createRoute({
@@ -11124,7 +11141,10 @@ export const getV1BrandTemplatesBrandTemplateIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['brandtemplate:meta:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:brandtemplate:meta:read'] },
+    { oauthAuthCode: ['brandtemplate:meta:read'] },
+  ],
 })
 
 export const getV1BrandTemplatesBrandTemplateIdDatasetRoute = createRoute({
@@ -11185,7 +11205,10 @@ export const getV1BrandTemplatesBrandTemplateIdDatasetRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['brandtemplate:content:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:brandtemplate:content:read'] },
+    { oauthAuthCode: ['brandtemplate:content:read'] },
+  ],
 })
 
 export const postV1CommentsRoute = createRoute({
@@ -12162,7 +12185,10 @@ export const getV1DesignsDesignIdExportFormatsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:read'] },
+    { oauthAuthCode: ['design:content:read'] },
+  ],
 })
 
 export const getV1DesignsDesignIdDatasetRoute = createRoute({
@@ -12220,7 +12246,10 @@ export const getV1DesignsDesignIdDatasetRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:read'] },
+    { oauthAuthCode: ['design:content:read'] },
+  ],
 })
 
 export const postV1PrintPartnerDesignsRoute = createRoute({
@@ -12426,7 +12455,7 @@ export const postV1GenerationsRoute = createRoute({
   path: '/v1/generations',
   tags: ['design_generation'],
   description:
-    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to generate a Canva design from a text brief. A successful job includes metadata for the generated design, which is saved to the user's Canva account.\n\nYou can generate a document or presentation. For presentations, you can also provide an outline of the slides to generate.\n\nRequires the `design_generation` capability. You can check whether the user has this capability using the [Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).\n\nStarting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.\n\n<Note>\n\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of jobs created with this API using the [Get design generation job API](https://www.canva.dev/docs/apps/rest-apis/reference/generations/get-design-generation-job/).\n\n</Note>",
+    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to generate a Canva design from a text brief. A successful job includes metadata for the generated design, which is saved to the user's Canva account.\n\nYou can generate a document or presentation. For presentations, you can also provide an outline of the slides to generate.\n\nRequires the `design_generation` capability. You can check whether the user has this capability using the [Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).\n\nStarting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.\n\n<Note>\n\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of jobs created with this API using the [Get design generation job API](https://www.canva.dev/docs/apps/rest-apis/reference/generations/get-design-generation-job/).\n\n</Note>",
   operationId: 'createDesignGenerationJobV2',
   request: {
     body: {
@@ -12477,6 +12506,18 @@ export const postV1GenerationsRoute = createRoute({
         },
       },
     },
+    402: {
+      description: 'Payment Required',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            user_payment_required: UserPaymentRequiredErrorExample,
+            app_payment_required: AppPaymentRequiredErrorExample,
+          },
+        },
+      },
+    },
     403: {
       description: 'Forbidden',
       content: {
@@ -12501,24 +12542,15 @@ export const postV1GenerationsRoute = createRoute({
         },
       },
     },
-    429: {
-      description: 'Credit Quota Exceeded',
-      content: {
-        'application/json': {
-          schema: CreditQuotaErrorSchema,
-          examples: {
-            credit_quota_exceeded: CreditQuotaExceededErrorExample,
-            credit_quota_cooldown: CreditQuotaCooldownErrorExample,
-          },
-        },
-      },
-    },
     default: {
       description: 'Error Response',
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const getV1GenerationsJobIdRoute = createRoute({
@@ -12637,7 +12669,10 @@ export const getV1GenerationsJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const postV1ImportsRoute = createRoute({
@@ -12699,7 +12734,10 @@ export const postV1ImportsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const getV1ImportsJobIdRoute = createRoute({
@@ -12783,7 +12821,10 @@ export const getV1ImportsJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const postV1UrlImportsRoute = createRoute({
@@ -12838,7 +12879,10 @@ export const postV1UrlImportsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const getV1UrlImportsJobIdRoute = createRoute({
@@ -12913,7 +12957,10 @@ export const getV1UrlImportsJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const postV1ImageToDesignImportsRoute = createRoute({
@@ -12921,7 +12968,7 @@ export const postV1ImageToDesignImportsRoute = createRoute({
   path: '/v1/image-to-design-imports',
   tags: ['design_import'],
   description:
-    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to convert an image into an editable design in Canva, using [Magic Layers](https://www.canva.com/magic-layers/). Elements in the image become separate editable layers in the resulting design.\n\nProvide the image as an asset that is already in the user's Canva account.\n\nThe image must be a standard photo or graphic file, such as a PNG or JPEG. Vector-based formats such as SVG, EPS, or AI files, are not supported. Video assets are not supported.\n\nThis conversion is designed for flat, non-photographic images such as posters, flyers, banners, and social graphics.\n\nStarting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.\n\nUse this API when the user wants to edit the contents of the image, such as changing its text, colors, or individual elements. If you only need to place the image into a design as a single flat image, use the [Create design API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/create-design/) with an `asset_id` instead. The Create design API doesn't consume AI credits.\n\n<Note>\n\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image-to-design import jobs created with this API using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/).\n\n</Note>",
+    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to convert an image into an editable design in Canva, using [Magic Layers](https://www.canva.com/magic-layers/). Elements in the image become separate editable layers in the resulting design.\n\nProvide the image as an asset that is already in the user's Canva account.\n\nThe image must be a standard photo or graphic file, such as a PNG or JPEG. Vector-based formats such as SVG, EPS, or AI files, are not supported. Video assets are not supported.\n\nThis conversion is designed for flat, non-photographic images such as posters, flyers, banners, and social graphics.\n\nStarting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.\n\nUse this API when the user wants to edit the contents of the image, such as changing its text, colors, or individual elements. If you only need to place the image into a design as a single flat image, use the [Create design API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/create-design/) with an `asset_id` instead. The Create design API doesn't consume AI credits.\n\n<Note>\n\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image-to-design import jobs created with this API using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/).\n\n</Note>",
   operationId: 'createImageToDesignImportJob',
   request: {
     body: {
@@ -12952,6 +12999,18 @@ export const postV1ImageToDesignImportsRoute = createRoute({
         },
       },
     },
+    402: {
+      description: 'Payment Required',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            user_payment_required: UserPaymentRequiredErrorExample,
+            app_payment_required: AppPaymentRequiredErrorExample,
+          },
+        },
+      },
+    },
     403: {
       description: 'Forbidden',
       content: {
@@ -12970,23 +13029,15 @@ export const postV1ImageToDesignImportsRoute = createRoute({
         },
       },
     },
-    429: {
-      description: 'Too Many Requests',
-      content: {
-        'application/json': {
-          schema: ErrorSchema,
-          examples: {
-            image_to_design_credit_quota_exceeded: ImageToDesignCreditQuotaExceededErrorExample,
-          },
-        },
-      },
-    },
     default: {
       description: 'Error Response',
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const getV1ImageToDesignImportsJobIdRoute = createRoute({
@@ -13070,7 +13121,10 @@ export const getV1ImageToDesignImportsJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write'] },
+    { oauthAuthCode: ['design:content:write'] },
+  ],
 })
 
 export const postV1ExportsRoute = createRoute({
@@ -13154,7 +13208,10 @@ export const postV1ExportsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:read'] },
+    { oauthAuthCode: ['design:content:read'] },
+  ],
 })
 
 export const postV1PrintPartnerExportsRoute = createRoute({
@@ -13162,7 +13219,7 @@ export const postV1PrintPartnerExportsRoute = createRoute({
   path: '/v1/print-partner/exports',
   tags: ['export'],
   description:
-    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nAVAILABILITY: This API is only available to Print Partners.\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to export a Print Partner file from Canva. Once the exported file is generated, you can download\nit using the URL(s) provided. The download URLs are only valid for 24 hours.\nThe request requires the design ID and exports a file as a print-quality PDF.\n\n<Note>\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/apps/rest-apis/reference/exports/get-design-export-job/).\n</Note>",
+    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nAVAILABILITY: This API is only available to Print Partners.\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to export a Print Partner file from Canva. Once the exported file is generated, you can download\nit using the URL(s) provided. The download URLs are only valid for 24 hours.\nThe request requires the design ID and exports a file as a print-quality PDF.\n\n<Note>\n\nThis endpoint has the following additional rate limits:\n\n  - **Integration throttle:** Each integration can export a maximum of 750 times per 5-minute window, and 5,000 times per 24-hour window.\n  - **Document throttle:** Each document can be exported a maximum of 75 times per 5-minute window.\n  - **User throttle:** Each user can export a maximum of 75 times per 5-minute window, and 500 times per 24-hour window.\n\n</Note>\n<Note>\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/apps/rest-apis/reference/exports/get-design-export-job/).\n</Note>",
   operationId: 'createPrintPartnerDesignExportJob',
   request: {
     body: {
@@ -13312,7 +13369,10 @@ export const getV1ExportsExportIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:read'] },
+    { oauthAuthCode: ['design:content:read'] },
+  ],
 })
 
 export const getV1FoldersFolderIdRoute = createRoute({
@@ -13748,7 +13808,10 @@ export const postV1FoldersMoveRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['folder:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:folder:write'] },
+    { oauthAuthCode: ['folder:write'] },
+  ],
 })
 
 export const postV1FoldersRoute = createRoute({
@@ -13809,7 +13872,7 @@ export const postV1ImageGenerationsRoute = createRoute({
   path: '/v1/image-generations',
   tags: ['image_generation'],
   description:
-    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to generate an image from a plain-text prompt. When the image is generated, you can download it using the URL provided. The download URL is only valid for 24 hours.\n\nThe request requires a prompt and an idempotency key. Call this API with a user access token that has the `asset:write` scope.\n\nTo also save the generated image to the user's Canva account as an image asset, set `asset_upload` to `type: upload`. The job then returns the asset alongside the download URL. Saving the asset requires a user access token.\n\nStarting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code.\n\n<Note>\n\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image generation jobs created with this API using the [Get image generation job API](https://www.canva.dev/docs/apps/rest-apis/reference/generations/get-image-generation-job/).\n\n</Note>",
+    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to generate an image from a plain-text prompt. When the image is generated, you can download it using the URL provided. The download URL is only valid for 24 hours.\n\nThe request requires a prompt and an idempotency key. Call this API with a user access token that has the `asset:write` scope.\n\nTo also save the generated image to the user's Canva account as an image asset, set `asset_upload` to `type: upload`. The job then returns the asset alongside the download URL. Saving the asset requires a user access token.\n\nStarting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code.\n\n<Note>\n\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image generation jobs created with this API using the [Get image generation job API](https://www.canva.dev/docs/apps/rest-apis/reference/generations/get-image-generation-job/).\n\n</Note>",
   operationId: 'createImageGenerationJob',
   request: {
     body: { content: { 'application/json': { schema: CreateImageGenerationJobRequestSchema } } },
@@ -13869,6 +13932,18 @@ export const postV1ImageGenerationsRoute = createRoute({
         },
       },
     },
+    402: {
+      description: 'Payment Required',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            user_payment_required: UserPaymentRequiredErrorExample,
+            app_payment_required: AppPaymentRequiredErrorExample,
+          },
+        },
+      },
+    },
     403: {
       description: 'Forbidden',
       content: {
@@ -13883,13 +13958,13 @@ export const postV1ImageGenerationsRoute = createRoute({
       },
     },
     429: {
-      description: 'Credit Quota Exceeded',
+      description: 'Too Many Requests',
       content: {
         'application/json': {
-          schema: CreditQuotaErrorSchema,
+          schema: ErrorSchema,
           examples: {
-            credit_quota_exceeded: CreditQuotaExceededErrorExample,
-            credit_quota_cooldown: CreditQuotaCooldownErrorExample,
+            model_capacity_reached: ModelCapacityReachedExample,
+            too_many_requests: TooManyRequestsErrorExample,
           },
         },
       },
@@ -13899,7 +13974,10 @@ export const postV1ImageGenerationsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['asset:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:asset:write'] },
+    { oauthAuthCode: ['asset:write'] },
+  ],
 })
 
 export const getV1ImageGenerationsJobIdRoute = createRoute({
@@ -13990,7 +14068,10 @@ export const getV1ImageGenerationsJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['asset:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:asset:write'] },
+    { oauthAuthCode: ['asset:write'] },
+  ],
 })
 
 export const postV1ImageTransformationsRoute = createRoute({
@@ -13998,7 +14079,7 @@ export const postV1ImageTransformationsRoute = createRoute({
   path: '/v1/image-transformations',
   tags: ['image_transformation'],
   description:
-    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to apply one or more transformations to an image asset. A successful job produces a single new image asset with all of the requested transformations applied. The source asset isn't modified, and intermediate results aren't returned.\n\nThe request requires the ID of the source asset and at least one transformation. The source asset must be an image asset, such as one created using the [Asset upload APIs](https://www.canva.dev/docs/apps/rest-apis/reference/assets/).\n\nTransformations are applied in the order provided, with each one stacked on the result of the previous one.\n\nStarting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.\n\n<Note>\n\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image transformation jobs created with this API using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/).\n\n</Note>",
+    "<Warning>\n\nThis API is currently provided as a preview. Be aware of the following:\n\n- There might be unannounced breaking changes.\n- Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).\n- Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.\n\n</Warning>\n\nStarts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to apply one or more transformations to an image asset. A successful job produces a single new image asset with all of the requested transformations applied. The source asset isn't modified, and intermediate results aren't returned.\n\nThe request requires the ID of the source asset and at least one transformation. The source asset must be an image asset, such as one created using the [Asset upload APIs](https://www.canva.dev/docs/apps/rest-apis/reference/assets/).\n\nTransformations are applied in the order provided, with each one stacked on the result of the previous one.\n\nStarting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.\n\n<Note>\n\nFor more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image transformation jobs created with this API using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/).\n\n</Note>",
   operationId: 'createImageTransformationJob',
   request: {
     body: {
@@ -14051,6 +14132,18 @@ export const postV1ImageTransformationsRoute = createRoute({
         },
       },
     },
+    402: {
+      description: 'Payment Required',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            user_payment_required: UserPaymentRequiredErrorExample,
+            app_payment_required: AppPaymentRequiredErrorExample,
+          },
+        },
+      },
+    },
     403: {
       description: 'Forbidden',
       content: {
@@ -14066,18 +14159,6 @@ export const postV1ImageTransformationsRoute = createRoute({
         'application/json': {
           schema: ErrorSchema,
           examples: { asset_not_found: AssetNotFoundErrorExample },
-        },
-      },
-    },
-    429: {
-      description: 'Credit Quota Exceeded',
-      content: {
-        'application/json': {
-          schema: CreditQuotaErrorSchema,
-          examples: {
-            credit_quota_exceeded: CreditQuotaExceededErrorExample,
-            credit_quota_cooldown: CreditQuotaCooldownErrorExample,
-          },
         },
       },
     },
@@ -14212,6 +14293,18 @@ export const postV1MergesRoute = createRoute({
         },
       },
     },
+    402: {
+      description: 'Payment Required',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            user_payment_required: UserPaymentRequiredErrorExample,
+            app_payment_required: AppPaymentRequiredErrorExample,
+          },
+        },
+      },
+    },
     403: {
       description: 'Forbidden',
       content: {
@@ -14247,7 +14340,10 @@ export const postV1MergesRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:write', 'design:meta:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:write', 'service:design:meta:read'] },
+    { oauthAuthCode: ['design:content:write', 'design:meta:read'] },
+  ],
 })
 
 export const getV1MergesJobIdRoute = createRoute({
@@ -14304,7 +14400,10 @@ export const getV1MergesJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:meta:read'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:meta:read'] },
+    { oauthAuthCode: ['design:meta:read'] },
+  ],
 })
 
 export const postV1OauthTokenRoute = createRoute({
@@ -14312,7 +14411,7 @@ export const postV1OauthTokenRoute = createRoute({
   path: '/v1/oauth/token',
   tags: ['oauth'],
   description:
-    "This endpoint implements the OAuth 2.0 `token` endpoint, as part of the Authorization Code flow with Proof Key for Code Exchange (PKCE). For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).\n\nTo generate an access token, you must provide one of the following:\n\n- An authorization code\n- A refresh token\n\nGenerating a token using either an authorization code or a refresh token allows your app to act on behalf of a user. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).\n\nAccess tokens may be up to 4 KB in size, and are only valid for a specified period of time. The expiry time (currently 4 hours) is shown in the endpoint response and is subject to change.\n\n**Endpoint authentication**\n\nRequests to this endpoint require authentication with your client ID and client secret, using _one_ of the following methods:\n\n- **Basic access authentication** (Recommended): For [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the `{credentials}` string must be a Base64 encoded value of `{client id}:{client secret}`.\n- **Body parameters**: Provide your app's credentials using the `client_id` and `client_secret` body parameters.\n\nThis endpoint can't be called from a user's web-browser client because it uses client authentication with client secrets. Requests must come from your app's backend, otherwise they'll be blocked by Canva's [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) policy.\n\n**Generate an access token using an authorization code**\n\nTo generate an access token with an authorization code, you must:\n\n- Set `grant_type` to `authorization_code`.\n- Provide the `code_verifier` value that you generated when creating the user authorization URL.\n- Provide the authorization code you received after the user authorized the app.\n\n**Generate an access token using a refresh token**\n\nUsing the `refresh_token` value from a previous user token request, you can get a new access token with the same or smaller scope as the previous one, but with a refreshed expiry time. You will also receive a new refresh token that you can use to refresh the access token again.\n\nTo refresh an existing access token, you must:\n\n- Set `grant_type` to `refresh_token`.\n- Provide the `refresh_token` from a previous token request.",
+    "This endpoint implements the OAuth 2.0 `token` endpoint. For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).\n\nThe way you generate an access token depends on your app type:\n\n- **Public or private apps** act on behalf of a user, using the OAuth authorization code flow with Proof Key for Code Exchange (PKCE). To generate an access token, you provide either an authorization code or a refresh token. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).\n- **Service apps** act on behalf of the app itself, using the OAuth client credentials flow. To generate an access token, you authenticate with your app's client ID and client secret. No user authorization is required.\n\nAccess tokens may be up to 4 KB in size, and are only valid for a specified period of time. The expiry time (currently 4 hours) is shown in the endpoint response and is subject to change.\n\n**Endpoint authentication**\n\nRequests to this endpoint require authentication with your client ID and client secret, using _one_ of the following methods:\n\n- **Basic access authentication** (Recommended): For [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the `{credentials}` string must be a Base64 encoded value of `{client id}:{client secret}`.\n- **Body parameters**: Provide your app's credentials using the `client_id` and `client_secret` body parameters.\n\nThis endpoint can't be called from a user's web-browser client because it uses client authentication with client secrets. Requests must come from your app's backend, otherwise they'll be blocked by Canva's [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) policy.\n\n**Generate an access token using an authorization code**\n\nOnly public or private apps can use this grant type.\n\nTo generate an access token with an authorization code, you must:\n\n- Set `grant_type` to `authorization_code`.\n- Provide the `code_verifier` value that you generated when creating the user authorization URL.\n- Provide the authorization code you received after the user authorized the app.\n\n**Generate an access token using a refresh token**\n\nOnly public or private apps can use this grant type.\n\nUsing the `refresh_token` value from a previous user token request, you can get a new access token with the same or smaller scope as the previous one, but with a refreshed expiry time. You will also receive a new refresh token that you can use to refresh the access token again.\n\nTo refresh an existing access token, you must:\n\n- Set `grant_type` to `refresh_token`.\n- Provide the `refresh_token` from a previous token request.\n\n**Generate an access token using client credentials**\n\nOnly service apps can use this grant type. The access token acts on behalf of the app itself, so it can only use [scopes for service apps](https://www.canva.dev/docs/apps/rest-apis/scopes/#scopes-for-service-apps).\n\nTo generate an access token using client credentials, you must:\n\n- Set `grant_type` to `client_credentials`.\n- Authenticate the request with your client ID and client secret, as described in **Endpoint authentication**.\n- Optionally, set `scope` to the scopes that the token needs. If you omit `scope`, the token is granted all the scopes that are enabled for your app in the Developer Portal.\n\nThe response doesn't include a refresh token. When the access token expires, generate a new one by making the same request again.",
   operationId: 'exchangeAccessToken',
   request: {
     body: {
@@ -14584,6 +14683,18 @@ export const postV1ResizesRoute = createRoute({
         },
       },
     },
+    402: {
+      description: 'Payment Required',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            user_payment_required: UserPaymentRequiredErrorExample,
+            app_payment_required: AppPaymentRequiredErrorExample,
+          },
+        },
+      },
+    },
     403: {
       description: 'Forbidden',
       content: {
@@ -14619,7 +14730,10 @@ export const postV1ResizesRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:read', 'design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:read', 'service:design:content:write'] },
+    { oauthAuthCode: ['design:content:read', 'design:content:write'] },
+  ],
 })
 
 export const getV1ResizesJobIdRoute = createRoute({
@@ -14675,7 +14789,10 @@ export const getV1ResizesJobIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauthAuthCode: ['design:content:read', 'design:content:write'] }],
+  security: [
+    { oauthClientCredentials: ['service:design:content:read', 'service:design:content:write'] },
+    { oauthAuthCode: ['design:content:read', 'design:content:write'] },
+  ],
 })
 
 export const getV1UsersMeRoute = createRoute({

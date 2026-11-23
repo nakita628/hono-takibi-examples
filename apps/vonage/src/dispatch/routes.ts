@@ -1,41 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AudioPropertySchema = z
-  .object({
-    url: z
-      .string()
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL of the audio attachment. `messenger` supports .mp3. `whatsapp` supports .aac, .m4a, .amr, .mp3 and .opus.',
-        example: 'https://example.com/audio.mp3',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AudioProperty')
-
-const ErrorSchema = z
-  .object({
-    detail: z.string().openapi({ example: 'Your request parameters did not validate.' }),
-    instance: z.string().openapi({ example: null }),
-    invalid_parameters: z
-      .object({
-        name: z.string().exactOptional().openapi({ example: 'Invalid `from` parameter' }),
-        reason: z.string().exactOptional().openapi({ example: 'Invalid `from` parameter' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.string().openapi({ example: 'https://www.nexmo.com/messages/Errors#InvalidParams' }),
-  })
-  .openapi({
-    description:
-      'The error format is standardized to the 4xx/5xx range with a code and a human readable explanation.',
-    required: ['type', 'title', 'detail', 'instance'],
-  })
-  .openapi('Error')
-
 const FailoverPropertySchema = z
   .object({
     condition_status: z
@@ -62,31 +26,6 @@ const FailoverPropertySchema = z
     required: [],
   })
   .openapi('FailoverProperty')
-
-const FilePropertySchema = z
-  .object({
-    caption: z
-      .string()
-      .min(1)
-      .max(3000)
-      .exactOptional()
-      .openapi({
-        description: 'Additional text to accompany the image. Supported by WhatsApp and MMS.',
-        example: 'Additional text to accompany the image.',
-      }),
-    url: z
-      .string()
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL of the file attachment. `messenger` supports a wide range of attachments including .zip, .csv and .pdf. `whatsapp` supports .pdf, .doc(x), .ppt(x) and .xls(x).',
-        example: 'https://example.com/file.zip',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('FileProperty')
 
 const FromPropertySchema = z
   .object({
@@ -116,6 +55,47 @@ const FromPropertySchema = z
   })
   .openapi({ required: ['type'] })
   .openapi('FromProperty')
+
+const AudioPropertySchema = z
+  .object({
+    url: z
+      .string()
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL of the audio attachment. `messenger` supports .mp3. `whatsapp` supports .aac, .m4a, .amr, .mp3 and .opus.',
+        example: 'https://example.com/audio.mp3',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AudioProperty')
+
+const FilePropertySchema = z
+  .object({
+    caption: z
+      .string()
+      .min(1)
+      .max(3000)
+      .exactOptional()
+      .openapi({
+        description: 'Additional text to accompany the image. Supported by WhatsApp and MMS.',
+        example: 'Additional text to accompany the image.',
+      }),
+    url: z
+      .string()
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL of the file attachment. `messenger` supports a wide range of attachments including .zip, .csv and .pdf. `whatsapp` supports .pdf, .doc(x), .ppt(x) and .xls(x).',
+        example: 'https://example.com/file.zip',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('FileProperty')
 
 const ImagePropertySchema = z
   .object({
@@ -284,14 +264,6 @@ const MessagePropertySchema = z
   .openapi({ required: ['content'] })
   .openapi('MessageProperty')
 
-const TimestampPropertySchema = z
-  .string()
-  .openapi({
-    description: 'The datetime of when the event occurred.',
-    example: '2020-01-01T14:00:00.000Z',
-  })
-  .openapi('TimestampProperty')
-
 const ToPropertySchema = z
   .object({
     id: z
@@ -320,6 +292,54 @@ const ToPropertySchema = z
   })
   .openapi({ required: ['type'] })
   .openapi('ToProperty')
+
+const SendWithFailoverMessageSchema = z
+  .object({
+    failover: FailoverPropertySchema.exactOptional(),
+    from: FromPropertySchema,
+    message: MessagePropertySchema,
+    to: ToPropertySchema,
+  })
+  .openapi({ description: 'Send With Failover Message', required: ['to', 'from', 'message'] })
+  .openapi('SendWithFailoverMessage')
+
+const SendMessageSchema = z
+  .object({ from: FromPropertySchema, message: MessagePropertySchema, to: ToPropertySchema })
+  .openapi({ description: 'Send Message', required: ['to', 'from', 'message'] })
+  .openapi('SendMessage')
+
+type CreateWorkflowType = {
+  template?: 'failover'
+  workflow?: (z.infer<typeof SendWithFailoverMessageSchema> | z.infer<typeof SendMessageSchema>)[]
+}
+
+const ErrorSchema = z
+  .object({
+    detail: z.string().openapi({ example: 'Your request parameters did not validate.' }),
+    instance: z.string().openapi({ example: null }),
+    invalid_parameters: z
+      .object({
+        name: z.string().exactOptional().openapi({ example: 'Invalid `from` parameter' }),
+        reason: z.string().exactOptional().openapi({ example: 'Invalid `from` parameter' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.string().openapi({ example: 'https://www.nexmo.com/messages/Errors#InvalidParams' }),
+  })
+  .openapi({
+    description:
+      'The error format is standardized to the 4xx/5xx range with a code and a human readable explanation.',
+    required: ['type', 'title', 'detail', 'instance'],
+  })
+  .openapi('Error')
+
+const TimestampPropertySchema = z
+  .string()
+  .openapi({
+    description: 'The datetime of when the event occurred.',
+    example: '2020-01-01T14:00:00.000Z',
+  })
+  .openapi('TimestampProperty')
 
 const MessageStatusSchema = z
   .object({
@@ -412,22 +432,7 @@ const ResponseSchema = z
   .openapi({ required: ['dispatch_uuid'] })
   .openapi('Response')
 
-const SendWithFailoverMessageSchema = z
-  .object({
-    failover: FailoverPropertySchema.exactOptional(),
-    from: FromPropertySchema,
-    message: MessagePropertySchema,
-    to: ToPropertySchema,
-  })
-  .openapi({ description: 'Send With Failover Message', required: ['to', 'from', 'message'] })
-  .openapi('SendWithFailoverMessage')
-
-const SendMessageSchema = z
-  .object({ from: FromPropertySchema, message: MessagePropertySchema, to: ToPropertySchema })
-  .openapi({ description: 'Send Message', required: ['to', 'from', 'message'] })
-  .openapi('SendMessage')
-
-const CreateWorkflowSchema = z
+const CreateWorkflowSchema: z.ZodType<CreateWorkflowType> = z
   .object({
     template: z
       .literal('failover')

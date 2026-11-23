@@ -30,7 +30,7 @@ Content-Type: application/problem+json; charset=utf-8
 
 {
   "detail": "Video not found",
-  "docs": "https://docs.joinpeertube.org/api-rest-reference.html#operation/getVideo",
+  "docs": "https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideo.html",
   "status": 404,
   "title": "Not Found",
   "type": "about:blank"
@@ -47,10 +47,10 @@ Content-Type: application/problem+json; charset=utf-8
 
 {
   "detail": "Cannot get this video regarding follow constraints",
-  "docs": "https://docs.joinpeertube.org/api-rest-reference.html#operation/getVideo",
+  "docs": "https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideo.html",
   "status": 403,
   "title": "Forbidden",
-  "type": "https://docs.joinpeertube.org/api-rest-reference.html#section/Errors/does_not_respect_follow_constraints"
+  "type": "https://docs.joinpeertube.org/api-rest-reference/api.html#does-not-respect-follow-constraints"
 }
 ```
 
@@ -66,7 +66,7 @@ Content-Type: application/problem+json; charset=utf-8
 
 {
   "detail": "Incorrect request parameters: id",
-  "docs": "https://docs.joinpeertube.org/api-rest-reference.html#operation/getVideo",
+  "docs": "https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideo.html",
   "instance": "/api/v1/videos/9c9de5e8-0a1e-484a-b099-e80766180",
   "invalid-params": {
     "id": {
@@ -228,6 +228,14 @@ Request an export without video files instead.
 
 The current password is invalid.
 
+## current_password_is_missing
+
+The action requires a [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation) but `currentPassword` is missing.
+
+## password_confirmation_unavailable
+
+The action requires a [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation) but the user authenticates with an external auth plugin (OpenID Connect, SAML...), so PeerTube cannot check their password.
+
 # Rate limits
 
 We are rate-limiting all endpoints of PeerTube's API. Custom values can be set by administrators:
@@ -251,6 +259,19 @@ following headers:
 | `X-RateLimit-Remaining` | Number of remaining requests in the current time period    |
 | `X-RateLimit-Reset`     | Timestamp of end of current time period as UNIX timestamp  |
 | `Retry-After`           | Seconds to delay after the first `429` is received         |
+
+# Password confirmation
+
+If the `security.password_confirmation.enabled` setting is enabled (default), sensitive administrator actions require
+the user password in the `currentPassword` field of the request body:
+
+  - Install or update a plugin/theme
+  - Change the custom JavaScript or CSS of the instance (`instance.customizations` of the custom configuration)
+  - Create an administrator, or give the administrator role to a user
+  - Change the password, email or auth plugin (`pluginAuth`) of an administrator
+
+After 10 failed password confirmations in 10 minutes (configurable), the user receives a `429 Too Many Requests` status code
+until the end of the time frame, even with the correct password.
 
 # CORS
 
@@ -277,7 +298,7 @@ Base URLs:
 Web: <a href="https://joinpeertube.org">PeerTube Community</a> 
 License: <a href="https://github.com/Chocobozzz/PeerTube/blob/master/LICENSE">AGPLv3.0</a>
 
-<a href="https://docs.joinpeertube.org/api-rest-reference.html">External documentation</a>
+<a href="https://docs.joinpeertube.org/api-rest-reference/api.html">External documentation</a>
 
 # Authentication
 
@@ -305,7 +326,7 @@ along with a __refresh token valid for 2 weeks__.
 
 As a visitor, you can use this API to open an account (if registrations are open on
 that PeerTube instance). As an admin, you should use the dedicated [User creation
-API](#operation/addUser) instead.
+API](https://docs.joinpeertube.org/api-rest-reference/api/operations/adduser.html) instead.
 
 
 ## Resend verification link to registration request email
@@ -853,7 +874,7 @@ curl https://peertube.example.com/api/v1/oauth-clients/local \
 
 `GET /api/v1/oauth-clients/local`
 
-You need to retrieve a client id and secret before [logging in](#operation/getOAuthToken).
+You need to retrieve a client id and secret before [logging in](https://docs.joinpeertube.org/api-rest-reference/api/operations/getoauthtoken.html).
 
 > Example responses
 
@@ -892,7 +913,7 @@ curl https://peertube.example.com/api/v1/users/token \
 
 `POST /api/v1/users/token`
 
-With your [client id and secret](#operation/getOAuthClient), you can retrieve an access and refresh tokens.
+With your [client id and secret](https://docs.joinpeertube.org/api-rest-reference/api/operations/getoauthclient.html), you can retrieve an access and refresh tokens.
 
 > Body parameter
 
@@ -981,6 +1002,8 @@ OAuth2
 
 ## List token sessions
 
+<a id="opIdlistUserTokenSessions"></a>
+
 > Code samples
 
 ```bash
@@ -1040,25 +1063,28 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2
 </aside>
 
-## List token sessions
+## Revoke a token session
+
+<a id="opIdrevokeUserTokenSession"></a>
 
 > Code samples
 
 ```bash
 curl https://peertube.example.com/api/v1/users/42/token-sessions/42/revoke \
+  -X POST \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /api/v1/users/{id}/token-sessions/{tokenSessionId}/revoke`
+`POST /api/v1/users/{id}/token-sessions/{tokenSessionId}/revoke`
 
-<h3 id="list-token-sessions-1-parameters">Parameters</h3>
+<h3 id="revoke-a-token-session-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|[id](#schemaid)|true|Entity id|
 |tokenSessionId|path|[id](#schemaid)|true|Token session Id|
 
-<h3 id="list-token-sessions-1-responses">Responses</h3>
+<h3 id="revoke-a-token-session-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1164,9 +1190,9 @@ curl https://peertube.example.com/api/v1/accounts/chocobozzz%20%7C%20chocobozzz%
 |aiUsageOneOf|query|[VideoAIUsageSet](#schemavideoaiusageset) \| [[VideoAIUsageSet](#schemavideoaiusageset)]|false|**PeerTube >= 9.0** Only list videos with one of these AI usages, declared by video creators.<br>If not provided, the preference of the authenticated user (`aiUsagesHidden`) is used<br>|
 |isLive|query|boolean|false|whether or not the video is a live|
 |includeScheduledLive|query|boolean|false|whether or not include live that are scheduled for later|
-|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](#operation/getLanguages)). Use `_unknown` to filter on videos that don't have a video language|
+|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html)). Use `_unknown` to filter on videos that don't have a video language|
 |tagsOneOf|query|string \| [string]|false|tag(s) of the video|
 |tagsAllOf|query|string \| [string]|false|tag(s) of the video, where all should be present in the video|
 |isLocal|query|boolean|false|**PeerTube >= 4.0** Display only local or remote objects|
@@ -1339,7 +1365,10 @@ curl https://peertube.example.com/api/v1/accounts/chocobozzz%20%7C%20chocobozzz%
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -1544,6 +1573,8 @@ This operation does not require authentication
 
 ## List ratings of an account
 
+<a id="opIdgetAccountRatings"></a>
+
 > Code samples
 
 ```bash
@@ -1690,7 +1721,10 @@ curl https://peertube.example.com/api/v1/accounts/chocobozzz%20%7C%20chocobozzz%
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     },
     "rating": "like"
   }
@@ -1965,7 +1999,8 @@ curl https://peertube.example.com/api/v1/users \
     "videoQuotaDaily": -1,
     "channelName": "framasoft_videos",
     "role": 2,
-    "adminFlags": 1
+    "adminFlags": 1,
+    "currentPassword": {}
   }'
 ```
 
@@ -1982,7 +2017,8 @@ curl https://peertube.example.com/api/v1/users \
   "videoQuotaDaily": -1,
   "channelName": "framasoft_videos",
   "role": 2,
-  "adminFlags": 1
+  "adminFlags": 1,
+  "currentPassword": {}
 }
 ```
 
@@ -1999,6 +2035,7 @@ curl https://peertube.example.com/api/v1/users \
 |» channelName|body|[usernameChannel](#schemausernamechannel)|false|immutable name of the channel, used to interact with its actor|
 |» role|body|[UserRole](#schemauserrole)|true|The user role (Admin = `0`, Moderator = `1`, User = `2`)|
 |» adminFlags|body|[UserAdminFlags](#schemauseradminflags)|false|Admin flags for the user (None = `0`, Bypass video blocklist = `1`)|
+|» currentPassword|body|object|false|Required to create an administrator, see [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation)|
 
 #### Enumerated Values
 
@@ -2264,7 +2301,8 @@ curl https://peertube.example.com/api/v1/users/42 \
     "pluginAuth": "peertube-plugin-auth-saml2",
     "role": 2,
     "adminFlags": 1,
-    "password": "password"
+    "password": "password",
+    "currentPassword": {}
   }'
 ```
 
@@ -2281,7 +2319,8 @@ curl https://peertube.example.com/api/v1/users/42 \
   "pluginAuth": "peertube-plugin-auth-saml2",
   "role": 2,
   "adminFlags": 1,
-  "password": "password"
+  "password": "password",
+  "currentPassword": {}
 }
 ```
 
@@ -2299,6 +2338,7 @@ curl https://peertube.example.com/api/v1/users/42 \
 |» role|body|[UserRole](#schemauserrole)|false|The user role (Admin = `0`, Moderator = `1`, User = `2`)|
 |» adminFlags|body|[UserAdminFlags](#schemauseradminflags)|false|Admin flags for the user (None = `0`, Bypass video blocklist = `1`)|
 |» password|body|[password](#schemapassword)|false|none|
+|» currentPassword|body|object|false|Required to give the administrator role, or to change the password, email or auth plugin of an administrator, see [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation)<br>|
 
 #### Enumerated Values
 
@@ -2354,6 +2394,8 @@ OAuth2 ( Scopes: admin )
 
 ## Block a user
 
+<a id="opIdblockUser"></a>
+
 > Code samples
 
 ```bash
@@ -2401,6 +2443,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## Unblock a user
+
+<a id="opIdunblockUser"></a>
 
 > Code samples
 
@@ -2531,6 +2575,8 @@ This operation does not require authentication
 
 ## Ask to reset password
 
+<a id="opIdaskResetPassword"></a>
+
 > Code samples
 
 ```bash
@@ -2572,6 +2618,8 @@ This operation does not require authentication
 </aside>
 
 ## Reset password
+
+<a id="opIdresetPassword"></a>
 
 > Code samples
 
@@ -3594,6 +3642,8 @@ OAuth2 ( Scopes: user )
 
 ## Get my user used quota
 
+<a id="opIdgetMyVideoQuotaUsed"></a>
+
 > Code samples
 
 ```bash
@@ -3637,6 +3687,8 @@ OAuth2 ( Scopes: user )
 
 ## Get rate of my user for a video
 
+<a id="opIdgetMyVideoRating"></a>
+
 > Code samples
 
 ```bash
@@ -3677,6 +3729,8 @@ OAuth2
 
 ## List videos of my user
 
+<a id="opIdlistMyVideos"></a>
+
 > Code samples
 
 ```bash
@@ -3702,9 +3756,9 @@ curl https://peertube.example.com/api/v1/users/me/videos \
 |aiUsageOneOf|query|[VideoAIUsageSet](#schemavideoaiusageset) \| [[VideoAIUsageSet](#schemavideoaiusageset)]|false|**PeerTube >= 9.0** Only list videos with one of these AI usages, declared by video creators.<br>If not provided, the preference of the authenticated user (`aiUsagesHidden`) is used<br>|
 |isLive|query|boolean|false|whether or not the video is a live|
 |includeScheduledLive|query|boolean|false|whether or not include live that are scheduled for later|
-|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](#operation/getLanguages)). Use `_unknown` to filter on videos that don't have a video language|
+|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html)). Use `_unknown` to filter on videos that don't have a video language|
 |tagsOneOf|query|string \| [string]|false|tag(s) of the video|
 |tagsAllOf|query|string \| [string]|false|tag(s) of the video, where all should be present in the video|
 |isLocal|query|boolean|false|**PeerTube >= 4.0** Display only local or remote objects|
@@ -3878,7 +3932,10 @@ curl https://peertube.example.com/api/v1/users/me/videos \
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -3896,6 +3953,8 @@ OAuth2 ( Scopes: user )
 </aside>
 
 ## Mark feature info as read
+
+<a id="opIdmarkMyNewFeatureInfoAsRead"></a>
 
 > Code samples
 
@@ -3946,6 +4005,8 @@ OAuth2 ( Scopes: user )
 </aside>
 
 ## Update my user avatar
+
+<a id="opIdupdateMyAvatar"></a>
 
 > Code samples
 
@@ -4019,6 +4080,8 @@ OAuth2
 
 ## Delete my avatar
 
+<a id="opIddeleteMyAvatar"></a>
+
 > Code samples
 
 ```bash
@@ -4046,6 +4109,8 @@ Operations related to your subscriptions to video channels, their new videos, an
 
 
 ## List my user subscriptions
+
+<a id="opIdlistMySubscriptions"></a>
 
 > Code samples
 
@@ -4167,6 +4232,8 @@ OAuth2 ( Scopes: user )
 
 ## Add subscription to my user
 
+<a id="opIdaddMySubscription"></a>
+
 > Code samples
 
 ```bash
@@ -4209,6 +4276,8 @@ OAuth2 ( Scopes: user )
 
 ## Get if subscriptions exist for my user
 
+<a id="opIdgetMySubscriptionsExist"></a>
+
 > Code samples
 
 ```bash
@@ -4246,6 +4315,8 @@ OAuth2 ( Scopes: user )
 
 ## List videos of subscriptions of my user
 
+<a id="opIdlistMySubscriptionsVideos"></a>
+
 > Code samples
 
 ```bash
@@ -4270,9 +4341,9 @@ curl https://peertube.example.com/api/v1/users/me/subscriptions/videos \
 |aiUsageOneOf|query|[VideoAIUsageSet](#schemavideoaiusageset) \| [[VideoAIUsageSet](#schemavideoaiusageset)]|false|**PeerTube >= 9.0** Only list videos with one of these AI usages, declared by video creators.<br>If not provided, the preference of the authenticated user (`aiUsagesHidden`) is used<br>|
 |isLive|query|boolean|false|whether or not the video is a live|
 |includeScheduledLive|query|boolean|false|whether or not include live that are scheduled for later|
-|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](#operation/getLanguages)). Use `_unknown` to filter on videos that don't have a video language|
+|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html)). Use `_unknown` to filter on videos that don't have a video language|
 |tagsOneOf|query|string \| [string]|false|tag(s) of the video|
 |tagsAllOf|query|string \| [string]|false|tag(s) of the video, where all should be present in the video|
 |isLocal|query|boolean|false|**PeerTube >= 4.0** Display only local or remote objects|
@@ -4445,7 +4516,10 @@ curl https://peertube.example.com/api/v1/users/me/subscriptions/videos \
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -4463,6 +4537,8 @@ OAuth2 ( Scopes: user )
 </aside>
 
 ## Get subscription of my user
+
+<a id="opIdgetMySubscription"></a>
 
 > Code samples
 
@@ -4569,6 +4645,8 @@ OAuth2 ( Scopes: user )
 
 ## Delete subscription of my user
 
+<a id="opIddeleteMySubscription"></a>
+
 > Code samples
 
 ```bash
@@ -4602,6 +4680,8 @@ Operations related to your watch history.
 
 
 ## List watched videos history
+
+<a id="opIdlistMyVideoHistory"></a>
 
 > Code samples
 
@@ -4741,7 +4821,10 @@ curl https://peertube.example.com/api/v1/users/me/history/videos \
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -4759,6 +4842,8 @@ OAuth2
 </aside>
 
 ## Delete history element
+
+<a id="opIddeleteMyVideoHistoryElement"></a>
 
 > Code samples
 
@@ -4788,6 +4873,8 @@ OAuth2
 </aside>
 
 ## Clear video history
+
+<a id="opIdclearMyVideoHistory"></a>
 
 > Code samples
 
@@ -4830,6 +4917,8 @@ Notifications following new videos, follows or reports. They allow you to keep t
 
 
 ## List my notifications
+
+<a id="opIdlistMyNotifications"></a>
 
 > Code samples
 
@@ -4888,6 +4977,7 @@ curl https://peertube.example.com/api/v1/users/me/notifications \
 |typeOneOf|31|
 |typeOneOf|32|
 |typeOneOf|33|
+|typeOneOf|34|
 
 > Example responses
 
@@ -5057,6 +5147,8 @@ OAuth2
 
 ## Mark notifications as read by their id
 
+<a id="opIdmarkMyNotificationsAsRead"></a>
+
 > Code samples
 
 ```bash
@@ -5103,6 +5195,8 @@ OAuth2
 
 ## Mark all my notification as read
 
+<a id="opIdmarkAllMyNotificationsAsRead"></a>
+
 > Code samples
 
 ```bash
@@ -5125,6 +5219,8 @@ OAuth2
 </aside>
 
 ## Update my notification settings
+
+<a id="opIdupdateMyNotificationSettings"></a>
 
 > Code samples
 
@@ -5322,6 +5418,28 @@ curl https://peertube.example.com/api/v1/config \
     "enabledResolutions": [
       240
     ]
+  },
+  "live": {
+    "enabled": true,
+    "allowReplay": true,
+    "dvr": {
+      "maxWindow": 0
+    },
+    "latencySetting": {
+      "enabled": true
+    },
+    "maxDuration": 0,
+    "maxInstanceLives": 0,
+    "maxUserLives": 0,
+    "transcoding": {
+      "enabled": true,
+      "enabledResolutions": [
+        240
+      ]
+    },
+    "rtmp": {
+      "port": 0
+    }
   },
   "import": {
     "videos": {
@@ -5747,12 +5865,17 @@ curl https://peertube.example.com/api/v1/config/custom \
 
 `PUT /api/v1/config/custom`
 
+Changing `instance.customizations.javascript` or `instance.customizations.css` requires a [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation): set `currentPassword` at the root of the request body.
+
+
 <h3 id="set-instance-runtime-configuration-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|successful operation|None|
-|400|Bad Request|Arises when:<br>  - the emailer is disabled and the instance is open to registrations<br>  - web videos and hls are disabled with transcoding enabled - you need at least one enabled<br>|None|
+|400|Bad Request|Arises when:<br>  - the emailer is disabled and the instance is open to registrations<br>  - web videos and hls are disabled with transcoding enabled - you need at least one enabled<br>  - the custom JavaScript or CSS changed and `currentPassword` is missing<br>|None|
+|403|Forbidden|invalid `currentPassword`, or password confirmation unavailable for this user|None|
+|429|Too Many Requests|too many failed password confirmations|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -5785,6 +5908,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## Update instance banner
+
+<a id="opIdupdateInstanceBanner"></a>
 
 > Code samples
 
@@ -5830,6 +5955,8 @@ OAuth2 ( Scopes: admin )
 
 ## Delete instance banner
 
+<a id="opIddeleteInstanceBanner"></a>
+
 > Code samples
 
 ```bash
@@ -5852,6 +5979,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## Update instance avatar
+
+<a id="opIdupdateInstanceAvatar"></a>
 
 > Code samples
 
@@ -5897,6 +6026,8 @@ OAuth2 ( Scopes: admin )
 
 ## Delete instance avatar
 
+<a id="opIddeleteInstanceAvatar"></a>
+
 > Code samples
 
 ```bash
@@ -5919,6 +6050,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## Update instance logo
+
+<a id="opIdupdateInstanceLogo"></a>
 
 > Code samples
 
@@ -5974,6 +6107,8 @@ OAuth2 ( Scopes: admin )
 
 ## Delete instance logo
 
+<a id="opIddeleteInstanceLogo"></a>
+
 > Code samples
 
 ```bash
@@ -6016,6 +6151,8 @@ Jobs are long-running tasks enqueued and processed by the instance itself. No ad
 
 
 ## Pause job queue
+
+<a id="opIdpauseJobQueue"></a>
 
 > Code samples
 
@@ -6069,6 +6206,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## Resume job queue
+
+<a id="opIdresumeJobQueue"></a>
 
 > Code samples
 
@@ -6311,6 +6450,8 @@ Managing servers which the instance interacts with is crucial to the concept of 
 
 ## List instances following the server
 
+<a id="opIdlistInstanceFollowers"></a>
+
 > Code samples
 
 ```bash
@@ -6424,6 +6565,8 @@ This operation does not require authentication
 
 ## Remove or reject a follower to your server
 
+<a id="opIdremoveInstanceFollower"></a>
+
 > Code samples
 
 ```bash
@@ -6453,6 +6596,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## Reject a pending follower to your server
+
+<a id="opIdrejectInstanceFollower"></a>
 
 > Code samples
 
@@ -6484,6 +6629,8 @@ OAuth2 ( Scopes: admin )
 
 ## Accept a pending follower to your server
 
+<a id="opIdacceptInstanceFollower"></a>
+
 > Code samples
 
 ```bash
@@ -6513,6 +6660,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## List instances followed by the server
+
+<a id="opIdlistInstanceFollowing"></a>
 
 > Code samples
 
@@ -6627,6 +6776,8 @@ This operation does not require authentication
 
 ## Follow a list of actors (PeerTube instance, channel or account)
 
+<a id="opIdfollowActors"></a>
+
 > Code samples
 
 ```bash
@@ -6681,6 +6832,8 @@ OAuth2 ( Scopes: admin )
 
 ## Unfollow an actor (PeerTube instance, channel or account)
 
+<a id="opIdunfollowActor"></a>
+
 > Code samples
 
 ```bash
@@ -6711,12 +6864,14 @@ OAuth2 ( Scopes: admin )
 
 <h1 id="peertube-instance-redundancy">Instance Redundancy</h1>
 
-Redundancy is part of the inter-server solidarity that PeerTube fosters. Manage the list of instances you wish to help by seeding their videos according to the policy of video selection of your choice. Note that you have a similar functionality to mirror individual videos, see [video mirroring](#tag/Video-Mirroring).
+Redundancy is part of the inter-server solidarity that PeerTube fosters. Manage the list of instances you wish to help by seeding their videos according to the policy of video selection of your choice. Note that you have a similar functionality to mirror individual videos, see [video mirroring](https://docs.joinpeertube.org/api-rest-reference/api/video-mirroring.html).
 
 
 <a href="https://docs.joinpeertube.org/admin/following-instances#instances-redundancy">External documentation</a>
 
 ## Update a server redundancy policy
+
+<a id="opIdupdateServerRedundancy"></a>
 
 > Code samples
 
@@ -6903,7 +7058,8 @@ curl https://peertube.example.com/api/v1/plugins/install \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "npmName": "peertube-plugin-auth-ldap"
+    "npmName": "peertube-plugin-auth-ldap",
+    "currentPassword": "password"
   }'
 ```
 
@@ -6913,7 +7069,8 @@ curl https://peertube.example.com/api/v1/plugins/install \
 
 ```json
 {
-  "npmName": "peertube-plugin-auth-ldap"
+  "npmName": "peertube-plugin-auth-ldap",
+  "currentPassword": "password"
 }
 ```
 
@@ -6924,15 +7081,19 @@ curl https://peertube.example.com/api/v1/plugins/install \
 |body|body|object|false|none|
 |» *oneOf*|body|object|false|none|
 |» npmName|body|string|true|none|
+|» currentPassword|body|[currentPassword](#schemacurrentpassword)|false|Password of the authenticated user, required if [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation) is enabled|
 |» *oneOf*|body|object|false|none|
 |» path|body|string|true|none|
+|» currentPassword|body|[currentPassword](#schemacurrentpassword)|false|Password of the authenticated user, required if [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation) is enabled|
 
 <h3 id="install-a-plugin-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|successful operation|None|
-|400|Bad Request|should have either `npmName` or `path` set|None|
+|400|Bad Request|should have either `npmName` or `path` set, or `currentPassword` is missing|None|
+|403|Forbidden|invalid `currentPassword`, or password confirmation unavailable for this user|None|
+|429|Too Many Requests|too many failed password confirmations|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -6951,7 +7112,8 @@ curl https://peertube.example.com/api/v1/plugins/update \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "npmName": "peertube-plugin-auth-ldap"
+    "npmName": "peertube-plugin-auth-ldap",
+    "currentPassword": "password"
   }'
 ```
 
@@ -6961,7 +7123,8 @@ curl https://peertube.example.com/api/v1/plugins/update \
 
 ```json
 {
-  "npmName": "peertube-plugin-auth-ldap"
+  "npmName": "peertube-plugin-auth-ldap",
+  "currentPassword": "password"
 }
 ```
 
@@ -6972,16 +7135,20 @@ curl https://peertube.example.com/api/v1/plugins/update \
 |body|body|object|false|none|
 |» *oneOf*|body|object|false|none|
 |» npmName|body|string|true|none|
+|» currentPassword|body|[currentPassword](#schemacurrentpassword)|false|Password of the authenticated user, required if [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation) is enabled|
 |» *oneOf*|body|object|false|none|
 |» path|body|string|true|none|
+|» currentPassword|body|[currentPassword](#schemacurrentpassword)|false|Password of the authenticated user, required if [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation) is enabled|
 
 <h3 id="update-a-plugin-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|successful operation|None|
-|400|Bad Request|should have either `npmName` or `path` set|None|
+|400|Bad Request|should have either `npmName` or `path` set, or `currentPassword` is missing|None|
+|403|Forbidden|invalid `currentPassword`, or password confirmation unavailable for this user|None|
 |404|Not Found|existing plugin not found|None|
+|429|Too Many Requests|too many failed password confirmations|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -7088,6 +7255,8 @@ OAuth2 ( Scopes: admin )
 
 ## Set a plugin's settings
 
+<a id="opIdupdatePluginSettings"></a>
+
 > Code samples
 
 ```bash
@@ -7132,6 +7301,8 @@ OAuth2 ( Scopes: admin )
 
 ## Get a plugin's public settings
 
+<a id="opIdgetPluginPublicSettings"></a>
+
 > Code samples
 
 ```bash
@@ -7167,6 +7338,8 @@ This operation does not require authentication
 </aside>
 
 ## Get a plugin's registered settings
+
+<a id="opIdgetPluginRegisteredSettings"></a>
 
 > Code samples
 
@@ -7618,6 +7791,8 @@ OAuth2 ( Scopes: admin moderator )
 
 ## Report an abuse
 
+<a id="opIdreportAbuse"></a>
+
 > Code samples
 
 ```bash
@@ -7637,7 +7812,8 @@ curl https://peertube.example.com/api/v1/abuses \
       "endAt": 0
     },
     "comment": {
-      "id": {}
+      "id": {},
+      "videoUUID": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     },
     "account": {
       "id": 0
@@ -7664,7 +7840,8 @@ You cannot report a video that you own or on which you are a collaborator (video
     "endAt": 0
   },
   "comment": {
-    "id": {}
+    "id": {},
+    "videoUUID": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   },
   "account": {
     "id": 0
@@ -7676,6 +7853,7 @@ You cannot report a video that you own or on which you are a collaborator (video
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|x-peertube-video-password|header|string|false|Required on password protected video|
 |body|body|object|true|none|
 |» reason|body|string|true|Reason why the user reports this video|
 |» predefinedReasons|body|[PredefinedAbuseReasons](#schemapredefinedabusereasons)|false|Reason categories that help triage reports|
@@ -7685,6 +7863,7 @@ You cannot report a video that you own or on which you are a collaborator (video
 |» » endAt|body|integer(seconds)|false|Timestamp in the video that marks the ending of the report|
 |» comment|body|object|false|none|
 |» » id|body|object|false|Comment id to report|
+|» » videoUUID|body|string(uuid)|false|UUID of the video of the comment, required to report a comment of an unlisted video|
 |» account|body|object|false|none|
 |» » id|body|integer|false|Account id to report|
 
@@ -7736,6 +7915,8 @@ OAuth2
 </aside>
 
 ## Update an abuse
+
+<a id="opIdupdateAbuse"></a>
 
 > Code samples
 
@@ -7792,6 +7973,8 @@ OAuth2 ( Scopes: admin moderator )
 
 ## Delete an abuse
 
+<a id="opIddeleteAbuse"></a>
+
 > Code samples
 
 ```bash
@@ -7821,6 +8004,8 @@ OAuth2 ( Scopes: admin moderator )
 </aside>
 
 ## List messages of an abuse
+
+<a id="opIdlistAbuseMessages"></a>
 
 > Code samples
 
@@ -7895,6 +8080,8 @@ OAuth2
 
 ## Add message to an abuse
 
+<a id="opIdaddAbuseMessage"></a>
+
 > Code samples
 
 ```bash
@@ -7938,6 +8125,8 @@ OAuth2
 </aside>
 
 ## Delete an abuse message
+
+<a id="opIddeleteAbuseMessage"></a>
 
 > Code samples
 
@@ -8022,6 +8211,76 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2
 </aside>
 
+## Duplicate a video
+
+<a id="opIdduplicateVideo"></a>
+
+> Code samples
+
+```bash
+curl https://peertube.example.com/api/v1/videos/42/duplicate \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string"
+  }'
+```
+
+`POST /api/v1/videos/{id}/duplicate`
+
+Create a copy of a local video, in the same channel.
+
+The copy of a blocked video (that only moderators can duplicate) is blocked for the same reason.
+
+
+> Body parameter
+
+```json
+{
+  "name": "string"
+}
+```
+
+<h3 id="duplicate-a-video-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[id](#schemaid) \| [UUIDv4](#schemauuidv4) \| [shortUUID](#schemashortuuid)|true|The object id, uuid or short uuid|
+|body|body|object|false|none|
+|» name|body|string|false|Name of the copy. Defaults to the name of the source video followed by "(Copy)"|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "video": {
+    "id": {},
+    "uuid": {},
+    "shortUUID": {}
+  }
+}
+```
+
+<h3 id="duplicate-a-video-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation. Returns the identifiers of the new video|[VideoUploadResponse](#schemavideouploadresponse)|
+|400|Bad Request|incorrect parameters|None|
+|403|Forbidden|the user cannot manage this video, the video is not local, or the video is blocked and the user cannot manage blocks|None|
+|404|Not Found|video not found|None|
+|409|Conflict|video is already being processed|None|
+|413|Payload Too Large|the user video quota is exceeded|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2
+</aside>
+
 ## List videos
 
 <a id="opIdgetVideos"></a>
@@ -8049,9 +8308,9 @@ curl https://peertube.example.com/api/v1/videos \
 |aiUsageOneOf|query|[VideoAIUsageSet](#schemavideoaiusageset) \| [[VideoAIUsageSet](#schemavideoaiusageset)]|false|**PeerTube >= 9.0** Only list videos with one of these AI usages, declared by video creators.<br>If not provided, the preference of the authenticated user (`aiUsagesHidden`) is used<br>|
 |isLive|query|boolean|false|whether or not the video is a live|
 |includeScheduledLive|query|boolean|false|whether or not include live that are scheduled for later|
-|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](#operation/getLanguages)). Use `_unknown` to filter on videos that don't have a video language|
+|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html)). Use `_unknown` to filter on videos that don't have a video language|
 |tagsOneOf|query|string \| [string]|false|tag(s) of the video|
 |tagsAllOf|query|string \| [string]|false|tag(s) of the video, where all should be present in the video|
 |isLocal|query|boolean|false|**PeerTube >= 4.0** Display only local or remote objects|
@@ -8224,7 +8483,10 @@ curl https://peertube.example.com/api/v1/videos \
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -8413,7 +8675,10 @@ All returned videos are restricted to the `scope`, which defaults to the `recomm
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -8806,6 +9071,9 @@ curl https://peertube.example.com/api/v1/videos/42 \
   "userHistory": {
     "currentTime": 0
   },
+  "captionLanguages": [
+    "fr"
+  ],
   "viewers": 0,
   "description": "\"**[Want to help to translate this video?](https://weblate.framasoft.org/projects/what-is-peertube-video/)**\\r\\n\\r\\n\n**Take back the control of your videos! [#JoinPeertube](https://joinpeertube.org)**\\r\\n*A decentralized video hosting network,\nbased on free/libre software!*\\r\\n\\r\\n**Animation Produced by:** [LILA](https://libreart.info) - [ZeMarmot Team](https://film.zemarmot.net)\\r\\n\n*Directed by* Aryeom\\r\\n*Assistant* Jehan\\r\\n**Licence**: [CC-By-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)\\r\\n\\r\\n\n**Sponsored by** [Framasoft](https://framasoft.org)\\r\\n\\r\\n**Music**: [Red Step Forward](http://play.dogmazic.net/song.php?song_id=52491) - CC-By Ken Bushima\\r\\n\\r\\n\n**Movie Clip**: [Caminades 3: Llamigos](http://www.caminandes.com/) CC-By Blender Institute\\r\\n\\r\\n**Video sources**: https://gitlab.gnome.org/Jehan/what-is-peertube/\"\n",
   "support": "Please support our work on https://soutenir.framasoft.org/en/ <3",
@@ -8889,7 +9157,7 @@ curl https://peertube.example.com/api/v1/videos/42 \
 
 ```json
 {
-  "type": "https://docs.joinpeertube.org/api-rest-reference.html#section/Errors/video_requires_password",
+  "type": "https://docs.joinpeertube.org/api-rest-reference/api.html#video-requires-password",
   "detail": "Please provide a password to access this password protected video",
   "status": 403,
   "code": "video_requires_password"
@@ -8900,7 +9168,7 @@ curl https://peertube.example.com/api/v1/videos/42 \
 
 ```json
 {
-  "type": "https://docs.joinpeertube.org/api-rest-reference.html#section/Errors/video_requires_password",
+  "type": "https://docs.joinpeertube.org/api-rest-reference/api.html#video-requires-password",
   "detail": "Please provide a password to access this password protected video",
   "status": 403,
   "code": "video_requires_password"
@@ -8997,10 +9265,10 @@ videoPasswords:
 |» channelId|body|integer|false|New channel of the video. The channel must be owned by the same account as the previous one. Use the "change ownership" endpoints to give a video to a channel owned by another account on the local PeerTube instance.|
 |» thumbnailfile|body|string(binary)|false|Video thumbnail file|
 |» previewfile|body|string(binary)|false|**Deprecated.** Deprecated in PeerTube v8.1, use thumbnailfile instead|
-|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](#operation/getLanguages))|
-|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
+|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
+|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
 |» description|body|string|false|Video description|
 |» waitTranscoding|body|string|false|Whether or not we wait transcoding before publish the video|
 |» support|body|string|false|A text tell the audience how to support the video creator|
@@ -9239,10 +9507,10 @@ videofile: string
 |body|body|[VideoUploadRequestLegacy](#schemavideouploadrequestlegacy)|false|none|
 |» name|body|string|true|Video name|
 |» channelId|body|integer|true|Channel id that will contain this video|
-|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
-|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
+|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |» description|body|string|false|Video description|
 |» waitTranscoding|body|boolean|false|Whether or not we wait transcoding before publish the video|
 |» generateTranscription|body|boolean|false|**PeerTube >= 6.2** If enabled by the admin, automatically generate a subtitle of the video|
@@ -9502,10 +9770,10 @@ Uses [a resumable protocol](https://github.com/kukhariev/node-uploadx/blob/maste
 |body|body|[VideoUploadRequestResumable](#schemavideouploadrequestresumable)|false|none|
 |» name|body|string|true|Video name|
 |» channelId|body|integer|true|Channel id that will contain this video|
-|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
-|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
+|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |» description|body|string|false|Video description|
 |» waitTranscoding|body|boolean|false|Whether or not we wait transcoding before publish the video|
 |» generateTranscription|body|boolean|false|**PeerTube >= 6.2** If enabled by the admin, automatically generate a subtitle of the video|
@@ -9952,9 +10220,9 @@ curl https://peertube.example.com/api/v1/video-channels/my_username%20%7C%20my_u
 |aiUsageOneOf|query|[VideoAIUsageSet](#schemavideoaiusageset) \| [[VideoAIUsageSet](#schemavideoaiusageset)]|false|**PeerTube >= 9.0** Only list videos with one of these AI usages, declared by video creators.<br>If not provided, the preference of the authenticated user (`aiUsagesHidden`) is used<br>|
 |isLive|query|boolean|false|whether or not the video is a live|
 |includeScheduledLive|query|boolean|false|whether or not include live that are scheduled for later|
-|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](#operation/getLanguages)). Use `_unknown` to filter on videos that don't have a video language|
+|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html)). Use `_unknown` to filter on videos that don't have a video language|
 |tagsOneOf|query|string \| [string]|false|tag(s) of the video|
 |tagsAllOf|query|string \| [string]|false|tag(s) of the video, where all should be present in the video|
 |isLocal|query|boolean|false|**PeerTube >= 4.0** Display only local or remote objects|
@@ -10127,7 +10395,10 @@ curl https://peertube.example.com/api/v1/video-channels/my_username%20%7C%20my_u
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -10238,10 +10509,10 @@ videoPasswords:
 |» torrentfile|body|string(binary)|true|Torrent file containing only the video file|
 |» name|body|string|true|Video name|
 |» channelId|body|integer|true|Channel id that will contain this video|
-|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
-|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
+|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |» description|body|string|false|Video description|
 |» waitTranscoding|body|boolean|false|Whether or not we wait transcoding before publish the video|
 |» generateTranscription|body|boolean|false|**PeerTube >= 6.2** If enabled by the admin, automatically generate a subtitle of the video|
@@ -10319,6 +10590,8 @@ OAuth2
 
 ## Cancel video import
 
+<a id="opIdcancelVideoImport"></a>
+
 > Code samples
 
 ```bash
@@ -10350,6 +10623,8 @@ OAuth2
 
 ## Retry video import
 
+<a id="opIdretryVideoImport"></a>
+
 > Code samples
 
 ```bash
@@ -10360,7 +10635,8 @@ curl https://peertube.example.com/api/v1/videos/imports/42/retry \
 
 `POST /api/v1/videos/imports/{id}/retry`
 
-**PeerTube >= 8.0** Retry a failed or cancelled (**PeerTube >= 8.3**) video import
+**PeerTube >= 8.0** Retry a failed or cancelled (**PeerTube >= 8.3**) video import.
+
 
 <h3 id="retry-video-import-parameters">Parameters</h3>
 
@@ -10379,7 +10655,46 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2
 </aside>
 
+## Retry the import of a video
+
+<a id="opIdretryImportOfVideo"></a>
+
+> Code samples
+
+```bash
+curl https://peertube.example.com/api/v1/videos/42/import/retry \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /api/v1/videos/{id}/import/retry`
+
+**PeerTube >= 9.0** Retry the failed or cancelled import of a video, without having to know the video import id.
+
+
+<h3 id="retry-the-import-of-a-video-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[id](#schemaid) \| [UUIDv4](#schemauuidv4) \| [shortUUID](#schemashortuuid)|true|The object id, uuid or short uuid|
+
+<h3 id="retry-the-import-of-a-video-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|successful operation|None|
+|400|Bad Request|the import is not failed or cancelled, or has reached the maximum number of attempts|None|
+|403|Forbidden|the user cannot manage this video import|None|
+|404|Not Found|the video does not exist or has not been imported|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2
+</aside>
+
 ## Delete video import
+
+<a id="opIddeleteVideoImport"></a>
 
 > Code samples
 
@@ -10915,6 +11230,7 @@ curl https://peertube.example.com/api/v1/videos/42/chapters \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|successful operation|None|
+|400|Bad Request|invalid chapters (invalid title or timecode, duplicate timecode or more than 500 chapters)|None|
 |404|Not Found|video not found|None|
 
 <aside class="warning">
@@ -11531,6 +11847,8 @@ OAuth2
 
 ## Update channel avatar
 
+<a id="opIdupdateVideoChannelAvatar"></a>
+
 > Code samples
 
 ```bash
@@ -11604,6 +11922,8 @@ OAuth2
 
 ## Delete channel avatar
 
+<a id="opIddeleteVideoChannelAvatar"></a>
+
 > Code samples
 
 ```bash
@@ -11632,6 +11952,8 @@ OAuth2
 </aside>
 
 ## Update channel banner
+
+<a id="opIdupdateVideoChannelBanner"></a>
 
 > Code samples
 
@@ -11706,6 +12028,8 @@ OAuth2
 
 ## Delete channel banner
 
+<a id="opIddeleteVideoChannelBanner"></a>
+
 > Code samples
 
 ```bash
@@ -11734,6 +12058,8 @@ OAuth2
 </aside>
 
 ## Import videos in channel
+
+<a id="opIdimportVideosInChannel"></a>
 
 > Code samples
 
@@ -11782,6 +12108,8 @@ OAuth2
 </aside>
 
 ## List video channels of an account
+
+<a id="opIdgetAccountVideoChannels"></a>
 
 > Code samples
 
@@ -11906,6 +12234,8 @@ This operation does not require authentication
 </aside>
 
 ## List the synchronizations of video channels of an account
+
+<a id="opIdgetAccountVideoChannelSyncs"></a>
 
 > Code samples
 
@@ -12533,6 +12863,8 @@ Operations dealing with comments to a video. Comments are organized in threads: 
 
 ## List comments on user's videos
 
+<a id="opIdlistMyVideosComments"></a>
+
 > Code samples
 
 ```bash
@@ -12638,6 +12970,8 @@ OAuth2
 
 ## List threads of a video
 
+<a id="opIdlistVideoCommentThreads"></a>
+
 > Code samples
 
 ```bash
@@ -12727,6 +13061,8 @@ This operation does not require authentication
 </aside>
 
 ## Create a thread
+
+<a id="opIdaddVideoCommentThread"></a>
 
 > Code samples
 
@@ -12821,6 +13157,8 @@ OAuth2
 
 ## Get a thread
 
+<a id="opIdgetVideoCommentThread"></a>
+
 > Code samples
 
 ```bash
@@ -12906,6 +13244,8 @@ This operation does not require authentication
 </aside>
 
 ## List replies of a comment
+
+<a id="opIdlistVideoCommentReplies"></a>
 
 > Code samples
 
@@ -13017,6 +13357,8 @@ This operation does not require authentication
 
 ## List instance comments
 
+<a id="opIdlistInstanceComments"></a>
+
 > Code samples
 
 ```bash
@@ -13121,6 +13463,8 @@ OAuth2 ( Scopes: admin moderator )
 
 ## Reply to a thread of a video
 
+<a id="opIdreplyVideoComment"></a>
+
 > Code samples
 
 ```bash
@@ -13216,6 +13560,8 @@ OAuth2
 
 ## Delete a comment or a reply
 
+<a id="opIddeleteVideoComment"></a>
+
 > Code samples
 
 ```bash
@@ -13248,6 +13594,8 @@ OAuth2
 </aside>
 
 ## Approve a comment
+
+<a id="opIdapproveVideoComment"></a>
 
 > Code samples
 
@@ -13580,7 +13928,10 @@ curl https://peertube.example.com/api/v1/videos/blacklist \
         },
         "userHistory": {
           "currentTime": 0
-        }
+        },
+        "captionLanguages": [
+          "fr"
+        ]
       },
       "createdAt": "1970-01-01T00:00:00Z",
       "updatedAt": "1970-01-01T00:00:00Z"
@@ -13614,6 +13965,8 @@ OAuth2 ( Scopes: admin moderator )
 Automatic tags set on objects (like comments or videos) by specific rules (external link, watched words, etc.)
 
 ## Get account auto tag policies on comments
+
+<a id="opIdgetAccountCommentAutoTagPolicies"></a>
 
 > Code samples
 
@@ -13657,6 +14010,8 @@ OAuth2
 </aside>
 
 ## Update account auto tag policies on comments
+
+<a id="opIdupdateAccountCommentAutoTagPolicies"></a>
 
 > Code samples
 
@@ -13707,6 +14062,8 @@ OAuth2
 
 ## Get account available auto tags
 
+<a id="opIdgetAccountAvailableAutoTags"></a>
+
 > Code samples
 
 ```bash
@@ -13753,6 +14110,8 @@ OAuth2
 
 ## Get server available auto tags
 
+<a id="opIdgetServerAvailableAutoTags"></a>
+
 > Code samples
 
 ```bash
@@ -13793,6 +14152,8 @@ OAuth2 ( Scopes: admin moderator )
 
 ## Get server auto tag policies for videos
 
+<a id="opIdgetServerVideoAutoTagPolicies"></a>
+
 > Code samples
 
 ```bash
@@ -13829,6 +14190,8 @@ OAuth2 ( Scopes: admin moderator )
 </aside>
 
 ## Update server auto tag policies for videos
+
+<a id="opIdupdateServerVideoAutoTagPolicies"></a>
 
 > Code samples
 
@@ -13881,6 +14244,8 @@ OAuth2 ( Scopes: admin moderator )
 Manage list of watched words to detect patterns on objects (like comments of videos)
 
 ## List account watched words
+
+<a id="opIdlistAccountWatchedWords"></a>
 
 > Code samples
 
@@ -13943,6 +14308,8 @@ OAuth2
 </aside>
 
 ## Add account watched words
+
+<a id="opIdaddAccountWatchedWords"></a>
 
 > Code samples
 
@@ -14018,6 +14385,8 @@ OAuth2
 
 ## Update account watched words
 
+<a id="opIdupdateAccountWatchedWords"></a>
+
 > Code samples
 
 ```bash
@@ -14071,6 +14440,8 @@ OAuth2
 
 ## Delete account watched words
 
+<a id="opIddeleteAccountWatchedWords"></a>
+
 > Code samples
 
 ```bash
@@ -14102,6 +14473,8 @@ OAuth2
 </aside>
 
 ## List server watched words
+
+<a id="opIdlistServerWatchedWords"></a>
 
 > Code samples
 
@@ -14158,6 +14531,8 @@ OAuth2 ( Scopes: admin moderator )
 </aside>
 
 ## Add server watched words
+
+<a id="opIdaddServerWatchedWords"></a>
 
 > Code samples
 
@@ -14232,6 +14607,8 @@ OAuth2 ( Scopes: admin moderator )
 
 ## Update server watched words
 
+<a id="opIdupdateServerWatchedWords"></a>
+
 > Code samples
 
 ```bash
@@ -14284,6 +14661,8 @@ OAuth2 ( Scopes: admin moderator )
 
 ## Delete server watched words
 
+<a id="opIddeleteServerWatchedWords"></a>
+
 > Code samples
 
 ```bash
@@ -14314,6 +14693,8 @@ OAuth2 ( Scopes: admin moderator )
 </aside>
 
 ## List account watched words subscriptions
+
+<a id="opIdlistAccountWatchedWordsSubscriptions"></a>
 
 > Code samples
 
@@ -14382,6 +14763,8 @@ OAuth2
 
 ## Add account watched words subscription
 
+<a id="opIdaddAccountWatchedWordsSubscription"></a>
+
 > Code samples
 
 ```bash
@@ -14448,6 +14831,8 @@ OAuth2
 
 ## Delete account watched words subscription
 
+<a id="opIddeleteAccountWatchedWordsSubscription"></a>
+
 > Code samples
 
 ```bash
@@ -14478,6 +14863,8 @@ OAuth2
 </aside>
 
 ## List server watched words subscriptions
+
+<a id="opIdlistServerWatchedWordsSubscriptions"></a>
 
 > Code samples
 
@@ -14545,6 +14932,8 @@ OAuth2 ( Scopes: admin moderator )
 
 ## Add server watched words subscription
 
+<a id="opIdaddServerWatchedWordsSubscription"></a>
+
 > Code samples
 
 ```bash
@@ -14610,6 +14999,8 @@ OAuth2 ( Scopes: admin moderator )
 
 ## Delete server watched words subscription
 
+<a id="opIddeleteServerWatchedWordsSubscription"></a>
+
 > Code samples
 
 ```bash
@@ -14643,6 +15034,8 @@ OAuth2 ( Scopes: admin moderator )
 Like/dislike a video.
 
 ## Like/dislike a video
+
+<a id="opIdrateVideo"></a>
 
 > Code samples
 
@@ -14700,6 +15093,8 @@ Operations dealing with playlists of videos. Playlists are bound to users and/or
 
 ## List playlists of a channel
 
+<a id="opIdgetVideoChannelPlaylists"></a>
+
 > Code samples
 
 ```bash
@@ -14743,7 +15138,7 @@ curl https://peertube.example.com/api/v1/video-channels/my_username%20%7C%20my_u
       "description": "string",
       "displayName": "string",
       "isLocal": true,
-      "videoLength": 0,
+      "videosLength": 0,
       "thumbnailPath": "string",
       "thumbnails": [
         {
@@ -14958,7 +15353,7 @@ curl https://peertube.example.com/api/v1/video-playlists \
       "description": "string",
       "displayName": "string",
       "isLocal": true,
-      "videoLength": 0,
+      "videosLength": 0,
       "thumbnailPath": "string",
       "thumbnails": [
         {
@@ -15074,7 +15469,7 @@ videoChannelId: {}
 |body|body|object|false|none|
 |» displayName|body|string|true|Video playlist display name|
 |» thumbnailfile|body|string(binary)|false|Video playlist thumbnail file|
-|» privacy|body|[VideoPlaylistPrivacySet](#schemavideoplaylistprivacyset)|false|Video playlist privacy policy (see [/video-playlists/privacies](#operation/getPlaylistPrivacyPolicies))|
+|» privacy|body|[VideoPlaylistPrivacySet](#schemavideoplaylistprivacyset)|false|Video playlist privacy policy (see [/video-playlists/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getplaylistprivacypolicies.html))|
 |» description|body|string|false|Video playlist description|
 |» videoChannelId|body|object|false|Video channel in which the playlist will be published|
 
@@ -15124,6 +15519,8 @@ OAuth2
 
 ## Get a video playlist
 
+<a id="opIdgetVideoPlaylist"></a>
+
 > Code samples
 
 ```bash
@@ -15153,7 +15550,7 @@ curl https://peertube.example.com/api/v1/video-playlists/42 \
   "description": "string",
   "displayName": "string",
   "isLocal": true,
-  "videoLength": 0,
+  "videosLength": 0,
   "thumbnailPath": "string",
   "thumbnails": [
     {
@@ -15221,6 +15618,8 @@ This operation does not require authentication
 
 ## Update a video playlist
 
+<a id="opIdupdateVideoPlaylist"></a>
+
 > Code samples
 
 ```bash
@@ -15256,7 +15655,7 @@ videoChannelId: {}
 |body|body|object|false|none|
 |» displayName|body|string|false|Video playlist display name|
 |» thumbnailfile|body|string(binary)|false|Video playlist thumbnail file|
-|» privacy|body|[VideoPlaylistPrivacySet](#schemavideoplaylistprivacyset)|false|Video playlist privacy policy (see [/video-playlists/privacies](#operation/getPlaylistPrivacyPolicies))|
+|» privacy|body|[VideoPlaylistPrivacySet](#schemavideoplaylistprivacyset)|false|Video playlist privacy policy (see [/video-playlists/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getplaylistprivacypolicies.html))|
 |» description|body|string|false|Video playlist description|
 |» videoChannelId|body|object|false|Video channel in which the playlist will be published|
 
@@ -15280,6 +15679,8 @@ OAuth2
 </aside>
 
 ## Delete a video playlist
+
+<a id="opIddeleteVideoPlaylist"></a>
 
 > Code samples
 
@@ -15442,6 +15843,8 @@ OAuth2
 
 ## Check video exists in my playlists
 
+<a id="opIdgetMyPlaylistsVideosExist"></a>
+
 > Code samples
 
 ```bash
@@ -15500,6 +15903,8 @@ OAuth2
 
 ## List playlists of an account
 
+<a id="opIdgetAccountPlaylists"></a>
+
 > Code samples
 
 ```bash
@@ -15546,7 +15951,7 @@ curl https://peertube.example.com/api/v1/accounts/chocobozzz%20%7C%20chocobozzz%
       "description": "string",
       "displayName": "string",
       "isLocal": true,
-      "videoLength": 0,
+      "videosLength": 0,
       "thumbnailPath": "string",
       "thumbnails": [
         {
@@ -15699,26 +16104,33 @@ Video transcoding related operations
 
 ## Create a studio task
 
+<a id="opIdcreateVideoStudioTask"></a>
+
 > Code samples
 
 ```bash
 curl https://peertube.example.com/api/v1/videos/42/studio/edit \
   -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -F 'tasks=[{"name":"cut","options":{"start":0,"end":0}}]' \
+  -F 'saveAsNewVideo=false'
 ```
 
 `POST /api/v1/videos/{id}/studio/edit`
 
-Create a task to edit a video  (cut, add intro/outro etc)
+Create a task to edit a video (cut, add intro/outro etc). By default the video is edited in place. Set `saveAsNewVideo` to keep it untouched and save the result in a new video.
 
 > Body parameter
 
 ```yaml
--
-  name: cut
-  options:
-    start: 0
-    end: 0
+tasks:
+  -
+    name: cut
+    options:
+      start: 0
+      end: 0
+saveAsNewVideo: false
 ```
 
 <h3 id="create-a-studio-task-parameters">Parameters</h3>
@@ -15726,48 +16138,34 @@ Create a task to edit a video  (cut, add intro/outro etc)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|[id](#schemaid) \| [UUIDv4](#schemauuidv4) \| [shortUUID](#schemashortuuid)|true|The object id, uuid or short uuid|
-|body|body|[VideoStudioCreateTask](#schemavideostudiocreatetask)|true|none|
-|» *anyOf*|body|object|false|none|
-|» name|body|string|false|none|
-|» options|body|object|false|none|
-|» » start|body|integer|false|none|
-|» » end|body|integer|false|none|
-|» *anyOf*|body|object|false|none|
-|» name|body|string|false|none|
-|» options|body|object|false|none|
-|» » file|body|string(binary)|false|none|
-|» *anyOf*|body|object|false|none|
-|» name|body|string|false|none|
-|» options|body|object|false|none|
-|» » file|body|string(binary)|false|none|
-|» *anyOf*|body|object|false|none|
-|» name|body|string|false|none|
-|» options|body|object|false|none|
-|» » file|body|string(binary)|false|none|
-|» *anyOf*|body|object|false|none|
-|» name|body|string|false|none|
-|» options|body|object|false|none|
-|» » segments|body|[object]|true|none|
-|» » » start|body|integer|true|none|
-|» » » end|body|integer|true|none|
+|body|body|object|true|none|
+|» tasks|body|[VideoStudioCreateTask](#schemavideostudiocreatetask)|true|none|
+|» saveAsNewVideo|body|boolean|false|Keep the source video untouched: duplicate it, and edit the duplicate. The duplicate is created private, in the same channel as the source video, with the source video metadata. The size of the source video counts towards the user quota.<br>|
 
-#### Enumerated Values
+> Example responses
 
-|Parameter|Value|
-|---|---|
-|» name|cut|
-|» name|add-intro|
-|» name|add-outro|
-|» name|add-watermark|
-|» name|remove-segments|
+> 200 Response
+
+```json
+{
+  "video": {
+    "id": {},
+    "uuid": {},
+    "shortUUID": {}
+  }
+}
+```
 
 <h3 id="create-a-studio-task-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|No Content|successful operation|None|
+|200|OK|successful operation, when `saveAsNewVideo` is `true`. Returns the identifiers of the new video|[VideoUploadResponse](#schemavideouploadresponse)|
+|204|No Content|successful operation, when the source video is edited in place|None|
 |400|Bad Request|incorrect parameters|None|
+|403|Forbidden|the user cannot manage this video, or `saveAsNewVideo` is `true` on a blocked video and the user cannot manage blocks|None|
 |404|Not Found|video not found|None|
+|409|Conflict|video is already being processed|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -15836,6 +16234,8 @@ Video statistics
 
 ## Get overall stats of a video
 
+<a id="opIdgetVideoOverallStats"></a>
+
 > Code samples
 
 ```bash
@@ -15892,6 +16292,8 @@ OAuth2
 </aside>
 
 ## Get user agent stats of a video
+
+<a id="opIdgetVideoUserAgentStats"></a>
 
 > Code samples
 
@@ -15951,6 +16353,8 @@ OAuth2
 
 ## Get retention stats of a video
 
+<a id="opIdgetVideoRetentionStats"></a>
+
 > Code samples
 
 ```bash
@@ -15994,6 +16398,8 @@ OAuth2
 </aside>
 
 ## Get timeserie stats of a video
+
+<a id="opIdgetVideoTimeserieStats"></a>
 
 > Code samples
 
@@ -16321,11 +16727,64 @@ curl https://peertube.example.com/feeds/podcast/videos.xml
 This operation does not require authentication
 </aside>
 
+## Video chapters of podcast feeds
+
+<a id="opIdgetVideoPodcastChapters"></a>
+
+> Code samples
+
+```bash
+curl 'https://peertube.example.com/feeds/podcast/video-chapters.json?videoId=string' \
+  -H 'Accept: application/json'
+```
+
+`GET /feeds/podcast/video-chapters.json`
+
+**PeerTube >= 9.0** Chapters of a video in the Podcasting 2.0 JSON format, referenced by the `podcast:chapters` tag of podcast feed items.
+See https://podcasting2.org/docs/podcast-namespace/tags/chapters
+
+
+<h3 id="video-chapters-of-podcast-feeds-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|videoId|query|string|true|The video id, uuid or short uuid|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "version": "1.2.0",
+  "chapters": [
+    {
+      "startTime": 0,
+      "title": "string"
+    }
+  ]
+}
+```
+
+<h3 id="video-chapters-of-podcast-feeds-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation|[PodcastChapters](#schemapodcastchapters)|
+|404|Not Found|video not found|None|
+|406|Not Acceptable|accept header unsupported|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 <h1 id="peertube-video-download">Video Download</h1>
 
 Download video files
 
 ## Download video file
+
+<a id="opIddownloadVideoFile"></a>
 
 > Code samples
 
@@ -16343,7 +16802,7 @@ Generate a mp4 container that contains at most 1 video stream and at most 1 audi
 |---|---|---|---|---|
 |videoIdOrUUID|path|[id](#schemaid) \| [UUIDv4](#schemauuidv4) \| [shortUUID](#schemashortuuid)|true|Video id or UUID|
 |videoFileIds|query|[integer]|true|streams of video files to mux in the output|
-|videoFileToken|query|string|false|Video file token [generated](#operation/requestVideoToken) by PeerTube so you don't need to provide an OAuth token in the request header.|
+|videoFileToken|query|string|false|Video file token [generated](https://docs.joinpeertube.org/api-rest-reference/api/operations/requestvideotoken.html) by PeerTube so you don't need to provide an OAuth token in the request header.|
 
 <h3 id="download-video-file-responses">Responses</h3>
 
@@ -16670,9 +17129,9 @@ curl 'https://peertube.example.com/api/v1/search/videos?search=string' \
 |aiUsageOneOf|query|[VideoAIUsageSet](#schemavideoaiusageset) \| [[VideoAIUsageSet](#schemavideoaiusageset)]|false|**PeerTube >= 9.0** Only list videos with one of these AI usages, declared by video creators.<br>If not provided, the preference of the authenticated user (`aiUsagesHidden`) is used<br>|
 |isLive|query|boolean|false|whether or not the video is a live|
 |includeScheduledLive|query|boolean|false|whether or not include live that are scheduled for later|
-|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](#operation/getLanguages)). Use `_unknown` to filter on videos that don't have a video language|
+|categoryOneOf|query|[VideoCategorySet](#schemavideocategoryset) \| [[VideoCategorySet](#schemavideocategoryset)]|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licenceOneOf|query|[VideoLicenceSet](#schemavideolicenceset) \| [[VideoLicenceSet](#schemavideolicenceset)]|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|languageOneOf|query|[VideoLanguageSet](#schemavideolanguageset) \| [[VideoLanguageSet](#schemavideolanguageset)]|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html)). Use `_unknown` to filter on videos that don't have a video language|
 |tagsOneOf|query|string \| [string]|false|tag(s) of the video|
 |tagsAllOf|query|string \| [string]|false|tag(s) of the video, where all should be present in the video|
 |isLocal|query|boolean|false|**PeerTube >= 4.0** Display only local or remote objects|
@@ -16852,7 +17311,10 @@ curl 'https://peertube.example.com/api/v1/search/videos?search=string' \
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -17042,7 +17504,7 @@ curl 'https://peertube.example.com/api/v1/search/video-playlists?search=string' 
       "description": "string",
       "displayName": "string",
       "isLocal": true,
-      "videoLength": 0,
+      "videosLength": 0,
       "thumbnailPath": "string",
       "thumbnails": [
         {
@@ -17126,6 +17588,8 @@ Get and update the custom homepage
 
 ## Get instance custom homepage
 
+<a id="opIdgetInstanceHomepage"></a>
+
 > Code samples
 
 ```bash
@@ -17157,6 +17621,8 @@ This operation does not require authentication
 </aside>
 
 ## Set instance custom homepage
+
+<a id="opIdupdateInstanceHomepage"></a>
 
 > Code samples
 
@@ -17202,7 +17668,7 @@ OAuth2 ( Scopes: admin )
 
 PeerTube instances can mirror videos from one another, and help distribute some videos.
 
-For importing videos as your own, refer to [video imports](#operation/importVideo).
+For importing videos as your own, refer to [video imports](https://docs.joinpeertube.org/api-rest-reference/api/operations/importvideo.html).
 
 
 ## List videos being mirrored
@@ -17442,6 +17908,8 @@ This operation does not require authentication
 </aside>
 
 ## Create playback metrics
+
+<a id="opIdcreatePlaybackMetrics"></a>
 
 > Code samples
 
@@ -17734,6 +18202,8 @@ Manage runner registration tokens.
 
 ## Generate registration token
 
+<a id="opIdgenerateRunnerRegistrationToken"></a>
+
 > Code samples
 
 ```bash
@@ -17758,6 +18228,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## Remove registration token
+
+<a id="opIddeleteRunnerRegistrationToken"></a>
 
 > Code samples
 
@@ -17789,6 +18261,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## List registration tokens
+
+<a id="opIdlistRunnerRegistrationTokens"></a>
 
 > Code samples
 
@@ -17859,6 +18333,8 @@ Manage runner jobs and runner-side job execution.
 
 ## Request a new job
 
+<a id="opIdrequestRunnerJob"></a>
+
 > Code samples
 
 ```bash
@@ -17870,7 +18346,8 @@ curl https://peertube.example.com/api/v1/runners/jobs/request \
     "runnerToken": "string",
     "jobTypes": [
       "string"
-    ]
+    ],
+    "version": "0.4.0"
   }'
 ```
 
@@ -17885,7 +18362,8 @@ API used by PeerTube runners
   "runnerToken": "string",
   "jobTypes": [
     "string"
-  ]
+  ],
+  "version": "0.4.0"
 }
 ```
 
@@ -17896,6 +18374,7 @@ API used by PeerTube runners
 |body|body|object|false|none|
 |» runnerToken|body|string|true|none|
 |» jobTypes|body|[string]|false|Filter jobs depending on their types|
+|» version|body|[RunnerVersion](#schemarunnerversion)|false|Version of the runner, updated on the runner model if provided|
 
 > Example responses
 
@@ -17952,6 +18431,8 @@ This operation does not require authentication
 </aside>
 
 ## Accept job
+
+<a id="opIdacceptRunnerJob"></a>
 
 > Code samples
 
@@ -18087,6 +18568,8 @@ This operation does not require authentication
 
 ## Abort job
 
+<a id="opIdabortRunnerJob"></a>
+
 > Code samples
 
 ```bash
@@ -18135,6 +18618,8 @@ This operation does not require authentication
 </aside>
 
 ## Update job
+
+<a id="opIdupdateRunnerJob"></a>
 
 > Code samples
 
@@ -18216,6 +18701,8 @@ This operation does not require authentication
 
 ## Post job error
 
+<a id="opIderrorRunnerJob"></a>
+
 > Code samples
 
 ```bash
@@ -18264,6 +18751,8 @@ This operation does not require authentication
 </aside>
 
 ## Post job success
+
+<a id="opIdsuccessRunnerJob"></a>
 
 > Code samples
 
@@ -18326,6 +18815,8 @@ This operation does not require authentication
 
 ## Download the max-quality audio file for a job video
 
+<a id="opIddownloadRunnerJobMaxQualityAudio"></a>
+
 > Code samples
 
 ```bash
@@ -18373,6 +18864,8 @@ This operation does not require authentication
 </aside>
 
 ## Download the max-quality video file for a job video
+
+<a id="opIddownloadRunnerJobMaxQualityVideo"></a>
 
 > Code samples
 
@@ -18422,6 +18915,8 @@ This operation does not require authentication
 
 ## Download the max-quality thumbnail for a job video
 
+<a id="opIddownloadRunnerJobMaxQualityThumbnail"></a>
+
 > Code samples
 
 ```bash
@@ -18470,6 +18965,8 @@ This operation does not require authentication
 
 ## Download the max-quality preview for a job video
 
+<a id="opIddownloadRunnerJobMaxQualityPreview"></a>
+
 > Code samples
 
 ```bash
@@ -18517,6 +19014,8 @@ This operation does not require authentication
 </aside>
 
 ## Download a video studio task file for a job video
+
+<a id="opIddownloadRunnerJobStudioTaskFile"></a>
 
 > Code samples
 
@@ -18568,6 +19067,8 @@ This operation does not require authentication
 
 ## Cancel a job
 
+<a id="opIdcancelRunnerJob"></a>
+
 > Code samples
 
 ```bash
@@ -18596,6 +19097,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## Delete a job
+
+<a id="opIddeleteRunnerJob"></a>
 
 > Code samples
 
@@ -18627,6 +19130,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## List jobs
+
+<a id="opIdlistRunnerJobs"></a>
 
 > Code samples
 
@@ -18748,6 +19253,8 @@ Register, list and remove remote runners.
 
 ## Register a new runner
 
+<a id="opIdregisterRunner"></a>
+
 > Code samples
 
 ```bash
@@ -18758,7 +19265,8 @@ curl https://peertube.example.com/api/v1/runners/register \
   -d '{
     "registrationToken": "string",
     "name": "string",
-    "description": "string"
+    "description": "string",
+    "version": "0.4.0"
   }'
 ```
 
@@ -18772,7 +19280,8 @@ API used by PeerTube runners
 {
   "registrationToken": "string",
   "name": "string",
-  "description": "string"
+  "description": "string",
+  "version": "0.4.0"
 }
 ```
 
@@ -18784,6 +19293,7 @@ API used by PeerTube runners
 |» registrationToken|body|string|true|none|
 |» name|body|string|true|none|
 |» description|body|string|false|none|
+|» version|body|[RunnerVersion](#schemarunnerversion)|false|Version of the runner, updated on the runner model if provided|
 
 > Example responses
 
@@ -18816,6 +19326,8 @@ This operation does not require authentication
 </aside>
 
 ## Unregister a runner
+
+<a id="opIdunregisterRunner"></a>
 
 > Code samples
 
@@ -18858,6 +19370,8 @@ This operation does not require authentication
 </aside>
 
 ## Delete a runner
+
+<a id="opIddeleteRunner"></a>
 
 > Code samples
 
@@ -18902,6 +19416,8 @@ OAuth2 ( Scopes: admin )
 
 ## List runners
 
+<a id="opIdlistRunners"></a>
+
 > Code samples
 
 ```bash
@@ -18941,7 +19457,8 @@ curl https://peertube.example.com/api/v1/runners \
       "ip": "string",
       "updatedAt": "1970-01-01T00:00:00Z",
       "createdAt": "1970-01-01T00:00:00Z",
-      "lastContact": "1970-01-01T00:00:00Z"
+      "lastContact": "1970-01-01T00:00:00Z",
+      "version": "0.4.0"
     }
   ]
 }
@@ -19261,6 +19778,8 @@ This operation does not require authentication
 
 ## Get public Web Video file
 
+<a id="opIdgetStaticWebVideoFile"></a>
+
 > Code samples
 
 ```bash
@@ -19290,6 +19809,8 @@ This operation does not require authentication
 
 ## Get private Web Video file
 
+<a id="opIdgetStaticPrivateWebVideoFile"></a>
+
 > Code samples
 
 ```bash
@@ -19306,7 +19827,7 @@ curl https://peertube.example.com/static/web-videos/private/string \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |filename|path|string|true|Filename|
-|videoFileToken|query|string|false|Video file token [generated](#operation/requestVideoToken) by PeerTube so you don't need to provide an OAuth token in the request header.|
+|videoFileToken|query|string|false|Video file token [generated](https://docs.joinpeertube.org/api-rest-reference/api/operations/requestvideotoken.html) by PeerTube so you don't need to provide an OAuth token in the request header.|
 
 <h3 id="get-private-web-video-file-responses">Responses</h3>
 
@@ -19322,6 +19843,8 @@ OAuth2
 </aside>
 
 ## Get public HLS video file
+
+<a id="opIdgetStaticHLSFile"></a>
 
 > Code samples
 
@@ -19353,6 +19876,8 @@ OAuth2
 
 ## Get private HLS video file
 
+<a id="opIdgetStaticPrivateHLSFile"></a>
+
 > Code samples
 
 ```bash
@@ -19367,7 +19892,7 @@ curl https://peertube.example.com/static/streaming-playlists/hls/private/string 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |filename|path|string|true|Filename|
-|videoFileToken|query|string|false|Video file token [generated](#operation/requestVideoToken) by PeerTube so you don't need to provide an OAuth token in the request header.|
+|videoFileToken|query|string|false|Video file token [generated](https://docs.joinpeertube.org/api-rest-reference/api/operations/requestvideotoken.html) by PeerTube so you don't need to provide an OAuth token in the request header.|
 |reinjectVideoFileToken|query|boolean|false|Ask the server to reinject videoFileToken in URLs in m3u8 playlist|
 
 <h3 id="get-private-hls-video-file-responses">Responses</h3>
@@ -19386,6 +19911,8 @@ OAuth2
 <h1 id="peertube-videos">Videos</h1>
 
 ## Get video imports of my user
+
+<a id="opIdgetMyVideoImports"></a>
 
 > Code samples
 
@@ -19555,7 +20082,10 @@ curl https://peertube.example.com/api/v1/users/me/videos/imports \
         },
         "userHistory": {
           "currentTime": 0
-        }
+        },
+        "captionLanguages": [
+          "fr"
+        ]
       }
     }
   ]
@@ -19719,7 +20249,10 @@ curl https://peertube.example.com/api/v1/video-playlists/42/videos \
         },
         "userHistory": {
           "currentTime": 0
-        }
+        },
+        "captionLanguages": [
+          "fr"
+        ]
       }
     }
   ]
@@ -19828,6 +20361,8 @@ OAuth2
 <h1 id="peertube-ownership-change">Ownership Change</h1>
 
 ## List video ownership changes
+
+<a id="opIdlistVideoOwnershipChanges"></a>
 
 > Code samples
 
@@ -19998,6 +20533,8 @@ OAuth2
 
 ## Accept ownership change request
 
+<a id="opIdacceptVideoOwnershipChange"></a>
+
 > Code samples
 
 ```bash
@@ -20045,6 +20582,8 @@ OAuth2
 
 ## Refuse ownership change request
 
+<a id="opIdrefuseVideoOwnershipChange"></a>
+
 > Code samples
 
 ```bash
@@ -20076,6 +20615,8 @@ OAuth2
 </aside>
 
 ## Delete ownership change request
+
+<a id="opIddeleteVideoOwnershipChange"></a>
 
 > Code samples
 
@@ -20110,6 +20651,8 @@ OAuth2
 </aside>
 
 ## List ownership change requests for a video
+
+<a id="opIdlistOwnershipChangesOfVideo"></a>
 
 > Code samples
 
@@ -20286,6 +20829,8 @@ OAuth2
 
 ## Request ownership change
 
+<a id="opIdrequestVideoOwnershipChange"></a>
+
 > Code samples
 
 ```bash
@@ -20331,6 +20876,8 @@ OAuth2
 </aside>
 
 ## List channel ownership changes
+
+<a id="opIdlistChannelOwnershipChanges"></a>
 
 > Code samples
 
@@ -20501,6 +21048,8 @@ OAuth2
 
 ## Accept channel ownership change request
 
+<a id="opIdacceptChannelOwnershipChange"></a>
+
 > Code samples
 
 ```bash
@@ -20535,6 +21084,8 @@ OAuth2
 
 ## Refuse channel ownership change request
 
+<a id="opIdrefuseChannelOwnershipChange"></a>
+
 > Code samples
 
 ```bash
@@ -20566,6 +21117,8 @@ OAuth2
 </aside>
 
 ## Delete channel ownership change request
+
+<a id="opIddeleteChannelOwnershipChange"></a>
 
 > Code samples
 
@@ -20600,6 +21153,8 @@ OAuth2
 </aside>
 
 ## List ownership change requests for a channel
+
+<a id="opIdlistOwnershipChangesOfChannel"></a>
 
 > Code samples
 
@@ -20777,6 +21332,8 @@ OAuth2
 
 ## Request channel ownership change
 
+<a id="opIdrequestChannelOwnershipChange"></a>
+
 > Code samples
 
 ```bash
@@ -20839,6 +21396,7 @@ curl https://peertube.example.com/api/v1/videos/live \
   -F 'replaySettings={"privacy":1}' \
   -F 'permanentLive=true' \
   -F 'latencyMode={}' \
+  -F 'dvrWindow={}' \
   -F 'thumbnailfile=@/path/to/file' \
   -F 'previewfile=@/path/to/file' \
   -F 'privacy=1' \
@@ -20871,6 +21429,7 @@ replaySettings:
   privacy: 1
 permanentLive: true
 latencyMode: {}
+dvrWindow: {}
 thumbnailfile: string
 previewfile: string
 privacy: 1
@@ -20905,12 +21464,13 @@ schedules:
 |» replaySettings|body|[LiveVideoReplaySettings](#schemalivevideoreplaysettings)|false|none|
 |» permanentLive|body|boolean|false|User can stream multiple times in a permanent live|
 |» latencyMode|body|object|false|User can select live latency mode if enabled by the instance|
+|» dvrWindow|body|object|false|Defaults to the max DVR window of the instance (`live.dvr.maxWindow` in `GET /api/v1/config`), so DVR is enabled by default if the instance allows it|
 |» thumbnailfile|body|string(binary)|false|Live video/replay thumbnail file|
 |» previewfile|body|string(binary)|false|**Deprecated.** Deprecated in PeerTube v8.1, use thumbnailfile instead|
-|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
-|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](#operation/getCategories))|
-|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
+|» category|body|[VideoCategorySet](#schemavideocategoryset)|false|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|» licence|body|[VideoLicenceSet](#schemavideolicenceset)|false|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|» language|body|[VideoLanguageSet](#schemavideolanguageset)|false|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |» description|body|string|false|Live video/replay description|
 |» support|body|string|false|A text tell the audience how to support the creator|
 |» nsfw|body|boolean|false|Whether or not this live video/replay contains sensitive content|
@@ -20972,7 +21532,7 @@ schedules:
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|successful operation|[VideoUploadResponse](#schemavideouploadresponse)|
-|400|Bad Request|Disambiguate via `code`:<br>- default type for a validation error<br>- `live_conflicting_permanent_and_save_replay` for conflicting parameters set<br>|None|
+|400|Bad Request|Disambiguate via `code`:<br>- default type for a validation error, including a `dvrWindow` higher than the max DVR window of the instance<br>- `live_conflicting_permanent_and_save_replay` for conflicting parameters set<br>|None|
 |403|Forbidden|Disambiguate via `code`:<br>- `live_not_enabled` for a disabled live feature<br>- `live_not_allowing_replay` for a disabled replay feature<br>- `max_instance_lives_limit_reached` for the absolute concurrent live limit<br>- `max_user_lives_limit_reached` for the user concurrent live limit<br>|None|
 
 <aside class="warning">
@@ -21015,6 +21575,7 @@ curl https://peertube.example.com/api/v1/videos/live/42 \
   },
   "permanentLive": true,
   "latencyMode": {},
+  "dvrWindow": 0,
   "schedules": [
     {
       "startAt": "1970-01-01T00:00:00Z"
@@ -21052,6 +21613,7 @@ curl https://peertube.example.com/api/v1/videos/live/42 \
     },
     "permanentLive": true,
     "latencyMode": {},
+    "dvrWindow": 0,
     "schedules": [
       {
         "startAt": "1970-01-01T00:00:00Z"
@@ -21072,6 +21634,7 @@ curl https://peertube.example.com/api/v1/videos/live/42 \
   },
   "permanentLive": true,
   "latencyMode": {},
+  "dvrWindow": 0,
   "schedules": [
     {
       "startAt": "1970-01-01T00:00:00Z"
@@ -21090,6 +21653,7 @@ curl https://peertube.example.com/api/v1/videos/live/42 \
 |» replaySettings|body|[LiveVideoReplaySettings](#schemalivevideoreplaysettings)|false|none|
 |» permanentLive|body|boolean|false|User can stream multiple times in a permanent live|
 |» latencyMode|body|object|false|User can select live latency mode if enabled by the instance|
+|» dvrWindow|body|[LiveVideoDVRWindow](#schemalivevideodvrwindow)|false|**PeerTube >= 8.2** How far back viewers can rewind the live, in seconds. `0` disables DVR. Cannot be higher than the max DVR window of the instance<br>|
 |» schedules|body|[[LiveSchedule](#schemaliveschedule)]|false|none|
 
 <h3 id="update-information-about-a-live-responses">Responses</h3>
@@ -21097,7 +21661,7 @@ curl https://peertube.example.com/api/v1/videos/live/42 \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|successful operation|None|
-|400|Bad Request|bad parameters or trying to update a live that has already started|None|
+|400|Bad Request|bad parameters (including a `dvrWindow` higher than the max DVR window of the instance) or trying to update a live that has already started<br>|None|
 |403|Forbidden|trying to save replay of the live but saving replay is not enabled on the instance|None|
 
 <aside class="warning">
@@ -21106,6 +21670,8 @@ OAuth2
 </aside>
 
 ## List live sessions
+
+<a id="opIdlistLiveSessions"></a>
 
 > Code samples
 
@@ -21170,6 +21736,8 @@ OAuth2
 </aside>
 
 ## Get live session of a replay
+
+<a id="opIdgetReplayLiveSession"></a>
 
 > Code samples
 
@@ -21413,6 +21981,8 @@ OAuth2 ( Scopes: user )
 <h1 id="peertube-account-blocklist">Account Blocklist</h1>
 
 ## Get block status of accounts/hosts
+
+<a id="opIdgetBlocklistStatus"></a>
 
 > Code samples
 
@@ -21854,6 +22424,8 @@ OAuth2 ( Scopes: user )
 
 ## List blocked accounts by server
 
+<a id="opIdgetServerBlockedAccounts"></a>
+
 > Code samples
 
 ```bash
@@ -21963,6 +22535,8 @@ OAuth2 ( Scopes: admin )
 
 ## Block an account by server
 
+<a id="opIdblockAccountByServer"></a>
+
 > Code samples
 
 ```bash
@@ -22006,6 +22580,8 @@ OAuth2 ( Scopes: admin )
 
 ## Unblock an account by server
 
+<a id="opIdunblockAccountByServer"></a>
+
 > Code samples
 
 ```bash
@@ -22035,6 +22611,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## List blocked servers by server
+
+<a id="opIdgetServerBlockedServers"></a>
 
 > Code samples
 
@@ -22124,6 +22702,8 @@ OAuth2 ( Scopes: admin )
 
 ## Block a server by server
 
+<a id="opIdblockServerByServer"></a>
+
 > Code samples
 
 ```bash
@@ -22167,6 +22747,8 @@ OAuth2 ( Scopes: admin )
 
 ## Unblock a server by server
 
+<a id="opIdunblockServerByServer"></a>
+
 > Code samples
 
 ```bash
@@ -22196,6 +22778,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## List server blocklist subscriptions
+
+<a id="opIdlistServerBlocklistSubscriptions"></a>
 
 > Code samples
 
@@ -22260,6 +22844,8 @@ OAuth2 ( Scopes: admin )
 
 ## Add a server blocklist subscription
 
+<a id="opIdaddServerBlocklistSubscription"></a>
+
 > Code samples
 
 ```bash
@@ -22321,6 +22907,8 @@ OAuth2 ( Scopes: admin )
 
 ## Delete a server blocklist subscription
 
+<a id="opIddeleteServerBlocklistSubscription"></a>
+
 > Code samples
 
 ```bash
@@ -22350,6 +22938,8 @@ OAuth2 ( Scopes: admin )
 </aside>
 
 ## List publicly shared server blocklist log entries
+
+<a id="opIdlistServerBlocklistPublicLog"></a>
 
 > Code samples
 
@@ -22468,6 +23058,19 @@ immutable name of the channel, used to interact with its actor
 "password"
 ```
 
+<h2 id="tocS_currentPassword">currentPassword</h2>
+<!-- backwards compatibility -->
+<a id="schemacurrentpassword"></a>
+<a id="schema_currentPassword"></a>
+<a id="tocScurrentpassword"></a>
+<a id="tocscurrentpassword"></a>
+
+```json
+"password"
+```
+
+Password of the authenticated user, required if [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation) is enabled
+
 <h2 id="tocS_VideoCategorySet">VideoCategorySet</h2>
 <!-- backwards compatibility -->
 <a id="schemavideocategoryset"></a>
@@ -22479,7 +23082,7 @@ immutable name of the channel, used to interact with its actor
 15
 ```
 
-category id of the video (see [/videos/categories](#operation/getCategories))
+category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))
 
 <h2 id="tocS_VideoConstantNumber-Category">VideoConstantNumber-Category</h2>
 <!-- backwards compatibility -->
@@ -22499,7 +23102,7 @@ category id of the video (see [/videos/categories](#operation/getCategories))
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](#operation/getCategories))|
+|id|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
 |label|string|false|none|none|
 
 <h2 id="tocS_VideoLicenceSet">VideoLicenceSet</h2>
@@ -22513,7 +23116,7 @@ category id of the video (see [/videos/categories](#operation/getCategories))
 2
 ```
 
-licence id of the video (see [/videos/licences](#operation/getLicences))
+licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))
 
 <h2 id="tocS_VideoConstantNumber-Licence">VideoConstantNumber-Licence</h2>
 <!-- backwards compatibility -->
@@ -22533,7 +23136,7 @@ licence id of the video (see [/videos/licences](#operation/getLicences))
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](#operation/getLicences))|
+|id|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
 |label|string|false|none|none|
 
 <h2 id="tocS_VideoLanguageSet">VideoLanguageSet</h2>
@@ -22547,7 +23150,7 @@ licence id of the video (see [/videos/licences](#operation/getLicences))
 "en"
 ```
 
-language id of the video (see [/videos/languages](#operation/getLanguages))
+language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))
 
 <h2 id="tocS_VideoConstantString-Language">VideoConstantString-Language</h2>
 <!-- backwards compatibility -->
@@ -22567,7 +23170,7 @@ language id of the video (see [/videos/languages](#operation/getLanguages))
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|id|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |label|string|false|none|none|
 
 <h2 id="tocS_VideoPlaylistPrivacySet">VideoPlaylistPrivacySet</h2>
@@ -22581,7 +23184,7 @@ language id of the video (see [/videos/languages](#operation/getLanguages))
 1
 ```
 
-Video playlist privacy policy (see [/video-playlists/privacies](#operation/getPlaylistPrivacyPolicies))
+Video playlist privacy policy (see [/video-playlists/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getplaylistprivacypolicies.html))
 
 <h2 id="tocS_VideoPlaylistPrivacyConstant">VideoPlaylistPrivacyConstant</h2>
 <!-- backwards compatibility -->
@@ -22601,7 +23204,7 @@ Video playlist privacy policy (see [/video-playlists/privacies](#operation/getPl
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|[VideoPlaylistPrivacySet](#schemavideoplaylistprivacyset)|false|none|Video playlist privacy policy (see [/video-playlists/privacies](#operation/getPlaylistPrivacyPolicies))|
+|id|[VideoPlaylistPrivacySet](#schemavideoplaylistprivacyset)|false|none|Video playlist privacy policy (see [/video-playlists/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getplaylistprivacypolicies.html))|
 |label|string|false|none|none|
 
 #### Enumerated Values
@@ -22664,7 +23267,7 @@ The video playlist type (Regular = `1`, Watch Later = `2`)
 1
 ```
 
-privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))
+privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))
 
 <h2 id="tocS_VideoPrivacyConstant">VideoPrivacyConstant</h2>
 <!-- backwards compatibility -->
@@ -22684,7 +23287,7 @@ privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolic
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
+|id|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
 |label|string|false|none|none|
 
 #### Enumerated Values
@@ -23007,7 +23610,7 @@ The live latency mode (Default = `1`, High latency = `2`, Small Latency = `3`)
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
+|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
 
 #### Enumerated Values
 
@@ -23079,7 +23682,7 @@ The activity target:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|false|none|The video state:<br>- `1`: Published<br>- `2`: To transcode<br>- `3`: To import<br>- `4`: Waiting for live stream<br>- `5`: Live ended<br>- `6`: To move to an external storage (object storage...)<br>- `7`: Transcoding failed<br>- `8`: Moving to an external storage failed<br>- `9`: To edit using studio edition feature<br>|
+|id|integer|false|none|The video state:<br>- `1`: Published<br>- `2`: To transcode<br>- `3`: To import<br>- `4`: Waiting for live stream<br>- `5`: Live ended<br>- `6`: To move to an external storage (object storage...)<br>- `7`: Transcoding failed<br>- `8`: Moving to an external storage failed<br>- `9`: To edit using studio edition feature<br>- `10`: To move to the file system<br>- `11`: Moving to the file system failed<br>- `12`: Import failed<br>- `13`: To duplicate, the files of another video are being copied<br>- `14`: Duplication failed, the files of the other video could not be copied<br>- `15`: The studio edition of a video saved as a new video failed<br>|
 |label|string|false|none|none|
 
 #### Enumerated Values
@@ -23095,6 +23698,12 @@ The activity target:
 |id|7|
 |id|8|
 |id|9|
+|id|10|
+|id|11|
+|id|12|
+|id|13|
+|id|14|
+|id|15|
 
 <h2 id="tocS_UserExportState">UserExportState</h2>
 <!-- backwards compatibility -->
@@ -23241,7 +23850,7 @@ resolutions and their labels for the video
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
+|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
 |updateAt|string(date-time)|true|none|When to update the video|
 
 #### Enumerated Values
@@ -23512,7 +24121,10 @@ resolutions and their labels for the video
     },
     "userHistory": {
       "currentTime": 0
-    }
+    },
+    "captionLanguages": [
+      "fr"
+    ]
   }
 }
 ```
@@ -23870,7 +24482,10 @@ resolutions and their labels for the video
   },
   "userHistory": {
     "currentTime": 0
-  }
+  },
+  "captionLanguages": [
+    "fr"
+  ]
 }
 ```
 
@@ -23918,6 +24533,7 @@ resolutions and their labels for the video
 |account|[AccountSummary](#schemaaccountsummary)|false|none|none|
 |channel|[VideoChannelSummary](#schemavideochannelsummary)|false|none|none|
 |userHistory|object \| null|false|none|none|
+|captionLanguages|[string]|false|none|**PeerTube >= 9.0** Languages of the video captions. Only returned by video lists|
 
 <h2 id="tocS_ServerError">ServerError</h2>
 <!-- backwards compatibility -->
@@ -23928,7 +24544,7 @@ resolutions and their labels for the video
 
 ```json
 {
-  "type": "https://docs.joinpeertube.org/api-rest-reference.html#section/Errors/video_requires_password",
+  "type": "https://docs.joinpeertube.org/api-rest-reference/api.html#video-requires-password",
   "detail": "Please provide a password to access this password protected video",
   "status": 403,
   "code": "video_requires_password"
@@ -23939,7 +24555,7 @@ resolutions and their labels for the video
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string(uri-reference)|false|none|URI identifying the error type. `about:blank` when the error has no specific type. Otherwise it links to the corresponding section of the [Errors](#section/Errors) documentation; the type name itself is also available in `code`.<br>|
+|type|string(uri-reference)|false|none|URI identifying the error type. `about:blank` when the error has no specific type. Otherwise it links to the corresponding section of the [Errors](https://docs.joinpeertube.org/api-rest-reference/api.html#errors) documentation; the type name itself is also available in `code`.<br>|
 |detail|string|false|none|none|
 |status|integer|false|none|none|
 |code|string|false|none|none|
@@ -24124,6 +24740,9 @@ resolutions and their labels for the video
   "userHistory": {
     "currentTime": 0
   },
+  "captionLanguages": [
+    "fr"
+  ],
   "viewers": 0,
   "description": "\"**[Want to help to translate this video?](https://weblate.framasoft.org/projects/what-is-peertube-video/)**\\r\\n\\r\\n\n**Take back the control of your videos! [#JoinPeertube](https://joinpeertube.org)**\\r\\n*A decentralized video hosting network,\nbased on free/libre software!*\\r\\n\\r\\n**Animation Produced by:** [LILA](https://libreart.info) - [ZeMarmot Team](https://film.zemarmot.net)\\r\\n\n*Directed by* Aryeom\\r\\n*Assistant* Jehan\\r\\n**Licence**: [CC-By-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)\\r\\n\\r\\n\n**Sponsored by** [Framasoft](https://framasoft.org)\\r\\n\\r\\n**Music**: [Red Step Forward](http://play.dogmazic.net/song.php?song_id=52491) - CC-By Ken Bushima\\r\\n\\r\\n\n**Movie Clip**: [Caminades 3: Llamigos](http://www.caminandes.com/) CC-By Blender Institute\\r\\n\\r\\n**Video sources**: https://gitlab.gnome.org/Jehan/what-is-peertube/\"\n",
   "support": "Please support our work on https://soutenir.framasoft.org/en/ <3",
@@ -24247,6 +24866,7 @@ resolutions and their labels for the video
 |account|[AccountSummary](#schemaaccountsummary)|false|none|none|
 |channel|[VideoChannelSummary](#schemavideochannelsummary)|false|none|none|
 |userHistory|object \| null|false|none|none|
+|captionLanguages|[string]|false|none|**PeerTube >= 9.0** Languages of the video captions. Only returned by video lists|
 |viewers|integer|false|none|If the video is a live, you have the amount of current viewers|
 |description|string \| null|false|none|full description of the video, written in Markdown.<br>|
 |support|string \| null|false|none|A text tell the audience how to support the video creator|
@@ -24738,10 +25358,10 @@ resolutions and their labels for the video
 |torrentfile|string(binary)|true|none|Torrent file containing only the video file|
 |name|string|true|none|Video name|
 |channelId|integer|true|none|Channel id that will contain this video|
-|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
-|category|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licence|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|language|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
+|category|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licence|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|language|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |description|string|false|none|Video description|
 |waitTranscoding|boolean|false|none|Whether or not we wait transcoding before publish the video|
 |generateTranscription|boolean|false|none|**PeerTube >= 6.2** If enabled by the admin, automatically generate a subtitle of the video|
@@ -24922,7 +25542,10 @@ resolutions and their labels for the video
     },
     "userHistory": {
       "currentTime": 0
-    }
+    },
+    "captionLanguages": [
+      "fr"
+    ]
   }
 }
 ```
@@ -25078,7 +25701,10 @@ resolutions and their labels for the video
         },
         "userHistory": {
           "currentTime": 0
-        }
+        },
+        "captionLanguages": [
+          "fr"
+        ]
       }
     }
   ]
@@ -25423,7 +26049,10 @@ resolutions and their labels for the video
     },
     "userHistory": {
       "currentTime": 0
-    }
+    },
+    "captionLanguages": [
+      "fr"
+    ]
   },
   "createdAt": "1970-01-01T00:00:00Z",
   "updatedAt": "1970-01-01T00:00:00Z"
@@ -25635,7 +26264,7 @@ Representation of a ownership change
   "description": "string",
   "displayName": "string",
   "isLocal": true,
-  "videoLength": 0,
+  "videosLength": 0,
   "thumbnailPath": "string",
   "thumbnails": [
     {
@@ -25703,7 +26332,7 @@ Representation of a ownership change
 |description|string|false|none|none|
 |displayName|string|false|none|none|
 |isLocal|boolean|false|none|none|
-|videoLength|integer|false|none|none|
+|videosLength|integer|false|none|none|
 |thumbnailPath|string \| null|false|none|**Deprecated.** Deprecated in PeerTube v8.1, use thumbnails instead. Null if the file is stored in object storage: use the non-deprecated field instead.|
 |thumbnails|[[Thumbnail](#schemathumbnail)]|false|none|**PeerTube >= 8.1** Array of thumbnails for the playlist|
 |privacy|[VideoPlaylistPrivacyConstant](#schemavideoplaylistprivacyconstant)|false|none|none|
@@ -26043,6 +26672,34 @@ Representation of a ownership change
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |chapters|object|false|none|none|
+
+<h2 id="tocS_PodcastChapters">PodcastChapters</h2>
+<!-- backwards compatibility -->
+<a id="schemapodcastchapters"></a>
+<a id="schema_PodcastChapters"></a>
+<a id="tocSpodcastchapters"></a>
+<a id="tocspodcastchapters"></a>
+
+```json
+{
+  "version": "1.2.0",
+  "chapters": [
+    {
+      "startTime": 0,
+      "title": "string"
+    }
+  ]
+}
+```
+
+Podcasting 2.0 JSON chapters, see https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/chapters/jsonChapters.md
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|version|string|false|none|none|
+|chapters|[object]|false|none|none|
 
 <h2 id="tocS_VideoSource">VideoSource</h2>
 <!-- backwards compatibility -->
@@ -26507,6 +27164,28 @@ Representation of a ownership change
       240
     ]
   },
+  "live": {
+    "enabled": true,
+    "allowReplay": true,
+    "dvr": {
+      "maxWindow": 0
+    },
+    "latencySetting": {
+      "enabled": true
+    },
+    "maxDuration": 0,
+    "maxInstanceLives": 0,
+    "maxUserLives": 0,
+    "transcoding": {
+      "enabled": true,
+      "enabledResolutions": [
+        240
+      ]
+    },
+    "rtmp": {
+      "port": 0
+    }
+  },
   "import": {
     "videos": {
       "http": {
@@ -26637,6 +27316,7 @@ Representation of a ownership change
 |serverCommit|string|false|none|none|
 |signup|object|false|none|none|
 |transcoding|object|false|none|none|
+|live|object|false|none|none|
 |import|object|false|none|none|
 |export|object|false|none|none|
 |autoBlacklist|object|false|none|none|
@@ -27350,10 +28030,10 @@ Reason categories that help triage reports
 |---|---|---|---|---|
 |name|string|true|none|Video name|
 |channelId|integer|true|none|Channel id that will contain this video|
-|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
-|category|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licence|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|language|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
+|category|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licence|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|language|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |description|string|false|none|Video description|
 |waitTranscoding|boolean|false|none|Whether or not we wait transcoding before publish the video|
 |generateTranscription|boolean|false|none|**PeerTube >= 6.2** If enabled by the admin, automatically generate a subtitle of the video|
@@ -27452,10 +28132,10 @@ Reason categories that help triage reports
 |---|---|---|---|---|
 |name|string|true|none|Video name|
 |channelId|integer|true|none|Channel id that will contain this video|
-|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
-|category|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licence|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|language|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
+|category|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licence|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|language|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |description|string|false|none|Video description|
 |waitTranscoding|boolean|false|none|Whether or not we wait transcoding before publish the video|
 |generateTranscription|boolean|false|none|**PeerTube >= 6.2** If enabled by the admin, automatically generate a subtitle of the video|
@@ -27555,10 +28235,10 @@ Reason categories that help triage reports
 |---|---|---|---|---|
 |name|string|true|none|Video name|
 |channelId|integer|true|none|Channel id that will contain this video|
-|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))|
-|category|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](#operation/getCategories))|
-|licence|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](#operation/getLicences))|
-|language|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](#operation/getLanguages))|
+|privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
+|category|[VideoCategorySet](#schemavideocategoryset)|false|none|category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))|
+|licence|[VideoLicenceSet](#schemavideolicenceset)|false|none|licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))|
+|language|[VideoLanguageSet](#schemavideolanguageset)|false|none|language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))|
 |description|string|false|none|Video description|
 |waitTranscoding|boolean|false|none|Whether or not we wait transcoding before publish the video|
 |generateTranscription|boolean|false|none|**PeerTube >= 6.2** If enabled by the admin, automatically generate a subtitle of the video|
@@ -27935,7 +28615,10 @@ Reason categories that help triage reports
       },
       "userHistory": {
         "currentTime": 0
-      }
+      },
+      "captionLanguages": [
+        "fr"
+      ]
     }
   ]
 }
@@ -28602,7 +29285,8 @@ Reason categories that help triage reports
   "videoQuotaDaily": -1,
   "channelName": "framasoft_videos",
   "role": 2,
-  "adminFlags": 1
+  "adminFlags": 1,
+  "currentPassword": {}
 }
 ```
 
@@ -28618,6 +29302,7 @@ Reason categories that help triage reports
 |channelName|[usernameChannel](#schemausernamechannel)|false|none|immutable name of the channel, used to interact with its actor|
 |role|[UserRole](#schemauserrole)|true|none|The user role (Admin = `0`, Moderator = `1`, User = `2`)|
 |adminFlags|[UserAdminFlags](#schemauseradminflags)|false|none|Admin flags for the user (None = `0`, Bypass video blocklist = `1`)|
+|currentPassword|object|false|none|Required to create an administrator, see [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation)|
 
 #### Enumerated Values
 
@@ -28645,7 +29330,8 @@ Reason categories that help triage reports
   "pluginAuth": "peertube-plugin-auth-saml2",
   "role": 2,
   "adminFlags": 1,
-  "password": "password"
+  "password": "password",
+  "currentPassword": {}
 }
 ```
 
@@ -28661,6 +29347,7 @@ Reason categories that help triage reports
 |role|[UserRole](#schemauserrole)|false|none|The user role (Admin = `0`, Moderator = `1`, User = `2`)|
 |adminFlags|[UserAdminFlags](#schemauseradminflags)|false|none|Admin flags for the user (None = `0`, Bypass video blocklist = `1`)|
 |password|[password](#schemapassword)|false|none|none|
+|currentPassword|object|false|none|Required to give the administrator role, or to change the password, email or auth plugin of an administrator, see [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation)<br>|
 
 #### Enumerated Values
 
@@ -28922,7 +29609,10 @@ Reason categories that help triage reports
     },
     "userHistory": {
       "currentTime": 0
-    }
+    },
+    "captionLanguages": [
+      "fr"
+    ]
   },
   "rating": "like"
 }
@@ -30095,6 +30785,10 @@ Notification type. One of the following values:
 
   - `32` AUTOMATIC_BLOCKLIST_UPDATE
 
+  - `33` MY_VIDEO_STUDIO_EDITION_ERROR
+
+  - `34` MY_VIDEO_DUPLICATION_ERROR
+
 <h2 id="tocS_NewFeatureInfoType">NewFeatureInfoType</h2>
 <!-- backwards compatibility -->
 <a id="schemanewfeatureinfotype"></a>
@@ -30268,7 +30962,7 @@ Represent a new feature that can be displayed to inform users. One of the follow
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[id](#schemaid)|false|none|none|
-|type|[NotificationType](#schemanotificationtype)|false|none|Notification type. One of the following values:<br><br>  - `1` NEW_VIDEO_FROM_SUBSCRIPTION<br><br>  - `2` NEW_COMMENT_ON_MY_VIDEO<br><br>  - `3` NEW_ABUSE_FOR_MODERATORS<br><br>  - `4` BLACKLIST_ON_MY_VIDEO<br><br>  - `5` UNBLACKLIST_ON_MY_VIDEO<br><br>  - `6` MY_VIDEO_PUBLISHED<br><br>  - `7` MY_VIDEO_IMPORT_SUCCESS<br><br>  - `8` MY_VIDEO_IMPORT_ERROR<br><br>  - `9` NEW_USER_REGISTRATION<br><br>  - `10` NEW_FOLLOW<br><br>  - `11` COMMENT_MENTION<br><br>  - `12` VIDEO_AUTO_BLACKLIST_FOR_MODERATORS<br><br>  - `13` NEW_INSTANCE_FOLLOWER<br><br>  - `14` AUTO_INSTANCE_FOLLOWING<br><br>  - `15` ABUSE_STATE_CHANGE<br><br>  - `16` ABUSE_NEW_MESSAGE<br><br>  - `17` NEW_PLUGIN_VERSION<br><br>  - `18` NEW_PEERTUBE_VERSION<br><br>  - `19` MY_VIDEO_STUDIO_EDITION_FINISHED<br><br>  - `20` NEW_USER_REGISTRATION_REQUEST<br><br>  - `21` NEW_LIVE_FROM_SUBSCRIPTION<br><br>  - `22` MY_VIDEO_TRANSCRIPTION_GENERATED<br><br>  - `23` INVITED_TO_COLLABORATE_TO_CHANNEL<br><br>  - `24` ACCEPTED_TO_COLLABORATE_TO_CHANNEL<br><br>  - `25` REFUSED_TO_COLLABORATE_TO_CHANNEL<br><br>  - `26` VIDEO_OWNERSHIP_CHANGED_REQUEST<br><br>  - `27` VIDEO_OWNERSHIP_CHANGED_ACCEPTED<br><br>  - `28` VIDEO_OWNERSHIP_CHANGED_REJECTED<br><br>  - `29` CHANNEL_OWNERSHIP_CHANGED_REQUEST<br><br>  - `30` CHANNEL_OWNERSHIP_CHANGED_ACCEPTED<br><br>  - `31` CHANNEL_OWNERSHIP_CHANGED_REJECTED<br><br>  - `32` AUTOMATIC_BLOCKLIST_UPDATE<br>|
+|type|[NotificationType](#schemanotificationtype)|false|none|Notification type. One of the following values:<br><br>  - `1` NEW_VIDEO_FROM_SUBSCRIPTION<br><br>  - `2` NEW_COMMENT_ON_MY_VIDEO<br><br>  - `3` NEW_ABUSE_FOR_MODERATORS<br><br>  - `4` BLACKLIST_ON_MY_VIDEO<br><br>  - `5` UNBLACKLIST_ON_MY_VIDEO<br><br>  - `6` MY_VIDEO_PUBLISHED<br><br>  - `7` MY_VIDEO_IMPORT_SUCCESS<br><br>  - `8` MY_VIDEO_IMPORT_ERROR<br><br>  - `9` NEW_USER_REGISTRATION<br><br>  - `10` NEW_FOLLOW<br><br>  - `11` COMMENT_MENTION<br><br>  - `12` VIDEO_AUTO_BLACKLIST_FOR_MODERATORS<br><br>  - `13` NEW_INSTANCE_FOLLOWER<br><br>  - `14` AUTO_INSTANCE_FOLLOWING<br><br>  - `15` ABUSE_STATE_CHANGE<br><br>  - `16` ABUSE_NEW_MESSAGE<br><br>  - `17` NEW_PLUGIN_VERSION<br><br>  - `18` NEW_PEERTUBE_VERSION<br><br>  - `19` MY_VIDEO_STUDIO_EDITION_FINISHED<br><br>  - `20` NEW_USER_REGISTRATION_REQUEST<br><br>  - `21` NEW_LIVE_FROM_SUBSCRIPTION<br><br>  - `22` MY_VIDEO_TRANSCRIPTION_GENERATED<br><br>  - `23` INVITED_TO_COLLABORATE_TO_CHANNEL<br><br>  - `24` ACCEPTED_TO_COLLABORATE_TO_CHANNEL<br><br>  - `25` REFUSED_TO_COLLABORATE_TO_CHANNEL<br><br>  - `26` VIDEO_OWNERSHIP_CHANGED_REQUEST<br><br>  - `27` VIDEO_OWNERSHIP_CHANGED_ACCEPTED<br><br>  - `28` VIDEO_OWNERSHIP_CHANGED_REJECTED<br><br>  - `29` CHANNEL_OWNERSHIP_CHANGED_REQUEST<br><br>  - `30` CHANNEL_OWNERSHIP_CHANGED_ACCEPTED<br><br>  - `31` CHANNEL_OWNERSHIP_CHANGED_REJECTED<br><br>  - `32` AUTOMATIC_BLOCKLIST_UPDATE<br><br>  - `33` MY_VIDEO_STUDIO_EDITION_ERROR<br><br>  - `34` MY_VIDEO_DUPLICATION_ERROR<br>|
 |read|boolean|false|none|none|
 |video|object \| null|false|none|none|
 |videoImport|object \| null|false|none|none|
@@ -30317,6 +31011,7 @@ Represent a new feature that can be displayed to inform users. One of the follow
 |type|31|
 |type|32|
 |type|33|
+|type|34|
 
 <h2 id="tocS_NotificationListResponse">NotificationListResponse</h2>
 <!-- backwards compatibility -->
@@ -30582,6 +31277,7 @@ Represent a new feature that can be displayed to inform users. One of the follow
   },
   "permanentLive": true,
   "latencyMode": {},
+  "dvrWindow": 0,
   "schedules": [
     {
       "startAt": "1970-01-01T00:00:00Z"
@@ -30598,6 +31294,7 @@ Represent a new feature that can be displayed to inform users. One of the follow
 |replaySettings|[LiveVideoReplaySettings](#schemalivevideoreplaysettings)|false|none|none|
 |permanentLive|boolean|false|none|User can stream multiple times in a permanent live|
 |latencyMode|object|false|none|User can select live latency mode if enabled by the instance|
+|dvrWindow|[LiveVideoDVRWindow](#schemalivevideodvrwindow)|false|none|**PeerTube >= 8.2** How far back viewers can rewind the live, in seconds. `0` disables DVR. Cannot be higher than the max DVR window of the instance<br>|
 |schedules|[[LiveSchedule](#schemaliveschedule)]|false|none|none|
 
 <h2 id="tocS_LiveVideoResponse">LiveVideoResponse</h2>
@@ -30618,6 +31315,7 @@ Represent a new feature that can be displayed to inform users. One of the follow
   },
   "permanentLive": true,
   "latencyMode": {},
+  "dvrWindow": 0,
   "schedules": [
     {
       "startAt": "1970-01-01T00:00:00Z"
@@ -30637,7 +31335,21 @@ Represent a new feature that can be displayed to inform users. One of the follow
 |replaySettings|[LiveVideoReplaySettings](#schemalivevideoreplaysettings)|false|none|none|
 |permanentLive|boolean|false|none|User can stream multiple times in a permanent live|
 |latencyMode|object|false|none|User can select live latency mode if enabled by the instance|
+|dvrWindow|integer|false|none|**PeerTube >= 8.2** How far back viewers can rewind the live, in seconds. `0` means DVR is disabled.<br>|
 |schedules|[[LiveSchedule](#schemaliveschedule)]|false|none|none|
+
+<h2 id="tocS_LiveVideoDVRWindow">LiveVideoDVRWindow</h2>
+<!-- backwards compatibility -->
+<a id="schemalivevideodvrwindow"></a>
+<a id="schema_LiveVideoDVRWindow"></a>
+<a id="tocSlivevideodvrwindow"></a>
+<a id="tocslivevideodvrwindow"></a>
+
+```json
+0
+```
+
+**PeerTube >= 8.2** How far back viewers can rewind the live, in seconds. `0` disables DVR. Cannot be higher than the max DVR window of the instance
 
 <h2 id="tocS_LiveSchedule">LiveSchedule</h2>
 <!-- backwards compatibility -->
@@ -30866,7 +31578,8 @@ Represent a new feature that can be displayed to inform users. One of the follow
   "ip": "string",
   "updatedAt": "1970-01-01T00:00:00Z",
   "createdAt": "1970-01-01T00:00:00Z",
-  "lastContact": "1970-01-01T00:00:00Z"
+  "lastContact": "1970-01-01T00:00:00Z",
+  "version": "0.4.0"
 }
 ```
 
@@ -30881,6 +31594,20 @@ Represent a new feature that can be displayed to inform users. One of the follow
 |updatedAt|string(date-time)|false|none|none|
 |createdAt|string(date-time)|false|none|none|
 |lastContact|string(date-time)|false|none|none|
+|version|string \| null|false|none|Version of the runner, sent when it registers or requests jobs. `null` if the runner never sent its version|
+
+<h2 id="tocS_RunnerVersion">RunnerVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemarunnerversion"></a>
+<a id="schema_RunnerVersion"></a>
+<a id="tocSrunnerversion"></a>
+<a id="tocsrunnerversion"></a>
+
+```json
+"0.4.0"
+```
+
+Version of the runner, updated on the runner model if provided
 
 <h2 id="tocS_RunnerJobType">RunnerJobType</h2>
 <!-- backwards compatibility -->

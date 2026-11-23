@@ -1,71 +1,17 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AlterMetadataResourceLocationRequestSchema = z
+const EncryptionConfigSchema = z
   .object({
-    locationUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The new location URI for the metadata resource.' }),
-    resourceName: z
+    kmsKey: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. The relative metadata resource name in the following format.databases/{database_id} or databases/{database_id}/tables/{table_id} or databases/{database_id}/tables/{table_id}/partitions/{partition_id}',
+          'The fully qualified customer provided Cloud KMS key name to use for customer data encryption, in the following form:projects/{project_number}/locations/{location_id}/keyRings/{key_ring_id}/cryptoKeys/{crypto_key_id}.',
       }),
   })
-  .openapi({
-    description: 'Request message for DataprocMetastore.AlterMetadataResourceLocation.',
-    required: [],
-  })
-  .openapi('AlterMetadataResourceLocationRequest')
-
-const AlterMetadataResourceLocationResponseSchema = z
-  .object({})
-  .openapi({ description: 'Response message for DataprocMetastore.AlterMetadataResourceLocation.' })
-  .openapi('AlterMetadataResourceLocationResponse')
-
-const AuditLogConfigSchema = z
-  .object({
-    exemptedMembers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
-  })
-  .openapi({
-    description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
-    required: [],
-  })
-  .openapi('AuditLogConfig')
-
-const AuditConfigSchema = z
-  .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a service that will be enabled for audit logging. For example, storage.googleapis.com, cloudsql.googleapis.com. allServices is a special value that covers all services.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs.If there are AuditConfigs for both allServices and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted.Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts jose@example.com from DATA_READ logging, and aliya@example.com from DATA_WRITE logging.',
-    required: [],
-  })
-  .openapi('AuditConfig')
+  .openapi({ description: 'Encryption settings for the service.', required: [] })
+  .openapi('EncryptionConfig')
 
 const ConsumerSchema = z
   .object({
@@ -140,36 +86,6 @@ const AuxiliaryVersionConfigSchema = z
     required: [],
   })
   .openapi('AuxiliaryVersionConfig')
-
-const BackendMetastoreSchema = z
-  .object({
-    metastoreType: z
-      .enum(['METASTORE_TYPE_UNSPECIFIED', 'DATAPLEX', 'BIGQUERY', 'DATAPROC_METASTORE'])
-      .exactOptional()
-      .openapi({ description: 'The type of the backend metastore.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The relative resource name of the metastore that is being federated. The formats of the relative resource names for the currently supported metastores are listed below: BigQuery projects/{project_id} Dataproc Metastore projects/{project_id}/locations/{location}/services/{service_id}',
-      }),
-  })
-  .openapi({ description: 'Represents a backend metastore for the federation.', required: [] })
-  .openapi('BackendMetastore')
-
-const EncryptionConfigSchema = z
-  .object({
-    kmsKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fully qualified customer provided Cloud KMS key name to use for customer data encryption, in the following form:projects/{project_number}/locations/{location_id}/keyRings/{key_ring_id}/cryptoKeys/{crypto_key_id}.',
-      }),
-  })
-  .openapi({ description: 'Encryption settings for the service.', required: [] })
-  .openapi('EncryptionConfig')
 
 const SecretSchema = z
   .object({
@@ -604,7 +520,17 @@ const ServiceSchema = z
   })
   .openapi('Service')
 
-const BackupSchema = z
+type BackupType = {
+  createTime?: string
+  description?: string
+  endTime?: string
+  name?: string
+  restoringServices?: string[]
+  serviceRevision?: z.infer<typeof ServiceSchema>
+  state?: 'STATE_UNSPECIFIED' | 'CREATING' | 'DELETING' | 'ACTIVE' | 'FAILED' | 'RESTORING'
+}
+
+const BackupSchema: z.ZodType<BackupType> = z
   .object({
     createTime: z
       .string()
@@ -649,6 +575,102 @@ const BackupSchema = z
   })
   .openapi({ description: 'The details of a backup resource.', required: [] })
   .openapi('Backup')
+
+type ListBackupsResponseType = {
+  backups?: z.infer<typeof BackupSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+type ListServicesResponseType = {
+  nextPageToken?: string
+  services?: z.infer<typeof ServiceSchema>[]
+  unreachable?: string[]
+}
+
+const AlterMetadataResourceLocationRequestSchema = z
+  .object({
+    locationUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The new location URI for the metadata resource.' }),
+    resourceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The relative metadata resource name in the following format.databases/{database_id} or databases/{database_id}/tables/{table_id} or databases/{database_id}/tables/{table_id}/partitions/{partition_id}',
+      }),
+  })
+  .openapi({
+    description: 'Request message for DataprocMetastore.AlterMetadataResourceLocation.',
+    required: [],
+  })
+  .openapi('AlterMetadataResourceLocationRequest')
+
+const AlterMetadataResourceLocationResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'Response message for DataprocMetastore.AlterMetadataResourceLocation.' })
+  .openapi('AlterMetadataResourceLocationResponse')
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, storage.googleapis.com, cloudsql.googleapis.com. allServices is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs.If there are AuditConfigs for both allServices and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted.Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts jose@example.com from DATA_READ logging, and aliya@example.com from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const BackendMetastoreSchema = z
+  .object({
+    metastoreType: z
+      .enum(['METASTORE_TYPE_UNSPECIFIED', 'DATAPLEX', 'BIGQUERY', 'DATAPROC_METASTORE'])
+      .exactOptional()
+      .openapi({ description: 'The type of the backend metastore.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The relative resource name of the metastore that is being federated. The formats of the relative resource names for the currently supported metastores are listed below: BigQuery projects/{project_id} Dataproc Metastore projects/{project_id}/locations/{location}/services/{service_id}',
+      }),
+  })
+  .openapi({ description: 'Represents a backend metastore for the federation.', required: [] })
+  .openapi('BackendMetastore')
 
 const ExprSchema = z
   .object({
@@ -713,7 +735,7 @@ const BindingSchema = z
   .openapi('Binding')
 
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
 
@@ -749,7 +771,7 @@ const DatabaseDumpSchema = z
   .openapi('DatabaseDump')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); } ',
@@ -874,7 +896,7 @@ const HiveMetastoreVersionSchema = z
   })
   .openapi('HiveMetastoreVersion')
 
-const ListBackupsResponseSchema = z
+const ListBackupsResponseSchema: z.ZodType<ListBackupsResponseType> = z
   .object({
     backups: z
       .array(BackupSchema)
@@ -1162,7 +1184,7 @@ const ListOperationsResponseSchema = z
   .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
   .openapi('ListOperationsResponse')
 
-const ListServicesResponseSchema = z
+const ListServicesResponseSchema: z.ZodType<ListServicesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1220,7 +1242,7 @@ const MoveTableToDatabaseRequestSchema = z
   .openapi('MoveTableToDatabaseRequest')
 
 const MoveTableToDatabaseResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response message for DataprocMetastore.MoveTableToDatabase.' })
   .openapi('MoveTableToDatabaseResponse')
 

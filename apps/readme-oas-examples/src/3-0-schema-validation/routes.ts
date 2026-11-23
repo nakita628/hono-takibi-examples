@@ -623,6 +623,7 @@ export const getAnythingOasFormatsRoute = createRoute({
             required: false,
           },
           example: '4000000000',
+          default: 3000000000,
         }),
       float: z
         .preprocess(

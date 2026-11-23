@@ -1,105 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AccountSchema = z
-  .object({
-    applyPretargetingToNonGuaranteedDeals: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When this is false, bid requests that include a deal ID for a private auction or preferred deal are always sent to your bidder. When true, all active pretargeting configs will be applied to private auctions and preferred deals. Programmatic Guaranteed deals (when enabled) are always sent to your bidder.',
-      }),
-    bidderLocation: z
-      .array(
-        z
-          .object({
-            bidProtocol: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The protocol that the bidder endpoint is using. OpenRTB protocols with prefix PROTOCOL_OPENRTB_PROTOBUF use proto buffer, otherwise use JSON.  Allowed values:  \n- PROTOCOL_ADX \n- PROTOCOL_OPENRTB_2_2 \n- PROTOCOL_OPENRTB_2_3 \n- PROTOCOL_OPENRTB_2_4 \n- PROTOCOL_OPENRTB_2_5 \n- PROTOCOL_OPENRTB_PROTOBUF_2_3 \n- PROTOCOL_OPENRTB_PROTOBUF_2_4 \n- PROTOCOL_OPENRTB_PROTOBUF_2_5',
-              }),
-            maximumQps: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description: 'The maximum queries per second the Ad Exchange will send.',
-              }),
-            region: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The geographical region the Ad Exchange should send requests from. Only used by some quota systems, but always setting the value is recommended. Allowed values:  \n- ASIA \n- EUROPE \n- US_EAST \n- US_WEST',
-              }),
-            url: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The URL to which the Ad Exchange will send bid requests.' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Your bidder locations that have distinct URLs.' }),
-    cookieMatchingNid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The nid parameter value used in cookie match requests. Please contact your technical account manager if you need to change this.',
-      }),
-    cookieMatchingUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The base URL used in cookie match requests.' }),
-    id: z.int32().exactOptional().openapi({ description: 'Account id.' }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#account')
-      .exactOptional()
-      .openapi({ description: 'Resource type.' }),
-    maximumActiveCreatives: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of active creatives that an account can have, where a creative is active if it was inserted or bid with in the last 30 days. Please contact your technical account manager if you need to change this.',
-      }),
-    maximumTotalQps: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sum of all bidderLocation.maximumQps values cannot exceed this. Please contact your technical account manager if you need to change this.',
-      }),
-    numberActiveCreatives: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of creatives that this account inserted or bid with in the last 30 days.',
-      }),
-  })
-  .openapi({ description: 'Configuration data for an Ad Exchange buyer account.', required: [] })
-  .openapi('Account')
-
-const AccountsListSchema = z
-  .object({
-    items: z.array(AccountSchema).exactOptional().openapi({ description: 'A list of accounts.' }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#accountsList')
-      .exactOptional()
-      .openapi({ description: 'Resource type.' }),
-  })
-  .openapi({
-    description:
-      'An account feed lists Ad Exchange buyer accounts that the user has access to. Each entry in the feed corresponds to a single buyer account.',
-    required: [],
-  })
-  .openapi('AccountsList')
-
 const PrivateDataSchema = z
   .object({ referenceId: z.string().exactOptional(), referencePayload: z.string().exactOptional() })
   .openapi({ required: [] })
@@ -494,7 +394,36 @@ const DealTermsSchema = z
   .openapi({ required: [] })
   .openapi('DealTerms')
 
-const MarketplaceDealSchema = z
+type MarketplaceDealType = {
+  buyerPrivateData?: z.infer<typeof PrivateDataSchema>
+  creationTimeMs?: string
+  creativePreApprovalPolicy?: string
+  creativeSafeFrameCompatibility?: string
+  dealId?: string
+  dealServingMetadata?: z.infer<typeof DealServingMetadataSchema>
+  deliveryControl?: z.infer<typeof DeliveryControlSchema>
+  externalDealId?: string
+  flightEndTimeMs?: string
+  flightStartTimeMs?: string
+  inventoryDescription?: string
+  isRfpTemplate?: boolean
+  isSetupComplete?: boolean
+  kind?: string
+  lastUpdateTimeMs?: string
+  makegoodRequestedReason?: string
+  name?: string
+  productId?: string
+  productRevisionNumber?: string
+  programmaticCreativeSource?: string
+  proposalId?: string
+  sellerContacts?: z.infer<typeof ContactInformationSchema>[]
+  sharedTargetings?: z.infer<typeof SharedTargetingSchema>[]
+  syndicationProduct?: string
+  terms?: z.infer<typeof DealTermsSchema>
+  webPropertyCode?: string
+}
+
+const MarketplaceDealSchema: z.ZodType<MarketplaceDealType> = z
   .object({
     buyerPrivateData: PrivateDataSchema.exactOptional().openapi({
       description: 'Buyer private data (hidden from seller).',
@@ -634,387 +563,16 @@ const MarketplaceDealSchema = z
   })
   .openapi('MarketplaceDeal')
 
-const AddOrderDealsRequestSchema = z
-  .object({
-    deals: z
-      .array(MarketplaceDealSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of deals to add' }),
-    proposalRevisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last known proposal revision number.' }),
-    updateAction: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates an optional action to take on the proposal' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AddOrderDealsRequest')
+type AddOrderDealsRequestType = {
+  deals?: z.infer<typeof MarketplaceDealSchema>[]
+  proposalRevisionNumber?: string
+  updateAction?: string
+}
 
-const AddOrderDealsResponseSchema = z
-  .object({
-    deals: z
-      .array(MarketplaceDealSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of deals added (in the same proposal as passed in the request)',
-      }),
-    proposalRevisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The updated revision number for the proposal.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AddOrderDealsResponse')
-
-const MarketplaceNoteSchema = z
-  .object({
-    creatorRole: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The role of the person (buyer/seller) creating the note. (readonly)',
-      }),
-    dealId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Notes can optionally be associated with a deal. (readonly, except on create)',
-      }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#marketplaceNote')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "adexchangebuyer#marketplaceNote".',
-      }),
-    note: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The actual note to attach. (readonly, except on create)' }),
-    noteId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique id for the note. (readonly)' }),
-    proposalId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The proposalId that a note is attached to. (readonly)' }),
-    proposalRevisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the note is associated with a proposal revision number, then store that here. (readonly, except on create)',
-      }),
-    timestampMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp (ms since epoch) that this note was created. (readonly)',
-      }),
-  })
-  .openapi({
-    description:
-      'A proposal is associated with a bunch of notes which may optionally be associated with a deal and/or revision number.',
-    required: [],
-  })
-  .openapi('MarketplaceNote')
-
-const AddOrderNotesRequestSchema = z
-  .object({
-    notes: z
-      .array(MarketplaceNoteSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of notes to add.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AddOrderNotesRequest')
-
-const AddOrderNotesResponseSchema = z
-  .object({ notes: z.array(MarketplaceNoteSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AddOrderNotesResponse')
-
-const BillingInfoSchema = z
-  .object({
-    accountId: z.int32().exactOptional().openapi({ description: 'Account id.' }),
-    accountName: z.string().exactOptional().openapi({ description: 'Account name.' }),
-    billingId: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of adgroup IDs associated with this particular account. These IDs may show up as part of a realtime bidding BidRequest, which indicates a bid request for this account.',
-      }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#billingInfo')
-      .exactOptional()
-      .openapi({ description: 'Resource type.' }),
-  })
-  .openapi({ description: 'The configuration data for an Ad Exchange billing info.', required: [] })
-  .openapi('BillingInfo')
-
-const BillingInfoListSchema = z
-  .object({
-    items: z
-      .array(BillingInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of billing info relevant for your account.' }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#billingInfoList')
-      .exactOptional()
-      .openapi({ description: 'Resource type.' }),
-  })
-  .openapi({
-    description:
-      'A billing info feed lists Billing Info the Ad Exchange buyer account has access to. Each entry in the feed corresponds to a single billing info.',
-    required: [],
-  })
-  .openapi('BillingInfoList')
-
-const BudgetSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the account. This is required for get and update requests.',
-      }),
-    billingId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The billing id to determine which adgroup to provide budget information for. This is required for get and update requests.',
-      }),
-    budgetAmount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The daily budget amount in unit amount of the account currency to apply for the billingId provided. This is required for update requests.',
-      }),
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The currency code for the buyer. This cannot be altered here.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique id that describes this item.' }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#budget')
-      .exactOptional()
-      .openapi({ description: 'The kind of the resource, i.e. "adexchangebuyer#budget".' }),
-  })
-  .openapi({
-    description: 'The configuration data for Ad Exchange RTB - Budget API.',
-    required: [],
-  })
-  .openapi('Budget')
-
-const SellerSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique id for the seller. The seller fills in this field. The seller account id is then available to buyer in the product.',
-      }),
-    subAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional sub-account id for the seller.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Seller')
-
-const MarketplaceDealPartySchema = z
-  .object({
-    buyer: BuyerSchema.exactOptional().openapi({
-      description:
-        'The buyer/seller associated with the deal. One of buyer/seller is specified for a deal-party.',
-    }),
-    seller: SellerSchema.exactOptional().openapi({
-      description:
-        'The buyer/seller associated with the deal. One of buyer/seller is specified for a deal party.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('MarketplaceDealParty')
-
-const MarketplaceLabelSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The accountId of the party that created the label.' }),
-    createTimeMs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The creation time (in ms since epoch) for the label.' }),
-    deprecatedMarketplaceDealParty: MarketplaceDealPartySchema.exactOptional().openapi({
-      description: 'Information about the party that created the label.',
-    }),
-    label: z.string().exactOptional().openapi({ description: 'The label to use.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MarketplaceLabel')
-
-const ProposalSchema = z
-  .object({
-    billedBuyer: BuyerSchema.exactOptional().openapi({
-      description: 'Reference to the buyer that will get billed for this proposal. (readonly)',
-    }),
-    buyer: BuyerSchema.exactOptional().openapi({
-      description: 'Reference to the buyer on the proposal. (readonly, except on create)',
-    }),
-    buyerContacts: z
-      .array(ContactInformationSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional contact information of the buyer. (seller-readonly)' }),
-    buyerPrivateData: PrivateDataSchema.exactOptional().openapi({
-      description: 'Private data for buyer. (hidden from seller).',
-    }),
-    dbmAdvertiserIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'IDs of DBM advertisers permission to this proposal.' }),
-    hasBuyerSignedOff: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When an proposal is in an accepted state, indicates whether the buyer has signed off. Once both sides have signed off on a deal, the proposal can be finalized by the seller. (seller-readonly)',
-      }),
-    hasSellerSignedOff: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When an proposal is in an accepted state, indicates whether the buyer has signed off Once both sides have signed off on a deal, the proposal can be finalized by the seller. (buyer-readonly)',
-      }),
-    inventorySource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'What exchange will provide this inventory (readonly, except on create).',
-      }),
-    isRenegotiating: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the proposal is being renegotiated (readonly).' }),
-    isSetupComplete: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True, if the buyside inventory setup is complete for this proposal. (readonly, except via OrderSetupCompleted action) Deprecated in favor of deal level setup complete flag.',
-      }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#proposal')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "adexchangebuyer#proposal".',
-      }),
-    labels: z
-      .array(MarketplaceLabelSchema)
-      .exactOptional()
-      .openapi({ description: 'List of labels associated with the proposal. (readonly)' }),
-    lastUpdaterOrCommentorRole: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The role of the last user that either updated the proposal or left a comment. (readonly)',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name for the proposal (updatable)' }),
-    negotiationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional negotiation id if this proposal is a preferred deal proposal.',
-      }),
-    originatorRole: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the buyer/seller created the proposal.(readonly)',
-      }),
-    privateAuctionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional private auction id if this proposal is a private auction proposal.',
-      }),
-    proposalId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique id of the proposal. (readonly).' }),
-    proposalState: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The current state of the proposal. (readonly)' }),
-    revisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The revision number for the proposal (readonly).' }),
-    revisionTimeMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time (ms since epoch) when the proposal was last revised (readonly).',
-      }),
-    seller: SellerSchema.exactOptional().openapi({
-      description: 'Reference to the seller on the proposal. (readonly, except on create)',
-    }),
-    sellerContacts: z
-      .array(ContactInformationSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional contact information of the seller (buyer-readonly).' }),
-  })
-  .openapi({
-    description:
-      'Represents a proposal in the marketplace. A proposal is the unit of negotiation between a seller and a buyer and contains deals which are served. Each field in a proposal can have one of the following setting:\n\n(readonly) - It is an error to try and set this field. (buyer-readonly) - Only the seller can set this field. (seller-readonly) - Only the buyer can set this field. (updatable) - The field is updatable at all times by either buyer or the seller.',
-    required: [],
-  })
-  .openapi('Proposal')
-
-const CreateOrdersRequestSchema = z
-  .object({
-    proposals: z
-      .array(ProposalSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of proposals to create.' }),
-    webPropertyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Web property id of the seller creating these orders' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateOrdersRequest')
-
-const CreateOrdersResponseSchema = z
-  .object({
-    proposals: z
-      .array(ProposalSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of proposals successfully created.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateOrdersResponse')
+type AddOrderDealsResponseType = {
+  deals?: z.infer<typeof MarketplaceDealSchema>[]
+  proposalRevisionNumber?: string
+}
 
 const CreativeSchema = z
   .object({
@@ -1435,85 +993,201 @@ const CreativeSchema = z
   .openapi({ description: 'A creative and its classification data.', required: [] })
   .openapi('Creative')
 
-const CreativeDealIdsSchema = z
-  .object({
-    dealStatuses: z
-      .array(
-        z
-          .object({
-            arcStatus: z.string().exactOptional().openapi({ description: 'ARC approval status.' }),
-            dealId: z.string().exactOptional().openapi({ description: 'External deal ID.' }),
-            webPropertyId: z.int32().exactOptional().openapi({ description: 'Publisher ID.' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'A list of external deal ids and ARC approval status.' }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#creativeDealIds')
-      .exactOptional()
-      .openapi({ description: 'Resource type.' }),
-  })
-  .openapi({ description: 'The external deal ids associated with a creative.', required: [] })
-  .openapi('CreativeDealIds')
+type CreativesListType = {
+  items?: z.infer<typeof CreativeSchema>[]
+  kind?: string
+  nextPageToken?: string
+}
 
-const CreativesListSchema = z
+type DeleteOrderDealsResponseType = {
+  deals?: z.infer<typeof MarketplaceDealSchema>[]
+  proposalRevisionNumber?: string
+}
+
+const SellerSchema = z
   .object({
-    items: z.array(CreativeSchema).exactOptional().openapi({ description: 'A list of creatives.' }),
-    kind: z
-      .string()
-      .default('adexchangebuyer#creativesList')
-      .exactOptional()
-      .openapi({ description: 'Resource type.' }),
-    nextPageToken: z
+    accountId: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Continuation token used to page through creatives. To retrieve the next page of results, set the next request\'s "pageToken" value to this.',
+          'The unique id for the seller. The seller fills in this field. The seller account id is then available to buyer in the product.',
       }),
+    subAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional sub-account id for the seller.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Seller')
+
+const MarketplaceDealPartySchema = z
+  .object({
+    buyer: BuyerSchema.exactOptional().openapi({
+      description:
+        'The buyer/seller associated with the deal. One of buyer/seller is specified for a deal-party.',
+    }),
+    seller: SellerSchema.exactOptional().openapi({
+      description:
+        'The buyer/seller associated with the deal. One of buyer/seller is specified for a deal party.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('MarketplaceDealParty')
+
+const MarketplaceLabelSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The accountId of the party that created the label.' }),
+    createTimeMs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The creation time (in ms since epoch) for the label.' }),
+    deprecatedMarketplaceDealParty: MarketplaceDealPartySchema.exactOptional().openapi({
+      description: 'Information about the party that created the label.',
+    }),
+    label: z.string().exactOptional().openapi({ description: 'The label to use.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MarketplaceLabel')
+
+const ProposalSchema = z
+  .object({
+    billedBuyer: BuyerSchema.exactOptional().openapi({
+      description: 'Reference to the buyer that will get billed for this proposal. (readonly)',
+    }),
+    buyer: BuyerSchema.exactOptional().openapi({
+      description: 'Reference to the buyer on the proposal. (readonly, except on create)',
+    }),
+    buyerContacts: z
+      .array(ContactInformationSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional contact information of the buyer. (seller-readonly)' }),
+    buyerPrivateData: PrivateDataSchema.exactOptional().openapi({
+      description: 'Private data for buyer. (hidden from seller).',
+    }),
+    dbmAdvertiserIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'IDs of DBM advertisers permission to this proposal.' }),
+    hasBuyerSignedOff: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When an proposal is in an accepted state, indicates whether the buyer has signed off. Once both sides have signed off on a deal, the proposal can be finalized by the seller. (seller-readonly)',
+      }),
+    hasSellerSignedOff: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When an proposal is in an accepted state, indicates whether the buyer has signed off Once both sides have signed off on a deal, the proposal can be finalized by the seller. (buyer-readonly)',
+      }),
+    inventorySource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'What exchange will provide this inventory (readonly, except on create).',
+      }),
+    isRenegotiating: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the proposal is being renegotiated (readonly).' }),
+    isSetupComplete: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True, if the buyside inventory setup is complete for this proposal. (readonly, except via OrderSetupCompleted action) Deprecated in favor of deal level setup complete flag.',
+      }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#proposal')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "adexchangebuyer#proposal".',
+      }),
+    labels: z
+      .array(MarketplaceLabelSchema)
+      .exactOptional()
+      .openapi({ description: 'List of labels associated with the proposal. (readonly)' }),
+    lastUpdaterOrCommentorRole: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The role of the last user that either updated the proposal or left a comment. (readonly)',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name for the proposal (updatable)' }),
+    negotiationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional negotiation id if this proposal is a preferred deal proposal.',
+      }),
+    originatorRole: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the buyer/seller created the proposal.(readonly)',
+      }),
+    privateAuctionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional private auction id if this proposal is a private auction proposal.',
+      }),
+    proposalId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique id of the proposal. (readonly).' }),
+    proposalState: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The current state of the proposal. (readonly)' }),
+    revisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The revision number for the proposal (readonly).' }),
+    revisionTimeMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time (ms since epoch) when the proposal was last revised (readonly).',
+      }),
+    seller: SellerSchema.exactOptional().openapi({
+      description: 'Reference to the seller on the proposal. (readonly, except on create)',
+    }),
+    sellerContacts: z
+      .array(ContactInformationSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional contact information of the seller (buyer-readonly).' }),
   })
   .openapi({
     description:
-      'The creatives feed lists the active creatives for the Ad Exchange buyer accounts that the user has access to. Each entry in the feed corresponds to a single creative.',
+      'Represents a proposal in the marketplace. A proposal is the unit of negotiation between a seller and a buyer and contains deals which are served. Each field in a proposal can have one of the following setting:\n\n(readonly) - It is an error to try and set this field. (buyer-readonly) - Only the seller can set this field. (seller-readonly) - Only the buyer can set this field. (updatable) - The field is updatable at all times by either buyer or the seller.',
     required: [],
   })
-  .openapi('CreativesList')
+  .openapi('Proposal')
 
-const DeleteOrderDealsRequestSchema = z
-  .object({
-    dealIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of deals to delete for a given proposal' }),
-    proposalRevisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last known proposal revision number.' }),
-    updateAction: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates an optional action to take on the proposal' }),
-  })
-  .openapi({ required: [] })
-  .openapi('DeleteOrderDealsRequest')
+type EditAllOrderDealsRequestType = {
+  deals?: z.infer<typeof MarketplaceDealSchema>[]
+  proposal?: z.infer<typeof ProposalSchema>
+  proposalRevisionNumber?: string
+  updateAction?: string
+}
 
-const DeleteOrderDealsResponseSchema = z
-  .object({
-    deals: z
-      .array(MarketplaceDealSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of deals deleted (in the same proposal as passed in the request)',
-      }),
-    proposalRevisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The updated revision number for the proposal.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('DeleteOrderDealsResponse')
+type EditAllOrderDealsResponseType = {
+  deals?: z.infer<typeof MarketplaceDealSchema>[]
+  orderRevisionNumber?: string
+}
 
 const DimensionDimensionValueSchema = z
   .object({
@@ -1548,45 +1222,6 @@ const DimensionSchema = z
   })
   .openapi('Dimension')
 
-const EditAllOrderDealsRequestSchema = z
-  .object({
-    deals: z
-      .array(MarketplaceDealSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of deals to edit. Service may perform 3 different operations based on comparison of deals in this list vs deals already persisted in database: 1. Add new deal to proposal If a deal in this list does not exist in the proposal, the service will create a new deal and add it to the proposal. Validation will follow AddOrderDealsRequest. 2. Update existing deal in the proposal If a deal in this list already exist in the proposal, the service will update that existing deal to this new deal in the request. Validation will follow UpdateOrderDealsRequest. 3. Delete deals from the proposal (just need the id) If a existing deal in the proposal is not present in this list, the service will delete that deal from the proposal. Validation will follow DeleteOrderDealsRequest.',
-      }),
-    proposal: ProposalSchema.exactOptional().openapi({
-      description:
-        'If specified, also updates the proposal in the batch transaction. This is useful when the proposal and the deals need to be updated in one transaction.',
-    }),
-    proposalRevisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last known revision number for the proposal.' }),
-    updateAction: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates an optional action to take on the proposal' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EditAllOrderDealsRequest')
-
-const EditAllOrderDealsResponseSchema = z
-  .object({
-    deals: z
-      .array(MarketplaceDealSchema)
-      .exactOptional()
-      .openapi({ description: 'List of all deals in the proposal after edit.' }),
-    orderRevisionNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The latest revision number after the update has been applied.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EditAllOrderDealsResponse')
-
 const PublisherProvidedForecastSchema = z
   .object({
     dimensions: z
@@ -1608,7 +1243,37 @@ const PublisherProvidedForecastSchema = z
   })
   .openapi('PublisherProvidedForecast')
 
-const ProductSchema = z
+type ProductType = {
+  billedBuyer?: z.infer<typeof BuyerSchema>
+  buyer?: z.infer<typeof BuyerSchema>
+  creationTimeMs?: string
+  creatorContacts?: z.infer<typeof ContactInformationSchema>[]
+  creatorRole?: string
+  deliveryControl?: z.infer<typeof DeliveryControlSchema>
+  flightEndTimeMs?: string
+  flightStartTimeMs?: string
+  hasCreatorSignedOff?: boolean
+  inventorySource?: string
+  kind?: string
+  labels?: z.infer<typeof MarketplaceLabelSchema>[]
+  lastUpdateTimeMs?: string
+  legacyOfferId?: string
+  marketplacePublisherProfileId?: string
+  name?: string
+  privateAuctionId?: string
+  productId?: string
+  publisherProfileId?: string
+  publisherProvidedForecast?: z.infer<typeof PublisherProvidedForecastSchema>
+  revisionNumber?: string
+  seller?: z.infer<typeof SellerSchema>
+  sharedTargetings?: z.infer<typeof SharedTargetingSchema>[]
+  state?: string
+  syndicationProduct?: string
+  terms?: z.infer<typeof DealTermsSchema>
+  webPropertyCode?: string
+}
+
+const ProductSchema: z.ZodType<ProductType> = z
   .object({
     billedBuyer: BuyerSchema.exactOptional().openapi({
       description:
@@ -1764,48 +1429,9 @@ const ProductSchema = z
   })
   .openapi('Product')
 
-const GetOffersResponseSchema = z
-  .object({
-    products: z
-      .array(ProductSchema)
-      .exactOptional()
-      .openapi({ description: 'The returned list of products.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetOffersResponse')
+type GetOffersResponseType = { products?: z.infer<typeof ProductSchema>[] }
 
-const GetOrderDealsResponseSchema = z
-  .object({
-    deals: z
-      .array(MarketplaceDealSchema)
-      .exactOptional()
-      .openapi({ description: 'List of deals for the proposal' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetOrderDealsResponse')
-
-const GetOrderNotesResponseSchema = z
-  .object({
-    notes: z
-      .array(MarketplaceNoteSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of matching notes. The notes for a proposal are ordered from oldest to newest. If the notes span multiple proposals, they will be grouped by proposal, with the notes for the most recently modified proposal appearing first.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetOrderNotesResponse')
-
-const GetOrdersResponseSchema = z
-  .object({
-    proposals: z
-      .array(ProposalSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of matching proposals.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetOrdersResponse')
+type GetOrderDealsResponseType = { deals?: z.infer<typeof MarketplaceDealSchema>[] }
 
 const MobileApplicationSchema = z
   .object({ appStore: z.string().exactOptional(), externalAppId: z.string().exactOptional() })
@@ -1925,15 +1551,491 @@ const PublisherProfileApiProtoSchema = z
   .openapi({ required: [] })
   .openapi('PublisherProfileApiProto')
 
-const GetPublisherProfilesByAccountIdResponseSchema = z
+type GetPublisherProfilesByAccountIdResponseType = {
+  profiles?: z.infer<typeof PublisherProfileApiProtoSchema>[]
+}
+
+const AccountSchema = z
   .object({
-    profiles: z
-      .array(PublisherProfileApiProtoSchema)
+    applyPretargetingToNonGuaranteedDeals: z
+      .boolean()
       .exactOptional()
-      .openapi({ description: 'Profiles for the requested publisher' }),
+      .openapi({
+        description:
+          'When this is false, bid requests that include a deal ID for a private auction or preferred deal are always sent to your bidder. When true, all active pretargeting configs will be applied to private auctions and preferred deals. Programmatic Guaranteed deals (when enabled) are always sent to your bidder.',
+      }),
+    bidderLocation: z
+      .array(
+        z
+          .object({
+            bidProtocol: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The protocol that the bidder endpoint is using. OpenRTB protocols with prefix PROTOCOL_OPENRTB_PROTOBUF use proto buffer, otherwise use JSON.  Allowed values:  \n- PROTOCOL_ADX \n- PROTOCOL_OPENRTB_2_2 \n- PROTOCOL_OPENRTB_2_3 \n- PROTOCOL_OPENRTB_2_4 \n- PROTOCOL_OPENRTB_2_5 \n- PROTOCOL_OPENRTB_PROTOBUF_2_3 \n- PROTOCOL_OPENRTB_PROTOBUF_2_4 \n- PROTOCOL_OPENRTB_PROTOBUF_2_5',
+              }),
+            maximumQps: z
+              .int32()
+              .exactOptional()
+              .openapi({
+                description: 'The maximum queries per second the Ad Exchange will send.',
+              }),
+            region: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The geographical region the Ad Exchange should send requests from. Only used by some quota systems, but always setting the value is recommended. Allowed values:  \n- ASIA \n- EUROPE \n- US_EAST \n- US_WEST',
+              }),
+            url: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The URL to which the Ad Exchange will send bid requests.' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Your bidder locations that have distinct URLs.' }),
+    cookieMatchingNid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The nid parameter value used in cookie match requests. Please contact your technical account manager if you need to change this.',
+      }),
+    cookieMatchingUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The base URL used in cookie match requests.' }),
+    id: z.int32().exactOptional().openapi({ description: 'Account id.' }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#account')
+      .exactOptional()
+      .openapi({ description: 'Resource type.' }),
+    maximumActiveCreatives: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of active creatives that an account can have, where a creative is active if it was inserted or bid with in the last 30 days. Please contact your technical account manager if you need to change this.',
+      }),
+    maximumTotalQps: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sum of all bidderLocation.maximumQps values cannot exceed this. Please contact your technical account manager if you need to change this.',
+      }),
+    numberActiveCreatives: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of creatives that this account inserted or bid with in the last 30 days.',
+      }),
+  })
+  .openapi({ description: 'Configuration data for an Ad Exchange buyer account.', required: [] })
+  .openapi('Account')
+
+const AccountsListSchema = z
+  .object({
+    items: z.array(AccountSchema).exactOptional().openapi({ description: 'A list of accounts.' }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#accountsList')
+      .exactOptional()
+      .openapi({ description: 'Resource type.' }),
+  })
+  .openapi({
+    description:
+      'An account feed lists Ad Exchange buyer accounts that the user has access to. Each entry in the feed corresponds to a single buyer account.',
+    required: [],
+  })
+  .openapi('AccountsList')
+
+const AddOrderDealsRequestSchema: z.ZodType<AddOrderDealsRequestType> = z
+  .object({
+    deals: z
+      .array(MarketplaceDealSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of deals to add' }),
+    proposalRevisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last known proposal revision number.' }),
+    updateAction: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates an optional action to take on the proposal' }),
   })
   .openapi({ required: [] })
-  .openapi('GetPublisherProfilesByAccountIdResponse')
+  .openapi('AddOrderDealsRequest')
+
+const AddOrderDealsResponseSchema: z.ZodType<AddOrderDealsResponseType> = z
+  .object({
+    deals: z
+      .array(MarketplaceDealSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of deals added (in the same proposal as passed in the request)',
+      }),
+    proposalRevisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The updated revision number for the proposal.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddOrderDealsResponse')
+
+const MarketplaceNoteSchema = z
+  .object({
+    creatorRole: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The role of the person (buyer/seller) creating the note. (readonly)',
+      }),
+    dealId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Notes can optionally be associated with a deal. (readonly, except on create)',
+      }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#marketplaceNote')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "adexchangebuyer#marketplaceNote".',
+      }),
+    note: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The actual note to attach. (readonly, except on create)' }),
+    noteId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique id for the note. (readonly)' }),
+    proposalId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The proposalId that a note is attached to. (readonly)' }),
+    proposalRevisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the note is associated with a proposal revision number, then store that here. (readonly, except on create)',
+      }),
+    timestampMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp (ms since epoch) that this note was created. (readonly)',
+      }),
+  })
+  .openapi({
+    description:
+      'A proposal is associated with a bunch of notes which may optionally be associated with a deal and/or revision number.',
+    required: [],
+  })
+  .openapi('MarketplaceNote')
+
+const AddOrderNotesRequestSchema = z
+  .object({
+    notes: z
+      .array(MarketplaceNoteSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of notes to add.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddOrderNotesRequest')
+
+const AddOrderNotesResponseSchema = z
+  .object({ notes: z.array(MarketplaceNoteSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AddOrderNotesResponse')
+
+const BillingInfoSchema = z
+  .object({
+    accountId: z.int32().exactOptional().openapi({ description: 'Account id.' }),
+    accountName: z.string().exactOptional().openapi({ description: 'Account name.' }),
+    billingId: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of adgroup IDs associated with this particular account. These IDs may show up as part of a realtime bidding BidRequest, which indicates a bid request for this account.',
+      }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#billingInfo')
+      .exactOptional()
+      .openapi({ description: 'Resource type.' }),
+  })
+  .openapi({ description: 'The configuration data for an Ad Exchange billing info.', required: [] })
+  .openapi('BillingInfo')
+
+const BillingInfoListSchema = z
+  .object({
+    items: z
+      .array(BillingInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of billing info relevant for your account.' }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#billingInfoList')
+      .exactOptional()
+      .openapi({ description: 'Resource type.' }),
+  })
+  .openapi({
+    description:
+      'A billing info feed lists Billing Info the Ad Exchange buyer account has access to. Each entry in the feed corresponds to a single billing info.',
+    required: [],
+  })
+  .openapi('BillingInfoList')
+
+const BudgetSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the account. This is required for get and update requests.',
+      }),
+    billingId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing id to determine which adgroup to provide budget information for. This is required for get and update requests.',
+      }),
+    budgetAmount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The daily budget amount in unit amount of the account currency to apply for the billingId provided. This is required for update requests.',
+      }),
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The currency code for the buyer. This cannot be altered here.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique id that describes this item.' }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#budget')
+      .exactOptional()
+      .openapi({ description: 'The kind of the resource, i.e. "adexchangebuyer#budget".' }),
+  })
+  .openapi({
+    description: 'The configuration data for Ad Exchange RTB - Budget API.',
+    required: [],
+  })
+  .openapi('Budget')
+
+const CreateOrdersRequestSchema = z
+  .object({
+    proposals: z
+      .array(ProposalSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of proposals to create.' }),
+    webPropertyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Web property id of the seller creating these orders' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateOrdersRequest')
+
+const CreateOrdersResponseSchema = z
+  .object({
+    proposals: z
+      .array(ProposalSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of proposals successfully created.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateOrdersResponse')
+
+const CreativeDealIdsSchema = z
+  .object({
+    dealStatuses: z
+      .array(
+        z
+          .object({
+            arcStatus: z.string().exactOptional().openapi({ description: 'ARC approval status.' }),
+            dealId: z.string().exactOptional().openapi({ description: 'External deal ID.' }),
+            webPropertyId: z.int32().exactOptional().openapi({ description: 'Publisher ID.' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'A list of external deal ids and ARC approval status.' }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#creativeDealIds')
+      .exactOptional()
+      .openapi({ description: 'Resource type.' }),
+  })
+  .openapi({ description: 'The external deal ids associated with a creative.', required: [] })
+  .openapi('CreativeDealIds')
+
+const CreativesListSchema: z.ZodType<CreativesListType> = z
+  .object({
+    items: z.array(CreativeSchema).exactOptional().openapi({ description: 'A list of creatives.' }),
+    kind: z
+      .string()
+      .default('adexchangebuyer#creativesList')
+      .exactOptional()
+      .openapi({ description: 'Resource type.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Continuation token used to page through creatives. To retrieve the next page of results, set the next request\'s "pageToken" value to this.',
+      }),
+  })
+  .openapi({
+    description:
+      'The creatives feed lists the active creatives for the Ad Exchange buyer accounts that the user has access to. Each entry in the feed corresponds to a single creative.',
+    required: [],
+  })
+  .openapi('CreativesList')
+
+const DeleteOrderDealsRequestSchema = z
+  .object({
+    dealIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of deals to delete for a given proposal' }),
+    proposalRevisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last known proposal revision number.' }),
+    updateAction: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates an optional action to take on the proposal' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteOrderDealsRequest')
+
+const DeleteOrderDealsResponseSchema: z.ZodType<DeleteOrderDealsResponseType> = z
+  .object({
+    deals: z
+      .array(MarketplaceDealSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of deals deleted (in the same proposal as passed in the request)',
+      }),
+    proposalRevisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The updated revision number for the proposal.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteOrderDealsResponse')
+
+const EditAllOrderDealsRequestSchema: z.ZodType<EditAllOrderDealsRequestType> = z
+  .object({
+    deals: z
+      .array(MarketplaceDealSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of deals to edit. Service may perform 3 different operations based on comparison of deals in this list vs deals already persisted in database: 1. Add new deal to proposal If a deal in this list does not exist in the proposal, the service will create a new deal and add it to the proposal. Validation will follow AddOrderDealsRequest. 2. Update existing deal in the proposal If a deal in this list already exist in the proposal, the service will update that existing deal to this new deal in the request. Validation will follow UpdateOrderDealsRequest. 3. Delete deals from the proposal (just need the id) If a existing deal in the proposal is not present in this list, the service will delete that deal from the proposal. Validation will follow DeleteOrderDealsRequest.',
+      }),
+    proposal: ProposalSchema.exactOptional().openapi({
+      description:
+        'If specified, also updates the proposal in the batch transaction. This is useful when the proposal and the deals need to be updated in one transaction.',
+    }),
+    proposalRevisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last known revision number for the proposal.' }),
+    updateAction: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates an optional action to take on the proposal' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EditAllOrderDealsRequest')
+
+const EditAllOrderDealsResponseSchema: z.ZodType<EditAllOrderDealsResponseType> = z
+  .object({
+    deals: z
+      .array(MarketplaceDealSchema)
+      .exactOptional()
+      .openapi({ description: 'List of all deals in the proposal after edit.' }),
+    orderRevisionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The latest revision number after the update has been applied.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EditAllOrderDealsResponse')
+
+const GetOffersResponseSchema: z.ZodType<GetOffersResponseType> = z
+  .object({
+    products: z
+      .array(ProductSchema)
+      .exactOptional()
+      .openapi({ description: 'The returned list of products.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetOffersResponse')
+
+const GetOrderDealsResponseSchema: z.ZodType<GetOrderDealsResponseType> = z
+  .object({
+    deals: z
+      .array(MarketplaceDealSchema)
+      .exactOptional()
+      .openapi({ description: 'List of deals for the proposal' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetOrderDealsResponse')
+
+const GetOrderNotesResponseSchema = z
+  .object({
+    notes: z
+      .array(MarketplaceNoteSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of matching notes. The notes for a proposal are ordered from oldest to newest. If the notes span multiple proposals, they will be grouped by proposal, with the notes for the most recently modified proposal appearing first.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetOrderNotesResponse')
+
+const GetOrdersResponseSchema = z
+  .object({
+    proposals: z
+      .array(ProposalSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of matching proposals.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetOrdersResponse')
+
+const GetPublisherProfilesByAccountIdResponseSchema: z.ZodType<GetPublisherProfilesByAccountIdResponseType> =
+  z
+    .object({
+      profiles: z
+        .array(PublisherProfileApiProtoSchema)
+        .exactOptional()
+        .openapi({ description: 'Profiles for the requested publisher' }),
+    })
+    .openapi({ required: [] })
+    .openapi('GetPublisherProfilesByAccountIdResponse')
 
 const PerformanceReportSchema = z
   .object({

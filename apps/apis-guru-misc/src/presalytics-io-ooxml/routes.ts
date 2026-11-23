@@ -3015,7 +3015,8 @@ const ProblemDetailsSchema = z
     title: z.string().nullable().exactOptional(),
     type: z.string().nullable().exactOptional(),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
+  .openapi({ required: [] })
   .openapi('ProblemDetails')
 
 const SharedColorTransformationAttributesSchema = z

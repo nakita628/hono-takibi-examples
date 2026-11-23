@@ -112,7 +112,7 @@ The historical auctions endpoint provides auction prices for the given stock sym
 |200|OK|OK|[stock_auctions_resp_single](#schemastock_auctions_resp_single)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -161,7 +161,7 @@ The historical stock bars API provides aggregates for the stock symbol between t
 |start|query|string(date-time)|false|The inclusive start of the interval. Format: RFC-3339 or YYYY-MM-DD.<br>Default: the beginning of the current day, but at least 15 minutes ago if the user doesn't have real-time access for the feed.<br>|
 |end|query|string(date-time)|false|The inclusive end of the interval. Format: RFC-3339 or YYYY-MM-DD.<br>Default: the current time if the user has a real-time access for the feed, otherwise 15 minutes before the current time.<br>|
 |limit|query|integer|false|The maximum number of data points to return in the response page.<br>The API may return less, even if there are more available data points in the requested interval.<br>Always check the `next_page_token` for more pages.<br>The limit applies to the total number of data points, not per symbol!<br>|
-|adjustment|query|string|false|Specifies the adjustments for the bars.<br><br> - `raw`: no adjustments<br> - `split`: adjust price and volume for forward and reverse stock splits<br> - `dividend`: adjust price for cash dividends<br> - `spin-off`: adjust price for spin-offs<br> - `all`: apply all above adjustments<br><br>You can combine multiple adjustments by separating them with a comma, e.g. `split,spin-off`.<br>|
+|adjustment|query|[[stock_adjustment](#schemastock_adjustment)]|false|Specifies the adjustments for the bars. Passed as a comma-separated list, e.g. `split,spin-off`.<br><br> - `raw`: no adjustments<br> - `split`: adjust price and volume for forward and reverse stock splits<br> - `dividend`: adjust price for cash dividends<br> - `spin-off`: adjust price for spin-offs<br> - `all`: apply split, dividend, and spin-off adjustments<br><br>Default: `raw`.<br><br>The following are rejected with a `400`:<br> - Unknown values<br> - Empty values<br> - Repeated keys like `?adjustment=split&adjustment=all`<br>|
 |asof|query|string|false|The as-of date of the queried stock symbol(s). Format: YYYY-MM-DD. Default: current day.<br><br>This date is used to identify the underlying entity of the provided symbol(s), so that name changes for this entity can be found. Data for past symbol(s) is returned if the query date range spans the name change.<br><br>The special value of "-" means symbol mapping is skipped. Data is returned based on the symbol alone without looking up previous names. The same happens if the queried symbol is not found on the given `asof` date.<br><br>Example: FB was renamed to META in 2022-06-09. Querying META with an `asof` date after 2022-06-09 will also yield FB data. The data for the FB ticker will be labeled as META because they are considered the same underlying entity as of 2022-06-09. Querying FB with an `asof` date after 2022-06-09 will only return data with the FB ticker, not with META. But with an `asof` date before 2022-06-09, META will also be returned (as FB).<br>|
 |feed|query|[stock_historical_feed](#schemastock_historical_feed)|false|The source feed of the data.<br> - `sip`: all US exchanges<br> - `iex`: Investors EXchange<br> - `boats`: Blue Ocean ATS, overnight US trading data<br> - `otc`: over-the-counter exchanges<br>|
 |currency|query|string|false|The currency of all prices in ISO 4217 format. Default: USD.<br>|
@@ -172,6 +172,11 @@ The historical stock bars API provides aggregates for the stock symbol between t
 
 |Parameter|Value|
 |---|---|
+|adjustment|raw|
+|adjustment|split|
+|adjustment|dividend|
+|adjustment|spin-off|
+|adjustment|all|
 |feed|iex|
 |feed|otc|
 |feed|sip|
@@ -207,7 +212,7 @@ The historical stock bars API provides aggregates for the stock symbol between t
 |200|OK|OK|[stock_bars_resp_single](#schemastock_bars_resp_single)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -294,7 +299,7 @@ The latest bar endpoint returns the latest minute bar for the given ticker symbo
 |200|OK|OK|[stock_latest_bars_resp_single](#schemastock_latest_bars_resp_single)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -403,7 +408,7 @@ The historical stock quotes API provides quote data for a stock symbol between t
 |200|OK|OK|[stock_quotes_resp_single](#schemastock_quotes_resp_single)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -493,7 +498,7 @@ The latest quote endpoint provides the latest best bid and ask prices for a give
 |200|OK|OK|[stock_latest_quotes_resp_single](#schemastock_latest_quotes_resp_single)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -625,7 +630,7 @@ The snapshot endpoint provides the latest trade, latest quote, minute bar, daily
 |200|OK|OK|[stock_snapshots_resp_single](#schemastock_snapshots_resp_single)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -732,7 +737,7 @@ The historical stock trades API provides trade data for a stock symbol between t
 |200|OK|OK|[stock_trades_resp_single](#schemastock_trades_resp_single)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -822,7 +827,7 @@ Trades with any conditions that causes them to not update the bar price are excl
 |200|OK|OK|[stock_latest_trades_resp_single](#schemastock_latest_trades_resp_single)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1054,7 +1059,7 @@ The historical auctions endpoint provides auction prices for a list of stock sym
 |200|OK|OK|[stock_auctions_resp](#schemastock_auctions_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1107,7 +1112,7 @@ In these situations, if you keep requesting again with the `next_page_token` fro
 |start|query|string(date-time)|false|The inclusive start of the interval. Format: RFC-3339 or YYYY-MM-DD.<br>Default: the beginning of the current day, but at least 15 minutes ago if the user doesn't have real-time access for the feed.<br>|
 |end|query|string(date-time)|false|The inclusive end of the interval. Format: RFC-3339 or YYYY-MM-DD.<br>Default: the current time if the user has a real-time access for the feed, otherwise 15 minutes before the current time.<br>|
 |limit|query|integer|false|The maximum number of data points to return in the response page.<br>The API may return less, even if there are more available data points in the requested interval.<br>Always check the `next_page_token` for more pages.<br>The limit applies to the total number of data points, not per symbol!<br>|
-|adjustment|query|string|false|Specifies the adjustments for the bars.<br><br> - `raw`: no adjustments<br> - `split`: adjust price and volume for forward and reverse stock splits<br> - `dividend`: adjust price for cash dividends<br> - `spin-off`: adjust price for spin-offs<br> - `all`: apply all above adjustments<br><br>You can combine multiple adjustments by separating them with a comma, e.g. `split,spin-off`.<br>|
+|adjustment|query|[[stock_adjustment](#schemastock_adjustment)]|false|Specifies the adjustments for the bars. Passed as a comma-separated list, e.g. `split,spin-off`.<br><br> - `raw`: no adjustments<br> - `split`: adjust price and volume for forward and reverse stock splits<br> - `dividend`: adjust price for cash dividends<br> - `spin-off`: adjust price for spin-offs<br> - `all`: apply split, dividend, and spin-off adjustments<br><br>Default: `raw`.<br><br>The following are rejected with a `400`:<br> - Unknown values<br> - Empty values<br> - Repeated keys like `?adjustment=split&adjustment=all`<br>|
 |asof|query|string|false|The as-of date of the queried stock symbol(s). Format: YYYY-MM-DD. Default: current day.<br><br>This date is used to identify the underlying entity of the provided symbol(s), so that name changes for this entity can be found. Data for past symbol(s) is returned if the query date range spans the name change.<br><br>The special value of "-" means symbol mapping is skipped. Data is returned based on the symbol alone without looking up previous names. The same happens if the queried symbol is not found on the given `asof` date.<br><br>Example: FB was renamed to META in 2022-06-09. Querying META with an `asof` date after 2022-06-09 will also yield FB data. The data for the FB ticker will be labeled as META because they are considered the same underlying entity as of 2022-06-09. Querying FB with an `asof` date after 2022-06-09 will only return data with the FB ticker, not with META. But with an `asof` date before 2022-06-09, META will also be returned (as FB).<br>|
 |feed|query|[stock_historical_feed](#schemastock_historical_feed)|false|The source feed of the data.<br> - `sip`: all US exchanges<br> - `iex`: Investors EXchange<br> - `boats`: Blue Ocean ATS, overnight US trading data<br> - `otc`: over-the-counter exchanges<br>|
 |currency|query|string|false|The currency of all prices in ISO 4217 format. Default: USD.<br>|
@@ -1118,6 +1123,11 @@ In these situations, if you keep requesting again with the `next_page_token` fro
 
 |Parameter|Value|
 |---|---|
+|adjustment|raw|
+|adjustment|split|
+|adjustment|dividend|
+|adjustment|spin-off|
+|adjustment|all|
 |feed|iex|
 |feed|otc|
 |feed|sip|
@@ -1154,7 +1164,7 @@ In these situations, if you keep requesting again with the `next_page_token` fro
 |200|OK|OK|[stock_bars_resp](#schemastock_bars_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1252,7 +1262,7 @@ The latest bars endpoint provides the latest minute bar for the given ticker sym
 |200|OK|OK|[stock_latest_bars_resp](#schemastock_latest_bars_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1328,7 +1338,7 @@ Returns the mapping between the condition codes and names.
 |200|OK|OK|[stock_conditions](#schemastock_conditions)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1387,7 +1397,7 @@ Returns the mapping between the stock exchange codes and the corresponding excha
 |200|OK|OK|[stock_exchanges](#schemastock_exchanges)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1501,7 +1511,7 @@ In these situations, if you keep requesting again with the `next_page_token` fro
 |200|OK|OK|[stock_quotes_resp](#schemastock_quotes_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1605,7 +1615,7 @@ The latest quotes endpoint provides the latest best bid and ask prices for the g
 |200|OK|OK|[stock_latest_quotes_resp](#schemastock_latest_quotes_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1795,7 +1805,7 @@ The snapshot endpoint for multiple tickers provides the latest trade, latest quo
 |200|OK|OK|[stock_snapshots_resp](#schemastock_snapshots_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -1909,7 +1919,7 @@ In these situations, if you keep requesting again with the `next_page_token` fro
 |200|OK|OK|[stock_trades_resp](#schemastock_trades_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2001,7 +2011,728 @@ Trades with any conditions that causes them to not update the bar price are excl
 |200|OK|OK|[stock_latest_trades_resp](#schemastock_latest_trades_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
+|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
+|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||Request limit per minute.|
+|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|400|X-RateLimit-Limit|integer||Request limit per minute.|
+|400|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|400|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|429|X-RateLimit-Limit|integer||Request limit per minute.|
+|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey & apiSecret, BasicAuth
+</aside>
+
+<h1 id="market-data-api-stock-v3">Stock v3</h1>
+
+Endpoints for global stocks.
+
+## Historical bars
+
+<a id="opIdStockV3Bars"></a>
+
+> Code samples
+
+```bash
+curl 'https://data.alpaca.markets/v3/stocks/xetr/bars?symbols=BMW%3AXETR%2CSAP%3AXETR&timeframe=1Min&start=2026-09-23T01%3A02%3A03.123456789Z' \
+  -H 'Accept: application/json' \
+  -H "APCA-API-KEY-ID: ${API_KEY}" \
+  -H "APCA-API-SECRET-KEY: ${API_KEY}"
+```
+
+`GET /v3/stocks/{feed}/bars`
+
+The historical bars API provides aggregates for a list of symbols between the specified times.
+
+Bars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used. Bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.
+
+Daily, weekly and monthly bars start at midnight in the market's time zone. Weekly bars start on the market's first trading day of the week.
+
+The bars of each symbol are sorted by timestamp. The order of symbols is not guaranteed. Continue with `next_page_token`.
+
+
+<h3 id="historical-bars-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|feed|path|[stock_v3_historical_feed](#schemastock_v3_historical_feed)|true|The source feed of the data. All feeds require a subscription.<br> - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues<br> - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)<br> - `xhkg`: Hong Kong Stock Exchange (HKEX)<br> - `xlon`: London Stock Exchange (LSE)<br> - `xsau`: Saudi Exchange (Tadawul)<br>|
+|symbols|query|string|true|A comma-separated list of symbols with a limit of 1000.<br>Each symbol must be in `TICKER:MIC` format, where MIC is the ISO 10383 defined code of the symbol's primary market.<br>The market must be one the feed covers, e.g. `XETR` on `xetr`; `euroctp` accepts any market.<br>|
+|timeframe|query|string|true|The timeframe represented by each bar in aggregation.<br>You can use any of the following values:<br> - `[1-59]Min` or `[1-59]T`, e.g. `5Min` or `5T` creates 5-minute aggregations<br> - `[1-23]Hour` or `[1-23]H`, e.g. `12Hour` or `12H` creates 12-hour aggregations<br> - `1Day` or `1D` creates 1-day aggregations<br> - `1Week` or `1W` creates 1-week aggregations<br> - `[1,2,3,4,6,12]Month` or `[1,2,3,4,6,12]M`, e.g. `3Month` or `3M` creates 3-month aggregations<br>|
+|start|query|string(date-time) \| string(date)|true|The inclusive start of the interval. Format: RFC-3339 or YYYY-MM-DD.<br>A date means the start of that day in the market's time zone.<br>|
+|end|query|string(date-time) \| string(date)|false|The inclusive end of the interval. A data point is returned when `start <= t <= end`. Format: RFC-3339 or YYYY-MM-DD.<br>A date means the end of that day in the market's time zone.<br>Defaults to the current time if not specified.<br>|
+|sort|query|object|false|Sort the data points of each symbol by timestamp in ascending or descending order.|
+|page_size|query|integer|false|The maximum number of data points to return in the response page.<br>The page_size applies to the total number of data points across all symbols, not per symbol.<br>The API may return fewer, even if more data points exist in the requested interval.<br>Always check `next_page_token` for more pages.<br>|
+|page_token|query|string|false|The pagination token from which to continue. The value to pass here is returned in specific requests when more data is available, usually because of a response result limit.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|feed|euroctp|
+|feed|xetr|
+|feed|xhkg|
+|feed|xlon|
+|feed|xsau|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "bars": {
+    "VOD:XLON": [
+      {
+        "c": "116.95",
+        "h": "117.506",
+        "l": "115.6",
+        "n": "4274",
+        "o": "116.1",
+        "t": "2026-11-09T00:00:00Z",
+        "v": "41294069",
+        "vw": "116.842699"
+      },
+      {
+        "c": "116.6281",
+        "h": "119.05",
+        "l": "114.3",
+        "n": "7210",
+        "o": "117.05",
+        "t": "2026-11-10T00:00:00Z",
+        "v": "98346873",
+        "vw": "116.519345"
+      }
+    ]
+  },
+  "next_page_token": "MURheXxWT0Q6WExPTnxEfDE3OTQzNTUyMDAwMDAwMDAwMDA="
+}
+```
+
+<h3 id="historical-bars-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[stock_v3_bars_resp](#schemastock_v3_bars_resp)|
+|400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
+|401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
+|404|Not Found|The requested resource was not found, for example because the requested feed does not exist.<br>|None|
+|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
+|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||Request limit per minute.|
+|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|400|X-RateLimit-Limit|integer||Request limit per minute.|
+|400|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|400|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|429|X-RateLimit-Limit|integer||Request limit per minute.|
+|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey & apiSecret, BasicAuth
+</aside>
+
+## Latest bars
+
+<a id="opIdStockV3LatestBars"></a>
+
+> Code samples
+
+```bash
+curl 'https://data.alpaca.markets/v3/stocks/xetr/latest/bars?symbols=BMW%3AXETR%2CSAP%3AXETR' \
+  -H 'Accept: application/json' \
+  -H "APCA-API-KEY-ID: ${API_KEY}" \
+  -H "APCA-API-SECRET-KEY: ${API_KEY}"
+```
+
+`GET /v3/stocks/{feed}/latest/bars`
+
+The latest bars endpoint provides the latest minute bar for the given symbols.
+
+Bars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used. Latest bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.
+
+
+<h3 id="latest-bars-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|feed|path|[stock_v3_latest_feed](#schemastock_v3_latest_feed)|true|The source feed of the data. All feeds require a subscription.<br> - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues<br> - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)<br> - `xhkg`: Hong Kong Stock Exchange (HKEX)<br> - `xlon`: London Stock Exchange (LSE)<br> - `xsau`: Saudi Exchange (Tadawul)<br>|
+|symbols|query|string|true|A comma-separated list of symbols with a limit of 1000.<br>Each symbol must be in `TICKER:MIC` format, where MIC is the ISO 10383 defined code of the symbol's primary market.<br>The market must be one the feed covers, e.g. `XETR` on `xetr`; `euroctp` accepts any market.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|feed|euroctp|
+|feed|xetr|
+|feed|xhkg|
+|feed|xlon|
+|feed|xsau|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "bars": {
+    "BMW:XETR": {
+      "c": "57.92",
+      "h": "57.92",
+      "l": "57.92",
+      "n": "1",
+      "o": "57.92",
+      "t": "2026-11-13T21:58:00Z",
+      "v": "87",
+      "vw": "57.92"
+    }
+  }
+}
+```
+
+<h3 id="latest-bars-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[stock_v3_latest_bars_resp](#schemastock_v3_latest_bars_resp)|
+|400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
+|401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
+|404|Not Found|The requested resource was not found, for example because the requested feed does not exist.<br>|None|
+|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
+|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||Request limit per minute.|
+|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|400|X-RateLimit-Limit|integer||Request limit per minute.|
+|400|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|400|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|429|X-RateLimit-Limit|integer||Request limit per minute.|
+|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey & apiSecret, BasicAuth
+</aside>
+
+## Latest quotes
+
+<a id="opIdStockV3LatestQuotes"></a>
+
+> Code samples
+
+```bash
+curl 'https://data.alpaca.markets/v3/stocks/xetr/latest/quotes?symbols=BMW%3AXETR%2CSAP%3AXETR' \
+  -H 'Accept: application/json' \
+  -H "APCA-API-KEY-ID: ${API_KEY}" \
+  -H "APCA-API-SECRET-KEY: ${API_KEY}"
+```
+
+`GET /v3/stocks/{feed}/latest/quotes`
+
+The latest quotes endpoint provides the latest best bid and ask prices for the given symbols.
+
+
+<h3 id="latest-quotes-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|feed|path|[stock_v3_latest_feed](#schemastock_v3_latest_feed)|true|The source feed of the data. All feeds require a subscription.<br> - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues<br> - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)<br> - `xhkg`: Hong Kong Stock Exchange (HKEX)<br> - `xlon`: London Stock Exchange (LSE)<br> - `xsau`: Saudi Exchange (Tadawul)<br>|
+|symbols|query|string|true|A comma-separated list of symbols with a limit of 1000.<br>Each symbol must be in `TICKER:MIC` format, where MIC is the ISO 10383 defined code of the symbol's primary market.<br>The market must be one the feed covers, e.g. `XETR` on `xetr`; `euroctp` accepts any market.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|feed|euroctp|
+|feed|xetr|
+|feed|xhkg|
+|feed|xlon|
+|feed|xsau|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "quotes": {
+    "VOD:XLON": {
+      "ap": "120",
+      "as": "55563",
+      "bp": "114.2",
+      "bs": "4000",
+      "t": "2026-11-13T17:30:00.12296Z"
+    }
+  }
+}
+```
+
+<h3 id="latest-quotes-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[stock_v3_latest_quotes_resp](#schemastock_v3_latest_quotes_resp)|
+|400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
+|401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
+|404|Not Found|The requested resource was not found, for example because the requested feed does not exist.<br>|None|
+|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
+|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||Request limit per minute.|
+|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|400|X-RateLimit-Limit|integer||Request limit per minute.|
+|400|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|400|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|429|X-RateLimit-Limit|integer||Request limit per minute.|
+|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey & apiSecret, BasicAuth
+</aside>
+
+## Latest trades
+
+<a id="opIdStockV3LatestTrades"></a>
+
+> Code samples
+
+```bash
+curl 'https://data.alpaca.markets/v3/stocks/xetr/latest/trades?symbols=BMW%3AXETR%2CSAP%3AXETR' \
+  -H 'Accept: application/json' \
+  -H "APCA-API-KEY-ID: ${API_KEY}" \
+  -H "APCA-API-SECRET-KEY: ${API_KEY}"
+```
+
+`GET /v3/stocks/{feed}/latest/trades`
+
+The latest trades endpoint provides the latest trade for the given symbols.
+
+
+<h3 id="latest-trades-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|feed|path|[stock_v3_latest_feed](#schemastock_v3_latest_feed)|true|The source feed of the data. All feeds require a subscription.<br> - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues<br> - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)<br> - `xhkg`: Hong Kong Stock Exchange (HKEX)<br> - `xlon`: London Stock Exchange (LSE)<br> - `xsau`: Saudi Exchange (Tadawul)<br>|
+|symbols|query|string|true|A comma-separated list of symbols with a limit of 1000.<br>Each symbol must be in `TICKER:MIC` format, where MIC is the ISO 10383 defined code of the symbol's primary market.<br>The market must be one the feed covers, e.g. `XETR` on `xetr`; `euroctp` accepts any market.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|feed|euroctp|
+|feed|xetr|
+|feed|xhkg|
+|feed|xlon|
+|feed|xsau|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "trades": {
+    "BMW:XETR": {
+      "m": "SINT",
+      "p": "57.92",
+      "s": "87",
+      "t": "2026-11-13T21:58:07.933045226Z"
+    }
+  }
+}
+```
+
+<h3 id="latest-trades-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[stock_v3_latest_trades_resp](#schemastock_v3_latest_trades_resp)|
+|400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
+|401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
+|404|Not Found|The requested resource was not found, for example because the requested feed does not exist.<br>|None|
+|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
+|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||Request limit per minute.|
+|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|400|X-RateLimit-Limit|integer||Request limit per minute.|
+|400|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|400|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|429|X-RateLimit-Limit|integer||Request limit per minute.|
+|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey & apiSecret, BasicAuth
+</aside>
+
+## Historical quotes
+
+<a id="opIdStockV3Quotes"></a>
+
+> Code samples
+
+```bash
+curl 'https://data.alpaca.markets/v3/stocks/xetr/quotes?symbols=BMW%3AXETR%2CSAP%3AXETR&start=2026-09-23T01%3A02%3A03.123456789Z' \
+  -H 'Accept: application/json' \
+  -H "APCA-API-KEY-ID: ${API_KEY}" \
+  -H "APCA-API-SECRET-KEY: ${API_KEY}"
+```
+
+`GET /v3/stocks/{feed}/quotes`
+
+The historical quotes API provides quote data for a list of symbols between the specified times.
+
+The quotes of each symbol are sorted by timestamp. The order of symbols is not guaranteed. Continue with `next_page_token`.
+
+
+<h3 id="historical-quotes-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|feed|path|[stock_v3_historical_feed](#schemastock_v3_historical_feed)|true|The source feed of the data. All feeds require a subscription.<br> - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues<br> - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)<br> - `xhkg`: Hong Kong Stock Exchange (HKEX)<br> - `xlon`: London Stock Exchange (LSE)<br> - `xsau`: Saudi Exchange (Tadawul)<br>|
+|symbols|query|string|true|A comma-separated list of symbols with a limit of 1000.<br>Each symbol must be in `TICKER:MIC` format, where MIC is the ISO 10383 defined code of the symbol's primary market.<br>The market must be one the feed covers, e.g. `XETR` on `xetr`; `euroctp` accepts any market.<br>|
+|start|query|string(date-time) \| string(date)|true|The inclusive start of the interval. Format: RFC-3339 or YYYY-MM-DD.<br>A date means the start of that day in the market's time zone.<br>|
+|end|query|string(date-time) \| string(date)|false|The inclusive end of the interval. A data point is returned when `start <= t <= end`. Format: RFC-3339 or YYYY-MM-DD.<br>A date means the end of that day in the market's time zone.<br>Defaults to the current time if not specified.<br>|
+|sort|query|object|false|Sort the data points of each symbol by timestamp in ascending or descending order.|
+|page_size|query|integer|false|The maximum number of data points to return in the response page.<br>The page_size applies to the total number of data points across all symbols, not per symbol.<br>The API may return fewer, even if more data points exist in the requested interval.<br>Always check `next_page_token` for more pages.<br>|
+|page_token|query|string|false|The pagination token from which to continue. The value to pass here is returned in specific requests when more data is available, usually because of a response result limit.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|feed|euroctp|
+|feed|xetr|
+|feed|xhkg|
+|feed|xlon|
+|feed|xsau|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "next_page_token": "cXVvdGVzfEVOSTpYTUlMfDE3OTQ0OTAyMDMwOTM4NDAwMDB8WFhYWHwyNS42MjV8NTI0fDI1LjYzfDc3Nw==",
+  "quotes": {
+    "ENI:XMIL": [
+      {
+        "ap": "25.63",
+        "as": "777",
+        "bp": "25.62",
+        "bs": "2045",
+        "t": "2026-11-12T13:30:00.52471Z"
+      },
+      {
+        "ap": "25.63",
+        "as": "777",
+        "bp": "25.62",
+        "bs": "2033",
+        "t": "2026-11-12T13:30:01.79933Z"
+      },
+      {
+        "ap": "25.63",
+        "as": "777",
+        "bp": "25.62",
+        "bs": "4343",
+        "t": "2026-11-12T13:30:02.87255Z"
+      }
+    ]
+  }
+}
+```
+
+<h3 id="historical-quotes-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[stock_v3_quotes_resp](#schemastock_v3_quotes_resp)|
+|400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
+|401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
+|404|Not Found|The requested resource was not found, for example because the requested feed does not exist.<br>|None|
+|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
+|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||Request limit per minute.|
+|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|400|X-RateLimit-Limit|integer||Request limit per minute.|
+|400|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|400|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|429|X-RateLimit-Limit|integer||Request limit per minute.|
+|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey & apiSecret, BasicAuth
+</aside>
+
+## Snapshots
+
+<a id="opIdStockV3Snapshots"></a>
+
+> Code samples
+
+```bash
+curl 'https://data.alpaca.markets/v3/stocks/xetr/snapshots?symbols=BMW%3AXETR%2CSAP%3AXETR' \
+  -H 'Accept: application/json' \
+  -H "APCA-API-KEY-ID: ${API_KEY}" \
+  -H "APCA-API-SECRET-KEY: ${API_KEY}"
+```
+
+`GET /v3/stocks/{feed}/snapshots`
+
+The snapshot endpoint provides the latest trade, latest quote, minute bar, daily bar, and previous daily bar for each requested symbol.
+
+Bars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used. Trades, bars, and snapshots may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.
+
+
+<h3 id="snapshots-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|feed|path|[stock_v3_latest_feed](#schemastock_v3_latest_feed)|true|The source feed of the data. All feeds require a subscription.<br> - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues<br> - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)<br> - `xhkg`: Hong Kong Stock Exchange (HKEX)<br> - `xlon`: London Stock Exchange (LSE)<br> - `xsau`: Saudi Exchange (Tadawul)<br>|
+|symbols|query|string|true|A comma-separated list of symbols with a limit of 1000.<br>Each symbol must be in `TICKER:MIC` format, where MIC is the ISO 10383 defined code of the symbol's primary market.<br>The market must be one the feed covers, e.g. `XETR` on `xetr`; `euroctp` accepts any market.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|feed|euroctp|
+|feed|xetr|
+|feed|xhkg|
+|feed|xlon|
+|feed|xsau|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "snapshots": {
+    "BMW:XETR": {
+      "daily_bar": {
+        "c": "57.92",
+        "h": "57.98",
+        "l": "56.7",
+        "n": "12829",
+        "o": "57.08",
+        "t": "2026-11-12T23:00:00Z",
+        "v": "2044549",
+        "vw": "57.541271"
+      },
+      "latest_quote": {
+        "ap": "59.2",
+        "as": "150",
+        "bp": "55.84",
+        "bs": "300",
+        "t": "2026-11-13T18:48:19.89115Z"
+      },
+      "latest_trade": {
+        "m": "SINT",
+        "p": "57.92",
+        "s": "87",
+        "t": "2026-11-13T21:58:07.933045226Z"
+      },
+      "minute_bar": {
+        "c": "57.92",
+        "h": "57.92",
+        "l": "57.92",
+        "n": "1",
+        "o": "57.92",
+        "t": "2026-11-13T21:58:00Z",
+        "v": "87",
+        "vw": "57.92"
+      },
+      "prev_daily_bar": {
+        "c": "56.76",
+        "h": "58.8",
+        "l": "56.76",
+        "n": "15403",
+        "o": "58.32",
+        "t": "2026-11-11T23:00:00Z",
+        "v": "4858215",
+        "vw": "57.939011"
+      }
+    }
+  }
+}
+```
+
+<h3 id="snapshots-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[stock_v3_snapshots_resp](#schemastock_v3_snapshots_resp)|
+|400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
+|401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
+|404|Not Found|The requested resource was not found, for example because the requested feed does not exist.<br>|None|
+|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
+|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||Request limit per minute.|
+|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|400|X-RateLimit-Limit|integer||Request limit per minute.|
+|400|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|400|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|429|X-RateLimit-Limit|integer||Request limit per minute.|
+|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey & apiSecret, BasicAuth
+</aside>
+
+## Historical trades
+
+<a id="opIdStockV3Trades"></a>
+
+> Code samples
+
+```bash
+curl 'https://data.alpaca.markets/v3/stocks/xetr/trades?symbols=BMW%3AXETR%2CSAP%3AXETR&start=2026-09-23T01%3A02%3A03.123456789Z' \
+  -H 'Accept: application/json' \
+  -H "APCA-API-KEY-ID: ${API_KEY}" \
+  -H "APCA-API-SECRET-KEY: ${API_KEY}"
+```
+
+`GET /v3/stocks/{feed}/trades`
+
+The historical trades API provides trade data for a list of symbols between the specified times.
+
+The trades of each symbol are sorted by timestamp. The order of symbols is not guaranteed. A page can contain one symbol when that symbol fills `page_size`. Continue with `next_page_token`.
+
+
+<h3 id="historical-trades-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|feed|path|[stock_v3_historical_feed](#schemastock_v3_historical_feed)|true|The source feed of the data. All feeds require a subscription.<br> - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues<br> - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)<br> - `xhkg`: Hong Kong Stock Exchange (HKEX)<br> - `xlon`: London Stock Exchange (LSE)<br> - `xsau`: Saudi Exchange (Tadawul)<br>|
+|symbols|query|string|true|A comma-separated list of symbols with a limit of 1000.<br>Each symbol must be in `TICKER:MIC` format, where MIC is the ISO 10383 defined code of the symbol's primary market.<br>The market must be one the feed covers, e.g. `XETR` on `xetr`; `euroctp` accepts any market.<br>|
+|start|query|string(date-time) \| string(date)|true|The inclusive start of the interval. Format: RFC-3339 or YYYY-MM-DD.<br>A date means the start of that day in the market's time zone.<br>|
+|end|query|string(date-time) \| string(date)|false|The inclusive end of the interval. A data point is returned when `start <= t <= end`. Format: RFC-3339 or YYYY-MM-DD.<br>A date means the end of that day in the market's time zone.<br>Defaults to the current time if not specified.<br>|
+|sort|query|object|false|Sort the data points of each symbol by timestamp in ascending or descending order.|
+|page_size|query|integer|false|The maximum number of data points to return in the response page.<br>The page_size applies to the total number of data points across all symbols, not per symbol.<br>The API may return fewer, even if more data points exist in the requested interval.<br>Always check `next_page_token` for more pages.<br>|
+|page_token|query|string|false|The pagination token from which to continue. The value to pass here is returned in specific requests when more data is available, usually because of a response result limit.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|feed|euroctp|
+|feed|xetr|
+|feed|xhkg|
+|feed|xlon|
+|feed|xsau|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "next_page_token": "dHJhZGVzfEJNVzpYRVRSfDE3OTQ0OTAyNDgxNjYwNDg4MzJ8RVJGUXww",
+  "trades": {
+    "BMW:XETR": [
+      {
+        "m": "XGAT",
+        "p": "57.14",
+        "s": "400",
+        "t": "2026-11-12T13:30:41.54608138Z"
+      },
+      {
+        "m": "CEUX",
+        "p": "57.14",
+        "s": "10",
+        "t": "2026-11-12T13:30:43.05075Z"
+      },
+      {
+        "m": "CEUX",
+        "p": "57.14",
+        "s": "11",
+        "t": "2026-11-12T13:30:43.05077Z"
+      },
+      {
+        "m": "TQEX",
+        "p": "57.16",
+        "s": "287",
+        "t": "2026-11-12T13:30:44.37277Z"
+      },
+      {
+        "m": "XETA",
+        "p": "57.16",
+        "s": "449",
+        "t": "2026-11-12T13:30:48.16554Z"
+      }
+    ]
+  }
+}
+```
+
+<h3 id="historical-trades-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[stock_v3_trades_resp](#schemastock_v3_trades_resp)|
+|400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
+|401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
+|404|Not Found|The requested resource was not found, for example because the requested feed does not exist.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2050,7 +2781,7 @@ This means that you are likely to see only one symbol in your first response if 
 
 In these situations, if you keep requesting again with the `next_page_token` from the previous response, you will eventually reach the other symbols if any bars were found for them.
 
-<h3 id="historical-bars-1-parameters">Parameters</h3>
+<h3 id="historical-bars-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2086,14 +2817,14 @@ In these situations, if you keep requesting again with the `next_page_token` fro
 }
 ```
 
-<h3 id="historical-bars-1-responses">Responses</h3>
+<h3 id="historical-bars-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[option_bars_resp](#schemaoption_bars_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2165,7 +2896,7 @@ Returns the mapping between the condition codes and names.
 |200|OK|OK|[option_conditions](#schemaoption_conditions)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2223,7 +2954,7 @@ Returns the mapping between the option exchange codes and the corresponding exch
 |200|OK|OK|[option_exchanges](#schemaoption_exchanges)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2264,12 +2995,12 @@ curl 'https://data.alpaca.markets/v1beta1/options/quotes/latest?symbols=AAPL2412
 The latest multi-quotes endpoint provides the latest bid and ask prices for each given contract symbol.
 
 
-<h3 id="latest-quotes-1-parameters">Parameters</h3>
+<h3 id="latest-quotes-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbols|query|string|true|A comma-separated list of contract symbols with a limit of 100.|
-|feed|query|[option_feed](#schemaoption_feed)|false|The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the user has a subscription, otherwise `indicative`.<br>|
+|feed|query|[option_feed](#schemaoption_feed)|false|The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the request uses broker partner API credentials and the partner has an OPRA subscription, or if the account has a real-time subscription and has signed the OPRA agreement; otherwise `indicative`.<br>|
 
 #### Enumerated Values
 
@@ -2309,14 +3040,14 @@ The latest multi-quotes endpoint provides the latest bid and ask prices for each
 }
 ```
 
-<h3 id="latest-quotes-1-responses">Responses</h3>
+<h3 id="latest-quotes-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[option_latest_quotes_resp](#schemaoption_latest_quotes_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2357,12 +3088,12 @@ curl 'https://data.alpaca.markets/v1beta1/options/snapshots?symbols=AAPL241220C0
 The snapshots endpoint provides the latest trade, latest quote and greeks for each given contract symbol.
 
 
-<h3 id="snapshots-1-parameters">Parameters</h3>
+<h3 id="snapshots-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbols|query|string|true|A comma-separated list of contract symbols with a limit of 100.|
-|feed|query|[option_feed](#schemaoption_feed)|false|The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the user has a subscription, otherwise `indicative`.<br>|
+|feed|query|[option_feed](#schemaoption_feed)|false|The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the request uses broker partner API credentials and the partner has an OPRA subscription, or if the account has a real-time subscription and has signed the OPRA agreement; otherwise `indicative`.<br>|
 |updated_since|query|string(date-time)|false|Filter to snapshots that were updated since this timestamp, meaning that the timestamp of the trade or the quote is greater than or equal to this value.<br>Format: RFC-3339 or YYYY-MM-DD. If missing, all values are returned.<br>|
 |limit|query|integer|false|Number of maximum snapshots to return in a response.<br>The limit applies to the total number of data points, not the number per symbol!<br>Use `next_page_token` to fetch the next set of responses.<br>|
 |page_token|query|string|false|The pagination token from which to continue. The value to pass here is returned in specific requests when more data is available, usually because of a response result limit.<br>|
@@ -2413,14 +3144,14 @@ The snapshots endpoint provides the latest trade, latest quote and greeks for ea
 }
 ```
 
-<h3 id="snapshots-1-responses">Responses</h3>
+<h3 id="snapshots-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[option_snapshots_resp](#schemaoption_snapshots_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2466,7 +3197,7 @@ The option chain endpoint provides the latest trade, latest quote, and greeks fo
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |underlying_symbol|path|string|true|The financial instrument on which an option contract is based or derived.|
-|feed|query|[option_feed](#schemaoption_feed)|false|The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the user has a subscription, otherwise `indicative`.<br>|
+|feed|query|[option_feed](#schemaoption_feed)|false|The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the request uses broker partner API credentials and the partner has an OPRA subscription, or if the account has a real-time subscription and has signed the OPRA agreement; otherwise `indicative`.<br>|
 |limit|query|integer|false|Number of maximum snapshots to return in a response.<br>The limit applies to the total number of data points, not the number per symbol!<br>Use `next_page_token` to fetch the next set of responses.<br>|
 |updated_since|query|string(date-time)|false|Filter to snapshots that were updated since this timestamp, meaning that the timestamp of the trade or the quote is greater than or equal to this value.<br>Format: RFC-3339 or YYYY-MM-DD. If missing, all values are returned.<br>|
 |page_token|query|string|false|The pagination token from which to continue. The value to pass here is returned in specific requests when more data is available, usually because of a response result limit.<br>|
@@ -2533,7 +3264,7 @@ The option chain endpoint provides the latest trade, latest quote, and greeks fo
 |200|OK|OK|[option_snapshots_resp](#schemaoption_snapshots_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2578,7 +3309,7 @@ This means that you are likely to see only one symbol in your first response if 
 
 In these situations, if you keep requesting again with the `next_page_token` from the previous response, you will eventually reach the other symbols if any trades were found for them.
 
-<h3 id="historical-trades-1-parameters">Parameters</h3>
+<h3 id="historical-trades-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2617,14 +3348,14 @@ In these situations, if you keep requesting again with the `next_page_token` fro
 }
 ```
 
-<h3 id="historical-trades-1-responses">Responses</h3>
+<h3 id="historical-trades-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[option_trades_resp](#schemaoption_trades_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2665,12 +3396,12 @@ curl 'https://data.alpaca.markets/v1beta1/options/trades/latest?symbols=AAPL2412
 The latest multi-trades endpoint provides the latest historical trade data for multiple given contract symbols.
 
 
-<h3 id="latest-trades-1-parameters">Parameters</h3>
+<h3 id="latest-trades-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbols|query|string|true|A comma-separated list of contract symbols with a limit of 100.|
-|feed|query|[option_feed](#schemaoption_feed)|false|The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the user has a subscription, otherwise `indicative`.<br>|
+|feed|query|[option_feed](#schemaoption_feed)|false|The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the request uses broker partner API credentials and the partner has an OPRA subscription, or if the account has a real-time subscription and has signed the OPRA agreement; otherwise `indicative`.<br>|
 
 #### Enumerated Values
 
@@ -2697,14 +3428,14 @@ The latest multi-trades endpoint provides the latest historical trade data for m
 }
 ```
 
-<h3 id="latest-trades-1-responses">Responses</h3>
+<h3 id="latest-trades-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[option_latest_trades_resp](#schemaoption_latest_trades_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2749,7 +3480,7 @@ curl 'https://data.alpaca.markets/v1beta3/crypto/us/bars?symbols=BTC%2FUSD%2CLTC
 The crypto bars API provides historical aggregates for a list of crypto symbols between the specified dates.
 
 
-<h3 id="historical-bars-2-parameters">Parameters</h3>
+<h3 id="historical-bars-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2796,14 +3527,14 @@ The crypto bars API provides historical aggregates for a list of crypto symbols 
 }
 ```
 
-<h3 id="historical-bars-2-responses">Responses</h3>
+<h3 id="historical-bars-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[crypto_bars_resp](#schemacrypto_bars_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2844,7 +3575,7 @@ curl 'https://data.alpaca.markets/v1beta3/crypto/us/latest/bars?symbols=BTC%2FUS
 The latest multi-bars endpoint returns the latest minute-aggregated historical bar data for each of the crypto symbols provided.
 
 
-<h3 id="latest-bars-1-parameters">Parameters</h3>
+<h3 id="latest-bars-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2882,14 +3613,14 @@ The latest multi-bars endpoint returns the latest minute-aggregated historical b
 }
 ```
 
-<h3 id="latest-bars-1-responses">Responses</h3>
+<h3 id="latest-bars-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[crypto_latest_bars_resp](#schemacrypto_latest_bars_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -2988,7 +3719,7 @@ The latest orderbook endpoint returns the latest bid and ask orderbook for the c
 |200|OK|OK|[crypto_latest_orderbooks_resp](#schemacrypto_latest_orderbooks_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3029,7 +3760,7 @@ curl 'https://data.alpaca.markets/v1beta3/crypto/us/latest/quotes?symbols=BTC%2F
 The latest quotes endpoint returns the latest bid and ask prices for the crypto symbols provided.
 
 
-<h3 id="latest-quotes-2-parameters">Parameters</h3>
+<h3 id="latest-quotes-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3071,14 +3802,14 @@ The latest quotes endpoint returns the latest bid and ask prices for the crypto 
 }
 ```
 
-<h3 id="latest-quotes-2-responses">Responses</h3>
+<h3 id="latest-quotes-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[crypto_latest_quotes_resp](#schemacrypto_latest_quotes_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3119,7 +3850,7 @@ curl 'https://data.alpaca.markets/v1beta3/crypto/us/latest/trades?symbols=BTC%2F
 The latest trades endpoint returns the latest trade data for the crypto symbols provided.
 
 
-<h3 id="latest-trades-2-parameters">Parameters</h3>
+<h3 id="latest-trades-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3161,14 +3892,14 @@ The latest trades endpoint returns the latest trade data for the crypto symbols 
 }
 ```
 
-<h3 id="latest-trades-2-responses">Responses</h3>
+<h3 id="latest-trades-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[crypto_latest_trades_resp](#schemacrypto_latest_trades_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3209,7 +3940,7 @@ curl 'https://data.alpaca.markets/v1beta3/crypto/us/quotes?symbols=BTC%2FUSD%2CL
 The crypto quotes API provides historical quote data for a list of crypto symbols between the specified dates.
 The oldest date to retrieve historical quotes of us-1 location is 14th October, 2025 12AM UTC.
 
-<h3 id="historical-quotes-1-parameters">Parameters</h3>
+<h3 id="historical-quotes-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3261,14 +3992,14 @@ The oldest date to retrieve historical quotes of us-1 location is 14th October, 
 }
 ```
 
-<h3 id="historical-quotes-1-responses">Responses</h3>
+<h3 id="historical-quotes-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[crypto_quotes_resp](#schemacrypto_quotes_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3309,7 +4040,7 @@ curl 'https://data.alpaca.markets/v1beta3/crypto/us/snapshots?symbols=BTC%2FUSD%
 The snapshots endpoint returns the latest trade, latest quote, latest minute bar, latest daily bar, and previous daily bar data for crypto symbols.
 
 
-<h3 id="snapshots-2-parameters">Parameters</h3>
+<h3 id="snapshots-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3383,14 +4114,14 @@ The snapshots endpoint returns the latest trade, latest quote, latest minute bar
 }
 ```
 
-<h3 id="snapshots-2-responses">Responses</h3>
+<h3 id="snapshots-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[crypto_snapshots_resp](#schemacrypto_snapshots_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3431,7 +4162,7 @@ curl 'https://data.alpaca.markets/v1beta3/crypto/us/trades?symbols=BTC%2FUSD%2CL
 The crypto trades API provides historical trade data for a list of crypto symbols between the specified dates.
 
 
-<h3 id="historical-trades-2-parameters">Parameters</h3>
+<h3 id="historical-trades-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3490,14 +4221,14 @@ The crypto trades API provides historical trade data for a list of crypto symbol
 }
 ```
 
-<h3 id="historical-trades-2-responses">Responses</h3>
+<h3 id="historical-trades-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[crypto_trades_resp](#schemacrypto_trades_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3584,7 +4315,7 @@ This endpoint returns the latest prices for the given fixed income securities.
 |200|OK|OK|[fixed_income_latest_prices_resp](#schemafixed_income_latest_prices_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3625,7 +4356,7 @@ curl 'https://data.alpaca.markets/v1beta1/fixed_income/latest/quotes?isins=US912
 This endpoint returns the latest quotes for the given fixed income securities.
 
 
-<h3 id="latest-quotes-3-parameters">Parameters</h3>
+<h3 id="latest-quotes-4-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3669,14 +4400,14 @@ This endpoint returns the latest quotes for the given fixed income securities.
 }
 ```
 
-<h3 id="latest-quotes-3-responses">Responses</h3>
+<h3 id="latest-quotes-4-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[fixed_income_latest_quotes_resp](#schemafixed_income_latest_quotes_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3733,7 +4464,7 @@ Get the image of the company logo for the given symbol.
 |200|OK|OK|Inline|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3843,7 +4574,7 @@ For crypto, the endpoint resets at midnight.
 |200|OK|OK|[movers_resp](#schemamovers_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3922,7 +4653,7 @@ Returns the most active stocks by volume or trade count based on real time SIP d
 |200|OK|OK|[most_actives_resp](#schemamost_actives_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -3995,22 +4726,51 @@ Returns the latest news articles across stocks and crypto. By default, returns t
 {
   "news": [
     {
-      "author": "Charles Gross",
-      "content": "<p>This headline-only article is meant to show you why a stock is moving, the most difficult aspect of stock trading....</p>",
-      "created_at": "2021-12-31T11:08:42Z",
-      "headline": "Apple Leader in Phone Sales in China for Second Straight Month in November With 23.6% Share, According to Market Research Data",
-      "id": 24843171,
+      "author": "",
+      "content": "Following the release of SpaceX's third-quarter 2026 financial results, several analysts have updated their outlook on the company. UBS maintained a Buy rating while raising its price target to $230 from $210. Additionally, Wells Fargo maintained an Overweight rating and increased its price target to $274 from $214. These adjustments reflect analyst reactions to the company's reported revenue growth and strategic focus on artificial intelligence.",
+      "created_at": "2026-10-21T15:02:10Z",
+      "headline": "Analysts Adjust Price Targets for SpaceX Following Q3 Results",
+      "id": 100536145,
       "images": [],
-      "source": "benzinga",
-      "summary": "This headline-only article is meant to show you why a stock is moving, the most difficult aspect of stock trading",
+      "source": "fiscal.ai",
+      "summary": "Financial institutions including UBS and Wells Fargo have updated their price targets for SpaceX following the company's third-quarter earnings report.",
       "symbols": [
-        "AAPL"
+        "SPCX"
       ],
-      "updated_at": "2021-12-31T11:08:43Z",
-      "url": "https://www.benzinga.com/news/21/12/24843171/apple-leader-in-phone-sales-in-china-for-second-straight-month-in-november-with-23-6-share-according"
+      "updated_at": "2026-10-21T15:02:10Z",
+      "url": "https://www.moomoo.com/stock/SPCX-US/news?chain_id=Name1K9-3FXPhg.1lcj000&global_content=%7B%22promote_id%22%3A13764,%22sub_promote_id%22%3A64,%22f%22%3A%22www.moomoo.com%2Fcommunity%2Fprofile%2F105275796%2Fpost%2Fall%22%7D"
+    },
+    {
+      "author": "Badar Shaikh",
+      "content": "<p>It was yet another eventful week for <strong>Tesla Inc</strong> (NASDAQ:TSLA) and CEO <strong>Elon Musk</strong> amid the Roadster's high-flying debut, questions about a possible SpaceX merger and more.</p>",
+      "created_at": "2026-10-18T12:51:02Z",
+      "headline": "This Week in TSLA: Roadster's Flying Debut, Cybercab Speeding in School Zones, SpaceX Merger and More",
+      "id": 62429279,
+      "images": [
+        {
+          "size": "large",
+          "url": "https://cdn.benzinga.com/files/images/story/2026/10/18/Kaunas--Lithuania-2022---April-14-Tesla-.jpg?width=2048&height=1536"
+        },
+        {
+          "size": "small",
+          "url": "https://cdn.benzinga.com/files/images/story/2026/10/18/Kaunas--Lithuania-2022---April-14-Tesla-.jpg?width=1024&height=768"
+        },
+        {
+          "size": "thumb",
+          "url": "https://cdn.benzinga.com/files/images/story/2026/10/18/Kaunas--Lithuania-2022---April-14-Tesla-.jpg?width=250&height=187"
+        }
+      ],
+      "source": "benzinga",
+      "summary": "This week, Tesla unveiled its flying Roadster, faced Cybercab questions and merger speculation with SpaceX.",
+      "symbols": [
+        "SPCX",
+        "TSLA"
+      ],
+      "updated_at": "2026-10-18T12:51:02Z",
+      "url": "https://www.benzinga.com/markets/tech/26/10/62429279/this-week-in-tsla-roadsters-flying-debut-cybercab-speeding-in-school-zones-spacex-merger-and-more"
     }
   ],
-  "next_page_token": "MTY0MDk0ODkyMzAwMDAwMDAwMHwyNDg0MzE3MQ=="
+  "next_page_token": "MTc5MjMyNzg2MjAwMDAwMDAwMHw2MjQyOTI3OQ=="
 }
 ```
 
@@ -4021,7 +4781,7 @@ Returns the latest news articles across stocks and crypto. By default, returns t
 |200|OK|OK|[news_resp](#schemanews_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -4136,7 +4896,7 @@ Each event carries an `event_type` discriminator that selects the shape of the `
 |200|OK|Connected. Corporate-action events will now start streaming as long as you keep the connection open.|Inline|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -4456,7 +5216,7 @@ By default (`data_quality=complete`), corporate actions that are still incomplet
 |200|OK|OK|[corporate_actions_resp](#schemacorporate_actions_resp)|
 |400|Bad Request|One of the request parameters is invalid. See the returned message for details.<br>|None|
 |401|Unauthorized|Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.<br>|None|
-|403|Forbidden|The requested resource is forbidden.<br>|None|
+|403|Forbidden|The requested resource is forbidden, for example because the subscription does not cover the requested data.<br>|None|
 |429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
 |500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on [Slack](https://alpaca.markets/slack) or on the [Community Forum](https://forum.alpaca.markets/).<br>|None|
 
@@ -7446,9 +8206,9 @@ The best bid and ask information for a given security.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |ap|number(double)|true|none|Ask price.|
-|as|number(double)|true|none|Ask size.|
+|as|number(double)|true|none|Ask size in the base asset (left side of the pair), with no lot multiplier.|
 |bp|number(double)|true|none|Bid price.|
-|bs|number(double)|true|none|Bid size.|
+|bs|number(double)|true|none|Bid size in the base asset (left side of the pair), with no lot multiplier.|
 |t|[timestamp](#schematimestamp)|true|none|Timestamp in RFC-3339 format with nanosecond precision.|
 
 <h2 id="tocS_crypto_quotes_resp">crypto_quotes_resp</h2>
@@ -8252,14 +9012,14 @@ Model representing a news article.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|author|string|true|none|Original author of news article.|
-|content|string|true|none|Content of the news article (might contain HTML).|
+|author|string|true|none|Original author of news article (may be empty).|
+|content|string|true|none|Content of the news article (might contain HTML, may be empty).|
 |created_at|string(date-time)|true|none|Date article was created (RFC-3339).|
 |headline|string|true|none|Headline or title of the article.|
 |id|integer(int64)|true|none|News article ID.|
 |images|[[news_image](#schemanews_image)]|true|none|List of images (URLs) related to given article (may be empty).|
-|source|string|true|none|Source where the news originated from (e.g. Benzinga).|
-|summary|string|true|none|Summary text for the article (may be first sentence of content).|
+|source|string|true|none|Source from which the news originated.|
+|summary|string|true|none|Summary text for the article (may be first sentence of content or may be empty).|
 |symbols|[string]|true|none|List of related or mentioned symbols.|
 |updated_at|string(date-time)|true|none|Date article was updated (RFC-3339).|
 |url|string \| null(uri)|false|none|URL of article (if applicable).|
@@ -9270,6 +10030,19 @@ Spin-off.
 |source_isin|[isin](#schemaisin)|false|none|International Securities Identification Number (ISIN) as defined by ISO 6166.<br>May be empty for US corporate actions.<br>|
 |source_rate|number(double)|true|none|none|
 |source_symbol|string|true|none|none|
+
+<h2 id="tocS_stock_adjustment">stock_adjustment</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_adjustment"></a>
+<a id="schema_stock_adjustment"></a>
+<a id="tocSstock_adjustment"></a>
+<a id="tocsstock_adjustment"></a>
+
+```json
+"raw"
+```
+
+One adjustment applied to historical stock bars.
 
 <h2 id="tocS_stock_and_cash_merger">stock_and_cash_merger</h2>
 <!-- backwards compatibility -->
@@ -10364,8 +11137,6 @@ A snapshot provides the latest trade, latest quote, latest minute bar, current d
 
 ```json
 {
-  "currency": "string",
-  "symbol": "string",
   "dailyBar": {
     "c": 178.08,
     "h": 178.34,
@@ -10420,7 +11191,9 @@ A snapshot provides the latest trade, latest quote, latest minute bar, current d
     "t": "2022-01-03T09:00:00Z",
     "v": 60937,
     "vw": 177.954244
-  }
+  },
+  "currency": "string",
+  "symbol": "string"
 }
 ```
 
@@ -10428,13 +11201,13 @@ A snapshot provides the latest trade, latest quote, latest minute bar, current d
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|currency|string|false|none|none|
-|symbol|string|false|none|none|
 |dailyBar|[stock_bar](#schemastock_bar)|false|none|OHLC aggregate of all the trades in a given interval.<br>|
 |latestQuote|[stock_quote](#schemastock_quote)|false|none|The best bid and ask information for a given security.|
 |latestTrade|[stock_trade](#schemastock_trade)|false|none|A stock trade.|
 |minuteBar|[stock_bar](#schemastock_bar)|false|none|OHLC aggregate of all the trades in a given interval.<br>|
 |prevDailyBar|[stock_bar](#schemastock_bar)|false|none|OHLC aggregate of all the trades in a given interval.<br>|
+|currency|string|false|none|none|
+|symbol|string|false|none|none|
 
 <h2 id="tocS_stock_tape">stock_tape</h2>
 <!-- backwards compatibility -->
@@ -10589,6 +11362,540 @@ A stock trade.
 |next_page_token|[next_page_token](#schemanext_page_token)|true|none|Pagination token for the next page.|
 |symbol|string|true|none|none|
 |trades|[[stock_trade](#schemastock_trade)]|true|none|none|
+
+<h2 id="tocS_stock_v3_bar">stock_v3_bar</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_bar"></a>
+<a id="schema_stock_v3_bar"></a>
+<a id="tocSstock_v3_bar"></a>
+<a id="tocsstock_v3_bar"></a>
+
+```json
+{
+  "c": "57.88",
+  "h": "60.08",
+  "l": "57.88",
+  "n": "14950",
+  "o": "59.92",
+  "t": "2026-09-22T22:00:00Z",
+  "v": "2540940",
+  "vw": "58.365"
+}
+```
+
+OHLC aggregate of trades in an interval.
+Bars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used.
+Bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|c|string(decimal)|true|none|Price of the last trade in the bar, in the native quotation currency.|
+|h|string(decimal)|true|none|Highest trade price in the bar, in the native quotation currency.|
+|l|string(decimal)|true|none|Lowest trade price in the bar, in the native quotation currency.|
+|n|string(int64)|true|none|Number of trades in the bar.|
+|o|string(decimal)|true|none|Price of the first trade in the bar, in the native quotation currency.|
+|t|[timestamp](#schematimestamp)|true|none|Timestamp in RFC-3339 format with nanosecond precision.|
+|v|string(decimal)|true|none|Number of shares traded in the bar.|
+|vw|string(decimal)|true|none|Volume-weighted average price of the trades in the bar, in the native quotation currency.|
+
+<h2 id="tocS_stock_v3_bars_resp">stock_v3_bars_resp</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_bars_resp"></a>
+<a id="schema_stock_v3_bars_resp"></a>
+<a id="tocSstock_v3_bars_resp"></a>
+<a id="tocsstock_v3_bars_resp"></a>
+
+```json
+{
+  "bars": {
+    "property1": [
+      {
+        "c": "57.88",
+        "h": "60.08",
+        "l": "57.88",
+        "n": "14950",
+        "o": "59.92",
+        "t": "2026-09-22T22:00:00Z",
+        "v": "2540940",
+        "vw": "58.365"
+      }
+    ],
+    "property2": [
+      {
+        "c": "57.88",
+        "h": "60.08",
+        "l": "57.88",
+        "n": "14950",
+        "o": "59.92",
+        "t": "2026-09-22T22:00:00Z",
+        "v": "2540940",
+        "vw": "58.365"
+      }
+    ]
+  },
+  "next_page_token": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bars|object|true|none|Bars keyed by symbol (`TICKER:MIC`).|
+|next_page_token|[next_page_token](#schemanext_page_token)|true|none|Pagination token for the next page.|
+
+<h2 id="tocS_stock_v3_historical_feed">stock_v3_historical_feed</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_historical_feed"></a>
+<a id="schema_stock_v3_historical_feed"></a>
+<a id="tocSstock_v3_historical_feed"></a>
+<a id="tocsstock_v3_historical_feed"></a>
+
+```json
+"euroctp"
+```
+
+<h2 id="tocS_stock_v3_latest_bars_resp">stock_v3_latest_bars_resp</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_latest_bars_resp"></a>
+<a id="schema_stock_v3_latest_bars_resp"></a>
+<a id="tocSstock_v3_latest_bars_resp"></a>
+<a id="tocsstock_v3_latest_bars_resp"></a>
+
+```json
+{
+  "bars": {
+    "property1": {
+      "c": "57.88",
+      "h": "60.08",
+      "l": "57.88",
+      "n": "14950",
+      "o": "59.92",
+      "t": "2026-09-22T22:00:00Z",
+      "v": "2540940",
+      "vw": "58.365"
+    },
+    "property2": {
+      "c": "57.88",
+      "h": "60.08",
+      "l": "57.88",
+      "n": "14950",
+      "o": "59.92",
+      "t": "2026-09-22T22:00:00Z",
+      "v": "2540940",
+      "vw": "58.365"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bars|object|true|none|The latest minute bars keyed by symbol (`TICKER:MIC`).|
+
+<h2 id="tocS_stock_v3_latest_feed">stock_v3_latest_feed</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_latest_feed"></a>
+<a id="schema_stock_v3_latest_feed"></a>
+<a id="tocSstock_v3_latest_feed"></a>
+<a id="tocsstock_v3_latest_feed"></a>
+
+```json
+"euroctp"
+```
+
+<h2 id="tocS_stock_v3_latest_quotes_resp">stock_v3_latest_quotes_resp</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_latest_quotes_resp"></a>
+<a id="schema_stock_v3_latest_quotes_resp"></a>
+<a id="tocSstock_v3_latest_quotes_resp"></a>
+<a id="tocsstock_v3_latest_quotes_resp"></a>
+
+```json
+{
+  "quotes": {
+    "property1": {
+      "ap": "57.84",
+      "as": "260",
+      "bp": "57.82",
+      "bs": "520",
+      "t": "2026-09-24T13:30:00.041325568Z"
+    },
+    "property2": {
+      "ap": "57.84",
+      "as": "260",
+      "bp": "57.82",
+      "bs": "520",
+      "t": "2026-09-24T13:30:00.041325568Z"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|quotes|object|true|none|The latest quotes keyed by symbol (`TICKER:MIC`).|
+
+<h2 id="tocS_stock_v3_latest_trades_resp">stock_v3_latest_trades_resp</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_latest_trades_resp"></a>
+<a id="schema_stock_v3_latest_trades_resp"></a>
+<a id="tocSstock_v3_latest_trades_resp"></a>
+<a id="tocsstock_v3_latest_trades_resp"></a>
+
+```json
+{
+  "trades": {
+    "property1": {
+      "i": "1",
+      "m": "XETR",
+      "p": "57.84",
+      "s": "120",
+      "t": "2026-09-24T13:30:00.086175744Z"
+    },
+    "property2": {
+      "i": "1",
+      "m": "XETR",
+      "p": "57.84",
+      "s": "120",
+      "t": "2026-09-24T13:30:00.086175744Z"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|trades|object|true|none|The latest trades keyed by symbol (`TICKER:MIC`).|
+
+<h2 id="tocS_stock_v3_quote">stock_v3_quote</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_quote"></a>
+<a id="schema_stock_v3_quote"></a>
+<a id="tocSstock_v3_quote"></a>
+<a id="tocsstock_v3_quote"></a>
+
+```json
+{
+  "ap": "57.84",
+  "as": "260",
+  "bp": "57.82",
+  "bs": "520",
+  "t": "2026-09-24T13:30:00.041325568Z"
+}
+```
+
+The best bid and offer (BBO) for the symbol.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ap|string(decimal)|true|none|Best ask price, in the native quotation currency.|
+|as|string(decimal)|true|none|Number of shares available at the best ask price.|
+|bp|string(decimal)|true|none|Best bid price, in the native quotation currency.|
+|bs|string(decimal)|true|none|Number of shares available at the best bid price.|
+|t|[timestamp](#schematimestamp)|true|none|Timestamp in RFC-3339 format with nanosecond precision.|
+
+<h2 id="tocS_stock_v3_quotes_resp">stock_v3_quotes_resp</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_quotes_resp"></a>
+<a id="schema_stock_v3_quotes_resp"></a>
+<a id="tocSstock_v3_quotes_resp"></a>
+<a id="tocsstock_v3_quotes_resp"></a>
+
+```json
+{
+  "next_page_token": "string",
+  "quotes": {
+    "property1": [
+      {
+        "ap": "57.84",
+        "as": "260",
+        "bp": "57.82",
+        "bs": "520",
+        "t": "2026-09-24T13:30:00.041325568Z"
+      }
+    ],
+    "property2": [
+      {
+        "ap": "57.84",
+        "as": "260",
+        "bp": "57.82",
+        "bs": "520",
+        "t": "2026-09-24T13:30:00.041325568Z"
+      }
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_page_token|[next_page_token](#schemanext_page_token)|true|none|Pagination token for the next page.|
+|quotes|object|true|none|Quotes keyed by symbol (`TICKER:MIC`).|
+
+<h2 id="tocS_stock_v3_snapshot">stock_v3_snapshot</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_snapshot"></a>
+<a id="schema_stock_v3_snapshot"></a>
+<a id="tocSstock_v3_snapshot"></a>
+<a id="tocsstock_v3_snapshot"></a>
+
+```json
+{
+  "daily_bar": {
+    "c": "57.88",
+    "h": "60.08",
+    "l": "57.88",
+    "n": "14950",
+    "o": "59.92",
+    "t": "2026-09-22T22:00:00Z",
+    "v": "2540940",
+    "vw": "58.365"
+  },
+  "latest_quote": {
+    "ap": "57.84",
+    "as": "260",
+    "bp": "57.82",
+    "bs": "520",
+    "t": "2026-09-24T13:30:00.041325568Z"
+  },
+  "latest_trade": {
+    "i": "1",
+    "m": "XETR",
+    "p": "57.84",
+    "s": "120",
+    "t": "2026-09-24T13:30:00.086175744Z"
+  },
+  "minute_bar": {
+    "c": "57.88",
+    "h": "60.08",
+    "l": "57.88",
+    "n": "14950",
+    "o": "59.92",
+    "t": "2026-09-22T22:00:00Z",
+    "v": "2540940",
+    "vw": "58.365"
+  },
+  "prev_daily_bar": {
+    "c": "57.88",
+    "h": "60.08",
+    "l": "57.88",
+    "n": "14950",
+    "o": "59.92",
+    "t": "2026-09-22T22:00:00Z",
+    "v": "2540940",
+    "vw": "58.365"
+  }
+}
+```
+
+The latest trade, latest quote, minute bar, current daily bar, and previous daily bar for one symbol.
+Bars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used.
+Trades and bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|daily_bar|[stock_v3_bar](#schemastock_v3_bar)|false|none|OHLC aggregate of trades in an interval.<br>Bars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used.<br>Bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.<br>|
+|latest_quote|[stock_v3_quote](#schemastock_v3_quote)|false|none|The best bid and offer (BBO) for the symbol.<br>|
+|latest_trade|[stock_v3_trade](#schemastock_v3_trade)|false|none|A trade print published by an execution venue.<br>Trades may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.<br>|
+|minute_bar|[stock_v3_bar](#schemastock_v3_bar)|false|none|OHLC aggregate of trades in an interval.<br>Bars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used.<br>Bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.<br>|
+|prev_daily_bar|[stock_v3_bar](#schemastock_v3_bar)|false|none|OHLC aggregate of trades in an interval.<br>Bars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used.<br>Bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.<br>|
+
+<h2 id="tocS_stock_v3_snapshots_resp">stock_v3_snapshots_resp</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_snapshots_resp"></a>
+<a id="schema_stock_v3_snapshots_resp"></a>
+<a id="tocSstock_v3_snapshots_resp"></a>
+<a id="tocsstock_v3_snapshots_resp"></a>
+
+```json
+{
+  "snapshots": {
+    "property1": {
+      "daily_bar": {
+        "c": "57.88",
+        "h": "60.08",
+        "l": "57.88",
+        "n": "14950",
+        "o": "59.92",
+        "t": "2026-09-22T22:00:00Z",
+        "v": "2540940",
+        "vw": "58.365"
+      },
+      "latest_quote": {
+        "ap": "57.84",
+        "as": "260",
+        "bp": "57.82",
+        "bs": "520",
+        "t": "2026-09-24T13:30:00.041325568Z"
+      },
+      "latest_trade": {
+        "i": "1",
+        "m": "XETR",
+        "p": "57.84",
+        "s": "120",
+        "t": "2026-09-24T13:30:00.086175744Z"
+      },
+      "minute_bar": {
+        "c": "57.88",
+        "h": "60.08",
+        "l": "57.88",
+        "n": "14950",
+        "o": "59.92",
+        "t": "2026-09-22T22:00:00Z",
+        "v": "2540940",
+        "vw": "58.365"
+      },
+      "prev_daily_bar": {
+        "c": "57.88",
+        "h": "60.08",
+        "l": "57.88",
+        "n": "14950",
+        "o": "59.92",
+        "t": "2026-09-22T22:00:00Z",
+        "v": "2540940",
+        "vw": "58.365"
+      }
+    },
+    "property2": {
+      "daily_bar": {
+        "c": "57.88",
+        "h": "60.08",
+        "l": "57.88",
+        "n": "14950",
+        "o": "59.92",
+        "t": "2026-09-22T22:00:00Z",
+        "v": "2540940",
+        "vw": "58.365"
+      },
+      "latest_quote": {
+        "ap": "57.84",
+        "as": "260",
+        "bp": "57.82",
+        "bs": "520",
+        "t": "2026-09-24T13:30:00.041325568Z"
+      },
+      "latest_trade": {
+        "i": "1",
+        "m": "XETR",
+        "p": "57.84",
+        "s": "120",
+        "t": "2026-09-24T13:30:00.086175744Z"
+      },
+      "minute_bar": {
+        "c": "57.88",
+        "h": "60.08",
+        "l": "57.88",
+        "n": "14950",
+        "o": "59.92",
+        "t": "2026-09-22T22:00:00Z",
+        "v": "2540940",
+        "vw": "58.365"
+      },
+      "prev_daily_bar": {
+        "c": "57.88",
+        "h": "60.08",
+        "l": "57.88",
+        "n": "14950",
+        "o": "59.92",
+        "t": "2026-09-22T22:00:00Z",
+        "v": "2540940",
+        "vw": "58.365"
+      }
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|snapshots|object|true|none|Snapshots keyed by symbol (`TICKER:MIC`).|
+
+<h2 id="tocS_stock_v3_trade">stock_v3_trade</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_trade"></a>
+<a id="schema_stock_v3_trade"></a>
+<a id="tocSstock_v3_trade"></a>
+<a id="tocsstock_v3_trade"></a>
+
+```json
+{
+  "i": "1",
+  "m": "XETR",
+  "p": "57.84",
+  "s": "120",
+  "t": "2026-09-24T13:30:00.086175744Z"
+}
+```
+
+A trade print published by an execution venue.
+Trades may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|i|string|false|none|Trade ID. Omitted when the venue does not publish one.|
+|m|string|true|none|MIC of the execution venue that published the print. It can differ from the listing MIC in the symbol.|
+|p|string(decimal)|true|none|Trade price, in the native quotation currency.|
+|s|string(decimal)|true|none|Number of shares traded.|
+|t|[timestamp](#schematimestamp)|true|none|Timestamp in RFC-3339 format with nanosecond precision.|
+
+<h2 id="tocS_stock_v3_trades_resp">stock_v3_trades_resp</h2>
+<!-- backwards compatibility -->
+<a id="schemastock_v3_trades_resp"></a>
+<a id="schema_stock_v3_trades_resp"></a>
+<a id="tocSstock_v3_trades_resp"></a>
+<a id="tocsstock_v3_trades_resp"></a>
+
+```json
+{
+  "next_page_token": "string",
+  "trades": {
+    "property1": [
+      {
+        "i": "1",
+        "m": "XETR",
+        "p": "57.84",
+        "s": "120",
+        "t": "2026-09-24T13:30:00.086175744Z"
+      }
+    ],
+    "property2": [
+      {
+        "i": "1",
+        "m": "XETR",
+        "p": "57.84",
+        "s": "120",
+        "t": "2026-09-24T13:30:00.086175744Z"
+      }
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_page_token|[next_page_token](#schemanext_page_token)|true|none|Pagination token for the next page.|
+|trades|object|true|none|Trades keyed by symbol (`TICKER:MIC`).|
 
 <h2 id="tocS_timestamp">timestamp</h2>
 <!-- backwards compatibility -->

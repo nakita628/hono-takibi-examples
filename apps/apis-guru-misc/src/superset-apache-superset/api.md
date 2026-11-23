@@ -8,7 +8,7 @@ Base URLs:
 
 * <a href="http://superset.apache.local">http://superset.apache.local</a>
 
-* <a href="https://api.apis.guru/api/v1">https://api.apis.guru/api/v1</a>
+* <a href="/api/v1">/api/v1</a>
 
 # Authentication
 
@@ -3329,7 +3329,7 @@ Check favorited dashboards for current user
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|q|query|[get_fav_star_ids_schema](#schemaget_fav_star_ids_schema)|false|none|
+|q|query|[get_fav_star_ids_schema2](#schemaget_fav_star_ids_schema2)|false|none|
 
 > Example responses
 
@@ -6351,7 +6351,7 @@ Check favorited dashboards for current user
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|q|query|[get_fav_star_ids_schema](#schemaget_fav_star_ids_schema)|false|none|
+|q|query|[get_fav_star_ids_schema2](#schemaget_fav_star_ids_schema2)|false|none|
 
 > Example responses
 
@@ -22334,12 +22334,12 @@ jwt_refresh
 ]
 ```
 
-<h2 id="tocS_get_fav_star_ids_schema">get_fav_star_ids_schema</h2>
+<h2 id="tocS_get_fav_star_ids_schema2">get_fav_star_ids_schema2</h2>
 <!-- backwards compatibility -->
-<a id="schemaget_fav_star_ids_schema"></a>
-<a id="schema_get_fav_star_ids_schema"></a>
-<a id="tocSget_fav_star_ids_schema"></a>
-<a id="tocsget_fav_star_ids_schema"></a>
+<a id="schemaget_fav_star_ids_schema2"></a>
+<a id="schema_get_fav_star_ids_schema2"></a>
+<a id="tocSget_fav_star_ids_schema2"></a>
+<a id="tocsget_fav_star_ids_schema2"></a>
 
 ```json
 [

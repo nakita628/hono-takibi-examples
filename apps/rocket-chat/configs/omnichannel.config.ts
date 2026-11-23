@@ -6,6 +6,17 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/omnichannel.yaml',
   output: './src/omnichannel/routes.ts',
+  template: {},
+  type: { output: './src/omnichannel/types.ts' },
+  client: { output: './src/omnichannel/client.ts', baseUrl: '/' },
+  rpc: { output: './src/omnichannel/rpc.ts', parseResponse: true },
+  swr: { output: './src/omnichannel/hooks/swr.ts' },
+  'tanstack-query': { output: './src/omnichannel/hooks/tanstack-query.ts' },
+  'preact-query': { output: './src/omnichannel/hooks/preact-query.ts' },
+  'solid-query': { output: './src/omnichannel/hooks/solid-query.ts' },
+  'vue-query': { output: './src/omnichannel/hooks/vue-query.ts' },
+  'svelte-query': { output: './src/omnichannel/hooks/svelte-query.ts' },
+  'angular-query': { output: './src/omnichannel/hooks/angular-query.ts' },
   docs: {
     output: './src/omnichannel/api.md',
     curl: true,

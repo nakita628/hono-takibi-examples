@@ -1101,12 +1101,12 @@ Status Code **200**
 |» bot|object|false|none|Object containing details about the deactivated bot.<br>|
 |» » user_id|integer|false|none|The user ID of the deactivated bot.<br>|
 |» » full_name|string|false|none|The full name of the deactivated bot.<br>|
-|» *oneOf*|object|false|none|Event sent to all users when a bot has been deactivated.<br>Note that this is very similar to the bot_remove event<br>and one of them will be removed soon.<br>|
+|» *oneOf*|object|false|none|Event sent to the previous owner of a bot when the bot's<br>owner is changed, unless the previous owner is an<br>organization administrator or is deactivated.<br>|
 |» id|[EventIdSchema](#schemaeventidschema)|false|none|The ID of the event. Events appear in increasing order but may not be consecutive.<br>|
 |» type|object|false|none|none|
 |» op|string|false|none|none|
-|» bot|object|false|none|Object containing details about the deactivated bot.<br>|
-|» » user_id|integer|false|none|The user ID of the deactivated bot.<br>|
+|» bot|object|false|none|Object containing details about the bot.<br>|
+|» » user_id|integer|false|none|The user ID of the bot.<br>|
 |» *oneOf*|object|false|none|The simpler of two possible event types sent to all users<br>in a Zulip organization when the configuration of the<br>organization (realm) has changed.<br><br>Often individual settings are migrated from this format to<br>the [realm/update_dict](#realm-update_dict) event format when additional realm<br>settings are added whose values are coupled to each other<br>in some way. The specific values supported by this event<br>type are documented in the [realm/update_dict](#realm-update_dict)<br>documentation.<br><br>A correct client implementation should convert these<br>events into the corresponding [realm/update_dict](#realm-update_dict)<br>event and then process that.<br><br>**Changes**: Removed the `rendered_description` property in<br>Zulip 12.0 (feature level 464). It had been briefly present only<br>since feature level 462 and can be safely ignored by all clients.<br><br>Removed `extra_data` optional property in Zulip 10.0 (feature level 306).<br>The `extra_data` used to include an `upload_quota` field when changed<br>property was `plan_type`. The server now sends a standard<br>`realm/update_dict` event for plan changes.<br>|
 |» id|[EventIdSchema](#schemaeventidschema)|false|none|The ID of the event. Events appear in increasing order but may not be consecutive.<br>|
 |» type|object|false|none|none|
@@ -2028,6 +2028,7 @@ Status Code **200**
 |» web_stream_unreads_count_display_policy|integer|false|none|Configuration for which channels should be displayed with a numeric unread count in the left sidebar.<br>Channels that do not have an unread count will have a simple dot indicator for whether there are any<br>unread messages.<br><br>- 1 - All channels<br>- 2 - Unmuted channels and topics<br>- 3 - No channels<br><br>**Changes**: New in Zulip 8.0 (feature level 210).<br>|
 |» hide_ai_features|boolean|false|none|Controls whether user wants AI features like topic summarization to<br>be hidden in all Zulip clients.<br><br>**Changes**: New in Zulip 10.0 (feature level 350).<br>|
 |» web_inbox_show_channel_folders|boolean|false|none|Determines whether [channel folders](/help/channel-folders)<br>are used to organize how conversations with unread messages<br>are displayed in the web/desktop application's Inbox view.<br><br>**Changes**: New in Zulip 12.0 (feature level 431).<br>|
+|» web_left_sidebar_topics_order|integer|false|none|Whether the web/desktop application's left sidebar lists a<br>channel's resolved topics after its unresolved ones.<br>Subscriptions can override this per channel with the<br>subscription property of the same name.<br><br>- 1 - All topics in order of recent activity<br>- 2 - Resolved topics after unresolved topics<br><br>**Changes**: New in Zulip 14.0 (feature level 525).<br>|
 |» web_left_sidebar_show_channel_folders|boolean|false|none|Determines whether [channel folders](/help/channel-folders)<br>are used to organize how channels are displayed in the<br>web/desktop application's left sidebar.<br><br>**Changes**: New in Zulip 11.0 (feature level 411).<br>|
 |» web_left_sidebar_unreads_count_summary|boolean|false|none|Determines whether the web/desktop application's left sidebar displays<br>the unread message count summary.<br><br>**Changes**: New in Zulip 11.0 (feature level 398).<br>|
 |» timezone|string|false|none|The IANA identifier of the user's [profile time zone](/help/change-your-timezone),<br>which is used primarily to display the user's local time to other users.<br>|
@@ -2072,6 +2073,7 @@ Status Code **200**
 |» allow_private_data_export|boolean|false|none|Whether organization administrators are allowed to<br>export your private data.<br><br>**Changes**: New in Zulip 10.0 (feature level 293).<br>|
 |» email_address_visibility|[EmailAddressVisibility](#schemaemailaddressvisibility)|false|none|The [policy][permission-level] for [which other users][help-email-visibility]<br>in this organization can see the user's real email address.<br><br>- 1 = Everyone<br>- 2 = Members only<br>- 3 = Administrators only<br>- 4 = Nobody<br>- 5 = Moderators only<br><br>**Changes**: New in Zulip 7.0 (feature level 163), replacing the<br>realm-level setting.<br><br>[permission-level]: /api/roles-and-permissions#permission-levels<br>[help-email-visibility]: /help/configure-email-visibility<br>|
 |» web_navigate_to_sent_message|boolean|false|none|Web/desktop app setting for whether the user's view should<br>automatically go to the conversation where they sent a message.<br><br>**Changes**: New in Zulip 9.0 (feature level 268). Previously,<br>this behavior was not configurable.<br>|
+|» web_right_click_opens_message_actions_menu|boolean|false|none|Web/desktop app setting for whether right-clicking on a message<br>opens the message actions menu instead of the browser's context menu.<br><br>**Changes**: New in Zulip 14.0 (feature level 526).<br>|
 |user_topics|[object]|false|none|Present if `user_topic` is present in `fetch_event_types`.<br><br>**Changes**: New in Zulip 6.0 (feature level 134), deprecating and<br>replacing the previous `muted_topics` structure.<br>|
 |» stream_id|integer|false|none|The ID of the channel to which the topic belongs.<br>|
 |» topic_name|string|false|none|The name of the topic.<br><br>Note that the empty string topic may have been rewritten by the server to<br>the value of `realm_empty_topic_display_name` found in the [`POST /register`](/api/register-queue)<br>response depending on the value of the `empty_topic_name` [client capability][client-capabilities].<br><br>**Changes**: The `empty_topic_name` client capability is new in<br>Zulip 10.0 (feature level 334).<br><br>[client-capabilities]: /api/register-queue#parameter-client_capabilities<br>|
@@ -2358,6 +2360,7 @@ Status Code **200**
 |» web_stream_unreads_count_display_policy|integer|false|none|Configuration for which channels should be displayed with a numeric unread count in the left sidebar.<br>Channels that do not have an unread count will have a simple dot indicator for whether there are any<br>unread messages.<br><br>- 1 - All channels<br>- 2 - Unmuted channels and topics<br>- 3 - No channels<br><br>**Changes**: New in Zulip 8.0 (feature level 210).<br>|
 |» hide_ai_features|boolean|false|none|Controls whether user wants AI features like topic summarization to<br>be hidden in all Zulip clients.<br><br>**Changes**: New in Zulip 10.0 (feature level 350).<br>|
 |» web_inbox_show_channel_folders|boolean|false|none|Determines whether [channel folders](/help/channel-folders)<br>are used to organize how conversations with unread messages<br>are displayed in the web/desktop application's Inbox view.<br><br>**Changes**: New in Zulip 12.0 (feature level 431).<br>|
+|» web_left_sidebar_topics_order|integer|false|none|Whether the web/desktop application's left sidebar lists a<br>channel's resolved topics after its unresolved ones.<br>Subscriptions can override this per channel with the<br>subscription property of the same name.<br><br>- 1 - All topics in order of recent activity<br>- 2 - Resolved topics after unresolved topics<br><br>**Changes**: New in Zulip 14.0 (feature level 525).<br>|
 |» web_left_sidebar_show_channel_folders|boolean|false|none|Determines whether [channel folders](/help/channel-folders)<br>are used to organize how channels are displayed in the<br>web/desktop application's left sidebar.<br><br>**Changes**: New in Zulip 11.0 (feature level 411).<br>|
 |» web_left_sidebar_unreads_count_summary|boolean|false|none|Determines whether the web/desktop application's left sidebar displays<br>the unread message count summary.<br><br>**Changes**: New in Zulip 11.0 (feature level 398).<br>|
 |» enable_stream_desktop_notifications|boolean|false|none|Enable visual desktop notifications for channel messages.<br>|
@@ -2401,6 +2404,7 @@ Status Code **200**
 |» allow_private_data_export|boolean|false|none|Whether organization administrators are allowed to<br>export your private data.<br><br>**Changes**: New in Zulip 10.0 (feature level 293).<br>|
 |» email_address_visibility|[EmailAddressVisibility](#schemaemailaddressvisibility)|false|none|The [policy][permission-level] for [which other users][help-email-visibility]<br>in this organization can see the user's real email address.<br><br>- 1 = Everyone<br>- 2 = Members only<br>- 3 = Administrators only<br>- 4 = Nobody<br>- 5 = Moderators only<br><br>**Changes**: New in Zulip 7.0 (feature level 163), replacing the<br>realm-level setting.<br><br>[permission-level]: /api/roles-and-permissions#permission-levels<br>[help-email-visibility]: /help/configure-email-visibility<br>|
 |» web_navigate_to_sent_message|boolean|false|none|Web/desktop app setting for whether the user's view should<br>automatically go to the conversation where they sent a message.<br><br>**Changes**: New in Zulip 9.0 (feature level 268). Previously,<br>this behavior was not configurable.<br>|
+|» web_right_click_opens_message_actions_menu|boolean|false|none|Web/desktop app setting for whether right-clicking on a message<br>opens the message actions menu instead of the browser's context menu.<br><br>**Changes**: New in Zulip 14.0 (feature level 526).<br>|
 |realm_users|[[User](#schemauser)]|false|none|Present if `realm_user` is present in `fetch_event_types`.<br><br>A array of dictionaries where each entry describes a user<br>whose account has not been deactivated. Note that unlike<br>the usual User dictionary, this does not contain the `is_active`<br>key, as all the users present in this array have active accounts.<br><br>If the current user is a guest whose access to users is limited by a<br>`can_access_all_users_group` policy, and the event queue was registered<br>with the `user_list_incomplete` client capability, then users that the<br>current user cannot access will not be included in this array. If the<br>current user's access to a user is restricted but the client lacks this<br>capability, then that inaccessible user will appear in the users array as<br>an "Unknown user" object with the usual format but placeholder data whose<br>only variable content is the user ID.<br><br>See also `cross_realm_bots` and `realm_non_active_users`.<br><br>**Changes**: Before Zulip 8.0 (feature level 232), the<br>`user_list_incomplete` client capability did not exist, and so all<br>clients whose access to a new user was prevented by<br>`can_access_all_users_group` policy would receive a fake "Unknown<br>user" event for such users.<br>|
 |realm_non_active_users|[[User](#schemauser)]|false|none|Present if `realm_user` is present in `fetch_event_types`.<br><br>A array of dictionaries where each entry describes a user<br>whose account has been deactivated. Note that unlike<br>the usual User dictionary this does not contain the `is_active`<br>key as all the users present in this array have deactivated<br>accounts.<br>|
 |avatar_source|string|false|none|Present if `realm_user` is present in `fetch_event_types`.<br><br>The avatar data source type for the current user. Valid values are:<br><br>- "G" = Hosted by Gravatar<br>- "J" = Generated using Jdenticon<br>- "U" = Uploaded by user<br><br>**Changes**: The "J" value is new in Zulip 12.0 (feature level 466).<br>The avatar data source type for the current user.<br>|
@@ -3102,6 +3106,7 @@ Get all channels that the user is subscribed to.
       "invite_only": false,
       "name": "Denmark",
       "pin_to_top": false,
+      "web_left_sidebar_topics_order": 0,
       "push_notifications": false,
       "stream_id": 1,
       "subscribers": [
@@ -3123,6 +3128,7 @@ Get all channels that the user is subscribed to.
       "invite_only": false,
       "name": "Scotland",
       "pin_to_top": false,
+      "web_left_sidebar_topics_order": 0,
       "push_notifications": false,
       "stream_id": 3,
       "subscribers": [
@@ -3935,8 +3941,8 @@ subscription_data:
 |body|body|object|true|none|
 |» subscription_data|body|[object]|true|A list of objects that describe the changes that should be applied in<br>each subscription. Each object represents a subscription, and must have<br>a `stream_id` key that identifies the channel, as well as the `property`<br>being modified and its new `value`.<br>|
 |» » stream_id|body|integer|true|The unique ID of a channel.<br>|
-|» » property|body|[SubscriptionProperty](#schemasubscriptionproperty)|true|One of the channel properties described below:<br><br>- `"color"`: The hex value of the user's display color for the channel.<br><br>- `"is_muted"`: Whether the channel is [muted](/help/mute-a-channel).<br><br>  **Changes**: As of Zulip 6.0 (feature level 139), updating either<br>  `"is_muted"` or `"in_home_view"` generates two [subscription update<br>  events](/api/get-events#subscription-update), one for each property,<br>  that are sent to clients. Prior to this feature level, updating either<br>  property only generated a subscription update event for<br>  `"in_home_view"`. <br><br>  Prior to Zulip 2.1.0, this feature was represented<br>  by the more confusingly named `"in_home_view"` (with the<br>  opposite value: `in_home_view=!is_muted`); for<br>  backwards-compatibility, modern Zulip still accepts that property.<br><br>- `"pin_to_top"`: Whether to pin the channel at the top of the channel list.<br><br>- `"desktop_notifications"`: Whether to show desktop notifications<br>  for all messages sent to the channel.<br><br>- `"audible_notifications"`: Whether to play a sound<br>  notification for all messages sent to the channel.<br><br>- `"push_notifications"`: Whether to trigger a mobile push<br>  notification for all messages sent to the channel.<br><br>- `"email_notifications"`: Whether to trigger an email<br>  notification for all messages sent to the channel.<br><br>- `"wildcard_mentions_notify"`: Whether wildcard mentions trigger<br>  notifications as though they were personal mentions in this channel.<br>|
-|» » value|body|[SubscriptionPropertyValue](#schemasubscriptionpropertyvalue)|true|The new value of the property being modified.<br><br>If the property is `"color"`, then `value` is a string<br>representing the hex value of the user's display<br>color for the channel. For all other above properties,<br>`value` is a boolean.<br>|
+|» » property|body|[SubscriptionProperty](#schemasubscriptionproperty)|true|One of the channel properties described below:<br><br>- `"color"`: The hex value of the user's display color for the channel.<br><br>- `"is_muted"`: Whether the channel is [muted](/help/mute-a-channel).<br><br>  **Changes**: As of Zulip 6.0 (feature level 139), updating either<br>  `"is_muted"` or `"in_home_view"` generates two [subscription update<br>  events](/api/get-events#subscription-update), one for each property,<br>  that are sent to clients. Prior to this feature level, updating either<br>  property only generated a subscription update event for<br>  `"in_home_view"`. <br><br>  Prior to Zulip 2.1.0, this feature was represented<br>  by the more confusingly named `"in_home_view"` (with the<br>  opposite value: `in_home_view=!is_muted`); for<br>  backwards-compatibility, modern Zulip still accepts that property.<br><br>- `"pin_to_top"`: Whether to pin the channel at the top of the channel list.<br><br>- `"desktop_notifications"`: Whether to show desktop notifications<br>  for all messages sent to the channel.<br><br>- `"audible_notifications"`: Whether to play a sound<br>  notification for all messages sent to the channel.<br><br>- `"push_notifications"`: Whether to trigger a mobile push<br>  notification for all messages sent to the channel.<br><br>- `"email_notifications"`: Whether to trigger an email<br>  notification for all messages sent to the channel.<br><br>- `"wildcard_mentions_notify"`: Whether wildcard mentions trigger<br>  notifications as though they were personal mentions in this channel.<br><br>- `"web_left_sidebar_topics_order"`: Whether the web/desktop<br>  application's left sidebar lists the channel's resolved topics<br>  after its unresolved ones: 0 to follow the user's<br>  `web_left_sidebar_topics_order` setting, 1 for all topics in<br>  order of recent activity, 2 for resolved topics after unresolved<br>  topics.<br><br>  **Changes**: New in Zulip 14.0 (feature level 525).<br>|
+|» » value|body|[SubscriptionPropertyValue](#schemasubscriptionpropertyvalue)|true|The new value of the property being modified.<br><br>If the property is `"color"`, then `value` is a string<br>representing the hex value of the user's display<br>color for the channel. If the property is<br>`"web_left_sidebar_topics_order"`, then `value` is an integer.<br>For all other above properties, `value` is a boolean.<br><br>**Changes**: Integer values are new in Zulip 14.0 (feature level 525).<br>|
 
 #### Enumerated Values
 
@@ -3951,6 +3957,7 @@ subscription_data:
 |» » property|push_notifications|
 |» » property|email_notifications|
 |» » property|wildcard_mentions_notify|
+|» » property|web_left_sidebar_topics_order|
 
 > Example responses
 
@@ -4036,8 +4043,8 @@ value: "true"
 |---|---|---|---|---|
 |stream_id|path|integer|true|The ID of the channel to access.<br>|
 |body|body|object|true|none|
-|» property|body|[SubscriptionProperty](#schemasubscriptionproperty)|true|One of the channel properties described below:<br><br>- `"color"`: The hex value of the user's display color for the channel.<br><br>- `"is_muted"`: Whether the channel is [muted](/help/mute-a-channel).<br><br>  **Changes**: As of Zulip 6.0 (feature level 139), updating either<br>  `"is_muted"` or `"in_home_view"` generates two [subscription update<br>  events](/api/get-events#subscription-update), one for each property,<br>  that are sent to clients. Prior to this feature level, updating either<br>  property only generated a subscription update event for<br>  `"in_home_view"`. <br><br>  Prior to Zulip 2.1.0, this feature was represented<br>  by the more confusingly named `"in_home_view"` (with the<br>  opposite value: `in_home_view=!is_muted`); for<br>  backwards-compatibility, modern Zulip still accepts that property.<br><br>- `"pin_to_top"`: Whether to pin the channel at the top of the channel list.<br><br>- `"desktop_notifications"`: Whether to show desktop notifications<br>  for all messages sent to the channel.<br><br>- `"audible_notifications"`: Whether to play a sound<br>  notification for all messages sent to the channel.<br><br>- `"push_notifications"`: Whether to trigger a mobile push<br>  notification for all messages sent to the channel.<br><br>- `"email_notifications"`: Whether to trigger an email<br>  notification for all messages sent to the channel.<br><br>- `"wildcard_mentions_notify"`: Whether wildcard mentions trigger<br>  notifications as though they were personal mentions in this channel.<br>|
-|» value|body|[SubscriptionPropertyValue](#schemasubscriptionpropertyvalue)|true|The new value of the property being modified.<br><br>If the property is `"color"`, then `value` is a string<br>representing the hex value of the user's display<br>color for the channel. For all other above properties,<br>`value` is a boolean.<br>|
+|» property|body|[SubscriptionProperty](#schemasubscriptionproperty)|true|One of the channel properties described below:<br><br>- `"color"`: The hex value of the user's display color for the channel.<br><br>- `"is_muted"`: Whether the channel is [muted](/help/mute-a-channel).<br><br>  **Changes**: As of Zulip 6.0 (feature level 139), updating either<br>  `"is_muted"` or `"in_home_view"` generates two [subscription update<br>  events](/api/get-events#subscription-update), one for each property,<br>  that are sent to clients. Prior to this feature level, updating either<br>  property only generated a subscription update event for<br>  `"in_home_view"`. <br><br>  Prior to Zulip 2.1.0, this feature was represented<br>  by the more confusingly named `"in_home_view"` (with the<br>  opposite value: `in_home_view=!is_muted`); for<br>  backwards-compatibility, modern Zulip still accepts that property.<br><br>- `"pin_to_top"`: Whether to pin the channel at the top of the channel list.<br><br>- `"desktop_notifications"`: Whether to show desktop notifications<br>  for all messages sent to the channel.<br><br>- `"audible_notifications"`: Whether to play a sound<br>  notification for all messages sent to the channel.<br><br>- `"push_notifications"`: Whether to trigger a mobile push<br>  notification for all messages sent to the channel.<br><br>- `"email_notifications"`: Whether to trigger an email<br>  notification for all messages sent to the channel.<br><br>- `"wildcard_mentions_notify"`: Whether wildcard mentions trigger<br>  notifications as though they were personal mentions in this channel.<br><br>- `"web_left_sidebar_topics_order"`: Whether the web/desktop<br>  application's left sidebar lists the channel's resolved topics<br>  after its unresolved ones: 0 to follow the user's<br>  `web_left_sidebar_topics_order` setting, 1 for all topics in<br>  order of recent activity, 2 for resolved topics after unresolved<br>  topics.<br><br>  **Changes**: New in Zulip 14.0 (feature level 525).<br>|
+|» value|body|[SubscriptionPropertyValue](#schemasubscriptionpropertyvalue)|true|The new value of the property being modified.<br><br>If the property is `"color"`, then `value` is a string<br>representing the hex value of the user's display<br>color for the channel. If the property is<br>`"web_left_sidebar_topics_order"`, then `value` is an integer.<br>For all other above properties, `value` is a boolean.<br><br>**Changes**: Integer values are new in Zulip 14.0 (feature level 525).<br>|
 
 #### Enumerated Values
 
@@ -4052,6 +4059,7 @@ value: "true"
 |» property|push_notifications|
 |» property|email_notifications|
 |» property|wildcard_mentions_notify|
+|» property|web_left_sidebar_topics_order|
 
 > Example responses
 
@@ -9107,6 +9115,14 @@ curl https://example.zulipchat.com/api/v1/users/12/reactivate \
 user](https://zulip.com/help/deactivate-or-reactivate-a-user)
 given their user ID.
 
+If the user is a bot whose owner is deactivated, the acting user
+becomes the bot's owner, and the bot's API key is regenerated.
+
+**Changes**: Starting with Zulip 13.0 (feature level 516),
+the bot's API key is regenerated when reactivating a bot changes
+its owner. This change was also backported to the Zulip 12.x
+series, at feature level 501.
+
 
 <h3 id="reactivate-a-user-parameters">Parameters</h3>
 
@@ -12050,7 +12066,7 @@ curl https://example.zulipchat.com/api/v1/settings \
   -X PATCH \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H 'Accept: application/json' \
-  -d 'target_users=%7B%22user_ids%22%3A%5B6%2C8%5D%2C%22group_ids%22%3A%5B24%5D%2C%22skip_if_already_edited%22%3Afalse%7D&full_name=NewName&email=newname%40example.com&old_password=old12345&new_password=new12345&twenty_four_hour_time=true&web_mark_read_on_scroll_policy=1&web_channel_default_view=1&starred_message_counts=true&receives_typing_notifications=true&web_suggest_update_timezone=true&fluid_layout_width=true&high_contrast_mode=true&web_font_size_px=14&web_line_height_percent=122&color_scheme=1&enable_drafts_synchronization=true&translate_emoticons=true&display_emoji_reaction_users=false&default_language=en&web_home_view=all_messages&web_escape_navigates_to_home_view=true&left_side_userlist=true&emojiset=google&demote_inactive_streams=1&user_list_style=1&web_animate_image_previews=on_hover&web_stream_unreads_count_display_policy=2&hide_ai_features=true&web_inbox_show_channel_folders=true&web_left_sidebar_show_channel_folders=true&web_left_sidebar_unreads_count_summary=true&timezone=Asia%2FKolkata&enable_stream_desktop_notifications=true&enable_stream_email_notifications=true&enable_stream_push_notifications=true&enable_stream_audible_notifications=true&notification_sound=ding&enable_desktop_notifications=true&enable_sounds=true&email_notifications_batching_period_seconds=120&enable_offline_email_notifications=true&enable_offline_push_notifications=true&enable_online_push_notifications=true&enable_followed_topic_desktop_notifications=true&enable_followed_topic_email_notifications=true&enable_followed_topic_push_notifications=false&enable_followed_topic_audible_notifications=false&enable_digest_emails=true&enable_marketing_emails=true&enable_login_emails=true&message_content_in_email_notifications=true&pm_content_in_desktop_notifications=true&wildcard_mentions_notify=true&enable_followed_topic_wildcard_mentions_notify=true&desktop_icon_count_display=1&realm_name_in_email_notifications_policy=1&automatically_follow_topics_policy=1&automatically_unmute_topics_in_muted_streams_policy=1&automatically_follow_topics_where_mentioned=true&resolved_topic_notice_auto_read_policy=except_followed&presence_enabled=true&enter_sends=true&send_private_typing_notifications=true&send_stream_typing_notifications=true&send_read_receipts=true&allow_private_data_export=true&email_address_visibility=1&web_navigate_to_sent_message=true'
+  -d 'target_users=%7B%22user_ids%22%3A%5B6%2C8%5D%2C%22group_ids%22%3A%5B24%5D%2C%22skip_if_already_edited%22%3Afalse%7D&full_name=NewName&email=newname%40example.com&old_password=old12345&new_password=new12345&twenty_four_hour_time=true&web_mark_read_on_scroll_policy=1&web_channel_default_view=1&starred_message_counts=true&receives_typing_notifications=true&web_suggest_update_timezone=true&fluid_layout_width=true&high_contrast_mode=true&web_font_size_px=14&web_line_height_percent=122&color_scheme=1&enable_drafts_synchronization=true&translate_emoticons=true&display_emoji_reaction_users=false&default_language=en&web_home_view=all_messages&web_escape_navigates_to_home_view=true&left_side_userlist=true&emojiset=google&demote_inactive_streams=1&user_list_style=1&web_animate_image_previews=on_hover&web_stream_unreads_count_display_policy=2&hide_ai_features=true&web_inbox_show_channel_folders=true&web_left_sidebar_topics_order=1&web_left_sidebar_show_channel_folders=true&web_left_sidebar_unreads_count_summary=true&timezone=Asia%2FKolkata&enable_stream_desktop_notifications=true&enable_stream_email_notifications=true&enable_stream_push_notifications=true&enable_stream_audible_notifications=true&notification_sound=ding&enable_desktop_notifications=true&enable_sounds=true&email_notifications_batching_period_seconds=120&enable_offline_email_notifications=true&enable_offline_push_notifications=true&enable_online_push_notifications=true&enable_followed_topic_desktop_notifications=true&enable_followed_topic_email_notifications=true&enable_followed_topic_push_notifications=false&enable_followed_topic_audible_notifications=false&enable_digest_emails=true&enable_marketing_emails=true&enable_login_emails=true&message_content_in_email_notifications=true&pm_content_in_desktop_notifications=true&wildcard_mentions_notify=true&enable_followed_topic_wildcard_mentions_notify=true&desktop_icon_count_display=1&realm_name_in_email_notifications_policy=1&automatically_follow_topics_policy=1&automatically_unmute_topics_in_muted_streams_policy=1&automatically_follow_topics_where_mentioned=true&resolved_topic_notice_auto_read_policy=except_followed&presence_enabled=true&enter_sends=true&send_private_typing_notifications=true&send_stream_typing_notifications=true&send_read_receipts=true&allow_private_data_export=true&email_address_visibility=1&web_navigate_to_sent_message=true&web_right_click_opens_message_actions_menu=false'
 ```
 
 `PATCH /settings`
@@ -12137,6 +12153,7 @@ web_animate_image_previews: on_hover
 web_stream_unreads_count_display_policy: 2
 hide_ai_features: true
 web_inbox_show_channel_folders: true
+web_left_sidebar_topics_order: 1
 web_left_sidebar_show_channel_folders: true
 web_left_sidebar_unreads_count_summary: true
 timezone: Asia/Kolkata
@@ -12176,6 +12193,7 @@ send_read_receipts: true
 allow_private_data_export: true
 email_address_visibility: 1
 web_navigate_to_sent_message: true
+web_right_click_opens_message_actions_menu: false
 ```
 
 <h3 id="update-settings-parameters">Parameters</h3>
@@ -12216,6 +12234,7 @@ web_navigate_to_sent_message: true
 |» web_stream_unreads_count_display_policy|body|integer|false|Configuration for which channels should be displayed with a numeric unread count in the left sidebar.<br>Channels that do not have an unread count will have a simple dot indicator for whether there are any<br>unread messages.<br><br>- 1 - All channels<br>- 2 - Unmuted channels and topics<br>- 3 - No channels<br><br>**Changes**: New in Zulip 8.0 (feature level 210).<br>|
 |» hide_ai_features|body|boolean|false|Controls whether user wants AI features like topic summarization to<br>be hidden in all Zulip clients.<br><br>**Changes**: New in Zulip 10.0 (feature level 350).<br>|
 |» web_inbox_show_channel_folders|body|boolean|false|Determines whether [channel folders](/help/channel-folders)<br>are used to organize how conversations with unread messages<br>are displayed in the web/desktop application's Inbox view.<br><br>**Changes**: New in Zulip 12.0 (feature level 431).<br>|
+|» web_left_sidebar_topics_order|body|integer|false|Whether the web/desktop application's left sidebar lists a<br>channel's resolved topics after its unresolved ones.<br>Subscriptions can override this per channel with the<br>subscription property of the same name.<br><br>- 1 - All topics in order of recent activity<br>- 2 - Resolved topics after unresolved topics<br><br>**Changes**: New in Zulip 14.0 (feature level 525).<br>|
 |» web_left_sidebar_show_channel_folders|body|boolean|false|Determines whether [channel folders](/help/channel-folders)<br>are used to organize how channels are displayed in the<br>web/desktop application's left sidebar.<br><br>**Changes**: New in Zulip 11.0 (feature level 411).<br>|
 |» web_left_sidebar_unreads_count_summary|body|boolean|false|Determines whether the web/desktop application's left sidebar displays<br>the unread message count summary.<br><br>**Changes**: New in Zulip 11.0 (feature level 398).<br>|
 |» timezone|body|string|false|The IANA identifier of the user's [profile time zone](/help/change-your-timezone),<br>which is used primarily to display the user's local time to other users.<br><br>**Changes**: Before Zulip 5.0 (feature level 80), this setting was managed by<br>the `PATCH /settings/display` endpoint.<br><br>Unnecessary JSON-encoding of this parameter was removed in Zulip 4.0 (feature level 64).<br>|
@@ -12255,6 +12274,7 @@ web_navigate_to_sent_message: true
 |» allow_private_data_export|body|boolean|false|Whether organization administrators are allowed to<br>export your private data.<br><br>**Changes**: New in Zulip 10.0 (feature level 293).<br>|
 |» email_address_visibility|body|integer|false|The [policy][permission-level] this user has selected for [which other<br>users][help-email-visibility] in this organization can see their real<br>email address.<br><br>- 1 = Everyone<br>- 2 = Members only<br>- 3 = Administrators only<br>- 4 = Nobody<br>- 5 = Moderators only<br><br>**Changes**: New in Zulip 7.0 (feature level 163), replacing the<br>realm-level setting.<br><br>[permission-level]: /api/roles-and-permissions#permission-levels<br>[help-email-visibility]: /help/configure-email-visibility<br>|
 |» web_navigate_to_sent_message|body|boolean|false|Web/desktop app setting for whether the user's view should<br>automatically go to the conversation where they sent a message.<br><br>**Changes**: New in Zulip 9.0 (feature level 268). Previously,<br>this behavior was not configurable.<br>|
+|» web_right_click_opens_message_actions_menu|body|boolean|false|Web/desktop app setting for whether right-clicking on a message<br>opens the message actions menu instead of the browser's context menu.<br><br>**Changes**: New in Zulip 14.0 (feature level 526).<br>|
 
 #### Enumerated Values
 
@@ -12281,6 +12301,8 @@ web_navigate_to_sent_message: true
 |» web_stream_unreads_count_display_policy|1|
 |» web_stream_unreads_count_display_policy|2|
 |» web_stream_unreads_count_display_policy|3|
+|» web_left_sidebar_topics_order|1|
+|» web_left_sidebar_topics_order|2|
 |» desktop_icon_count_display|1|
 |» desktop_icon_count_display|2|
 |» desktop_icon_count_display|3|
@@ -17979,7 +18001,7 @@ curl https://example.zulipchat.com/api/v1/realm/user_settings_defaults \
   -X PATCH \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H 'Accept: application/json' \
-  -d 'starred_message_counts=true&receives_typing_notifications=true&web_suggest_update_timezone=true&fluid_layout_width=true&high_contrast_mode=true&web_mark_read_on_scroll_policy=1&web_channel_default_view=1&web_font_size_px=14&web_line_height_percent=122&color_scheme=1&enable_drafts_synchronization=true&translate_emoticons=true&display_emoji_reaction_users=false&web_home_view=all_messages&web_escape_navigates_to_home_view=true&left_side_userlist=true&emojiset=google&demote_inactive_streams=1&user_list_style=1&web_animate_image_previews=on_hover&web_stream_unreads_count_display_policy=2&hide_ai_features=true&web_inbox_show_channel_folders=true&web_left_sidebar_show_channel_folders=true&web_left_sidebar_unreads_count_summary=true&enable_stream_desktop_notifications=true&enable_stream_email_notifications=true&enable_stream_push_notifications=true&enable_stream_audible_notifications=true&notification_sound=ding&enable_desktop_notifications=true&enable_sounds=true&enable_followed_topic_desktop_notifications=true&enable_followed_topic_email_notifications=true&enable_followed_topic_push_notifications=false&enable_followed_topic_audible_notifications=false&email_notifications_batching_period_seconds=120&enable_offline_email_notifications=true&enable_offline_push_notifications=true&enable_online_push_notifications=true&enable_digest_emails=true&message_content_in_email_notifications=true&pm_content_in_desktop_notifications=true&wildcard_mentions_notify=true&enable_followed_topic_wildcard_mentions_notify=true&desktop_icon_count_display=1&realm_name_in_email_notifications_policy=1&automatically_follow_topics_policy=1&automatically_unmute_topics_in_muted_streams_policy=1&automatically_follow_topics_where_mentioned=true&resolved_topic_notice_auto_read_policy=except_followed&presence_enabled=true&enter_sends=true&twenty_four_hour_time=true&send_private_typing_notifications=true&send_stream_typing_notifications=true&send_read_receipts=true&email_address_visibility=1&web_navigate_to_sent_message=true'
+  -d 'starred_message_counts=true&receives_typing_notifications=true&web_suggest_update_timezone=true&fluid_layout_width=true&high_contrast_mode=true&web_mark_read_on_scroll_policy=1&web_channel_default_view=1&web_font_size_px=14&web_line_height_percent=122&color_scheme=1&enable_drafts_synchronization=true&translate_emoticons=true&display_emoji_reaction_users=false&web_home_view=all_messages&web_escape_navigates_to_home_view=true&left_side_userlist=true&emojiset=google&demote_inactive_streams=1&user_list_style=1&web_animate_image_previews=on_hover&web_stream_unreads_count_display_policy=2&hide_ai_features=true&web_inbox_show_channel_folders=true&web_left_sidebar_topics_order=1&web_left_sidebar_show_channel_folders=true&web_left_sidebar_unreads_count_summary=true&enable_stream_desktop_notifications=true&enable_stream_email_notifications=true&enable_stream_push_notifications=true&enable_stream_audible_notifications=true&notification_sound=ding&enable_desktop_notifications=true&enable_sounds=true&enable_followed_topic_desktop_notifications=true&enable_followed_topic_email_notifications=true&enable_followed_topic_push_notifications=false&enable_followed_topic_audible_notifications=false&email_notifications_batching_period_seconds=120&enable_offline_email_notifications=true&enable_offline_push_notifications=true&enable_online_push_notifications=true&enable_digest_emails=true&message_content_in_email_notifications=true&pm_content_in_desktop_notifications=true&wildcard_mentions_notify=true&enable_followed_topic_wildcard_mentions_notify=true&desktop_icon_count_display=1&realm_name_in_email_notifications_policy=1&automatically_follow_topics_policy=1&automatically_unmute_topics_in_muted_streams_policy=1&automatically_follow_topics_where_mentioned=true&resolved_topic_notice_auto_read_policy=except_followed&presence_enabled=true&enter_sends=true&twenty_four_hour_time=true&send_private_typing_notifications=true&send_stream_typing_notifications=true&send_read_receipts=true&email_address_visibility=1&web_navigate_to_sent_message=true&web_right_click_opens_message_actions_menu=false'
 ```
 
 `PATCH /realm/user_settings_defaults`
@@ -18037,6 +18059,7 @@ web_animate_image_previews: on_hover
 web_stream_unreads_count_display_policy: 2
 hide_ai_features: true
 web_inbox_show_channel_folders: true
+web_left_sidebar_topics_order: 1
 web_left_sidebar_show_channel_folders: true
 web_left_sidebar_unreads_count_summary: true
 enable_stream_desktop_notifications: true
@@ -18073,6 +18096,7 @@ send_stream_typing_notifications: true
 send_read_receipts: true
 email_address_visibility: 1
 web_navigate_to_sent_message: true
+web_right_click_opens_message_actions_menu: false
 ```
 
 <h3 id="update-realm-level-defaults-of-user-settings-parameters">Parameters</h3>
@@ -18103,6 +18127,7 @@ web_navigate_to_sent_message: true
 |» web_stream_unreads_count_display_policy|body|integer|false|Configuration for which channels should be displayed with a numeric unread count in the left sidebar.<br>Channels that do not have an unread count will have a simple dot indicator for whether there are any<br>unread messages.<br><br>- 1 - All channels<br>- 2 - Unmuted channels and topics<br>- 3 - No channels<br><br>**Changes**: New in Zulip 8.0 (feature level 210).<br>|
 |» hide_ai_features|body|boolean|false|Controls whether user wants AI features like topic summarization to<br>be hidden in all Zulip clients.<br><br>**Changes**: New in Zulip 10.0 (feature level 350).<br>|
 |» web_inbox_show_channel_folders|body|boolean|false|Determines whether [channel folders](/help/channel-folders)<br>are used to organize how conversations with unread messages<br>are displayed in the web/desktop application's Inbox view.<br><br>**Changes**: New in Zulip 12.0 (feature level 431).<br>|
+|» web_left_sidebar_topics_order|body|integer|false|Whether the web/desktop application's left sidebar lists a<br>channel's resolved topics after its unresolved ones.<br>Subscriptions can override this per channel with the<br>subscription property of the same name.<br><br>- 1 - All topics in order of recent activity<br>- 2 - Resolved topics after unresolved topics<br><br>**Changes**: New in Zulip 14.0 (feature level 525).<br>|
 |» web_left_sidebar_show_channel_folders|body|boolean|false|Determines whether [channel folders](/help/channel-folders)<br>are used to organize how channels are displayed in the<br>web/desktop application's left sidebar.<br><br>**Changes**: New in Zulip 11.0 (feature level 411).<br>|
 |» web_left_sidebar_unreads_count_summary|body|boolean|false|Determines whether the web/desktop application's left sidebar displays<br>the unread message count summary.<br><br>**Changes**: New in Zulip 11.0 (feature level 398).<br>|
 |» enable_stream_desktop_notifications|body|boolean|false|Enable visual desktop notifications for channel messages.<br>|
@@ -18139,6 +18164,7 @@ web_navigate_to_sent_message: true
 |» send_read_receipts|body|boolean|false|Whether other users are allowed to see whether you've<br>read messages.<br><br>**Changes**: New in Zulip 5.0 (feature level 105).<br>|
 |» email_address_visibility|body|integer|false|The [policy][permission-level] for [which other users][help-email-visibility]<br>in this organization can see the user's real email address.<br><br>- 1 = Everyone<br>- 2 = Members only<br>- 3 = Administrators only<br>- 4 = Nobody<br>- 5 = Moderators only<br><br>**Changes**: New in Zulip 7.0 (feature level 163), replacing the<br>realm-level setting.<br><br>[permission-level]: /api/roles-and-permissions#permission-levels<br>[help-email-visibility]: /help/configure-email-visibility<br>|
 |» web_navigate_to_sent_message|body|boolean|false|Web/desktop app setting for whether the user's view should<br>automatically go to the conversation where they sent a message.<br><br>**Changes**: New in Zulip 9.0 (feature level 268). Previously,<br>this behavior was not configurable.<br>|
+|» web_right_click_opens_message_actions_menu|body|boolean|false|Web/desktop app setting for whether right-clicking on a message<br>opens the message actions menu instead of the browser's context menu.<br><br>**Changes**: New in Zulip 14.0 (feature level 526).<br>|
 
 #### Enumerated Values
 
@@ -18166,6 +18192,8 @@ web_navigate_to_sent_message: true
 |» web_stream_unreads_count_display_policy|1|
 |» web_stream_unreads_count_display_policy|2|
 |» web_stream_unreads_count_display_policy|3|
+|» web_left_sidebar_topics_order|1|
+|» web_left_sidebar_topics_order|2|
 |» desktop_icon_count_display|1|
 |» desktop_icon_count_display|2|
 |» desktop_icon_count_display|3|
@@ -21288,6 +21316,7 @@ users as moderators.
   "audible_notifications": true,
   "pin_to_top": true,
   "is_muted": true,
+  "web_left_sidebar_topics_order": 0,
   "in_home_view": true,
   "is_announcement_only": true,
   "is_web_public": true,
@@ -21337,6 +21366,7 @@ users as moderators.
 |audible_notifications|boolean \| null|false|none|A boolean specifying whether audible notifications<br>are enabled for the given channel.<br><br>A `null` value means the value of this setting<br>should be inherited from the user-level default<br>setting, `enable_stream_audible_notifications`, for<br>this channel.<br>|
 |pin_to_top|boolean|false|none|A boolean specifying whether the given channel has been pinned<br>to the top.<br>|
 |is_muted|boolean|false|none|Whether the user has muted the channel. Muted channels do<br>not count towards your total unread count and do not show<br>up in the `Combined feed` view (previously known as `All messages`).<br><br>**Changes**: Prior to Zulip 2.1.0, this feature was<br>represented by the more confusingly named `in_home_view` (with the<br>opposite value, `in_home_view=!is_muted`).<br>|
+|web_left_sidebar_topics_order|integer|false|none|Whether the web/desktop application's left sidebar lists the<br>channel's resolved topics after its unresolved ones.<br><br>- 0 - The value of this setting should be inherited from the<br>  user-level default setting, `web_left_sidebar_topics_order`,<br>  for this channel.<br>- 1 - All topics in order of recent activity<br>- 2 - Resolved topics after unresolved topics<br><br>**Changes**: New in Zulip 14.0 (feature level 525).<br>|
 |in_home_view|boolean|false|none|**Deprecated.** Legacy property for if the given channel is muted, with inverted meaning.<br><br>**Changes**: Deprecated in Zulip 2.1.0. Clients should use `is_muted`<br>where available.<br>|
 |is_announcement_only|boolean|false|none|**Deprecated.** Whether only organization administrators can post to the channel.<br><br>**Changes**: Deprecated in Zulip 3.0 (feature level 1). Clients<br>should use `stream_post_policy` instead.<br>|
 |is_web_public|boolean|false|none|Whether the channel has been configured to allow unauthenticated<br>access to its message history from the web.<br>|
@@ -21368,6 +21398,9 @@ users as moderators.
 
 |Property|Value|
 |---|---|
+|web_left_sidebar_topics_order|0|
+|web_left_sidebar_topics_order|1|
+|web_left_sidebar_topics_order|2|
 |topics_policy|inherit|
 |topics_policy|allow_empty_topic|
 |topics_policy|disable_empty_topic|
@@ -23947,6 +23980,14 @@ One of the channel properties described below:
 - `"wildcard_mentions_notify"`: Whether wildcard mentions trigger
   notifications as though they were personal mentions in this channel.
 
+- `"web_left_sidebar_topics_order"`: Whether the web/desktop
+  application's left sidebar lists the channel's resolved topics
+  after its unresolved ones: 0 to follow the user's
+  `web_left_sidebar_topics_order` setting, 1 for all topics in
+  order of recent activity, 2 for resolved topics after unresolved
+  topics.<br>
+  **Changes**: New in Zulip 14.0 (feature level 525).
+
 <h2 id="tocS_SubscriptionPropertyValue">SubscriptionPropertyValue</h2>
 <!-- backwards compatibility -->
 <a id="schemasubscriptionpropertyvalue"></a>
@@ -23962,12 +24003,16 @@ The new value of the property being modified.
 
 If the property is `"color"`, then `value` is a string
 representing the hex value of the user's display
-color for the channel. For all other above properties,
-`value` is a boolean.
+color for the channel. If the property is
+`"web_left_sidebar_topics_order"`, then `value` is an integer.
+For all other above properties, `value` is a boolean.
+
+**Changes**: Integer values are new in Zulip 14.0 (feature level 525).
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*oneOf*|boolean|false|none|The new boolean value for the specified property.<br>|
+|*oneOf*|integer|false|none|The new integer value for the specified property.<br>|
 |*oneOf*|string|false|none|The hex value of the user's display color for the channel.<br>|

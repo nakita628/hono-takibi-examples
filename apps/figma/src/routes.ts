@@ -25,8 +25,8 @@ type IsLayerTraitType = {
   scrollBehavior: 'SCROLLS' | 'FIXED' | 'STICKY_SCROLLS'
   rotation?: number
   componentPropertyReferences?: { [key: string]: string }
-  pluginData?: { [key: string]: unknown }
-  sharedPluginData?: { [key: string]: unknown }
+  pluginData?: unknown
+  sharedPluginData?: unknown
   boundVariables?: {
     size?: { x?: z.infer<typeof VariableAliasSchema>; y?: z.infer<typeof VariableAliasSchema> }
     individualStrokeWeights?: {
@@ -197,8 +197,8 @@ const VectorSchema = z
   .openapi('Vector')
 
 type HasLayoutTraitType = {
-  absoluteBoundingBox: z.infer<typeof RectangleSchema> | ({ [key: string]: unknown } | null)
-  absoluteRenderBounds: z.infer<typeof RectangleSchema> | ({ [key: string]: unknown } | null)
+  absoluteBoundingBox: z.infer<typeof RectangleSchema> | null
+  absoluteRenderBounds: z.infer<typeof RectangleSchema> | null
   preserveRatio?: boolean
   constraints?: z.infer<typeof LayoutConstraintSchema>
   relativeTransform?: z.infer<typeof TransformSchema>
@@ -226,10 +226,6 @@ type HasLayoutTraitType = {
   gridColumnAnchorIndex?: number
 }
 
-const PaintSchema: z.ZodType<PaintType> = z
-  .lazy(() => z.xor([SolidPaintSchema, GradientPaintSchema, ImagePaintSchema, PatternPaintSchema]))
-  .openapi('Paint')
-
 type RGBAType = { r: number; g: number; b: number; a: number }
 
 const RGBASchema: z.ZodType<RGBAType> = z
@@ -241,6 +237,228 @@ const RGBASchema: z.ZodType<RGBAType> = z
   })
   .openapi({ description: 'An RGBA color', required: ['r', 'g', 'b', 'a'] })
   .openapi('RGBA')
+
+const BlendModeSchema = z
+  .enum([
+    'PASS_THROUGH',
+    'NORMAL',
+    'DARKEN',
+    'MULTIPLY',
+    'LINEAR_BURN',
+    'COLOR_BURN',
+    'LIGHTEN',
+    'SCREEN',
+    'LINEAR_DODGE',
+    'COLOR_DODGE',
+    'OVERLAY',
+    'SOFT_LIGHT',
+    'HARD_LIGHT',
+    'DIFFERENCE',
+    'EXCLUSION',
+    'HUE',
+    'SATURATION',
+    'COLOR',
+    'LUMINOSITY',
+  ])
+  .openapi({
+    description:
+      'This type is a string enum with the following possible values\n\nNormal blends:\n- `PASS_THROUGH` (only applicable to objects with children)\n- `NORMAL`\n\nDarken:\n- `DARKEN`\n- `MULTIPLY`\n- `LINEAR_BURN`\n- `COLOR_BURN`\n\nLighten:\n- `LIGHTEN`\n- `SCREEN`\n- `LINEAR_DODGE`\n- `COLOR_DODGE`\n\nContrast:\n- `OVERLAY`\n- `SOFT_LIGHT`\n- `HARD_LIGHT`\n\nInversion:\n- `DIFFERENCE`\n- `EXCLUSION`\n\nComponent:\n- `HUE`\n- `SATURATION`\n- `COLOR`\n- `LUMINOSITY`',
+  })
+  .openapi('BlendMode')
+
+const BasePaintSchema = z
+  .object({
+    visible: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'Is the paint enabled?' }),
+    opacity: z
+      .number()
+      .min(0)
+      .max(1)
+      .default(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Overall opacity of paint (colors within the paint can also have opacity values which would blend with this)',
+      }),
+    blendMode: BlendModeSchema.openapi({
+      description: 'How this node blends with nodes behind it in the scene',
+    }),
+  })
+  .openapi({ required: ['blendMode'] })
+  .openapi('BasePaint')
+
+const SolidPaintSchema = z
+  .object({
+    type: z
+      .literal('SOLID')
+      .openapi({
+        description:
+          'The string literal "SOLID" representing the paint\'s type. Always check the `type` before reading other properties.',
+      }),
+    color: RGBASchema.openapi({ description: 'Solid color of the paint' }),
+    boundVariables: z
+      .object({ color: VariableAliasSchema.exactOptional() })
+      .exactOptional()
+      .openapi({
+        description: 'The variables bound to a particular field on this paint',
+        required: [],
+      }),
+  })
+  .openapi({ description: 'A solid color', required: ['type', 'color'] })
+  .and(BasePaintSchema)
+  .openapi('SolidPaint')
+
+const ColorStopSchema = z
+  .object({
+    position: z
+      .number()
+      .openapi({ description: 'Value between 0 and 1 representing position along gradient axis.' }),
+    color: RGBASchema.openapi({ description: 'Color attached to corresponding position.' }),
+    boundVariables: z
+      .object({ color: VariableAliasSchema.exactOptional() })
+      .exactOptional()
+      .openapi({ description: 'The variables bound to a particular gradient stop', required: [] }),
+  })
+  .openapi({
+    description:
+      'A single color stop with its position along the gradient axis, color, and bound variables if any',
+    required: ['position', 'color'],
+  })
+  .openapi('ColorStop')
+
+const GradientPaintSchema = z
+  .object({
+    type: z
+      .enum(['GRADIENT_LINEAR', 'GRADIENT_RADIAL', 'GRADIENT_ANGULAR', 'GRADIENT_DIAMOND'])
+      .openapi({
+        description:
+          "The string literal representing the paint's type. Always check the `type` before reading other properties.",
+      }),
+    gradientHandlePositions: z
+      .array(VectorSchema)
+      .openapi({
+        description:
+          'This field contains three vectors, each of which are a position in normalized object space (normalized object space is if the top left corner of the bounding box of the object is (0, 0) and the bottom right is (1,1)). The first position corresponds to the start of the gradient (value 0 for the purposes of calculating gradient stops), the second position is the end of the gradient (value 1), and the third handle position determines the width of the gradient.',
+      }),
+    gradientStops: z
+      .array(ColorStopSchema)
+      .openapi({
+        description:
+          'Positions of key points along the gradient axis with the colors anchored there. Colors along the gradient are interpolated smoothly between neighboring gradient stops.',
+      }),
+  })
+  .openapi({
+    description: 'A gradient',
+    required: ['type', 'gradientHandlePositions', 'gradientStops'],
+  })
+  .and(BasePaintSchema)
+  .openapi('GradientPaint')
+
+const ImageFiltersSchema = z
+  .object({
+    exposure: z.number().default(0).exactOptional(),
+    contrast: z.number().default(0).exactOptional(),
+    saturation: z.number().default(0).exactOptional(),
+    temperature: z.number().default(0).exactOptional(),
+    tint: z.number().default(0).exactOptional(),
+    highlights: z.number().default(0).exactOptional(),
+    shadows: z.number().default(0).exactOptional(),
+  })
+  .openapi({ description: 'Image filters to apply to the node.', required: [] })
+  .openapi('ImageFilters')
+
+const ImagePaintSchema = z
+  .object({
+    type: z
+      .literal('IMAGE')
+      .openapi({
+        description:
+          'The string literal "IMAGE" representing the paint\'s type. Always check the `type` before reading other properties.',
+      }),
+    scaleMode: z
+      .enum(['FILL', 'FIT', 'TILE', 'STRETCH'])
+      .openapi({ description: 'Image scaling mode.' }),
+    imageRef: z
+      .string()
+      .openapi({
+        description:
+          'A reference to an image embedded in this node. To download the image using this reference, use the `GET file images` endpoint to retrieve the mapping from image references to image URLs.',
+      }),
+    imageTransform: TransformSchema.exactOptional().openapi({
+      description:
+        'Affine transform applied to the image, only present if `scaleMode` is `STRETCH`',
+    }),
+    scalingFactor: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Amount image is scaled by in tiling, only present if scaleMode is `TILE`.',
+      }),
+    filters: ImageFiltersSchema.exactOptional().openapi({
+      description:
+        'Defines what image filters have been applied to this paint, if any. If this property is not defined, no filters have been applied.',
+    }),
+    rotation: z
+      .number()
+      .default(0)
+      .exactOptional()
+      .openapi({ description: 'Image rotation, in degrees.' }),
+    gifRef: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to an animated GIF embedded in this node. To download the image using this reference, use the `GET file images` endpoint to retrieve the mapping from image references to image URLs.',
+      }),
+  })
+  .openapi({ description: 'An image', required: ['type', 'scaleMode', 'imageRef'] })
+  .and(BasePaintSchema)
+  .openapi('ImagePaint')
+
+const PatternPaintSchema = z
+  .object({
+    type: z
+      .literal('PATTERN')
+      .openapi({
+        description:
+          'The string literal "PATTERN" representing the paint\'s type. Always check the `type` before reading other properties.',
+      }),
+    sourceNodeId: z
+      .string()
+      .openapi({ description: 'The node id of the source node for the pattern' }),
+    tileType: z
+      .enum(['RECTANGULAR', 'HORIZONTAL_HEXAGONAL', 'VERTICAL_HEXAGONAL'])
+      .openapi({ description: 'The tile type for the pattern' }),
+    scalingFactor: z.number().openapi({ description: 'The scaling factor for the pattern' }),
+    spacing: VectorSchema.openapi({ description: 'The spacing for the pattern' }),
+    horizontalAlignment: z
+      .enum(['START', 'CENTER', 'END'])
+      .openapi({ description: 'The horizontal alignment for the pattern' }),
+    verticalAlignment: z
+      .enum(['START', 'CENTER', 'END'])
+      .openapi({ description: 'The vertical alignment for the pattern' }),
+  })
+  .openapi({
+    description: 'A pattern',
+    required: [
+      'type',
+      'sourceNodeId',
+      'tileType',
+      'scalingFactor',
+      'spacing',
+      'horizontalAlignment',
+      'verticalAlignment',
+    ],
+  })
+  .and(BasePaintSchema)
+  .openapi('PatternPaint')
+
+const PaintSchema = z
+  .xor([SolidPaintSchema, GradientPaintSchema, ImagePaintSchema, PatternPaintSchema])
+  .openapi('Paint')
 
 const LayoutGridSchema = z
   .object({
@@ -320,34 +538,6 @@ type HasFramePropertiesTraitType = {
   counterAxisSpacing?: number
   counterAxisAlignContent?: 'AUTO' | 'SPACE_BETWEEN'
 }
-
-const BlendModeSchema = z
-  .enum([
-    'PASS_THROUGH',
-    'NORMAL',
-    'DARKEN',
-    'MULTIPLY',
-    'LINEAR_BURN',
-    'COLOR_BURN',
-    'LIGHTEN',
-    'SCREEN',
-    'LINEAR_DODGE',
-    'COLOR_DODGE',
-    'OVERLAY',
-    'SOFT_LIGHT',
-    'HARD_LIGHT',
-    'DIFFERENCE',
-    'EXCLUSION',
-    'HUE',
-    'SATURATION',
-    'COLOR',
-    'LUMINOSITY',
-  ])
-  .openapi({
-    description:
-      'This type is a string enum with the following possible values\n\nNormal blends:\n- `PASS_THROUGH` (only applicable to objects with children)\n- `NORMAL`\n\nDarken:\n- `DARKEN`\n- `MULTIPLY`\n- `LINEAR_BURN`\n- `COLOR_BURN`\n\nLighten:\n- `LIGHTEN`\n- `SCREEN`\n- `LINEAR_DODGE`\n- `COLOR_DODGE`\n\nContrast:\n- `OVERLAY`\n- `SOFT_LIGHT`\n- `HARD_LIGHT`\n\nInversion:\n- `DIFFERENCE`\n- `EXCLUSION`\n\nComponent:\n- `HUE`\n- `SATURATION`\n- `COLOR`\n- `LUMINOSITY`',
-  })
-  .openapi('BlendMode')
 
 type HasBlendModeAndOpacityTraitType = {
   blendMode: z.infer<typeof BlendModeSchema>
@@ -477,9 +667,7 @@ const PathSchema = z
 
 type HasGeometryTraitType = z.infer<typeof MinimalFillsTraitSchema> &
   z.infer<typeof MinimalStrokesTraitSchema> & {
-    fillOverrideTable?: {
-      [key: string]: z.infer<typeof PaintOverrideSchema> | ({ [key: string]: unknown } | null)
-    }
+    fillOverrideTable?: { [key: string]: z.infer<typeof PaintOverrideSchema> | null }
     fillGeometry?: z.infer<typeof PathSchema>[]
     strokeGeometry?: z.infer<typeof PathSchema>[]
     strokeCap?:
@@ -525,30 +713,240 @@ type CornerTraitType = {
   rectangleCornerRadii?: number[]
 }
 
-const EffectSchema: z.ZodType<EffectType> = z
-  .lazy(() =>
-    z
-      .xor([
-        DropShadowEffectSchema,
-        InnerShadowEffectSchema,
-        BlurEffectSchema,
-        TextureEffectSchema,
-        NoiseEffectSchema,
-      ])
+const BaseShadowEffectSchema = z
+  .object({
+    color: RGBASchema.openapi({ description: 'The color of the shadow' }),
+    blendMode: BlendModeSchema.openapi({ description: 'Blend mode of the shadow' }),
+    offset: VectorSchema.openapi({
+      description: 'How far the shadow is projected in the x and y directions',
+    }),
+    radius: z
+      .number()
+      .min(0)
+      .openapi({ description: 'Radius of the blur effect (applies to shadows as well)' }),
+    spread: z
+      .number()
+      .default(0)
+      .exactOptional()
       .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            DROP_SHADOW: '#/components/schemas/DropShadowEffect',
-            INNER_SHADOW: '#/components/schemas/InnerShadowEffect',
-            LAYER_BLUR: '#/components/schemas/BlurEffect',
-            BACKGROUND_BLUR: '#/components/schemas/BlurEffect',
-            TEXTURE: '#/components/schemas/TextureEffect',
-            NOISE: '#/components/schemas/NoiseEffect',
-          },
-        },
+        description:
+          'The distance by which to expand (or contract) the shadow.\n\nFor drop shadows, a positive `spread` value creates a shadow larger than the node, whereas a negative value creates a shadow smaller than the node.\n\nFor inner shadows, a positive `spread` value contracts the shadow. Spread values are only accepted on rectangles and ellipses, or on frames, components, and instances with visible fill paints and `clipsContent` enabled. When left unspecified, the default value is 0.',
       }),
-  )
+    visible: z.boolean().openapi({ description: 'Whether this shadow is visible.' }),
+    boundVariables: z
+      .object({
+        radius: VariableAliasSchema.exactOptional(),
+        spread: VariableAliasSchema.exactOptional(),
+        color: VariableAliasSchema.exactOptional(),
+        offsetX: VariableAliasSchema.exactOptional(),
+        offsetY: VariableAliasSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The variables bound to a particular field on this shadow effect',
+        required: [],
+      }),
+  })
+  .openapi({
+    description: 'Base properties shared by all shadow effects',
+    required: ['color', 'blendMode', 'offset', 'radius', 'visible'],
+  })
+  .openapi('BaseShadowEffect')
+
+const DropShadowEffectSchema = z
+  .object({
+    type: z
+      .literal('DROP_SHADOW')
+      .openapi({
+        description:
+          "A string literal representing the effect's type. Always check the type before reading other properties.",
+      }),
+    showShadowBehindNode: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description: 'Whether to show the shadow behind translucent or transparent pixels',
+      }),
+  })
+  .openapi({ description: 'A drop shadow effect', required: ['type', 'showShadowBehindNode'] })
+  .and(BaseShadowEffectSchema)
+  .openapi('DropShadowEffect')
+
+const InnerShadowEffectSchema = z
+  .object({
+    type: z
+      .literal('INNER_SHADOW')
+      .exactOptional()
+      .openapi({
+        description:
+          "A string literal representing the effect's type. Always check the type before reading other properties.",
+      }),
+  })
+  .openapi({ description: 'An inner shadow effect', required: [] })
+  .and(BaseShadowEffectSchema)
+  .openapi('InnerShadowEffect')
+
+const BaseBlurEffectSchema = z
+  .object({
+    type: z
+      .enum(['LAYER_BLUR', 'BACKGROUND_BLUR'])
+      .openapi({
+        description:
+          "A string literal representing the effect's type. Always check the type before reading other properties.",
+      }),
+    visible: z.boolean().openapi({ description: 'Whether this blur is active.' }),
+    radius: z.number().min(0).openapi({ description: 'Radius of the blur effect' }),
+    boundVariables: z
+      .object({ radius: VariableAliasSchema.exactOptional() })
+      .exactOptional()
+      .openapi({
+        description: 'The variables bound to a particular field on this blur effect',
+        required: [],
+      }),
+  })
+  .openapi({
+    description: 'Base properties shared by all blur effects',
+    required: ['type', 'visible', 'radius'],
+  })
+  .openapi('BaseBlurEffect')
+
+const NormalBlurEffectSchema = z
+  .object({
+    blurType: z
+      .literal('NORMAL')
+      .exactOptional()
+      .openapi({
+        description:
+          "The string literal 'NORMAL' representing the blur type. Always check the blurType before reading other properties.",
+      }),
+  })
+  .openapi({ description: 'A normal blur effect', required: [] })
+  .and(BaseBlurEffectSchema)
+  .openapi('NormalBlurEffect')
+
+const ProgressiveBlurEffectSchema = z
+  .object({
+    blurType: z
+      .literal('PROGRESSIVE')
+      .openapi({
+        description:
+          "The string literal 'PROGRESSIVE' representing the blur type. Always check the blurType before reading other properties.",
+      }),
+    startRadius: z.number().openapi({ description: 'The starting radius of the progressive blur' }),
+    startOffset: VectorSchema.openapi({
+      description: 'The starting offset of the progressive blur',
+    }),
+    endOffset: VectorSchema.openapi({ description: 'The ending offset of the progressive blur' }),
+  })
+  .openapi({
+    description: 'A progressive blur effect',
+    required: ['blurType', 'startRadius', 'startOffset', 'endOffset'],
+  })
+  .and(BaseBlurEffectSchema)
+  .openapi('ProgressiveBlurEffect')
+
+const BlurEffectSchema = z
+  .xor([NormalBlurEffectSchema, ProgressiveBlurEffectSchema])
+  .openapi('BlurEffect')
+
+const TextureEffectSchema = z
+  .object({
+    type: z
+      .literal('TEXTURE')
+      .openapi({
+        description:
+          "The string literal 'TEXTURE' representing the effect's type. Always check the type before reading other properties.",
+      }),
+    visible: z.boolean().openapi({ description: 'Whether the texture effect is visible.' }),
+    noiseSize: z.number().openapi({ description: 'The size of the texture effect' }),
+    radius: z.number().openapi({ description: 'The radius of the texture effect' }),
+    clipToShape: z
+      .boolean()
+      .openapi({ description: 'Whether the texture is clipped to the shape' }),
+  })
+  .openapi({
+    description: 'A texture effect',
+    required: ['type', 'visible', 'noiseSize', 'radius', 'clipToShape'],
+  })
+  .openapi('TextureEffect')
+
+const BaseNoiseEffectSchema = z
+  .object({
+    type: z
+      .literal('NOISE')
+      .openapi({
+        description:
+          "The string literal 'NOISE' representing the effect's type. Always check the type before reading other properties.",
+      }),
+    color: RGBASchema.openapi({ description: 'The color of the noise effect' }),
+    visible: z.boolean().openapi({ description: 'Whether the noise effect is visible.' }),
+    blendMode: BlendModeSchema.openapi({ description: 'Blend mode of the noise effect' }),
+    noiseSize: z.number().openapi({ description: 'The size of the noise effect' }),
+    density: z.number().openapi({ description: 'The density of the noise effect' }),
+  })
+  .openapi({
+    description: 'A noise effect',
+    required: ['type', 'color', 'visible', 'noiseSize', 'density', 'blendMode'],
+  })
+  .openapi('BaseNoiseEffect')
+
+const MonotoneNoiseEffectSchema = z
+  .object({
+    noiseType: z
+      .literal('MONOTONE')
+      .openapi({ description: "The string literal 'MONOTONE' representing the noise type." }),
+  })
+  .openapi({ description: 'A monotone noise effect', required: ['noiseType'] })
+  .and(BaseNoiseEffectSchema)
+  .openapi('MonotoneNoiseEffect')
+
+const MultitoneNoiseEffectSchema = z
+  .object({
+    noiseType: z
+      .literal('MULTITONE')
+      .openapi({ description: "The string literal 'MULTITONE' representing the noise type." }),
+    opacity: z.number().openapi({ description: 'The opacity of the noise effect' }),
+  })
+  .openapi({ description: 'A multitone noise effect', required: ['noiseType', 'opacity'] })
+  .and(BaseNoiseEffectSchema)
+  .openapi('MultitoneNoiseEffect')
+
+const DuotoneNoiseEffectSchema = z
+  .object({
+    noiseType: z
+      .literal('DUOTONE')
+      .openapi({ description: "The string literal 'DUOTONE' representing the noise type." }),
+    secondaryColor: RGBASchema.openapi({ description: 'The secondary color of the noise effect' }),
+  })
+  .openapi({ description: 'A duotone noise effect', required: ['noiseType', 'secondaryColor'] })
+  .and(BaseNoiseEffectSchema)
+  .openapi('DuotoneNoiseEffect')
+
+const NoiseEffectSchema = z
+  .xor([MonotoneNoiseEffectSchema, MultitoneNoiseEffectSchema, DuotoneNoiseEffectSchema])
+  .openapi('NoiseEffect')
+
+const EffectSchema = z
+  .xor([
+    DropShadowEffectSchema,
+    InnerShadowEffectSchema,
+    BlurEffectSchema,
+    TextureEffectSchema,
+    NoiseEffectSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        DROP_SHADOW: '#/components/schemas/DropShadowEffect',
+        INNER_SHADOW: '#/components/schemas/InnerShadowEffect',
+        LAYER_BLUR: '#/components/schemas/BlurEffect',
+        BACKGROUND_BLUR: '#/components/schemas/BlurEffect',
+        TEXTURE: '#/components/schemas/TextureEffect',
+        NOISE: '#/components/schemas/NoiseEffect',
+      },
+    },
+  })
   .openapi('Effect')
 
 type HasEffectsTraitType = { effects: z.infer<typeof EffectSchema>[] }
@@ -658,6 +1056,242 @@ type ComponentPropertiesTraitType = {
   }
 }
 
+const HyperlinkSchema = z
+  .object({
+    type: z
+      .enum(['URL', 'NODE'])
+      .openapi({ description: 'The type of hyperlink. Can be either `URL` or `NODE`.' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL that the hyperlink points to, if `type` is `URL`.' }),
+    nodeID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the node that the hyperlink points to, if `type` is `NODE`.',
+      }),
+  })
+  .openapi({
+    description: 'A link to either a URL or another frame (node) in the document.',
+    required: ['type'],
+  })
+  .openapi('Hyperlink')
+
+const BaseTypeStyleSchema = z
+  .object({
+    fontFamily: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Font family of text (standard name).' }),
+    fontPostScriptName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'PostScript font name.' }),
+    fontStyle: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Describes visual weight or emphasis, such as Bold or Italic.' }),
+    italic: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Whether or not text is italicized.' }),
+    fontWeight: z.number().exactOptional().openapi({ description: 'Numeric font weight.' }),
+    fontSize: z.number().exactOptional().openapi({ description: 'Font size in px.' }),
+    textCase: z
+      .enum(['ORIGINAL', 'UPPER', 'LOWER', 'TITLE', 'SMALL_CAPS', 'SMALL_CAPS_FORCED'])
+      .exactOptional()
+      .openapi({ description: 'Text casing applied to the node, default is the original casing.' }),
+    textAlignHorizontal: z
+      .enum(['LEFT', 'RIGHT', 'CENTER', 'JUSTIFIED'])
+      .exactOptional()
+      .openapi({ description: 'Horizontal text alignment as string enum.' }),
+    textAlignVertical: z
+      .enum(['TOP', 'CENTER', 'BOTTOM'])
+      .exactOptional()
+      .openapi({ description: 'Vertical text alignment as string enum.' }),
+    letterSpacing: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Space between characters in px.' }),
+    fills: z
+      .array(PaintSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of fill paints applied to the characters.' }),
+    hyperlink: HyperlinkSchema.exactOptional().openapi({ description: 'Link to a URL or frame.' }),
+    opentypeFlags: z
+      .record(z.string(), z.number())
+      .exactOptional()
+      .openapi({
+        description:
+          "A map of OpenType feature flags to 1 or 0, 1 if it is enabled and 0 if it is disabled. Note that some flags aren't reflected here. For example, SMCP (small caps) is still represented by the `textCase` field.",
+      }),
+    semanticWeight: z
+      .enum(['BOLD', 'NORMAL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates how the font weight was overridden when there is a text style override.',
+      }),
+    semanticItalic: z
+      .enum(['ITALIC', 'NORMAL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates how the font style was overridden when there is a text style override.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BaseTypeStyle')
+
+const TypeStyleSchema = z
+  .object({
+    paragraphSpacing: z
+      .number()
+      .default(0)
+      .exactOptional()
+      .openapi({ description: 'Space between paragraphs in px, 0 if not present.' }),
+    paragraphIndent: z
+      .number()
+      .default(0)
+      .exactOptional()
+      .openapi({ description: 'Paragraph indentation in px, 0 if not present.' }),
+    listSpacing: z
+      .number()
+      .default(0)
+      .exactOptional()
+      .openapi({ description: 'Space between list items in px, 0 if not present.' }),
+    textDecoration: z
+      .enum(['NONE', 'STRIKETHROUGH', 'UNDERLINE'])
+      .default('NONE')
+      .exactOptional()
+      .openapi({ description: 'Text decoration applied to the node, default is none.' }),
+    fontVariantPosition: z
+      .enum(['NORMAL', 'SUPER', 'SUB'])
+      .default('NORMAL')
+      .exactOptional()
+      .openapi({ description: 'Whether the text is formatted as superscript or subscript.' }),
+    textAutoResize: z
+      .enum(['NONE', 'WIDTH_AND_HEIGHT', 'HEIGHT', 'TRUNCATE'])
+      .default('NONE')
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions along which text will auto resize, default is that the text does not auto-resize. TRUNCATE means that the text will be shortened and trailing text will be replaced with "…" if the text contents is larger than the bounds. `TRUNCATE` as a return value is deprecated and will be removed in a future version. Read from `textTruncation` instead.',
+      }),
+    textTruncation: z
+      .enum(['DISABLED', 'ENDING'])
+      .default('DISABLED')
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this text node will truncate with an ellipsis when the text contents is larger than the text node.',
+      }),
+    maxLines: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'When `textTruncation: "ENDING"` is set, `maxLines` determines how many lines a text node can grow to before it truncates.',
+      }),
+    lineHeightPx: z.number().exactOptional().openapi({ description: 'Line height in px.' }),
+    lineHeightPercent: z
+      .number()
+      .default(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'Line height as a percentage of normal line height. This is deprecated; in a future version of the API only lineHeightPx and lineHeightPercentFontSize will be returned.',
+      }),
+    lineHeightPercentFontSize: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Line height as a percentage of the font size. Only returned when `lineHeightPercent` (deprecated) is not 100.',
+      }),
+    lineHeightUnit: z
+      .enum(['PIXELS', 'FONT_SIZE_%', 'INTRINSIC_%'])
+      .exactOptional()
+      .openapi({ description: 'The unit of the line height value specified by the user.' }),
+    isOverrideOverTextStyle: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not this style has overrides over a text style. The possible fields to override are semanticWeight, semanticItalic, hyperlink, and textDecoration. If this is true, then those fields are overrides if present.',
+      }),
+    boundVariables: z
+      .object({
+        fontFamily: VariableAliasSchema.exactOptional(),
+        fontSize: VariableAliasSchema.exactOptional(),
+        fontStyle: VariableAliasSchema.exactOptional(),
+        fontWeight: VariableAliasSchema.exactOptional(),
+        letterSpacing: VariableAliasSchema.exactOptional(),
+        lineHeight: VariableAliasSchema.exactOptional(),
+        paragraphSpacing: VariableAliasSchema.exactOptional(),
+        paragraphIndent: VariableAliasSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The variables bound to a particular field on this style',
+        required: [],
+      }),
+  })
+  .openapi({ description: 'Metadata for character formatting.', required: [] })
+  .and(BaseTypeStyleSchema)
+  .openapi('TypeStyle')
+
+type TypePropertiesTraitType = {
+  characters: string
+  style: z.infer<typeof TypeStyleSchema>
+  characterStyleOverrides: number[]
+  layoutVersion?: number
+  styleOverrideTable: { [key: string]: z.infer<typeof TypeStyleSchema> }
+  lineTypes: ('NONE' | 'ORDERED' | 'UNORDERED')[]
+  lineIndentations: number[]
+}
+
+const TextPathTypeStyleSchema = z
+  .object({
+    isOverrideOverTextStyle: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not this style has overrides over a text style. The possible fields to override are semanticWeight, semanticItalic, and hyperlink. If this is true, then those fields are overrides if present.',
+      }),
+    boundVariables: z
+      .object({
+        fontFamily: VariableAliasSchema.exactOptional(),
+        fontSize: VariableAliasSchema.exactOptional(),
+        fontStyle: VariableAliasSchema.exactOptional(),
+        fontWeight: VariableAliasSchema.exactOptional(),
+        letterSpacing: VariableAliasSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The variables bound to a particular field on this style',
+        required: [],
+      }),
+  })
+  .openapi({
+    description: 'Metadata for character formatting for styles used in text paths.',
+    required: [],
+  })
+  .and(BaseTypeStyleSchema)
+  .openapi('TextPathTypeStyle')
+
+type TextPathPropertiesTraitType = {
+  characters: string
+  style: z.infer<typeof TextPathTypeStyleSchema>
+  characterStyleOverrides: number[]
+  layoutVersion?: number
+  styleOverrideTable: { [key: string]: z.infer<typeof TextPathTypeStyleSchema> }
+}
+
 const EasingTypeSchema = z
   .enum([
     'EASE_IN',
@@ -680,36 +1314,52 @@ const EasingTypeSchema = z
   })
   .openapi('EasingType')
 
-const TriggerSchema: z.ZodType<TriggerType> = z
-  .lazy(() =>
+const AfterTimeoutTriggerSchema = z
+  .object({ type: z.literal('AFTER_TIMEOUT'), timeout: z.number() })
+  .openapi({ required: ['type', 'timeout'] })
+  .openapi('AfterTimeoutTrigger')
+
+const OnKeyDownTriggerSchema = z
+  .object({
+    type: z.literal('ON_KEY_DOWN'),
+    device: z.enum(['KEYBOARD', 'XBOX_ONE', 'PS4', 'SWITCH_PRO', 'UNKNOWN_CONTROLLER']),
+    keyCodes: z.array(z.number()),
+  })
+  .openapi({ required: ['type', 'device', 'keyCodes'] })
+  .openapi('OnKeyDownTrigger')
+
+const OnMediaHitTriggerSchema = z
+  .object({ type: z.literal('ON_MEDIA_HIT'), mediaHitTime: z.number() })
+  .openapi({ required: ['type', 'mediaHitTime'] })
+  .openapi('OnMediaHitTrigger')
+
+const TriggerSchema = z
+  .xor([
     z
-      .xor([
-        z
-          .object({ type: z.enum(['ON_CLICK', 'ON_HOVER', 'ON_PRESS', 'ON_DRAG']) })
-          .openapi({ required: ['type'] }),
-        AfterTimeoutTriggerSchema,
-        z
-          .object({
-            type: z.enum(['MOUSE_ENTER', 'MOUSE_LEAVE', 'MOUSE_UP', 'MOUSE_DOWN']),
-            delay: z.number(),
-            deprecatedVersion: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Whether this is a [deprecated version](https://help.figma.com/hc/en-us/articles/360040035834-Prototype-triggers#h_01HHN04REHJNP168R26P1CMP0A) of the trigger that was left unchanged for backwards compatibility.\nIf not present, the trigger is the latest version.',
-              }),
-          })
-          .openapi({ required: ['type', 'delay'] }),
-        OnKeyDownTriggerSchema,
-        OnMediaHitTriggerSchema,
-        z.object({ type: z.literal('ON_MEDIA_END') }).openapi({ required: ['type'] }),
-      ])
-      .openapi({
-        description:
-          'The `"ON_HOVER"` and `"ON_PRESS"` trigger types revert the navigation when the trigger is finished (the result is temporary). \n`"MOUSE_ENTER"`, `"MOUSE_LEAVE"`, `"MOUSE_UP"` and `"MOUSE_DOWN"` are permanent, one-way navigation.\nThe `delay` parameter requires the trigger to be held for a certain duration of time before the action occurs.\nBoth `timeout` and `delay` values are in milliseconds.\nThe `"ON_MEDIA_HIT"` and `"ON_MEDIA_END"` trigger types can only trigger from a video. \nThey fire when a video reaches a certain time or ends. The `timestamp` value is in seconds.',
-      }),
-  )
+      .object({ type: z.enum(['ON_CLICK', 'ON_HOVER', 'ON_PRESS', 'ON_DRAG']) })
+      .openapi({ required: ['type'] }),
+    AfterTimeoutTriggerSchema,
+    z
+      .object({
+        type: z.enum(['MOUSE_ENTER', 'MOUSE_LEAVE', 'MOUSE_UP', 'MOUSE_DOWN']),
+        delay: z.number(),
+        deprecatedVersion: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether this is a [deprecated version](https://help.figma.com/hc/en-us/articles/360040035834-Prototype-triggers#h_01HHN04REHJNP168R26P1CMP0A) of the trigger that was left unchanged for backwards compatibility.\nIf not present, the trigger is the latest version.',
+          }),
+      })
+      .openapi({ required: ['type', 'delay'] }),
+    OnKeyDownTriggerSchema,
+    OnMediaHitTriggerSchema,
+    z.object({ type: z.literal('ON_MEDIA_END') }).openapi({ required: ['type'] }),
+  ])
+  .openapi({
+    description:
+      'The `"ON_HOVER"` and `"ON_PRESS"` trigger types revert the navigation when the trigger is finished (the result is temporary). \n`"MOUSE_ENTER"`, `"MOUSE_LEAVE"`, `"MOUSE_UP"` and `"MOUSE_DOWN"` are permanent, one-way navigation.\nThe `delay` parameter requires the trigger to be held for a certain duration of time before the action occurs.\nBoth `timeout` and `delay` values are in milliseconds.\nThe `"ON_MEDIA_HIT"` and `"ON_MEDIA_END"` trigger types can only trigger from a video. \nThey fire when a video reaches a certain time or ends. The `timestamp` value is in seconds.',
+  })
   .openapi('Trigger')
 
 const ActionSchema: z.ZodType<ActionType> = z
@@ -728,7 +1378,12 @@ const ActionSchema: z.ZodType<ActionType> = z
   )
   .openapi('Action')
 
-const InteractionSchema = z
+type InteractionType = {
+  trigger: z.infer<typeof TriggerSchema> | null
+  actions?: z.infer<typeof ActionSchema>[]
+}
+
+const InteractionSchema: z.ZodType<InteractionType> = z
   .object({
     trigger: z
       .xor([TriggerSchema, z.null().nullable()])
@@ -1433,11 +2088,11 @@ const IndividualStrokesTraitSchema: z.ZodType<IndividualStrokesTraitType> = z
   .openapi('IndividualStrokesTrait')
 
 const VariableWidthStrokesTraitSchema: z.ZodType<VariableWidthStrokesTraitType> = z
-  .object({})
+  .looseObject({})
   .openapi('VariableWidthStrokesTrait')
 
 const ComplexStrokesTraitSchema: z.ZodType<ComplexStrokesTraitType> = z
-  .object({})
+  .looseObject({})
   .openapi('ComplexStrokesTrait')
 
 const DevStatusTraitSchema: z.ZodType<DevStatusTraitType> = z
@@ -1464,7 +2119,7 @@ const DevStatusTraitSchema: z.ZodType<DevStatusTraitType> = z
   .openapi('DevStatusTrait')
 
 const AnnotationsTraitSchema: z.ZodType<AnnotationsTraitType> = z
-  .object({})
+  .looseObject({})
   .openapi('AnnotationsTrait')
 
 type FrameTraitsType = z.infer<typeof IsLayerTraitSchema> &
@@ -1482,6 +2137,38 @@ type FrameTraitsType = z.infer<typeof IsLayerTraitSchema> &
   z.infer<typeof VariableWidthStrokesTraitSchema> &
   z.infer<typeof ComplexStrokesTraitSchema> &
   z.infer<typeof DevStatusTraitSchema> &
+  z.infer<typeof AnnotationsTraitSchema>
+
+type DefaultShapeTraitsType = z.infer<typeof IsLayerTraitSchema> &
+  z.infer<typeof HasBlendModeAndOpacityTraitSchema> &
+  z.infer<typeof HasLayoutTraitSchema> &
+  z.infer<typeof HasGeometryTraitSchema> &
+  z.infer<typeof HasExportSettingsTraitSchema> &
+  z.infer<typeof HasEffectsTraitSchema> &
+  z.infer<typeof HasMaskTraitSchema> &
+  z.infer<typeof TransitionSourceTraitSchema> &
+  z.infer<typeof VariableWidthStrokesTraitSchema> &
+  z.infer<typeof ComplexStrokesTraitSchema>
+
+const DefaultShapeTraitsSchema: z.ZodType<DefaultShapeTraitsType> = IsLayerTraitSchema.and(
+  HasBlendModeAndOpacityTraitSchema,
+)
+  .and(HasLayoutTraitSchema)
+  .and(HasGeometryTraitSchema)
+  .and(HasExportSettingsTraitSchema)
+  .and(HasEffectsTraitSchema)
+  .and(HasMaskTraitSchema)
+  .and(TransitionSourceTraitSchema)
+  .and(VariableWidthStrokesTraitSchema)
+  .and(ComplexStrokesTraitSchema)
+  .openapi('DefaultShapeTraits')
+
+type CornerRadiusShapeTraitsType = z.infer<typeof DefaultShapeTraitsSchema> &
+  z.infer<typeof CornerTraitSchema>
+
+type RectangularShapeTraitsType = z.infer<typeof DefaultShapeTraitsSchema> &
+  z.infer<typeof CornerTraitSchema> &
+  z.infer<typeof IndividualStrokesTraitSchema> &
   z.infer<typeof AnnotationsTraitSchema>
 
 const BooleanOperationNodeSchema: z.ZodType<BooleanOperationNodeType> = z
@@ -1696,17 +2383,6 @@ const ArcDataSchema = z
   })
   .openapi('ArcData')
 
-const DefaultShapeTraitsSchema = IsLayerTraitSchema.and(HasBlendModeAndOpacityTraitSchema)
-  .and(HasLayoutTraitSchema)
-  .and(HasGeometryTraitSchema)
-  .and(HasExportSettingsTraitSchema)
-  .and(HasEffectsTraitSchema)
-  .and(HasMaskTraitSchema)
-  .and(TransitionSourceTraitSchema)
-  .and(VariableWidthStrokesTraitSchema)
-  .and(ComplexStrokesTraitSchema)
-  .openapi('DefaultShapeTraits')
-
 type EllipseNodeType = { type: 'ELLIPSE'; arcData: z.infer<typeof ArcDataSchema> } & z.infer<
   typeof DefaultShapeTraitsSchema
 > &
@@ -1845,10 +2521,11 @@ const LinkUnfurlNodeSchema: z.ZodType<LinkUnfurlNodeType> = z
   .and(HasExportSettingsTraitSchema)
   .openapi('LinkUnfurlNode')
 
-const RectangularShapeTraitsSchema = DefaultShapeTraitsSchema.and(CornerTraitSchema)
-  .and(IndividualStrokesTraitSchema)
-  .and(AnnotationsTraitSchema)
-  .openapi('RectangularShapeTraits')
+const RectangularShapeTraitsSchema: z.ZodType<RectangularShapeTraitsType> =
+  DefaultShapeTraitsSchema.and(CornerTraitSchema)
+    .and(IndividualStrokesTraitSchema)
+    .and(AnnotationsTraitSchema)
+    .openapi('RectangularShapeTraits')
 
 type RectangleNodeType = { type: 'RECTANGLE' } & z.infer<typeof RectangularShapeTraitsSchema>
 
@@ -1864,7 +2541,7 @@ const RectangleNodeSchema: z.ZodType<RectangleNodeType> = z
   .and(RectangularShapeTraitsSchema)
   .openapi('RectangleNode')
 
-const CornerRadiusShapeTraitsSchema =
+const CornerRadiusShapeTraitsSchema: z.ZodType<CornerRadiusShapeTraitsType> =
   DefaultShapeTraitsSchema.and(CornerTraitSchema).openapi('CornerRadiusShapeTraits')
 
 type RegularPolygonNodeType = { type: 'REGULAR_POLYGON' } & z.infer<
@@ -2085,103 +2762,7 @@ const TableCellNodeSchema: z.ZodType<TableCellNodeType> = z
   .and(HasTextSublayerTraitSchema)
   .openapi('TableCellNode')
 
-const TypeStyleSchema: z.ZodType<TypeStyleType> = z
-  .lazy(() =>
-    z
-      .object({
-        paragraphSpacing: z
-          .number()
-          .default(0)
-          .exactOptional()
-          .openapi({ description: 'Space between paragraphs in px, 0 if not present.' }),
-        paragraphIndent: z
-          .number()
-          .default(0)
-          .exactOptional()
-          .openapi({ description: 'Paragraph indentation in px, 0 if not present.' }),
-        listSpacing: z
-          .number()
-          .default(0)
-          .exactOptional()
-          .openapi({ description: 'Space between list items in px, 0 if not present.' }),
-        textDecoration: z
-          .enum(['NONE', 'STRIKETHROUGH', 'UNDERLINE'])
-          .default('NONE')
-          .exactOptional()
-          .openapi({ description: 'Text decoration applied to the node, default is none.' }),
-        textAutoResize: z
-          .enum(['NONE', 'WIDTH_AND_HEIGHT', 'HEIGHT', 'TRUNCATE'])
-          .default('NONE')
-          .exactOptional()
-          .openapi({
-            description:
-              'Dimensions along which text will auto resize, default is that the text does not auto-resize. TRUNCATE means that the text will be shortened and trailing text will be replaced with "…" if the text contents is larger than the bounds. `TRUNCATE` as a return value is deprecated and will be removed in a future version. Read from `textTruncation` instead.',
-          }),
-        textTruncation: z
-          .enum(['DISABLED', 'ENDING'])
-          .default('DISABLED')
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether this text node will truncate with an ellipsis when the text contents is larger than the text node.',
-          }),
-        maxLines: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description:
-              'When `textTruncation: "ENDING"` is set, `maxLines` determines how many lines a text node can grow to before it truncates.',
-          }),
-        lineHeightPx: z.number().exactOptional().openapi({ description: 'Line height in px.' }),
-        lineHeightPercent: z
-          .number()
-          .default(100)
-          .exactOptional()
-          .openapi({
-            description:
-              'Line height as a percentage of normal line height. This is deprecated; in a future version of the API only lineHeightPx and lineHeightPercentFontSize will be returned.',
-          }),
-        lineHeightPercentFontSize: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description:
-              'Line height as a percentage of the font size. Only returned when `lineHeightPercent` (deprecated) is not 100.',
-          }),
-        lineHeightUnit: z
-          .enum(['PIXELS', 'FONT_SIZE_%', 'INTRINSIC_%'])
-          .exactOptional()
-          .openapi({ description: 'The unit of the line height value specified by the user.' }),
-        isOverrideOverTextStyle: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether or not this style has overrides over a text style. The possible fields to override are semanticWeight, semanticItalic, hyperlink, and textDecoration. If this is true, then those fields are overrides if present.',
-          }),
-        boundVariables: z
-          .object({
-            fontFamily: VariableAliasSchema.exactOptional(),
-            fontSize: VariableAliasSchema.exactOptional(),
-            fontStyle: VariableAliasSchema.exactOptional(),
-            fontWeight: VariableAliasSchema.exactOptional(),
-            letterSpacing: VariableAliasSchema.exactOptional(),
-            lineHeight: VariableAliasSchema.exactOptional(),
-            paragraphSpacing: VariableAliasSchema.exactOptional(),
-            paragraphIndent: VariableAliasSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'The variables bound to a particular field on this style',
-            required: [],
-          }),
-      })
-      .openapi({ description: 'Metadata for character formatting.', required: [] })
-      .and(BaseTypeStyleSchema),
-  )
-  .openapi('TypeStyle')
-
-const TypePropertiesTraitSchema = z
+const TypePropertiesTraitSchema: z.ZodType<TypePropertiesTraitType> = z
   .object({
     characters: z.string().openapi({ description: 'The raw characters in the text node.' }),
     style: TypeStyleSchema.openapi({
@@ -2244,127 +2825,7 @@ const TextNodeSchema: z.ZodType<TextNodeType> = z
   .and(AnnotationsTraitSchema)
   .openapi('TextNode')
 
-const HyperlinkSchema = z
-  .object({
-    type: z
-      .enum(['URL', 'NODE'])
-      .openapi({ description: 'The type of hyperlink. Can be either `URL` or `NODE`.' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL that the hyperlink points to, if `type` is `URL`.' }),
-    nodeID: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the node that the hyperlink points to, if `type` is `NODE`.',
-      }),
-  })
-  .openapi({
-    description: 'A link to either a URL or another frame (node) in the document.',
-    required: ['type'],
-  })
-  .openapi('Hyperlink')
-
-const BaseTypeStyleSchema = z
-  .object({
-    fontFamily: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Font family of text (standard name).' }),
-    fontPostScriptName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'PostScript font name.' }),
-    fontStyle: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Describes visual weight or emphasis, such as Bold or Italic.' }),
-    italic: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Whether or not text is italicized.' }),
-    fontWeight: z.number().exactOptional().openapi({ description: 'Numeric font weight.' }),
-    fontSize: z.number().exactOptional().openapi({ description: 'Font size in px.' }),
-    textCase: z
-      .enum(['ORIGINAL', 'UPPER', 'LOWER', 'TITLE', 'SMALL_CAPS', 'SMALL_CAPS_FORCED'])
-      .exactOptional()
-      .openapi({ description: 'Text casing applied to the node, default is the original casing.' }),
-    textAlignHorizontal: z
-      .enum(['LEFT', 'RIGHT', 'CENTER', 'JUSTIFIED'])
-      .exactOptional()
-      .openapi({ description: 'Horizontal text alignment as string enum.' }),
-    textAlignVertical: z
-      .enum(['TOP', 'CENTER', 'BOTTOM'])
-      .exactOptional()
-      .openapi({ description: 'Vertical text alignment as string enum.' }),
-    letterSpacing: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Space between characters in px.' }),
-    fills: z
-      .array(PaintSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of fill paints applied to the characters.' }),
-    hyperlink: HyperlinkSchema.exactOptional().openapi({ description: 'Link to a URL or frame.' }),
-    opentypeFlags: z
-      .record(z.string(), z.number())
-      .exactOptional()
-      .openapi({
-        description:
-          "A map of OpenType feature flags to 1 or 0, 1 if it is enabled and 0 if it is disabled. Note that some flags aren't reflected here. For example, SMCP (small caps) is still represented by the `textCase` field.",
-      }),
-    semanticWeight: z
-      .enum(['BOLD', 'NORMAL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates how the font weight was overridden when there is a text style override.',
-      }),
-    semanticItalic: z
-      .enum(['ITALIC', 'NORMAL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates how the font style was overridden when there is a text style override.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BaseTypeStyle')
-
-const TextPathTypeStyleSchema = z
-  .object({
-    isOverrideOverTextStyle: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether or not this style has overrides over a text style. The possible fields to override are semanticWeight, semanticItalic, and hyperlink. If this is true, then those fields are overrides if present.',
-      }),
-    boundVariables: z
-      .object({
-        fontFamily: VariableAliasSchema.exactOptional(),
-        fontSize: VariableAliasSchema.exactOptional(),
-        fontStyle: VariableAliasSchema.exactOptional(),
-        fontWeight: VariableAliasSchema.exactOptional(),
-        letterSpacing: VariableAliasSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The variables bound to a particular field on this style',
-        required: [],
-      }),
-  })
-  .openapi({
-    description: 'Metadata for character formatting for styles used in text paths.',
-    required: [],
-  })
-  .and(BaseTypeStyleSchema)
-  .openapi('TextPathTypeStyle')
-
-const TextPathPropertiesTraitSchema = z
+const TextPathPropertiesTraitSchema: z.ZodType<TextPathPropertiesTraitType> = z
   .object({
     characters: z.string().openapi({ description: 'The raw characters in the text path node.' }),
     style: TextPathTypeStyleSchema.openapi({
@@ -2549,7 +3010,19 @@ const MeasurementSchema = z
   })
   .openapi('Measurement')
 
-const CanvasNodeSchema = z
+type CanvasNodeType = {
+  type: 'CANVAS'
+  children: z.infer<typeof SubcanvasNodeSchema>[]
+  backgroundColor: z.infer<typeof RGBASchema>
+  prototypeStartNodeID: string | null
+  flowStartingPoints: z.infer<typeof FlowStartingPointSchema>[]
+  prototypeDevice: z.infer<typeof PrototypeDeviceSchema>
+  prototypeBackgrounds?: z.infer<typeof RGBASchema>[]
+  measurements?: z.infer<typeof MeasurementSchema>[]
+} & z.infer<typeof IsLayerTraitSchema> &
+  z.infer<typeof HasExportSettingsTraitSchema>
+
+const CanvasNodeSchema: z.ZodType<CanvasNodeType> = z
   .object({
     type: z.literal('CANVAS'),
     children: z.array(SubcanvasNodeSchema),
@@ -2594,7 +3067,12 @@ const CanvasNodeSchema = z
   .and(HasExportSettingsTraitSchema)
   .openapi('CanvasNode')
 
-const DocumentNodeSchema = z
+type DocumentNodeType = {
+  type: 'DOCUMENT'
+  children: z.infer<typeof CanvasNodeSchema>[]
+} & z.infer<typeof IsLayerTraitSchema>
+
+const DocumentNodeSchema: z.ZodType<DocumentNodeType> = z
   .object({ type: z.literal('DOCUMENT'), children: z.array(CanvasNodeSchema) })
   .openapi({ required: ['type', 'children'] })
   .and(IsLayerTraitSchema)
@@ -2731,7 +3209,7 @@ type TableNodeType = { type: 'TABLE' } & z.infer<typeof IsLayerTraitSchema> &
   z.infer<typeof HasExportSettingsTraitSchema>
 
 const TransformModifiersTraitSchema: z.ZodType<TransformModifiersTraitType> = z
-  .object({})
+  .looseObject({})
   .openapi('TransformModifiersTrait')
 
 type TransformGroupNodeType = { type: 'TRANSFORM_GROUP' } & z.infer<typeof FrameTraitsSchema> &
@@ -2795,489 +3273,6 @@ type WidgetNodeType = { type: 'WIDGET' } & z.infer<typeof IsLayerTraitSchema> &
   z.infer<typeof HasChildrenTraitSchema>
 
 type RGBType = { r: number; g: number; b: number }
-
-const BasePaintSchema = z
-  .object({
-    visible: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({ description: 'Is the paint enabled?' }),
-    opacity: z
-      .number()
-      .min(0)
-      .max(1)
-      .default(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Overall opacity of paint (colors within the paint can also have opacity values which would blend with this)',
-      }),
-    blendMode: BlendModeSchema.openapi({
-      description: 'How this node blends with nodes behind it in the scene',
-    }),
-  })
-  .openapi({ required: ['blendMode'] })
-  .openapi('BasePaint')
-
-const SolidPaintSchema = z
-  .object({
-    type: z
-      .literal('SOLID')
-      .openapi({
-        description:
-          'The string literal "SOLID" representing the paint\'s type. Always check the `type` before reading other properties.',
-      }),
-    color: RGBASchema.openapi({ description: 'Solid color of the paint' }),
-    boundVariables: z
-      .object({ color: VariableAliasSchema.exactOptional() })
-      .exactOptional()
-      .openapi({
-        description: 'The variables bound to a particular field on this paint',
-        required: [],
-      }),
-  })
-  .openapi({ description: 'A solid color', required: ['type', 'color'] })
-  .and(BasePaintSchema)
-  .openapi('SolidPaint')
-
-const ColorStopSchema = z
-  .object({
-    position: z
-      .number()
-      .openapi({ description: 'Value between 0 and 1 representing position along gradient axis.' }),
-    color: RGBASchema.openapi({ description: 'Color attached to corresponding position.' }),
-    boundVariables: z
-      .object({ color: VariableAliasSchema.exactOptional() })
-      .exactOptional()
-      .openapi({ description: 'The variables bound to a particular gradient stop', required: [] }),
-  })
-  .openapi({
-    description:
-      'A single color stop with its position along the gradient axis, color, and bound variables if any',
-    required: ['position', 'color'],
-  })
-  .openapi('ColorStop')
-
-const GradientPaintSchema = z
-  .object({
-    type: z
-      .enum(['GRADIENT_LINEAR', 'GRADIENT_RADIAL', 'GRADIENT_ANGULAR', 'GRADIENT_DIAMOND'])
-      .openapi({
-        description:
-          "The string literal representing the paint's type. Always check the `type` before reading other properties.",
-      }),
-    gradientHandlePositions: z
-      .array(VectorSchema)
-      .openapi({
-        description:
-          'This field contains three vectors, each of which are a position in normalized object space (normalized object space is if the top left corner of the bounding box of the object is (0, 0) and the bottom right is (1,1)). The first position corresponds to the start of the gradient (value 0 for the purposes of calculating gradient stops), the second position is the end of the gradient (value 1), and the third handle position determines the width of the gradient.',
-      }),
-    gradientStops: z
-      .array(ColorStopSchema)
-      .openapi({
-        description:
-          'Positions of key points along the gradient axis with the colors anchored there. Colors along the gradient are interpolated smoothly between neighboring gradient stops.',
-      }),
-  })
-  .openapi({
-    description: 'A gradient',
-    required: ['type', 'gradientHandlePositions', 'gradientStops'],
-  })
-  .and(BasePaintSchema)
-  .openapi('GradientPaint')
-
-const ImageFiltersSchema = z
-  .object({
-    exposure: z.number().default(0).exactOptional(),
-    contrast: z.number().default(0).exactOptional(),
-    saturation: z.number().default(0).exactOptional(),
-    temperature: z.number().default(0).exactOptional(),
-    tint: z.number().default(0).exactOptional(),
-    highlights: z.number().default(0).exactOptional(),
-    shadows: z.number().default(0).exactOptional(),
-  })
-  .openapi({ description: 'Image filters to apply to the node.', required: [] })
-  .openapi('ImageFilters')
-
-const ImagePaintSchema = z
-  .object({
-    type: z
-      .literal('IMAGE')
-      .openapi({
-        description:
-          'The string literal "IMAGE" representing the paint\'s type. Always check the `type` before reading other properties.',
-      }),
-    scaleMode: z
-      .enum(['FILL', 'FIT', 'TILE', 'STRETCH'])
-      .openapi({ description: 'Image scaling mode.' }),
-    imageRef: z
-      .string()
-      .openapi({
-        description:
-          'A reference to an image embedded in this node. To download the image using this reference, use the `GET file images` endpoint to retrieve the mapping from image references to image URLs.',
-      }),
-    imageTransform: TransformSchema.exactOptional().openapi({
-      description:
-        'Affine transform applied to the image, only present if `scaleMode` is `STRETCH`',
-    }),
-    scalingFactor: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Amount image is scaled by in tiling, only present if scaleMode is `TILE`.',
-      }),
-    filters: ImageFiltersSchema.exactOptional().openapi({
-      description:
-        'Defines what image filters have been applied to this paint, if any. If this property is not defined, no filters have been applied.',
-    }),
-    rotation: z
-      .number()
-      .default(0)
-      .exactOptional()
-      .openapi({ description: 'Image rotation, in degrees.' }),
-    gifRef: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to an animated GIF embedded in this node. To download the image using this reference, use the `GET file images` endpoint to retrieve the mapping from image references to image URLs.',
-      }),
-  })
-  .openapi({ description: 'An image', required: ['type', 'scaleMode', 'imageRef'] })
-  .and(BasePaintSchema)
-  .openapi('ImagePaint')
-
-const PatternPaintSchema = z
-  .object({
-    type: z
-      .literal('PATTERN')
-      .openapi({
-        description:
-          'The string literal "PATTERN" representing the paint\'s type. Always check the `type` before reading other properties.',
-      }),
-    sourceNodeId: z
-      .string()
-      .openapi({ description: 'The node id of the source node for the pattern' }),
-    tileType: z
-      .enum(['RECTANGULAR', 'HORIZONTAL_HEXAGONAL', 'VERTICAL_HEXAGONAL'])
-      .openapi({ description: 'The tile type for the pattern' }),
-    scalingFactor: z.number().openapi({ description: 'The scaling factor for the pattern' }),
-    spacing: VectorSchema.openapi({ description: 'The spacing for the pattern' }),
-    horizontalAlignment: z
-      .enum(['START', 'CENTER', 'END'])
-      .openapi({ description: 'The horizontal alignment for the pattern' }),
-    verticalAlignment: z
-      .enum(['START', 'CENTER', 'END'])
-      .openapi({ description: 'The vertical alignment for the pattern' }),
-  })
-  .openapi({
-    description: 'A pattern',
-    required: [
-      'type',
-      'sourceNodeId',
-      'tileType',
-      'scalingFactor',
-      'spacing',
-      'horizontalAlignment',
-      'verticalAlignment',
-    ],
-  })
-  .and(BasePaintSchema)
-  .openapi('PatternPaint')
-
-type PaintType =
-  | z.infer<typeof SolidPaintSchema>
-  | z.infer<typeof GradientPaintSchema>
-  | z.infer<typeof ImagePaintSchema>
-  | z.infer<typeof PatternPaintSchema>
-
-const BaseBlurEffectSchema = z
-  .object({
-    type: z
-      .enum(['LAYER_BLUR', 'BACKGROUND_BLUR'])
-      .openapi({
-        description:
-          "A string literal representing the effect's type. Always check the type before reading other properties.",
-      }),
-    visible: z.boolean().openapi({ description: 'Whether this blur is active.' }),
-    radius: z.number().min(0).openapi({ description: 'Radius of the blur effect' }),
-    boundVariables: z
-      .object({ radius: VariableAliasSchema.exactOptional() })
-      .exactOptional()
-      .openapi({
-        description: 'The variables bound to a particular field on this blur effect',
-        required: [],
-      }),
-  })
-  .openapi({
-    description: 'Base properties shared by all blur effects',
-    required: ['type', 'visible', 'radius'],
-  })
-  .openapi('BaseBlurEffect')
-
-const NormalBlurEffectSchema = z
-  .object({
-    blurType: z
-      .literal('NORMAL')
-      .exactOptional()
-      .openapi({
-        description:
-          "The string literal 'NORMAL' representing the blur type. Always check the blurType before reading other properties.",
-      }),
-  })
-  .openapi({ description: 'A normal blur effect', required: [] })
-  .and(BaseBlurEffectSchema)
-  .openapi('NormalBlurEffect')
-
-const ProgressiveBlurEffectSchema = z
-  .object({
-    blurType: z
-      .literal('PROGRESSIVE')
-      .openapi({
-        description:
-          "The string literal 'PROGRESSIVE' representing the blur type. Always check the blurType before reading other properties.",
-      }),
-    startRadius: z.number().openapi({ description: 'The starting radius of the progressive blur' }),
-    startOffset: VectorSchema.openapi({
-      description: 'The starting offset of the progressive blur',
-    }),
-    endOffset: VectorSchema.openapi({ description: 'The ending offset of the progressive blur' }),
-  })
-  .openapi({
-    description: 'A progressive blur effect',
-    required: ['blurType', 'startRadius', 'startOffset', 'endOffset'],
-  })
-  .and(BaseBlurEffectSchema)
-  .openapi('ProgressiveBlurEffect')
-
-type BlurEffectType =
-  | z.infer<typeof NormalBlurEffectSchema>
-  | z.infer<typeof ProgressiveBlurEffectSchema>
-
-const BaseNoiseEffectSchema = z
-  .object({
-    type: z
-      .literal('NOISE')
-      .openapi({
-        description:
-          "The string literal 'NOISE' representing the effect's type. Always check the type before reading other properties.",
-      }),
-    color: RGBASchema.openapi({ description: 'The color of the noise effect' }),
-    visible: z.boolean().openapi({ description: 'Whether the noise effect is visible.' }),
-    blendMode: BlendModeSchema.openapi({ description: 'Blend mode of the noise effect' }),
-    noiseSize: z.number().openapi({ description: 'The size of the noise effect' }),
-    density: z.number().openapi({ description: 'The density of the noise effect' }),
-  })
-  .openapi({
-    description: 'A noise effect',
-    required: ['type', 'color', 'visible', 'noiseSize', 'density', 'blendMode'],
-  })
-  .openapi('BaseNoiseEffect')
-
-const MonotoneNoiseEffectSchema = z
-  .object({
-    noiseType: z
-      .literal('MONOTONE')
-      .openapi({ description: "The string literal 'MONOTONE' representing the noise type." }),
-  })
-  .openapi({ description: 'A monotone noise effect', required: ['noiseType'] })
-  .and(BaseNoiseEffectSchema)
-  .openapi('MonotoneNoiseEffect')
-
-const MultitoneNoiseEffectSchema = z
-  .object({
-    noiseType: z
-      .literal('MULTITONE')
-      .openapi({ description: "The string literal 'MULTITONE' representing the noise type." }),
-    opacity: z.number().openapi({ description: 'The opacity of the noise effect' }),
-  })
-  .openapi({ description: 'A multitone noise effect', required: ['noiseType', 'opacity'] })
-  .and(BaseNoiseEffectSchema)
-  .openapi('MultitoneNoiseEffect')
-
-const DuotoneNoiseEffectSchema = z
-  .object({
-    noiseType: z
-      .literal('DUOTONE')
-      .openapi({ description: "The string literal 'DUOTONE' representing the noise type." }),
-    secondaryColor: RGBASchema.openapi({ description: 'The secondary color of the noise effect' }),
-  })
-  .openapi({ description: 'A duotone noise effect', required: ['noiseType', 'secondaryColor'] })
-  .and(BaseNoiseEffectSchema)
-  .openapi('DuotoneNoiseEffect')
-
-type NoiseEffectType =
-  | z.infer<typeof MonotoneNoiseEffectSchema>
-  | z.infer<typeof MultitoneNoiseEffectSchema>
-  | z.infer<typeof DuotoneNoiseEffectSchema>
-
-const BaseShadowEffectSchema = z
-  .object({
-    color: RGBASchema.openapi({ description: 'The color of the shadow' }),
-    blendMode: BlendModeSchema.openapi({ description: 'Blend mode of the shadow' }),
-    offset: VectorSchema.openapi({
-      description: 'How far the shadow is projected in the x and y directions',
-    }),
-    radius: z
-      .number()
-      .min(0)
-      .openapi({ description: 'Radius of the blur effect (applies to shadows as well)' }),
-    spread: z
-      .number()
-      .default(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'The distance by which to expand (or contract) the shadow.\n\nFor drop shadows, a positive `spread` value creates a shadow larger than the node, whereas a negative value creates a shadow smaller than the node.\n\nFor inner shadows, a positive `spread` value contracts the shadow. Spread values are only accepted on rectangles and ellipses, or on frames, components, and instances with visible fill paints and `clipsContent` enabled. When left unspecified, the default value is 0.',
-      }),
-    visible: z.boolean().openapi({ description: 'Whether this shadow is visible.' }),
-    boundVariables: z
-      .object({
-        radius: VariableAliasSchema.exactOptional(),
-        spread: VariableAliasSchema.exactOptional(),
-        color: VariableAliasSchema.exactOptional(),
-        offsetX: VariableAliasSchema.exactOptional(),
-        offsetY: VariableAliasSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The variables bound to a particular field on this shadow effect',
-        required: [],
-      }),
-  })
-  .openapi({
-    description: 'Base properties shared by all shadow effects',
-    required: ['color', 'blendMode', 'offset', 'radius', 'visible'],
-  })
-  .openapi('BaseShadowEffect')
-
-const DropShadowEffectSchema = z
-  .object({
-    type: z
-      .literal('DROP_SHADOW')
-      .openapi({
-        description:
-          "A string literal representing the effect's type. Always check the type before reading other properties.",
-      }),
-    showShadowBehindNode: z
-      .boolean()
-      .default(false)
-      .openapi({
-        description: 'Whether to show the shadow behind translucent or transparent pixels',
-      }),
-  })
-  .openapi({ description: 'A drop shadow effect', required: ['type', 'showShadowBehindNode'] })
-  .and(BaseShadowEffectSchema)
-  .openapi('DropShadowEffect')
-
-const InnerShadowEffectSchema = z
-  .object({
-    type: z
-      .literal('INNER_SHADOW')
-      .exactOptional()
-      .openapi({
-        description:
-          "A string literal representing the effect's type. Always check the type before reading other properties.",
-      }),
-  })
-  .openapi({ description: 'An inner shadow effect', required: [] })
-  .and(BaseShadowEffectSchema)
-  .openapi('InnerShadowEffect')
-
-const BlurEffectSchema: z.ZodType<BlurEffectType> = z
-  .lazy(() => z.xor([NormalBlurEffectSchema, ProgressiveBlurEffectSchema]))
-  .openapi('BlurEffect')
-
-const TextureEffectSchema = z
-  .object({
-    type: z
-      .literal('TEXTURE')
-      .openapi({
-        description:
-          "The string literal 'TEXTURE' representing the effect's type. Always check the type before reading other properties.",
-      }),
-    visible: z.boolean().openapi({ description: 'Whether the texture effect is visible.' }),
-    noiseSize: z.number().openapi({ description: 'The size of the texture effect' }),
-    radius: z.number().openapi({ description: 'The radius of the texture effect' }),
-    clipToShape: z
-      .boolean()
-      .openapi({ description: 'Whether the texture is clipped to the shape' }),
-  })
-  .openapi({
-    description: 'A texture effect',
-    required: ['type', 'visible', 'noiseSize', 'radius', 'clipToShape'],
-  })
-  .openapi('TextureEffect')
-
-const NoiseEffectSchema: z.ZodType<NoiseEffectType> = z
-  .lazy(() =>
-    z.xor([MonotoneNoiseEffectSchema, MultitoneNoiseEffectSchema, DuotoneNoiseEffectSchema]),
-  )
-  .openapi('NoiseEffect')
-
-type EffectType =
-  | z.infer<typeof DropShadowEffectSchema>
-  | z.infer<typeof InnerShadowEffectSchema>
-  | z.infer<typeof BlurEffectSchema>
-  | z.infer<typeof TextureEffectSchema>
-  | z.infer<typeof NoiseEffectSchema>
-
-type TypeStyleType = {
-  paragraphSpacing?: number
-  paragraphIndent?: number
-  listSpacing?: number
-  textDecoration?: 'NONE' | 'STRIKETHROUGH' | 'UNDERLINE'
-  textAutoResize?: 'NONE' | 'WIDTH_AND_HEIGHT' | 'HEIGHT' | 'TRUNCATE'
-  textTruncation?: 'DISABLED' | 'ENDING'
-  maxLines?: number
-  lineHeightPx?: number
-  lineHeightPercent?: number
-  lineHeightPercentFontSize?: number
-  lineHeightUnit?: 'PIXELS' | 'FONT_SIZE_%' | 'INTRINSIC_%'
-  isOverrideOverTextStyle?: boolean
-  boundVariables?: {
-    fontFamily?: z.infer<typeof VariableAliasSchema>
-    fontSize?: z.infer<typeof VariableAliasSchema>
-    fontStyle?: z.infer<typeof VariableAliasSchema>
-    fontWeight?: z.infer<typeof VariableAliasSchema>
-    letterSpacing?: z.infer<typeof VariableAliasSchema>
-    lineHeight?: z.infer<typeof VariableAliasSchema>
-    paragraphSpacing?: z.infer<typeof VariableAliasSchema>
-    paragraphIndent?: z.infer<typeof VariableAliasSchema>
-  }
-} & z.infer<typeof BaseTypeStyleSchema>
-
-const AfterTimeoutTriggerSchema = z
-  .object({ type: z.literal('AFTER_TIMEOUT'), timeout: z.number() })
-  .openapi({ required: ['type', 'timeout'] })
-  .openapi('AfterTimeoutTrigger')
-
-const OnKeyDownTriggerSchema = z
-  .object({
-    type: z.literal('ON_KEY_DOWN'),
-    device: z.enum(['KEYBOARD', 'XBOX_ONE', 'PS4', 'SWITCH_PRO', 'UNKNOWN_CONTROLLER']),
-    keyCodes: z.array(z.number()),
-  })
-  .openapi({ required: ['type', 'device', 'keyCodes'] })
-  .openapi('OnKeyDownTrigger')
-
-const OnMediaHitTriggerSchema = z
-  .object({ type: z.literal('ON_MEDIA_HIT'), mediaHitTime: z.number() })
-  .openapi({ required: ['type', 'mediaHitTime'] })
-  .openapi('OnMediaHitTrigger')
-
-type TriggerType =
-  | { type: 'ON_CLICK' | 'ON_HOVER' | 'ON_PRESS' | 'ON_DRAG' }
-  | z.infer<typeof AfterTimeoutTriggerSchema>
-  | {
-      type: 'MOUSE_ENTER' | 'MOUSE_LEAVE' | 'MOUSE_UP' | 'MOUSE_DOWN'
-      delay: number
-      deprecatedVersion?: boolean
-    }
-  | z.infer<typeof OnKeyDownTriggerSchema>
-  | z.infer<typeof OnMediaHitTriggerSchema>
-  | { type: 'ON_MEDIA_END' }
 
 type OpenURLActionType = { type: 'URL'; url: string }
 
@@ -3437,76 +3432,6 @@ const NavigationSchema = z
   })
   .openapi('Navigation')
 
-const TransitionSchema: z.ZodType<TransitionType> = z
-  .lazy(() => z.xor([SimpleTransitionSchema, DirectionalTransitionSchema]))
-  .openapi('Transition')
-
-type NodeActionType = {
-  type: 'NODE'
-  destinationId: string | null
-  navigation: z.infer<typeof NavigationSchema>
-  transition: z.infer<typeof TransitionSchema> | ({ [key: string]: unknown } | null)
-  preserveScrollPosition?: boolean
-  overlayRelativePosition?: z.infer<typeof VectorSchema>
-  resetVideoPosition?: boolean
-  resetScrollPosition?: boolean
-  resetInteractiveComponents?: boolean
-}
-
-const NodeActionSchema: z.ZodType<NodeActionType> = z
-  .object({
-    type: z.literal('NODE'),
-    destinationId: z.string().nullable(),
-    navigation: NavigationSchema,
-    transition: z.xor([TransitionSchema, z.null().nullable()]),
-    preserveScrollPosition: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the scroll offsets of any scrollable elements in the current screen or overlay are preserved when navigating to the destination. This is applicable only if the layout of both the current frame and its destination are the same.',
-      }),
-    overlayRelativePosition: VectorSchema.exactOptional().openapi({
-      description:
-        'Applicable only when `navigation` is `"OVERLAY"` and the destination is a frame with `overlayPosition` equal to `"MANUAL"`. This value represents the offset by which the overlay is opened relative to this node.',
-    }),
-    resetVideoPosition: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When true, all videos within the destination frame will reset their memorized playback position to 00:00 before starting to play.',
-      }),
-    resetScrollPosition: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the scroll offsets of any scrollable elements in the current screen or overlay reset when navigating to the destination. This is applicable only if the layout of both the current frame and its destination are the same.',
-      }),
-    resetInteractiveComponents: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the state of any interactive components in the current screen or overlay reset when navigating to the destination. This is applicable if there are interactive components in the destination frame.',
-      }),
-  })
-  .openapi({
-    description: 'An action that navigates to a specific node in the Figma viewer.',
-    required: ['type', 'destinationId', 'navigation', 'transition'],
-  })
-  .openapi('NodeAction')
-
-type ActionType =
-  | { type: 'BACK' | 'CLOSE' }
-  | z.infer<typeof OpenURLActionSchema>
-  | z.infer<typeof UpdateMediaRuntimeActionSchema>
-  | z.infer<typeof SetVariableActionSchema>
-  | z.infer<typeof SetVariableModeActionSchema>
-  | z.infer<typeof ConditionalActionSchema>
-  | z.infer<typeof NodeActionSchema>
-
 const EasingSchema = z
   .object({
     type: EasingTypeSchema.openapi({ description: 'The type of easing curve.' }),
@@ -3569,9 +3494,75 @@ const DirectionalTransitionSchema = z
   })
   .openapi('DirectionalTransition')
 
-type TransitionType =
-  | z.infer<typeof SimpleTransitionSchema>
-  | z.infer<typeof DirectionalTransitionSchema>
+const TransitionSchema = z
+  .xor([SimpleTransitionSchema, DirectionalTransitionSchema])
+  .openapi('Transition')
+
+type NodeActionType = {
+  type: 'NODE'
+  destinationId: string | null
+  navigation: z.infer<typeof NavigationSchema>
+  transition: z.infer<typeof TransitionSchema> | null
+  preserveScrollPosition?: boolean
+  overlayRelativePosition?: z.infer<typeof VectorSchema>
+  resetVideoPosition?: boolean
+  resetScrollPosition?: boolean
+  resetInteractiveComponents?: boolean
+}
+
+const NodeActionSchema: z.ZodType<NodeActionType> = z
+  .object({
+    type: z.literal('NODE'),
+    destinationId: z.string().nullable(),
+    navigation: NavigationSchema,
+    transition: z.xor([TransitionSchema, z.null().nullable()]),
+    preserveScrollPosition: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the scroll offsets of any scrollable elements in the current screen or overlay are preserved when navigating to the destination. This is applicable only if the layout of both the current frame and its destination are the same.',
+      }),
+    overlayRelativePosition: VectorSchema.exactOptional().openapi({
+      description:
+        'Applicable only when `navigation` is `"OVERLAY"` and the destination is a frame with `overlayPosition` equal to `"MANUAL"`. This value represents the offset by which the overlay is opened relative to this node.',
+    }),
+    resetVideoPosition: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, all videos within the destination frame will reset their memorized playback position to 00:00 before starting to play.',
+      }),
+    resetScrollPosition: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the scroll offsets of any scrollable elements in the current screen or overlay reset when navigating to the destination. This is applicable only if the layout of both the current frame and its destination are the same.',
+      }),
+    resetInteractiveComponents: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the state of any interactive components in the current screen or overlay reset when navigating to the destination. This is applicable if there are interactive components in the destination frame.',
+      }),
+  })
+  .openapi({
+    description: 'An action that navigates to a specific node in the Figma viewer.',
+    required: ['type', 'destinationId', 'navigation', 'transition'],
+  })
+  .openapi('NodeAction')
+
+type ActionType =
+  | { type: 'BACK' | 'CLOSE' }
+  | z.infer<typeof OpenURLActionSchema>
+  | z.infer<typeof UpdateMediaRuntimeActionSchema>
+  | z.infer<typeof SetVariableActionSchema>
+  | z.infer<typeof SetVariableModeActionSchema>
+  | z.infer<typeof ConditionalActionSchema>
+  | z.infer<typeof NodeActionSchema>
 
 const ConditionalBlockSchema: z.ZodType<ConditionalBlockType> = z
   .lazy(() =>
@@ -3696,74 +3687,71 @@ type ConditionalBlockType = {
 }
 
 const NodeSchema: z.ZodType<NodeType> = z
-  .lazy(() =>
-    z
-      .xor([
-        BooleanOperationNodeSchema,
-        ComponentNodeSchema,
-        ComponentSetNodeSchema,
-        ConnectorNodeSchema,
-        EllipseNodeSchema,
-        EmbedNodeSchema,
-        FrameNodeSchema,
-        GroupNodeSchema,
-        InstanceNodeSchema,
-        LineNodeSchema,
-        LinkUnfurlNodeSchema,
-        RectangleNodeSchema,
-        RegularPolygonNodeSchema,
-        SectionNodeSchema,
-        ShapeWithTextNodeSchema,
-        SliceNodeSchema,
-        StarNodeSchema,
-        StickyNodeSchema,
-        TableNodeSchema,
-        TableCellNodeSchema,
-        TextNodeSchema,
-        TextPathNodeSchema,
-        TransformGroupNodeSchema,
-        VectorNodeSchema,
-        WashiTapeNodeSchema,
-        WidgetNodeSchema,
-        DocumentNodeSchema,
-        CanvasNodeSchema,
-      ])
-      .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            BOOLEAN_OPERATION: '#/components/schemas/BooleanOperationNode',
-            COMPONENT: '#/components/schemas/ComponentNode',
-            COMPONENT_SET: '#/components/schemas/ComponentSetNode',
-            CONNECTOR: '#/components/schemas/ConnectorNode',
-            ELLIPSE: '#/components/schemas/EllipseNode',
-            EMBED: '#/components/schemas/EmbedNode',
-            FRAME: '#/components/schemas/FrameNode',
-            GROUP: '#/components/schemas/GroupNode',
-            INSTANCE: '#/components/schemas/InstanceNode',
-            LINE: '#/components/schemas/LineNode',
-            LINK_UNFURL: '#/components/schemas/LinkUnfurlNode',
-            RECTANGLE: '#/components/schemas/RectangleNode',
-            REGULAR_POLYGON: '#/components/schemas/RegularPolygonNode',
-            SECTION: '#/components/schemas/SectionNode',
-            SHAPE_WITH_TEXT: '#/components/schemas/ShapeWithTextNode',
-            SLICE: '#/components/schemas/SliceNode',
-            STAR: '#/components/schemas/StarNode',
-            STICKY: '#/components/schemas/StickyNode',
-            TABLE: '#/components/schemas/TableNode',
-            TABLE_CELL: '#/components/schemas/TableCellNode',
-            TEXT: '#/components/schemas/TextNode',
-            TEXT_PATH: '#/components/schemas/TextPathNode',
-            TRANSFORM_GROUP: '#/components/schemas/TransformGroupNode',
-            VECTOR: '#/components/schemas/VectorNode',
-            WASHI_TAPE: '#/components/schemas/WashiTapeNode',
-            WIDGET: '#/components/schemas/WidgetNode',
-            DOCUMENT: '#/components/schemas/DocumentNode',
-            CANVAS: '#/components/schemas/CanvasNode',
-          },
-        },
-      }),
-  )
+  .xor([
+    BooleanOperationNodeSchema,
+    ComponentNodeSchema,
+    ComponentSetNodeSchema,
+    ConnectorNodeSchema,
+    EllipseNodeSchema,
+    EmbedNodeSchema,
+    FrameNodeSchema,
+    GroupNodeSchema,
+    InstanceNodeSchema,
+    LineNodeSchema,
+    LinkUnfurlNodeSchema,
+    RectangleNodeSchema,
+    RegularPolygonNodeSchema,
+    SectionNodeSchema,
+    ShapeWithTextNodeSchema,
+    SliceNodeSchema,
+    StarNodeSchema,
+    StickyNodeSchema,
+    TableNodeSchema,
+    TableCellNodeSchema,
+    TextNodeSchema,
+    TextPathNodeSchema,
+    TransformGroupNodeSchema,
+    VectorNodeSchema,
+    WashiTapeNodeSchema,
+    WidgetNodeSchema,
+    DocumentNodeSchema,
+    CanvasNodeSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        BOOLEAN_OPERATION: '#/components/schemas/BooleanOperationNode',
+        COMPONENT: '#/components/schemas/ComponentNode',
+        COMPONENT_SET: '#/components/schemas/ComponentSetNode',
+        CONNECTOR: '#/components/schemas/ConnectorNode',
+        ELLIPSE: '#/components/schemas/EllipseNode',
+        EMBED: '#/components/schemas/EmbedNode',
+        FRAME: '#/components/schemas/FrameNode',
+        GROUP: '#/components/schemas/GroupNode',
+        INSTANCE: '#/components/schemas/InstanceNode',
+        LINE: '#/components/schemas/LineNode',
+        LINK_UNFURL: '#/components/schemas/LinkUnfurlNode',
+        RECTANGLE: '#/components/schemas/RectangleNode',
+        REGULAR_POLYGON: '#/components/schemas/RegularPolygonNode',
+        SECTION: '#/components/schemas/SectionNode',
+        SHAPE_WITH_TEXT: '#/components/schemas/ShapeWithTextNode',
+        SLICE: '#/components/schemas/SliceNode',
+        STAR: '#/components/schemas/StarNode',
+        STICKY: '#/components/schemas/StickyNode',
+        TABLE: '#/components/schemas/TableNode',
+        TABLE_CELL: '#/components/schemas/TableCellNode',
+        TEXT: '#/components/schemas/TextNode',
+        TEXT_PATH: '#/components/schemas/TextPathNode',
+        TRANSFORM_GROUP: '#/components/schemas/TransformGroupNode',
+        VECTOR: '#/components/schemas/VectorNode',
+        WASHI_TAPE: '#/components/schemas/WashiTapeNode',
+        WIDGET: '#/components/schemas/WidgetNode',
+        DOCUMENT: '#/components/schemas/DocumentNode',
+        CANVAS: '#/components/schemas/CanvasNode',
+      },
+    },
+  })
   .openapi('Node')
 
 const StyleTypeSchema = z
@@ -4373,7 +4361,7 @@ const WebhookV2RequestInfoSchema = z
     id: z.string().openapi({ description: 'The ID of the webhook' }),
     endpoint: z.string().openapi({ description: 'The actual endpoint the request was sent to' }),
     payload: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'The contents of the request that was sent to the endpoint' }),
     sent_at: z.iso
       .datetime({ offset: true })

@@ -1,0 +1,139 @@
+import { useQuery, useSuspenseQuery, queryOptions } from '@tanstack/react-query'
+import type {
+  UseQueryOptions,
+  UseSuspenseQueryOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/react-query'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getV1beta1Key() {
+  return ['v1beta1'] as const
+}
+
+export function getV1beta1ParentDeliveryDataQueryKey(
+  args: InferRequestType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>,
+) {
+  return ['v1beta1', '/v1beta1/:parent/deliveryData', args] as const
+}
+
+export function getV1beta1ParentDeliveryDataQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1beta1ParentDeliveryDataQueryKey>
+  >({
+    queryKey: getV1beta1ParentDeliveryDataQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.v1beta1[':parent'].deliveryData.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function useV1beta1ParentDeliveryData<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>,
+  options?: {
+    query?: Omit<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getV1beta1ParentDeliveryDataQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery(
+    {
+      ...getV1beta1ParentDeliveryDataQueryOptions<TData, TError>(args, clientOptions),
+      ...queryOptions,
+    },
+    queryClient,
+  )
+}
+
+export function useSuspenseV1beta1ParentDeliveryData<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>,
+  options?: {
+    query?: Omit<
+      UseSuspenseQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.v1beta1)[':parent']['deliveryData']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getV1beta1ParentDeliveryDataQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useSuspenseQuery(
+    {
+      ...getV1beta1ParentDeliveryDataQueryOptions<TData, TError>(args, clientOptions),
+      ...queryOptions,
+    },
+    queryClient,
+  )
+}

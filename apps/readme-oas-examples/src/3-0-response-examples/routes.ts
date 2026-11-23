@@ -16,13 +16,10 @@ export const getExampleRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        TestHeader: {
-          description: 'A test example header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'A test example header', param: { required: false } }),
-        },
+        TestHeader: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'A test example header', param: { required: false } }),
       }),
     },
     204: { description: 'OK', content: {} },

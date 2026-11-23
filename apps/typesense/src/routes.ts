@@ -1,43 +1,97 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SearchSynonymSchemaSchema = z
+const FacetCountsSchema = z
   .object({
-    root: z
-      .string()
+    counts: z
+      .array(
+        z
+          .object({
+            count: z.int().exactOptional(),
+            highlighted: z.string().exactOptional(),
+            value: z.string().exactOptional(),
+            parent: z.looseObject({}).exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    field_name: z.string().exactOptional(),
+    sampled: z.boolean().exactOptional(),
+    stats: z
+      .object({
+        max: z.float64().exactOptional(),
+        min: z.float64().exactOptional(),
+        sum: z.float64().exactOptional(),
+        total_values: z.int().exactOptional(),
+        avg: z.float64().exactOptional(),
+      })
       .exactOptional()
-      .openapi({
-        description:
-          'For 1-way synonyms, indicates the root word that words in the `synonyms` parameter map to.',
-      }),
-    synonyms: z
-      .array(z.string())
-      .openapi({ description: 'Array of words that should be considered as synonyms.' }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Locale for the synonym, leave blank to use the standard tokenizer.',
-      }),
-    symbols_to_index: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'By default, special characters are dropped from synonyms. Use this attribute to specify which special characters should be indexed as is.',
-      }),
+      .openapi({ required: [] }),
   })
-  .openapi({ required: ['synonyms'] })
-  .openapi('SearchSynonymSchema')
+  .openapi({ required: [] })
+  .openapi('FacetCounts')
 
-type SearchSynonymType = z.infer<typeof SearchSynonymSchemaSchema> & { id: string }
-
-const ApiKeySchemaSchema = z
+const SearchHighlightSchema = z
   .object({
-    value: z.string().exactOptional(),
-    description: z.string(),
-    actions: z.array(z.string()),
-    collections: z.array(z.string()),
-    expires_at: z
+    field: z.string().exactOptional().openapi({ example: 'company_name' }),
+    snippet: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Present only for (non-array) string fields',
+        example: '<mark>Stark</mark> Industries',
+      }),
+    snippets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Present only for (array) string[] fields',
+        example: ['<mark>Stark</mark> Industries', '<mark>Stark</mark> Corp'],
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Full field value with highlighting, present only for (non-array) string fields',
+        example: '<mark>Stark</mark> Industries is a major supplier of space equipment.',
+      }),
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Full field value with highlighting, present only for (array) string[] fields',
+        example: ['<mark>Stark</mark> Industries', '<mark>Stark</mark> Corp'],
+      }),
+    indices: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({
+        description:
+          'The indices property will be present only for string[] fields and will contain the corresponding indices of the snippets in the search field',
+        example: 1,
+      }),
+    matched_tokens: z
+      .array(z.looseObject({}).openapi({ 'x-go-type': 'interface{}' }))
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchHighlight')
+
+const SearchResultHitSchema = z
+  .object({
+    highlights: z
+      .array(SearchHighlightSchema)
+      .exactOptional()
+      .openapi({ description: '(Deprecated) Contains highlighted portions of the search fields' }),
+    highlight: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Highlighted version of the matching document' }),
+    document: z
+      .record(z.string(), z.looseObject({}))
+      .exactOptional()
+      .openapi({ description: 'Can be any key-value pair' }),
+    text_match: z
       .preprocess(
         (val) =>
           typeof val === 'number' && Number.isSafeInteger(val)
@@ -49,11 +103,190 @@ const ApiKeySchemaSchema = z
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
+    text_match_info: z
+      .object({
+        best_field_score: z.string().exactOptional(),
+        best_field_weight: z.int().exactOptional(),
+        fields_matched: z.int().exactOptional(),
+        num_tokens_dropped: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', 'x-go-type': 'uint64' }),
+        score: z.string().exactOptional(),
+        tokens_matched: z.int().exactOptional(),
+        typo_prefix_score: z.int().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    geo_distance_meters: z
+      .record(z.string(), z.int())
+      .exactOptional()
+      .openapi({ description: 'Can be any key-value pair' }),
+    vector_distance: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description: "Distance between the query vector and matching document's vector value",
+      }),
+    hybrid_search_info: z
+      .object({
+        rank_fusion_score: z
+          .float32()
+          .exactOptional()
+          .openapi({ description: 'Combined score from rank fusion of text and vector search' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Information about hybrid search scoring', required: [] }),
+    search_index: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returned only for union query response. Indicates the index of the query which this document matched to.',
+      }),
   })
-  .openapi({ required: ['actions', 'collections', 'description'] })
-  .openapi('ApiKeySchema')
+  .openapi({
+    example: {
+      highlights: {
+        company_name: { field: 'company_name', snippet: '<mark>Stark</mark> Industries' },
+      },
+      document: {
+        id: '124',
+        company_name: 'Stark Industries',
+        num_employees: 5215,
+        country: 'USA',
+      },
+      text_match: 1234556,
+    },
+    required: [],
+  })
+  .openapi('SearchResultHit')
 
-type ApiKeyType = z.infer<typeof ApiKeySchemaSchema> & { id?: bigint; value_prefix?: string }
+const SearchGroupedHitSchema = z
+  .object({
+    found: z.int().exactOptional(),
+    group_key: z.array(z.any()),
+    hits: z
+      .array(SearchResultHitSchema)
+      .openapi({ description: 'The documents that matched the search query' }),
+  })
+  .openapi({ required: ['group_key', 'hits'] })
+  .openapi('SearchGroupedHit')
+
+const SearchRequestParamsSchema = z
+  .object({
+    collection_name: z.string(),
+    first_q: z.string().exactOptional(),
+    q: z.string(),
+    per_page: z.int(),
+    voice_query: z
+      .object({ transcribed_query: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['collection_name', 'q', 'per_page'] })
+  .openapi('SearchRequestParams')
+
+const SearchResultConversationSchema = z
+  .object({
+    answer: z.string(),
+    conversation_history: z.array(z.looseObject({})),
+    conversation_id: z.string(),
+    query: z.string(),
+  })
+  .openapi({ required: ['answer', 'conversation_history', 'conversation_id', 'query'] })
+  .openapi('SearchResultConversation')
+
+type SearchResultType = {
+  facet_counts?: z.infer<typeof FacetCountsSchema>[]
+  found?: number
+  found_docs?: number
+  search_time_ms?: number
+  out_of?: number
+  search_cutoff?: boolean
+  page?: number
+  grouped_hits?: z.infer<typeof SearchGroupedHitSchema>[]
+  hits?: z.infer<typeof SearchResultHitSchema>[]
+  request_params?: z.infer<typeof SearchRequestParamsSchema>
+  conversation?: z.infer<typeof SearchResultConversationSchema>
+  union_request_params?: z.infer<typeof SearchRequestParamsSchema>[]
+  metadata?: { [key: string]: unknown }
+}
+
+const SearchResultSchema: z.ZodType<SearchResultType> = z
+  .object({
+    facet_counts: z.array(FacetCountsSchema).exactOptional(),
+    found: z.int().exactOptional().openapi({ description: 'The number of documents found' }),
+    found_docs: z.int().exactOptional(),
+    search_time_ms: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of milliseconds the search took' }),
+    out_of: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The total number of documents in the collection' }),
+    search_cutoff: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the search was cut off' }),
+    page: z.int().exactOptional().openapi({ description: 'The search result page number' }),
+    grouped_hits: z.array(SearchGroupedHitSchema).exactOptional(),
+    hits: z
+      .array(SearchResultHitSchema)
+      .exactOptional()
+      .openapi({ description: 'The documents that matched the search query' }),
+    request_params: SearchRequestParamsSchema.exactOptional(),
+    conversation: SearchResultConversationSchema.exactOptional(),
+    union_request_params: z
+      .array(SearchRequestParamsSchema)
+      .exactOptional()
+      .openapi({ description: 'Returned only for union query response.' }),
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Custom JSON object that can be returned in the search response' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchResult')
+
+type MultiSearchResultItemType = z.infer<typeof SearchResultSchema> & {
+  code?: bigint
+  error?: string
+}
+
+const MultiSearchResultItemSchema: z.ZodType<MultiSearchResultItemType> = SearchResultSchema.and(
+  z
+    .object({
+      code: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({ type: 'integer', format: 'int64', description: 'HTTP error code' }),
+      error: z.string().exactOptional().openapi({ description: 'Error description' }),
+    })
+    .openapi({ required: [] }),
+).openapi('MultiSearchResultItem')
+
+type MultiSearchResultType = {
+  results: z.infer<typeof MultiSearchResultItemSchema>[]
+  conversation?: z.infer<typeof SearchResultConversationSchema>
+}
 
 const FieldSchema = z
   .object({
@@ -203,7 +436,7 @@ const CollectionSchemaSchema = z
       .openapi({ description: 'List of symbols or special characters to be indexed.\n' }),
     voice_query_model: VoiceQueryModelCollectionConfigSchema.exactOptional(),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -231,7 +464,7 @@ const CollectionUpdateSchemaSchema = z
       .exactOptional()
       .openapi({ description: 'List of synonym set names to associate with this collection' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -307,253 +540,38 @@ const CollectionAliasesResponseSchema = z
   .openapi({ required: ['aliases'] })
   .openapi('CollectionAliasesResponse')
 
-const FacetCountsSchema = z
+const SearchSynonymSchemaSchema = z
   .object({
-    counts: z
-      .array(
-        z
-          .object({
-            count: z.int().exactOptional(),
-            highlighted: z.string().exactOptional(),
-            value: z.string().exactOptional(),
-            parent: z.object({}).exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    field_name: z.string().exactOptional(),
-    sampled: z.boolean().exactOptional(),
-    stats: z
-      .object({
-        max: z.float64().exactOptional(),
-        min: z.float64().exactOptional(),
-        sum: z.float64().exactOptional(),
-        total_values: z.int().exactOptional(),
-        avg: z.float64().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('FacetCounts')
-
-const SearchHighlightSchema = z
-  .object({
-    field: z.string().exactOptional().openapi({ example: 'company_name' }),
-    snippet: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Present only for (non-array) string fields',
-        example: '<mark>Stark</mark> Industries',
-      }),
-    snippets: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Present only for (array) string[] fields',
-        example: ['<mark>Stark</mark> Industries', '<mark>Stark</mark> Corp'],
-      }),
-    value: z
+    root: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Full field value with highlighting, present only for (non-array) string fields',
-        example: '<mark>Stark</mark> Industries is a major supplier of space equipment.',
+          'For 1-way synonyms, indicates the root word that words in the `synonyms` parameter map to.',
       }),
-    values: z
+    synonyms: z
+      .array(z.string())
+      .openapi({ description: 'Array of words that should be considered as synonyms.' }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Locale for the synonym, leave blank to use the standard tokenizer.',
+      }),
+    symbols_to_index: z
       .array(z.string())
       .exactOptional()
       .openapi({
-        description: 'Full field value with highlighting, present only for (array) string[] fields',
-        example: ['<mark>Stark</mark> Industries', '<mark>Stark</mark> Corp'],
-      }),
-    indices: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({
         description:
-          'The indices property will be present only for string[] fields and will contain the corresponding indices of the snippets in the search field',
-        example: 1,
-      }),
-    matched_tokens: z.array(z.object({}).openapi({ 'x-go-type': 'interface{}' })).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchHighlight')
-
-const SearchResultHitSchema = z
-  .object({
-    highlights: z
-      .array(SearchHighlightSchema)
-      .exactOptional()
-      .openapi({ description: '(Deprecated) Contains highlighted portions of the search fields' }),
-    highlight: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'Highlighted version of the matching document' }),
-    document: z
-      .record(z.string(), z.object({}))
-      .exactOptional()
-      .openapi({ description: 'Can be any key-value pair' }),
-    text_match: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    text_match_info: z
-      .object({
-        best_field_score: z.string().exactOptional(),
-        best_field_weight: z.int().exactOptional(),
-        fields_matched: z.int().exactOptional(),
-        num_tokens_dropped: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', 'x-go-type': 'uint64' }),
-        score: z.string().exactOptional(),
-        tokens_matched: z.int().exactOptional(),
-        typo_prefix_score: z.int().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    geo_distance_meters: z
-      .record(z.string(), z.int())
-      .exactOptional()
-      .openapi({ description: 'Can be any key-value pair' }),
-    vector_distance: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description: "Distance between the query vector and matching document's vector value",
-      }),
-    hybrid_search_info: z
-      .object({
-        rank_fusion_score: z
-          .float32()
-          .exactOptional()
-          .openapi({ description: 'Combined score from rank fusion of text and vector search' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Information about hybrid search scoring', required: [] }),
-    search_index: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Returned only for union query response. Indicates the index of the query which this document matched to.',
+          'By default, special characters are dropped from synonyms. Use this attribute to specify which special characters should be indexed as is.',
       }),
   })
-  .openapi({
-    example: {
-      highlights: {
-        company_name: { field: 'company_name', snippet: '<mark>Stark</mark> Industries' },
-      },
-      document: {
-        id: '124',
-        company_name: 'Stark Industries',
-        num_employees: 5215,
-        country: 'USA',
-      },
-      text_match: 1234556,
-    },
-    required: [],
-  })
-  .openapi('SearchResultHit')
+  .openapi({ required: ['synonyms'] })
+  .openapi('SearchSynonymSchema')
 
-const SearchGroupedHitSchema = z
-  .object({
-    found: z.int().exactOptional(),
-    group_key: z.array(z.any()),
-    hits: z
-      .array(SearchResultHitSchema)
-      .openapi({ description: 'The documents that matched the search query' }),
-  })
-  .openapi({ required: ['group_key', 'hits'] })
-  .openapi('SearchGroupedHit')
-
-const SearchRequestParamsSchema = z
-  .object({
-    collection_name: z.string(),
-    first_q: z.string().exactOptional(),
-    q: z.string(),
-    per_page: z.int(),
-    voice_query: z
-      .object({ transcribed_query: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['collection_name', 'q', 'per_page'] })
-  .openapi('SearchRequestParams')
-
-const SearchResultConversationSchema = z
-  .object({
-    answer: z.string(),
-    conversation_history: z.array(z.object({})),
-    conversation_id: z.string(),
-    query: z.string(),
-  })
-  .openapi({ required: ['answer', 'conversation_history', 'conversation_id', 'query'] })
-  .openapi('SearchResultConversation')
-
-const SearchResultSchema = z
-  .object({
-    facet_counts: z.array(FacetCountsSchema).exactOptional(),
-    found: z.int().exactOptional().openapi({ description: 'The number of documents found' }),
-    found_docs: z.int().exactOptional(),
-    search_time_ms: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The number of milliseconds the search took' }),
-    out_of: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The total number of documents in the collection' }),
-    search_cutoff: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the search was cut off' }),
-    page: z.int().exactOptional().openapi({ description: 'The search result page number' }),
-    grouped_hits: z.array(SearchGroupedHitSchema).exactOptional(),
-    hits: z
-      .array(SearchResultHitSchema)
-      .exactOptional()
-      .openapi({ description: 'The documents that matched the search query' }),
-    request_params: SearchRequestParamsSchema.exactOptional(),
-    conversation: SearchResultConversationSchema.exactOptional(),
-    union_request_params: z
-      .array(SearchRequestParamsSchema)
-      .exactOptional()
-      .openapi({ description: 'Returned only for union query response.' }),
-    metadata: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'Custom JSON object that can be returned in the search response' }),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchResult')
-
-const SearchSynonymSchema: z.ZodType<SearchSynonymType> = z
-  .lazy(() =>
-    SearchSynonymSchemaSchema.and(
-      z.object({ id: z.string().openapi({ readOnly: true }) }).openapi({ required: ['id'] }),
-    ),
-  )
-  .openapi('SearchSynonym')
+const SearchSynonymSchema = SearchSynonymSchemaSchema.and(
+  z.object({ id: z.string().openapi({ readOnly: true }) }).openapi({ required: ['id'] }),
+).openapi('SearchSynonym')
 
 const SearchSynonymDeleteResponseSchema = z
   .object({ id: z.string().openapi({ description: 'The id of the synonym that was deleted' }) })
@@ -598,29 +616,47 @@ const ApiResponseSchema = z
   .openapi({ required: ['message'] })
   .openapi('ApiResponse')
 
-const ApiKeySchema: z.ZodType<ApiKeyType> = z
-  .lazy(() =>
-    ApiKeySchemaSchema.and(
-      z
-        .object({
-          id: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-          value_prefix: z.string().exactOptional().openapi({ readOnly: true }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('ApiKey')
+const ApiKeySchemaSchema = z
+  .object({
+    value: z.string().exactOptional(),
+    description: z.string(),
+    actions: z.array(z.string()),
+    collections: z.array(z.string()),
+    expires_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: ['actions', 'collections', 'description'] })
+  .openapi('ApiKeySchema')
+
+const ApiKeySchema = ApiKeySchemaSchema.and(
+  z
+    .object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+      value_prefix: z.string().exactOptional().openapi({ readOnly: true }),
+    })
+    .openapi({ required: [] }),
+).openapi('ApiKey')
 
 const ApiKeyDeleteResponseSchema = z
   .object({
@@ -648,27 +684,7 @@ const ApiKeysResponseSchema = z
   .openapi({ required: ['keys'] })
   .openapi('ApiKeysResponse')
 
-const MultiSearchResultItemSchema = SearchResultSchema.and(
-  z
-    .object({
-      code: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({ type: 'integer', format: 'int64', description: 'HTTP error code' }),
-      error: z.string().exactOptional().openapi({ description: 'Error description' }),
-    })
-    .openapi({ required: [] }),
-).openapi('MultiSearchResultItem')
-
-const MultiSearchResultSchema = z
+const MultiSearchResultSchema: z.ZodType<MultiSearchResultType> = z
   .object({
     results: z.array(MultiSearchResultItemSchema),
     conversation: SearchResultConversationSchema.exactOptional(),
@@ -1843,7 +1859,9 @@ const AnalyticsRuleUpdateSchema = z
   .openapi({ description: 'Fields allowed to update on an analytics rule', required: [] })
   .openapi('AnalyticsRuleUpdate')
 
-const AnalyticsRuleSchema = AnalyticsRuleCreateSchema.and(z.object({})).openapi('AnalyticsRule')
+const AnalyticsRuleSchema = AnalyticsRuleCreateSchema.and(z.looseObject({})).openapi(
+  'AnalyticsRule',
+)
 
 const AnalyticsStatusSchema = z
   .object({
@@ -1864,11 +1882,11 @@ const APIStatsResponseSchema = z
     delete_requests_per_second: z.float64().exactOptional(),
     import_latency_ms: z.float64().exactOptional(),
     import_requests_per_second: z.float64().exactOptional(),
-    latency_ms: z.object({}).exactOptional().openapi({ 'x-go-type': 'map[string]float64' }),
+    latency_ms: z.looseObject({}).exactOptional().openapi({ 'x-go-type': 'map[string]float64' }),
     overloaded_requests_per_second: z.float64().exactOptional(),
     pending_write_batches: z.float64().exactOptional(),
     requests_per_second: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ 'x-go-type': 'map[string]float64' }),
     search_latency_ms: z.float64().exactOptional(),
@@ -1985,23 +2003,38 @@ const ConversationModelUpdateSchemaSchema = z
   .openapi('ConversationModelUpdateSchema')
 
 const ConversationModelCreateSchemaSchema = ConversationModelUpdateSchemaSchema.and(
-  z
-    .object({
-      model_name: z
-        .string()
-        .openapi({ description: 'Name of the LLM model offered by OpenAI, Cloudflare or vLLM' }),
-      max_bytes: z
-        .int()
-        .openapi({
-          description:
-            "The maximum number of bytes to send to the LLM in every API call. Consult the LLM's documentation on the number of bytes supported in the context window.\n",
-        }),
-      history_collection: z
-        .string()
-        .openapi({ description: 'Typesense collection that stores the historical conversations' }),
-    })
-    .openapi({ required: ['model_name', 'max_bytes', 'history_collection'] }),
+  z.looseObject({}).openapi({ required: ['model_name', 'max_bytes'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'model_name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'max_bytes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        model_name: z
+          .string()
+          .openapi({ description: 'Name of the LLM model offered by OpenAI, Cloudflare or vLLM' }),
+        max_bytes: z
+          .int()
+          .openapi({
+            description:
+              "The maximum number of bytes to send to the LLM in every API call. Consult the LLM's documentation on the number of bytes supported in the context window.\n",
+          }),
+        history_collection: z
+          .string()
+          .openapi({
+            description: 'Typesense collection that stores the historical conversations',
+          }),
+      })
+      .openapi({ required: ['model_name', 'max_bytes', 'history_collection'] }),
+  )
   .openapi({ required: ['model_name', 'max_bytes'] })
   .openapi('ConversationModelCreateSchema')
 
@@ -2281,7 +2314,7 @@ const CurationItemCreateSchemaSchema = z
           "Indicates whether search query tokens that exist in the curation's rule should be removed from the search query.\n",
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2683,7 +2716,7 @@ export const postCollectionsCollectionNameDocumentsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ description: 'Can be any key-value pair', 'x-go-type': 'interface{}' }),
         },
       },
@@ -2695,7 +2728,7 @@ export const postCollectionsCollectionNameDocumentsRoute = createRoute({
       description: 'Document successfully created/indexed',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Can be any key-value pair' }),
+          schema: z.looseObject({}).openapi({ description: 'Can be any key-value pair' }),
         },
       },
     },
@@ -2933,7 +2966,7 @@ export const patchCollectionsCollectionNameDocumentsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ description: 'Can be any key-value pair', 'x-go-type': 'interface{}' }),
         },
       },
@@ -5344,7 +5377,7 @@ export const getCollectionsCollectionNameDocumentsDocumentIdRoute = createRoute(
       description: 'The document referenced by the ID',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Can be any key-value pair' }),
+          schema: z.looseObject({}).openapi({ description: 'Can be any key-value pair' }),
         },
       },
     },
@@ -5393,7 +5426,7 @@ export const deleteCollectionsCollectionNameDocumentsDocumentIdRoute = createRou
       description: 'The document referenced by the ID was deleted',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Can be any key-value pair' }),
+          schema: z.looseObject({}).openapi({ description: 'Can be any key-value pair' }),
         },
       },
     },
@@ -5453,7 +5486,7 @@ export const patchCollectionsCollectionNameDocumentsDocumentIdRoute = createRout
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ description: 'Can be any key-value pair', 'x-go-type': 'interface{}' }),
         },
       },
@@ -5465,7 +5498,7 @@ export const patchCollectionsCollectionNameDocumentsDocumentIdRoute = createRout
       description: 'The document referenced by the ID was updated',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Can be any key-value pair' }),
+          schema: z.looseObject({}).openapi({ description: 'Can be any key-value pair' }),
         },
       },
     },
@@ -7680,7 +7713,7 @@ export const getMetricsJsonRoute = createRoute({
   responses: {
     200: {
       description: 'Metrics fetched.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })

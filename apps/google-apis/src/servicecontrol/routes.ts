@@ -1,70 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ViolationInfoSchema = z
-  .object({
-    checkedValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Value that is being checked for the policy. This could be in encrypted form (if pii sensitive). This field will only be emitted in LIST_POLICY types',
-      }),
-    constraint: z.string().exactOptional().openapi({ description: 'Optional. Constraint name' }),
-    errorMessage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Error message that policy is indicating.' }),
-    policyType: z
-      .enum([
-        'POLICY_TYPE_UNSPECIFIED',
-        'BOOLEAN_CONSTRAINT',
-        'LIST_CONSTRAINT',
-        'CUSTOM_CONSTRAINT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Optional. Indicates the type of the policy.' }),
-  })
-  .openapi({
-    description: 'Provides information about the Policy violation info for this request.',
-    required: [],
-  })
-  .openapi('ViolationInfo')
-
-const OrgPolicyViolationInfoSchema = z
-  .object({
-    payload: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Resource payload that is currently in scope and is subjected to orgpolicy conditions. This payload may be the subset of the actual Resource that may come in the request. This payload should not contain any core content.',
-      }),
-    resourceTags: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Tags referenced on the resource at the time of evaluation. These also include the federated tags, if they are supplied in the CheckOrgPolicy or CheckCustomConstraints Requests. Optional field as of now. These tags are the Cloud tags that are available on the resource during the policy evaluation and will be available as part of the OrgPolicy check response for logging purposes.',
-      }),
-    resourceType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Resource type that the orgpolicy is checked against. Example: compute.googleapis.com/Instance, store.googleapis.com/bucket',
-      }),
-    violationInfo: z
-      .array(ViolationInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Policy violations' }),
-  })
-  .openapi({ description: 'Represents OrgPolicy Violation information.', required: [] })
-  .openapi('OrgPolicyViolationInfo')
-
-type PolicyViolationInfoType = {
-  orgPolicyViolationInfo?: z.infer<typeof OrgPolicyViolationInfoSchema>
-}
-
 const ApiSchema = z
   .object({
     operation: z
@@ -554,19 +489,77 @@ const AuthorizationInfoSchema = z
   .openapi({ description: 'Authorization information for the operation.', required: [] })
   .openapi('AuthorizationInfo')
 
-const PolicyViolationInfoSchema: z.ZodType<PolicyViolationInfoType> = z
-  .lazy(() =>
-    z
-      .object({
-        orgPolicyViolationInfo: OrgPolicyViolationInfoSchema.exactOptional().openapi({
-          description: 'Indicates the orgpolicy violations for this resource.',
-        }),
-      })
+const ViolationInfoSchema = z
+  .object({
+    checkedValue: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'Information related to policy violations for this request.',
-        required: [],
+        description:
+          'Optional. Value that is being checked for the policy. This could be in encrypted form (if pii sensitive). This field will only be emitted in LIST_POLICY types',
       }),
-  )
+    constraint: z.string().exactOptional().openapi({ description: 'Optional. Constraint name' }),
+    errorMessage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Error message that policy is indicating.' }),
+    policyType: z
+      .enum([
+        'POLICY_TYPE_UNSPECIFIED',
+        'BOOLEAN_CONSTRAINT',
+        'LIST_CONSTRAINT',
+        'CUSTOM_CONSTRAINT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Optional. Indicates the type of the policy.' }),
+  })
+  .openapi({
+    description: 'Provides information about the Policy violation info for this request.',
+    required: [],
+  })
+  .openapi('ViolationInfo')
+
+const OrgPolicyViolationInfoSchema = z
+  .object({
+    payload: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Resource payload that is currently in scope and is subjected to orgpolicy conditions. This payload may be the subset of the actual Resource that may come in the request. This payload should not contain any core content.',
+      }),
+    resourceTags: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Tags referenced on the resource at the time of evaluation. These also include the federated tags, if they are supplied in the CheckOrgPolicy or CheckCustomConstraints Requests. Optional field as of now. These tags are the Cloud tags that are available on the resource during the policy evaluation and will be available as part of the OrgPolicy check response for logging purposes.',
+      }),
+    resourceType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Resource type that the orgpolicy is checked against. Example: compute.googleapis.com/Instance, store.googleapis.com/bucket',
+      }),
+    violationInfo: z
+      .array(ViolationInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional. Policy violations' }),
+  })
+  .openapi({ description: 'Represents OrgPolicy Violation information.', required: [] })
+  .openapi('OrgPolicyViolationInfo')
+
+const PolicyViolationInfoSchema = z
+  .object({
+    orgPolicyViolationInfo: OrgPolicyViolationInfoSchema.exactOptional().openapi({
+      description: 'Indicates the orgpolicy violations for this resource.',
+    }),
+  })
+  .openapi({
+    description: 'Information related to policy violations for this request.',
+    required: [],
+  })
   .openapi('PolicyViolationInfo')
 
 const RequestMetadataSchema = z
@@ -862,7 +855,7 @@ const ReportRequestSchema = z
   .openapi('ReportRequest')
 
 const ReportResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response message for the Report method. If the request contains any invalid data, the server returns an RPC error.',

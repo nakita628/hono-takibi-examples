@@ -2,33 +2,755 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const StringSchema = z.string().max(2147483647).openapi('String')
 
-const TStampSchema = z.iso.datetime({ offset: true }).openapi('TStamp')
+const SupportedPlatformSchema = z
+  .object({ Name: StringSchema.exactOptional().openapi({ description: '<p/>' }) })
+  .openapi({ description: 'A list of supported platforms for orderable clusters.', required: [] })
+  .openapi('SupportedPlatform')
+
+const SupportedPlatformsListSchema = z
+  .array(SupportedPlatformSchema.openapi({ xml: { name: 'SupportedPlatform' } }))
+  .openapi('SupportedPlatformsList')
+
+const AvailabilityZoneSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the availability zone.',
+    }),
+    SupportedPlatforms: SupportedPlatformsListSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
+  })
+  .openapi({ description: 'Describes an availability zone.', required: [] })
+  .openapi('AvailabilityZone')
+
+const SubnetSchema = z
+  .object({
+    SubnetIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the subnet.',
+    }),
+    SubnetAvailabilityZone: AvailabilityZoneSchema.exactOptional().openapi({ description: '<p/>' }),
+    SubnetStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of the subnet.',
+    }),
+  })
+  .openapi({ description: 'Describes a subnet.', required: [] })
+  .openapi('Subnet')
+
+const SubnetListSchema = z
+  .array(SubnetSchema.openapi({ xml: { name: 'Subnet' } }))
+  .openapi('SubnetList')
+
+const TagSchema = z
+  .object({
+    Key: StringSchema.exactOptional().openapi({
+      description: 'The key, or name, for the resource tag.',
+    }),
+    Value: StringSchema.exactOptional().openapi({ description: 'The value for the resource tag.' }),
+  })
+  .openapi({ description: 'A tag consisting of a name/value pair for a resource.', required: [] })
+  .openapi('Tag')
+
+const TagListSchema = z.array(TagSchema.openapi({ xml: { name: 'Tag' } })).openapi('TagList')
+
+const ClusterSubnetGroupSchema = z
+  .object({
+    ClusterSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cluster subnet group.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the cluster subnet group.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description: 'The VPC ID of the cluster subnet group.',
+    }),
+    SubnetGroupStatus: StringSchema.exactOptional().openapi({
+      description:
+        'The status of the cluster subnet group. Possible values are <code>Complete</code>, <code>Incomplete</code> and <code>Invalid</code>. ',
+    }),
+    Subnets: SubnetListSchema.exactOptional().openapi({
+      description: 'A list of the VPC <a>Subnet</a> elements. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the cluster subnet group.',
+    }),
+  })
+  .openapi({ description: 'Describes a subnet group.', required: [] })
+  .openapi('ClusterSubnetGroup')
+
+const ClusterSubnetGroupsSchema = z
+  .array(ClusterSubnetGroupSchema.openapi({ xml: { name: 'ClusterSubnetGroup' } }))
+  .openapi('ClusterSubnetGroups')
+
+type ClusterSubnetGroupMessageType = {
+  Marker?: z.infer<typeof StringSchema> & unknown
+  ClusterSubnetGroups?: z.infer<typeof ClusterSubnetGroupsSchema> & unknown
+}
 
 const IntegerSchema = z.int().openapi('Integer')
 
+const NetworkInterfaceSchema = z
+  .object({
+    NetworkInterfaceId: StringSchema.exactOptional().openapi({
+      description: 'The network interface identifier. ',
+    }),
+    SubnetId: StringSchema.exactOptional().openapi({ description: 'The subnet identifier. ' }),
+    PrivateIpAddress: StringSchema.exactOptional().openapi({
+      description: 'The IPv4 address of the network interface within the subnet. ',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'The Availability Zone. ',
+    }),
+  })
+  .openapi({ description: 'Describes a network interface. ', required: [] })
+  .openapi('NetworkInterface')
+
+const NetworkInterfaceListSchema = z
+  .array(NetworkInterfaceSchema.openapi({ xml: { name: 'NetworkInterface' } }))
+  .openapi('NetworkInterfaceList')
+
+const VpcEndpointSchema = z
+  .object({
+    VpcEndpointId: StringSchema.exactOptional().openapi({
+      description:
+        'The connection endpoint ID for connecting an Amazon Redshift cluster through the proxy.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description: 'The VPC identifier that the endpoint is associated. ',
+    }),
+    NetworkInterfaces: NetworkInterfaceListSchema.exactOptional().openapi({
+      description:
+        'One or more network interfaces of the endpoint. Also known as an interface endpoint. ',
+    }),
+  })
+  .openapi({
+    description:
+      'The connection endpoint for connecting to an Amazon Redshift cluster through the proxy.',
+    required: [],
+  })
+  .openapi('VpcEndpoint')
+
+const VpcEndpointsListSchema = z
+  .array(VpcEndpointSchema.openapi({ xml: { name: 'VpcEndpoint' } }))
+  .openapi('VpcEndpointsList')
+
+const EndpointSchema = z
+  .object({
+    Address: StringSchema.exactOptional().openapi({
+      description: 'The DNS address of the Cluster.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      description: 'The port that the database engine is listening on.',
+    }),
+    VpcEndpoints: VpcEndpointsListSchema.exactOptional().openapi({
+      description: 'Describes a connection endpoint.',
+    }),
+  })
+  .openapi({ description: 'Describes a connection endpoint.', required: [] })
+  .openapi('Endpoint')
+
+const TStampSchema = z.iso.datetime({ offset: true }).openapi('TStamp')
+
+const ClusterSecurityGroupMembershipSchema = z
+  .object({
+    ClusterSecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cluster security group.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the cluster security group.',
+    }),
+  })
+  .openapi({ description: 'Describes a cluster security group.', required: [] })
+  .openapi('ClusterSecurityGroupMembership')
+
+const ClusterSecurityGroupMembershipListSchema = z
+  .array(ClusterSecurityGroupMembershipSchema.openapi({ xml: { name: 'ClusterSecurityGroup' } }))
+  .openapi('ClusterSecurityGroupMembershipList')
+
+const VpcSecurityGroupMembershipSchema = z
+  .object({
+    VpcSecurityGroupId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the VPC security group.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the VPC security group.',
+    }),
+  })
+  .openapi({ description: 'Describes the members of a VPC security group.', required: [] })
+  .openapi('VpcSecurityGroupMembership')
+
+const VpcSecurityGroupMembershipListSchema = z
+  .array(VpcSecurityGroupMembershipSchema.openapi({ xml: { name: 'VpcSecurityGroup' } }))
+  .openapi('VpcSecurityGroupMembershipList')
+
+const ClusterParameterStatusSchema = z
+  .object({
+    ParameterName: StringSchema.exactOptional().openapi({
+      description: 'The name of the parameter.',
+    }),
+    ParameterApplyStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the parameter that indicates whether the parameter is in sync with the database, waiting for a cluster reboot, or encountered an error when being applied.</p> <p>The following are possible statuses and descriptions.</p> <ul> <li> <p> <code>in-sync</code>: The parameter value is in sync with the database.</p> </li> <li> <p> <code>pending-reboot</code>: The parameter value will be applied after the cluster reboots.</p> </li> <li> <p> <code>applying</code>: The parameter value is being applied to the database.</p> </li> <li> <p> <code>invalid-parameter</code>: Cannot apply the parameter value because it has an invalid value or syntax.</p> </li> <li> <p> <code>apply-deferred</code>: The parameter contains static property changes. The changes are deferred until the cluster reboots.</p> </li> <li> <p> <code>apply-error</code>: Cannot connect to the cluster. The parameter change will be applied after the cluster reboots.</p> </li> <li> <p> <code>unknown-error</code>: Cannot apply the parameter change right now. The change will be applied after the cluster reboots.</p> </li> </ul>',
+    }),
+    ParameterApplyErrorDescription: StringSchema.exactOptional().openapi({
+      description: 'The error that prevented the parameter from being applied to the database.',
+    }),
+  })
+  .openapi({ description: 'Describes the status of a parameter group.', required: [] })
+  .openapi('ClusterParameterStatus')
+
+const ClusterParameterStatusListSchema = z
+  .array(ClusterParameterStatusSchema)
+  .openapi('ClusterParameterStatusList')
+
+const ClusterParameterGroupStatusSchema = z
+  .object({
+    ParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cluster parameter group.',
+    }),
+    ParameterApplyStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of parameter updates.',
+    }),
+    ClusterParameterStatusList: ClusterParameterStatusListSchema.exactOptional().openapi({
+      description:
+        '<p>The list of parameter statuses.</p> <p> For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>',
+    }),
+  })
+  .openapi({ description: 'Describes the status of a parameter group.', required: [] })
+  .openapi('ClusterParameterGroupStatus')
+
+const ClusterParameterGroupStatusListSchema = z
+  .array(ClusterParameterGroupStatusSchema.openapi({ xml: { name: 'ClusterParameterGroup' } }))
+  .openapi('ClusterParameterGroupStatusList')
+
+const IntegerOptionalSchema = z.int().openapi('IntegerOptional')
+
+const BooleanOptionalSchema = z.boolean().openapi('BooleanOptional')
+
+const PendingModifiedValuesSchema = z
+  .object({
+    MasterUserPassword: StringSchema.exactOptional().openapi({
+      description: 'The pending or in-progress change of the admin user password for the cluster.',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description: "The pending or in-progress change of the cluster's node type.",
+    }),
+    NumberOfNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The pending or in-progress change of the number of nodes in the cluster.',
+    }),
+    ClusterType: StringSchema.exactOptional().openapi({
+      description: 'The pending or in-progress change of the cluster type.',
+    }),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description: 'The pending or in-progress change of the service version.',
+    }),
+    AutomatedSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The pending or in-progress change of the automated snapshot retention period.',
+    }),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The pending or in-progress change of the new identifier for the cluster.',
+    }),
+    PubliclyAccessible: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'The pending or in-progress change of the ability to connect to the cluster from the public network.',
+    }),
+    EnhancedVpcRouting: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
+    }),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the maintenance track that the cluster will change to during the next maintenance window.',
+    }),
+    EncryptionType: StringSchema.exactOptional().openapi({
+      description: 'The encryption type for a cluster. Possible values are: KMS and None. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes cluster attributes that are in a pending state. A change to one or more the attributes was requested and is in progress or will be applied.',
+    required: [],
+  })
+  .openapi('PendingModifiedValues')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
 const DoubleSchema = z.float64().openapi('Double')
+
+const LongSchema = z.int().openapi('Long')
+
+const RestoreStatusSchema = z
+  .object({
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The status of the restore action. Returns starting, restoring, completed, or failed.',
+    }),
+    CurrentRestoreRateInMegaBytesPerSecond: DoubleSchema.exactOptional().openapi({
+      description:
+        'The number of megabytes per second being transferred from the backup storage. Returns the average rate for a completed backup. This field is only updated when you restore to DC2 and DS2 node types. ',
+    }),
+    SnapshotSizeInMegaBytes: LongSchema.exactOptional().openapi({
+      description:
+        'The size of the set of snapshot data used to restore the cluster. This field is only updated when you restore to DC2 and DS2 node types. ',
+    }),
+    ProgressInMegaBytes: LongSchema.exactOptional().openapi({
+      description:
+        'The number of megabytes that have been transferred from snapshot storage. This field is only updated when you restore to DC2 and DS2 node types. ',
+    }),
+    ElapsedTimeInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of time an in-progress restore has been running, or the amount of time it took a completed restore to finish. This field is only updated when you restore to DC2 and DS2 node types. ',
+    }),
+    EstimatedTimeToCompletionInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        'The estimate of the time remaining before the restore will complete. Returns 0 for a completed restore. This field is only updated when you restore to DC2 and DS2 node types. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the status of a cluster restore action. Returns null if the cluster was not created by restoring a snapshot.',
+    required: [],
+  })
+  .openapi('RestoreStatus')
+
+const DoubleOptionalSchema = z.float64().openapi('DoubleOptional')
+
+const LongOptionalSchema = z.int().openapi('LongOptional')
+
+const DataTransferProgressSchema = z
+  .object({
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'Describes the status of the cluster. While the transfer is in progress the status is <code>transferringdata</code>.',
+    }),
+    CurrentRateInMegaBytesPerSecond: DoubleOptionalSchema.exactOptional().openapi({
+      description: "Describes the data transfer rate in MB's per second.",
+    }),
+    TotalDataInMegaBytes: LongSchema.exactOptional().openapi({
+      description: 'Describes the total amount of data to be transfered in megabytes.',
+    }),
+    DataTransferredInMegaBytes: LongSchema.exactOptional().openapi({
+      description: "Describes the total amount of data that has been transfered in MB's.",
+    }),
+    EstimatedTimeToCompletionInSeconds: LongOptionalSchema.exactOptional().openapi({
+      description: 'Describes the estimated number of seconds remaining to complete the transfer.',
+    }),
+    ElapsedTimeInSeconds: LongOptionalSchema.exactOptional().openapi({
+      description: 'Describes the number of seconds that have elapsed during the data transfer.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the status of a cluster while it is in the process of resizing with an incremental resize.',
+    required: [],
+  })
+  .openapi('DataTransferProgress')
+
+const HsmStatusSchema = z
+  .object({
+    HsmClientCertificateIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the HSM client certificate the Amazon Redshift cluster uses to retrieve the data encryption keys stored in an HSM.',
+    }),
+    HsmConfigurationIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the HSM configuration that contains the information the Amazon Redshift cluster can use to retrieve and store keys in an HSM.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Reports whether the Amazon Redshift cluster has finished applying any HSM settings changes specified in a modify cluster command.</p> <p>Values: active, applying</p>',
+    }),
+  })
+  .openapi({ description: 'Describes the status of changes to HSM settings.', required: [] })
+  .openapi('HsmStatus')
+
+const ClusterSnapshotCopyStatusSchema = z
+  .object({
+    DestinationRegion: StringSchema.exactOptional().openapi({
+      description:
+        'The destination region that snapshots are automatically copied to when cross-region snapshot copy is enabled.',
+    }),
+    RetentionPeriod: LongSchema.exactOptional().openapi({
+      description:
+        'The number of days that automated snapshots are retained in the destination region after they are copied from a source region.',
+    }),
+    ManualSnapshotRetentionPeriod: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that automated snapshots are retained in the destination region after they are copied from a source region. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>',
+    }),
+    SnapshotCopyGrantName: StringSchema.exactOptional().openapi({
+      description: 'The name of the snapshot copy grant.',
+    }),
+  })
+  .openapi({
+    description:
+      'Returns the destination region and retention period that are configured for cross-region snapshot copy.',
+    required: [],
+  })
+  .openapi('ClusterSnapshotCopyStatus')
+
+const ClusterNodeSchema = z
+  .object({
+    NodeRole: StringSchema.exactOptional().openapi({
+      description: 'Whether the node is a leader node or a compute node.',
+    }),
+    PrivateIPAddress: StringSchema.exactOptional().openapi({
+      description: 'The private IP address of a node within a cluster.',
+    }),
+    PublicIPAddress: StringSchema.exactOptional().openapi({
+      description: 'The public IP address of a node within a cluster.',
+    }),
+  })
+  .openapi({ description: 'The identifier of a node in a cluster.', required: [] })
+  .openapi('ClusterNode')
+
+const ClusterNodesListSchema = z.array(ClusterNodeSchema).openapi('ClusterNodesList')
+
+const ElasticIpStatusSchema = z
+  .object({
+    ElasticIp: StringSchema.exactOptional().openapi({
+      description: 'The elastic IP (EIP) address for the cluster.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the elastic IP (EIP) address.',
+    }),
+  })
+  .openapi({ description: 'Describes the status of the elastic IP (EIP) address.', required: [] })
+  .openapi('ElasticIpStatus')
+
+const ClusterIamRoleSchema = z
+  .object({
+    IamRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role, for example, <code>arn:aws:iam::123456789012:role/RedshiftCopyUnload</code>. ',
+    }),
+    ApplyStatus: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A value that describes the status of the IAM role's association with an Amazon Redshift cluster.</p> <p>The following are possible statuses and descriptions.</p> <ul> <li> <p> <code>in-sync</code>: The role is available for use by the cluster.</p> </li> <li> <p> <code>adding</code>: The role is in the process of being associated with the cluster.</p> </li> <li> <p> <code>removing</code>: The role is in the process of being disassociated with the cluster.</p> </li> </ul>",
+    }),
+  })
+  .openapi({
+    description:
+      'An Identity and Access Management (IAM) role that can be used by the associated Amazon Redshift cluster to access other Amazon Web Services services.',
+    required: [],
+  })
+  .openapi('ClusterIamRole')
+
+const ClusterIamRoleListSchema = z
+  .array(ClusterIamRoleSchema.openapi({ xml: { name: 'ClusterIamRole' } }))
+  .openapi('ClusterIamRoleList')
+
+const PendingActionsListSchema = z.array(StringSchema).openapi('PendingActionsList')
+
+const DeferredMaintenanceWindowSchema = z
+  .object({
+    DeferMaintenanceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the maintenance window.',
+    }),
+    DeferMaintenanceStartTime: TStampSchema.exactOptional().openapi({
+      description: ' A timestamp for the beginning of the time period when we defer maintenance.',
+    }),
+    DeferMaintenanceEndTime: TStampSchema.exactOptional().openapi({
+      description: ' A timestamp for the end of the time period when we defer maintenance.',
+    }),
+  })
+  .openapi({ description: 'Describes a deferred maintenance window', required: [] })
+  .openapi('DeferredMaintenanceWindow')
+
+const DeferredMaintenanceWindowsListSchema = z
+  .array(DeferredMaintenanceWindowSchema.openapi({ xml: { name: 'DeferredMaintenanceWindow' } }))
+  .openapi('DeferredMaintenanceWindowsList')
+
+const ScheduleStateSchema = z.enum(['MODIFYING', 'ACTIVE', 'FAILED']).openapi('ScheduleState')
+
+const ResizeInfoSchema = z
+  .object({
+    ResizeType: StringSchema.exactOptional().openapi({
+      description: 'Returns the value <code>ClassicResize</code>.',
+    }),
+    AllowCancelResize: BooleanSchema.exactOptional().openapi({
+      description: 'A boolean value indicating if the resize operation can be cancelled.',
+    }),
+  })
+  .openapi({ description: 'Describes a resize operation.', required: [] })
+  .openapi('ResizeInfo')
+
+const AquaStatusSchema = z.enum(['enabled', 'disabled', 'applying']).openapi('AquaStatus')
+
+const AquaConfigurationStatusSchema = z
+  .enum(['enabled', 'disabled', 'auto'])
+  .openapi('AquaConfigurationStatus')
+
+const AquaConfigurationSchema = z
+  .object({
+    AquaStatus: AquaStatusSchema.exactOptional().openapi({
+      description:
+        'This field is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
+    }),
+    AquaConfigurationStatus: AquaConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        'This field is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
+    }),
+  })
+  .openapi({
+    description:
+      'The operation that uses this structure is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
+    required: [],
+  })
+  .openapi('AquaConfiguration')
+
+const ReservedNodeExchangeStatusTypeSchema = z
+  .enum(['REQUESTED', 'PENDING', 'IN_PROGRESS', 'RETRYING', 'SUCCEEDED', 'FAILED'])
+  .openapi('ReservedNodeExchangeStatusType')
+
+const ReservedNodeExchangeStatusSchema = z
+  .object({
+    ReservedNodeExchangeRequestId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the reserved-node exchange request.',
+    }),
+    Status: ReservedNodeExchangeStatusTypeSchema.exactOptional().openapi({
+      description:
+        'The status of the reserved-node exchange request. Statuses include in-progress and requested.',
+    }),
+    RequestTime: TStampSchema.exactOptional().openapi({
+      description: 'A date and time that indicate when the reserved-node exchange was requested.',
+    }),
+    SourceReservedNodeId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the source reserved node.',
+    }),
+    SourceReservedNodeType: StringSchema.exactOptional().openapi({
+      description: 'The source reserved-node type, for example ds2.xlarge.',
+    }),
+    SourceReservedNodeCount: IntegerSchema.exactOptional().openapi({
+      description: 'The source reserved-node count in the cluster.',
+    }),
+    TargetReservedNodeOfferingId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the target reserved node offering.',
+    }),
+    TargetReservedNodeType: StringSchema.exactOptional().openapi({
+      description: 'The node type of the target reserved node, for example ra3.4xlarge.',
+    }),
+    TargetReservedNodeCount: IntegerSchema.exactOptional().openapi({
+      description: 'The count of target reserved nodes in the cluster.',
+    }),
+  })
+  .openapi({
+    description:
+      'Reserved-node status details, such as the source reserved-node identifier, the target reserved-node identifier, the node type, the node count, and other details.',
+    required: [],
+  })
+  .openapi('ReservedNodeExchangeStatus')
+
+const ClusterSchema = z
+  .object({
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier of the cluster.',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description: 'The node type for the nodes in the cluster.',
+    }),
+    ClusterStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The current state of the cluster. Possible values are the following:</p> <ul> <li> <p> <code>available</code> </p> </li> <li> <p> <code>available, prep-for-resize</code> </p> </li> <li> <p> <code>available, resize-cleanup</code> </p> </li> <li> <p> <code>cancelling-resize</code> </p> </li> <li> <p> <code>creating</code> </p> </li> <li> <p> <code>deleting</code> </p> </li> <li> <p> <code>final-snapshot</code> </p> </li> <li> <p> <code>hardware-failure</code> </p> </li> <li> <p> <code>incompatible-hsm</code> </p> </li> <li> <p> <code>incompatible-network</code> </p> </li> <li> <p> <code>incompatible-parameters</code> </p> </li> <li> <p> <code>incompatible-restore</code> </p> </li> <li> <p> <code>modifying</code> </p> </li> <li> <p> <code>paused</code> </p> </li> <li> <p> <code>rebooting</code> </p> </li> <li> <p> <code>renaming</code> </p> </li> <li> <p> <code>resizing</code> </p> </li> <li> <p> <code>rotating-keys</code> </p> </li> <li> <p> <code>storage-full</code> </p> </li> <li> <p> <code>updating-hsm</code> </p> </li> </ul>',
+    }),
+    ClusterAvailabilityStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The availability status of the cluster for queries. Possible values are the following:</p> <ul> <li> <p>Available - The cluster is available for queries. </p> </li> <li> <p>Unavailable - The cluster is not available for queries.</p> </li> <li> <p>Maintenance - The cluster is intermittently available for queries due to maintenance activities.</p> </li> <li> <p>Modifying - The cluster is intermittently available for queries due to changes that modify the cluster.</p> </li> <li> <p>Failed - The cluster failed and is not available for queries.</p> </li> </ul>',
+    }),
+    ModifyStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of a modify operation, if any, initiated for the cluster.',
+    }),
+    MasterUsername: StringSchema.exactOptional().openapi({
+      description:
+        'The admin user name for the cluster. This name is used to connect to the database that is specified in the <b>DBName</b> parameter. ',
+    }),
+    DBName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the initial database that was created when the cluster was created. This same name is returned for the life of the cluster. If an initial database was not specified, a database named <code>dev</code>dev was created by default. ',
+    }),
+    Endpoint: EndpointSchema.exactOptional().openapi({ description: 'The connection endpoint.' }),
+    ClusterCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'The date and time that the cluster was created.',
+    }),
+    AutomatedSnapshotRetentionPeriod: IntegerSchema.exactOptional().openapi({
+      description: 'The number of days that automatic cluster snapshots are retained.',
+    }),
+    ManualSnapshotRetentionPeriod: IntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>",
+    }),
+    ClusterSecurityGroups: ClusterSecurityGroupMembershipListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of cluster security group that are associated with the cluster. Each security group is represented by an element that contains <code>ClusterSecurityGroup.Name</code> and <code>ClusterSecurityGroup.Status</code> subelements. </p> <p>Cluster security groups are used when the cluster is not created in an Amazon Virtual Private Cloud (VPC). Clusters that are created in a VPC use VPC security groups, which are listed by the <b>VpcSecurityGroups</b> parameter. </p>',
+    }),
+    VpcSecurityGroups: VpcSecurityGroupMembershipListSchema.exactOptional().openapi({
+      description:
+        'A list of Amazon Virtual Private Cloud (Amazon VPC) security groups that are associated with the cluster. This parameter is returned only if the cluster is in a VPC.',
+    }),
+    ClusterParameterGroups: ClusterParameterGroupStatusListSchema.exactOptional().openapi({
+      description:
+        'The list of cluster parameter groups that are associated with this cluster. Each parameter group in the list is returned with its status.',
+    }),
+    ClusterSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the subnet group that is associated with the cluster. This parameter is valid only when the cluster is in a VPC.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the VPC the cluster is in, if the cluster is in a VPC.',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'The name of the Availability Zone in which the cluster is located.',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        'The weekly time range, in Universal Coordinated Time (UTC), during which system maintenance can occur.',
+    }),
+    PendingModifiedValues: PendingModifiedValuesSchema.exactOptional().openapi({
+      description:
+        'A value that, if present, indicates that changes to the cluster are pending. Specific pending changes are identified by subelements.',
+    }),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description: 'The version ID of the Amazon Redshift engine that is running on the cluster.',
+    }),
+    AllowVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value that, if <code>true</code>, indicates that major version upgrades will be applied automatically to the cluster during the maintenance window. ',
+    }),
+    NumberOfNodes: IntegerSchema.exactOptional().openapi({
+      description: 'The number of compute nodes in the cluster.',
+    }),
+    PubliclyAccessible: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value that, if <code>true</code>, indicates that the cluster can be accessed from a public network.',
+    }),
+    Encrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value that, if <code>true</code>, indicates that data in the cluster is encrypted at rest.',
+    }),
+    RestoreStatus: RestoreStatusSchema.exactOptional().openapi({
+      description:
+        'A value that describes the status of a cluster restore action. This parameter returns null if the cluster was not created by restoring a snapshot.',
+    }),
+    DataTransferProgress: DataTransferProgressSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
+    HsmStatus: HsmStatusSchema.exactOptional().openapi({
+      description:
+        '<p>A value that reports whether the Amazon Redshift cluster has finished applying any hardware security module (HSM) settings changes specified in a modify cluster command.</p> <p>Values: active, applying</p>',
+    }),
+    ClusterSnapshotCopyStatus: ClusterSnapshotCopyStatusSchema.exactOptional().openapi({
+      description:
+        'A value that returns the destination region and retention period that are configured for cross-region snapshot copy.',
+    }),
+    ClusterPublicKey: StringSchema.exactOptional().openapi({
+      description: 'The public key for the cluster.',
+    }),
+    ClusterNodes: ClusterNodesListSchema.exactOptional().openapi({
+      description: 'The nodes in the cluster.',
+    }),
+    ElasticIpStatus: ElasticIpStatusSchema.exactOptional().openapi({
+      description: 'The status of the elastic IP (EIP) address.',
+    }),
+    ClusterRevisionNumber: StringSchema.exactOptional().openapi({
+      description: 'The specific revision number of the database in the cluster.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the cluster.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'The Key Management Service (KMS) key ID of the encryption key used to encrypt data in the cluster.',
+    }),
+    EnhancedVpcRouting: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
+    }),
+    IamRoles: ClusterIamRoleListSchema.exactOptional().openapi({
+      description:
+        'A list of Identity and Access Management (IAM) roles that can be used by the cluster to access other Amazon Web Services services.',
+    }),
+    PendingActions: PendingActionsListSchema.exactOptional().openapi({
+      description: 'Cluster operations that are waiting to be started.',
+    }),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description: 'The name of the maintenance track for the cluster.',
+    }),
+    ElasticResizeNumberOfNodeOptions: StringSchema.exactOptional().openapi({
+      description:
+        'The number of nodes that you can resize the cluster to with the elastic resize method. ',
+    }),
+    DeferredMaintenanceWindows: DeferredMaintenanceWindowsListSchema.exactOptional().openapi({
+      description: 'Describes a group of <code>DeferredMaintenanceWindow</code> objects.',
+    }),
+    SnapshotScheduleIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the cluster snapshot schedule.',
+    }),
+    SnapshotScheduleState: ScheduleStateSchema.exactOptional().openapi({
+      description: 'The current state of the cluster snapshot schedule.',
+    }),
+    ExpectedNextSnapshotScheduleTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The date and time when the next snapshot is expected to be taken for clusters with a valid snapshot schedule and backups enabled. ',
+    }),
+    ExpectedNextSnapshotScheduleTimeStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The status of next expected snapshot for clusters having a valid snapshot schedule and backups enabled. Possible values are the following:</p> <ul> <li> <p>OnTrack - The next snapshot is expected to be taken on time. </p> </li> <li> <p>Pending - The next snapshot is pending to be taken. </p> </li> </ul>',
+    }),
+    NextMaintenanceWindowStartTime: TStampSchema.exactOptional().openapi({
+      description: 'The date and time in UTC when system maintenance can begin.',
+    }),
+    ResizeInfo: ResizeInfoSchema.exactOptional().openapi({
+      description:
+        '<p>Returns the following:</p> <ul> <li> <p>AllowCancelResize: a boolean value indicating if the resize operation can be cancelled.</p> </li> <li> <p>ResizeType: Returns ClassicResize</p> </li> </ul>',
+    }),
+    AvailabilityZoneRelocationStatus: StringSchema.exactOptional().openapi({
+      description: 'Describes the status of the Availability Zone relocation operation.',
+    }),
+    ClusterNamespaceArn: StringSchema.exactOptional().openapi({
+      description: 'The namespace Amazon Resource Name (ARN) of the cluster.',
+    }),
+    TotalStorageCapacityInMegaBytes: LongOptionalSchema.exactOptional().openapi({
+      description: 'The total storage capacity of the cluster in megabytes. ',
+    }),
+    AquaConfiguration: AquaConfigurationSchema.exactOptional().openapi({
+      description:
+        'This field is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
+    }),
+    DefaultIamRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the IAM role set as default for the cluster.',
+    }),
+    ReservedNodeExchangeStatus: ReservedNodeExchangeStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the reserved-node exchange request. Statuses include in-progress and requested.',
+    }),
+  })
+  .openapi({ description: 'Describes a cluster.', required: [] })
+  .openapi('Cluster')
+
+const ClusterListSchema = z
+  .array(ClusterSchema.openapi({ xml: { name: 'Cluster' } }))
+  .openapi('ClusterList')
+
+type ClustersMessageType = {
+  Marker?: z.infer<typeof StringSchema> & unknown
+  Clusters?: z.infer<typeof ClusterListSchema> & unknown
+}
 
 const RecurringChargeSchema = z
   .object({
-    RecurringChargeAmount: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount charged per the period of time specified by the recurring charge frequency.',
-        }),
-    ).exactOptional(),
-    RecurringChargeFrequency: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The frequency at which the recurring charge amount is applied.' }),
-    ).exactOptional(),
+    RecurringChargeAmount: DoubleSchema.exactOptional().openapi({
+      description:
+        'The amount charged per the period of time specified by the recurring charge frequency.',
+    }),
+    RecurringChargeFrequency: StringSchema.exactOptional().openapi({
+      description: 'The frequency at which the recurring charge amount is applied.',
+    }),
   })
   .openapi({ description: 'Describes a recurring charge.', required: [] })
   .openapi('RecurringCharge')
 
 const RecurringChargeListSchema = z
-  .array(RecurringChargeSchema.and(z.any().openapi({ xml: { name: 'RecurringCharge' } })))
+  .array(RecurringChargeSchema.openapi({ xml: { name: 'RecurringCharge' } }))
   .openapi('RecurringChargeList')
 
 const ReservedNodeOfferingTypeSchema = z
@@ -37,68 +759,48 @@ const ReservedNodeOfferingTypeSchema = z
 
 const ReservedNodeSchema = z
   .object({
-    ReservedNodeId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the reservation.' }),
-    ).exactOptional(),
-    ReservedNodeOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the reserved node offering.' }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z.any().openapi({ description: 'The node type of the reserved node.' }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the reservation started. You purchase a reserved node offering for a duration. This is the start time of that duration.',
-        }),
-    ).exactOptional(),
-    Duration: IntegerSchema.and(
-      z.any().openapi({ description: 'The duration of the node reservation in seconds.' }),
-    ).exactOptional(),
-    FixedPrice: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fixed cost Amazon Redshift charges you for this reserved node.',
-        }),
-    ).exactOptional(),
-    UsagePrice: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The hourly rate Amazon Redshift charges you for this reserved node.',
-        }),
-    ).exactOptional(),
-    CurrencyCode: StringSchema.and(
-      z.any().openapi({ description: 'The currency code for the reserved cluster.' }),
-    ).exactOptional(),
-    NodeCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of reserved compute nodes.' }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the reserved compute node.</p> <p>Possible Values:</p> <ul> <li> <p>pending-payment-This reserved node has recently been purchased, and the sale has been approved, but payment has not yet been confirmed.</p> </li> <li> <p>active-This reserved node is owned by the caller and is available for use.</p> </li> <li> <p>payment-failed-Payment failed for the purchase attempt.</p> </li> <li> <p>retired-The reserved node is no longer available. </p> </li> <li> <p>exchanging-The owner is exchanging the reserved node for another reserved node.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OfferingType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The anticipated utilization of the reserved node, as defined in the reserved node offering.',
-        }),
-    ).exactOptional(),
-    RecurringCharges: RecurringChargeListSchema.and(
-      z.any().openapi({ description: 'The recurring charges for the reserved node.' }),
-    ).exactOptional(),
-    ReservedNodeOfferingType: ReservedNodeOfferingTypeSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    ReservedNodeId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier for the reservation.',
+    }),
+    ReservedNodeOfferingId: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the reserved node offering.',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description: 'The node type of the reserved node.',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The time the reservation started. You purchase a reserved node offering for a duration. This is the start time of that duration.',
+    }),
+    Duration: IntegerSchema.exactOptional().openapi({
+      description: 'The duration of the node reservation in seconds.',
+    }),
+    FixedPrice: DoubleSchema.exactOptional().openapi({
+      description: 'The fixed cost Amazon Redshift charges you for this reserved node.',
+    }),
+    UsagePrice: DoubleSchema.exactOptional().openapi({
+      description: 'The hourly rate Amazon Redshift charges you for this reserved node.',
+    }),
+    CurrencyCode: StringSchema.exactOptional().openapi({
+      description: 'The currency code for the reserved cluster.',
+    }),
+    NodeCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of reserved compute nodes.',
+    }),
+    State: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the reserved compute node.</p> <p>Possible Values:</p> <ul> <li> <p>pending-payment-This reserved node has recently been purchased, and the sale has been approved, but payment has not yet been confirmed.</p> </li> <li> <p>active-This reserved node is owned by the caller and is available for use.</p> </li> <li> <p>payment-failed-Payment failed for the purchase attempt.</p> </li> <li> <p>retired-The reserved node is no longer available. </p> </li> <li> <p>exchanging-The owner is exchanging the reserved node for another reserved node.</p> </li> </ul>',
+    }),
+    OfferingType: StringSchema.exactOptional().openapi({
+      description:
+        'The anticipated utilization of the reserved node, as defined in the reserved node offering.',
+    }),
+    RecurringCharges: RecurringChargeListSchema.exactOptional().openapi({
+      description: 'The recurring charges for the reserved node.',
+    }),
+    ReservedNodeOfferingType: ReservedNodeOfferingTypeSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
   })
   .openapi({
     description:
@@ -109,9 +811,7 @@ const ReservedNodeSchema = z
 
 const AcceptReservedNodeExchangeOutputMessageSchema = z
   .object({
-    ExchangedReservedNode: ReservedNodeSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    ExchangedReservedNode: ReservedNodeSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: [] })
   .openapi('AcceptReservedNodeExchangeOutputMessage')
@@ -144,14 +844,12 @@ const PartnerIntegrationPartnerNameSchema = z
 
 const PartnerIntegrationOutputMessageSchema = z
   .object({
-    DatabaseName: PartnerIntegrationDatabaseNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the database that receives data from the partner.' }),
-    ).exactOptional(),
-    PartnerName: PartnerIntegrationPartnerNameSchema.and(
-      z.any().openapi({ description: 'The name of the partner that is authorized to send data.' }),
-    ).exactOptional(),
+    DatabaseName: PartnerIntegrationDatabaseNameSchema.exactOptional().openapi({
+      description: 'The name of the database that receives data from the partner.',
+    }),
+    PartnerName: PartnerIntegrationPartnerNameSchema.exactOptional().openapi({
+      description: 'The name of the partner that is authorized to send data.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PartnerIntegrationOutputMessage')
@@ -164,41 +862,29 @@ const UnauthorizedPartnerIntegrationFaultSchema = z
   .any()
   .openapi('UnauthorizedPartnerIntegrationFault')
 
-const BooleanSchema = z.boolean().openapi('Boolean')
-
 const DataShareStatusSchema = z
   .enum(['ACTIVE', 'PENDING_AUTHORIZATION', 'AUTHORIZED', 'DEAUTHORIZED', 'REJECTED', 'AVAILABLE'])
   .openapi('DataShareStatus')
 
 const DataShareAssociationSchema = z
   .object({
-    ConsumerIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the consumer accounts that have an association with a producer datashare.',
-        }),
-    ).exactOptional(),
-    Status: DataShareStatusSchema.and(
-      z.any().openapi({ description: 'The status of the datashare that is associated.' }),
-    ).exactOptional(),
-    ConsumerRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region of the consumer accounts that have an association with a producer datashare.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TStampSchema.and(
-      z.any().openapi({ description: 'The creation date of the datashare that is associated.' }),
-    ).exactOptional(),
-    StatusChangeDate: TStampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status change data of the datashare that is associated.' }),
-    ).exactOptional(),
+    ConsumerIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the consumer accounts that have an association with a producer datashare.',
+    }),
+    Status: DataShareStatusSchema.exactOptional().openapi({
+      description: 'The status of the datashare that is associated.',
+    }),
+    ConsumerRegion: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services Region of the consumer accounts that have an association with a producer datashare.',
+    }),
+    CreatedDate: TStampSchema.exactOptional().openapi({
+      description: 'The creation date of the datashare that is associated.',
+    }),
+    StatusChangeDate: TStampSchema.exactOptional().openapi({
+      description: 'The status change data of the datashare that is associated.',
+    }),
   })
   .openapi({
     description: 'The association of a datashare from a producer account with a data consumer. ',
@@ -212,38 +898,24 @@ const DataShareAssociationListSchema = z
 
 const DataShareSchema = z
   .object({
-    DataShareArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that references the datashare that is owned by a specific namespace of the producer cluster. A datashare ARN is in the <code>arn:aws:redshift:{region}:{account-id}:{datashare}:{namespace-guid}/{datashare-name}</code> format.',
-        }),
-    ).exactOptional(),
-    ProducerArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the producer.' }),
-    ).exactOptional(),
-    AllowPubliclyAccessibleConsumers: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that specifies whether the datashare can be shared to a publicly accessible cluster.',
-        }),
-    ).exactOptional(),
-    DataShareAssociations: DataShareAssociationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that specifies when the datashare has an association between producer and data consumers.',
-        }),
-    ).exactOptional(),
-    ManagedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of a datashare to show its managing entity.' }),
-    ).exactOptional(),
+    DataShareArn: StringSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that references the datashare that is owned by a specific namespace of the producer cluster. A datashare ARN is in the <code>arn:aws:redshift:{region}:{account-id}:{datashare}:{namespace-guid}/{datashare-name}</code> format.',
+    }),
+    ProducerArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the producer.',
+    }),
+    AllowPubliclyAccessibleConsumers: BooleanSchema.exactOptional().openapi({
+      description:
+        'A value that specifies whether the datashare can be shared to a publicly accessible cluster.',
+    }),
+    DataShareAssociations: DataShareAssociationListSchema.exactOptional().openapi({
+      description:
+        'A value that specifies when the datashare has an association between producer and data consumers.',
+    }),
+    ManagedBy: StringSchema.exactOptional().openapi({
+      description: 'The identifier of a datashare to show its managing entity.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DataShare')
@@ -252,103 +924,67 @@ const InvalidDataShareFaultSchema = z.any().openapi('InvalidDataShareFault')
 
 const InvalidNamespaceFaultSchema = z.any().openapi('InvalidNamespaceFault')
 
-const TagSchema = z
-  .object({
-    Key: StringSchema.and(
-      z.any().openapi({ description: 'The key, or name, for the resource tag.' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The value for the resource tag.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'A tag consisting of a name/value pair for a resource.', required: [] })
-  .openapi('Tag')
-
-const TagListSchema = z
-  .array(TagSchema.and(z.any().openapi({ xml: { name: 'Tag' } })))
-  .openapi('TagList')
-
 const EC2SecurityGroupSchema = z
   .object({
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the EC2 security group.' }),
-    ).exactOptional(),
-    EC2SecurityGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the EC2 Security Group.' }),
-    ).exactOptional(),
-    EC2SecurityGroupOwnerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID of the owner of the EC2 security group specified in the <code>EC2SecurityGroupName</code> field. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the EC2 security group.' }),
-    ).exactOptional(),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the EC2 security group.',
+    }),
+    EC2SecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the EC2 Security Group.',
+    }),
+    EC2SecurityGroupOwnerId: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID of the owner of the EC2 security group specified in the <code>EC2SecurityGroupName</code> field. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the EC2 security group.',
+    }),
   })
   .openapi({ description: 'Describes an Amazon EC2 security group.', required: [] })
   .openapi('EC2SecurityGroup')
 
 const EC2SecurityGroupListSchema = z
-  .array(EC2SecurityGroupSchema.and(z.any().openapi({ xml: { name: 'EC2SecurityGroup' } })))
+  .array(EC2SecurityGroupSchema.openapi({ xml: { name: 'EC2SecurityGroup' } }))
   .openapi('EC2SecurityGroupList')
 
 const IPRangeSchema = z
   .object({
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the IP range, for example, "authorized".' }),
-    ).exactOptional(),
-    CIDRIP: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IP range in Classless Inter-Domain Routing (CIDR) notation.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the IP range.' }),
-    ).exactOptional(),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the IP range, for example, "authorized".',
+    }),
+    CIDRIP: StringSchema.exactOptional().openapi({
+      description: 'The IP range in Classless Inter-Domain Routing (CIDR) notation.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the IP range.',
+    }),
   })
   .openapi({ description: 'Describes an IP range used in a security group.', required: [] })
   .openapi('IPRange')
 
 const IPRangeListSchema = z
-  .array(IPRangeSchema.and(z.any().openapi({ xml: { name: 'IPRange' } })))
+  .array(IPRangeSchema.openapi({ xml: { name: 'IPRange' } }))
   .openapi('IPRangeList')
 
 const ClusterSecurityGroupSchema = z
   .object({
-    ClusterSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the cluster security group to which the operation was applied.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the security group.' }),
-    ).exactOptional(),
-    EC2SecurityGroups: EC2SecurityGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of EC2 security groups that are permitted to access clusters associated with this cluster security group.',
-        }),
-    ).exactOptional(),
-    IPRanges: IPRangeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of IP ranges (CIDR blocks) that are permitted to access clusters associated with this cluster security group.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the cluster security group.' }),
-    ).exactOptional(),
+    ClusterSecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cluster security group to which the operation was applied.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A description of the security group.',
+    }),
+    EC2SecurityGroups: EC2SecurityGroupListSchema.exactOptional().openapi({
+      description:
+        'A list of EC2 security groups that are permitted to access clusters associated with this cluster security group.',
+    }),
+    IPRanges: IPRangeListSchema.exactOptional().openapi({
+      description:
+        'A list of IP ranges (CIDR blocks) that are permitted to access clusters associated with this cluster security group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the cluster security group.',
+    }),
   })
   .openapi({ description: 'Describes a security group.', required: [] })
   .openapi('ClusterSecurityGroup')
@@ -371,52 +1007,39 @@ const AuthorizationQuotaExceededFaultSchema = z.any().openapi('AuthorizationQuot
 const AuthorizationStatusSchema = z.enum(['Authorized', 'Revoking']).openapi('AuthorizationStatus')
 
 const VpcIdentifierListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'VpcIdentifier' } })))
+  .array(StringSchema.openapi({ xml: { name: 'VpcIdentifier' } }))
   .openapi('VpcIdentifierList')
 
 const EndpointAuthorizationSchema = z
   .object({
-    Grantor: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID of the cluster owner.' }),
-    ).exactOptional(),
-    Grantee: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account ID of the grantee of the cluster.',
-        }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The cluster identifier.' }),
-    ).exactOptional(),
-    AuthorizeTime: TStampSchema.and(
-      z.any().openapi({ description: 'The time (UTC) when the authorization was created.' }),
-    ).exactOptional(),
-    ClusterStatus: StringSchema.and(
-      z.any().openapi({ description: 'The status of the cluster.' }),
-    ).exactOptional(),
-    Status: AuthorizationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the authorization action.' }),
-    ).exactOptional(),
-    AllowedAllVPCs: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether all VPCs in the grantee account are allowed access to the cluster.',
-        }),
-    ).exactOptional(),
-    AllowedVPCs: VpcIdentifierListSchema.and(
-      z.any().openapi({ description: 'The VPCs allowed access to the cluster.' }),
-    ).exactOptional(),
-    EndpointCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Redshift-managed VPC endpoints created for the authorization.',
-        }),
-    ).exactOptional(),
+    Grantor: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the cluster owner.',
+    }),
+    Grantee: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the grantee of the cluster.',
+    }),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The cluster identifier.',
+    }),
+    AuthorizeTime: TStampSchema.exactOptional().openapi({
+      description: 'The time (UTC) when the authorization was created.',
+    }),
+    ClusterStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of the cluster.',
+    }),
+    Status: AuthorizationStatusSchema.exactOptional().openapi({
+      description: 'The status of the authorization action.',
+    }),
+    AllowedAllVPCs: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether all VPCs in the grantee account are allowed access to the cluster.',
+    }),
+    AllowedVPCs: VpcIdentifierListSchema.exactOptional().openapi({
+      description: 'The VPCs allowed access to the cluster.',
+    }),
+    EndpointCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of Redshift-managed VPC endpoints created for the authorization.',
+    }),
   })
   .openapi({
     description:
@@ -439,22 +1062,14 @@ const InvalidClusterStateFaultSchema = z.any().openapi('InvalidClusterStateFault
 
 const AccountWithRestoreAccessSchema = z
   .object({
-    AccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of an Amazon Web Services account authorized to restore a snapshot.',
-        }),
-    ).exactOptional(),
-    AccountAlias: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of an Amazon Web Services support account authorized to restore a snapshot. For Amazon Web Services Support, the identifier is <code>amazon-redshift-support</code>. ',
-        }),
-    ).exactOptional(),
+    AccountId: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of an Amazon Web Services account authorized to restore a snapshot.',
+    }),
+    AccountAlias: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of an Amazon Web Services support account authorized to restore a snapshot. For Amazon Web Services Support, the identifier is <code>amazon-redshift-support</code>. ',
+    }),
   })
   .openapi({
     description: 'Describes an Amazon Web Services account authorized to restore a snapshot.',
@@ -463,234 +1078,132 @@ const AccountWithRestoreAccessSchema = z
   .openapi('AccountWithRestoreAccess')
 
 const AccountsWithRestoreAccessListSchema = z
-  .array(
-    AccountWithRestoreAccessSchema.and(
-      z.any().openapi({ xml: { name: 'AccountWithRestoreAccess' } }),
-    ),
-  )
+  .array(AccountWithRestoreAccessSchema.openapi({ xml: { name: 'AccountWithRestoreAccess' } }))
   .openapi('AccountsWithRestoreAccessList')
 
-const LongSchema = z.int().openapi('Long')
-
 const RestorableNodeTypeListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'NodeType' } })))
+  .array(StringSchema.openapi({ xml: { name: 'NodeType' } }))
   .openapi('RestorableNodeTypeList')
-
-const IntegerOptionalSchema = z.int().openapi('IntegerOptional')
 
 const SnapshotSchema = z
   .object({
-    SnapshotIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The snapshot identifier that is provided in the request.' }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the cluster for which the snapshot was taken.',
-        }),
-    ).exactOptional(),
-    SnapshotCreateTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time (in UTC format) when Amazon Redshift began the snapshot. A snapshot contains a copy of the cluster data as of this exact time.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The snapshot status. The value of the status depends on the API operation used: </p> <ul> <li> <p> <a>CreateClusterSnapshot</a> and <a>CopyClusterSnapshot</a> returns status as "creating". </p> </li> <li> <p> <a>DescribeClusterSnapshots</a> returns status as "creating", "available", "final snapshot", or "failed".</p> </li> <li> <p> <a>DeleteClusterSnapshot</a> returns status as "deleted".</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z.any().openapi({ description: 'The port that the cluster is listening on.' }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z.any().openapi({ description: 'The Availability Zone in which the cluster was created.' }),
-    ).exactOptional(),
-    ClusterCreateTime: TStampSchema.and(
-      z.any().openapi({ description: 'The time (UTC) when the cluster was originally created.' }),
-    ).exactOptional(),
-    MasterUsername: StringSchema.and(
-      z.any().openapi({ description: 'The admin user name for the cluster.' }),
-    ).exactOptional(),
-    ClusterVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID of the Amazon Redshift engine that is running on the cluster.',
-        }),
-    ).exactOptional(),
-    EngineFullVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster version of the cluster used to create the snapshot. For example, 1.0.15503. ',
-        }),
-    ).exactOptional(),
-    SnapshotType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The snapshot type. Snapshots created using <a>CreateClusterSnapshot</a> and <a>CopyClusterSnapshot</a> are of type "manual". ',
-        }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z.any().openapi({ description: 'The node type of the nodes in the cluster.' }),
-    ).exactOptional(),
-    NumberOfNodes: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of nodes in the cluster.' }),
-    ).exactOptional(),
-    DBName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the database that was created when the cluster was created.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC identifier of the cluster if the snapshot is from a cluster in a VPC. Otherwise, this field is not in the output.',
-        }),
-    ).exactOptional(),
-    Encrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If <code>true</code>, the data in the snapshot is encrypted at rest.',
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Key Management Service (KMS) key ID of the encryption key that was used to encrypt data in the cluster from which the snapshot was taken.',
-        }),
-    ).exactOptional(),
-    EncryptedWithHSM: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean that indicates whether the snapshot data is encrypted using the HSM keys of the source cluster. <code>true</code> indicates that the data is encrypted using HSM keys.',
-        }),
-    ).exactOptional(),
-    AccountsWithRestoreAccess: AccountsWithRestoreAccessListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the Amazon Web Services accounts authorized to restore the snapshot. Returns <code>null</code> if no accounts are authorized. Visible only to the snapshot owner. ',
-        }),
-    ).exactOptional(),
-    OwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For manual snapshots, the Amazon Web Services account used to create or copy the snapshot. For automatic snapshots, the owner of the cluster. The owner can perform all snapshot actions, such as sharing a manual snapshot.',
-        }),
-    ).exactOptional(),
-    TotalBackupSizeInMegaBytes: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the complete set of backup data that would be used to restore the cluster.',
-        }),
-    ).exactOptional(),
-    ActualIncrementalBackupSizeInMegaBytes: DoubleSchema.and(
-      z.any().openapi({ description: 'The size of the incremental backup.' }),
-    ).exactOptional(),
-    BackupProgressInMegaBytes: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of megabytes that have been transferred to the snapshot backup.',
-        }),
-    ).exactOptional(),
-    CurrentBackupRateInMegaBytesPerSecond: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of megabytes per second being transferred to the snapshot backup. Returns <code>0</code> for a completed backup. ',
-        }),
-    ).exactOptional(),
-    EstimatedSecondsToCompletion: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimate of the time remaining before the snapshot backup will complete. Returns <code>0</code> for a completed backup. ',
-        }),
-    ).exactOptional(),
-    ElapsedTimeInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time an in-progress snapshot backup has been running, or the amount of time it took a completed backup to finish.',
-        }),
-    ).exactOptional(),
-    SourceRegion: StringSchema.and(
-      z.any().openapi({ description: 'The source region from which the snapshot was copied.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the cluster snapshot.' }),
-    ).exactOptional(),
-    RestorableNodeTypes: RestorableNodeTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of node types that this cluster snapshot is able to restore into.',
-        }),
-    ).exactOptional(),
-    EnhancedVpcRouting: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    MaintenanceTrackName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the maintenance track for the snapshot.' }),
-    ).exactOptional(),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>',
-        }),
-    ).exactOptional(),
-    ManualSnapshotRemainingDays: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of days until a manual snapshot will pass its retention period.',
-        }),
-    ).exactOptional(),
-    SnapshotRetentionStartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp representing the start of the retention period for the snapshot.',
-        }),
-    ).exactOptional(),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The snapshot identifier that is provided in the request.',
+    }),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the cluster for which the snapshot was taken.',
+    }),
+    SnapshotCreateTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The time (in UTC format) when Amazon Redshift began the snapshot. A snapshot contains a copy of the cluster data as of this exact time.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The snapshot status. The value of the status depends on the API operation used: </p> <ul> <li> <p> <a>CreateClusterSnapshot</a> and <a>CopyClusterSnapshot</a> returns status as "creating". </p> </li> <li> <p> <a>DescribeClusterSnapshots</a> returns status as "creating", "available", "final snapshot", or "failed".</p> </li> <li> <p> <a>DeleteClusterSnapshot</a> returns status as "deleted".</p> </li> </ul>',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      description: 'The port that the cluster is listening on.',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'The Availability Zone in which the cluster was created.',
+    }),
+    ClusterCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'The time (UTC) when the cluster was originally created.',
+    }),
+    MasterUsername: StringSchema.exactOptional().openapi({
+      description: 'The admin user name for the cluster.',
+    }),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description: 'The version ID of the Amazon Redshift engine that is running on the cluster.',
+    }),
+    EngineFullVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The cluster version of the cluster used to create the snapshot. For example, 1.0.15503. ',
+    }),
+    SnapshotType: StringSchema.exactOptional().openapi({
+      description:
+        'The snapshot type. Snapshots created using <a>CreateClusterSnapshot</a> and <a>CopyClusterSnapshot</a> are of type "manual". ',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description: 'The node type of the nodes in the cluster.',
+    }),
+    NumberOfNodes: IntegerSchema.exactOptional().openapi({
+      description: 'The number of nodes in the cluster.',
+    }),
+    DBName: StringSchema.exactOptional().openapi({
+      description: 'The name of the database that was created when the cluster was created.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description:
+        'The VPC identifier of the cluster if the snapshot is from a cluster in a VPC. Otherwise, this field is not in the output.',
+    }),
+    Encrypted: BooleanSchema.exactOptional().openapi({
+      description: 'If <code>true</code>, the data in the snapshot is encrypted at rest.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'The Key Management Service (KMS) key ID of the encryption key that was used to encrypt data in the cluster from which the snapshot was taken.',
+    }),
+    EncryptedWithHSM: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean that indicates whether the snapshot data is encrypted using the HSM keys of the source cluster. <code>true</code> indicates that the data is encrypted using HSM keys.',
+    }),
+    AccountsWithRestoreAccess: AccountsWithRestoreAccessListSchema.exactOptional().openapi({
+      description:
+        'A list of the Amazon Web Services accounts authorized to restore the snapshot. Returns <code>null</code> if no accounts are authorized. Visible only to the snapshot owner. ',
+    }),
+    OwnerAccount: StringSchema.exactOptional().openapi({
+      description:
+        'For manual snapshots, the Amazon Web Services account used to create or copy the snapshot. For automatic snapshots, the owner of the cluster. The owner can perform all snapshot actions, such as sharing a manual snapshot.',
+    }),
+    TotalBackupSizeInMegaBytes: DoubleSchema.exactOptional().openapi({
+      description:
+        'The size of the complete set of backup data that would be used to restore the cluster.',
+    }),
+    ActualIncrementalBackupSizeInMegaBytes: DoubleSchema.exactOptional().openapi({
+      description: 'The size of the incremental backup.',
+    }),
+    BackupProgressInMegaBytes: DoubleSchema.exactOptional().openapi({
+      description: 'The number of megabytes that have been transferred to the snapshot backup.',
+    }),
+    CurrentBackupRateInMegaBytesPerSecond: DoubleSchema.exactOptional().openapi({
+      description:
+        'The number of megabytes per second being transferred to the snapshot backup. Returns <code>0</code> for a completed backup. ',
+    }),
+    EstimatedSecondsToCompletion: LongSchema.exactOptional().openapi({
+      description:
+        'The estimate of the time remaining before the snapshot backup will complete. Returns <code>0</code> for a completed backup. ',
+    }),
+    ElapsedTimeInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of time an in-progress snapshot backup has been running, or the amount of time it took a completed backup to finish.',
+    }),
+    SourceRegion: StringSchema.exactOptional().openapi({
+      description: 'The source region from which the snapshot was copied.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the cluster snapshot.',
+    }),
+    RestorableNodeTypes: RestorableNodeTypeListSchema.exactOptional().openapi({
+      description: 'The list of node types that this cluster snapshot is able to restore into.',
+    }),
+    EnhancedVpcRouting: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
+    }),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description: 'The name of the maintenance track for the snapshot.',
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>',
+    }),
+    ManualSnapshotRemainingDays: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The number of days until a manual snapshot will pass its retention period.',
+    }),
+    SnapshotRetentionStartTime: TStampSchema.exactOptional().openapi({
+      description: 'A timestamp representing the start of the retention period for the snapshot.',
+    }),
   })
   .openapi({ description: 'Describes a snapshot.', required: [] })
   .openapi('Snapshot')
@@ -711,61 +1224,53 @@ const InvalidClusterSnapshotStateFaultSchema = z.any().openapi('InvalidClusterSn
 const LimitExceededFaultSchema = z.any().openapi('LimitExceededFault')
 
 const SnapshotIdentifierListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'String' } })))
+  .array(StringSchema.openapi({ xml: { name: 'String' } }))
   .openapi('SnapshotIdentifierList')
 
 const SnapshotErrorMessageSchema = z
   .object({
-    SnapshotIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the snapshot returning the error.' }),
-    ).exactOptional(),
-    SnapshotClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the cluster.' }),
-    ).exactOptional(),
-    FailureCode: StringSchema.and(
-      z.any().openapi({ description: 'The failure code for the error.' }),
-    ).exactOptional(),
-    FailureReason: StringSchema.and(
-      z.any().openapi({ description: 'The text message describing the error.' }),
-    ).exactOptional(),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the snapshot returning the error.',
+    }),
+    SnapshotClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the cluster.',
+    }),
+    FailureCode: StringSchema.exactOptional().openapi({
+      description: 'The failure code for the error.',
+    }),
+    FailureReason: StringSchema.exactOptional().openapi({
+      description: 'The text message describing the error.',
+    }),
   })
   .openapi({ description: 'Describes the errors returned by a snapshot.', required: [] })
   .openapi('SnapshotErrorMessage')
 
 const BatchSnapshotOperationErrorListSchema = z
-  .array(SnapshotErrorMessageSchema.and(z.any().openapi({ xml: { name: 'SnapshotErrorMessage' } })))
+  .array(SnapshotErrorMessageSchema.openapi({ xml: { name: 'SnapshotErrorMessage' } }))
   .openapi('BatchSnapshotOperationErrorList')
 
 const BatchDeleteClusterSnapshotsResultSchema = z
   .object({
-    Resources: SnapshotIdentifierListSchema.and(
-      z.any().openapi({ description: 'A list of the snapshot identifiers that were deleted. ' }),
-    ).exactOptional(),
-    Errors: BatchSnapshotOperationErrorListSchema.and(
-      z.any().openapi({ description: 'A list of any errors returned.' }),
-    ).exactOptional(),
+    Resources: SnapshotIdentifierListSchema.exactOptional().openapi({
+      description: 'A list of the snapshot identifiers that were deleted. ',
+    }),
+    Errors: BatchSnapshotOperationErrorListSchema.exactOptional().openapi({
+      description: 'A list of any errors returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDeleteClusterSnapshotsResult')
 
 const DeleteClusterSnapshotMessageSchema = z
   .object({
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the manual snapshot to be deleted.</p> <p>Constraints: Must be the name of an existing snapshot that is in the <code>available</code>, <code>failed</code>, or <code>cancelled</code> state.</p>',
-        }),
-    ),
-    SnapshotClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p> <p>Constraints: Must be the name of valid cluster.</p>',
-        }),
-    ).exactOptional(),
+    SnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>The unique identifier of the manual snapshot to be deleted.</p> <p>Constraints: Must be the name of an existing snapshot that is in the <code>available</code>, <code>failed</code>, or <code>cancelled</code> state.</p>',
+    }),
+    SnapshotClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p> <p>Constraints: Must be the name of valid cluster.</p>',
+    }),
   })
   .openapi({
     required: ['SnapshotIdentifier'],
@@ -779,17 +1284,17 @@ const BatchDeleteRequestSizeExceededFaultSchema = z
   .openapi('BatchDeleteRequestSizeExceededFault')
 
 const BatchSnapshotOperationErrorsSchema = z
-  .array(SnapshotErrorMessageSchema.and(z.any().openapi({ xml: { name: 'SnapshotErrorMessage' } })))
+  .array(SnapshotErrorMessageSchema.openapi({ xml: { name: 'SnapshotErrorMessage' } }))
   .openapi('BatchSnapshotOperationErrors')
 
 const BatchModifyClusterSnapshotsOutputMessageSchema = z
   .object({
-    Resources: SnapshotIdentifierListSchema.and(
-      z.any().openapi({ description: 'A list of the snapshots that were modified.' }),
-    ).exactOptional(),
-    Errors: BatchSnapshotOperationErrorsSchema.and(
-      z.any().openapi({ description: 'A list of any errors returned.' }),
-    ).exactOptional(),
+    Resources: SnapshotIdentifierListSchema.exactOptional().openapi({
+      description: 'A list of the snapshots that were modified.',
+    }),
+    Errors: BatchSnapshotOperationErrorsSchema.exactOptional().openapi({
+      description: 'A list of any errors returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchModifyClusterSnapshotsOutputMessage')
@@ -806,138 +1311,70 @@ const ImportTablesInProgressSchema = z.array(StringSchema).openapi('ImportTables
 
 const ImportTablesNotStartedSchema = z.array(StringSchema).openapi('ImportTablesNotStarted')
 
-const DoubleOptionalSchema = z.float64().openapi('DoubleOptional')
-
-const LongOptionalSchema = z.int().openapi('LongOptional')
-
 const ResizeProgressMessageSchema = z
   .object({
-    TargetNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The node type that the cluster will have after the resize operation is complete.',
-        }),
-    ).exactOptional(),
-    TargetNumberOfNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of nodes that the cluster will have after the resize operation is complete.',
-        }),
-    ).exactOptional(),
-    TargetClusterType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cluster type after the resize operation is complete.</p> <p>Valid Values: <code>multi-node</code> | <code>single-node</code> </p>',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the resize operation.</p> <p>Valid Values: <code>NONE</code> | <code>IN_PROGRESS</code> | <code>FAILED</code> | <code>SUCCEEDED</code> | <code>CANCELLING</code> </p>',
-        }),
-    ).exactOptional(),
-    ImportTablesCompleted: ImportTablesCompletedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The names of tables that have been completely imported .</p> <p>Valid Values: List of table names.</p>',
-        }),
-    ).exactOptional(),
-    ImportTablesInProgress: ImportTablesInProgressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The names of tables that are being currently imported.</p> <p>Valid Values: List of table names.</p>',
-        }),
-    ).exactOptional(),
-    ImportTablesNotStarted: ImportTablesNotStartedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The names of tables that have not been yet imported.</p> <p>Valid Values: List of table names</p>',
-        }),
-    ).exactOptional(),
-    AvgResizeRateInMegaBytesPerSecond: DoubleOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average rate of the resize operation over the last few minutes, measured in megabytes per second. After the resize operation completes, this value shows the average rate of the entire resize operation.',
-        }),
-    ).exactOptional(),
-    TotalResizeDataInMegaBytes: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated total amount of data, in megabytes, on the cluster before the resize operation began.',
-        }),
-    ).exactOptional(),
-    ProgressInMegaBytes: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'While the resize operation is in progress, this value shows the current amount of data, in megabytes, that has been processed so far. When the resize operation is complete, this value shows the total amount of data, in megabytes, on the cluster, which may be more or less than TotalResizeDataInMegaBytes (the estimated total amount of data before resize).',
-        }),
-    ).exactOptional(),
-    ElapsedTimeInSeconds: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of seconds that have elapsed since the resize operation began. After the resize operation completes, this value shows the total actual time, in seconds, for the resize operation.',
-        }),
-    ).exactOptional(),
-    EstimatedTimeToCompletionInSeconds: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated time remaining, in seconds, until the resize operation is complete. This value is calculated based on the average resize rate and the estimated amount of data remaining to be processed. Once the resize operation is complete, this value will be 0.',
-        }),
-    ).exactOptional(),
-    ResizeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enum with possible values of <code>ClassicResize</code> and <code>ElasticResize</code>. These values describe the type of resize operation being performed. ',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An optional string to provide additional details about the resize action.',
-        }),
-    ).exactOptional(),
-    TargetEncryptionType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of encryption for the cluster after the resize is complete.</p> <p>Possible values are <code>KMS</code> and <code>None</code>. </p>',
-        }),
-    ).exactOptional(),
-    DataTransferProgressPercent: DoubleOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The percent of data transferred from source cluster to target cluster.',
-        }),
-    ).exactOptional(),
+    TargetNodeType: StringSchema.exactOptional().openapi({
+      description:
+        'The node type that the cluster will have after the resize operation is complete.',
+    }),
+    TargetNumberOfNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The number of nodes that the cluster will have after the resize operation is complete.',
+    }),
+    TargetClusterType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The cluster type after the resize operation is complete.</p> <p>Valid Values: <code>multi-node</code> | <code>single-node</code> </p>',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the resize operation.</p> <p>Valid Values: <code>NONE</code> | <code>IN_PROGRESS</code> | <code>FAILED</code> | <code>SUCCEEDED</code> | <code>CANCELLING</code> </p>',
+    }),
+    ImportTablesCompleted: ImportTablesCompletedSchema.exactOptional().openapi({
+      description:
+        '<p>The names of tables that have been completely imported .</p> <p>Valid Values: List of table names.</p>',
+    }),
+    ImportTablesInProgress: ImportTablesInProgressSchema.exactOptional().openapi({
+      description:
+        '<p>The names of tables that are being currently imported.</p> <p>Valid Values: List of table names.</p>',
+    }),
+    ImportTablesNotStarted: ImportTablesNotStartedSchema.exactOptional().openapi({
+      description:
+        '<p>The names of tables that have not been yet imported.</p> <p>Valid Values: List of table names</p>',
+    }),
+    AvgResizeRateInMegaBytesPerSecond: DoubleOptionalSchema.exactOptional().openapi({
+      description:
+        'The average rate of the resize operation over the last few minutes, measured in megabytes per second. After the resize operation completes, this value shows the average rate of the entire resize operation.',
+    }),
+    TotalResizeDataInMegaBytes: LongOptionalSchema.exactOptional().openapi({
+      description:
+        'The estimated total amount of data, in megabytes, on the cluster before the resize operation began.',
+    }),
+    ProgressInMegaBytes: LongOptionalSchema.exactOptional().openapi({
+      description:
+        'While the resize operation is in progress, this value shows the current amount of data, in megabytes, that has been processed so far. When the resize operation is complete, this value shows the total amount of data, in megabytes, on the cluster, which may be more or less than TotalResizeDataInMegaBytes (the estimated total amount of data before resize).',
+    }),
+    ElapsedTimeInSeconds: LongOptionalSchema.exactOptional().openapi({
+      description:
+        'The amount of seconds that have elapsed since the resize operation began. After the resize operation completes, this value shows the total actual time, in seconds, for the resize operation.',
+    }),
+    EstimatedTimeToCompletionInSeconds: LongOptionalSchema.exactOptional().openapi({
+      description:
+        'The estimated time remaining, in seconds, until the resize operation is complete. This value is calculated based on the average resize rate and the estimated amount of data remaining to be processed. Once the resize operation is complete, this value will be 0.',
+    }),
+    ResizeType: StringSchema.exactOptional().openapi({
+      description:
+        'An enum with possible values of <code>ClassicResize</code> and <code>ElasticResize</code>. These values describe the type of resize operation being performed. ',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'An optional string to provide additional details about the resize action.',
+    }),
+    TargetEncryptionType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of encryption for the cluster after the resize is complete.</p> <p>Possible values are <code>KMS</code> and <code>None</code>. </p>',
+    }),
+    DataTransferProgressPercent: DoubleOptionalSchema.exactOptional().openapi({
+      description: 'The percent of data transferred from source cluster to target cluster.',
+    }),
   })
   .openapi({ description: 'Describes the result of a cluster resize operation.', required: [] })
   .openapi('ResizeProgressMessage')
@@ -961,12 +1398,12 @@ const AuthenticationProfileNameStringSchema = z
 
 const CreateAuthenticationProfileResultSchema = z
   .object({
-    AuthenticationProfileName: AuthenticationProfileNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the authentication profile that was created.' }),
-    ).exactOptional(),
-    AuthenticationProfileContent: StringSchema.and(
-      z.any().openapi({ description: 'The content of the authentication profile in JSON format.' }),
-    ).exactOptional(),
+    AuthenticationProfileName: AuthenticationProfileNameStringSchema.exactOptional().openapi({
+      description: 'The name of the authentication profile that was created.',
+    }),
+    AuthenticationProfileContent: StringSchema.exactOptional().openapi({
+      description: 'The content of the authentication profile in JSON format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAuthenticationProfileResult')
@@ -982,960 +1419,6 @@ const AuthenticationProfileQuotaExceededFaultSchema = z
 const InvalidAuthenticationProfileRequestFaultSchema = z
   .any()
   .openapi('InvalidAuthenticationProfileRequestFault')
-
-const NetworkInterfaceSchema = z
-  .object({
-    NetworkInterfaceId: StringSchema.and(
-      z.any().openapi({ description: 'The network interface identifier. ' }),
-    ).exactOptional(),
-    SubnetId: StringSchema.and(
-      z.any().openapi({ description: 'The subnet identifier. ' }),
-    ).exactOptional(),
-    PrivateIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IPv4 address of the network interface within the subnet. ' }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z.any().openapi({ description: 'The Availability Zone. ' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a network interface. ', required: [] })
-  .openapi('NetworkInterface')
-
-const NetworkInterfaceListSchema = z
-  .array(NetworkInterfaceSchema.and(z.any().openapi({ xml: { name: 'NetworkInterface' } })))
-  .openapi('NetworkInterfaceList')
-
-const VpcEndpointSchema = z
-  .object({
-    VpcEndpointId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The connection endpoint ID for connecting an Amazon Redshift cluster through the proxy.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z.any().openapi({ description: 'The VPC identifier that the endpoint is associated. ' }),
-    ).exactOptional(),
-    NetworkInterfaces: NetworkInterfaceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more network interfaces of the endpoint. Also known as an interface endpoint. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The connection endpoint for connecting to an Amazon Redshift cluster through the proxy.',
-    required: [],
-  })
-  .openapi('VpcEndpoint')
-
-const VpcEndpointsListSchema = z
-  .array(VpcEndpointSchema.and(z.any().openapi({ xml: { name: 'VpcEndpoint' } })))
-  .openapi('VpcEndpointsList')
-
-const EndpointSchema = z
-  .object({
-    Address: StringSchema.and(
-      z.any().openapi({ description: 'The DNS address of the Cluster.' }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z.any().openapi({ description: 'The port that the database engine is listening on.' }),
-    ).exactOptional(),
-    VpcEndpoints: VpcEndpointsListSchema.and(
-      z.any().openapi({ description: 'Describes a connection endpoint.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a connection endpoint.', required: [] })
-  .openapi('Endpoint')
-
-const ClusterSecurityGroupMembershipSchema = z
-  .object({
-    ClusterSecurityGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster security group.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the cluster security group.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a cluster security group.', required: [] })
-  .openapi('ClusterSecurityGroupMembership')
-
-const ClusterSecurityGroupMembershipListSchema = z
-  .array(
-    ClusterSecurityGroupMembershipSchema.and(
-      z.any().openapi({ xml: { name: 'ClusterSecurityGroup' } }),
-    ),
-  )
-  .openapi('ClusterSecurityGroupMembershipList')
-
-const VpcSecurityGroupMembershipSchema = z
-  .object({
-    VpcSecurityGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the VPC security group.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the VPC security group.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes the members of a VPC security group.', required: [] })
-  .openapi('VpcSecurityGroupMembership')
-
-const VpcSecurityGroupMembershipListSchema = z
-  .array(
-    VpcSecurityGroupMembershipSchema.and(z.any().openapi({ xml: { name: 'VpcSecurityGroup' } })),
-  )
-  .openapi('VpcSecurityGroupMembershipList')
-
-const ClusterParameterStatusSchema = z
-  .object({
-    ParameterName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the parameter.' }),
-    ).exactOptional(),
-    ParameterApplyStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the parameter that indicates whether the parameter is in sync with the database, waiting for a cluster reboot, or encountered an error when being applied.</p> <p>The following are possible statuses and descriptions.</p> <ul> <li> <p> <code>in-sync</code>: The parameter value is in sync with the database.</p> </li> <li> <p> <code>pending-reboot</code>: The parameter value will be applied after the cluster reboots.</p> </li> <li> <p> <code>applying</code>: The parameter value is being applied to the database.</p> </li> <li> <p> <code>invalid-parameter</code>: Cannot apply the parameter value because it has an invalid value or syntax.</p> </li> <li> <p> <code>apply-deferred</code>: The parameter contains static property changes. The changes are deferred until the cluster reboots.</p> </li> <li> <p> <code>apply-error</code>: Cannot connect to the cluster. The parameter change will be applied after the cluster reboots.</p> </li> <li> <p> <code>unknown-error</code>: Cannot apply the parameter change right now. The change will be applied after the cluster reboots.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ParameterApplyErrorDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error that prevented the parameter from being applied to the database.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes the status of a parameter group.', required: [] })
-  .openapi('ClusterParameterStatus')
-
-const ClusterParameterStatusListSchema = z
-  .array(ClusterParameterStatusSchema)
-  .openapi('ClusterParameterStatusList')
-
-const ClusterParameterGroupStatusSchema = z
-  .object({
-    ParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster parameter group.' }),
-    ).exactOptional(),
-    ParameterApplyStatus: StringSchema.and(
-      z.any().openapi({ description: 'The status of parameter updates.' }),
-    ).exactOptional(),
-    ClusterParameterStatusList: ClusterParameterStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of parameter statuses.</p> <p> For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes the status of a parameter group.', required: [] })
-  .openapi('ClusterParameterGroupStatus')
-
-const ClusterParameterGroupStatusListSchema = z
-  .array(
-    ClusterParameterGroupStatusSchema.and(
-      z.any().openapi({ xml: { name: 'ClusterParameterGroup' } }),
-    ),
-  )
-  .openapi('ClusterParameterGroupStatusList')
-
-const BooleanOptionalSchema = z.boolean().openapi('BooleanOptional')
-
-const PendingModifiedValuesSchema = z
-  .object({
-    MasterUserPassword: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pending or in-progress change of the admin user password for the cluster.',
-        }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The pending or in-progress change of the cluster's node type." }),
-    ).exactOptional(),
-    NumberOfNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pending or in-progress change of the number of nodes in the cluster.',
-        }),
-    ).exactOptional(),
-    ClusterType: StringSchema.and(
-      z.any().openapi({ description: 'The pending or in-progress change of the cluster type.' }),
-    ).exactOptional(),
-    ClusterVersion: StringSchema.and(
-      z.any().openapi({ description: 'The pending or in-progress change of the service version.' }),
-    ).exactOptional(),
-    AutomatedSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pending or in-progress change of the automated snapshot retention period.',
-        }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pending or in-progress change of the new identifier for the cluster.',
-        }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pending or in-progress change of the ability to connect to the cluster from the public network.',
-        }),
-    ).exactOptional(),
-    EnhancedVpcRouting: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    MaintenanceTrackName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the maintenance track that the cluster will change to during the next maintenance window.',
-        }),
-    ).exactOptional(),
-    EncryptionType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The encryption type for a cluster. Possible values are: KMS and None. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes cluster attributes that are in a pending state. A change to one or more the attributes was requested and is in progress or will be applied.',
-    required: [],
-  })
-  .openapi('PendingModifiedValues')
-
-const RestoreStatusSchema = z
-  .object({
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the restore action. Returns starting, restoring, completed, or failed.',
-        }),
-    ).exactOptional(),
-    CurrentRestoreRateInMegaBytesPerSecond: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of megabytes per second being transferred from the backup storage. Returns the average rate for a completed backup. This field is only updated when you restore to DC2 and DS2 node types. ',
-        }),
-    ).exactOptional(),
-    SnapshotSizeInMegaBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the set of snapshot data used to restore the cluster. This field is only updated when you restore to DC2 and DS2 node types. ',
-        }),
-    ).exactOptional(),
-    ProgressInMegaBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of megabytes that have been transferred from snapshot storage. This field is only updated when you restore to DC2 and DS2 node types. ',
-        }),
-    ).exactOptional(),
-    ElapsedTimeInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time an in-progress restore has been running, or the amount of time it took a completed restore to finish. This field is only updated when you restore to DC2 and DS2 node types. ',
-        }),
-    ).exactOptional(),
-    EstimatedTimeToCompletionInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimate of the time remaining before the restore will complete. Returns 0 for a completed restore. This field is only updated when you restore to DC2 and DS2 node types. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the status of a cluster restore action. Returns null if the cluster was not created by restoring a snapshot.',
-    required: [],
-  })
-  .openapi('RestoreStatus')
-
-const DataTransferProgressSchema = z
-  .object({
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the status of the cluster. While the transfer is in progress the status is <code>transferringdata</code>.',
-        }),
-    ).exactOptional(),
-    CurrentRateInMegaBytesPerSecond: DoubleOptionalSchema.and(
-      z.any().openapi({ description: "Describes the data transfer rate in MB's per second." }),
-    ).exactOptional(),
-    TotalDataInMegaBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the total amount of data to be transfered in megabytes.',
-        }),
-    ).exactOptional(),
-    DataTransferredInMegaBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "Describes the total amount of data that has been transfered in MB's.",
-        }),
-    ).exactOptional(),
-    EstimatedTimeToCompletionInSeconds: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the estimated number of seconds remaining to complete the transfer.',
-        }),
-    ).exactOptional(),
-    ElapsedTimeInSeconds: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the number of seconds that have elapsed during the data transfer.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the status of a cluster while it is in the process of resizing with an incremental resize.',
-    required: [],
-  })
-  .openapi('DataTransferProgress')
-
-const HsmStatusSchema = z
-  .object({
-    HsmClientCertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the HSM client certificate the Amazon Redshift cluster uses to retrieve the data encryption keys stored in an HSM.',
-        }),
-    ).exactOptional(),
-    HsmConfigurationIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the HSM configuration that contains the information the Amazon Redshift cluster can use to retrieve and store keys in an HSM.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Reports whether the Amazon Redshift cluster has finished applying any HSM settings changes specified in a modify cluster command.</p> <p>Values: active, applying</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes the status of changes to HSM settings.', required: [] })
-  .openapi('HsmStatus')
-
-const ClusterSnapshotCopyStatusSchema = z
-  .object({
-    DestinationRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination region that snapshots are automatically copied to when cross-region snapshot copy is enabled.',
-        }),
-    ).exactOptional(),
-    RetentionPeriod: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days that automated snapshots are retained in the destination region after they are copied from a source region.',
-        }),
-    ).exactOptional(),
-    ManualSnapshotRetentionPeriod: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that automated snapshots are retained in the destination region after they are copied from a source region. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>',
-        }),
-    ).exactOptional(),
-    SnapshotCopyGrantName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the snapshot copy grant.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Returns the destination region and retention period that are configured for cross-region snapshot copy.',
-    required: [],
-  })
-  .openapi('ClusterSnapshotCopyStatus')
-
-const ClusterNodeSchema = z
-  .object({
-    NodeRole: StringSchema.and(
-      z.any().openapi({ description: 'Whether the node is a leader node or a compute node.' }),
-    ).exactOptional(),
-    PrivateIPAddress: StringSchema.and(
-      z.any().openapi({ description: 'The private IP address of a node within a cluster.' }),
-    ).exactOptional(),
-    PublicIPAddress: StringSchema.and(
-      z.any().openapi({ description: 'The public IP address of a node within a cluster.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The identifier of a node in a cluster.', required: [] })
-  .openapi('ClusterNode')
-
-const ClusterNodesListSchema = z.array(ClusterNodeSchema).openapi('ClusterNodesList')
-
-const ElasticIpStatusSchema = z
-  .object({
-    ElasticIp: StringSchema.and(
-      z.any().openapi({ description: 'The elastic IP (EIP) address for the cluster.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the elastic IP (EIP) address.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes the status of the elastic IP (EIP) address.', required: [] })
-  .openapi('ElasticIpStatus')
-
-const ClusterIamRoleSchema = z
-  .object({
-    IamRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role, for example, <code>arn:aws:iam::123456789012:role/RedshiftCopyUnload</code>. ',
-        }),
-    ).exactOptional(),
-    ApplyStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A value that describes the status of the IAM role's association with an Amazon Redshift cluster.</p> <p>The following are possible statuses and descriptions.</p> <ul> <li> <p> <code>in-sync</code>: The role is available for use by the cluster.</p> </li> <li> <p> <code>adding</code>: The role is in the process of being associated with the cluster.</p> </li> <li> <p> <code>removing</code>: The role is in the process of being disassociated with the cluster.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An Identity and Access Management (IAM) role that can be used by the associated Amazon Redshift cluster to access other Amazon Web Services services.',
-    required: [],
-  })
-  .openapi('ClusterIamRole')
-
-const ClusterIamRoleListSchema = z
-  .array(ClusterIamRoleSchema.and(z.any().openapi({ xml: { name: 'ClusterIamRole' } })))
-  .openapi('ClusterIamRoleList')
-
-const PendingActionsListSchema = z.array(StringSchema).openapi('PendingActionsList')
-
-const DeferredMaintenanceWindowSchema = z
-  .object({
-    DeferMaintenanceIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the maintenance window.' }),
-    ).exactOptional(),
-    DeferMaintenanceStartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A timestamp for the beginning of the time period when we defer maintenance.',
-        }),
-    ).exactOptional(),
-    DeferMaintenanceEndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A timestamp for the end of the time period when we defer maintenance.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a deferred maintenance window', required: [] })
-  .openapi('DeferredMaintenanceWindow')
-
-const DeferredMaintenanceWindowsListSchema = z
-  .array(
-    DeferredMaintenanceWindowSchema.and(
-      z.any().openapi({ xml: { name: 'DeferredMaintenanceWindow' } }),
-    ),
-  )
-  .openapi('DeferredMaintenanceWindowsList')
-
-const ScheduleStateSchema = z.enum(['MODIFYING', 'ACTIVE', 'FAILED']).openapi('ScheduleState')
-
-const ResizeInfoSchema = z
-  .object({
-    ResizeType: StringSchema.and(
-      z.any().openapi({ description: 'Returns the value <code>ClassicResize</code>.' }),
-    ).exactOptional(),
-    AllowCancelResize: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A boolean value indicating if the resize operation can be cancelled.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a resize operation.', required: [] })
-  .openapi('ResizeInfo')
-
-const AquaStatusSchema = z.enum(['enabled', 'disabled', 'applying']).openapi('AquaStatus')
-
-const AquaConfigurationStatusSchema = z
-  .enum(['enabled', 'disabled', 'auto'])
-  .openapi('AquaConfigurationStatus')
-
-const AquaConfigurationSchema = z
-  .object({
-    AquaStatus: AquaStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This field is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
-        }),
-    ).exactOptional(),
-    AquaConfigurationStatus: AquaConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This field is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The operation that uses this structure is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
-    required: [],
-  })
-  .openapi('AquaConfiguration')
-
-const ReservedNodeExchangeStatusTypeSchema = z
-  .enum(['REQUESTED', 'PENDING', 'IN_PROGRESS', 'RETRYING', 'SUCCEEDED', 'FAILED'])
-  .openapi('ReservedNodeExchangeStatusType')
-
-const ReservedNodeExchangeStatusSchema = z
-  .object({
-    ReservedNodeExchangeRequestId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the reserved-node exchange request.' }),
-    ).exactOptional(),
-    Status: ReservedNodeExchangeStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the reserved-node exchange request. Statuses include in-progress and requested.',
-        }),
-    ).exactOptional(),
-    RequestTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A date and time that indicate when the reserved-node exchange was requested.',
-        }),
-    ).exactOptional(),
-    SourceReservedNodeId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the source reserved node.' }),
-    ).exactOptional(),
-    SourceReservedNodeType: StringSchema.and(
-      z.any().openapi({ description: 'The source reserved-node type, for example ds2.xlarge.' }),
-    ).exactOptional(),
-    SourceReservedNodeCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The source reserved-node count in the cluster.' }),
-    ).exactOptional(),
-    TargetReservedNodeOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the target reserved node offering.' }),
-    ).exactOptional(),
-    TargetReservedNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The node type of the target reserved node, for example ra3.4xlarge.',
-        }),
-    ).exactOptional(),
-    TargetReservedNodeCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The count of target reserved nodes in the cluster.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Reserved-node status details, such as the source reserved-node identifier, the target reserved-node identifier, the node type, the node count, and other details.',
-    required: [],
-  })
-  .openapi('ReservedNodeExchangeStatus')
-
-const ClusterSchema = z
-  .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the cluster.' }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z.any().openapi({ description: 'The node type for the nodes in the cluster.' }),
-    ).exactOptional(),
-    ClusterStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The current state of the cluster. Possible values are the following:</p> <ul> <li> <p> <code>available</code> </p> </li> <li> <p> <code>available, prep-for-resize</code> </p> </li> <li> <p> <code>available, resize-cleanup</code> </p> </li> <li> <p> <code>cancelling-resize</code> </p> </li> <li> <p> <code>creating</code> </p> </li> <li> <p> <code>deleting</code> </p> </li> <li> <p> <code>final-snapshot</code> </p> </li> <li> <p> <code>hardware-failure</code> </p> </li> <li> <p> <code>incompatible-hsm</code> </p> </li> <li> <p> <code>incompatible-network</code> </p> </li> <li> <p> <code>incompatible-parameters</code> </p> </li> <li> <p> <code>incompatible-restore</code> </p> </li> <li> <p> <code>modifying</code> </p> </li> <li> <p> <code>paused</code> </p> </li> <li> <p> <code>rebooting</code> </p> </li> <li> <p> <code>renaming</code> </p> </li> <li> <p> <code>resizing</code> </p> </li> <li> <p> <code>rotating-keys</code> </p> </li> <li> <p> <code>storage-full</code> </p> </li> <li> <p> <code>updating-hsm</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ClusterAvailabilityStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The availability status of the cluster for queries. Possible values are the following:</p> <ul> <li> <p>Available - The cluster is available for queries. </p> </li> <li> <p>Unavailable - The cluster is not available for queries.</p> </li> <li> <p>Maintenance - The cluster is intermittently available for queries due to maintenance activities.</p> </li> <li> <p>Modifying - The cluster is intermittently available for queries due to changes that modify the cluster.</p> </li> <li> <p>Failed - The cluster failed and is not available for queries.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ModifyStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of a modify operation, if any, initiated for the cluster.',
-        }),
-    ).exactOptional(),
-    MasterUsername: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The admin user name for the cluster. This name is used to connect to the database that is specified in the <b>DBName</b> parameter. ',
-        }),
-    ).exactOptional(),
-    DBName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the initial database that was created when the cluster was created. This same name is returned for the life of the cluster. If an initial database was not specified, a database named <code>dev</code>dev was created by default. ',
-        }),
-    ).exactOptional(),
-    Endpoint: EndpointSchema.and(
-      z.any().openapi({ description: 'The connection endpoint.' }),
-    ).exactOptional(),
-    ClusterCreateTime: TStampSchema.and(
-      z.any().openapi({ description: 'The date and time that the cluster was created.' }),
-    ).exactOptional(),
-    AutomatedSnapshotRetentionPeriod: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of days that automatic cluster snapshots are retained.',
-        }),
-    ).exactOptional(),
-    ManualSnapshotRetentionPeriod: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>",
-        }),
-    ).exactOptional(),
-    ClusterSecurityGroups: ClusterSecurityGroupMembershipListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of cluster security group that are associated with the cluster. Each security group is represented by an element that contains <code>ClusterSecurityGroup.Name</code> and <code>ClusterSecurityGroup.Status</code> subelements. </p> <p>Cluster security groups are used when the cluster is not created in an Amazon Virtual Private Cloud (VPC). Clusters that are created in a VPC use VPC security groups, which are listed by the <b>VpcSecurityGroups</b> parameter. </p>',
-        }),
-    ).exactOptional(),
-    VpcSecurityGroups: VpcSecurityGroupMembershipListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Amazon Virtual Private Cloud (Amazon VPC) security groups that are associated with the cluster. This parameter is returned only if the cluster is in a VPC.',
-        }),
-    ).exactOptional(),
-    ClusterParameterGroups: ClusterParameterGroupStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of cluster parameter groups that are associated with this cluster. Each parameter group in the list is returned with its status.',
-        }),
-    ).exactOptional(),
-    ClusterSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the subnet group that is associated with the cluster. This parameter is valid only when the cluster is in a VPC.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the VPC the cluster is in, if the cluster is in a VPC.',
-        }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Availability Zone in which the cluster is located.',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The weekly time range, in Universal Coordinated Time (UTC), during which system maintenance can occur.',
-        }),
-    ).exactOptional(),
-    PendingModifiedValues: PendingModifiedValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that, if present, indicates that changes to the cluster are pending. Specific pending changes are identified by subelements.',
-        }),
-    ).exactOptional(),
-    ClusterVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID of the Amazon Redshift engine that is running on the cluster.',
-        }),
-    ).exactOptional(),
-    AllowVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value that, if <code>true</code>, indicates that major version upgrades will be applied automatically to the cluster during the maintenance window. ',
-        }),
-    ).exactOptional(),
-    NumberOfNodes: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of compute nodes in the cluster.' }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value that, if <code>true</code>, indicates that the cluster can be accessed from a public network.',
-        }),
-    ).exactOptional(),
-    Encrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value that, if <code>true</code>, indicates that data in the cluster is encrypted at rest.',
-        }),
-    ).exactOptional(),
-    RestoreStatus: RestoreStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that describes the status of a cluster restore action. This parameter returns null if the cluster was not created by restoring a snapshot.',
-        }),
-    ).exactOptional(),
-    DataTransferProgress: DataTransferProgressSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    HsmStatus: HsmStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that reports whether the Amazon Redshift cluster has finished applying any hardware security module (HSM) settings changes specified in a modify cluster command.</p> <p>Values: active, applying</p>',
-        }),
-    ).exactOptional(),
-    ClusterSnapshotCopyStatus: ClusterSnapshotCopyStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that returns the destination region and retention period that are configured for cross-region snapshot copy.',
-        }),
-    ).exactOptional(),
-    ClusterPublicKey: StringSchema.and(
-      z.any().openapi({ description: 'The public key for the cluster.' }),
-    ).exactOptional(),
-    ClusterNodes: ClusterNodesListSchema.and(
-      z.any().openapi({ description: 'The nodes in the cluster.' }),
-    ).exactOptional(),
-    ElasticIpStatus: ElasticIpStatusSchema.and(
-      z.any().openapi({ description: 'The status of the elastic IP (EIP) address.' }),
-    ).exactOptional(),
-    ClusterRevisionNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The specific revision number of the database in the cluster.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the cluster.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Key Management Service (KMS) key ID of the encryption key used to encrypt data in the cluster.',
-        }),
-    ).exactOptional(),
-    EnhancedVpcRouting: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    IamRoles: ClusterIamRoleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Identity and Access Management (IAM) roles that can be used by the cluster to access other Amazon Web Services services.',
-        }),
-    ).exactOptional(),
-    PendingActions: PendingActionsListSchema.and(
-      z.any().openapi({ description: 'Cluster operations that are waiting to be started.' }),
-    ).exactOptional(),
-    MaintenanceTrackName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the maintenance track for the cluster.' }),
-    ).exactOptional(),
-    ElasticResizeNumberOfNodeOptions: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of nodes that you can resize the cluster to with the elastic resize method. ',
-        }),
-    ).exactOptional(),
-    DeferredMaintenanceWindows: DeferredMaintenanceWindowsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes a group of <code>DeferredMaintenanceWindow</code> objects.',
-        }),
-    ).exactOptional(),
-    SnapshotScheduleIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the cluster snapshot schedule.' }),
-    ).exactOptional(),
-    SnapshotScheduleState: ScheduleStateSchema.and(
-      z.any().openapi({ description: 'The current state of the cluster snapshot schedule.' }),
-    ).exactOptional(),
-    ExpectedNextSnapshotScheduleTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the next snapshot is expected to be taken for clusters with a valid snapshot schedule and backups enabled. ',
-        }),
-    ).exactOptional(),
-    ExpectedNextSnapshotScheduleTimeStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The status of next expected snapshot for clusters having a valid snapshot schedule and backups enabled. Possible values are the following:</p> <ul> <li> <p>OnTrack - The next snapshot is expected to be taken on time. </p> </li> <li> <p>Pending - The next snapshot is pending to be taken. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextMaintenanceWindowStartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time in UTC when system maintenance can begin.' }),
-    ).exactOptional(),
-    ResizeInfo: ResizeInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Returns the following:</p> <ul> <li> <p>AllowCancelResize: a boolean value indicating if the resize operation can be cancelled.</p> </li> <li> <p>ResizeType: Returns ClassicResize</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneRelocationStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the status of the Availability Zone relocation operation.',
-        }),
-    ).exactOptional(),
-    ClusterNamespaceArn: StringSchema.and(
-      z.any().openapi({ description: 'The namespace Amazon Resource Name (ARN) of the cluster.' }),
-    ).exactOptional(),
-    TotalStorageCapacityInMegaBytes: LongOptionalSchema.and(
-      z.any().openapi({ description: 'The total storage capacity of the cluster in megabytes. ' }),
-    ).exactOptional(),
-    AquaConfiguration: AquaConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This field is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
-        }),
-    ).exactOptional(),
-    DefaultIamRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the IAM role set as default for the cluster.',
-        }),
-    ).exactOptional(),
-    ReservedNodeExchangeStatus: ReservedNodeExchangeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the reserved-node exchange request. Statuses include in-progress and requested.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a cluster.', required: [] })
-  .openapi('Cluster')
 
 const CreateClusterResultSchema = z
   .object({ Cluster: ClusterSchema.exactOptional() })
@@ -1986,23 +1469,19 @@ const SnapshotScheduleNotFoundFaultSchema = z.any().openapi('SnapshotScheduleNot
 
 const ClusterParameterGroupSchema = z
   .object({
-    ParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster parameter group.' }),
-    ).exactOptional(),
-    ParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cluster parameter group family that this cluster parameter group is compatible with.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the parameter group.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the cluster parameter group.' }),
-    ).exactOptional(),
+    ParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cluster parameter group.',
+    }),
+    ParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cluster parameter group family that this cluster parameter group is compatible with.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the parameter group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the cluster parameter group.',
+    }),
   })
   .openapi({ description: 'Describes a parameter group.', required: [] })
   .openapi('ClusterParameterGroup')
@@ -2038,75 +1517,6 @@ const CreateClusterSnapshotResultSchema = z
   .openapi({ required: [] })
   .openapi('CreateClusterSnapshotResult')
 
-const SupportedPlatformSchema = z
-  .object({ Name: StringSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional() })
-  .openapi({ description: 'A list of supported platforms for orderable clusters.', required: [] })
-  .openapi('SupportedPlatform')
-
-const SupportedPlatformsListSchema = z
-  .array(SupportedPlatformSchema.and(z.any().openapi({ xml: { name: 'SupportedPlatform' } })))
-  .openapi('SupportedPlatformsList')
-
-const AvailabilityZoneSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the availability zone.' }),
-    ).exactOptional(),
-    SupportedPlatforms: SupportedPlatformsListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes an availability zone.', required: [] })
-  .openapi('AvailabilityZone')
-
-const SubnetSchema = z
-  .object({
-    SubnetIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the subnet.' }),
-    ).exactOptional(),
-    SubnetAvailabilityZone: AvailabilityZoneSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    SubnetStatus: StringSchema.and(
-      z.any().openapi({ description: 'The status of the subnet.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a subnet.', required: [] })
-  .openapi('Subnet')
-
-const SubnetListSchema = z
-  .array(SubnetSchema.and(z.any().openapi({ xml: { name: 'Subnet' } })))
-  .openapi('SubnetList')
-
-const ClusterSubnetGroupSchema = z
-  .object({
-    ClusterSubnetGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster subnet group.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the cluster subnet group.' }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z.any().openapi({ description: 'The VPC ID of the cluster subnet group.' }),
-    ).exactOptional(),
-    SubnetGroupStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the cluster subnet group. Possible values are <code>Complete</code>, <code>Incomplete</code> and <code>Invalid</code>. ',
-        }),
-    ).exactOptional(),
-    Subnets: SubnetListSchema.and(
-      z.any().openapi({ description: 'A list of the VPC <a>Subnet</a> elements. ' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the cluster subnet group.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a subnet group.', required: [] })
-  .openapi('ClusterSubnetGroup')
-
 const CreateClusterSubnetGroupResultSchema = z
   .object({ ClusterSubnetGroup: ClusterSubnetGroupSchema.exactOptional() })
   .openapi({ required: [] })
@@ -2124,50 +1534,33 @@ const ClusterSubnetQuotaExceededFaultSchema = z.any().openapi('ClusterSubnetQuot
 
 const EndpointAccessSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The cluster identifier of the cluster associated with the endpoint.',
-        }),
-    ).exactOptional(),
-    ResourceOwner: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account ID of the owner of the cluster.',
-        }),
-    ).exactOptional(),
-    SubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subnet group name where Amazon Redshift chooses to deploy the endpoint.',
-        }),
-    ).exactOptional(),
-    EndpointStatus: StringSchema.and(
-      z.any().openapi({ description: 'The status of the endpoint.' }),
-    ).exactOptional(),
-    EndpointName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the endpoint.' }),
-    ).exactOptional(),
-    EndpointCreateTime: TStampSchema.and(
-      z.any().openapi({ description: 'The time (UTC) that the endpoint was created.' }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The port number on which the cluster accepts incoming connections.',
-        }),
-    ).exactOptional(),
-    Address: StringSchema.and(
-      z.any().openapi({ description: 'The DNS address of the endpoint.' }),
-    ).exactOptional(),
-    VpcSecurityGroups: VpcSecurityGroupMembershipListSchema.and(
-      z.any().openapi({ description: 'The security groups associated with the endpoint.' }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The cluster identifier of the cluster associated with the endpoint.',
+    }),
+    ResourceOwner: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the owner of the cluster.',
+    }),
+    SubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The subnet group name where Amazon Redshift chooses to deploy the endpoint.',
+    }),
+    EndpointStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of the endpoint.',
+    }),
+    EndpointName: StringSchema.exactOptional().openapi({
+      description: 'The name of the endpoint.',
+    }),
+    EndpointCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'The time (UTC) that the endpoint was created.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      description: 'The port number on which the cluster accepts incoming connections.',
+    }),
+    Address: StringSchema.exactOptional().openapi({
+      description: 'The DNS address of the endpoint.',
+    }),
+    VpcSecurityGroups: VpcSecurityGroupMembershipListSchema.exactOptional().openapi({
+      description: 'The security groups associated with the endpoint.',
+    }),
     VpcEndpoint: VpcEndpointSchema.exactOptional(),
   })
   .openapi({ description: 'Describes a Redshift-managed VPC endpoint.', required: [] })
@@ -2186,97 +1579,57 @@ const EndpointsPerAuthorizationLimitExceededFaultSchema = z
 const EndpointAlreadyExistsFaultSchema = z.any().openapi('EndpointAlreadyExistsFault')
 
 const SourceIdsListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'SourceId' } })))
+  .array(StringSchema.openapi({ xml: { name: 'SourceId' } }))
   .openapi('SourceIdsList')
 
 const EventCategoriesListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'EventCategory' } })))
+  .array(StringSchema.openapi({ xml: { name: 'EventCategory' } }))
   .openapi('EventCategoriesList')
 
 const EventSubscriptionSchema = z
   .object({
-    CustomerAwsId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account associated with the Amazon Redshift event notification subscription.',
-        }),
-    ).exactOptional(),
-    CustSubscriptionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Amazon Redshift event notification subscription.',
-        }),
-    ).exactOptional(),
-    SnsTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic used by the event notification subscription.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Amazon Redshift event notification subscription.</p> <p>Constraints:</p> <ul> <li> <p>Can be one of the following: active | no-permission | topic-not-exist</p> </li> <li> <p>The status "no-permission" indicates that Amazon Redshift no longer has permission to post to the Amazon SNS topic. The status "topic-not-exist" indicates that the topic was deleted after the subscription was created.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SubscriptionCreationTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time the Amazon Redshift event notification subscription was created.',
-        }),
-    ).exactOptional(),
-    SourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source type of the events returned by the Amazon Redshift event notification, such as cluster, cluster-snapshot, cluster-parameter-group, cluster-security-group, or scheduled-action. ',
-        }),
-    ).exactOptional(),
-    SourceIdsList: SourceIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the sources that publish events to the Amazon Redshift event notification subscription.',
-        }),
-    ).exactOptional(),
-    EventCategoriesList: EventCategoriesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of Amazon Redshift event categories specified in the event notification subscription.</p> <p>Values: Configuration, Management, Monitoring, Security, Pending</p>',
-        }),
-    ).exactOptional(),
-    Severity: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The event severity specified in the Amazon Redshift event notification subscription.</p> <p>Values: ERROR, INFO</p>',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value indicating whether the subscription is enabled; <code>true</code> indicates that the subscription is enabled.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the event subscription.' }),
-    ).exactOptional(),
+    CustomerAwsId: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account associated with the Amazon Redshift event notification subscription.',
+    }),
+    CustSubscriptionId: StringSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Redshift event notification subscription.',
+    }),
+    SnsTopicArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic used by the event notification subscription.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the Amazon Redshift event notification subscription.</p> <p>Constraints:</p> <ul> <li> <p>Can be one of the following: active | no-permission | topic-not-exist</p> </li> <li> <p>The status "no-permission" indicates that Amazon Redshift no longer has permission to post to the Amazon SNS topic. The status "topic-not-exist" indicates that the topic was deleted after the subscription was created.</p> </li> </ul>',
+    }),
+    SubscriptionCreationTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The date and time the Amazon Redshift event notification subscription was created.',
+    }),
+    SourceType: StringSchema.exactOptional().openapi({
+      description:
+        'The source type of the events returned by the Amazon Redshift event notification, such as cluster, cluster-snapshot, cluster-parameter-group, cluster-security-group, or scheduled-action. ',
+    }),
+    SourceIdsList: SourceIdsListSchema.exactOptional().openapi({
+      description:
+        'A list of the sources that publish events to the Amazon Redshift event notification subscription.',
+    }),
+    EventCategoriesList: EventCategoriesListSchema.exactOptional().openapi({
+      description:
+        '<p>The list of Amazon Redshift event categories specified in the event notification subscription.</p> <p>Values: Configuration, Management, Monitoring, Security, Pending</p>',
+    }),
+    Severity: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The event severity specified in the Amazon Redshift event notification subscription.</p> <p>Values: ERROR, INFO</p>',
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value indicating whether the subscription is enabled; <code>true</code> indicates that the subscription is enabled.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the event subscription.',
+    }),
   })
   .openapi({ description: 'Describes event subscriptions.', required: [] })
   .openapi('EventSubscription')
@@ -2308,20 +1661,16 @@ const SourceNotFoundFaultSchema = z.any().openapi('SourceNotFoundFault')
 
 const HsmClientCertificateSchema = z
   .object({
-    HsmClientCertificateIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the HSM client certificate.' }),
-    ).exactOptional(),
-    HsmClientCertificatePublicKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The public key that the Amazon Redshift cluster will use to connect to the HSM. You must register the public key in the HSM.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the HSM client certificate.' }),
-    ).exactOptional(),
+    HsmClientCertificateIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the HSM client certificate.',
+    }),
+    HsmClientCertificatePublicKey: StringSchema.exactOptional().openapi({
+      description:
+        'The public key that the Amazon Redshift cluster will use to connect to the HSM. You must register the public key in the HSM.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the HSM client certificate.',
+    }),
   })
   .openapi({
     description:
@@ -2345,31 +1694,22 @@ const HsmClientCertificateQuotaExceededFaultSchema = z
 
 const HsmConfigurationSchema = z
   .object({
-    HsmConfigurationIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Redshift HSM configuration.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A text description of the HSM configuration.' }),
-    ).exactOptional(),
-    HsmIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address that the Amazon Redshift cluster must use to access the HSM.',
-        }),
-    ).exactOptional(),
-    HsmPartitionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the partition in the HSM where the Amazon Redshift clusters will store their database encryption keys.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the HSM configuration.' }),
-    ).exactOptional(),
+    HsmConfigurationIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Redshift HSM configuration.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A text description of the HSM configuration.',
+    }),
+    HsmIpAddress: StringSchema.exactOptional().openapi({
+      description: 'The IP address that the Amazon Redshift cluster must use to access the HSM.',
+    }),
+    HsmPartitionName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the partition in the HSM where the Amazon Redshift clusters will store their database encryption keys.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the HSM configuration.',
+    }),
   })
   .openapi({
     description:
@@ -2393,42 +1733,30 @@ const HsmConfigurationQuotaExceededFaultSchema = z
 
 const ResizeClusterMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the cluster to resize.' }),
-    ),
-    ClusterType: StringSchema.and(
-      z.any().openapi({ description: 'The new cluster type for the specified cluster.' }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The new node type for the nodes you are adding. If not specified, the cluster's current node type is used.",
-        }),
-    ).exactOptional(),
-    NumberOfNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The new number of nodes for the cluster. If not specified, the cluster's current number of nodes is used.",
-        }),
-    ).exactOptional(),
-    Classic: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A boolean value indicating whether the resize operation is using the classic resize process. If you don't provide this parameter or set the value to <code>false</code>, the resize type is elastic. ",
-        }),
-    ).exactOptional(),
-    ReservedNodeId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the reserved node.' }),
-    ).exactOptional(),
-    TargetReservedNodeOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the target reserved node offering.' }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description: 'The unique identifier for the cluster to resize.',
+    }),
+    ClusterType: StringSchema.exactOptional().openapi({
+      description: 'The new cluster type for the specified cluster.',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description:
+        "The new node type for the nodes you are adding. If not specified, the cluster's current node type is used.",
+    }),
+    NumberOfNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "The new number of nodes for the cluster. If not specified, the cluster's current number of nodes is used.",
+    }),
+    Classic: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "A boolean value indicating whether the resize operation is using the classic resize process. If you don't provide this parameter or set the value to <code>false</code>, the resize type is elastic. ",
+    }),
+    ReservedNodeId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the reserved node.',
+    }),
+    TargetReservedNodeOfferingId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the target reserved node offering.',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier'],
@@ -2440,9 +1768,9 @@ const ResizeClusterMessageSchema = z
 
 const PauseClusterMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the cluster to be paused.' }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description: 'The identifier of the cluster to be paused.',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier'],
@@ -2454,9 +1782,9 @@ const PauseClusterMessageSchema = z
 
 const ResumeClusterMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the cluster to be resumed.' }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description: 'The identifier of the cluster to be resumed.',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier'],
@@ -2468,27 +1796,15 @@ const ResumeClusterMessageSchema = z
 
 const ScheduledActionTypeSchema = z
   .object({
-    ResizeCluster: ResizeClusterMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An action that runs a <code>ResizeCluster</code> API operation. ',
-        }),
-    ).exactOptional(),
-    PauseCluster: PauseClusterMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An action that runs a <code>PauseCluster</code> API operation. ',
-        }),
-    ).exactOptional(),
-    ResumeCluster: ResumeClusterMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An action that runs a <code>ResumeCluster</code> API operation. ',
-        }),
-    ).exactOptional(),
+    ResizeCluster: ResizeClusterMessageSchema.exactOptional().openapi({
+      description: 'An action that runs a <code>ResizeCluster</code> API operation. ',
+    }),
+    PauseCluster: PauseClusterMessageSchema.exactOptional().openapi({
+      description: 'An action that runs a <code>PauseCluster</code> API operation. ',
+    }),
+    ResumeCluster: ResumeClusterMessageSchema.exactOptional().openapi({
+      description: 'An action that runs a <code>ResumeCluster</code> API operation. ',
+    }),
   })
   .openapi({
     description:
@@ -2500,67 +1816,43 @@ const ScheduledActionTypeSchema = z
 const ScheduledActionStateSchema = z.enum(['ACTIVE', 'DISABLED']).openapi('ScheduledActionState')
 
 const ScheduledActionTimeListSchema = z
-  .array(TStampSchema.and(z.any().openapi({ xml: { name: 'ScheduledActionTime' } })))
+  .array(TStampSchema.openapi({ xml: { name: 'ScheduledActionTime' } }))
   .openapi('ScheduledActionTimeList')
 
 const ScheduledActionSchema = z
   .object({
-    ScheduledActionName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the scheduled action. ' }),
-    ).exactOptional(),
-    TargetAction: ScheduledActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON format string of the Amazon Redshift API operation with input parameters. </p> <p>"<code>{\\"ResizeCluster\\":{\\"NodeType\\":\\"ds2.8xlarge\\",\\"ClusterIdentifier\\":\\"my-test-cluster\\",\\"NumberOfNodes\\":3}}</code>". </p>',
-        }),
-    ).exactOptional(),
-    Schedule: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The schedule for a one-time (at format) or recurring (cron format) scheduled action. Schedule invocations must be separated by at least one hour.</p> <p>Format of at expressions is "<code>at(yyyy-mm-ddThh:mm:ss)</code>". For example, "<code>at(2016-03-04T17:27:00)</code>".</p> <p>Format of cron expressions is "<code>cron(Minutes Hours Day-of-month Month Day-of-week Year)</code>". For example, "<code>cron(0 10 ? * MON *)</code>". For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions">Cron Expressions</a> in the <i>Amazon CloudWatch Events User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    IamRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role to assume to run the scheduled action. This IAM role must have permission to run the Amazon Redshift API operation in the scheduled action. This IAM role must allow the Amazon Redshift scheduler (Principal scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more information about the IAM role to use with the Amazon Redshift scheduler, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html">Using Identity-Based Policies for Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. ',
-        }),
-    ).exactOptional(),
-    ScheduledActionDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the scheduled action. ' }),
-    ).exactOptional(),
-    State: ScheduledActionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state of the scheduled action. For example, <code>DISABLED</code>. ',
-        }),
-    ).exactOptional(),
-    NextInvocations: ScheduledActionTimeListSchema.and(
-      z.any().openapi({ description: 'List of times when the scheduled action will run. ' }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time in UTC when the schedule is active. Before this time, the scheduled action does not trigger. ',
-        }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end time in UTC when the schedule is no longer active. After this time, the scheduled action does not trigger. ',
-        }),
-    ).exactOptional(),
+    ScheduledActionName: StringSchema.exactOptional().openapi({
+      description: 'The name of the scheduled action. ',
+    }),
+    TargetAction: ScheduledActionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON format string of the Amazon Redshift API operation with input parameters. </p> <p>"<code>{\\"ResizeCluster\\":{\\"NodeType\\":\\"ds2.8xlarge\\",\\"ClusterIdentifier\\":\\"my-test-cluster\\",\\"NumberOfNodes\\":3}}</code>". </p>',
+    }),
+    Schedule: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The schedule for a one-time (at format) or recurring (cron format) scheduled action. Schedule invocations must be separated by at least one hour.</p> <p>Format of at expressions is "<code>at(yyyy-mm-ddThh:mm:ss)</code>". For example, "<code>at(2016-03-04T17:27:00)</code>".</p> <p>Format of cron expressions is "<code>cron(Minutes Hours Day-of-month Month Day-of-week Year)</code>". For example, "<code>cron(0 10 ? * MON *)</code>". For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions">Cron Expressions</a> in the <i>Amazon CloudWatch Events User Guide</i>.</p>',
+    }),
+    IamRole: StringSchema.exactOptional().openapi({
+      description:
+        'The IAM role to assume to run the scheduled action. This IAM role must have permission to run the Amazon Redshift API operation in the scheduled action. This IAM role must allow the Amazon Redshift scheduler (Principal scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more information about the IAM role to use with the Amazon Redshift scheduler, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html">Using Identity-Based Policies for Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. ',
+    }),
+    ScheduledActionDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the scheduled action. ',
+    }),
+    State: ScheduledActionStateSchema.exactOptional().openapi({
+      description: 'The state of the scheduled action. For example, <code>DISABLED</code>. ',
+    }),
+    NextInvocations: ScheduledActionTimeListSchema.exactOptional().openapi({
+      description: 'List of times when the scheduled action will run. ',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The start time in UTC when the schedule is active. Before this time, the scheduled action does not trigger. ',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The end time in UTC when the schedule is no longer active. After this time, the scheduled action does not trigger. ',
+    }),
   })
   .openapi({
     description:
@@ -2583,20 +1875,14 @@ const InvalidScheduledActionFaultSchema = z.any().openapi('InvalidScheduledActio
 
 const SnapshotCopyGrantSchema = z
   .object({
-    SnapshotCopyGrantName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the snapshot copy grant.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the encrypted symmetric key in Amazon Web Services KMS to which Amazon Redshift is granted permission.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    SnapshotCopyGrantName: StringSchema.exactOptional().openapi({
+      description: 'The name of the snapshot copy grant.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'The unique identifier of the encrypted symmetric key in Amazon Web Services KMS to which Amazon Redshift is granted permission.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     description:
@@ -2619,59 +1905,51 @@ const SnapshotCopyGrantQuotaExceededFaultSchema = z
   .openapi('SnapshotCopyGrantQuotaExceededFault')
 
 const ScheduleDefinitionListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'ScheduleDefinition' } })))
+  .array(StringSchema.openapi({ xml: { name: 'ScheduleDefinition' } }))
   .openapi('ScheduleDefinitionList')
 
 const ScheduledSnapshotTimeListSchema = z
-  .array(TStampSchema.and(z.any().openapi({ xml: { name: 'SnapshotTime' } })))
+  .array(TStampSchema.openapi({ xml: { name: 'SnapshotTime' } }))
   .openapi('ScheduledSnapshotTimeList')
 
 const ClusterAssociatedToScheduleSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    ScheduleAssociationState: ScheduleStateSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({ description: '<p/>' }),
+    ScheduleAssociationState: ScheduleStateSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ClusterAssociatedToSchedule')
 
 const AssociatedClusterListSchema = z
   .array(
-    ClusterAssociatedToScheduleSchema.and(
-      z.any().openapi({ xml: { name: 'ClusterAssociatedToSchedule' } }),
-    ),
+    ClusterAssociatedToScheduleSchema.openapi({ xml: { name: 'ClusterAssociatedToSchedule' } }),
   )
   .openapi('AssociatedClusterList')
 
 const SnapshotScheduleSchema = z
   .object({
-    ScheduleDefinitions: ScheduleDefinitionListSchema.and(
-      z.any().openapi({ description: 'A list of ScheduleDefinitions.' }),
-    ).exactOptional(),
-    ScheduleIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the schedule.' }),
-    ).exactOptional(),
-    ScheduleDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the schedule.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'An optional set of tags describing the schedule.' }),
-    ).exactOptional(),
-    NextInvocations: ScheduledSnapshotTimeListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    AssociatedClusterCount: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'The number of clusters associated with the schedule.' }),
-    ).exactOptional(),
-    AssociatedClusters: AssociatedClusterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of clusters associated with the schedule. A maximum of 100 clusters is returned.',
-        }),
-    ).exactOptional(),
+    ScheduleDefinitions: ScheduleDefinitionListSchema.exactOptional().openapi({
+      description: 'A list of ScheduleDefinitions.',
+    }),
+    ScheduleIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the schedule.',
+    }),
+    ScheduleDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the schedule.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'An optional set of tags describing the schedule.',
+    }),
+    NextInvocations: ScheduledSnapshotTimeListSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
+    AssociatedClusterCount: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The number of clusters associated with the schedule.',
+    }),
+    AssociatedClusters: AssociatedClusterListSchema.exactOptional().openapi({
+      description:
+        'A list of clusters associated with the schedule. A maximum of 100 clusters is returned.',
+    }),
   })
   .openapi({
     description:
@@ -2708,50 +1986,32 @@ const UsageLimitBreachActionSchema = z
 
 const UsageLimitSchema = z
   .object({
-    UsageLimitId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the usage limit.' }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the cluster with a usage limit.' }),
-    ).exactOptional(),
-    FeatureType: UsageLimitFeatureTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Redshift feature to which the limit applies.' }),
-    ).exactOptional(),
-    LimitType: UsageLimitLimitTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of limit. Depending on the feature type, this can be based on a time duration or data size.',
-        }),
-    ).exactOptional(),
-    Amount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The limit amount. If time-based, this amount is in minutes. If data-based, this amount is in terabytes (TB).',
-        }),
-    ).exactOptional(),
-    Period: UsageLimitPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time period that the amount applies to. A <code>weekly</code> period begins on Sunday. The default is <code>monthly</code>. ',
-        }),
-    ).exactOptional(),
-    BreachAction: UsageLimitBreachActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action that Amazon Redshift takes when the limit is reached. Possible values are: </p> <ul> <li> <p> <b>log</b> - To log an event in a system table. The default is log.</p> </li> <li> <p> <b>emit-metric</b> - To emit CloudWatch metrics.</p> </li> <li> <p> <b>disable</b> - To disable the feature until the next usage period begins.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    UsageLimitId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the usage limit.',
+    }),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the cluster with a usage limit.',
+    }),
+    FeatureType: UsageLimitFeatureTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Redshift feature to which the limit applies.',
+    }),
+    LimitType: UsageLimitLimitTypeSchema.exactOptional().openapi({
+      description:
+        'The type of limit. Depending on the feature type, this can be based on a time duration or data size.',
+    }),
+    Amount: LongSchema.exactOptional().openapi({
+      description:
+        'The limit amount. If time-based, this amount is in minutes. If data-based, this amount is in terabytes (TB).',
+    }),
+    Period: UsageLimitPeriodSchema.exactOptional().openapi({
+      description:
+        'The time period that the amount applies to. A <code>weekly</code> period begins on Sunday. The default is <code>monthly</code>. ',
+    }),
+    BreachAction: UsageLimitBreachActionSchema.exactOptional().openapi({
+      description:
+        '<p>The action that Amazon Redshift takes when the limit is reached. Possible values are: </p> <ul> <li> <p> <b>log</b> - To log an event in a system table. The default is log.</p> </li> <li> <p> <b>emit-metric</b> - To emit CloudWatch metrics.</p> </li> <li> <p> <b>disable</b> - To disable the feature until the next usage period begins.</p> </li> </ul>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({ description: 'Describes a usage limit object for a cluster. ', required: [] })
   .openapi('UsageLimit')
@@ -2762,9 +2022,9 @@ const InvalidUsageLimitFaultSchema = z.any().openapi('InvalidUsageLimitFault')
 
 const DeleteAuthenticationProfileResultSchema = z
   .object({
-    AuthenticationProfileName: AuthenticationProfileNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the authentication profile that was deleted.' }),
-    ).exactOptional(),
+    AuthenticationProfileName: AuthenticationProfileNameStringSchema.exactOptional().openapi({
+      description: 'The name of the authentication profile that was deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteAuthenticationProfileResult')
@@ -2819,25 +2079,25 @@ const UsageLimitNotFoundFaultSchema = z.any().openapi('UsageLimitNotFoundFault')
 
 const AttributeValueTargetSchema = z
   .object({
-    AttributeValue: StringSchema.and(
-      z.any().openapi({ description: 'The value of the attribute.' }),
-    ).exactOptional(),
+    AttributeValue: StringSchema.exactOptional().openapi({
+      description: 'The value of the attribute.',
+    }),
   })
   .openapi({ description: 'Describes an attribute value.', required: [] })
   .openapi('AttributeValueTarget')
 
 const AttributeValueListSchema = z
-  .array(AttributeValueTargetSchema.and(z.any().openapi({ xml: { name: 'AttributeValueTarget' } })))
+  .array(AttributeValueTargetSchema.openapi({ xml: { name: 'AttributeValueTarget' } }))
   .openapi('AttributeValueList')
 
 const AccountAttributeSchema = z
   .object({
-    AttributeName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the attribute.' }),
-    ).exactOptional(),
-    AttributeValues: AttributeValueListSchema.and(
-      z.any().openapi({ description: 'A list of attribute values.' }),
-    ).exactOptional(),
+    AttributeName: StringSchema.exactOptional().openapi({
+      description: 'The name of the attribute.',
+    }),
+    AttributeValues: AttributeValueListSchema.exactOptional().openapi({
+      description: 'A list of attribute values.',
+    }),
   })
   .openapi({
     description: 'A name value pair that describes an aspect of an account. ',
@@ -2846,31 +2106,27 @@ const AccountAttributeSchema = z
   .openapi('AccountAttribute')
 
 const AttributeListSchema = z
-  .array(AccountAttributeSchema.and(z.any().openapi({ xml: { name: 'AccountAttribute' } })))
+  .array(AccountAttributeSchema.openapi({ xml: { name: 'AccountAttribute' } }))
   .openapi('AttributeList')
 
 const AccountAttributeListSchema = z
   .object({
-    AccountAttributes: AttributeListSchema.and(
-      z.any().openapi({ description: 'A list of attributes assigned to an account.' }),
-    ).exactOptional(),
+    AccountAttributes: AttributeListSchema.exactOptional().openapi({
+      description: 'A list of attributes assigned to an account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AccountAttributeList')
 
 const AuthenticationProfileSchema = z
   .object({
-    AuthenticationProfileName: AuthenticationProfileNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the authentication profile.' }),
-    ).exactOptional(),
-    AuthenticationProfileContent: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the authentication profile in JSON format. The maximum length of the JSON string is determined by a quota for your account.',
-        }),
-    ).exactOptional(),
+    AuthenticationProfileName: AuthenticationProfileNameStringSchema.exactOptional().openapi({
+      description: 'The name of the authentication profile.',
+    }),
+    AuthenticationProfileContent: StringSchema.exactOptional().openapi({
+      description:
+        'The content of the authentication profile in JSON format. The maximum length of the JSON string is determined by a quota for your account.',
+    }),
   })
   .openapi({ description: 'Describes an authentication profile.', required: [] })
   .openapi('AuthenticationProfile')
@@ -2881,110 +2137,84 @@ const AuthenticationProfileListSchema = z
 
 const DescribeAuthenticationProfilesResultSchema = z
   .object({
-    AuthenticationProfiles: AuthenticationProfileListSchema.and(
-      z.any().openapi({ description: 'The list of authentication profiles.' }),
-    ).exactOptional(),
+    AuthenticationProfiles: AuthenticationProfileListSchema.exactOptional().openapi({
+      description: 'The list of authentication profiles.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAuthenticationProfilesResult')
 
 const RevisionTargetSchema = z
   .object({
-    DatabaseRevision: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the version to update the cluster to. You can use this value in <a>ModifyClusterDbRevision</a>.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that describes the changes and features that will be applied to the cluster when it is updated to the corresponding <a>ClusterDbRevision</a>.',
-        }),
-    ).exactOptional(),
-    DatabaseRevisionReleaseDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date on which the database revision was released.' }),
-    ).exactOptional(),
+    DatabaseRevision: StringSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the version to update the cluster to. You can use this value in <a>ModifyClusterDbRevision</a>.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description:
+        'A string that describes the changes and features that will be applied to the cluster when it is updated to the corresponding <a>ClusterDbRevision</a>.',
+    }),
+    DatabaseRevisionReleaseDate: TStampSchema.exactOptional().openapi({
+      description: 'The date on which the database revision was released.',
+    }),
   })
   .openapi({ description: 'Describes a <code>RevisionTarget</code>.', required: [] })
   .openapi('RevisionTarget')
 
 const RevisionTargetsListSchema = z
-  .array(RevisionTargetSchema.and(z.any().openapi({ xml: { name: 'RevisionTarget' } })))
+  .array(RevisionTargetSchema.openapi({ xml: { name: 'RevisionTarget' } }))
   .openapi('RevisionTargetsList')
 
 const ClusterDbRevisionSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the cluster.' }),
-    ).exactOptional(),
-    CurrentDatabaseRevision: StringSchema.and(
-      z.any().openapi({ description: 'A string representing the current cluster version.' }),
-    ).exactOptional(),
-    DatabaseRevisionReleaseDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date on which the database revision was released.' }),
-    ).exactOptional(),
-    RevisionTargets: RevisionTargetsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>RevisionTarget</code> objects, where each object describes the database revision that a cluster can be updated to.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier of the cluster.',
+    }),
+    CurrentDatabaseRevision: StringSchema.exactOptional().openapi({
+      description: 'A string representing the current cluster version.',
+    }),
+    DatabaseRevisionReleaseDate: TStampSchema.exactOptional().openapi({
+      description: 'The date on which the database revision was released.',
+    }),
+    RevisionTargets: RevisionTargetsListSchema.exactOptional().openapi({
+      description:
+        'A list of <code>RevisionTarget</code> objects, where each object describes the database revision that a cluster can be updated to.',
+    }),
   })
   .openapi({ description: 'Describes a <code>ClusterDbRevision</code>.', required: [] })
   .openapi('ClusterDbRevision')
 
 const ClusterDbRevisionsListSchema = z
-  .array(ClusterDbRevisionSchema.and(z.any().openapi({ xml: { name: 'ClusterDbRevision' } })))
+  .array(ClusterDbRevisionSchema.openapi({ xml: { name: 'ClusterDbRevision' } }))
   .openapi('ClusterDbRevisionsList')
 
 const ClusterDbRevisionsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string representing the starting point for the next set of revisions. If a value is returned in a response, you can retrieve the next set of revisions by providing the value in the <code>marker</code> parameter and retrying the command. If the <code>marker</code> field is empty, all revisions have already been returned.',
-        }),
-    ).exactOptional(),
-    ClusterDbRevisions: ClusterDbRevisionsListSchema.and(
-      z.any().openapi({ description: 'A list of revisions.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A string representing the starting point for the next set of revisions. If a value is returned in a response, you can retrieve the next set of revisions by providing the value in the <code>marker</code> parameter and retrying the command. If the <code>marker</code> field is empty, all revisions have already been returned.',
+    }),
+    ClusterDbRevisions: ClusterDbRevisionsListSchema.exactOptional().openapi({
+      description: 'A list of revisions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ClusterDbRevisionsMessage')
 
 const ParameterGroupListSchema = z
-  .array(
-    ClusterParameterGroupSchema.and(z.any().openapi({ xml: { name: 'ClusterParameterGroup' } })),
-  )
+  .array(ClusterParameterGroupSchema.openapi({ xml: { name: 'ClusterParameterGroup' } }))
   .openapi('ParameterGroupList')
 
 const ClusterParameterGroupsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    ParameterGroups: ParameterGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a>ClusterParameterGroup</a> instances. Each instance describes one cluster parameter group. ',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    ParameterGroups: ParameterGroupListSchema.exactOptional().openapi({
+      description:
+        'A list of <a>ClusterParameterGroup</a> instances. Each instance describes one cluster parameter group. ',
+    }),
   })
   .openapi({
     description: 'Contains the output from the <a>DescribeClusterParameterGroups</a> action. ',
@@ -2996,80 +2226,54 @@ const ParameterApplyTypeSchema = z.enum(['static', 'dynamic']).openapi('Paramete
 
 const ParameterSchema = z
   .object({
-    ParameterName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the parameter.' }),
-    ).exactOptional(),
-    ParameterValue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the parameter. If <code>ParameterName</code> is <code>wlm_json_configuration</code>, then the maximum size of <code>ParameterValue</code> is 8000 characters.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the parameter.' }),
-    ).exactOptional(),
-    Source: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The source of the parameter value, such as "engine-default" or "user".',
-        }),
-    ).exactOptional(),
-    DataType: StringSchema.and(
-      z.any().openapi({ description: 'The data type of the parameter.' }),
-    ).exactOptional(),
-    AllowedValues: StringSchema.and(
-      z.any().openapi({ description: 'The valid range of values for the parameter.' }),
-    ).exactOptional(),
-    ApplyType: ParameterApplyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how to apply the WLM configuration parameter. Some properties can be applied dynamically, while other properties require that any associated clusters be rebooted for the configuration changes to be applied. For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.',
-        }),
-    ).exactOptional(),
-    IsModifiable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed. ',
-        }),
-    ).exactOptional(),
-    MinimumEngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The earliest engine version to which the parameter can apply.' }),
-    ).exactOptional(),
+    ParameterName: StringSchema.exactOptional().openapi({
+      description: 'The name of the parameter.',
+    }),
+    ParameterValue: StringSchema.exactOptional().openapi({
+      description:
+        'The value of the parameter. If <code>ParameterName</code> is <code>wlm_json_configuration</code>, then the maximum size of <code>ParameterValue</code> is 8000 characters.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A description of the parameter.',
+    }),
+    Source: StringSchema.exactOptional().openapi({
+      description: 'The source of the parameter value, such as "engine-default" or "user".',
+    }),
+    DataType: StringSchema.exactOptional().openapi({
+      description: 'The data type of the parameter.',
+    }),
+    AllowedValues: StringSchema.exactOptional().openapi({
+      description: 'The valid range of values for the parameter.',
+    }),
+    ApplyType: ParameterApplyTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies how to apply the WLM configuration parameter. Some properties can be applied dynamically, while other properties require that any associated clusters be rebooted for the configuration changes to be applied. For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.',
+    }),
+    IsModifiable: BooleanSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed. ',
+    }),
+    MinimumEngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The earliest engine version to which the parameter can apply.',
+    }),
   })
   .openapi({ description: 'Describes a parameter in a cluster parameter group.', required: [] })
   .openapi('Parameter')
 
 const ParametersListSchema = z
-  .array(ParameterSchema.and(z.any().openapi({ xml: { name: 'Parameter' } })))
+  .array(ParameterSchema.openapi({ xml: { name: 'Parameter' } }))
   .openapi('ParametersList')
 
 const ClusterParameterGroupDetailsSchema = z
   .object({
-    Parameters: ParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a>Parameter</a> instances. Each instance lists the parameters of one cluster parameter group. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description:
+        'A list of <a>Parameter</a> instances. Each instance lists the parameters of one cluster parameter group. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
   })
   .openapi({
     description: 'Contains the output from the <a>DescribeClusterParameters</a> action. ',
@@ -3078,43 +2282,35 @@ const ClusterParameterGroupDetailsSchema = z
   .openapi('ClusterParameterGroupDetails')
 
 const ClusterSecurityGroupsSchema = z
-  .array(ClusterSecurityGroupSchema.and(z.any().openapi({ xml: { name: 'ClusterSecurityGroup' } })))
+  .array(ClusterSecurityGroupSchema.openapi({ xml: { name: 'ClusterSecurityGroup' } }))
   .openapi('ClusterSecurityGroups')
 
 const ClusterSecurityGroupMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    ClusterSecurityGroups: ClusterSecurityGroupsSchema.and(
-      z.any().openapi({ description: 'A list of <a>ClusterSecurityGroup</a> instances. ' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    ClusterSecurityGroups: ClusterSecurityGroupsSchema.exactOptional().openapi({
+      description: 'A list of <a>ClusterSecurityGroup</a> instances. ',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ClusterSecurityGroupMessage')
 
 const SnapshotListSchema = z
-  .array(SnapshotSchema.and(z.any().openapi({ xml: { name: 'Snapshot' } })))
+  .array(SnapshotSchema.openapi({ xml: { name: 'Snapshot' } }))
   .openapi('SnapshotList')
 
 const SnapshotMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    Snapshots: SnapshotListSchema.and(
-      z.any().openapi({ description: 'A list of <a>Snapshot</a> instances. ' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    Snapshots: SnapshotListSchema.exactOptional().openapi({
+      description: 'A list of <a>Snapshot</a> instances. ',
+    }),
   })
   .openapi({
     description: 'Contains the output from the <a>DescribeClusterSnapshots</a> action. ',
@@ -3130,33 +2326,25 @@ const SortByOrderSchema = z.enum(['ASC', 'DESC']).openapi('SortByOrder')
 
 const SnapshotSortingEntitySchema = z
   .object({
-    Attribute: SnapshotAttributeToSortBySchema.and(
-      z.any().openapi({ description: 'The category for sorting the snapshots.' }),
-    ),
-    SortOrder: SortByOrderSchema.and(
-      z.any().openapi({ description: 'The order for listing the attributes.' }),
-    ).exactOptional(),
+    Attribute: SnapshotAttributeToSortBySchema.openapi({
+      description: 'The category for sorting the snapshots.',
+    }),
+    SortOrder: SortByOrderSchema.exactOptional().openapi({
+      description: 'The order for listing the attributes.',
+    }),
   })
   .openapi({ required: ['Attribute'], description: 'Describes a sorting entity' })
   .openapi('SnapshotSortingEntity')
 
-const ClusterSubnetGroupsSchema = z
-  .array(ClusterSubnetGroupSchema.and(z.any().openapi({ xml: { name: 'ClusterSubnetGroup' } })))
-  .openapi('ClusterSubnetGroups')
-
-const ClusterSubnetGroupMessageSchema = z
+const ClusterSubnetGroupMessageSchema: z.ZodType<ClusterSubnetGroupMessageType> = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    ClusterSubnetGroups: ClusterSubnetGroupsSchema.and(
-      z.any().openapi({ description: 'A list of <a>ClusterSubnetGroup</a> instances. ' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    ClusterSubnetGroups: ClusterSubnetGroupsSchema.exactOptional().openapi({
+      description: 'A list of <a>ClusterSubnetGroup</a> instances. ',
+    }),
   })
   .openapi({
     description: 'Contains the output from the <a>DescribeClusterSubnetGroups</a> action. ',
@@ -3166,9 +2354,9 @@ const ClusterSubnetGroupMessageSchema = z
 
 const SupportedOperationSchema = z
   .object({
-    OperationName: StringSchema.and(
-      z.any().openapi({ description: 'A list of the supported operations.' }),
-    ).exactOptional(),
+    OperationName: StringSchema.exactOptional().openapi({
+      description: 'A list of the supported operations.',
+    }),
   })
   .openapi({
     description: 'Describes the operations that are allowed on a maintenance track.',
@@ -3177,20 +2365,20 @@ const SupportedOperationSchema = z
   .openapi('SupportedOperation')
 
 const SupportedOperationListSchema = z
-  .array(SupportedOperationSchema.and(z.any().openapi({ xml: { name: 'SupportedOperation' } })))
+  .array(SupportedOperationSchema.openapi({ xml: { name: 'SupportedOperation' } }))
   .openapi('SupportedOperationList')
 
 const UpdateTargetSchema = z
   .object({
-    MaintenanceTrackName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the new maintenance track.' }),
-    ).exactOptional(),
-    DatabaseVersion: StringSchema.and(
-      z.any().openapi({ description: 'The cluster version for the new maintenance track.' }),
-    ).exactOptional(),
-    SupportedOperations: SupportedOperationListSchema.and(
-      z.any().openapi({ description: 'A list of operations supported by the maintenance track.' }),
-    ).exactOptional(),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description: 'The name of the new maintenance track.',
+    }),
+    DatabaseVersion: StringSchema.exactOptional().openapi({
+      description: 'The cluster version for the new maintenance track.',
+    }),
+    SupportedOperations: SupportedOperationListSchema.exactOptional().openapi({
+      description: 'A list of operations supported by the maintenance track.',
+    }),
   })
   .openapi({
     description: 'A maintenance track that you can switch the current track to.',
@@ -3199,30 +2387,21 @@ const UpdateTargetSchema = z
   .openapi('UpdateTarget')
 
 const EligibleTracksToUpdateListSchema = z
-  .array(UpdateTargetSchema.and(z.any().openapi({ xml: { name: 'UpdateTarget' } })))
+  .array(UpdateTargetSchema.openapi({ xml: { name: 'UpdateTarget' } }))
   .openapi('EligibleTracksToUpdateList')
 
 const MaintenanceTrackSchema = z
   .object({
-    MaintenanceTrackName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the maintenance track. Possible values are <code>current</code> and <code>trailing</code>.',
-        }),
-    ).exactOptional(),
-    DatabaseVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number for the cluster release.' }),
-    ).exactOptional(),
-    UpdateTargets: EligibleTracksToUpdateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <a>UpdateTarget</a> objects to update with the maintenance track. ',
-        }),
-    ).exactOptional(),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the maintenance track. Possible values are <code>current</code> and <code>trailing</code>.',
+    }),
+    DatabaseVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number for the cluster release.',
+    }),
+    UpdateTargets: EligibleTracksToUpdateListSchema.exactOptional().openapi({
+      description: 'An array of <a>UpdateTarget</a> objects to update with the maintenance track. ',
+    }),
   })
   .openapi({
     description:
@@ -3232,46 +2411,34 @@ const MaintenanceTrackSchema = z
   .openapi('MaintenanceTrack')
 
 const TrackListSchema = z
-  .array(MaintenanceTrackSchema.and(z.any().openapi({ xml: { name: 'MaintenanceTrack' } })))
+  .array(MaintenanceTrackSchema.openapi({ xml: { name: 'MaintenanceTrack' } }))
   .openapi('TrackList')
 
 const TrackListMessageSchema = z
   .object({
-    MaintenanceTracks: TrackListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of maintenance tracks output by the <code>DescribeClusterTracks</code> operation. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The starting point to return a set of response tracklist records. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request.',
-        }),
-    ).exactOptional(),
+    MaintenanceTracks: TrackListSchema.exactOptional().openapi({
+      description:
+        'A list of maintenance tracks output by the <code>DescribeClusterTracks</code> operation. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'The starting point to return a set of response tracklist records. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TrackListMessage')
 
 const ClusterVersionSchema = z
   .object({
-    ClusterVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number used by the cluster.' }),
-    ).exactOptional(),
-    ClusterParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the cluster parameter group family for the cluster.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the cluster version.' }),
-    ).exactOptional(),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number used by the cluster.',
+    }),
+    ClusterParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description: 'The name of the cluster parameter group family for the cluster.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the cluster version.',
+    }),
   })
   .openapi({
     description:
@@ -3281,22 +2448,18 @@ const ClusterVersionSchema = z
   .openapi('ClusterVersion')
 
 const ClusterVersionListSchema = z
-  .array(ClusterVersionSchema.and(z.any().openapi({ xml: { name: 'ClusterVersion' } })))
+  .array(ClusterVersionSchema.openapi({ xml: { name: 'ClusterVersion' } }))
   .openapi('ClusterVersionList')
 
 const ClusterVersionsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    ClusterVersions: ClusterVersionListSchema.and(
-      z.any().openapi({ description: 'A list of <code>Version</code> elements. ' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    ClusterVersions: ClusterVersionListSchema.exactOptional().openapi({
+      description: 'A list of <code>Version</code> elements. ',
+    }),
   })
   .openapi({
     description: 'Contains the output from the <a>DescribeClusterVersions</a> action. ',
@@ -3304,28 +2467,16 @@ const ClusterVersionsMessageSchema = z
   })
   .openapi('ClusterVersionsMessage')
 
-const ClusterListSchema = z
-  .array(ClusterSchema.and(z.any().openapi({ xml: { name: 'Cluster' } })))
-  .openapi('ClusterList')
-
-const ClustersMessageSchema = z
+const ClustersMessageSchema: z.ZodType<ClustersMessageType> = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    Clusters: ClusterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Cluster</code> objects, where each object describes one cluster. ',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    Clusters: ClusterListSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Cluster</code> objects, where each object describes one cluster. ',
+    }),
   })
   .openapi({
     description: 'Contains the output from the <a>DescribeClusters</a> action. ',
@@ -3337,76 +2488,56 @@ const DataShareListSchema = z.array(DataShareSchema).openapi('DataShareList')
 
 const DescribeDataSharesResultSchema = z
   .object({
-    DataShares: DataShareListSchema.and(
-      z.any().openapi({ description: 'The results returned from describing datashares.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataShares</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    DataShares: DataShareListSchema.exactOptional().openapi({
+      description: 'The results returned from describing datashares.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataShares</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDataSharesResult')
 
 const DescribeDataSharesForConsumerResultSchema = z
   .object({
-    DataShares: DataShareListSchema.and(
-      z.any().openapi({ description: 'Shows the results of datashares available for consumers.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataSharesForConsumer</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    DataShares: DataShareListSchema.exactOptional().openapi({
+      description: 'Shows the results of datashares available for consumers.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataSharesForConsumer</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDataSharesForConsumerResult')
 
 const DescribeDataSharesForProducerResultSchema = z
   .object({
-    DataShares: DataShareListSchema.and(
-      z.any().openapi({ description: 'Shows the results of datashares available for producers.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataSharesForProducer</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    DataShares: DataShareListSchema.exactOptional().openapi({
+      description: 'Shows the results of datashares available for producers.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataSharesForProducer</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDataSharesForProducerResult')
 
 const DefaultClusterParametersSchema = z
   .object({
-    ParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cluster parameter group family to which the engine default parameters apply.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersListSchema.and(
-      z.any().openapi({ description: 'The list of cluster default parameters.' }),
-    ).exactOptional(),
+    ParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cluster parameter group family to which the engine default parameters apply.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description: 'The list of cluster default parameters.',
+    }),
   })
   .openapi({
     description: 'Describes the default cluster parameters for a parameter group family.',
@@ -3423,17 +2554,13 @@ const EndpointAccessesSchema = z.array(EndpointAccessSchema).openapi('EndpointAc
 
 const EndpointAccessListSchema = z
   .object({
-    EndpointAccessList: EndpointAccessesSchema.and(
-      z.any().openapi({ description: 'The list of endpoints with access to the cluster.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeEndpointAccess</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
-        }),
-    ).exactOptional(),
+    EndpointAccessList: EndpointAccessesSchema.exactOptional().openapi({
+      description: 'The list of endpoints with access to the cluster.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeEndpointAccess</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EndpointAccessList')
@@ -3444,92 +2571,78 @@ const EndpointAuthorizationsSchema = z
 
 const EndpointAuthorizationListSchema = z
   .object({
-    EndpointAuthorizationList: EndpointAuthorizationsSchema.and(
-      z.any().openapi({ description: 'The authorizations to an endpoint.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeEndpointAuthorization</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
-        }),
-    ).exactOptional(),
+    EndpointAuthorizationList: EndpointAuthorizationsSchema.exactOptional().openapi({
+      description: 'The authorizations to an endpoint.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeEndpointAuthorization</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EndpointAuthorizationList')
 
 const EventInfoMapSchema = z
   .object({
-    EventId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of an Amazon Redshift event.' }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z.any().openapi({ description: 'The category of an Amazon Redshift event.' }),
-    ).exactOptional(),
-    EventDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of an Amazon Redshift event.' }),
-    ).exactOptional(),
-    Severity: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: '<p>The severity of the event.</p> <p>Values: ERROR, INFO</p>' }),
-    ).exactOptional(),
+    EventId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of an Amazon Redshift event.',
+    }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description: 'The category of an Amazon Redshift event.',
+    }),
+    EventDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of an Amazon Redshift event.',
+    }),
+    Severity: StringSchema.exactOptional().openapi({
+      description: '<p>The severity of the event.</p> <p>Values: ERROR, INFO</p>',
+    }),
   })
   .openapi({ description: 'Describes event information.', required: [] })
   .openapi('EventInfoMap')
 
 const EventInfoMapListSchema = z
-  .array(EventInfoMapSchema.and(z.any().openapi({ xml: { name: 'EventInfoMap' } })))
+  .array(EventInfoMapSchema.openapi({ xml: { name: 'EventInfoMap' } }))
   .openapi('EventInfoMapList')
 
 const EventCategoriesMapSchema = z
   .object({
-    SourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source type, such as cluster or cluster-snapshot, that the returned categories belong to.',
-        }),
-    ).exactOptional(),
-    Events: EventInfoMapListSchema.and(
-      z.any().openapi({ description: 'The events in the event category.' }),
-    ).exactOptional(),
+    SourceType: StringSchema.exactOptional().openapi({
+      description:
+        'The source type, such as cluster or cluster-snapshot, that the returned categories belong to.',
+    }),
+    Events: EventInfoMapListSchema.exactOptional().openapi({
+      description: 'The events in the event category.',
+    }),
   })
   .openapi({ description: 'Describes event categories.', required: [] })
   .openapi('EventCategoriesMap')
 
 const EventCategoriesMapListSchema = z
-  .array(EventCategoriesMapSchema.and(z.any().openapi({ xml: { name: 'EventCategoriesMap' } })))
+  .array(EventCategoriesMapSchema.openapi({ xml: { name: 'EventCategoriesMap' } }))
   .openapi('EventCategoriesMapList')
 
 const EventCategoriesMessageSchema = z
   .object({
-    EventCategoriesMapList: EventCategoriesMapListSchema.and(
-      z.any().openapi({ description: 'A list of event categories descriptions.' }),
-    ).exactOptional(),
+    EventCategoriesMapList: EventCategoriesMapListSchema.exactOptional().openapi({
+      description: 'A list of event categories descriptions.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('EventCategoriesMessage')
 
 const EventSubscriptionsListSchema = z
-  .array(EventSubscriptionSchema.and(z.any().openapi({ xml: { name: 'EventSubscription' } })))
+  .array(EventSubscriptionSchema.openapi({ xml: { name: 'EventSubscription' } }))
   .openapi('EventSubscriptionsList')
 
 const EventSubscriptionsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    EventSubscriptionsList: EventSubscriptionsListSchema.and(
-      z.any().openapi({ description: 'A list of event subscriptions.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    EventSubscriptionsList: EventSubscriptionsListSchema.exactOptional().openapi({
+      description: 'A list of event subscriptions.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('EventSubscriptionsMessage')
@@ -3546,102 +2659,74 @@ const SourceTypeSchema = z
 
 const EventSchema = z
   .object({
-    SourceIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the source of the event.' }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z.any().openapi({ description: 'The source type for this event.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The text of this event.' }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of the event categories.</p> <p>Values: Configuration, Management, Monitoring, Security, Pending</p>',
-        }),
-    ).exactOptional(),
-    Severity: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: '<p>The severity of the event.</p> <p>Values: ERROR, INFO</p>' }),
-    ).exactOptional(),
-    Date: TStampSchema.and(
-      z.any().openapi({ description: 'The date and time of the event.' }),
-    ).exactOptional(),
-    EventId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the event.' }),
-    ).exactOptional(),
+    SourceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the source of the event.',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description: 'The source type for this event.',
+    }),
+    Message: StringSchema.exactOptional().openapi({ description: 'The text of this event.' }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of the event categories.</p> <p>Values: Configuration, Management, Monitoring, Security, Pending</p>',
+    }),
+    Severity: StringSchema.exactOptional().openapi({
+      description: '<p>The severity of the event.</p> <p>Values: ERROR, INFO</p>',
+    }),
+    Date: TStampSchema.exactOptional().openapi({ description: 'The date and time of the event.' }),
+    EventId: StringSchema.exactOptional().openapi({ description: 'The identifier of the event.' }),
   })
   .openapi({ description: 'Describes an event.', required: [] })
   .openapi('Event')
 
 const EventListSchema = z
-  .array(EventSchema.and(z.any().openapi({ xml: { name: 'Event' } })))
+  .array(EventSchema.openapi({ xml: { name: 'Event' } }))
   .openapi('EventList')
 
 const EventsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    Events: EventListSchema.and(
-      z.any().openapi({ description: 'A list of <code>Event</code> instances. ' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    Events: EventListSchema.exactOptional().openapi({
+      description: 'A list of <code>Event</code> instances. ',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('EventsMessage')
 
 const HsmClientCertificateListSchema = z
-  .array(HsmClientCertificateSchema.and(z.any().openapi({ xml: { name: 'HsmClientCertificate' } })))
+  .array(HsmClientCertificateSchema.openapi({ xml: { name: 'HsmClientCertificate' } }))
   .openapi('HsmClientCertificateList')
 
 const HsmClientCertificateMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    HsmClientCertificates: HsmClientCertificateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the identifiers for one or more HSM client certificates used by Amazon Redshift clusters to store and retrieve database encryption keys in an HSM.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    HsmClientCertificates: HsmClientCertificateListSchema.exactOptional().openapi({
+      description:
+        'A list of the identifiers for one or more HSM client certificates used by Amazon Redshift clusters to store and retrieve database encryption keys in an HSM.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('HsmClientCertificateMessage')
 
 const HsmConfigurationListSchema = z
-  .array(HsmConfigurationSchema.and(z.any().openapi({ xml: { name: 'HsmConfiguration' } })))
+  .array(HsmConfigurationSchema.openapi({ xml: { name: 'HsmConfiguration' } }))
   .openapi('HsmConfigurationList')
 
 const HsmConfigurationMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    HsmConfigurations: HsmConfigurationListSchema.and(
-      z.any().openapi({ description: 'A list of <code>HsmConfiguration</code> objects.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    HsmConfigurations: HsmConfigurationListSchema.exactOptional().openapi({
+      description: 'A list of <code>HsmConfiguration</code> objects.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('HsmConfigurationMessage')
@@ -3652,44 +2737,32 @@ const LogTypeListSchema = z.array(StringSchema).openapi('LogTypeList')
 
 const LoggingStatusSchema = z
   .object({
-    LoggingEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' <code>true</code> if logging is on, <code>false</code> if logging is off.',
-        }),
-    ).exactOptional(),
-    BucketName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the S3 bucket where the log files are stored.' }),
-    ).exactOptional(),
-    S3KeyPrefix: StringSchema.and(
-      z.any().openapi({ description: 'The prefix applied to the log file names.' }),
-    ).exactOptional(),
-    LastSuccessfulDeliveryTime: TStampSchema.and(
-      z.any().openapi({ description: 'The last time that logs were delivered.' }),
-    ).exactOptional(),
-    LastFailureTime: TStampSchema.and(
-      z.any().openapi({ description: 'The last time when logs failed to be delivered.' }),
-    ).exactOptional(),
-    LastFailureMessage: StringSchema.and(
-      z.any().openapi({ description: 'The message indicating that logs failed to be delivered.' }),
-    ).exactOptional(),
-    LogDestinationType: LogDestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The log destination type. An enum with possible values of <code>s3</code> and <code>cloudwatch</code>.',
-        }),
-    ).exactOptional(),
-    LogExports: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of exported log types. Possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>.',
-        }),
-    ).exactOptional(),
+    LoggingEnabled: BooleanSchema.exactOptional().openapi({
+      description: ' <code>true</code> if logging is on, <code>false</code> if logging is off.',
+    }),
+    BucketName: StringSchema.exactOptional().openapi({
+      description: 'The name of the S3 bucket where the log files are stored.',
+    }),
+    S3KeyPrefix: StringSchema.exactOptional().openapi({
+      description: 'The prefix applied to the log file names.',
+    }),
+    LastSuccessfulDeliveryTime: TStampSchema.exactOptional().openapi({
+      description: 'The last time that logs were delivered.',
+    }),
+    LastFailureTime: TStampSchema.exactOptional().openapi({
+      description: 'The last time when logs failed to be delivered.',
+    }),
+    LastFailureMessage: StringSchema.exactOptional().openapi({
+      description: 'The message indicating that logs failed to be delivered.',
+    }),
+    LogDestinationType: LogDestinationTypeSchema.exactOptional().openapi({
+      description:
+        'The log destination type. An enum with possible values of <code>s3</code> and <code>cloudwatch</code>.',
+    }),
+    LogExports: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'The collection of exported log types. Possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>.',
+    }),
   })
   .openapi({ description: 'Describes the status of logging for a cluster.', required: [] })
   .openapi('LoggingStatus')
@@ -3698,43 +2771,33 @@ const ModeSchema = z.enum(['standard', 'high-performance']).openapi('Mode')
 
 const NodeConfigurationOptionSchema = z
   .object({
-    NodeType: StringSchema.and(
-      z.any().openapi({ description: 'The node type, such as, "ds2.8xlarge".' }),
-    ).exactOptional(),
-    NumberOfNodes: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of nodes.' }),
-    ).exactOptional(),
-    EstimatedDiskUtilizationPercent: DoubleOptionalSchema.and(
-      z.any().openapi({ description: 'The estimated disk utilizaton percentage.' }),
-    ).exactOptional(),
-    Mode: ModeSchema.and(
-      z.any().openapi({ description: 'The category of the node configuration recommendation.' }),
-    ).exactOptional(),
+    NodeType: StringSchema.exactOptional().openapi({
+      description: 'The node type, such as, "ds2.8xlarge".',
+    }),
+    NumberOfNodes: IntegerSchema.exactOptional().openapi({ description: 'The number of nodes.' }),
+    EstimatedDiskUtilizationPercent: DoubleOptionalSchema.exactOptional().openapi({
+      description: 'The estimated disk utilizaton percentage.',
+    }),
+    Mode: ModeSchema.exactOptional().openapi({
+      description: 'The category of the node configuration recommendation.',
+    }),
   })
   .openapi({ description: 'A list of node configurations.', required: [] })
   .openapi('NodeConfigurationOption')
 
 const NodeConfigurationOptionListSchema = z
-  .array(
-    NodeConfigurationOptionSchema.and(
-      z.any().openapi({ xml: { name: 'NodeConfigurationOption' } }),
-    ),
-  )
+  .array(NodeConfigurationOptionSchema.openapi({ xml: { name: 'NodeConfigurationOption' } }))
   .openapi('NodeConfigurationOptionList')
 
 const NodeConfigurationOptionsMessageSchema = z
   .object({
-    NodeConfigurationOptionList: NodeConfigurationOptionListSchema.and(
-      z.any().openapi({ description: 'A list of valid node configurations.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
+    NodeConfigurationOptionList: NodeConfigurationOptionListSchema.exactOptional().openapi({
+      description: 'A list of valid node configurations.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('NodeConfigurationOptionsMessage')
@@ -3748,31 +2811,23 @@ const OperatorTypeSchema = z
   .openapi('OperatorType')
 
 const ValueStringListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'item' } })))
+  .array(StringSchema.openapi({ xml: { name: 'item' } }))
   .openapi('ValueStringList')
 
 const NodeConfigurationOptionsFilterSchema = z
   .object({
-    Name: NodeConfigurationOptionsFilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the element to filter.' }),
-    ).exactOptional(),
-    Operator: OperatorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The filter operator. If filter Name is NodeType only the 'in' operator is supported. Provide one value to evaluate for 'eq', 'lt', 'le', 'gt', and 'ge'. Provide two values to evaluate for 'between'. Provide a list of values for 'in'.",
-        }),
-    ).exactOptional(),
-    Values: ValueStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Value' },
-          description:
-            'List of values. Compare Name using Operator to Values. If filter Name is NumberOfNodes, then values can range from 0 to 200. If filter Name is EstimatedDiskUtilizationPercent, then values can range from 0 to 100. For example, filter NumberOfNodes (name) GT (operator) 3 (values).',
-        }),
-    ).exactOptional(),
+    Name: NodeConfigurationOptionsFilterNameSchema.exactOptional().openapi({
+      description: 'The name of the element to filter.',
+    }),
+    Operator: OperatorTypeSchema.exactOptional().openapi({
+      description:
+        "The filter operator. If filter Name is NodeType only the 'in' operator is supported. Provide one value to evaluate for 'eq', 'lt', 'le', 'gt', and 'ge'. Provide two values to evaluate for 'between'. Provide a list of values for 'in'.",
+    }),
+    Values: ValueStringListSchema.exactOptional().openapi({
+      xml: { name: 'Value' },
+      description:
+        'List of values. Compare Name using Operator to Values. If filter Name is NumberOfNodes, then values can range from 0 to 200. If filter Name is EstimatedDiskUtilizationPercent, then values can range from 0 to 100. For example, filter NumberOfNodes (name) GT (operator) 3 (values).',
+    }),
   })
   .openapi({
     description: 'A set of elements to filter the returned node configurations.',
@@ -3783,51 +2838,41 @@ const NodeConfigurationOptionsFilterSchema = z
 const AccessToSnapshotDeniedFaultSchema = z.any().openapi('AccessToSnapshotDeniedFault')
 
 const AvailabilityZoneListSchema = z
-  .array(AvailabilityZoneSchema.and(z.any().openapi({ xml: { name: 'AvailabilityZone' } })))
+  .array(AvailabilityZoneSchema.openapi({ xml: { name: 'AvailabilityZone' } }))
   .openapi('AvailabilityZoneList')
 
 const OrderableClusterOptionSchema = z
   .object({
-    ClusterVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version of the orderable cluster.' }),
-    ).exactOptional(),
-    ClusterType: StringSchema.and(
-      z.any().openapi({ description: 'The cluster type, for example <code>multi-node</code>. ' }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z.any().openapi({ description: 'The node type for the orderable cluster.' }),
-    ).exactOptional(),
-    AvailabilityZones: AvailabilityZoneListSchema.and(
-      z.any().openapi({ description: 'A list of availability zones for the orderable cluster.' }),
-    ).exactOptional(),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the orderable cluster.',
+    }),
+    ClusterType: StringSchema.exactOptional().openapi({
+      description: 'The cluster type, for example <code>multi-node</code>. ',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description: 'The node type for the orderable cluster.',
+    }),
+    AvailabilityZones: AvailabilityZoneListSchema.exactOptional().openapi({
+      description: 'A list of availability zones for the orderable cluster.',
+    }),
   })
   .openapi({ description: 'Describes an orderable cluster option.', required: [] })
   .openapi('OrderableClusterOption')
 
 const OrderableClusterOptionsListSchema = z
-  .array(
-    OrderableClusterOptionSchema.and(z.any().openapi({ xml: { name: 'OrderableClusterOption' } })),
-  )
+  .array(OrderableClusterOptionSchema.openapi({ xml: { name: 'OrderableClusterOption' } }))
   .openapi('OrderableClusterOptionsList')
 
 const OrderableClusterOptionsMessageSchema = z
   .object({
-    OrderableClusterOptions: OrderableClusterOptionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>OrderableClusterOption</code> structure containing information about orderable options for the cluster.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
+    OrderableClusterOptions: OrderableClusterOptionsListSchema.exactOptional().openapi({
+      description:
+        'An <code>OrderableClusterOption</code> structure containing information about orderable options for the cluster.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
   })
   .openapi({
     description: 'Contains the output from the <a>DescribeOrderableClusterOptions</a> action. ',
@@ -3847,76 +2892,58 @@ const PartnerIntegrationStatusMessageSchema = z
 
 const PartnerIntegrationInfoSchema = z
   .object({
-    DatabaseName: PartnerIntegrationDatabaseNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the database that receives data from a partner.' }),
-    ).exactOptional(),
-    PartnerName: PartnerIntegrationPartnerNameSchema.and(
-      z.any().openapi({ description: 'The name of the partner.' }),
-    ).exactOptional(),
-    Status: PartnerIntegrationStatusSchema.and(
-      z.any().openapi({ description: 'The partner integration status.' }),
-    ).exactOptional(),
-    StatusMessage: PartnerIntegrationStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message provided by the partner.' }),
-    ).exactOptional(),
-    CreatedAt: TStampSchema.and(
-      z.any().openapi({ description: 'The date (UTC) that the partner integration was created.' }),
-    ).exactOptional(),
-    UpdatedAt: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date (UTC) that the partner integration status was last updated by the partner.',
-        }),
-    ).exactOptional(),
+    DatabaseName: PartnerIntegrationDatabaseNameSchema.exactOptional().openapi({
+      description: 'The name of the database that receives data from a partner.',
+    }),
+    PartnerName: PartnerIntegrationPartnerNameSchema.exactOptional().openapi({
+      description: 'The name of the partner.',
+    }),
+    Status: PartnerIntegrationStatusSchema.exactOptional().openapi({
+      description: 'The partner integration status.',
+    }),
+    StatusMessage: PartnerIntegrationStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message provided by the partner.',
+    }),
+    CreatedAt: TStampSchema.exactOptional().openapi({
+      description: 'The date (UTC) that the partner integration was created.',
+    }),
+    UpdatedAt: TStampSchema.exactOptional().openapi({
+      description:
+        'The date (UTC) that the partner integration status was last updated by the partner.',
+    }),
   })
   .openapi({ description: 'Describes a partner integration.', required: [] })
   .openapi('PartnerIntegrationInfo')
 
 const PartnerIntegrationInfoListSchema = z
-  .array(
-    PartnerIntegrationInfoSchema.and(z.any().openapi({ xml: { name: 'PartnerIntegrationInfo' } })),
-  )
+  .array(PartnerIntegrationInfoSchema.openapi({ xml: { name: 'PartnerIntegrationInfo' } }))
   .openapi('PartnerIntegrationInfoList')
 
 const DescribePartnersOutputMessageSchema = z
   .object({
-    PartnerIntegrationInfoList: PartnerIntegrationInfoListSchema.and(
-      z.any().openapi({ description: 'A list of partner integrations.' }),
-    ).exactOptional(),
+    PartnerIntegrationInfoList: PartnerIntegrationInfoListSchema.exactOptional().openapi({
+      description: 'A list of partner integrations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePartnersOutputMessage')
 
 const ReservedNodeExchangeStatusListSchema = z
-  .array(
-    ReservedNodeExchangeStatusSchema.and(
-      z.any().openapi({ xml: { name: 'ReservedNodeExchangeStatus' } }),
-    ),
-  )
+  .array(ReservedNodeExchangeStatusSchema.openapi({ xml: { name: 'ReservedNodeExchangeStatus' } }))
   .openapi('ReservedNodeExchangeStatusList')
 
 const DescribeReservedNodeExchangeStatusOutputMessageSchema = z
   .object({
-    ReservedNodeExchangeStatusDetails: ReservedNodeExchangeStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details of the reserved-node exchange request, including the status, request time, source reserved-node identifier, and additional details.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token provided by a previous <code>DescribeReservedNodeExchangeStatus</code> request.',
-        }),
-    ).exactOptional(),
+    ReservedNodeExchangeStatusDetails: ReservedNodeExchangeStatusListSchema.exactOptional().openapi(
+      {
+        description:
+          'The details of the reserved-node exchange request, including the status, request time, source reserved-node identifier, and additional details.',
+      },
+    ),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A pagination token provided by a previous <code>DescribeReservedNodeExchangeStatus</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReservedNodeExchangeStatusOutputMessage')
@@ -3925,120 +2952,88 @@ const ReservedNodeExchangeNotFoundFaultSchema = z.any().openapi('ReservedNodeExc
 
 const ReservedNodeOfferingSchema = z
   .object({
-    ReservedNodeOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'The offering identifier.' }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z.any().openapi({ description: 'The node type offered by the reserved node offering.' }),
-    ).exactOptional(),
-    Duration: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The duration, in seconds, for which the offering will reserve the node.',
-        }),
-    ).exactOptional(),
-    FixedPrice: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upfront fixed charge you will pay to purchase the specific reserved node offering.',
-        }),
-    ).exactOptional(),
-    UsagePrice: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rate you are charged for each hour the cluster that is using the offering is running.',
-        }),
-    ).exactOptional(),
-    CurrencyCode: StringSchema.and(
-      z.any().openapi({ description: 'The currency code for the compute nodes offering.' }),
-    ).exactOptional(),
-    OfferingType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The anticipated utilization of the reserved node, as defined in the reserved node offering.',
-        }),
-    ).exactOptional(),
-    RecurringCharges: RecurringChargeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The charge to your account regardless of whether you are creating any clusters using the node offering. Recurring charges are only in effect for heavy-utilization reserved nodes.',
-        }),
-    ).exactOptional(),
-    ReservedNodeOfferingType: ReservedNodeOfferingTypeSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    ReservedNodeOfferingId: StringSchema.exactOptional().openapi({
+      description: 'The offering identifier.',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description: 'The node type offered by the reserved node offering.',
+    }),
+    Duration: IntegerSchema.exactOptional().openapi({
+      description: 'The duration, in seconds, for which the offering will reserve the node.',
+    }),
+    FixedPrice: DoubleSchema.exactOptional().openapi({
+      description:
+        'The upfront fixed charge you will pay to purchase the specific reserved node offering.',
+    }),
+    UsagePrice: DoubleSchema.exactOptional().openapi({
+      description:
+        'The rate you are charged for each hour the cluster that is using the offering is running.',
+    }),
+    CurrencyCode: StringSchema.exactOptional().openapi({
+      description: 'The currency code for the compute nodes offering.',
+    }),
+    OfferingType: StringSchema.exactOptional().openapi({
+      description:
+        'The anticipated utilization of the reserved node, as defined in the reserved node offering.',
+    }),
+    RecurringCharges: RecurringChargeListSchema.exactOptional().openapi({
+      description:
+        'The charge to your account regardless of whether you are creating any clusters using the node offering. Recurring charges are only in effect for heavy-utilization reserved nodes.',
+    }),
+    ReservedNodeOfferingType: ReservedNodeOfferingTypeSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
   })
   .openapi({ description: 'Describes a reserved node offering.', required: [] })
   .openapi('ReservedNodeOffering')
 
 const ReservedNodeOfferingListSchema = z
-  .array(ReservedNodeOfferingSchema.and(z.any().openapi({ xml: { name: 'ReservedNodeOffering' } })))
+  .array(ReservedNodeOfferingSchema.openapi({ xml: { name: 'ReservedNodeOffering' } }))
   .openapi('ReservedNodeOfferingList')
 
 const ReservedNodeOfferingsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    ReservedNodeOfferings: ReservedNodeOfferingListSchema.and(
-      z.any().openapi({ description: 'A list of <code>ReservedNodeOffering</code> objects.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    ReservedNodeOfferings: ReservedNodeOfferingListSchema.exactOptional().openapi({
+      description: 'A list of <code>ReservedNodeOffering</code> objects.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ReservedNodeOfferingsMessage')
 
 const ReservedNodeListSchema = z
-  .array(ReservedNodeSchema.and(z.any().openapi({ xml: { name: 'ReservedNode' } })))
+  .array(ReservedNodeSchema.openapi({ xml: { name: 'ReservedNode' } }))
   .openapi('ReservedNodeList')
 
 const ReservedNodesMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    ReservedNodes: ReservedNodeListSchema.and(
-      z.any().openapi({ description: 'The list of <code>ReservedNode</code> objects.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    ReservedNodes: ReservedNodeListSchema.exactOptional().openapi({
+      description: 'The list of <code>ReservedNode</code> objects.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ReservedNodesMessage')
 
 const ScheduledActionListSchema = z
-  .array(ScheduledActionSchema.and(z.any().openapi({ xml: { name: 'ScheduledAction' } })))
+  .array(ScheduledActionSchema.openapi({ xml: { name: 'ScheduledAction' } }))
   .openapi('ScheduledActionList')
 
 const ScheduledActionsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeScheduledActions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    ScheduledActions: ScheduledActionListSchema.and(
-      z.any().openapi({ description: 'List of retrieved scheduled actions. ' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeScheduledActions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    ScheduledActions: ScheduledActionListSchema.exactOptional().openapi({
+      description: 'List of retrieved scheduled actions. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ScheduledActionsMessage')
@@ -4049,17 +3044,13 @@ const ScheduledActionFilterNameSchema = z
 
 const ScheduledActionFilterSchema = z
   .object({
-    Name: ScheduledActionFilterNameSchema.and(
-      z.any().openapi({ description: 'The type of element to filter. ' }),
-    ),
-    Values: ValueStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of values. Compare if the value (of type defined by <code>Name</code>) equals an item in the list of scheduled actions. ',
-        }),
-    ),
+    Name: ScheduledActionFilterNameSchema.openapi({
+      description: 'The type of element to filter. ',
+    }),
+    Values: ValueStringListSchema.openapi({
+      description:
+        'List of values. Compare if the value (of type defined by <code>Name</code>) equals an item in the list of scheduled actions. ',
+    }),
   })
   .openapi({
     required: ['Name', 'Values'],
@@ -4068,55 +3059,47 @@ const ScheduledActionFilterSchema = z
   .openapi('ScheduledActionFilter')
 
 const SnapshotCopyGrantListSchema = z
-  .array(SnapshotCopyGrantSchema.and(z.any().openapi({ xml: { name: 'SnapshotCopyGrant' } })))
+  .array(SnapshotCopyGrantSchema.openapi({ xml: { name: 'SnapshotCopyGrant' } }))
   .openapi('SnapshotCopyGrantList')
 
 const SnapshotCopyGrantMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <code>DescribeSnapshotCopyGrant</code> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p> <p>Constraints: You can specify either the <b>SnapshotCopyGrantName</b> parameter or the <b>Marker</b> parameter, but not both. </p>',
-        }),
-    ).exactOptional(),
-    SnapshotCopyGrants: SnapshotCopyGrantListSchema.and(
-      z.any().openapi({ description: 'The list of <code>SnapshotCopyGrant</code> objects.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <code>DescribeSnapshotCopyGrant</code> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p> <p>Constraints: You can specify either the <b>SnapshotCopyGrantName</b> parameter or the <b>Marker</b> parameter, but not both. </p>',
+    }),
+    SnapshotCopyGrants: SnapshotCopyGrantListSchema.exactOptional().openapi({
+      description: 'The list of <code>SnapshotCopyGrant</code> objects.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('SnapshotCopyGrantMessage')
 
 const SnapshotScheduleListSchema = z
-  .array(SnapshotScheduleSchema.and(z.any().openapi({ xml: { name: 'SnapshotSchedule' } })))
+  .array(SnapshotScheduleSchema.openapi({ xml: { name: 'SnapshotSchedule' } }))
   .openapi('SnapshotScheduleList')
 
 const DescribeSnapshotSchedulesOutputMessageSchema = z
   .object({
-    SnapshotSchedules: SnapshotScheduleListSchema.and(
-      z.any().openapi({ description: 'A list of SnapshotSchedules.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>marker</code> parameter and retrying the command. If the <code>marker</code> field is empty, all response records have been retrieved for the request.',
-        }),
-    ).exactOptional(),
+    SnapshotSchedules: SnapshotScheduleListSchema.exactOptional().openapi({
+      description: 'A list of SnapshotSchedules.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>marker</code> parameter and retrying the command. If the <code>marker</code> field is empty, all response records have been retrieved for the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSnapshotSchedulesOutputMessage')
 
 const CustomerStorageMessageSchema = z
   .object({
-    TotalBackupSizeInMegaBytes: DoubleSchema.and(
-      z.any().openapi({ description: 'The total amount of storage currently used for snapshots.' }),
-    ).exactOptional(),
-    TotalProvisionedStorageInMegaBytes: DoubleSchema.and(
-      z.any().openapi({ description: 'The total amount of storage currently provisioned.' }),
-    ).exactOptional(),
+    TotalBackupSizeInMegaBytes: DoubleSchema.exactOptional().openapi({
+      description: 'The total amount of storage currently used for snapshots.',
+    }),
+    TotalProvisionedStorageInMegaBytes: DoubleSchema.exactOptional().openapi({
+      description: 'The total amount of storage currently provisioned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CustomerStorageMessage')
@@ -4127,92 +3110,52 @@ const TableRestoreStatusTypeSchema = z
 
 const TableRestoreStatusSchema = z
   .object({
-    TableRestoreRequestId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the table restore request.' }),
-    ).exactOptional(),
-    Status: TableRestoreStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that describes the current state of the table restore request.</p> <p>Valid Values: <code>SUCCEEDED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>PENDING</code>, <code>IN_PROGRESS</code> </p>',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the status of the table restore request. Status values include <code>SUCCEEDED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>PENDING</code>, <code>IN_PROGRESS</code>.',
-        }),
-    ).exactOptional(),
-    RequestTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the table restore request was made, in Universal Coordinated Time (UTC).',
-        }),
-    ).exactOptional(),
-    ProgressInMegaBytes: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The amount of data restored to the new table so far, in megabytes (MB).',
-        }),
-    ).exactOptional(),
-    TotalDataInMegaBytes: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total amount of data to restore to the new table, in megabytes (MB).',
-        }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Redshift cluster that the table is being restored to.',
-        }),
-    ).exactOptional(),
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the snapshot that the table is being restored from.',
-        }),
-    ).exactOptional(),
-    SourceDatabaseName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source database that contains the table being restored.',
-        }),
-    ).exactOptional(),
-    SourceSchemaName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source schema that contains the table being restored.',
-        }),
-    ).exactOptional(),
-    SourceTableName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the source table being restored.' }),
-    ).exactOptional(),
-    TargetDatabaseName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the database to restore the table to.' }),
-    ).exactOptional(),
-    TargetSchemaName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the schema to restore the table to.' }),
-    ).exactOptional(),
-    NewTableName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the table to create as a result of the table restore request.',
-        }),
-    ).exactOptional(),
+    TableRestoreRequestId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier for the table restore request.',
+    }),
+    Status: TableRestoreStatusTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A value that describes the current state of the table restore request.</p> <p>Valid Values: <code>SUCCEEDED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>PENDING</code>, <code>IN_PROGRESS</code> </p>',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description:
+        'A description of the status of the table restore request. Status values include <code>SUCCEEDED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>PENDING</code>, <code>IN_PROGRESS</code>.',
+    }),
+    RequestTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The time that the table restore request was made, in Universal Coordinated Time (UTC).',
+    }),
+    ProgressInMegaBytes: LongOptionalSchema.exactOptional().openapi({
+      description: 'The amount of data restored to the new table so far, in megabytes (MB).',
+    }),
+    TotalDataInMegaBytes: LongOptionalSchema.exactOptional().openapi({
+      description: 'The total amount of data to restore to the new table, in megabytes (MB).',
+    }),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Redshift cluster that the table is being restored to.',
+    }),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the snapshot that the table is being restored from.',
+    }),
+    SourceDatabaseName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source database that contains the table being restored.',
+    }),
+    SourceSchemaName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source schema that contains the table being restored.',
+    }),
+    SourceTableName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source table being restored.',
+    }),
+    TargetDatabaseName: StringSchema.exactOptional().openapi({
+      description: 'The name of the database to restore the table to.',
+    }),
+    TargetSchemaName: StringSchema.exactOptional().openapi({
+      description: 'The name of the schema to restore the table to.',
+    }),
+    NewTableName: StringSchema.exactOptional().openapi({
+      description: 'The name of the table to create as a result of the table restore request.',
+    }),
   })
   .openapi({
     description: 'Describes the status of a <a>RestoreTableFromClusterSnapshot</a> operation.',
@@ -4221,26 +3164,18 @@ const TableRestoreStatusSchema = z
   .openapi('TableRestoreStatus')
 
 const TableRestoreStatusListSchema = z
-  .array(TableRestoreStatusSchema.and(z.any().openapi({ xml: { name: 'TableRestoreStatus' } })))
+  .array(TableRestoreStatusSchema.openapi({ xml: { name: 'TableRestoreStatus' } }))
   .openapi('TableRestoreStatusList')
 
 const TableRestoreStatusMessageSchema = z
   .object({
-    TableRestoreStatusDetails: TableRestoreStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of status details for one or more table restore requests.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token that can be used in a subsequent <a>DescribeTableRestoreStatus</a> request.',
-        }),
-    ).exactOptional(),
+    TableRestoreStatusDetails: TableRestoreStatusListSchema.exactOptional().openapi({
+      description: 'A list of status details for one or more table restore requests.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A pagination token that can be used in a subsequent <a>DescribeTableRestoreStatus</a> request.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('TableRestoreStatusMessage')
@@ -4249,46 +3184,32 @@ const TableRestoreNotFoundFaultSchema = z.any().openapi('TableRestoreNotFoundFau
 
 const TaggedResourceSchema = z
   .object({
-    Tag: TagSchema.and(
-      z.any().openapi({ description: 'The tag for the resource.' }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) with which the tag is associated, for example: <code>arn:aws:redshift:us-east-2:123456789:cluster:t1</code>.',
-        }),
-    ).exactOptional(),
-    ResourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of resource with which the tag is associated. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions">Constructing an Amazon Redshift Amazon Resource Name (ARN)</a> in the Amazon Redshift Cluster Management Guide. </p>',
-        }),
-    ).exactOptional(),
+    Tag: TagSchema.exactOptional().openapi({ description: 'The tag for the resource.' }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) with which the tag is associated, for example: <code>arn:aws:redshift:us-east-2:123456789:cluster:t1</code>.',
+    }),
+    ResourceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of resource with which the tag is associated. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions">Constructing an Amazon Redshift Amazon Resource Name (ARN)</a> in the Amazon Redshift Cluster Management Guide. </p>',
+    }),
   })
   .openapi({ description: 'A tag and its associated resource.', required: [] })
   .openapi('TaggedResource')
 
 const TaggedResourceListSchema = z
-  .array(TaggedResourceSchema.and(z.any().openapi({ xml: { name: 'TaggedResource' } })))
+  .array(TaggedResourceSchema.openapi({ xml: { name: 'TaggedResource' } }))
   .openapi('TaggedResourceList')
 
 const TaggedResourceListMessageSchema = z
   .object({
-    TaggedResources: TaggedResourceListSchema.and(
-      z.any().openapi({ description: 'A list of tags with their associated resources.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
+    TaggedResources: TaggedResourceListSchema.exactOptional().openapi({
+      description: 'A list of tags with their associated resources.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('TaggedResourceListMessage')
@@ -4297,21 +3218,13 @@ const UsageLimitsSchema = z.array(UsageLimitSchema).openapi('UsageLimits')
 
 const UsageLimitListSchema = z
   .object({
-    UsageLimits: UsageLimitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the output from the <a>DescribeUsageLimits</a> action. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
+    UsageLimits: UsageLimitsSchema.exactOptional().openapi({
+      description: 'Contains the output from the <a>DescribeUsageLimits</a> action. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UsageLimitList')
@@ -4348,29 +3261,17 @@ const SensitiveStringSchema = z.string().openapi('SensitiveString')
 
 const ClusterCredentialsSchema = z
   .object({
-    DbUser: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A database user name that is authorized to log on to the database <code>DbName</code> using the password <code>DbPassword</code>. If the specified DbUser exists in the database, the new user name has the same database permissions as the the user named in DbUser. By default, the user is added to PUBLIC. If the <code>DbGroups</code> parameter is specifed, <code>DbUser</code> is added to the listed groups for any sessions created using these credentials.',
-        }),
-    ).exactOptional(),
-    DbPassword: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A temporary password that authorizes the user name returned by <code>DbUser</code> to log on to the database <code>DbName</code>. ',
-        }),
-    ).exactOptional(),
-    Expiration: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the password in <code>DbPassword</code> expires.',
-        }),
-    ).exactOptional(),
+    DbUser: StringSchema.exactOptional().openapi({
+      description:
+        'A database user name that is authorized to log on to the database <code>DbName</code> using the password <code>DbPassword</code>. If the specified DbUser exists in the database, the new user name has the same database permissions as the the user named in DbUser. By default, the user is added to PUBLIC. If the <code>DbGroups</code> parameter is specifed, <code>DbUser</code> is added to the listed groups for any sessions created using these credentials.',
+    }),
+    DbPassword: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        'A temporary password that authorizes the user name returned by <code>DbUser</code> to log on to the database <code>DbName</code>. ',
+    }),
+    Expiration: TStampSchema.exactOptional().openapi({
+      description: 'The date and time the password in <code>DbPassword</code> expires.',
+    }),
   })
   .openapi({
     description:
@@ -4381,32 +3282,20 @@ const ClusterCredentialsSchema = z
 
 const ClusterExtendedCredentialsSchema = z
   .object({
-    DbUser: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A database user name that you provide when you connect to a database. The database user is mapped 1:1 to the source IAM identity. ',
-        }),
-    ).exactOptional(),
-    DbPassword: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A temporary password that you provide when you connect to a database.',
-        }),
-    ).exactOptional(),
-    Expiration: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time (UTC) when the temporary password expires. After this timestamp, a log in with the temporary password fails.',
-        }),
-    ).exactOptional(),
-    NextRefreshTime: TStampSchema.and(
-      z.any().openapi({ description: 'Reserved for future use.' }),
-    ).exactOptional(),
+    DbUser: StringSchema.exactOptional().openapi({
+      description:
+        'A database user name that you provide when you connect to a database. The database user is mapped 1:1 to the source IAM identity. ',
+    }),
+    DbPassword: SensitiveStringSchema.exactOptional().openapi({
+      description: 'A temporary password that you provide when you connect to a database.',
+    }),
+    Expiration: TStampSchema.exactOptional().openapi({
+      description:
+        'The time (UTC) when the temporary password expires. After this timestamp, a log in with the temporary password fails.',
+    }),
+    NextRefreshTime: TStampSchema.exactOptional().openapi({
+      description: 'Reserved for future use.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ClusterExtendedCredentials')
@@ -4414,9 +3303,9 @@ const ClusterExtendedCredentialsSchema = z
 const ReservedNodeConfigurationOptionSchema = z
   .object({
     SourceReservedNode: ReservedNodeSchema.exactOptional(),
-    TargetReservedNodeCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The target reserved-node count.' }),
-    ).exactOptional(),
+    TargetReservedNodeCount: IntegerSchema.exactOptional().openapi({
+      description: 'The target reserved-node count.',
+    }),
     TargetReservedNodeOffering: ReservedNodeOfferingSchema.exactOptional(),
   })
   .openapi({
@@ -4428,77 +3317,58 @@ const ReservedNodeConfigurationOptionSchema = z
 
 const ReservedNodeConfigurationOptionListSchema = z
   .array(
-    ReservedNodeConfigurationOptionSchema.and(
-      z.any().openapi({ xml: { name: 'ReservedNodeConfigurationOption' } }),
-    ),
+    ReservedNodeConfigurationOptionSchema.openapi({
+      xml: { name: 'ReservedNodeConfigurationOption' },
+    }),
   )
   .openapi('ReservedNodeConfigurationOptionList')
 
 const GetReservedNodeExchangeConfigurationOptionsOutputMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token provided by a previous <code>GetReservedNodeExchangeConfigurationOptions</code> request.',
-        }),
-    ).exactOptional(),
-    ReservedNodeConfigurationOptionList: ReservedNodeConfigurationOptionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'the configuration options for the reserved-node exchange. These options include information about the source reserved node and target reserved node. Details include the node type, the price, the node count, and the offering type.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A pagination token provided by a previous <code>GetReservedNodeExchangeConfigurationOptions</code> request.',
+    }),
+    ReservedNodeConfigurationOptionList:
+      ReservedNodeConfigurationOptionListSchema.exactOptional().openapi({
+        description:
+          'the configuration options for the reserved-node exchange. These options include information about the source reserved node and target reserved node. Details include the node type, the price, the node count, and the offering type.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetReservedNodeExchangeConfigurationOptionsOutputMessage')
 
 const GetReservedNodeExchangeOfferingsOutputMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point for returning a set of response records. When the results of a <code>GetReservedNodeExchangeOfferings</code> request exceed the value specified in MaxRecords, Amazon Redshift returns a value in the marker field of the response. You can retrieve the next set of response records by providing the returned marker value in the marker parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    ReservedNodeOfferings: ReservedNodeOfferingListSchema.and(
-      z.any().openapi({ description: 'Returns an array of <a>ReservedNodeOffering</a> objects.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point for returning a set of response records. When the results of a <code>GetReservedNodeExchangeOfferings</code> request exceed the value specified in MaxRecords, Amazon Redshift returns a value in the marker field of the response. You can retrieve the next set of response records by providing the returned marker value in the marker parameter and retrying the request. ',
+    }),
+    ReservedNodeOfferings: ReservedNodeOfferingListSchema.exactOptional().openapi({
+      description: 'Returns an array of <a>ReservedNodeOffering</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetReservedNodeExchangeOfferingsOutputMessage')
 
 const ModifyAquaOutputMessageSchema = z
   .object({
-    AquaConfiguration: AquaConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator). ',
-        }),
-    ).exactOptional(),
+    AquaConfiguration: AquaConfigurationSchema.exactOptional().openapi({
+      description:
+        'This parameter is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator). ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ModifyAquaOutputMessage')
 
 const ModifyAuthenticationProfileResultSchema = z
   .object({
-    AuthenticationProfileName: AuthenticationProfileNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the authentication profile that was replaced.' }),
-    ).exactOptional(),
-    AuthenticationProfileContent: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated content of the authentication profile in JSON format.',
-        }),
-    ).exactOptional(),
+    AuthenticationProfileName: AuthenticationProfileNameStringSchema.exactOptional().openapi({
+      description: 'The name of the authentication profile that was replaced.',
+    }),
+    AuthenticationProfileContent: StringSchema.exactOptional().openapi({
+      description: 'The updated content of the authentication profile in JSON format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ModifyAuthenticationProfileResult')
@@ -4531,17 +3401,13 @@ const ModifyClusterMaintenanceResultSchema = z
 
 const ClusterParameterGroupNameMessageSchema = z
   .object({
-    ParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster parameter group.' }),
-    ).exactOptional(),
-    ParameterGroupStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the parameter group. For example, if you made a change to a parameter group name-value pair, then the change could be pending a reboot of an associated cluster.',
-        }),
-    ).exactOptional(),
+    ParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cluster parameter group.',
+    }),
+    ParameterGroupStatus: StringSchema.exactOptional().openapi({
+      description:
+        'The status of the parameter group. For example, if you made a change to a parameter group name-value pair, then the change could be pending a reboot of an associated cluster.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ClusterParameterGroupNameMessage')
@@ -4642,22 +3508,14 @@ const RotateEncryptionKeyResultSchema = z
 
 const AcceptReservedNodeExchangeInputMessageSchema = z
   .object({
-    ReservedNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string representing the node identifier of the DC1 Reserved Node to be exchanged.',
-        }),
-    ),
-    TargetReservedNodeOfferingId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the DC2 Reserved Node offering to be used for the exchange. You can obtain the value for the parameter by calling <a>GetReservedNodeExchangeOfferings</a> ',
-        }),
-    ),
+    ReservedNodeId: StringSchema.openapi({
+      description:
+        'A string representing the node identifier of the DC1 Reserved Node to be exchanged.',
+    }),
+    TargetReservedNodeOfferingId: StringSchema.openapi({
+      description:
+        'The unique identifier of the DC2 Reserved Node offering to be used for the exchange. You can obtain the value for the parameter by calling <a>GetReservedNodeExchangeOfferings</a> ',
+    }),
   })
   .openapi({
     required: ['ReservedNodeId', 'TargetReservedNodeOfferingId'],
@@ -4671,75 +3529,45 @@ const ActionTypeSchema = z
 
 const AssociateDataShareConsumerMessageSchema = z
   .object({
-    DataShareArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the datashare that the consumer is to use with the account or the namespace.',
-        }),
-    ),
-    AssociateEntireAccount: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that specifies whether the datashare is associated with the entire account.',
-        }),
-    ).exactOptional(),
-    ConsumerArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the consumer that is associated with the datashare.',
-        }),
-    ).exactOptional(),
-    ConsumerRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'From a datashare consumer account, associates a datashare with all existing and future namespaces in the specified Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
+    DataShareArn: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the datashare that the consumer is to use with the account or the namespace.',
+    }),
+    AssociateEntireAccount: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A value that specifies whether the datashare is associated with the entire account.',
+    }),
+    ConsumerArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the consumer that is associated with the datashare.',
+    }),
+    ConsumerRegion: StringSchema.exactOptional().openapi({
+      description:
+        'From a datashare consumer account, associates a datashare with all existing and future namespaces in the specified Amazon Web Services Region.',
+    }),
   })
   .openapi({ required: ['DataShareArn'], title: 'AssociateDataShareConsumerMessage' })
   .openapi('AssociateDataShareConsumerMessage')
 
 const AttributeNameListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'AttributeName' } })))
+  .array(StringSchema.openapi({ xml: { name: 'AttributeName' } }))
   .openapi('AttributeNameList')
 
 const AuthorizeClusterSecurityGroupIngressMessageSchema = z
   .object({
-    ClusterSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the security group to which the ingress rule is added.',
-        }),
-    ),
-    CIDRIP: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IP range to be added the Amazon Redshift security group.' }),
-    ).exactOptional(),
-    EC2SecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The EC2 security group to be added the Amazon Redshift security group.',
-        }),
-    ).exactOptional(),
-    EC2SecurityGroupOwnerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services account number of the owner of the security group specified by the <i>EC2SecurityGroupName</i> parameter. The Amazon Web Services Access Key ID is not an acceptable value. </p> <p>Example: <code>111122223333</code> </p>',
-        }),
-    ).exactOptional(),
+    ClusterSecurityGroupName: StringSchema.openapi({
+      description: 'The name of the security group to which the ingress rule is added.',
+    }),
+    CIDRIP: StringSchema.exactOptional().openapi({
+      description: 'The IP range to be added the Amazon Redshift security group.',
+    }),
+    EC2SecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The EC2 security group to be added the Amazon Redshift security group.',
+    }),
+    EC2SecurityGroupOwnerId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services account number of the owner of the security group specified by the <i>EC2SecurityGroupName</i> parameter. The Amazon Web Services Access Key ID is not an acceptable value. </p> <p>Example: <code>111122223333</code> </p>',
+    }),
   })
   .openapi({
     required: ['ClusterSecurityGroupName'],
@@ -4750,77 +3578,49 @@ const AuthorizeClusterSecurityGroupIngressMessageSchema = z
 
 const AuthorizeDataShareMessageSchema = z
   .object({
-    DataShareArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the datashare that producers are to authorize sharing for.',
-        }),
-    ),
-    ConsumerIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the data consumer that is authorized to access the datashare. This identifier is an Amazon Web Services account ID or a keyword, such as ADX.',
-        }),
-    ),
+    DataShareArn: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the datashare that producers are to authorize sharing for.',
+    }),
+    ConsumerIdentifier: StringSchema.openapi({
+      description:
+        'The identifier of the data consumer that is authorized to access the datashare. This identifier is an Amazon Web Services account ID or a keyword, such as ADX.',
+    }),
   })
   .openapi({ required: ['DataShareArn', 'ConsumerIdentifier'], title: 'AuthorizeDataShareMessage' })
   .openapi('AuthorizeDataShareMessage')
 
 const AuthorizeEndpointAccessMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The cluster identifier of the cluster to grant access to.' }),
-    ).exactOptional(),
-    Account: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID to grant access to.' }),
-    ),
-    VpcIds: VpcIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The virtual private cloud (VPC) identifiers to grant access to.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The cluster identifier of the cluster to grant access to.',
+    }),
+    Account: StringSchema.openapi({
+      description: 'The Amazon Web Services account ID to grant access to.',
+    }),
+    VpcIds: VpcIdentifierListSchema.exactOptional().openapi({
+      description: 'The virtual private cloud (VPC) identifiers to grant access to.',
+    }),
   })
   .openapi({ required: ['Account'], title: 'AuthorizeEndpointAccessMessage' })
   .openapi('AuthorizeEndpointAccessMessage')
 
 const AuthorizeSnapshotAccessMessageSchema = z
   .object({
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the snapshot the account is authorized to restore.',
-        }),
-    ).exactOptional(),
-    SnapshotArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the snapshot to authorize access to.',
-        }),
-    ).exactOptional(),
-    SnapshotClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.',
-        }),
-    ).exactOptional(),
-    AccountWithRestoreAccess: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the Amazon Web Services account authorized to restore the specified snapshot.</p> <p>To share a snapshot with Amazon Web Services Support, specify amazon-redshift-support.</p>',
-        }),
-    ),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the snapshot the account is authorized to restore.',
+    }),
+    SnapshotArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the snapshot to authorize access to.',
+    }),
+    SnapshotClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.',
+    }),
+    AccountWithRestoreAccess: StringSchema.openapi({
+      description:
+        '<p>The identifier of the Amazon Web Services account authorized to restore the specified snapshot.</p> <p>To share a snapshot with Amazon Web Services Support, specify amazon-redshift-support.</p>',
+    }),
   })
   .openapi({
     required: ['AccountWithRestoreAccess'],
@@ -4831,102 +3631,68 @@ const AuthorizeSnapshotAccessMessageSchema = z
 
 const DeleteClusterSnapshotMessageListSchema = z
   .array(
-    DeleteClusterSnapshotMessageSchema.and(
-      z.any().openapi({ xml: { name: 'DeleteClusterSnapshotMessage' } }),
-    ),
+    DeleteClusterSnapshotMessageSchema.openapi({ xml: { name: 'DeleteClusterSnapshotMessage' } }),
   )
   .openapi('DeleteClusterSnapshotMessageList')
 
 const BatchDeleteClusterSnapshotsRequestSchema = z
   .object({
-    Identifiers: DeleteClusterSnapshotMessageListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of identifiers for the snapshots that you want to delete.',
-        }),
-    ),
+    Identifiers: DeleteClusterSnapshotMessageListSchema.openapi({
+      description: 'A list of identifiers for the snapshots that you want to delete.',
+    }),
   })
   .openapi({ required: ['Identifiers'], title: 'BatchDeleteClusterSnapshotsRequest' })
   .openapi('BatchDeleteClusterSnapshotsRequest')
 
 const BatchModifyClusterSnapshotsMessageSchema = z
   .object({
-    SnapshotIdentifierList: SnapshotIdentifierListSchema.and(
-      z.any().openapi({ description: 'A list of snapshot identifiers you want to modify.' }),
-    ),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that a manual snapshot is retained. If you specify the value -1, the manual snapshot is retained indefinitely.</p> <p>The number must be either -1 or an integer between 1 and 3,653.</p> <p>If you decrease the manual snapshot retention period from its current value, existing manual snapshots that fall outside of the new retention period will return an error. If you want to suppress the errors and delete the snapshots, use the force option. </p>',
-        }),
-    ).exactOptional(),
-    Force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value indicating whether to override an exception if the retention period has passed. ',
-        }),
-    ).exactOptional(),
+    SnapshotIdentifierList: SnapshotIdentifierListSchema.openapi({
+      description: 'A list of snapshot identifiers you want to modify.',
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that a manual snapshot is retained. If you specify the value -1, the manual snapshot is retained indefinitely.</p> <p>The number must be either -1 or an integer between 1 and 3,653.</p> <p>If you decrease the manual snapshot retention period from its current value, existing manual snapshots that fall outside of the new retention period will return an error. If you want to suppress the errors and delete the snapshots, use the force option. </p>',
+    }),
+    Force: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value indicating whether to override an exception if the retention period has passed. ',
+    }),
   })
   .openapi({ required: ['SnapshotIdentifierList'], title: 'BatchModifyClusterSnapshotsMessage' })
   .openapi('BatchModifyClusterSnapshotsMessage')
 
 const CancelResizeMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the cluster that you want to cancel a resize operation for.',
-        }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        'The unique identifier for the cluster that you want to cancel a resize operation for.',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'CancelResizeMessage' })
   .openapi('CancelResizeMessage')
 
 const ClusterSecurityGroupNameListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'ClusterSecurityGroupName' } })))
+  .array(StringSchema.openapi({ xml: { name: 'ClusterSecurityGroupName' } }))
   .openapi('ClusterSecurityGroupNameList')
 
 const CopyClusterSnapshotMessageSchema = z
   .object({
-    SourceSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the source snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Must be the identifier for a valid automated snapshot whose state is <code>available</code>.</p> </li> </ul>',
-        }),
-    ),
-    SourceSnapshotClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the cluster the source snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p> <p>Constraints:</p> <ul> <li> <p>Must be the identifier for a valid cluster.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TargetSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier given to the new manual snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank.</p> </li> <li> <p>Must contain from 1 to 255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for the Amazon Web Services account that is making the request.</p> </li> </ul>',
-        }),
-    ),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p> <p>The default value is -1.</p>',
-        }),
-    ).exactOptional(),
+    SourceSnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier for the source snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Must be the identifier for a valid automated snapshot whose state is <code>available</code>.</p> </li> </ul>',
+    }),
+    SourceSnapshotClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the cluster the source snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p> <p>Constraints:</p> <ul> <li> <p>Must be the identifier for a valid cluster.</p> </li> </ul>',
+    }),
+    TargetSnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier given to the new manual snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank.</p> </li> <li> <p>Must contain from 1 to 255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for the Amazon Web Services account that is making the request.</p> </li> </ul>',
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p> <p>The default value is -1.</p>',
+    }),
   })
   .openapi({
     required: ['SourceSnapshotIdentifier', 'TargetSnapshotIdentifier'],
@@ -4937,17 +3703,13 @@ const CopyClusterSnapshotMessageSchema = z
 
 const CreateAuthenticationProfileMessageSchema = z
   .object({
-    AuthenticationProfileName: AuthenticationProfileNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the authentication profile to be created.' }),
-    ),
-    AuthenticationProfileContent: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the authentication profile in JSON format. The maximum length of the JSON string is determined by a quota for your account.',
-        }),
-    ),
+    AuthenticationProfileName: AuthenticationProfileNameStringSchema.openapi({
+      description: 'The name of the authentication profile to be created.',
+    }),
+    AuthenticationProfileContent: StringSchema.openapi({
+      description:
+        'The content of the authentication profile in JSON format. The maximum length of the JSON string is determined by a quota for your account.',
+    }),
   })
   .openapi({
     required: ['AuthenticationProfileName', 'AuthenticationProfileContent'],
@@ -4956,269 +3718,142 @@ const CreateAuthenticationProfileMessageSchema = z
   .openapi('CreateAuthenticationProfileMessage')
 
 const VpcSecurityGroupIdListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'VpcSecurityGroupId' } })))
+  .array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } }))
   .openapi('VpcSecurityGroupIdList')
 
 const IamRoleArnListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'IamRoleArn' } })))
+  .array(StringSchema.openapi({ xml: { name: 'IamRoleArn' } }))
   .openapi('IamRoleArnList')
 
 const CreateClusterMessageSchema = z
   .object({
-    DBName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the first database to be created when the cluster is created.</p> <p>To create additional databases after the cluster is created, connect to the cluster with a SQL client and use SQL commands to create a database. For more information, go to <a href="https://docs.aws.amazon.com/redshift/latest/dg/t_creating_database.html">Create a Database</a> in the Amazon Redshift Database Developer Guide. </p> <p>Default: <code>dev</code> </p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 alphanumeric characters.</p> </li> <li> <p>Must contain only lowercase letters.</p> </li> <li> <p>Cannot be a word that is reserved by the service. A list of reserved words can be found in <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for the cluster. You use this identifier to refer to the cluster for any subsequent cluster operations such as deleting or modifying. The identifier also appears in the Amazon Redshift console.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>Alphabetic characters must be lowercase.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for all clusters within an Amazon Web Services account.</p> </li> </ul> <p>Example: <code>myexamplecluster</code> </p>',
-        }),
-    ),
-    ClusterType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the cluster. When cluster type is specified as</p> <ul> <li> <p> <code>single-node</code>, the <b>NumberOfNodes</b> parameter is not required.</p> </li> <li> <p> <code>multi-node</code>, the <b>NumberOfNodes</b> parameter is required.</p> </li> </ul> <p>Valid Values: <code>multi-node</code> | <code>single-node</code> </p> <p>Default: <code>multi-node</code> </p>',
-        }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The node type to be provisioned for the cluster. For information about node types, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes"> Working with Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p> <p>Valid Values: <code>ds2.xlarge</code> | <code>ds2.8xlarge</code> | <code>dc1.large</code> | <code>dc1.8xlarge</code> | <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>',
-        }),
-    ),
-    MasterUsername: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user name associated with the admin user for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 - 128 alphanumeric characters or hyphens. The user name can\'t be <code>PUBLIC</code>.</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Must not contain a colon (:) or a slash (/).</p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide. </p> </li> </ul>',
-        }),
-    ),
-    MasterUserPassword: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The password associated with the admin user for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>\'</code> (single quote), <code>"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>',
-        }),
-    ),
-    ClusterSecurityGroups: ClusterSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of security groups to be associated with this cluster.</p> <p>Default: The default cluster security group for Amazon Redshift.</p>',
-        }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster.</p> <p>Default: The default VPC security group is associated with the cluster.</p>',
-        }),
-    ).exactOptional(),
-    ClusterSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a cluster subnet group to be associated with this cluster.</p> <p>If this parameter is not provided the resulting cluster will be deployed outside virtual private cloud (VPC).</p>',
-        }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The EC2 Availability Zone (AZ) in which you want Amazon Redshift to provision the cluster. For example, if you have several EC2 instances running in a specific Availability Zone, then you might want the cluster to be provisioned in the same zone in order to decrease network latency.</p> <p>Default: A random, system-chosen Availability Zone in the region that is specified by the endpoint.</p> <p>Example: <code>us-east-2d</code> </p> <p>Constraint: The specified Availability Zone must be in the same region as the current endpoint.</p>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The weekly time range (in UTC) during which automated cluster maintenance can occur.</p> <p> Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p> Default: A 30-minute window selected at random from an 8-hour block of time per region, occurring on a random day of the week. For more information about the time blocks for each region, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-maintenance-windows">Maintenance Windows</a> in Amazon Redshift Cluster Management Guide.</p> <p>Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun</p> <p>Constraints: Minimum 30-minute window.</p>',
-        }),
-    ).exactOptional(),
-    ClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the parameter group to be associated with this cluster.</p> <p>Default: The default Amazon Redshift cluster parameter group. For information about the default parameter group, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Working with Amazon Redshift Parameter Groups</a> </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AutomatedSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with <a>CreateClusterSnapshot</a>. </p> <p>You can't disable automated snapshots for RA3 node types. Set the automated retention period from 1-35 days.</p> <p>Default: <code>1</code> </p> <p>Constraints: Must be a value from 0 to 35.</p>",
-        }),
-    ).exactOptional(),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>",
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port number on which the cluster accepts incoming connections.</p> <p>The cluster is accessible only via the JDBC and ODBC connection strings. Part of the connection string requires the port on which the cluster will listen for incoming connections.</p> <p>Default: <code>5439</code> </p> <p>Valid Values: <code>1150-65535</code> </p>',
-        }),
-    ).exactOptional(),
-    ClusterVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version of the Amazon Redshift engine software that you want to deploy on the cluster.</p> <p>The version selected runs on all the nodes in the cluster.</p> <p>Constraints: Only version 1.0 is currently available.</p> <p>Example: <code>1.0</code> </p>',
-        }),
-    ).exactOptional(),
-    AllowVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>true</code>, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster.</p> <p>When a new major version of the Amazon Redshift engine is released, you can request that the service automatically apply upgrades during the maintenance window to the Amazon Redshift engine that is running on your cluster.</p> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    NumberOfNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of compute nodes in the cluster. This parameter is required when the <b>ClusterType</b> parameter is specified as <code>multi-node</code>. </p> <p>For information about determining how many nodes you need, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes"> Working with Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p> <p>If you don\'t specify this parameter, you get a single-node cluster. When requesting a multi-node cluster, you must specify the number of nodes that you want in the cluster.</p> <p>Default: <code>1</code> </p> <p>Constraints: Value must be at least 1 and no more than 100.</p>',
-        }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If <code>true</code>, the cluster can be accessed from a public network. ',
-        }),
-    ).exactOptional(),
-    Encrypted: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>true</code>, the data in the cluster is encrypted at rest. </p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    HsmClientCertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the HSM client certificate the Amazon Redshift cluster uses to retrieve the data encryption keys stored in an HSM.',
-        }),
-    ).exactOptional(),
-    HsmConfigurationIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the HSM configuration that contains the information the Amazon Redshift cluster can use to retrieve and store keys in an HSM.',
-        }),
-    ).exactOptional(),
-    ElasticIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Elastic IP (EIP) address for the cluster.</p> <p>Constraints: The cluster must be provisioned in EC2-VPC and publicly-accessible through an Internet gateway. Don\'t specify the Elastic IP address for a publicly accessible cluster with availability zone relocation turned on. For more information about provisioning clusters in EC2-VPC, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms">Supported Platforms to Launch Your Cluster</a> in the Amazon Redshift Cluster Management Guide.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Key Management Service (KMS) key ID of the encryption key that you want to use to encrypt data in the cluster.',
-        }),
-    ).exactOptional(),
-    EnhancedVpcRouting: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    AdditionalInfo: StringSchema.and(z.any().openapi({ description: 'Reserved.' })).exactOptional(),
-    IamRoles: IamRoleArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Identity and Access Management (IAM) roles that can be used by the cluster to access other Amazon Web Services services. You must supply the IAM roles in their Amazon Resource Name (ARN) format. </p> <p>The maximum number of IAM roles that you can associate is subject to a quota. For more information, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html">Quotas and limits</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    MaintenanceTrackName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An optional parameter for the name of the maintenance track for the cluster. If you don't provide a maintenance track name, the cluster is assigned to the <code>current</code> track.",
-        }),
-    ).exactOptional(),
-    SnapshotScheduleIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the snapshot schedule.' }),
-    ).exactOptional(),
-    AvailabilityZoneRelocation: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to enable relocation for an Amazon Redshift cluster between Availability Zones after the cluster is created.',
-        }),
-    ).exactOptional(),
-    AquaConfigurationStatus: AquaConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is retired. It does not set the AQUA configuration status. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
-        }),
-    ).exactOptional(),
-    DefaultIamRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was created. ',
-        }),
-    ).exactOptional(),
-    LoadSampleData: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that specifies whether to load sample data once the cluster is created.',
-        }),
-    ).exactOptional(),
+    DBName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the first database to be created when the cluster is created.</p> <p>To create additional databases after the cluster is created, connect to the cluster with a SQL client and use SQL commands to create a database. For more information, go to <a href="https://docs.aws.amazon.com/redshift/latest/dg/t_creating_database.html">Create a Database</a> in the Amazon Redshift Database Developer Guide. </p> <p>Default: <code>dev</code> </p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 alphanumeric characters.</p> </li> <li> <p>Must contain only lowercase letters.</p> </li> <li> <p>Cannot be a word that is reserved by the service. A list of reserved words can be found in <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide. </p> </li> </ul>',
+    }),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>A unique identifier for the cluster. You use this identifier to refer to the cluster for any subsequent cluster operations such as deleting or modifying. The identifier also appears in the Amazon Redshift console.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>Alphabetic characters must be lowercase.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for all clusters within an Amazon Web Services account.</p> </li> </ul> <p>Example: <code>myexamplecluster</code> </p>',
+    }),
+    ClusterType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the cluster. When cluster type is specified as</p> <ul> <li> <p> <code>single-node</code>, the <b>NumberOfNodes</b> parameter is not required.</p> </li> <li> <p> <code>multi-node</code>, the <b>NumberOfNodes</b> parameter is required.</p> </li> </ul> <p>Valid Values: <code>multi-node</code> | <code>single-node</code> </p> <p>Default: <code>multi-node</code> </p>',
+    }),
+    NodeType: StringSchema.openapi({
+      description:
+        '<p>The node type to be provisioned for the cluster. For information about node types, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes"> Working with Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p> <p>Valid Values: <code>ds2.xlarge</code> | <code>ds2.8xlarge</code> | <code>dc1.large</code> | <code>dc1.8xlarge</code> | <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>',
+    }),
+    MasterUsername: StringSchema.openapi({
+      description:
+        '<p>The user name associated with the admin user for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 - 128 alphanumeric characters or hyphens. The user name can\'t be <code>PUBLIC</code>.</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Must not contain a colon (:) or a slash (/).</p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide. </p> </li> </ul>',
+    }),
+    MasterUserPassword: StringSchema.openapi({
+      description:
+        '<p>The password associated with the admin user for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>\'</code> (single quote), <code>"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>',
+    }),
+    ClusterSecurityGroups: ClusterSecurityGroupNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of security groups to be associated with this cluster.</p> <p>Default: The default cluster security group for Amazon Redshift.</p>',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster.</p> <p>Default: The default VPC security group is associated with the cluster.</p>',
+    }),
+    ClusterSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a cluster subnet group to be associated with this cluster.</p> <p>If this parameter is not provided the resulting cluster will be deployed outside virtual private cloud (VPC).</p>',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The EC2 Availability Zone (AZ) in which you want Amazon Redshift to provision the cluster. For example, if you have several EC2 instances running in a specific Availability Zone, then you might want the cluster to be provisioned in the same zone in order to decrease network latency.</p> <p>Default: A random, system-chosen Availability Zone in the region that is specified by the endpoint.</p> <p>Example: <code>us-east-2d</code> </p> <p>Constraint: The specified Availability Zone must be in the same region as the current endpoint.</p>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The weekly time range (in UTC) during which automated cluster maintenance can occur.</p> <p> Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p> Default: A 30-minute window selected at random from an 8-hour block of time per region, occurring on a random day of the week. For more information about the time blocks for each region, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-maintenance-windows">Maintenance Windows</a> in Amazon Redshift Cluster Management Guide.</p> <p>Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun</p> <p>Constraints: Minimum 30-minute window.</p>',
+    }),
+    ClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the parameter group to be associated with this cluster.</p> <p>Default: The default Amazon Redshift cluster parameter group. For information about the default parameter group, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Working with Amazon Redshift Parameter Groups</a> </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
+    }),
+    AutomatedSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with <a>CreateClusterSnapshot</a>. </p> <p>You can't disable automated snapshots for RA3 node types. Set the automated retention period from 1-35 days.</p> <p>Default: <code>1</code> </p> <p>Constraints: Must be a value from 0 to 35.</p>",
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>",
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The port number on which the cluster accepts incoming connections.</p> <p>The cluster is accessible only via the JDBC and ODBC connection strings. Part of the connection string requires the port on which the cluster will listen for incoming connections.</p> <p>Default: <code>5439</code> </p> <p>Valid Values: <code>1150-65535</code> </p>',
+    }),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The version of the Amazon Redshift engine software that you want to deploy on the cluster.</p> <p>The version selected runs on all the nodes in the cluster.</p> <p>Constraints: Only version 1.0 is currently available.</p> <p>Example: <code>1.0</code> </p>',
+    }),
+    AllowVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>true</code>, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster.</p> <p>When a new major version of the Amazon Redshift engine is released, you can request that the service automatically apply upgrades during the maintenance window to the Amazon Redshift engine that is running on your cluster.</p> <p>Default: <code>true</code> </p>',
+    }),
+    NumberOfNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of compute nodes in the cluster. This parameter is required when the <b>ClusterType</b> parameter is specified as <code>multi-node</code>. </p> <p>For information about determining how many nodes you need, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes"> Working with Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p> <p>If you don\'t specify this parameter, you get a single-node cluster. When requesting a multi-node cluster, you must specify the number of nodes that you want in the cluster.</p> <p>Default: <code>1</code> </p> <p>Constraints: Value must be at least 1 and no more than 100.</p>',
+    }),
+    PubliclyAccessible: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'If <code>true</code>, the cluster can be accessed from a public network. ',
+    }),
+    Encrypted: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>true</code>, the data in the cluster is encrypted at rest. </p> <p>Default: false</p>',
+    }),
+    HsmClientCertificateIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the HSM client certificate the Amazon Redshift cluster uses to retrieve the data encryption keys stored in an HSM.',
+    }),
+    HsmConfigurationIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the HSM configuration that contains the information the Amazon Redshift cluster can use to retrieve and store keys in an HSM.',
+    }),
+    ElasticIp: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Elastic IP (EIP) address for the cluster.</p> <p>Constraints: The cluster must be provisioned in EC2-VPC and publicly-accessible through an Internet gateway. Don\'t specify the Elastic IP address for a publicly accessible cluster with availability zone relocation turned on. For more information about provisioning clusters in EC2-VPC, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms">Supported Platforms to Launch Your Cluster</a> in the Amazon Redshift Cluster Management Guide.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'The Key Management Service (KMS) key ID of the encryption key that you want to use to encrypt data in the cluster.',
+    }),
+    EnhancedVpcRouting: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
+    }),
+    AdditionalInfo: StringSchema.exactOptional().openapi({ description: 'Reserved.' }),
+    IamRoles: IamRoleArnListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Identity and Access Management (IAM) roles that can be used by the cluster to access other Amazon Web Services services. You must supply the IAM roles in their Amazon Resource Name (ARN) format. </p> <p>The maximum number of IAM roles that you can associate is subject to a quota. For more information, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html">Quotas and limits</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>',
+    }),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description:
+        "An optional parameter for the name of the maintenance track for the cluster. If you don't provide a maintenance track name, the cluster is assigned to the <code>current</code> track.",
+    }),
+    SnapshotScheduleIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the snapshot schedule.',
+    }),
+    AvailabilityZoneRelocation: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'The option to enable relocation for an Amazon Redshift cluster between Availability Zones after the cluster is created.',
+    }),
+    AquaConfigurationStatus: AquaConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        'This parameter is retired. It does not set the AQUA configuration status. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
+    }),
+    DefaultIamRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was created. ',
+    }),
+    LoadSampleData: StringSchema.exactOptional().openapi({
+      description: 'A flag that specifies whether to load sample data once the cluster is created.',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier', 'NodeType', 'MasterUsername', 'MasterUserPassword'],
@@ -5229,28 +3864,16 @@ const CreateClusterMessageSchema = z
 
 const CreateClusterParameterGroupMessageSchema = z
   .object({
-    ParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters or hyphens</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique withing your Amazon Web Services account.</p> </li> </ul> <note> <p>This value is stored as a lower-case string.</p> </note>',
-        }),
-    ),
-    ParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Redshift engine version to which the cluster parameter group applies. The cluster engine version determines the set of parameters.</p> <p>To get a list of valid parameter group family names, you can call <a>DescribeClusterParameterGroups</a>. By default, Amazon Redshift returns a list of all the parameter groups that are owned by your Amazon Web Services account, including the default parameter groups for each Amazon Redshift engine version. The parameter group family names associated with the default parameter groups provide you the valid values. For example, a valid family name is "redshift-1.0". </p>',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the parameter group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    ParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters or hyphens</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique withing your Amazon Web Services account.</p> </li> </ul> <note> <p>This value is stored as a lower-case string.</p> </note>',
+    }),
+    ParameterGroupFamily: StringSchema.openapi({
+      description:
+        '<p>The Amazon Redshift engine version to which the cluster parameter group applies. The cluster engine version determines the set of parameters.</p> <p>To get a list of valid parameter group family names, you can call <a>DescribeClusterParameterGroups</a>. By default, Amazon Redshift returns a list of all the parameter groups that are owned by your Amazon Web Services account, including the default parameter groups for each Amazon Redshift engine version. The parameter group family names associated with the default parameter groups provide you the valid values. For example, a valid family name is "redshift-1.0". </p>',
+    }),
+    Description: StringSchema.openapi({ description: 'A description of the parameter group.' }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: ['ParameterGroupName', 'ParameterGroupFamily', 'Description'],
@@ -5261,20 +3884,12 @@ const CreateClusterParameterGroupMessageSchema = z
 
 const CreateClusterSecurityGroupMessageSchema = z
   .object({
-    ClusterSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the security group. Amazon Redshift stores the value as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain no more than 255 alphanumeric characters or hyphens.</p> </li> <li> <p>Must not be "Default".</p> </li> <li> <p>Must be unique for all security groups that are created by your Amazon Web Services account.</p> </li> </ul> <p>Example: <code>examplesecuritygroup</code> </p>',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description for the security group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    ClusterSecurityGroupName: StringSchema.openapi({
+      description:
+        '<p>The name for the security group. Amazon Redshift stores the value as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain no more than 255 alphanumeric characters or hyphens.</p> </li> <li> <p>Must not be "Default".</p> </li> <li> <p>Must be unique for all security groups that are created by your Amazon Web Services account.</p> </li> </ul> <p>Example: <code>examplesecuritygroup</code> </p>',
+    }),
+    Description: StringSchema.openapi({ description: 'A description for the security group.' }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: ['ClusterSecurityGroupName', 'Description'],
@@ -5285,28 +3900,18 @@ const CreateClusterSecurityGroupMessageSchema = z
 
 const CreateClusterSnapshotMessageSchema = z
   .object({
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for the snapshot that you are requesting. This identifier must be unique for all snapshots within the Amazon Web Services account.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank</p> </li> <li> <p>Must contain from 1 to 255 alphanumeric characters or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-snapshot-id</code> </p>',
-        }),
-    ),
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The cluster identifier for which you want a snapshot.' }),
-    ),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p> <p>The default value is -1.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    SnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>A unique identifier for the snapshot that you are requesting. This identifier must be unique for all snapshots within the Amazon Web Services account.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank</p> </li> <li> <p>Must contain from 1 to 255 alphanumeric characters or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-snapshot-id</code> </p>',
+    }),
+    ClusterIdentifier: StringSchema.openapi({
+      description: 'The cluster identifier for which you want a snapshot.',
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p> <p>The default value is -1.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: ['SnapshotIdentifier', 'ClusterIdentifier'],
@@ -5316,33 +3921,21 @@ const CreateClusterSnapshotMessageSchema = z
   .openapi('CreateClusterSnapshotMessage')
 
 const SubnetIdentifierListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'SubnetIdentifier' } })))
+  .array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } }))
   .openapi('SubnetIdentifierList')
 
 const CreateClusterSubnetGroupMessageSchema = z
   .object({
-    ClusterSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the subnet group. Amazon Redshift stores the value as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain no more than 255 alphanumeric characters or hyphens.</p> </li> <li> <p>Must not be "Default".</p> </li> <li> <p>Must be unique for all subnet groups that are created by your Amazon Web Services account.</p> </li> </ul> <p>Example: <code>examplesubnetgroup</code> </p>',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description for the subnet group.' }),
-    ),
-    SubnetIds: SubnetIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of VPC subnet IDs. A maximum of 20 subnets can be modified in a single request.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    ClusterSubnetGroupName: StringSchema.openapi({
+      description:
+        '<p>The name for the subnet group. Amazon Redshift stores the value as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain no more than 255 alphanumeric characters or hyphens.</p> </li> <li> <p>Must not be "Default".</p> </li> <li> <p>Must be unique for all subnet groups that are created by your Amazon Web Services account.</p> </li> </ul> <p>Example: <code>examplesubnetgroup</code> </p>',
+    }),
+    Description: StringSchema.openapi({ description: 'A description for the subnet group.' }),
+    SubnetIds: SubnetIdentifierListSchema.openapi({
+      description:
+        'An array of VPC subnet IDs. A maximum of 20 subnets can be modified in a single request.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: ['ClusterSubnetGroupName', 'Description', 'SubnetIds'],
@@ -5353,106 +3946,60 @@ const CreateClusterSubnetGroupMessageSchema = z
 
 const CreateEndpointAccessMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The cluster identifier of the cluster to access.' }),
-    ).exactOptional(),
-    ResourceOwner: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID of the owner of the cluster. This is only required if the cluster is in another Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    EndpointName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Redshift-managed VPC endpoint name.</p> <p>An endpoint name must contain 1-30 characters. Valid characters are A-Z, a-z, 0-9, and hyphen(-). The first character must be a letter. The name can't contain two consecutive hyphens or end with a hyphen.</p>",
-        }),
-    ),
-    SubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subnet group from which Amazon Redshift chooses the subnet to deploy the endpoint.',
-        }),
-    ),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security group that defines the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The cluster identifier of the cluster to access.',
+    }),
+    ResourceOwner: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID of the owner of the cluster. This is only required if the cluster is in another Amazon Web Services account.',
+    }),
+    EndpointName: StringSchema.openapi({
+      description:
+        "<p>The Redshift-managed VPC endpoint name.</p> <p>An endpoint name must contain 1-30 characters. Valid characters are A-Z, a-z, 0-9, and hyphen(-). The first character must be a letter. The name can't contain two consecutive hyphens or end with a hyphen.</p>",
+    }),
+    SubnetGroupName: StringSchema.openapi({
+      description:
+        'The subnet group from which Amazon Redshift chooses the subnet to deploy the endpoint.',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description:
+        'The security group that defines the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.',
+    }),
   })
   .openapi({ required: ['EndpointName', 'SubnetGroupName'], title: 'CreateEndpointAccessMessage' })
   .openapi('CreateEndpointAccessMessage')
 
 const CreateEventSubscriptionMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the event subscription to be created.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank.</p> </li> <li> <p>Must contain from 1 to 255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
-        }),
-    ),
-    SnsTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic used to transmit the event notifications. The ARN is created by Amazon SNS when you create a topic and subscribe to it.',
-        }),
-    ),
-    SourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of source that will be generating the events. For example, if you want to be notified of events generated by a cluster, you would set this parameter to cluster. If this value is not specified, events are returned for all Amazon Redshift objects in your Amazon Web Services account. You must specify a source type in order to specify source IDs.</p> <p>Valid values: cluster, cluster-parameter-group, cluster-security-group, cluster-snapshot, and scheduled-action.</p>',
-        }),
-    ).exactOptional(),
-    SourceIds: SourceIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of one or more identifiers of Amazon Redshift source objects. All of the objects must be of the same type as was specified in the source type parameter. The event subscription will return only events generated by the specified objects. If not specified, then events are returned for all objects within the source type specified.</p> <p>Example: my-cluster-1, my-cluster-2</p> <p>Example: my-snapshot-20131010</p>',
-        }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Amazon Redshift event categories to be published by the event notification subscription.</p> <p>Values: configuration, management, monitoring, security, pending</p>',
-        }),
-    ).exactOptional(),
-    Severity: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Amazon Redshift event severity to be published by the event notification subscription.</p> <p>Values: ERROR, INFO</p>',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value; set to <code>true</code> to activate the subscription, and set to <code>false</code> to create the subscription but not activate it. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    SubscriptionName: StringSchema.openapi({
+      description:
+        '<p>The name of the event subscription to be created.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank.</p> </li> <li> <p>Must contain from 1 to 255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
+    }),
+    SnsTopicArn: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic used to transmit the event notifications. The ARN is created by Amazon SNS when you create a topic and subscribe to it.',
+    }),
+    SourceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of source that will be generating the events. For example, if you want to be notified of events generated by a cluster, you would set this parameter to cluster. If this value is not specified, events are returned for all Amazon Redshift objects in your Amazon Web Services account. You must specify a source type in order to specify source IDs.</p> <p>Valid values: cluster, cluster-parameter-group, cluster-security-group, cluster-snapshot, and scheduled-action.</p>',
+    }),
+    SourceIds: SourceIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of one or more identifiers of Amazon Redshift source objects. All of the objects must be of the same type as was specified in the source type parameter. The event subscription will return only events generated by the specified objects. If not specified, then events are returned for all objects within the source type specified.</p> <p>Example: my-cluster-1, my-cluster-2</p> <p>Example: my-snapshot-20131010</p>',
+    }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Amazon Redshift event categories to be published by the event notification subscription.</p> <p>Values: configuration, management, monitoring, security, pending</p>',
+    }),
+    Severity: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Amazon Redshift event severity to be published by the event notification subscription.</p> <p>Values: ERROR, INFO</p>',
+    }),
+    Enabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A boolean value; set to <code>true</code> to activate the subscription, and set to <code>false</code> to create the subscription but not activate it. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: ['SubscriptionName', 'SnsTopicArn'],
@@ -5463,17 +4010,11 @@ const CreateEventSubscriptionMessageSchema = z
 
 const CreateHsmClientCertificateMessageSchema = z
   .object({
-    HsmClientCertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier to be assigned to the new HSM client certificate that the cluster will use to connect to the HSM to use the database encryption keys.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    HsmClientCertificateIdentifier: StringSchema.openapi({
+      description:
+        'The identifier to be assigned to the new HSM client certificate that the cluster will use to connect to the HSM to use the database encryption keys.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: ['HsmClientCertificateIdentifier'],
@@ -5484,49 +4025,27 @@ const CreateHsmClientCertificateMessageSchema = z
 
 const CreateHsmConfigurationMessageSchema = z
   .object({
-    HsmConfigurationIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier to be assigned to the new Amazon Redshift HSM configuration.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A text description of the HSM configuration to be created.' }),
-    ),
-    HsmIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address that the Amazon Redshift cluster must use to access the HSM.',
-        }),
-    ),
-    HsmPartitionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the partition in the HSM where the Amazon Redshift clusters will store their database encryption keys.',
-        }),
-    ),
-    HsmPartitionPassword: StringSchema.and(
-      z.any().openapi({ description: 'The password required to access the HSM partition.' }),
-    ),
-    HsmServerPublicCertificate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HSMs public certificate file. When using Cloud HSM, the file name is server.pem.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    HsmConfigurationIdentifier: StringSchema.openapi({
+      description: 'The identifier to be assigned to the new Amazon Redshift HSM configuration.',
+    }),
+    Description: StringSchema.openapi({
+      description: 'A text description of the HSM configuration to be created.',
+    }),
+    HsmIpAddress: StringSchema.openapi({
+      description: 'The IP address that the Amazon Redshift cluster must use to access the HSM.',
+    }),
+    HsmPartitionName: StringSchema.openapi({
+      description:
+        'The name of the partition in the HSM where the Amazon Redshift clusters will store their database encryption keys.',
+    }),
+    HsmPartitionPassword: StringSchema.openapi({
+      description: 'The password required to access the HSM partition.',
+    }),
+    HsmServerPublicCertificate: StringSchema.openapi({
+      description:
+        'The HSMs public certificate file. When using Cloud HSM, the file name is server.pem.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: [
@@ -5544,65 +4063,37 @@ const CreateHsmConfigurationMessageSchema = z
 
 const CreateScheduledActionMessageSchema = z
   .object({
-    ScheduledActionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the scheduled action. The name must be unique within an account. For more information about this parameter, see <a>ScheduledAction</a>. ',
-        }),
-    ),
-    TargetAction: ScheduledActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON format string of the Amazon Redshift API operation with input parameters. For more information about this parameter, see <a>ScheduledAction</a>. ',
-        }),
-    ),
-    Schedule: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The schedule in <code>at( )</code> or <code>cron( )</code> format. For more information about this parameter, see <a>ScheduledAction</a>.',
-        }),
-    ),
-    IamRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role to assume to run the target action. For more information about this parameter, see <a>ScheduledAction</a>. ',
-        }),
-    ),
-    ScheduledActionDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the scheduled action. ' }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time in UTC of the scheduled action. Before this time, the scheduled action does not trigger. For more information about this parameter, see <a>ScheduledAction</a>.',
-        }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end time in UTC of the scheduled action. After this time, the scheduled action does not trigger. For more information about this parameter, see <a>ScheduledAction</a>. ',
-        }),
-    ).exactOptional(),
-    Enable: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, the schedule is enabled. If false, the scheduled action does not trigger. For more information about <code>state</code> of the scheduled action, see <a>ScheduledAction</a>. ',
-        }),
-    ).exactOptional(),
+    ScheduledActionName: StringSchema.openapi({
+      description:
+        'The name of the scheduled action. The name must be unique within an account. For more information about this parameter, see <a>ScheduledAction</a>. ',
+    }),
+    TargetAction: ScheduledActionTypeSchema.openapi({
+      description:
+        'A JSON format string of the Amazon Redshift API operation with input parameters. For more information about this parameter, see <a>ScheduledAction</a>. ',
+    }),
+    Schedule: StringSchema.openapi({
+      description:
+        'The schedule in <code>at( )</code> or <code>cron( )</code> format. For more information about this parameter, see <a>ScheduledAction</a>.',
+    }),
+    IamRole: StringSchema.openapi({
+      description:
+        'The IAM role to assume to run the target action. For more information about this parameter, see <a>ScheduledAction</a>. ',
+    }),
+    ScheduledActionDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the scheduled action. ',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The start time in UTC of the scheduled action. Before this time, the scheduled action does not trigger. For more information about this parameter, see <a>ScheduledAction</a>.',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The end time in UTC of the scheduled action. After this time, the scheduled action does not trigger. For more information about this parameter, see <a>ScheduledAction</a>. ',
+    }),
+    Enable: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'If true, the schedule is enabled. If false, the scheduled action does not trigger. For more information about <code>state</code> of the scheduled action, see <a>ScheduledAction</a>. ',
+    }),
   })
   .openapi({
     required: ['ScheduledActionName', 'TargetAction', 'Schedule', 'IamRole'],
@@ -5612,25 +4103,15 @@ const CreateScheduledActionMessageSchema = z
 
 const CreateSnapshotCopyGrantMessageSchema = z
   .object({
-    SnapshotCopyGrantName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the snapshot copy grant. This name must be unique in the region for the Amazon Web Services account.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>Alphabetic characters must be lowercase.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for all clusters within an Amazon Web Services account.</p> </li> </ul>',
-        }),
-    ),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the encrypted symmetric key to which to grant Amazon Redshift permission. If no key is specified, the default key is used.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    SnapshotCopyGrantName: StringSchema.openapi({
+      description:
+        '<p>The name of the snapshot copy grant. This name must be unique in the region for the Amazon Web Services account.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>Alphabetic characters must be lowercase.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for all clusters within an Amazon Web Services account.</p> </li> </ul>',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'The unique identifier of the encrypted symmetric key to which to grant Amazon Redshift permission. If no key is specified, the default key is used.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: ['SnapshotCopyGrantName'],
@@ -5641,58 +4122,36 @@ const CreateSnapshotCopyGrantMessageSchema = z
 
 const CreateSnapshotScheduleMessageSchema = z
   .object({
-    ScheduleDefinitions: ScheduleDefinitionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The definition of the snapshot schedule. The definition is made up of schedule expressions, for example "cron(30 12 *)" or "rate(12 hours)". ',
-        }),
-    ).exactOptional(),
-    ScheduleIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a snapshot schedule. Only alphanumeric characters are allowed for the identifier.',
-        }),
-    ).exactOptional(),
-    ScheduleDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the snapshot schedule.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An optional set of tags you can use to search for the schedule.',
-        }),
-    ).exactOptional(),
-    DryRun: BooleanOptionalSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    NextInvocations: IntegerOptionalSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    ScheduleDefinitions: ScheduleDefinitionListSchema.exactOptional().openapi({
+      description:
+        'The definition of the snapshot schedule. The definition is made up of schedule expressions, for example "cron(30 12 *)" or "rate(12 hours)". ',
+    }),
+    ScheduleIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for a snapshot schedule. Only alphanumeric characters are allowed for the identifier.',
+    }),
+    ScheduleDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the snapshot schedule.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'An optional set of tags you can use to search for the schedule.',
+    }),
+    DryRun: BooleanOptionalSchema.exactOptional().openapi({ description: '<p/>' }),
+    NextInvocations: IntegerOptionalSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ title: 'CreateSnapshotScheduleMessage', required: [] })
   .openapi('CreateSnapshotScheduleMessage')
 
 const CreateTagsMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) to which you want to add the tag or tags. For example, <code>arn:aws:redshift:us-east-2:123456789:cluster:t1</code>. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more name/value pairs to add as tags to the specified resource. Each tag name is passed in with the parameter <code>Key</code> and the corresponding value is passed in with the parameter <code>Value</code>. The <code>Key</code> and <code>Value</code> parameters are separated by a comma (,). Separate multiple tags with a space. For example, <code>--tags "Key"="owner","Value"="admin" "Key"="environment","Value"="test" "Key"="version","Value"="1.0"</code>. ',
-        }),
-    ),
+    ResourceName: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) to which you want to add the tag or tags. For example, <code>arn:aws:redshift:us-east-2:123456789:cluster:t1</code>. ',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'One or more name/value pairs to add as tags to the specified resource. Each tag name is passed in with the parameter <code>Key</code> and the corresponding value is passed in with the parameter <code>Value</code>. The <code>Key</code> and <code>Value</code> parameters are separated by a comma (,). Separate multiple tags with a space. For example, <code>--tags "Key"="owner","Value"="admin" "Key"="environment","Value"="test" "Key"="version","Value"="1.0"</code>. ',
+    }),
   })
   .openapi({
     required: ['ResourceName', 'Tags'],
@@ -5703,49 +4162,29 @@ const CreateTagsMessageSchema = z
 
 const CreateUsageLimitMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the cluster that you want to limit usage.' }),
-    ),
-    FeatureType: UsageLimitFeatureTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Redshift feature that you want to limit.' }),
-    ),
-    LimitType: UsageLimitLimitTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of limit. Depending on the feature type, this can be based on a time duration or data size. If <code>FeatureType</code> is <code>spectrum</code>, then <code>LimitType</code> must be <code>data-scanned</code>. If <code>FeatureType</code> is <code>concurrency-scaling</code>, then <code>LimitType</code> must be <code>time</code>. If <code>FeatureType</code> is <code>cross-region-datasharing</code>, then <code>LimitType</code> must be <code>data-scanned</code>. ',
-        }),
-    ),
-    Amount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The limit amount. If time-based, this amount is in minutes. If data-based, this amount is in terabytes (TB). The value must be a positive number. ',
-        }),
-    ),
-    Period: UsageLimitPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time period that the amount applies to. A <code>weekly</code> period begins on Sunday. The default is <code>monthly</code>. ',
-        }),
-    ).exactOptional(),
-    BreachAction: UsageLimitBreachActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action that Amazon Redshift takes when the limit is reached. The default is log. For more information about this parameter, see <a>UsageLimit</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag instances.' }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description: 'The identifier of the cluster that you want to limit usage.',
+    }),
+    FeatureType: UsageLimitFeatureTypeSchema.openapi({
+      description: 'The Amazon Redshift feature that you want to limit.',
+    }),
+    LimitType: UsageLimitLimitTypeSchema.openapi({
+      description:
+        'The type of limit. Depending on the feature type, this can be based on a time duration or data size. If <code>FeatureType</code> is <code>spectrum</code>, then <code>LimitType</code> must be <code>data-scanned</code>. If <code>FeatureType</code> is <code>concurrency-scaling</code>, then <code>LimitType</code> must be <code>time</code>. If <code>FeatureType</code> is <code>cross-region-datasharing</code>, then <code>LimitType</code> must be <code>data-scanned</code>. ',
+    }),
+    Amount: LongSchema.openapi({
+      description:
+        'The limit amount. If time-based, this amount is in minutes. If data-based, this amount is in terabytes (TB). The value must be a positive number. ',
+    }),
+    Period: UsageLimitPeriodSchema.exactOptional().openapi({
+      description:
+        'The time period that the amount applies to. A <code>weekly</code> period begins on Sunday. The default is <code>monthly</code>. ',
+    }),
+    BreachAction: UsageLimitBreachActionSchema.exactOptional().openapi({
+      description:
+        'The action that Amazon Redshift takes when the limit is reached. The default is log. For more information about this parameter, see <a>UsageLimit</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag instances.' }),
   })
   .openapi({
     required: ['ClusterIdentifier', 'FeatureType', 'LimitType', 'Amount'],
@@ -5762,27 +4201,18 @@ const DataShareStatusForProducerSchema = z
   .openapi('DataShareStatusForProducer')
 
 const DbGroupListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'DbGroup' } })))
+  .array(StringSchema.openapi({ xml: { name: 'DbGroup' } }))
   .openapi('DbGroupList')
 
 const DeauthorizeDataShareMessageSchema = z
   .object({
-    DataShareArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the datashare to remove authorization from.',
-        }),
-    ),
-    ConsumerIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the data consumer that is to have authorization removed from the datashare. This identifier is an Amazon Web Services account ID or a keyword, such as ADX.',
-        }),
-    ),
+    DataShareArn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the datashare to remove authorization from.',
+    }),
+    ConsumerIdentifier: StringSchema.openapi({
+      description:
+        'The identifier of the data consumer that is to have authorization removed from the datashare. This identifier is an Amazon Web Services account ID or a keyword, such as ADX.',
+    }),
   })
   .openapi({
     required: ['DataShareArn', 'ConsumerIdentifier'],
@@ -5792,61 +4222,41 @@ const DeauthorizeDataShareMessageSchema = z
 
 const DeleteAuthenticationProfileMessageSchema = z
   .object({
-    AuthenticationProfileName: AuthenticationProfileNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the authentication profile to delete.' }),
-    ),
+    AuthenticationProfileName: AuthenticationProfileNameStringSchema.openapi({
+      description: 'The name of the authentication profile to delete.',
+    }),
   })
   .openapi({ required: ['AuthenticationProfileName'], title: 'DeleteAuthenticationProfileMessage' })
   .openapi('DeleteAuthenticationProfileMessage')
 
 const DeleteClusterMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the cluster to be deleted.</p> <p>Constraints:</p> <ul> <li> <p>Must contain lowercase characters.</p> </li> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
-        }),
-    ),
-    SkipFinalClusterSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines whether a final snapshot of the cluster is created before Amazon Redshift deletes the cluster. If <code>true</code>, a final cluster snapshot is not created. If <code>false</code>, a final cluster snapshot is created before the cluster is deleted. </p> <note> <p>The <i>FinalClusterSnapshotIdentifier</i> parameter must be specified if <i>SkipFinalClusterSnapshot</i> is <code>false</code>.</p> </note> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    FinalClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, <i>SkipFinalClusterSnapshot</i> must be <code>false</code>. </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FinalClusterSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p> <p>The default value is -1.</p>',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the cluster to be deleted.</p> <p>Constraints:</p> <ul> <li> <p>Must contain lowercase characters.</p> </li> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
+    }),
+    SkipFinalClusterSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Determines whether a final snapshot of the cluster is created before Amazon Redshift deletes the cluster. If <code>true</code>, a final cluster snapshot is not created. If <code>false</code>, a final cluster snapshot is created before the cluster is deleted. </p> <note> <p>The <i>FinalClusterSnapshotIdentifier</i> parameter must be specified if <i>SkipFinalClusterSnapshot</i> is <code>false</code>.</p> </note> <p>Default: <code>false</code> </p>',
+    }),
+    FinalClusterSnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, <i>SkipFinalClusterSnapshot</i> must be <code>false</code>. </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
+    }),
+    FinalClusterSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p> <p>The default value is -1.</p>',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'DeleteClusterMessage', description: '<p/>' })
   .openapi('DeleteClusterMessage')
 
 const DeleteClusterParameterGroupMessageSchema = z
   .object({
-    ParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the parameter group to be deleted.</p> <p>Constraints:</p> <ul> <li> <p>Must be the name of an existing cluster parameter group.</p> </li> <li> <p>Cannot delete a default cluster parameter group.</p> </li> </ul>',
-        }),
-    ),
+    ParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the parameter group to be deleted.</p> <p>Constraints:</p> <ul> <li> <p>Must be the name of an existing cluster parameter group.</p> </li> <li> <p>Cannot delete a default cluster parameter group.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ParameterGroupName'],
@@ -5857,9 +4267,9 @@ const DeleteClusterParameterGroupMessageSchema = z
 
 const DeleteClusterSecurityGroupMessageSchema = z
   .object({
-    ClusterSecurityGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster security group to be deleted.' }),
-    ),
+    ClusterSecurityGroupName: StringSchema.openapi({
+      description: 'The name of the cluster security group to be deleted.',
+    }),
   })
   .openapi({
     required: ['ClusterSecurityGroupName'],
@@ -5870,9 +4280,9 @@ const DeleteClusterSecurityGroupMessageSchema = z
 
 const DeleteClusterSubnetGroupMessageSchema = z
   .object({
-    ClusterSubnetGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster subnet group name to be deleted.' }),
-    ),
+    ClusterSubnetGroupName: StringSchema.openapi({
+      description: 'The name of the cluster subnet group name to be deleted.',
+    }),
   })
   .openapi({
     required: ['ClusterSubnetGroupName'],
@@ -5883,23 +4293,18 @@ const DeleteClusterSubnetGroupMessageSchema = z
 
 const DeleteEndpointAccessMessageSchema = z
   .object({
-    EndpointName: StringSchema.and(
-      z.any().openapi({ description: 'The Redshift-managed VPC endpoint to delete.' }),
-    ),
+    EndpointName: StringSchema.openapi({
+      description: 'The Redshift-managed VPC endpoint to delete.',
+    }),
   })
   .openapi({ required: ['EndpointName'], title: 'DeleteEndpointAccessMessage' })
   .openapi('DeleteEndpointAccessMessage')
 
 const DeleteEventSubscriptionMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Redshift event notification subscription to be deleted.',
-        }),
-    ),
+    SubscriptionName: StringSchema.openapi({
+      description: 'The name of the Amazon Redshift event notification subscription to be deleted.',
+    }),
   })
   .openapi({
     required: ['SubscriptionName'],
@@ -5910,11 +4315,9 @@ const DeleteEventSubscriptionMessageSchema = z
 
 const DeleteHsmClientCertificateMessageSchema = z
   .object({
-    HsmClientCertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the HSM client certificate to be deleted.' }),
-    ),
+    HsmClientCertificateIdentifier: StringSchema.openapi({
+      description: 'The identifier of the HSM client certificate to be deleted.',
+    }),
   })
   .openapi({
     required: ['HsmClientCertificateIdentifier'],
@@ -5925,13 +4328,9 @@ const DeleteHsmClientCertificateMessageSchema = z
 
 const DeleteHsmConfigurationMessageSchema = z
   .object({
-    HsmConfigurationIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the Amazon Redshift HSM configuration to be deleted.',
-        }),
-    ),
+    HsmConfigurationIdentifier: StringSchema.openapi({
+      description: 'The identifier of the Amazon Redshift HSM configuration to be deleted.',
+    }),
   })
   .openapi({
     required: ['HsmConfigurationIdentifier'],
@@ -5942,18 +4341,18 @@ const DeleteHsmConfigurationMessageSchema = z
 
 const DeleteScheduledActionMessageSchema = z
   .object({
-    ScheduledActionName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the scheduled action to delete. ' }),
-    ),
+    ScheduledActionName: StringSchema.openapi({
+      description: 'The name of the scheduled action to delete. ',
+    }),
   })
   .openapi({ required: ['ScheduledActionName'], title: 'DeleteScheduledActionMessage' })
   .openapi('DeleteScheduledActionMessage')
 
 const DeleteSnapshotCopyGrantMessageSchema = z
   .object({
-    SnapshotCopyGrantName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the snapshot copy grant to delete.' }),
-    ),
+    SnapshotCopyGrantName: StringSchema.openapi({
+      description: 'The name of the snapshot copy grant to delete.',
+    }),
   })
   .openapi({
     required: ['SnapshotCopyGrantName'],
@@ -5964,30 +4363,24 @@ const DeleteSnapshotCopyGrantMessageSchema = z
 
 const DeleteSnapshotScheduleMessageSchema = z
   .object({
-    ScheduleIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier of the snapshot schedule to delete.' }),
-    ),
+    ScheduleIdentifier: StringSchema.openapi({
+      description: 'A unique identifier of the snapshot schedule to delete.',
+    }),
   })
   .openapi({ required: ['ScheduleIdentifier'], title: 'DeleteSnapshotScheduleMessage' })
   .openapi('DeleteSnapshotScheduleMessage')
 
 const TagKeyListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'TagKey' } })))
+  .array(StringSchema.openapi({ xml: { name: 'TagKey' } }))
   .openapi('TagKeyList')
 
 const DeleteTagsMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) from which you want to remove the tag or tags. For example, <code>arn:aws:redshift:us-east-2:123456789:cluster:t1</code>. ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The tag key that you want to delete.' }),
-    ),
+    ResourceName: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) from which you want to remove the tag or tags. For example, <code>arn:aws:redshift:us-east-2:123456789:cluster:t1</code>. ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({ description: 'The tag key that you want to delete.' }),
   })
   .openapi({
     required: ['ResourceName', 'TagKeys'],
@@ -5998,149 +4391,97 @@ const DeleteTagsMessageSchema = z
 
 const DeleteUsageLimitMessageSchema = z
   .object({
-    UsageLimitId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the usage limit to delete.' }),
-    ),
+    UsageLimitId: StringSchema.openapi({
+      description: 'The identifier of the usage limit to delete.',
+    }),
   })
   .openapi({ required: ['UsageLimitId'], title: 'DeleteUsageLimitMessage' })
   .openapi('DeleteUsageLimitMessage')
 
 const DescribeAccountAttributesMessageSchema = z
   .object({
-    AttributeNames: AttributeNameListSchema.and(
-      z.any().openapi({ description: 'A list of attribute names.' }),
-    ).exactOptional(),
+    AttributeNames: AttributeNameListSchema.exactOptional().openapi({
+      description: 'A list of attribute names.',
+    }),
   })
   .openapi({ title: 'DescribeAccountAttributesMessage', required: [] })
   .openapi('DescribeAccountAttributesMessage')
 
 const DescribeAuthenticationProfilesMessageSchema = z
   .object({
-    AuthenticationProfileName: AuthenticationProfileNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the authentication profile to describe. If not specified then all authentication profiles owned by the account are listed.',
-        }),
-    ).exactOptional(),
+    AuthenticationProfileName: AuthenticationProfileNameStringSchema.exactOptional().openapi({
+      description:
+        'The name of the authentication profile to describe. If not specified then all authentication profiles owned by the account are listed.',
+    }),
   })
   .openapi({ title: 'DescribeAuthenticationProfilesMessage', required: [] })
   .openapi('DescribeAuthenticationProfilesMessage')
 
 const DescribeClusterDbRevisionsMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a cluster whose <code>ClusterDbRevisions</code> you are requesting. This parameter is case sensitive. All clusters defined for an account are returned by default.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified MaxRecords value, a value is returned in the <code>marker</code> field of the response. You can retrieve the next set of response records by providing the returned <code>marker</code> value in the <code>marker</code> parameter and retrying the request. </p> <p>Default: 100</p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that specifies the starting point for returning a set of response records. When the results of a <code>DescribeClusterDbRevisions</code> request exceed the value specified in <code>MaxRecords</code>, Amazon Redshift returns a value in the <code>marker</code> field of the response. You can retrieve the next set of response records by providing the returned <code>marker</code> value in the <code>marker</code> parameter and retrying the request. </p> <p>Constraints: You can specify either the <code>ClusterIdentifier</code> parameter, or the <code>marker</code> parameter, but not both.</p>',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for a cluster whose <code>ClusterDbRevisions</code> you are requesting. This parameter is case sensitive. All clusters defined for an account are returned by default.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified MaxRecords value, a value is returned in the <code>marker</code> field of the response. You can retrieve the next set of response records by providing the returned <code>marker</code> value in the <code>marker</code> parameter and retrying the request. </p> <p>Default: 100</p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that specifies the starting point for returning a set of response records. When the results of a <code>DescribeClusterDbRevisions</code> request exceed the value specified in <code>MaxRecords</code>, Amazon Redshift returns a value in the <code>marker</code> field of the response. You can retrieve the next set of response records by providing the returned <code>marker</code> value in the <code>marker</code> parameter and retrying the request. </p> <p>Constraints: You can specify either the <code>ClusterIdentifier</code> parameter, or the <code>marker</code> parameter, but not both.</p>',
+    }),
   })
   .openapi({ title: 'DescribeClusterDbRevisionsMessage', required: [] })
   .openapi('DescribeClusterDbRevisionsMessage')
 
 const TagValueListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'TagValue' } })))
+  .array(StringSchema.openapi({ xml: { name: 'TagValue' } }))
   .openapi('TagValueList')
 
 const DescribeClusterParameterGroupsMessageSchema = z
   .object({
-    ParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a specific parameter group for which to return details. By default, details about all parameter groups and the default parameter group are returned.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterParameterGroups</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching cluster parameter groups that are associated with the specified key or keys. For example, suppose that you have parameter groups that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the parameter groups that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching cluster parameter groups that are associated with the specified tag value or values. For example, suppose that you have parameter groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the parameter groups that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    ParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of a specific parameter group for which to return details. By default, details about all parameter groups and the default parameter group are returned.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterParameterGroups</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching cluster parameter groups that are associated with the specified key or keys. For example, suppose that you have parameter groups that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the parameter groups that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching cluster parameter groups that are associated with the specified tag value or values. For example, suppose that you have parameter groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the parameter groups that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeClusterParameterGroupsMessage', description: '<p/>', required: [] })
   .openapi('DescribeClusterParameterGroupsMessage')
 
 const DescribeClusterParametersMessageSchema = z
   .object({
-    ParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a cluster parameter group for which to return details.',
-        }),
-    ),
-    Source: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The parameter types to return. Specify <code>user</code> to show parameters that are different form the default. Similarly, specify <code>engine-default</code> to show parameters that are the same as the default parameter group. </p> <p>Default: All parameter types returned.</p> <p>Valid Values: <code>user</code> | <code>engine-default</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterParameters</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    ParameterGroupName: StringSchema.openapi({
+      description: 'The name of a cluster parameter group for which to return details.',
+    }),
+    Source: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The parameter types to return. Specify <code>user</code> to show parameters that are different form the default. Similarly, specify <code>engine-default</code> to show parameters that are the same as the default parameter group. </p> <p>Default: All parameter types returned.</p> <p>Valid Values: <code>user</code> | <code>engine-default</code> </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterParameters</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({
     required: ['ParameterGroupName'],
@@ -6151,434 +4492,252 @@ const DescribeClusterParametersMessageSchema = z
 
 const DescribeClusterSecurityGroupsMessageSchema = z
   .object({
-    ClusterSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a cluster security group for which you are requesting details. You must specify either the <b>Marker</b> parameter or a <b>ClusterSecurityGroupName</b> parameter, but not both. </p> <p> Example: <code>securitygroup1</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterSecurityGroups</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p> <p>Constraints: You must specify either the <b>ClusterSecurityGroupName</b> parameter or the <b>Marker</b> parameter, but not both. </p>',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching cluster security groups that are associated with the specified key or keys. For example, suppose that you have security groups that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the security groups that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching cluster security groups that are associated with the specified tag value or values. For example, suppose that you have security groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the security groups that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    ClusterSecurityGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a cluster security group for which you are requesting details. You must specify either the <b>Marker</b> parameter or a <b>ClusterSecurityGroupName</b> parameter, but not both. </p> <p> Example: <code>securitygroup1</code> </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterSecurityGroups</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p> <p>Constraints: You must specify either the <b>ClusterSecurityGroupName</b> parameter or the <b>Marker</b> parameter, but not both. </p>',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching cluster security groups that are associated with the specified key or keys. For example, suppose that you have security groups that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the security groups that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching cluster security groups that are associated with the specified tag value or values. For example, suppose that you have security groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the security groups that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeClusterSecurityGroupsMessage', description: '<p/>', required: [] })
   .openapi('DescribeClusterSecurityGroupsMessage')
 
 const SnapshotSortingEntityListSchema = z
-  .array(
-    SnapshotSortingEntitySchema.and(z.any().openapi({ xml: { name: 'SnapshotSortingEntity' } })),
-  )
+  .array(SnapshotSortingEntitySchema.openapi({ xml: { name: 'SnapshotSortingEntity' } }))
   .openapi('SnapshotSortingEntityList')
 
 const DescribeClusterSnapshotsMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the cluster which generated the requested snapshots.',
-        }),
-    ).exactOptional(),
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The snapshot identifier of the snapshot about which to return information.',
-        }),
-    ).exactOptional(),
-    SnapshotArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the snapshot associated with the message to describe cluster snapshots.',
-        }),
-    ).exactOptional(),
-    SnapshotType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of snapshots for which you are requesting information. By default, snapshots of all types are returned.</p> <p>Valid Values: <code>automated</code> | <code>manual</code> </p>',
-        }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that requests only snapshots created at or after the specified time. The time value is specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: <code>2012-07-16T18:00:00Z</code> </p>',
-        }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A time value that requests only snapshots created at or before the specified time. The time value is specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: <code>2012-07-16T18:00:00Z</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 500.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterSnapshots</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    OwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account used to create or copy the snapshot. Use this field to filter the results to snapshots owned by a particular account. To describe snapshots you own, either specify your Amazon Web Services account, or do not specify the parameter.',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching cluster snapshots that are associated with the specified key or keys. For example, suppose that you have snapshots that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the snapshots that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching cluster snapshots that are associated with the specified tag value or values. For example, suppose that you have snapshots that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the snapshots that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
-    ClusterExists: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A value that indicates whether to return snapshots only for an existing cluster. You can perform table-level restore only by using a snapshot of an existing cluster, that is, a cluster that has not been deleted. Values for this parameter work as follows: </p> <ul> <li> <p>If <code>ClusterExists</code> is set to <code>true</code>, <code>ClusterIdentifier</code> is required.</p> </li> <li> <p>If <code>ClusterExists</code> is set to <code>false</code> and <code>ClusterIdentifier</code> isn't specified, all snapshots associated with deleted clusters (orphaned snapshots) are returned. </p> </li> <li> <p>If <code>ClusterExists</code> is set to <code>false</code> and <code>ClusterIdentifier</code> is specified for a deleted cluster, snapshots associated with that cluster are returned.</p> </li> <li> <p>If <code>ClusterExists</code> is set to <code>false</code> and <code>ClusterIdentifier</code> is specified for an existing cluster, no snapshots are returned. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    SortingEntities: SnapshotSortingEntityListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the cluster which generated the requested snapshots.',
+    }),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The snapshot identifier of the snapshot about which to return information.',
+    }),
+    SnapshotArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the snapshot associated with the message to describe cluster snapshots.',
+    }),
+    SnapshotType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of snapshots for which you are requesting information. By default, snapshots of all types are returned.</p> <p>Valid Values: <code>automated</code> | <code>manual</code> </p>',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p>A value that requests only snapshots created at or after the specified time. The time value is specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: <code>2012-07-16T18:00:00Z</code> </p>',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p>A time value that requests only snapshots created at or before the specified time. The time value is specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: <code>2012-07-16T18:00:00Z</code> </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 500.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterSnapshots</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    OwnerAccount: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account used to create or copy the snapshot. Use this field to filter the results to snapshots owned by a particular account. To describe snapshots you own, either specify your Amazon Web Services account, or do not specify the parameter.',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching cluster snapshots that are associated with the specified key or keys. For example, suppose that you have snapshots that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the snapshots that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching cluster snapshots that are associated with the specified tag value or values. For example, suppose that you have snapshots that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the snapshots that have either or both of these tag values associated with them.',
+    }),
+    ClusterExists: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>A value that indicates whether to return snapshots only for an existing cluster. You can perform table-level restore only by using a snapshot of an existing cluster, that is, a cluster that has not been deleted. Values for this parameter work as follows: </p> <ul> <li> <p>If <code>ClusterExists</code> is set to <code>true</code>, <code>ClusterIdentifier</code> is required.</p> </li> <li> <p>If <code>ClusterExists</code> is set to <code>false</code> and <code>ClusterIdentifier</code> isn't specified, all snapshots associated with deleted clusters (orphaned snapshots) are returned. </p> </li> <li> <p>If <code>ClusterExists</code> is set to <code>false</code> and <code>ClusterIdentifier</code> is specified for a deleted cluster, snapshots associated with that cluster are returned.</p> </li> <li> <p>If <code>ClusterExists</code> is set to <code>false</code> and <code>ClusterIdentifier</code> is specified for an existing cluster, no snapshots are returned. </p> </li> </ul>",
+    }),
+    SortingEntities: SnapshotSortingEntityListSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
   })
   .openapi({ title: 'DescribeClusterSnapshotsMessage', description: '<p/>', required: [] })
   .openapi('DescribeClusterSnapshotsMessage')
 
 const DescribeClusterSubnetGroupsMessageSchema = z
   .object({
-    ClusterSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the cluster subnet group for which information is requested.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterSubnetGroups</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching cluster subnet groups that are associated with the specified key or keys. For example, suppose that you have subnet groups that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the subnet groups that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching cluster subnet groups that are associated with the specified tag value or values. For example, suppose that you have subnet groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the subnet groups that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    ClusterSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cluster subnet group for which information is requested.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterSubnetGroups</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching cluster subnet groups that are associated with the specified key or keys. For example, suppose that you have subnet groups that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the subnet groups that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching cluster subnet groups that are associated with the specified tag value or values. For example, suppose that you have subnet groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the subnet groups that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeClusterSubnetGroupsMessage', description: '<p/>', required: [] })
   .openapi('DescribeClusterSubnetGroupsMessage')
 
 const DescribeClusterTracksMessageSchema = z
   .object({
-    MaintenanceTrackName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the maintenance track. ' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An integer value for the maximum number of maintenance tracks to return.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <code>DescribeClusterTracks</code> request exceed the value specified in <code>MaxRecords</code>, Amazon Redshift returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description: 'The name of the maintenance track. ',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'An integer value for the maximum number of maintenance tracks to return.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <code>DescribeClusterTracks</code> request exceed the value specified in <code>MaxRecords</code>, Amazon Redshift returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeClusterTracksMessage', required: [] })
   .openapi('DescribeClusterTracksMessage')
 
 const DescribeClusterVersionsMessageSchema = z
   .object({
-    ClusterVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The specific cluster version to return.</p> <p>Example: <code>1.0</code> </p>',
-        }),
-    ).exactOptional(),
-    ClusterParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a specific cluster parameter group family to return details for.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterVersions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The specific cluster version to return.</p> <p>Example: <code>1.0</code> </p>',
+    }),
+    ClusterParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a specific cluster parameter group family to return details for.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusterVersions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeClusterVersionsMessage', description: '<p/>', required: [] })
   .openapi('DescribeClusterVersionsMessage')
 
 const DescribeClustersMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of a cluster whose properties you are requesting. This parameter is case sensitive.</p> <p>The default is that all clusters defined for an account are returned.</p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusters</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p> <p>Constraints: You can specify either the <b>ClusterIdentifier</b> parameter or the <b>Marker</b> parameter, but not both. </p>',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching clusters that are associated with the specified key or keys. For example, suppose that you have clusters that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the clusters that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching clusters that are associated with the specified tag value or values. For example, suppose that you have clusters that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the clusters that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier of a cluster whose properties you are requesting. This parameter is case sensitive.</p> <p>The default is that all clusters defined for an account are returned.</p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeClusters</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p> <p>Constraints: You can specify either the <b>ClusterIdentifier</b> parameter or the <b>Marker</b> parameter, but not both. </p>',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching clusters that are associated with the specified key or keys. For example, suppose that you have clusters that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the clusters that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching clusters that are associated with the specified tag value or values. For example, suppose that you have clusters that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the clusters that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeClustersMessage', description: '<p/>', required: [] })
   .openapi('DescribeClustersMessage')
 
 const DescribeDataSharesForConsumerMessageSchema = z
   .object({
-    ConsumerArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the consumer that returns in the list of datashares.',
-        }),
-    ).exactOptional(),
-    Status: DataShareStatusForConsumerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier giving the status of a datashare in the consumer cluster. If this field is specified, Amazon Redshift returns the list of datashares that have the specified status.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataSharesForConsumer</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    ConsumerArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the consumer that returns in the list of datashares.',
+    }),
+    Status: DataShareStatusForConsumerSchema.exactOptional().openapi({
+      description:
+        'An identifier giving the status of a datashare in the consumer cluster. If this field is specified, Amazon Redshift returns the list of datashares that have the specified status.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataSharesForConsumer</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeDataSharesForConsumerMessage', required: [] })
   .openapi('DescribeDataSharesForConsumerMessage')
 
 const DescribeDataSharesForProducerMessageSchema = z
   .object({
-    ProducerArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the producer that returns in the list of datashares.',
-        }),
-    ).exactOptional(),
-    Status: DataShareStatusForProducerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier giving the status of a datashare in the producer. If this field is specified, Amazon Redshift returns the list of datashares that have the specified status.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataSharesForProducer</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    ProducerArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the producer that returns in the list of datashares.',
+    }),
+    Status: DataShareStatusForProducerSchema.exactOptional().openapi({
+      description:
+        'An identifier giving the status of a datashare in the producer. If this field is specified, Amazon Redshift returns the list of datashares that have the specified status.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataSharesForProducer</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeDataSharesForProducerMessage', required: [] })
   .openapi('DescribeDataSharesForProducerMessage')
 
 const DescribeDataSharesMessageSchema = z
   .object({
-    DataShareArn: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the datashare to describe details of.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataShares</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    DataShareArn: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the datashare to describe details of.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDataShares</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeDataSharesMessage', required: [] })
   .openapi('DescribeDataSharesMessage')
 
 const DescribeDefaultClusterParametersMessageSchema = z
   .object({
-    ParameterGroupFamily: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster parameter group family.' }),
-    ),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDefaultClusterParameters</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    ParameterGroupFamily: StringSchema.openapi({
+      description: 'The name of the cluster parameter group family.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeDefaultClusterParameters</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({
     required: ['ParameterGroupFamily'],
@@ -6589,313 +4748,183 @@ const DescribeDefaultClusterParametersMessageSchema = z
 
 const DescribeEndpointAccessMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The cluster identifier associated with the described endpoint.' }),
-    ).exactOptional(),
-    ResourceOwner: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account ID of the owner of the cluster.',
-        }),
-    ).exactOptional(),
-    EndpointName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the endpoint to be described.' }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The virtual private cloud (VPC) identifier with access to the cluster.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a <code>Marker</code> is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeEndpointAccess</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The cluster identifier associated with the described endpoint.',
+    }),
+    ResourceOwner: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the owner of the cluster.',
+    }),
+    EndpointName: StringSchema.exactOptional().openapi({
+      description: 'The name of the endpoint to be described.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description: 'The virtual private cloud (VPC) identifier with access to the cluster.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a <code>Marker</code> is included in the response so that the remaining results can be retrieved.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeEndpointAccess</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
+    }),
   })
   .openapi({ title: 'DescribeEndpointAccessMessage', required: [] })
   .openapi('DescribeEndpointAccessMessage')
 
 const DescribeEndpointAuthorizationMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The cluster identifier of the cluster to access.' }),
-    ).exactOptional(),
-    Account: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID of either the cluster owner (grantor) or grantee. If <code>Grantee</code> parameter is true, then the <code>Account</code> value is of the grantor.',
-        }),
-    ).exactOptional(),
-    Grantee: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates whether to check authorization from a grantor or grantee point of view. If true, Amazon Redshift returns endpoint authorizations that you've been granted. If false (default), checks authorization from a grantor point of view.",
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a <code>Marker</code> is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeEndpointAuthorization</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The cluster identifier of the cluster to access.',
+    }),
+    Account: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID of either the cluster owner (grantor) or grantee. If <code>Grantee</code> parameter is true, then the <code>Account</code> value is of the grantor.',
+    }),
+    Grantee: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "Indicates whether to check authorization from a grantor or grantee point of view. If true, Amazon Redshift returns endpoint authorizations that you've been granted. If false (default), checks authorization from a grantor point of view.",
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a <code>Marker</code> is included in the response so that the remaining results can be retrieved.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeEndpointAuthorization</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
+    }),
   })
   .openapi({ title: 'DescribeEndpointAuthorizationMessage', required: [] })
   .openapi('DescribeEndpointAuthorizationMessage')
 
 const DescribeEventCategoriesMessageSchema = z
   .object({
-    SourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The source type, such as cluster or parameter group, to which the described event categories apply.</p> <p>Valid values: cluster, cluster-snapshot, cluster-parameter-group, cluster-security-group, and scheduled-action.</p>',
-        }),
-    ).exactOptional(),
+    SourceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The source type, such as cluster or parameter group, to which the described event categories apply.</p> <p>Valid values: cluster, cluster-snapshot, cluster-parameter-group, cluster-security-group, and scheduled-action.</p>',
+    }),
   })
   .openapi({ title: 'DescribeEventCategoriesMessage', description: '<p/>', required: [] })
   .openapi('DescribeEventCategoriesMessage')
 
 const DescribeEventSubscriptionsMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Redshift event notification subscription to be described.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a DescribeEventSubscriptions request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching event notification subscriptions that are associated with the specified key or keys. For example, suppose that you have subscriptions that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the subscriptions that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching event notification subscriptions that are associated with the specified tag value or values. For example, suppose that you have subscriptions that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the subscriptions that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    SubscriptionName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon Redshift event notification subscription to be described.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a DescribeEventSubscriptions request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching event notification subscriptions that are associated with the specified key or keys. For example, suppose that you have subscriptions that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the subscriptions that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching event notification subscriptions that are associated with the specified tag value or values. For example, suppose that you have subscriptions that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the subscriptions that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeEventSubscriptionsMessage', description: '<p/>', required: [] })
   .openapi('DescribeEventSubscriptionsMessage')
 
 const DescribeEventsMessageSchema = z
   .object({
-    SourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the event source for which events will be returned. If this parameter is not specified, then all sources are included in the response.</p> <p>Constraints:</p> <p>If <i>SourceIdentifier</i> is supplied, <i>SourceType</i> must also be provided.</p> <ul> <li> <p>Specify a cluster identifier when <i>SourceType</i> is <code>cluster</code>.</p> </li> <li> <p>Specify a cluster security group name when <i>SourceType</i> is <code>cluster-security-group</code>.</p> </li> <li> <p>Specify a cluster parameter group name when <i>SourceType</i> is <code>cluster-parameter-group</code>.</p> </li> <li> <p>Specify a cluster snapshot identifier when <i>SourceType</i> is <code>cluster-snapshot</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The event source to retrieve events for. If no value is specified, all events are returned.</p> <p>Constraints:</p> <p>If <i>SourceType</i> is supplied, <i>SourceIdentifier</i> must also be provided.</p> <ul> <li> <p>Specify <code>cluster</code> when <i>SourceIdentifier</i> is a cluster identifier.</p> </li> <li> <p>Specify <code>cluster-security-group</code> when <i>SourceIdentifier</i> is a cluster security group name.</p> </li> <li> <p>Specify <code>cluster-parameter-group</code> when <i>SourceIdentifier</i> is a cluster parameter group name.</p> </li> <li> <p>Specify <code>cluster-snapshot</code> when <i>SourceIdentifier</i> is a cluster snapshot identifier.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The beginning of the time interval to retrieve events for, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: <code>2009-07-08T18:00Z</code> </p>',
-        }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end of the time interval for which to retrieve events, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: <code>2009-07-08T18:00Z</code> </p>',
-        }),
-    ).exactOptional(),
-    Duration: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of minutes prior to the time of the request for which to retrieve events. For example, if the request is sent at 18:00 and you specify a duration of 60, then only events which have occurred after 17:00 will be returned.</p> <p>Default: <code>60</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeEvents</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    SourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the event source for which events will be returned. If this parameter is not specified, then all sources are included in the response.</p> <p>Constraints:</p> <p>If <i>SourceIdentifier</i> is supplied, <i>SourceType</i> must also be provided.</p> <ul> <li> <p>Specify a cluster identifier when <i>SourceType</i> is <code>cluster</code>.</p> </li> <li> <p>Specify a cluster security group name when <i>SourceType</i> is <code>cluster-security-group</code>.</p> </li> <li> <p>Specify a cluster parameter group name when <i>SourceType</i> is <code>cluster-parameter-group</code>.</p> </li> <li> <p>Specify a cluster snapshot identifier when <i>SourceType</i> is <code>cluster-snapshot</code>.</p> </li> </ul>',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The event source to retrieve events for. If no value is specified, all events are returned.</p> <p>Constraints:</p> <p>If <i>SourceType</i> is supplied, <i>SourceIdentifier</i> must also be provided.</p> <ul> <li> <p>Specify <code>cluster</code> when <i>SourceIdentifier</i> is a cluster identifier.</p> </li> <li> <p>Specify <code>cluster-security-group</code> when <i>SourceIdentifier</i> is a cluster security group name.</p> </li> <li> <p>Specify <code>cluster-parameter-group</code> when <i>SourceIdentifier</i> is a cluster parameter group name.</p> </li> <li> <p>Specify <code>cluster-snapshot</code> when <i>SourceIdentifier</i> is a cluster snapshot identifier.</p> </li> </ul>',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p>The beginning of the time interval to retrieve events for, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: <code>2009-07-08T18:00Z</code> </p>',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p>The end of the time interval for which to retrieve events, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: <code>2009-07-08T18:00Z</code> </p>',
+    }),
+    Duration: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of minutes prior to the time of the request for which to retrieve events. For example, if the request is sent at 18:00 and you specify a duration of 60, then only events which have occurred after 17:00 will be returned.</p> <p>Default: <code>60</code> </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeEvents</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeEventsMessage', description: '<p/>', required: [] })
   .openapi('DescribeEventsMessage')
 
 const DescribeHsmClientCertificatesMessageSchema = z
   .object({
-    HsmClientCertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of a specific HSM client certificate for which you want information. If no identifier is specified, information is returned for all HSM client certificates owned by your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeHsmClientCertificates</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching HSM client certificates that are associated with the specified key or keys. For example, suppose that you have HSM client certificates that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the HSM client certificates that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching HSM client certificates that are associated with the specified tag value or values. For example, suppose that you have HSM client certificates that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the HSM client certificates that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    HsmClientCertificateIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of a specific HSM client certificate for which you want information. If no identifier is specified, information is returned for all HSM client certificates owned by your Amazon Web Services account.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeHsmClientCertificates</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching HSM client certificates that are associated with the specified key or keys. For example, suppose that you have HSM client certificates that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the HSM client certificates that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching HSM client certificates that are associated with the specified tag value or values. For example, suppose that you have HSM client certificates that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the HSM client certificates that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeHsmClientCertificatesMessage', description: '<p/>', required: [] })
   .openapi('DescribeHsmClientCertificatesMessage')
 
 const DescribeHsmConfigurationsMessageSchema = z
   .object({
-    HsmConfigurationIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of a specific Amazon Redshift HSM configuration to be described. If no identifier is specified, information is returned for all HSM configurations owned by your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeHsmConfigurations</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching HSM configurations that are associated with the specified key or keys. For example, suppose that you have HSM configurations that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the HSM configurations that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching HSM configurations that are associated with the specified tag value or values. For example, suppose that you have HSM configurations that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the HSM configurations that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    HsmConfigurationIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of a specific Amazon Redshift HSM configuration to be described. If no identifier is specified, information is returned for all HSM configurations owned by your Amazon Web Services account.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeHsmConfigurations</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching HSM configurations that are associated with the specified key or keys. For example, suppose that you have HSM configurations that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the HSM configurations that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching HSM configurations that are associated with the specified tag value or values. For example, suppose that you have HSM configurations that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the HSM configurations that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeHsmConfigurationsMessage', description: '<p/>', required: [] })
   .openapi('DescribeHsmConfigurationsMessage')
 
 const DescribeLoggingStatusMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the cluster from which to get the logging status.</p> <p>Example: <code>examplecluster</code> </p>',
-        }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the cluster from which to get the logging status.</p> <p>Example: <code>examplecluster</code> </p>',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier'],
@@ -6906,116 +4935,66 @@ const DescribeLoggingStatusMessageSchema = z
 
 const NodeConfigurationOptionsFilterListSchema = z
   .array(
-    NodeConfigurationOptionsFilterSchema.and(
-      z.any().openapi({ xml: { name: 'NodeConfigurationOptionsFilter' } }),
-    ),
+    NodeConfigurationOptionsFilterSchema.openapi({
+      xml: { name: 'NodeConfigurationOptionsFilter' },
+    }),
   )
   .openapi('NodeConfigurationOptionsFilterList')
 
 const DescribeNodeConfigurationOptionsMessageSchema = z
   .object({
-    ActionType: ActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action type to evaluate for possible node configurations. Specify "restore-cluster" to get configuration combinations based on an existing snapshot. Specify "recommend-node-config" to get configuration recommendations based on an existing cluster or snapshot. Specify "resize-cluster" to get configuration combinations for elastic resize based on an existing cluster. ',
-        }),
-    ),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the cluster to evaluate for possible node configurations.',
-        }),
-    ).exactOptional(),
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the snapshot to evaluate for possible node configurations.',
-        }),
-    ).exactOptional(),
-    SnapshotArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the snapshot associated with the message to describe node configuration.',
-        }),
-    ).exactOptional(),
-    OwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot.',
-        }),
-    ).exactOptional(),
-    Filters: NodeConfigurationOptionsFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Filter' },
-          description: 'A set of name, operator, and value items to filter the results.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeNodeConfigurationOptions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>500</code> </p> <p>Constraints: minimum 100, maximum 500.</p>',
-        }),
-    ).exactOptional(),
+    ActionType: ActionTypeSchema.openapi({
+      description:
+        'The action type to evaluate for possible node configurations. Specify "restore-cluster" to get configuration combinations based on an existing snapshot. Specify "recommend-node-config" to get configuration recommendations based on an existing cluster or snapshot. Specify "resize-cluster" to get configuration combinations for elastic resize based on an existing cluster. ',
+    }),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the cluster to evaluate for possible node configurations.',
+    }),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the snapshot to evaluate for possible node configurations.',
+    }),
+    SnapshotArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the snapshot associated with the message to describe node configuration.',
+    }),
+    OwnerAccount: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot.',
+    }),
+    Filters: NodeConfigurationOptionsFilterListSchema.exactOptional().openapi({
+      xml: { name: 'Filter' },
+      description: 'A set of name, operator, and value items to filter the results.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeNodeConfigurationOptions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>500</code> </p> <p>Constraints: minimum 100, maximum 500.</p>',
+    }),
   })
   .openapi({ required: ['ActionType'], title: 'DescribeNodeConfigurationOptionsMessage' })
   .openapi('DescribeNodeConfigurationOptionsMessage')
 
 const DescribeOrderableClusterOptionsMessageSchema = z
   .object({
-    ClusterVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version filter value. Specify this parameter to show only the available offerings matching the specified version.</p> <p>Default: All versions.</p> <p>Constraints: Must be one of the version returned from <a>DescribeClusterVersions</a>.</p>',
-        }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The node type filter value. Specify this parameter to show only the available offerings matching the specified node type.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeOrderableClusterOptions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The version filter value. Specify this parameter to show only the available offerings matching the specified version.</p> <p>Default: All versions.</p> <p>Constraints: Must be one of the version returned from <a>DescribeClusterVersions</a>.</p>',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description:
+        'The node type filter value. Specify this parameter to show only the available offerings matching the specified node type.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeOrderableClusterOptions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeOrderableClusterOptionsMessage', description: '<p/>', required: [] })
   .openapi('DescribeOrderableClusterOptionsMessage')
@@ -7034,130 +5013,86 @@ const PartnerIntegrationClusterIdentifierSchema = z
 
 const DescribePartnersInputMessageSchema = z
   .object({
-    AccountId: PartnerIntegrationAccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID that owns the cluster.' }),
-    ),
-    ClusterIdentifier: PartnerIntegrationClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster identifier of the cluster whose partner integration is being described.',
-        }),
-    ),
-    DatabaseName: PartnerIntegrationDatabaseNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the database whose partner integration is being described. If database name is not specified, then all databases in the cluster are described.',
-        }),
-    ).exactOptional(),
-    PartnerName: PartnerIntegrationPartnerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the partner that is being described. If partner name is not specified, then all partner integrations are described.',
-        }),
-    ).exactOptional(),
+    AccountId: PartnerIntegrationAccountIdSchema.openapi({
+      description: 'The Amazon Web Services account ID that owns the cluster.',
+    }),
+    ClusterIdentifier: PartnerIntegrationClusterIdentifierSchema.openapi({
+      description:
+        'The cluster identifier of the cluster whose partner integration is being described.',
+    }),
+    DatabaseName: PartnerIntegrationDatabaseNameSchema.exactOptional().openapi({
+      description:
+        'The name of the database whose partner integration is being described. If database name is not specified, then all databases in the cluster are described.',
+    }),
+    PartnerName: PartnerIntegrationPartnerNameSchema.exactOptional().openapi({
+      description:
+        'The name of the partner that is being described. If partner name is not specified, then all partner integrations are described.',
+    }),
   })
   .openapi({ required: ['AccountId', 'ClusterIdentifier'], title: 'DescribePartnersInputMessage' })
   .openapi('DescribePartnersInputMessage')
 
 const DescribeReservedNodeExchangeStatusInputMessageSchema = z
   .object({
-    ReservedNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the source reserved node in a reserved-node exchange request.',
-        }),
-    ).exactOptional(),
-    ReservedNodeExchangeRequestId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the reserved-node exchange request.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>Marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeReservedNodeExchangeStatus</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request.',
-        }),
-    ).exactOptional(),
+    ReservedNodeId: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of the source reserved node in a reserved-node exchange request.',
+    }),
+    ReservedNodeExchangeRequestId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the reserved-node exchange request.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>Marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeReservedNodeExchangeStatus</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request.',
+    }),
   })
   .openapi({ title: 'DescribeReservedNodeExchangeStatusInputMessage', required: [] })
   .openapi('DescribeReservedNodeExchangeStatusInputMessage')
 
 const DescribeReservedNodeOfferingsMessageSchema = z
   .object({
-    ReservedNodeOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the offering.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeReservedNodeOfferings</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    ReservedNodeOfferingId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier for the offering.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeReservedNodeOfferings</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeReservedNodeOfferingsMessage', description: '<p/>', required: [] })
   .openapi('DescribeReservedNodeOfferingsMessage')
 
 const DescribeReservedNodesMessageSchema = z
   .object({
-    ReservedNodeId: StringSchema.and(
-      z.any().openapi({ description: 'Identifier for the node reservation.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeReservedNodes</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
+    ReservedNodeId: StringSchema.exactOptional().openapi({
+      description: 'Identifier for the node reservation.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeReservedNodes</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
   })
   .openapi({ title: 'DescribeReservedNodesMessage', description: '<p/>', required: [] })
   .openapi('DescribeReservedNodesMessage')
 
 const DescribeResizeMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of a cluster whose resize progress you are requesting. This parameter is case-sensitive.</p> <p>By default, resize operations for all clusters defined for an Amazon Web Services account are returned.</p>',
-        }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The unique identifier of a cluster whose resize progress you are requesting. This parameter is case-sensitive.</p> <p>By default, resize operations for all clusters defined for an Amazon Web Services account are returned.</p>',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'DescribeResizeMessage', description: '<p/>' })
   .openapi('DescribeResizeMessage')
@@ -7167,103 +5102,65 @@ const ScheduledActionTypeValuesSchema = z
   .openapi('ScheduledActionTypeValues')
 
 const ScheduledActionFilterListSchema = z
-  .array(
-    ScheduledActionFilterSchema.and(z.any().openapi({ xml: { name: 'ScheduledActionFilter' } })),
-  )
+  .array(ScheduledActionFilterSchema.openapi({ xml: { name: 'ScheduledActionFilter' } }))
   .openapi('ScheduledActionFilterList')
 
 const DescribeScheduledActionsMessageSchema = z
   .object({
-    ScheduledActionName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the scheduled action to retrieve. ' }),
-    ).exactOptional(),
-    TargetActionType: ScheduledActionTypeValuesSchema.and(
-      z.any().openapi({ description: 'The type of the scheduled actions to retrieve. ' }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time in UTC of the scheduled actions to retrieve. Only active scheduled actions that have invocations after this time are retrieved.',
-        }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end time in UTC of the scheduled action to retrieve. Only active scheduled actions that have invocations before this time are retrieved.',
-        }),
-    ).exactOptional(),
-    Active: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, retrieve only active scheduled actions. If false, retrieve only disabled scheduled actions. ',
-        }),
-    ).exactOptional(),
-    Filters: ScheduledActionFilterListSchema.and(
-      z.any().openapi({ description: 'List of scheduled action filters. ' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeScheduledActions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
+    ScheduledActionName: StringSchema.exactOptional().openapi({
+      description: 'The name of the scheduled action to retrieve. ',
+    }),
+    TargetActionType: ScheduledActionTypeValuesSchema.exactOptional().openapi({
+      description: 'The type of the scheduled actions to retrieve. ',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The start time in UTC of the scheduled actions to retrieve. Only active scheduled actions that have invocations after this time are retrieved.',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description:
+        'The end time in UTC of the scheduled action to retrieve. Only active scheduled actions that have invocations before this time are retrieved.',
+    }),
+    Active: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'If true, retrieve only active scheduled actions. If false, retrieve only disabled scheduled actions. ',
+    }),
+    Filters: ScheduledActionFilterListSchema.exactOptional().openapi({
+      description: 'List of scheduled action filters. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeScheduledActions</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
   })
   .openapi({ title: 'DescribeScheduledActionsMessage', required: [] })
   .openapi('DescribeScheduledActionsMessage')
 
 const DescribeSnapshotCopyGrantsMessageSchema = z
   .object({
-    SnapshotCopyGrantName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the snapshot copy grant.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <code>DescribeSnapshotCopyGrant</code> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p> <p>Constraints: You can specify either the <b>SnapshotCopyGrantName</b> parameter or the <b>Marker</b> parameter, but not both. </p>',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching resources that are associated with the specified key or keys. For example, suppose that you have resources tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with all resources that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching resources that are associated with the specified value or values. For example, suppose that you have resources tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with all resources that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    SnapshotCopyGrantName: StringSchema.exactOptional().openapi({
+      description: 'The name of the snapshot copy grant.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <code>DescribeSnapshotCopyGrant</code> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p> <p>Constraints: You can specify either the <b>SnapshotCopyGrantName</b> parameter or the <b>Marker</b> parameter, but not both. </p>',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching resources that are associated with the specified key or keys. For example, suppose that you have resources tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with all resources that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching resources that are associated with the specified value or values. For example, suppose that you have resources tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with all resources that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({
     title: 'DescribeSnapshotCopyGrantsMessage',
@@ -7274,215 +5171,129 @@ const DescribeSnapshotCopyGrantsMessageSchema = z
 
 const DescribeSnapshotSchedulesMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the cluster whose snapshot schedules you want to view.',
-        }),
-    ).exactOptional(),
-    ScheduleIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a snapshot schedule.' }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The key value for a snapshot schedule tag.' }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value corresponding to the key of the snapshot schedule tag.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>marker</code> parameter and retrying the command. If the <code>marker</code> field is empty, all response records have been retrieved for the request.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number or response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned <code>marker</code> value.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the cluster whose snapshot schedules you want to view.',
+    }),
+    ScheduleIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a snapshot schedule.',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description: 'The key value for a snapshot schedule tag.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description: 'The value corresponding to the key of the snapshot schedule tag.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>marker</code> parameter and retrying the command. If the <code>marker</code> field is empty, all response records have been retrieved for the request.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number or response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned <code>marker</code> value.',
+    }),
   })
   .openapi({ title: 'DescribeSnapshotSchedulesMessage', required: [] })
   .openapi('DescribeSnapshotSchedulesMessage')
 
 const DescribeTableRestoreStatusMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Redshift cluster that the table is being restored to.',
-        }),
-    ).exactOptional(),
-    TableRestoreRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The identifier of the table restore request to return status for. If you don't specify a <code>TableRestoreRequestId</code> value, then <code>DescribeTableRestoreStatus</code> returns the status of all in-progress table restore requests.",
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeTableRestoreStatus</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Redshift cluster that the table is being restored to.',
+    }),
+    TableRestoreRequestId: StringSchema.exactOptional().openapi({
+      description:
+        "The identifier of the table restore request to return status for. If you don't specify a <code>TableRestoreRequestId</code> value, then <code>DescribeTableRestoreStatus</code> returns the status of all in-progress table restore requests.",
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeTableRestoreStatus</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter.',
+    }),
   })
   .openapi({ title: 'DescribeTableRestoreStatusMessage', description: '<p/>', required: [] })
   .openapi('DescribeTableRestoreStatusMessage')
 
 const DescribeTagsMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for which you want to describe the tag or tags. For example, <code>arn:aws:redshift:us-east-2:123456789:cluster:t1</code>. ',
-        }),
-    ).exactOptional(),
-    ResourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of resource with which you want to view tags. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> <li> <p>Snapshot copy grant</p> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions">Specifying Policy Elements: Actions, Effects, Resources, and Principals</a> in the Amazon Redshift Cluster Management Guide. </p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number or response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned <code>marker</code> value. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>marker</code> parameter and retrying the command. If the <code>marker</code> field is empty, all response records have been retrieved for the request. ',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching resources that are associated with the specified key or keys. For example, suppose that you have resources tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with all resources that have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching resources that are associated with the specified value or values. For example, suppose that you have resources tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with all resources that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for which you want to describe the tag or tags. For example, <code>arn:aws:redshift:us-east-2:123456789:cluster:t1</code>. ',
+    }),
+    ResourceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of resource with which you want to view tags. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> <li> <p>Snapshot copy grant</p> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions">Specifying Policy Elements: Actions, Effects, Resources, and Principals</a> in the Amazon Redshift Cluster Management Guide. </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number or response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned <code>marker</code> value. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>marker</code> parameter and retrying the command. If the <code>marker</code> field is empty, all response records have been retrieved for the request. ',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching resources that are associated with the specified key or keys. For example, suppose that you have resources tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with all resources that have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching resources that are associated with the specified value or values. For example, suppose that you have resources tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with all resources that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeTagsMessage', description: '<p/>', required: [] })
   .openapi('DescribeTagsMessage')
 
 const DescribeUsageLimitsMessageSchema = z
   .object({
-    UsageLimitId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the usage limit to describe.' }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the cluster for which you want to describe usage limits.',
-        }),
-    ).exactOptional(),
-    FeatureType: UsageLimitFeatureTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The feature type for which you want to describe usage limits.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeUsageLimits</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key or keys for which you want to return all matching usage limit objects that are associated with the specified key or keys. For example, suppose that you have parameter groups that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the usage limit objects have either or both of these tag keys associated with them.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value or values for which you want to return all matching usage limit objects that are associated with the specified tag value or values. For example, suppose that you have parameter groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the usage limit objects that have either or both of these tag values associated with them.',
-        }),
-    ).exactOptional(),
+    UsageLimitId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the usage limit to describe.',
+    }),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the cluster for which you want to describe usage limits.',
+    }),
+    FeatureType: UsageLimitFeatureTypeSchema.exactOptional().openapi({
+      description: 'The feature type for which you want to describe usage limits.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeUsageLimits</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. ',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'A tag key or keys for which you want to return all matching usage limit objects that are associated with the specified key or keys. For example, suppose that you have parameter groups that are tagged with keys called <code>owner</code> and <code>environment</code>. If you specify both of these tag keys in the request, Amazon Redshift returns a response with the usage limit objects have either or both of these tag keys associated with them.',
+    }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description:
+        'A tag value or values for which you want to return all matching usage limit objects that are associated with the specified tag value or values. For example, suppose that you have parameter groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the usage limit objects that have either or both of these tag values associated with them.',
+    }),
   })
   .openapi({ title: 'DescribeUsageLimitsMessage', required: [] })
   .openapi('DescribeUsageLimitsMessage')
 
 const DisableLoggingMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the cluster on which logging is to be stopped.</p> <p>Example: <code>examplecluster</code> </p>',
-        }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the cluster on which logging is to be stopped.</p> <p>Example: <code>examplecluster</code> </p>',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'DisableLoggingMessage', description: '<p/>' })
   .openapi('DisableLoggingMessage')
 
 const DisableSnapshotCopyMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the source cluster that you want to disable copying of snapshots to a destination region.</p> <p>Constraints: Must be the valid name of an existing cluster that has cross-region snapshot copy enabled.</p>',
-        }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The unique identifier of the source cluster that you want to disable copying of snapshots to a destination region.</p> <p>Constraints: Must be the valid name of an existing cluster that has cross-region snapshot copy enabled.</p>',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier'],
@@ -7493,130 +5304,73 @@ const DisableSnapshotCopyMessageSchema = z
 
 const DisassociateDataShareConsumerMessageSchema = z
   .object({
-    DataShareArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the datashare to remove association for. ',
-        }),
-    ),
-    DisassociateEntireAccount: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that specifies whether association for the datashare is removed from the entire account.',
-        }),
-    ).exactOptional(),
-    ConsumerArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the consumer that association for the datashare is removed from.',
-        }),
-    ).exactOptional(),
-    ConsumerRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'From a datashare consumer account, removes association of a datashare from all the existing and future namespaces in the specified Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
+    DataShareArn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the datashare to remove association for. ',
+    }),
+    DisassociateEntireAccount: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A value that specifies whether association for the datashare is removed from the entire account.',
+    }),
+    ConsumerArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the consumer that association for the datashare is removed from.',
+    }),
+    ConsumerRegion: StringSchema.exactOptional().openapi({
+      description:
+        'From a datashare consumer account, removes association of a datashare from all the existing and future namespaces in the specified Amazon Web Services Region.',
+    }),
   })
   .openapi({ required: ['DataShareArn'], title: 'DisassociateDataShareConsumerMessage' })
   .openapi('DisassociateDataShareConsumerMessage')
 
 const EnableLoggingMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the cluster on which logging is to be started.</p> <p>Example: <code>examplecluster</code> </p>',
-        }),
-    ),
-    BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of an existing S3 bucket where the log files are to be stored.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the same region as the cluster</p> </li> <li> <p>The cluster must have read bucket and put object permissions</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    S3KeyPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The prefix applied to the log file names.</p> <p>Constraints:</p> <ul> <li> <p>Cannot exceed 512 characters</p> </li> <li> <p>Cannot contain spaces( ), double quotes ("), single quotes (\'), a backslash (\\), or control characters. The hexadecimal codes for invalid characters are: </p> <ul> <li> <p>x00 to x20</p> </li> <li> <p>x22</p> </li> <li> <p>x27</p> </li> <li> <p>x5c</p> </li> <li> <p>x7f or larger</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LogDestinationType: LogDestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The log destination type. An enum with possible values of <code>s3</code> and <code>cloudwatch</code>.',
-        }),
-    ).exactOptional(),
-    LogExports: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of exported log types. Possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the cluster on which logging is to be started.</p> <p>Example: <code>examplecluster</code> </p>',
+    }),
+    BucketName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of an existing S3 bucket where the log files are to be stored.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the same region as the cluster</p> </li> <li> <p>The cluster must have read bucket and put object permissions</p> </li> </ul>',
+    }),
+    S3KeyPrefix: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The prefix applied to the log file names.</p> <p>Constraints:</p> <ul> <li> <p>Cannot exceed 512 characters</p> </li> <li> <p>Cannot contain spaces( ), double quotes ("), single quotes (\'), a backslash (\\), or control characters. The hexadecimal codes for invalid characters are: </p> <ul> <li> <p>x00 to x20</p> </li> <li> <p>x22</p> </li> <li> <p>x27</p> </li> <li> <p>x5c</p> </li> <li> <p>x7f or larger</p> </li> </ul> </li> </ul>',
+    }),
+    LogDestinationType: LogDestinationTypeSchema.exactOptional().openapi({
+      description:
+        'The log destination type. An enum with possible values of <code>s3</code> and <code>cloudwatch</code>.',
+    }),
+    LogExports: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'The collection of exported log types. Possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>.',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'EnableLoggingMessage', description: '<p/>' })
   .openapi('EnableLoggingMessage')
 
 const EnableSnapshotCopyMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the source cluster to copy snapshots from.</p> <p>Constraints: Must be the valid name of an existing cluster that does not already have cross-region snapshot copy enabled.</p>',
-        }),
-    ),
-    DestinationRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The destination Amazon Web Services Region that you want to copy snapshots to.</p> <p>Constraints: Must be the name of a valid Amazon Web Services Region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#redshift_region">Regions and Endpoints</a> in the Amazon Web Services General Reference. </p>',
-        }),
-    ),
-    RetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days to retain automated snapshots in the destination region after they are copied from the source region.</p> <p>Default: 7.</p> <p>Constraints: Must be at least 1 and no more than 35.</p>',
-        }),
-    ).exactOptional(),
-    SnapshotCopyGrantName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the snapshot copy grant to use when snapshots of an Amazon Web Services KMS-encrypted cluster are copied to the destination region.',
-        }),
-    ).exactOptional(),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days to retain newly copied snapshots in the destination Amazon Web Services Region after they are copied from the source Amazon Web Services Region. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The unique identifier of the source cluster to copy snapshots from.</p> <p>Constraints: Must be the valid name of an existing cluster that does not already have cross-region snapshot copy enabled.</p>',
+    }),
+    DestinationRegion: StringSchema.openapi({
+      description:
+        '<p>The destination Amazon Web Services Region that you want to copy snapshots to.</p> <p>Constraints: Must be the name of a valid Amazon Web Services Region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#redshift_region">Regions and Endpoints</a> in the Amazon Web Services General Reference. </p>',
+    }),
+    RetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days to retain automated snapshots in the destination region after they are copied from the source region.</p> <p>Default: 7.</p> <p>Constraints: Must be at least 1 and no more than 35.</p>',
+    }),
+    SnapshotCopyGrantName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the snapshot copy grant to use when snapshots of an Amazon Web Services KMS-encrypted cluster are copied to the destination region.',
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days to retain newly copied snapshots in the destination Amazon Web Services Region after they are copied from the source Amazon Web Services Region. If the value is -1, the manual snapshot is retained indefinitely. </p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier', 'DestinationRegion'],
@@ -7627,54 +5381,30 @@ const EnableSnapshotCopyMessageSchema = z
 
 const GetClusterCredentialsMessageSchema = z
   .object({
-    DbUser: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a database user. If a user name matching <code>DbUser</code> exists in the database, the temporary user credentials have the same permissions as the existing user. If <code>DbUser</code> doesn\'t exist in the database and <code>Autocreate</code> is <code>True</code>, a new user is created using the value for <code>DbUser</code> with PUBLIC permissions. If a database user matching the value for <code>DbUser</code> doesn\'t exist and <code>Autocreate</code> is <code>False</code>, then the command succeeds but the connection attempt will fail because the user doesn\'t exist in the database.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_USER.html">CREATE USER</a> in the Amazon Redshift Database Developer Guide. </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens. The user name can\'t be <code>PUBLIC</code>.</p> </li> <li> <p>Must contain uppercase or lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ). </p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href="http://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide.</p> </li> </ul>',
-        }),
-    ),
-    DbName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a database that <code>DbUser</code> is authorized to log on to. If <code>DbName</code> is not specified, <code>DbUser</code> can log on to any existing database.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens</p> </li> <li> <p>Must contain uppercase or lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ). </p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href="http://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the cluster that contains the database for which you are requesting credentials. This parameter is case sensitive.',
-        }),
-    ),
-    DurationSeconds: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of seconds until the returned temporary password expires.</p> <p>Constraint: minimum 900, maximum 3600.</p> <p>Default: 900</p>',
-        }),
-    ).exactOptional(),
-    AutoCreate: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Create a database user with the name specified for the user named in <code>DbUser</code> if one does not exist.',
-        }),
-    ).exactOptional(),
-    DbGroups: DbGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of the names of existing database groups that the user named in <code>DbUser</code> will join for the current session, in addition to any group memberships for an existing user. If not specified, a new user is added only to PUBLIC.</p> <p>Database group name constraints</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ). </p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href="http://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    DbUser: StringSchema.openapi({
+      description:
+        '<p>The name of a database user. If a user name matching <code>DbUser</code> exists in the database, the temporary user credentials have the same permissions as the existing user. If <code>DbUser</code> doesn\'t exist in the database and <code>Autocreate</code> is <code>True</code>, a new user is created using the value for <code>DbUser</code> with PUBLIC permissions. If a database user matching the value for <code>DbUser</code> doesn\'t exist and <code>Autocreate</code> is <code>False</code>, then the command succeeds but the connection attempt will fail because the user doesn\'t exist in the database.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_USER.html">CREATE USER</a> in the Amazon Redshift Database Developer Guide. </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens. The user name can\'t be <code>PUBLIC</code>.</p> </li> <li> <p>Must contain uppercase or lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ). </p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href="http://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide.</p> </li> </ul>',
+    }),
+    DbName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a database that <code>DbUser</code> is authorized to log on to. If <code>DbName</code> is not specified, <code>DbUser</code> can log on to any existing database.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens</p> </li> <li> <p>Must contain uppercase or lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ). </p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href="http://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide.</p> </li> </ul>',
+    }),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        'The unique identifier of the cluster that contains the database for which you are requesting credentials. This parameter is case sensitive.',
+    }),
+    DurationSeconds: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of seconds until the returned temporary password expires.</p> <p>Constraint: minimum 900, maximum 3600.</p> <p>Default: 900</p>',
+    }),
+    AutoCreate: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Create a database user with the name specified for the user named in <code>DbUser</code> if one does not exist.',
+    }),
+    DbGroups: DbGroupListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of the names of existing database groups that the user named in <code>DbUser</code> will join for the current session, in addition to any group memberships for an existing user. If not specified, a new user is added only to PUBLIC.</p> <p>Database group name constraints</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ). </p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href="http://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html">Reserved Words</a> in the Amazon Redshift Database Developer Guide.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['DbUser', 'ClusterIdentifier'],
@@ -7685,30 +5415,18 @@ const GetClusterCredentialsMessageSchema = z
 
 const GetClusterCredentialsWithIAMMessageSchema = z
   .object({
-    DbName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the database for which you are requesting credentials. If the database name is specified, the IAM policy must allow access to the resource <code>dbname</code> for the specified database name. If the database name is not specified, access to all databases is allowed.',
-        }),
-    ).exactOptional(),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the cluster that contains the database for which you are requesting credentials. ',
-        }),
-    ),
-    DurationSeconds: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of seconds until the returned temporary password expires.</p> <p>Range: 900-3600. Default: 900.</p>',
-        }),
-    ).exactOptional(),
+    DbName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the database for which you are requesting credentials. If the database name is specified, the IAM policy must allow access to the resource <code>dbname</code> for the specified database name. If the database name is not specified, access to all databases is allowed.',
+    }),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        'The unique identifier of the cluster that contains the database for which you are requesting credentials. ',
+    }),
+    DurationSeconds: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of seconds until the returned temporary password expires.</p> <p>Range: 900-3600. Default: 900.</p>',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'GetClusterCredentialsWithIAMMessage' })
   .openapi('GetClusterCredentialsWithIAMMessage')
@@ -7719,46 +5437,26 @@ const ReservedNodeExchangeActionTypeSchema = z
 
 const GetReservedNodeExchangeConfigurationOptionsInputMessageSchema = z
   .object({
-    ActionType: ReservedNodeExchangeActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action type of the reserved-node configuration. The action type can be an exchange initiated from either a snapshot or a resize.',
-        }),
-    ),
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the cluster that is the source for a reserved-node exchange.',
-        }),
-    ).exactOptional(),
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the snapshot that is the source for the reserved-node exchange.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>Marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>GetReservedNodeExchangeConfigurationOptions</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request.',
-        }),
-    ).exactOptional(),
+    ActionType: ReservedNodeExchangeActionTypeSchema.openapi({
+      description:
+        'The action type of the reserved-node configuration. The action type can be an exchange initiated from either a snapshot or a resize.',
+    }),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the cluster that is the source for a reserved-node exchange.',
+    }),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the snapshot that is the source for the reserved-node exchange.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>Marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>GetReservedNodeExchangeConfigurationOptions</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by the <code>MaxRecords</code> parameter. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request.',
+    }),
   })
   .openapi({
     required: ['ActionType'],
@@ -7768,30 +5466,17 @@ const GetReservedNodeExchangeConfigurationOptionsInputMessageSchema = z
 
 const GetReservedNodeExchangeOfferingsInputMessageSchema = z
   .object({
-    ReservedNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string representing the node identifier for the DC1 Reserved Node to be exchanged.',
-        }),
-    ),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer setting the maximum number of ReservedNodeOfferings to retrieve.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the starting point for the next set of ReservedNodeOfferings.',
-        }),
-    ).exactOptional(),
+    ReservedNodeId: StringSchema.openapi({
+      description:
+        'A string representing the node identifier for the DC1 Reserved Node to be exchanged.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'An integer setting the maximum number of ReservedNodeOfferings to retrieve.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the starting point for the next set of ReservedNodeOfferings.',
+    }),
   })
   .openapi({
     required: ['ReservedNodeId'],
@@ -7802,34 +5487,26 @@ const GetReservedNodeExchangeOfferingsInputMessageSchema = z
 
 const ModifyAquaInputMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the cluster to be modified.' }),
-    ),
-    AquaConfigurationStatus: AquaConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description: 'The identifier of the cluster to be modified.',
+    }),
+    AquaConfigurationStatus: AquaConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        'This parameter is retired. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'ModifyAquaInputMessage' })
   .openapi('ModifyAquaInputMessage')
 
 const ModifyAuthenticationProfileMessageSchema = z
   .object({
-    AuthenticationProfileName: AuthenticationProfileNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the authentication profile to replace.' }),
-    ),
-    AuthenticationProfileContent: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new content of the authentication profile in JSON format. The maximum length of the JSON string is determined by a quota for your account.',
-        }),
-    ),
+    AuthenticationProfileName: AuthenticationProfileNameStringSchema.openapi({
+      description: 'The name of the authentication profile to replace.',
+    }),
+    AuthenticationProfileContent: StringSchema.openapi({
+      description:
+        'The new content of the authentication profile in JSON format. The maximum length of the JSON string is determined by a quota for your account.',
+    }),
   })
   .openapi({
     required: ['AuthenticationProfileName', 'AuthenticationProfileContent'],
@@ -7839,22 +5516,14 @@ const ModifyAuthenticationProfileMessageSchema = z
 
 const ModifyClusterDbRevisionMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of a cluster whose database revision you want to modify. </p> <p>Example: <code>examplecluster</code> </p>',
-        }),
-    ),
-    RevisionTarget: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the database revision. You can retrieve this value from the response to the <a>DescribeClusterDbRevisions</a> request.',
-        }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The unique identifier of a cluster whose database revision you want to modify. </p> <p>Example: <code>examplecluster</code> </p>',
+    }),
+    RevisionTarget: StringSchema.openapi({
+      description:
+        'The identifier of the database revision. You can retrieve this value from the response to the <a>DescribeClusterDbRevisions</a> request.',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier', 'RevisionTarget'],
@@ -7864,37 +5533,21 @@ const ModifyClusterDbRevisionMessageSchema = z
 
 const ModifyClusterIamRolesMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the cluster for which you want to associate or disassociate IAM roles.',
-        }),
-    ),
-    AddIamRoles: IamRoleArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Zero or more IAM roles to associate with the cluster. The roles must be in their Amazon Resource Name (ARN) format. ',
-        }),
-    ).exactOptional(),
-    RemoveIamRoles: IamRoleArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Zero or more IAM roles in ARN format to disassociate from the cluster. ',
-        }),
-    ).exactOptional(),
-    DefaultIamRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was last modified.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        'The unique identifier of the cluster for which you want to associate or disassociate IAM roles.',
+    }),
+    AddIamRoles: IamRoleArnListSchema.exactOptional().openapi({
+      description:
+        'Zero or more IAM roles to associate with the cluster. The roles must be in their Amazon Resource Name (ARN) format. ',
+    }),
+    RemoveIamRoles: IamRoleArnListSchema.exactOptional().openapi({
+      description: 'Zero or more IAM roles in ARN format to disassociate from the cluster. ',
+    }),
+    DefaultIamRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was last modified.',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier'],
@@ -7905,262 +5558,144 @@ const ModifyClusterIamRolesMessageSchema = z
 
 const ModifyClusterMaintenanceMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the cluster.' }),
-    ),
-    DeferMaintenance: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A boolean indicating whether to enable the deferred maintenance window. ',
-        }),
-    ).exactOptional(),
-    DeferMaintenanceIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the deferred maintenance window.' }),
-    ).exactOptional(),
-    DeferMaintenanceStartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A timestamp indicating the start time for the deferred maintenance window.',
-        }),
-    ).exactOptional(),
-    DeferMaintenanceEndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A timestamp indicating end time for the deferred maintenance window. If you specify an end time, you can't specify a duration.",
-        }),
-    ).exactOptional(),
-    DeferMaintenanceDuration: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An integer indicating the duration of the maintenance window in days. If you specify a duration, you can't specify an end time. The duration must be 45 days or less.",
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description: 'A unique identifier for the cluster.',
+    }),
+    DeferMaintenance: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'A boolean indicating whether to enable the deferred maintenance window. ',
+    }),
+    DeferMaintenanceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the deferred maintenance window.',
+    }),
+    DeferMaintenanceStartTime: TStampSchema.exactOptional().openapi({
+      description: 'A timestamp indicating the start time for the deferred maintenance window.',
+    }),
+    DeferMaintenanceEndTime: TStampSchema.exactOptional().openapi({
+      description:
+        "A timestamp indicating end time for the deferred maintenance window. If you specify an end time, you can't specify a duration.",
+    }),
+    DeferMaintenanceDuration: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "An integer indicating the duration of the maintenance window in days. If you specify a duration, you can't specify an end time. The duration must be 45 days or less.",
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'ModifyClusterMaintenanceMessage' })
   .openapi('ModifyClusterMaintenanceMessage')
 
 const ModifyClusterMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the cluster to be modified.</p> <p>Example: <code>examplecluster</code> </p>',
-        }),
-    ),
-    ClusterType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new cluster type.</p> <p>When you submit your cluster resize request, your existing cluster goes into a read-only mode. After Amazon Redshift provisions a new cluster based on your resize requirements, there will be outage for a period while the old cluster is deleted and your connection is switched to the new cluster. You can use <a>DescribeResize</a> to track the progress of the resize request. </p> <p>Valid Values: <code> multi-node | single-node </code> </p>',
-        }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new node type of the cluster. If you specify a new node type, you must also specify the number of nodes parameter.</p> <p> For more information about resizing clusters, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html">Resizing Clusters in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Valid Values: <code>ds2.xlarge</code> | <code>ds2.8xlarge</code> | <code>dc1.large</code> | <code>dc1.8xlarge</code> | <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>',
-        }),
-    ).exactOptional(),
-    NumberOfNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new number of nodes of the cluster. If you specify a new number of nodes, you must also specify the node type parameter.</p> <p> For more information about resizing clusters, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html">Resizing Clusters in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Valid Values: Integer greater than <code>0</code>.</p>',
-        }),
-    ).exactOptional(),
-    ClusterSecurityGroups: ClusterSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of cluster security groups to be authorized on this cluster. This change is asynchronously applied as soon as possible.</p> <p>Security groups currently associated with the cluster, and not in the list of groups to apply, will be revoked from the cluster.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of virtual private cloud (VPC) security groups to be associated with the cluster. This change is asynchronously applied as soon as possible.',
-        }),
-    ).exactOptional(),
-    MasterUserPassword: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>\'</code> (single quote), <code>"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cluster parameter group to apply to this cluster. This change is applied only after the cluster is rebooted. To reboot a cluster use <a>RebootCluster</a>. </p> <p>Default: Uses existing setting.</p> <p>Constraints: The cluster parameter group must be in the same parameter group family that matches the cluster version.</p>',
-        }),
-    ).exactOptional(),
-    AutomatedSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with <a>CreateClusterSnapshot</a>. </p> <p>If you decrease the automated snapshot retention period from its current value, existing automated snapshots that fall outside of the new retention period will be immediately deleted.</p> <p>You can't disable automated snapshots for RA3 node types. Set the automated retention period from 1-35 days.</p> <p>Default: Uses existing setting.</p> <p>Constraints: Must be a value from 0 to 35.</p>",
-        }),
-    ).exactOptional(),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default for number of days that a newly created manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely. This value doesn't retroactively change the retention periods of existing manual snapshots.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p> <p>The default value is -1.</p>",
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The weekly time range (in UTC) during which system maintenance can occur, if necessary. If system maintenance is necessary during the window, it may result in an outage.</p> <p>This maintenance window change is made immediately. If the new maintenance window indicates the current time, there must be at least 120 minutes between the current time and end of the window in order to ensure that pending changes are applied.</p> <p>Default: Uses existing setting.</p> <p>Format: ddd:hh24:mi-ddd:hh24:mi, for example <code>wed:07:30-wed:08:00</code>.</p> <p>Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun</p> <p>Constraints: Must be at least 30 minutes.</p>',
-        }),
-    ).exactOptional(),
-    ClusterVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new version number of the Amazon Redshift engine to upgrade to.</p> <p>For major version upgrades, if a non-default cluster parameter group is currently in use, a new cluster parameter group in the cluster parameter group family for the new version must be specified. The new cluster parameter group can be the default for that cluster parameter group family. For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Example: <code>1.0</code> </p>',
-        }),
-    ).exactOptional(),
-    AllowVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>true</code>, major version upgrades will be applied automatically to the cluster during the maintenance window. </p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    HsmClientCertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the HSM client certificate the Amazon Redshift cluster uses to retrieve the data encryption keys stored in an HSM.',
-        }),
-    ).exactOptional(),
-    HsmConfigurationIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the HSM configuration that contains the information the Amazon Redshift cluster can use to retrieve and store keys in an HSM.',
-        }),
-    ).exactOptional(),
-    NewClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new identifier for the cluster.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>Alphabetic characters must be lowercase.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for all clusters within an Amazon Web Services account.</p> </li> </ul> <p>Example: <code>examplecluster</code> </p>',
-        }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, the cluster can be accessed from a public network. Only clusters in VPCs can be set to be publicly available.',
-        }),
-    ).exactOptional(),
-    ElasticIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Elastic IP (EIP) address for the cluster.</p> <p>Constraints: The cluster must be provisioned in EC2-VPC and publicly-accessible through an Internet gateway. For more information about provisioning clusters in EC2-VPC, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms">Supported Platforms to Launch Your Cluster</a> in the Amazon Redshift Cluster Management Guide.</p>',
-        }),
-    ).exactOptional(),
-    EnhancedVpcRouting: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    MaintenanceTrackName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the maintenance track that you want to assign for the cluster. This name change is asynchronous. The new track name stays in the <code>PendingModifiedValues</code> for the cluster until the next maintenance window. When the maintenance track changes, the cluster is switched to the latest cluster release available for the maintenance track. At this point, the maintenance track name is applied.',
-        }),
-    ).exactOptional(),
-    Encrypted: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether the cluster is encrypted. If the value is encrypted (true) and you provide a value for the <code>KmsKeyId</code> parameter, we encrypt the cluster with the provided <code>KmsKeyId</code>. If you don't provide a <code>KmsKeyId</code>, we encrypt with the default key. </p> <p>If the value is not encrypted (false), then the cluster is decrypted. </p>",
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Key Management Service (KMS) key ID of the encryption key that you want to use to encrypt data in the cluster.',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneRelocation: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to enable relocation for an Amazon Redshift cluster between Availability Zones after the cluster modification is complete.',
-        }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to initiate relocation for an Amazon Redshift cluster to the target Availability Zone.',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The option to change the port of an Amazon Redshift cluster.' }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The unique identifier of the cluster to be modified.</p> <p>Example: <code>examplecluster</code> </p>',
+    }),
+    ClusterType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The new cluster type.</p> <p>When you submit your cluster resize request, your existing cluster goes into a read-only mode. After Amazon Redshift provisions a new cluster based on your resize requirements, there will be outage for a period while the old cluster is deleted and your connection is switched to the new cluster. You can use <a>DescribeResize</a> to track the progress of the resize request. </p> <p>Valid Values: <code> multi-node | single-node </code> </p>',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The new node type of the cluster. If you specify a new node type, you must also specify the number of nodes parameter.</p> <p> For more information about resizing clusters, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html">Resizing Clusters in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Valid Values: <code>ds2.xlarge</code> | <code>ds2.8xlarge</code> | <code>dc1.large</code> | <code>dc1.8xlarge</code> | <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>',
+    }),
+    NumberOfNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The new number of nodes of the cluster. If you specify a new number of nodes, you must also specify the node type parameter.</p> <p> For more information about resizing clusters, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html">Resizing Clusters in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Valid Values: Integer greater than <code>0</code>.</p>',
+    }),
+    ClusterSecurityGroups: ClusterSecurityGroupNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of cluster security groups to be authorized on this cluster. This change is asynchronously applied as soon as possible.</p> <p>Security groups currently associated with the cluster, and not in the list of groups to apply, will be revoked from the cluster.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description:
+        'A list of virtual private cloud (VPC) security groups to be associated with the cluster. This change is asynchronously applied as soon as possible.',
+    }),
+    MasterUserPassword: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>\'</code> (single quote), <code>"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>',
+    }),
+    ClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the cluster parameter group to apply to this cluster. This change is applied only after the cluster is rebooted. To reboot a cluster use <a>RebootCluster</a>. </p> <p>Default: Uses existing setting.</p> <p>Constraints: The cluster parameter group must be in the same parameter group family that matches the cluster version.</p>',
+    }),
+    AutomatedSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with <a>CreateClusterSnapshot</a>. </p> <p>If you decrease the automated snapshot retention period from its current value, existing automated snapshots that fall outside of the new retention period will be immediately deleted.</p> <p>You can't disable automated snapshots for RA3 node types. Set the automated retention period from 1-35 days.</p> <p>Default: Uses existing setting.</p> <p>Constraints: Must be a value from 0 to 35.</p>",
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The default for number of days that a newly created manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely. This value doesn't retroactively change the retention periods of existing manual snapshots.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p> <p>The default value is -1.</p>",
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The weekly time range (in UTC) during which system maintenance can occur, if necessary. If system maintenance is necessary during the window, it may result in an outage.</p> <p>This maintenance window change is made immediately. If the new maintenance window indicates the current time, there must be at least 120 minutes between the current time and end of the window in order to ensure that pending changes are applied.</p> <p>Default: Uses existing setting.</p> <p>Format: ddd:hh24:mi-ddd:hh24:mi, for example <code>wed:07:30-wed:08:00</code>.</p> <p>Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun</p> <p>Constraints: Must be at least 30 minutes.</p>',
+    }),
+    ClusterVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The new version number of the Amazon Redshift engine to upgrade to.</p> <p>For major version upgrades, if a non-default cluster parameter group is currently in use, a new cluster parameter group in the cluster parameter group family for the new version must be specified. The new cluster parameter group can be the default for that cluster parameter group family. For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Example: <code>1.0</code> </p>',
+    }),
+    AllowVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>true</code>, major version upgrades will be applied automatically to the cluster during the maintenance window. </p> <p>Default: <code>false</code> </p>',
+    }),
+    HsmClientCertificateIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the HSM client certificate the Amazon Redshift cluster uses to retrieve the data encryption keys stored in an HSM.',
+    }),
+    HsmConfigurationIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the HSM configuration that contains the information the Amazon Redshift cluster can use to retrieve and store keys in an HSM.',
+    }),
+    NewClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The new identifier for the cluster.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>Alphabetic characters must be lowercase.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for all clusters within an Amazon Web Services account.</p> </li> </ul> <p>Example: <code>examplecluster</code> </p>',
+    }),
+    PubliclyAccessible: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, the cluster can be accessed from a public network. Only clusters in VPCs can be set to be publicly available.',
+    }),
+    ElasticIp: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Elastic IP (EIP) address for the cluster.</p> <p>Constraints: The cluster must be provisioned in EC2-VPC and publicly-accessible through an Internet gateway. For more information about provisioning clusters in EC2-VPC, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms">Supported Platforms to Launch Your Cluster</a> in the Amazon Redshift Cluster Management Guide.</p>',
+    }),
+    EnhancedVpcRouting: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
+    }),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description:
+        'The name for the maintenance track that you want to assign for the cluster. This name change is asynchronous. The new track name stays in the <code>PendingModifiedValues</code> for the cluster until the next maintenance window. When the maintenance track changes, the cluster is switched to the latest cluster release available for the maintenance track. At this point, the maintenance track name is applied.',
+    }),
+    Encrypted: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether the cluster is encrypted. If the value is encrypted (true) and you provide a value for the <code>KmsKeyId</code> parameter, we encrypt the cluster with the provided <code>KmsKeyId</code>. If you don't provide a <code>KmsKeyId</code>, we encrypt with the default key. </p> <p>If the value is not encrypted (false), then the cluster is decrypted. </p>",
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'The Key Management Service (KMS) key ID of the encryption key that you want to use to encrypt data in the cluster.',
+    }),
+    AvailabilityZoneRelocation: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'The option to enable relocation for an Amazon Redshift cluster between Availability Zones after the cluster modification is complete.',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The option to initiate relocation for an Amazon Redshift cluster to the target Availability Zone.',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The option to change the port of an Amazon Redshift cluster.',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'ModifyClusterMessage', description: '<p/>' })
   .openapi('ModifyClusterMessage')
 
 const ModifyClusterParameterGroupMessageSchema = z
   .object({
-    ParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the parameter group to be modified.' }),
-    ),
-    Parameters: ParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of parameters to be modified. A maximum of 20 parameters can be modified in a single request.</p> <p>For each parameter to be modified, you must supply at least the parameter name and parameter value; other name-value pairs of the parameter are optional.</p> <p>For the workload management (WLM) configuration, you must supply all the name-value pairs in the wlm_json_configuration parameter.</p>',
-        }),
-    ),
+    ParameterGroupName: StringSchema.openapi({
+      description: 'The name of the parameter group to be modified.',
+    }),
+    Parameters: ParametersListSchema.openapi({
+      description:
+        '<p>An array of parameters to be modified. A maximum of 20 parameters can be modified in a single request.</p> <p>For each parameter to be modified, you must supply at least the parameter name and parameter value; other name-value pairs of the parameter are optional.</p> <p>For the workload management (WLM) configuration, you must supply all the name-value pairs in the wlm_json_configuration parameter.</p>',
+    }),
   })
   .openapi({
     required: ['ParameterGroupName', 'Parameters'],
@@ -8171,79 +5706,51 @@ const ModifyClusterParameterGroupMessageSchema = z
 
 const ModifyClusterSnapshotMessageSchema = z
   .object({
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the snapshot whose setting you want to modify.',
-        }),
-    ),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely.</p> <p>If the manual snapshot falls outside of the new retention period, you can specify the force option to immediately delete the snapshot.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>',
-        }),
-    ).exactOptional(),
-    Force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean option to override an exception if the retention period has already passed.',
-        }),
-    ).exactOptional(),
+    SnapshotIdentifier: StringSchema.openapi({
+      description: 'The identifier of the snapshot whose setting you want to modify.',
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that a manual snapshot is retained. If the value is -1, the manual snapshot is retained indefinitely.</p> <p>If the manual snapshot falls outside of the new retention period, you can specify the force option to immediately delete the snapshot.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>',
+    }),
+    Force: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean option to override an exception if the retention period has already passed.',
+    }),
   })
   .openapi({ required: ['SnapshotIdentifier'], title: 'ModifyClusterSnapshotMessage' })
   .openapi('ModifyClusterSnapshotMessage')
 
 const ModifyClusterSnapshotScheduleMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the cluster whose snapshot schedule you want to modify. ',
-        }),
-    ),
-    ScheduleIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique alphanumeric identifier for the schedule that you want to associate with the cluster.',
-        }),
-    ).exactOptional(),
-    DisassociateSchedule: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean to indicate whether to remove the assoiciation between the cluster and the schedule.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        'A unique identifier for the cluster whose snapshot schedule you want to modify. ',
+    }),
+    ScheduleIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'A unique alphanumeric identifier for the schedule that you want to associate with the cluster.',
+    }),
+    DisassociateSchedule: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A boolean to indicate whether to remove the assoiciation between the cluster and the schedule.',
+    }),
   })
   .openapi({ required: ['ClusterIdentifier'], title: 'ModifyClusterSnapshotScheduleMessage' })
   .openapi('ModifyClusterSnapshotScheduleMessage')
 
 const ModifyClusterSubnetGroupMessageSchema = z
   .object({
-    ClusterSubnetGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the subnet group to be modified.' }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A text description of the subnet group to be modified.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of VPC subnet IDs. A maximum of 20 subnets can be modified in a single request.',
-        }),
-    ),
+    ClusterSubnetGroupName: StringSchema.openapi({
+      description: 'The name of the subnet group to be modified.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A text description of the subnet group to be modified.',
+    }),
+    SubnetIds: SubnetIdentifierListSchema.openapi({
+      description:
+        'An array of VPC subnet IDs. A maximum of 20 subnets can be modified in a single request.',
+    }),
   })
   .openapi({
     required: ['ClusterSubnetGroupName', 'SubnetIds'],
@@ -8254,78 +5761,44 @@ const ModifyClusterSubnetGroupMessageSchema = z
 
 const ModifyEndpointAccessMessageSchema = z
   .object({
-    EndpointName: StringSchema.and(
-      z.any().openapi({ description: 'The endpoint to be modified.' }),
-    ),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The complete list of VPC security groups associated with the endpoint after the endpoint is modified.',
-        }),
-    ).exactOptional(),
+    EndpointName: StringSchema.openapi({ description: 'The endpoint to be modified.' }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description:
+        'The complete list of VPC security groups associated with the endpoint after the endpoint is modified.',
+    }),
   })
   .openapi({ required: ['EndpointName'], title: 'ModifyEndpointAccessMessage' })
   .openapi('ModifyEndpointAccessMessage')
 
 const ModifyEventSubscriptionMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the modified Amazon Redshift event notification subscription.',
-        }),
-    ),
-    SnsTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the SNS topic to be used by the event notification subscription.',
-        }),
-    ).exactOptional(),
-    SourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of source that will be generating the events. For example, if you want to be notified of events generated by a cluster, you would set this parameter to cluster. If this value is not specified, events are returned for all Amazon Redshift objects in your Amazon Web Services account. You must specify a source type in order to specify source IDs.</p> <p>Valid values: cluster, cluster-parameter-group, cluster-security-group, cluster-snapshot, and scheduled-action.</p>',
-        }),
-    ).exactOptional(),
-    SourceIds: SourceIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of one or more identifiers of Amazon Redshift source objects. All of the objects must be of the same type as was specified in the source type parameter. The event subscription will return only events generated by the specified objects. If not specified, then events are returned for all objects within the source type specified.</p> <p>Example: my-cluster-1, my-cluster-2</p> <p>Example: my-snapshot-20131010</p>',
-        }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Amazon Redshift event categories to be published by the event notification subscription.</p> <p>Values: configuration, management, monitoring, security, pending</p>',
-        }),
-    ).exactOptional(),
-    Severity: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Amazon Redshift event severity to be published by the event notification subscription.</p> <p>Values: ERROR, INFO</p>',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating if the subscription is enabled. <code>true</code> indicates the subscription is enabled ',
-        }),
-    ).exactOptional(),
+    SubscriptionName: StringSchema.openapi({
+      description: 'The name of the modified Amazon Redshift event notification subscription.',
+    }),
+    SnsTopicArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the SNS topic to be used by the event notification subscription.',
+    }),
+    SourceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of source that will be generating the events. For example, if you want to be notified of events generated by a cluster, you would set this parameter to cluster. If this value is not specified, events are returned for all Amazon Redshift objects in your Amazon Web Services account. You must specify a source type in order to specify source IDs.</p> <p>Valid values: cluster, cluster-parameter-group, cluster-security-group, cluster-snapshot, and scheduled-action.</p>',
+    }),
+    SourceIds: SourceIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of one or more identifiers of Amazon Redshift source objects. All of the objects must be of the same type as was specified in the source type parameter. The event subscription will return only events generated by the specified objects. If not specified, then events are returned for all objects within the source type specified.</p> <p>Example: my-cluster-1, my-cluster-2</p> <p>Example: my-snapshot-20131010</p>',
+    }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Amazon Redshift event categories to be published by the event notification subscription.</p> <p>Values: configuration, management, monitoring, security, pending</p>',
+    }),
+    Severity: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Amazon Redshift event severity to be published by the event notification subscription.</p> <p>Values: ERROR, INFO</p>',
+    }),
+    Enabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating if the subscription is enabled. <code>true</code> indicates the subscription is enabled ',
+    }),
   })
   .openapi({
     required: ['SubscriptionName'],
@@ -8336,90 +5809,54 @@ const ModifyEventSubscriptionMessageSchema = z
 
 const ModifyScheduledActionMessageSchema = z
   .object({
-    ScheduledActionName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the scheduled action to modify. ' }),
-    ),
-    TargetAction: ScheduledActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A modified JSON format of the scheduled action. For more information about this parameter, see <a>ScheduledAction</a>. ',
-        }),
-    ).exactOptional(),
-    Schedule: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A modified schedule in either <code>at( )</code> or <code>cron( )</code> format. For more information about this parameter, see <a>ScheduledAction</a>.',
-        }),
-    ).exactOptional(),
-    IamRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A different IAM role to assume to run the target action. For more information about this parameter, see <a>ScheduledAction</a>.',
-        }),
-    ).exactOptional(),
-    ScheduledActionDescription: StringSchema.and(
-      z.any().openapi({ description: 'A modified description of the scheduled action. ' }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A modified start time of the scheduled action. For more information about this parameter, see <a>ScheduledAction</a>. ',
-        }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A modified end time of the scheduled action. For more information about this parameter, see <a>ScheduledAction</a>. ',
-        }),
-    ).exactOptional(),
-    Enable: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A modified enable flag of the scheduled action. If true, the scheduled action is active. If false, the scheduled action is disabled. ',
-        }),
-    ).exactOptional(),
+    ScheduledActionName: StringSchema.openapi({
+      description: 'The name of the scheduled action to modify. ',
+    }),
+    TargetAction: ScheduledActionTypeSchema.exactOptional().openapi({
+      description:
+        'A modified JSON format of the scheduled action. For more information about this parameter, see <a>ScheduledAction</a>. ',
+    }),
+    Schedule: StringSchema.exactOptional().openapi({
+      description:
+        'A modified schedule in either <code>at( )</code> or <code>cron( )</code> format. For more information about this parameter, see <a>ScheduledAction</a>.',
+    }),
+    IamRole: StringSchema.exactOptional().openapi({
+      description:
+        'A different IAM role to assume to run the target action. For more information about this parameter, see <a>ScheduledAction</a>.',
+    }),
+    ScheduledActionDescription: StringSchema.exactOptional().openapi({
+      description: 'A modified description of the scheduled action. ',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        'A modified start time of the scheduled action. For more information about this parameter, see <a>ScheduledAction</a>. ',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description:
+        'A modified end time of the scheduled action. For more information about this parameter, see <a>ScheduledAction</a>. ',
+    }),
+    Enable: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A modified enable flag of the scheduled action. If true, the scheduled action is active. If false, the scheduled action is disabled. ',
+    }),
   })
   .openapi({ required: ['ScheduledActionName'], title: 'ModifyScheduledActionMessage' })
   .openapi('ModifyScheduledActionMessage')
 
 const ModifySnapshotCopyRetentionPeriodMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the cluster for which you want to change the retention period for either automated or manual snapshots that are copied to a destination Amazon Web Services Region.</p> <p>Constraints: Must be the valid name of an existing cluster that has cross-region snapshot copy enabled.</p>',
-        }),
-    ),
-    RetentionPeriod: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days to retain automated snapshots in the destination Amazon Web Services Region after they are copied from the source Amazon Web Services Region.</p> <p>By default, this only changes the retention period of copied automated snapshots. </p> <p>If you decrease the retention period for automated snapshots that are copied to a destination Amazon Web Services Region, Amazon Redshift deletes any existing automated snapshots that were copied to the destination Amazon Web Services Region and that fall outside of the new retention period.</p> <p>Constraints: Must be at least 1 and no more than 35 for automated snapshots. </p> <p>If you specify the <code>manual</code> option, only newly copied manual snapshots will have the new retention period. </p> <p>If you specify the value of -1 newly copied manual snapshots are retained indefinitely.</p> <p>Constraints: The number of days must be either -1 or an integer between 1 and 3,653 for manual snapshots.</p>',
-        }),
-    ),
-    Manual: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to apply the snapshot retention period to newly copied manual snapshots instead of automated snapshots.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The unique identifier of the cluster for which you want to change the retention period for either automated or manual snapshots that are copied to a destination Amazon Web Services Region.</p> <p>Constraints: Must be the valid name of an existing cluster that has cross-region snapshot copy enabled.</p>',
+    }),
+    RetentionPeriod: IntegerSchema.openapi({
+      description:
+        '<p>The number of days to retain automated snapshots in the destination Amazon Web Services Region after they are copied from the source Amazon Web Services Region.</p> <p>By default, this only changes the retention period of copied automated snapshots. </p> <p>If you decrease the retention period for automated snapshots that are copied to a destination Amazon Web Services Region, Amazon Redshift deletes any existing automated snapshots that were copied to the destination Amazon Web Services Region and that fall outside of the new retention period.</p> <p>Constraints: Must be at least 1 and no more than 35 for automated snapshots. </p> <p>If you specify the <code>manual</code> option, only newly copied manual snapshots will have the new retention period. </p> <p>If you specify the value of -1 newly copied manual snapshots are retained indefinitely.</p> <p>Constraints: The number of days must be either -1 or an integer between 1 and 3,653 for manual snapshots.</p>',
+    }),
+    Manual: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to apply the snapshot retention period to newly copied manual snapshots instead of automated snapshots.',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier', 'RetentionPeriod'],
@@ -8430,19 +5867,13 @@ const ModifySnapshotCopyRetentionPeriodMessageSchema = z
 
 const ModifySnapshotScheduleMessageSchema = z
   .object({
-    ScheduleIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique alphanumeric identifier of the schedule to modify.' }),
-    ),
-    ScheduleDefinitions: ScheduleDefinitionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An updated list of schedule definitions. A schedule definition is made up of schedule expressions, for example, "cron(30 12 *)" or "rate(12 hours)".',
-        }),
-    ),
+    ScheduleIdentifier: StringSchema.openapi({
+      description: 'A unique alphanumeric identifier of the schedule to modify.',
+    }),
+    ScheduleDefinitions: ScheduleDefinitionListSchema.openapi({
+      description:
+        'An updated list of schedule definitions. A schedule definition is made up of schedule expressions, for example, "cron(30 12 *)" or "rate(12 hours)".',
+    }),
   })
   .openapi({
     required: ['ScheduleIdentifier', 'ScheduleDefinitions'],
@@ -8452,49 +5883,35 @@ const ModifySnapshotScheduleMessageSchema = z
 
 const ModifyUsageLimitMessageSchema = z
   .object({
-    UsageLimitId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the usage limit to modify.' }),
-    ),
-    Amount: LongOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new limit amount. For more information about this parameter, see <a>UsageLimit</a>. ',
-        }),
-    ).exactOptional(),
-    BreachAction: UsageLimitBreachActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new action that Amazon Redshift takes when the limit is reached. For more information about this parameter, see <a>UsageLimit</a>. ',
-        }),
-    ).exactOptional(),
+    UsageLimitId: StringSchema.openapi({
+      description: 'The identifier of the usage limit to modify.',
+    }),
+    Amount: LongOptionalSchema.exactOptional().openapi({
+      description:
+        'The new limit amount. For more information about this parameter, see <a>UsageLimit</a>. ',
+    }),
+    BreachAction: UsageLimitBreachActionSchema.exactOptional().openapi({
+      description:
+        'The new action that Amazon Redshift takes when the limit is reached. For more information about this parameter, see <a>UsageLimit</a>. ',
+    }),
   })
   .openapi({ required: ['UsageLimitId'], title: 'ModifyUsageLimitMessage' })
   .openapi('ModifyUsageLimitMessage')
 
 const PartnerIntegrationInputMessageSchema = z
   .object({
-    AccountId: PartnerIntegrationAccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID that owns the cluster.' }),
-    ),
-    ClusterIdentifier: PartnerIntegrationClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The cluster identifier of the cluster that receives data from the partner.',
-        }),
-    ),
-    DatabaseName: PartnerIntegrationDatabaseNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the database that receives data from the partner.' }),
-    ),
-    PartnerName: PartnerIntegrationPartnerNameSchema.and(
-      z.any().openapi({ description: 'The name of the partner that is authorized to send data.' }),
-    ),
+    AccountId: PartnerIntegrationAccountIdSchema.openapi({
+      description: 'The Amazon Web Services account ID that owns the cluster.',
+    }),
+    ClusterIdentifier: PartnerIntegrationClusterIdentifierSchema.openapi({
+      description: 'The cluster identifier of the cluster that receives data from the partner.',
+    }),
+    DatabaseName: PartnerIntegrationDatabaseNameSchema.openapi({
+      description: 'The name of the database that receives data from the partner.',
+    }),
+    PartnerName: PartnerIntegrationPartnerNameSchema.openapi({
+      description: 'The name of the partner that is authorized to send data.',
+    }),
   })
   .openapi({
     required: ['AccountId', 'ClusterIdentifier', 'DatabaseName', 'PartnerName'],
@@ -8504,21 +5921,13 @@ const PartnerIntegrationInputMessageSchema = z
 
 const PurchaseReservedNodeOfferingMessageSchema = z
   .object({
-    ReservedNodeOfferingId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the reserved node offering you want to purchase.',
-        }),
-    ),
-    NodeCount: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of reserved nodes that you want to purchase.</p> <p>Default: <code>1</code> </p>',
-        }),
-    ).exactOptional(),
+    ReservedNodeOfferingId: StringSchema.openapi({
+      description: 'The unique identifier of the reserved node offering you want to purchase.',
+    }),
+    NodeCount: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of reserved nodes that you want to purchase.</p> <p>Default: <code>1</code> </p>',
+    }),
   })
   .openapi({
     required: ['ReservedNodeOfferingId'],
@@ -8528,46 +5937,32 @@ const PurchaseReservedNodeOfferingMessageSchema = z
   .openapi('PurchaseReservedNodeOfferingMessage')
 
 const RebootClusterMessageSchema = z
-  .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The cluster identifier.' }),
-    ),
-  })
+  .object({ ClusterIdentifier: StringSchema.openapi({ description: 'The cluster identifier.' }) })
   .openapi({ required: ['ClusterIdentifier'], title: 'RebootClusterMessage', description: '<p/>' })
   .openapi('RebootClusterMessage')
 
 const RejectDataShareMessageSchema = z
   .object({
-    DataShareArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the datashare to reject.' }),
-    ),
+    DataShareArn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the datashare to reject.',
+    }),
   })
   .openapi({ required: ['DataShareArn'], title: 'RejectDataShareMessage' })
   .openapi('RejectDataShareMessage')
 
 const ResetClusterParameterGroupMessageSchema = z
   .object({
-    ParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster parameter group to be reset.' }),
-    ),
-    ResetAllParameters: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>true</code>, all parameters in the specified parameter group will be reset to their default values. </p> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of names of parameters to be reset. If <i>ResetAllParameters</i> option is not used, then at least one parameter name must be supplied. </p> <p>Constraints: A maximum of 20 parameters can be reset in a single request.</p>',
-        }),
-    ).exactOptional(),
+    ParameterGroupName: StringSchema.openapi({
+      description: 'The name of the cluster parameter group to be reset.',
+    }),
+    ResetAllParameters: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>true</code>, all parameters in the specified parameter group will be reset to their default values. </p> <p>Default: <code>true</code> </p>',
+    }),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description:
+        '<p>An array of names of parameters to be reset. If <i>ResetAllParameters</i> option is not used, then at least one parameter name must be supplied. </p> <p>Constraints: A maximum of 20 parameters can be reset in a single request.</p>',
+    }),
   })
   .openapi({
     required: ['ParameterGroupName'],
@@ -8578,246 +5973,130 @@ const ResetClusterParameterGroupMessageSchema = z
 
 const RestoreFromClusterSnapshotMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the cluster that will be created from restoring the snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>Alphabetic characters must be lowercase.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for all clusters within an Amazon Web Services account.</p> </li> </ul>',
-        }),
-    ),
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the snapshot from which to create the new cluster. This parameter isn't case sensitive. You must specify this parameter or <code>snapshotArn</code>, but not both.</p> <p>Example: <code>my-snapshot-id</code> </p>",
-        }),
-    ).exactOptional(),
-    SnapshotArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the snapshot associated with the message to restore from a cluster. You must specify this parameter or <code>snapshotIdentifier</code>, but not both.',
-        }),
-    ).exactOptional(),
-    SnapshotClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cluster the source snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port number on which the cluster accepts connections.</p> <p>Default: The same port as the original cluster.</p> <p>Constraints: Must be between <code>1115</code> and <code>65535</code>.</p>',
-        }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon EC2 Availability Zone in which to restore the cluster.</p> <p>Default: A random, system-chosen Availability Zone.</p> <p>Example: <code>us-east-2a</code> </p>',
-        }),
-    ).exactOptional(),
-    AllowVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>true</code>, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster. </p> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    ClusterSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the subnet group where you want to cluster restored.</p> <p>A snapshot of cluster in VPC can be restored only in VPC. Therefore, you must provide subnet group name where you want the cluster restored.</p>',
-        }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If <code>true</code>, the cluster can be accessed from a public network. ',
-        }),
-    ).exactOptional(),
-    OwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot.',
-        }),
-    ).exactOptional(),
-    HsmClientCertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the HSM client certificate the Amazon Redshift cluster uses to retrieve the data encryption keys stored in an HSM.',
-        }),
-    ).exactOptional(),
-    HsmConfigurationIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the HSM configuration that contains the information the Amazon Redshift cluster can use to retrieve and store keys in an HSM.',
-        }),
-    ).exactOptional(),
-    ElasticIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Elastic IP (EIP) address for the cluster. Don't specify the Elastic IP address for a publicly accessible cluster with availability zone relocation turned on.",
-        }),
-    ).exactOptional(),
-    ClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the parameter group to be associated with this cluster.</p> <p>Default: The default Amazon Redshift cluster parameter group. For information about the default parameter group, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Working with Amazon Redshift Parameter Groups</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ClusterSecurityGroups: ClusterSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of security groups to be associated with this cluster.</p> <p>Default: The default cluster security group for Amazon Redshift.</p> <p>Cluster security groups only apply to clusters outside of VPCs.</p>',
-        }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster.</p> <p>Default: The default VPC security group is associated with the cluster.</p> <p>VPC security groups only apply to clusters in VPCs.</p>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The weekly time range (in UTC) during which automated cluster maintenance can occur.</p> <p> Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p> Default: The value selected for the cluster from which the snapshot was taken. For more information about the time blocks for each region, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-maintenance-windows">Maintenance Windows</a> in Amazon Redshift Cluster Management Guide. </p> <p>Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun</p> <p>Constraints: Minimum 30-minute window.</p>',
-        }),
-    ).exactOptional(),
-    AutomatedSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with <a>CreateClusterSnapshot</a>. </p> <p>You can't disable automated snapshots for RA3 node types. Set the automated retention period from 1-35 days.</p> <p>Default: The value selected for the cluster from which the snapshot was taken.</p> <p>Constraints: Must be a value from 0 to 35.</p>",
-        }),
-    ).exactOptional(),
-    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>",
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Key Management Service (KMS) key ID of the encryption key that encrypts data in the cluster restored from a shared snapshot. You can also provide the key ID when you restore from an unencrypted snapshot to an encrypted cluster in the same account. Additionally, you can specify a new KMS key ID when you restore from an encrypted snapshot in the same account in order to change it. In that case, the restored cluster is encrypted with the new KMS key ID.',
-        }),
-    ).exactOptional(),
-    NodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The node type that the restored cluster will be provisioned with.</p> <p>Default: The node type of the cluster from which the snapshot was taken. You can modify this if you are using any DS node type. In that case, you can choose to restore into another DS node type of the same size. For example, you can restore ds1.8xlarge into ds2.8xlarge, or ds1.xlarge into ds2.xlarge. If you have a DC instance type, you must restore into that same instance type and size. In other words, you can only restore a dc1.large instance type into another dc1.large instance type or dc2.large instance type. You can\'t restore dc1.8xlarge to dc2.8xlarge. First restore to a dc1.8xlarge cluster, then resize to a dc2.8large cluster. For more information about node types, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-about-clusters-and-nodes"> About Clusters and Nodes</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    EnhancedVpcRouting: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    AdditionalInfo: StringSchema.and(z.any().openapi({ description: 'Reserved.' })).exactOptional(),
-    IamRoles: IamRoleArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Identity and Access Management (IAM) roles that can be used by the cluster to access other Amazon Web Services services. You must supply the IAM roles in their Amazon Resource Name (ARN) format. </p> <p>The maximum number of IAM roles that you can associate is subject to a quota. For more information, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html">Quotas and limits</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    MaintenanceTrackName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the maintenance track for the restored cluster. When you take a snapshot, the snapshot inherits the <code>MaintenanceTrack</code> value from the cluster. The snapshot might be on a different track than the cluster that was the source for the snapshot. For example, suppose that you take a snapshot of a cluster that is on the current track and then change the cluster to be on the trailing track. In this case, the snapshot and the source cluster are on different tracks.',
-        }),
-    ).exactOptional(),
-    SnapshotScheduleIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the snapshot schedule.' }),
-    ).exactOptional(),
-    NumberOfNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of nodes specified when provisioning the restored cluster.',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneRelocation: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to enable relocation for an Amazon Redshift cluster between Availability Zones after the cluster is restored.',
-        }),
-    ).exactOptional(),
-    AquaConfigurationStatus: AquaConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is retired. It does not set the AQUA configuration status. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
-        }),
-    ).exactOptional(),
-    DefaultIamRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was last modified while it was restored from a snapshot.',
-        }),
-    ).exactOptional(),
-    ReservedNodeId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the target reserved node offering.' }),
-    ).exactOptional(),
-    TargetReservedNodeOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the target reserved node offering.' }),
-    ).exactOptional(),
-    Encrypted: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables support for restoring an unencrypted snapshot to a cluster encrypted with Key Management Service (KMS) and a customer managed key.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the cluster that will be created from restoring the snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 alphanumeric characters or hyphens.</p> </li> <li> <p>Alphabetic characters must be lowercase.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Must be unique for all clusters within an Amazon Web Services account.</p> </li> </ul>',
+    }),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the snapshot from which to create the new cluster. This parameter isn't case sensitive. You must specify this parameter or <code>snapshotArn</code>, but not both.</p> <p>Example: <code>my-snapshot-id</code> </p>",
+    }),
+    SnapshotArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the snapshot associated with the message to restore from a cluster. You must specify this parameter or <code>snapshotIdentifier</code>, but not both.',
+    }),
+    SnapshotClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cluster the source snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The port number on which the cluster accepts connections.</p> <p>Default: The same port as the original cluster.</p> <p>Constraints: Must be between <code>1115</code> and <code>65535</code>.</p>',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon EC2 Availability Zone in which to restore the cluster.</p> <p>Default: A random, system-chosen Availability Zone.</p> <p>Example: <code>us-east-2a</code> </p>',
+    }),
+    AllowVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>true</code>, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster. </p> <p>Default: <code>true</code> </p>',
+    }),
+    ClusterSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the subnet group where you want to cluster restored.</p> <p>A snapshot of cluster in VPC can be restored only in VPC. Therefore, you must provide subnet group name where you want the cluster restored.</p>',
+    }),
+    PubliclyAccessible: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'If <code>true</code>, the cluster can be accessed from a public network. ',
+    }),
+    OwnerAccount: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot.',
+    }),
+    HsmClientCertificateIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the HSM client certificate the Amazon Redshift cluster uses to retrieve the data encryption keys stored in an HSM.',
+    }),
+    HsmConfigurationIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the HSM configuration that contains the information the Amazon Redshift cluster can use to retrieve and store keys in an HSM.',
+    }),
+    ElasticIp: StringSchema.exactOptional().openapi({
+      description:
+        "The Elastic IP (EIP) address for the cluster. Don't specify the Elastic IP address for a publicly accessible cluster with availability zone relocation turned on.",
+    }),
+    ClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the parameter group to be associated with this cluster.</p> <p>Default: The default Amazon Redshift cluster parameter group. For information about the default parameter group, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Working with Amazon Redshift Parameter Groups</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
+    }),
+    ClusterSecurityGroups: ClusterSecurityGroupNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of security groups to be associated with this cluster.</p> <p>Default: The default cluster security group for Amazon Redshift.</p> <p>Cluster security groups only apply to clusters outside of VPCs.</p>',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster.</p> <p>Default: The default VPC security group is associated with the cluster.</p> <p>VPC security groups only apply to clusters in VPCs.</p>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The weekly time range (in UTC) during which automated cluster maintenance can occur.</p> <p> Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p> Default: The value selected for the cluster from which the snapshot was taken. For more information about the time blocks for each region, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-maintenance-windows">Maintenance Windows</a> in Amazon Redshift Cluster Management Guide. </p> <p>Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun</p> <p>Constraints: Minimum 30-minute window.</p>',
+    }),
+    AutomatedSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with <a>CreateClusterSnapshot</a>. </p> <p>You can't disable automated snapshots for RA3 node types. Set the automated retention period from 1-35 days.</p> <p>Default: The value selected for the cluster from which the snapshot was taken.</p> <p>Constraints: Must be a value from 0 to 35.</p>",
+    }),
+    ManualSnapshotRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>",
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'The Key Management Service (KMS) key ID of the encryption key that encrypts data in the cluster restored from a shared snapshot. You can also provide the key ID when you restore from an unencrypted snapshot to an encrypted cluster in the same account. Additionally, you can specify a new KMS key ID when you restore from an encrypted snapshot in the same account in order to change it. In that case, the restored cluster is encrypted with the new KMS key ID.',
+    }),
+    NodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The node type that the restored cluster will be provisioned with.</p> <p>Default: The node type of the cluster from which the snapshot was taken. You can modify this if you are using any DS node type. In that case, you can choose to restore into another DS node type of the same size. For example, you can restore ds1.8xlarge into ds2.8xlarge, or ds1.xlarge into ds2.xlarge. If you have a DC instance type, you must restore into that same instance type and size. In other words, you can only restore a dc1.large instance type into another dc1.large instance type or dc2.large instance type. You can\'t restore dc1.8xlarge to dc2.8xlarge. First restore to a dc1.8xlarge cluster, then resize to a dc2.8large cluster. For more information about node types, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-about-clusters-and-nodes"> About Clusters and Nodes</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>',
+    }),
+    EnhancedVpcRouting: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>An option that specifies whether to create the cluster with enhanced VPC routing enabled. To create a cluster that uses enhanced VPC routing, the cluster must be in a VPC. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">Enhanced VPC Routing</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If this option is <code>true</code>, enhanced VPC routing is enabled. </p> <p>Default: false</p>',
+    }),
+    AdditionalInfo: StringSchema.exactOptional().openapi({ description: 'Reserved.' }),
+    IamRoles: IamRoleArnListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Identity and Access Management (IAM) roles that can be used by the cluster to access other Amazon Web Services services. You must supply the IAM roles in their Amazon Resource Name (ARN) format. </p> <p>The maximum number of IAM roles that you can associate is subject to a quota. For more information, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html">Quotas and limits</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>',
+    }),
+    MaintenanceTrackName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the maintenance track for the restored cluster. When you take a snapshot, the snapshot inherits the <code>MaintenanceTrack</code> value from the cluster. The snapshot might be on a different track than the cluster that was the source for the snapshot. For example, suppose that you take a snapshot of a cluster that is on the current track and then change the cluster to be on the trailing track. In this case, the snapshot and the source cluster are on different tracks.',
+    }),
+    SnapshotScheduleIdentifier: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the snapshot schedule.',
+    }),
+    NumberOfNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The number of nodes specified when provisioning the restored cluster.',
+    }),
+    AvailabilityZoneRelocation: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'The option to enable relocation for an Amazon Redshift cluster between Availability Zones after the cluster is restored.',
+    }),
+    AquaConfigurationStatus: AquaConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        'This parameter is retired. It does not set the AQUA configuration status. Amazon Redshift automatically determines whether to use AQUA (Advanced Query Accelerator).',
+    }),
+    DefaultIamRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was last modified while it was restored from a snapshot.',
+    }),
+    ReservedNodeId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the target reserved node offering.',
+    }),
+    TargetReservedNodeOfferingId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the target reserved node offering.',
+    }),
+    Encrypted: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Enables support for restoring an unencrypted snapshot to a cluster encrypted with Key Management Service (KMS) and a customer managed key.',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier'],
@@ -8828,60 +6107,36 @@ const RestoreFromClusterSnapshotMessageSchema = z
 
 const RestoreTableFromClusterSnapshotMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the Amazon Redshift cluster to restore the table to.',
-        }),
-    ),
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the snapshot to restore the table from. This snapshot must have been created from the Amazon Redshift cluster specified by the <code>ClusterIdentifier</code> parameter.',
-        }),
-    ),
-    SourceDatabaseName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source database that contains the table to restore from.',
-        }),
-    ),
-    SourceSchemaName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the source schema that contains the table to restore from. If you do not specify a <code>SourceSchemaName</code> value, the default is <code>public</code>.',
-        }),
-    ).exactOptional(),
-    SourceTableName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the source table to restore from.' }),
-    ),
-    TargetDatabaseName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the database to restore the table to.' }),
-    ).exactOptional(),
-    TargetSchemaName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the schema to restore the table to.' }),
-    ).exactOptional(),
-    NewTableName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the table to create as a result of the current request.',
-        }),
-    ),
-    EnableCaseSensitiveIdentifier: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether name identifiers for database, schema, and table are case sensitive. If <code>true</code>, the names are case sensitive. If <code>false</code> (default), the names are not case sensitive.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.openapi({
+      description: 'The identifier of the Amazon Redshift cluster to restore the table to.',
+    }),
+    SnapshotIdentifier: StringSchema.openapi({
+      description:
+        'The identifier of the snapshot to restore the table from. This snapshot must have been created from the Amazon Redshift cluster specified by the <code>ClusterIdentifier</code> parameter.',
+    }),
+    SourceDatabaseName: StringSchema.openapi({
+      description: 'The name of the source database that contains the table to restore from.',
+    }),
+    SourceSchemaName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the source schema that contains the table to restore from. If you do not specify a <code>SourceSchemaName</code> value, the default is <code>public</code>.',
+    }),
+    SourceTableName: StringSchema.openapi({
+      description: 'The name of the source table to restore from.',
+    }),
+    TargetDatabaseName: StringSchema.exactOptional().openapi({
+      description: 'The name of the database to restore the table to.',
+    }),
+    TargetSchemaName: StringSchema.exactOptional().openapi({
+      description: 'The name of the schema to restore the table to.',
+    }),
+    NewTableName: StringSchema.openapi({
+      description: 'The name of the table to create as a result of the current request.',
+    }),
+    EnableCaseSensitiveIdentifier: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Indicates whether name identifiers for database, schema, and table are case sensitive. If <code>true</code>, the names are case sensitive. If <code>false</code> (default), the names are not case sensitive.',
+    }),
   })
   .openapi({
     required: [
@@ -8898,37 +6153,21 @@ const RestoreTableFromClusterSnapshotMessageSchema = z
 
 const RevokeClusterSecurityGroupIngressMessageSchema = z
   .object({
-    ClusterSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the security Group from which to revoke the ingress rule.',
-        }),
-    ),
-    CIDRIP: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP range for which to revoke access. This range must be a valid Classless Inter-Domain Routing (CIDR) block of IP addresses. If <code>CIDRIP</code> is specified, <code>EC2SecurityGroupName</code> and <code>EC2SecurityGroupOwnerId</code> cannot be provided. ',
-        }),
-    ).exactOptional(),
-    EC2SecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the EC2 Security Group whose access is to be revoked. If <code>EC2SecurityGroupName</code> is specified, <code>EC2SecurityGroupOwnerId</code> must also be provided and <code>CIDRIP</code> cannot be provided. ',
-        }),
-    ).exactOptional(),
-    EC2SecurityGroupOwnerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services account number of the owner of the security group specified in the <code>EC2SecurityGroupName</code> parameter. The Amazon Web Services access key ID is not an acceptable value. If <code>EC2SecurityGroupOwnerId</code> is specified, <code>EC2SecurityGroupName</code> must also be provided. and <code>CIDRIP</code> cannot be provided. </p> <p>Example: <code>111122223333</code> </p>',
-        }),
-    ).exactOptional(),
+    ClusterSecurityGroupName: StringSchema.openapi({
+      description: 'The name of the security Group from which to revoke the ingress rule.',
+    }),
+    CIDRIP: StringSchema.exactOptional().openapi({
+      description:
+        'The IP range for which to revoke access. This range must be a valid Classless Inter-Domain Routing (CIDR) block of IP addresses. If <code>CIDRIP</code> is specified, <code>EC2SecurityGroupName</code> and <code>EC2SecurityGroupOwnerId</code> cannot be provided. ',
+    }),
+    EC2SecurityGroupName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the EC2 Security Group whose access is to be revoked. If <code>EC2SecurityGroupName</code> is specified, <code>EC2SecurityGroupOwnerId</code> must also be provided and <code>CIDRIP</code> cannot be provided. ',
+    }),
+    EC2SecurityGroupOwnerId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services account number of the owner of the security group specified in the <code>EC2SecurityGroupName</code> parameter. The Amazon Web Services access key ID is not an acceptable value. If <code>EC2SecurityGroupOwnerId</code> is specified, <code>EC2SecurityGroupName</code> must also be provided. and <code>CIDRIP</code> cannot be provided. </p> <p>Example: <code>111122223333</code> </p>',
+    }),
   })
   .openapi({
     required: ['ClusterSecurityGroupName'],
@@ -8939,69 +6178,40 @@ const RevokeClusterSecurityGroupIngressMessageSchema = z
 
 const RevokeEndpointAccessMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The cluster to revoke access from.' }),
-    ).exactOptional(),
-    Account: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account ID whose access is to be revoked.',
-        }),
-    ).exactOptional(),
-    VpcIds: VpcIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The virtual private cloud (VPC) identifiers for which access is to be revoked.',
-        }),
-    ).exactOptional(),
-    Force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to force the revoke action. If true, the Redshift-managed VPC endpoints associated with the endpoint authorization are also deleted.',
-        }),
-    ).exactOptional(),
+    ClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The cluster to revoke access from.',
+    }),
+    Account: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID whose access is to be revoked.',
+    }),
+    VpcIds: VpcIdentifierListSchema.exactOptional().openapi({
+      description: 'The virtual private cloud (VPC) identifiers for which access is to be revoked.',
+    }),
+    Force: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to force the revoke action. If true, the Redshift-managed VPC endpoints associated with the endpoint authorization are also deleted.',
+    }),
   })
   .openapi({ title: 'RevokeEndpointAccessMessage', required: [] })
   .openapi('RevokeEndpointAccessMessage')
 
 const RevokeSnapshotAccessMessageSchema = z
   .object({
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the snapshot that the account can no longer access.',
-        }),
-    ).exactOptional(),
-    SnapshotArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the snapshot associated with the message to revoke access.',
-        }),
-    ).exactOptional(),
-    SnapshotClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.',
-        }),
-    ).exactOptional(),
-    AccountWithRestoreAccess: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Web Services account that can no longer restore the specified snapshot.',
-        }),
-    ),
+    SnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the snapshot that the account can no longer access.',
+    }),
+    SnapshotArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the snapshot associated with the message to revoke access.',
+    }),
+    SnapshotClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.',
+    }),
+    AccountWithRestoreAccess: StringSchema.openapi({
+      description:
+        'The identifier of the Amazon Web Services account that can no longer restore the specified snapshot.',
+    }),
   })
   .openapi({
     required: ['AccountWithRestoreAccess'],
@@ -9012,14 +6222,10 @@ const RevokeSnapshotAccessMessageSchema = z
 
 const RotateEncryptionKeyMessageSchema = z
   .object({
-    ClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the cluster that you want to rotate the encryption keys for.</p> <p>Constraints: Must be the name of valid cluster that has encryption enabled.</p>',
-        }),
-    ),
+    ClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The unique identifier of the cluster that you want to rotate the encryption keys for.</p> <p>Constraints: Must be the name of valid cluster that has encryption enabled.</p>',
+    }),
   })
   .openapi({
     required: ['ClusterIdentifier'],
@@ -9030,38 +6236,25 @@ const RotateEncryptionKeyMessageSchema = z
 
 const UpdatePartnerStatusInputMessageSchema = z
   .object({
-    AccountId: PartnerIntegrationAccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID that owns the cluster.' }),
-    ),
-    ClusterIdentifier: PartnerIntegrationClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster identifier of the cluster whose partner integration status is being updated.',
-        }),
-    ),
-    DatabaseName: PartnerIntegrationDatabaseNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the database whose partner integration status is being updated.',
-        }),
-    ),
-    PartnerName: PartnerIntegrationPartnerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the partner whose integration status is being updated.',
-        }),
-    ),
-    Status: PartnerIntegrationStatusSchema.and(
-      z.any().openapi({ description: 'The value of the updated status.' }),
-    ),
-    StatusMessage: PartnerIntegrationStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message provided by the partner.' }),
-    ).exactOptional(),
+    AccountId: PartnerIntegrationAccountIdSchema.openapi({
+      description: 'The Amazon Web Services account ID that owns the cluster.',
+    }),
+    ClusterIdentifier: PartnerIntegrationClusterIdentifierSchema.openapi({
+      description:
+        'The cluster identifier of the cluster whose partner integration status is being updated.',
+    }),
+    DatabaseName: PartnerIntegrationDatabaseNameSchema.openapi({
+      description: 'The name of the database whose partner integration status is being updated.',
+    }),
+    PartnerName: PartnerIntegrationPartnerNameSchema.openapi({
+      description: 'The name of the partner whose integration status is being updated.',
+    }),
+    Status: PartnerIntegrationStatusSchema.openapi({
+      description: 'The value of the updated status.',
+    }),
+    StatusMessage: PartnerIntegrationStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message provided by the partner.',
+    }),
   })
   .openapi({
     required: ['AccountId', 'ClusterIdentifier', 'DatabaseName', 'PartnerName', 'Status'],
@@ -9997,14 +7190,7 @@ export const getActionAuthorizeEndpointAccessRoute = createRoute({
       VpcIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'VpcIdentifier' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'VpcIdentifier' } })),
         )
         .exactOptional()
         .openapi({
@@ -10373,12 +7559,9 @@ export const getActionBatchDeleteClusterSnapshotsRoute = createRoute({
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z.array(
-            DeleteClusterSnapshotMessageSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'DeleteClusterSnapshotMessage' } }),
-            ),
+            DeleteClusterSnapshotMessageSchema.openapi({
+              xml: { name: 'DeleteClusterSnapshotMessage' },
+            }),
           ),
         )
         .openapi({
@@ -10502,14 +7685,7 @@ export const getActionBatchModifyClusterSnapshotsRoute = createRoute({
       SnapshotIdentifierList: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'String' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'String' } })),
         )
         .openapi({
           param: {
@@ -11229,14 +8405,7 @@ export const getActionCreateClusterRoute = createRoute({
       ClusterSecurityGroups: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ClusterSecurityGroupName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'ClusterSecurityGroupName' } })),
         )
         .exactOptional()
         .openapi({
@@ -11260,14 +8429,7 @@ export const getActionCreateClusterRoute = createRoute({
       VpcSecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -11526,14 +8688,7 @@ export const getActionCreateClusterRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -11591,14 +8746,7 @@ export const getActionCreateClusterRoute = createRoute({
       IamRoles: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'IamRoleArn' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'IamRoleArn' } })),
         )
         .exactOptional()
         .openapi({
@@ -11997,14 +9145,7 @@ export const getActionCreateClusterParameterGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -12174,14 +9315,7 @@ export const getActionCreateClusterSecurityGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -12372,14 +9506,7 @@ export const getActionCreateClusterSnapshotRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -12573,14 +9700,7 @@ export const getActionCreateClusterSubnetGroupRoute = createRoute({
       SubnetIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SubnetIdentifier' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } })),
         )
         .openapi({
           param: {
@@ -12603,14 +9723,7 @@ export const getActionCreateClusterSubnetGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -12833,14 +9946,7 @@ export const getActionCreateEndpointAccessRoute = createRoute({
       VpcSecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -13072,14 +10178,7 @@ export const getActionCreateEventSubscriptionRoute = createRoute({
       SourceIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SourceId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SourceId' } })),
         )
         .exactOptional()
         .openapi({
@@ -13100,14 +10199,7 @@ export const getActionCreateEventSubscriptionRoute = createRoute({
       EventCategories: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'EventCategory' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'EventCategory' } })),
         )
         .exactOptional()
         .openapi({
@@ -13158,14 +10250,7 @@ export const getActionCreateEventSubscriptionRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -13379,14 +10464,7 @@ export const getActionCreateHsmClientCertificateRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -13607,14 +10685,7 @@ export const getActionCreateHsmConfigurationRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -13803,24 +10874,16 @@ export const getActionCreateScheduledActionRoute = createRoute({
             .object({
               ResizeCluster: z
                 .object({
-                  ClusterIdentifier: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The unique identifier for the cluster to resize.' }),
-                  ),
-                  ClusterType: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The new cluster type for the specified cluster.' }),
-                  ).exactOptional(),
-                  NodeType: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The new node type for the nodes you are adding. If not specified, the cluster's current node type is used.",
-                      }),
-                  ).exactOptional(),
+                  ClusterIdentifier: StringSchema.openapi({
+                    description: 'The unique identifier for the cluster to resize.',
+                  }),
+                  ClusterType: StringSchema.exactOptional().openapi({
+                    description: 'The new cluster type for the specified cluster.',
+                  }),
+                  NodeType: StringSchema.exactOptional().openapi({
+                    description:
+                      "The new node type for the nodes you are adding. If not specified, the cluster's current node type is used.",
+                  }),
                   NumberOfNodes: z
                     .preprocess(
                       (val) =>
@@ -13831,15 +10894,11 @@ export const getActionCreateScheduledActionRoute = createRoute({
                           : val,
                       IntegerOptionalSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The new number of nodes for the cluster. If not specified, the cluster's current number of nodes is used.",
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "The new number of nodes for the cluster. If not specified, the cluster's current number of nodes is used.",
+                    }),
                   Classic: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -13848,25 +10907,17 @@ export const getActionCreateScheduledActionRoute = createRoute({
                       })(z.stringbool()),
                       BooleanOptionalSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "A boolean value indicating whether the resize operation is using the classic resize process. If you don't provide this parameter or set the value to <code>false</code>, the resize type is elastic. ",
-                        }),
-                    )
-                    .exactOptional(),
-                  ReservedNodeId: StringSchema.and(
-                    z.any().openapi({ description: 'The identifier of the reserved node.' }),
-                  ).exactOptional(),
-                  TargetReservedNodeOfferingId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The identifier of the target reserved node offering.',
-                      }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "A boolean value indicating whether the resize operation is using the classic resize process. If you don't provide this parameter or set the value to <code>false</code>, the resize type is elastic. ",
+                    }),
+                  ReservedNodeId: StringSchema.exactOptional().openapi({
+                    description: 'The identifier of the reserved node.',
+                  }),
+                  TargetReservedNodeOfferingId: StringSchema.exactOptional().openapi({
+                    description: 'The identifier of the target reserved node offering.',
+                  }),
                 })
                 .openapi({
                   required: ['ClusterIdentifier'],
@@ -13874,29 +10925,16 @@ export const getActionCreateScheduledActionRoute = createRoute({
                   description:
                     'Describes a resize cluster operation. For example, a scheduled action to run the <code>ResizeCluster</code> API operation. ',
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'An action that runs a <code>ResizeCluster</code> API operation. ',
-                    }),
-                )
-                .exactOptional(),
-              PauseCluster: PauseClusterMessageSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'An action that runs a <code>PauseCluster</code> API operation. ',
-                  }),
-              ).exactOptional(),
-              ResumeCluster: ResumeClusterMessageSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'An action that runs a <code>ResumeCluster</code> API operation. ',
-                  }),
-              ).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description: 'An action that runs a <code>ResizeCluster</code> API operation. ',
+                }),
+              PauseCluster: PauseClusterMessageSchema.exactOptional().openapi({
+                description: 'An action that runs a <code>PauseCluster</code> API operation. ',
+              }),
+              ResumeCluster: ResumeClusterMessageSchema.exactOptional().openapi({
+                description: 'An action that runs a <code>ResumeCluster</code> API operation. ',
+              }),
             })
             .openapi({
               param: {
@@ -14252,14 +11290,7 @@ export const getActionCreateSnapshotCopyGrantRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -14420,14 +11451,7 @@ export const getActionCreateSnapshotScheduleRoute = createRoute({
       ScheduleDefinitions: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ScheduleDefinition' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'ScheduleDefinition' } })),
         )
         .exactOptional()
         .openapi({
@@ -14478,14 +11502,7 @@ export const getActionCreateSnapshotScheduleRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -14685,14 +11702,7 @@ export const getActionCreateTagsRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .openapi({
           param: {
@@ -14915,14 +11925,7 @@ export const getActionCreateUsageLimitRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -17031,14 +14034,7 @@ export const getActionDeleteTagsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .openapi({
           param: {
@@ -17276,14 +14272,7 @@ export const getActionDescribeAccountAttributesRoute = createRoute({
       AttributeNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'AttributeName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'AttributeName' } })),
         )
         .exactOptional()
         .openapi({
@@ -17755,14 +14744,7 @@ export const getActionDescribeClusterParameterGroupsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -17783,14 +14765,7 @@ export const getActionDescribeClusterParameterGroupsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -18183,14 +15158,7 @@ export const getActionDescribeClusterSecurityGroupsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -18211,14 +15179,7 @@ export const getActionDescribeClusterSecurityGroupsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -18504,14 +15465,7 @@ export const getActionDescribeClusterSnapshotsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -18532,14 +15486,7 @@ export const getActionDescribeClusterSnapshotsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -18573,14 +15520,7 @@ export const getActionDescribeClusterSnapshotsRoute = createRoute({
       SortingEntities: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            SnapshotSortingEntitySchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SnapshotSortingEntity' } }),
-            ),
-          ),
+          z.array(SnapshotSortingEntitySchema.openapi({ xml: { name: 'SnapshotSortingEntity' } })),
         )
         .exactOptional()
         .openapi({
@@ -18796,14 +15736,7 @@ export const getActionDescribeClusterSubnetGroupsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -18824,14 +15757,7 @@ export const getActionDescribeClusterSubnetGroupsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -19392,14 +16318,7 @@ export const getActionDescribeClustersRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -19420,14 +16339,7 @@ export const getActionDescribeClustersRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -20887,14 +17799,7 @@ export const getActionDescribeEventSubscriptionsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -20915,14 +17820,7 @@ export const getActionDescribeEventSubscriptionsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -21364,14 +18262,7 @@ export const getActionDescribeHsmClientCertificatesRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -21392,14 +18283,7 @@ export const getActionDescribeHsmClientCertificatesRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -21604,14 +18488,7 @@ export const getActionDescribeHsmConfigurationsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -21632,14 +18509,7 @@ export const getActionDescribeHsmConfigurationsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -21977,12 +18847,9 @@ export const getActionDescribeNodeConfigurationOptionsRoute = createRoute({
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z.array(
-            NodeConfigurationOptionsFilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'NodeConfigurationOptionsFilter' } }),
-            ),
+            NodeConfigurationOptionsFilterSchema.openapi({
+              xml: { name: 'NodeConfigurationOptionsFilter' },
+            }),
           ),
         )
         .exactOptional()
@@ -23314,14 +20181,7 @@ export const getActionDescribeScheduledActionsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            ScheduledActionFilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ScheduledActionFilter' } }),
-            ),
-          ),
+          z.array(ScheduledActionFilterSchema.openapi({ xml: { name: 'ScheduledActionFilter' } })),
         )
         .exactOptional()
         .openapi({
@@ -23561,14 +20421,7 @@ export const getActionDescribeSnapshotCopyGrantsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -23589,14 +20442,7 @@ export const getActionDescribeSnapshotCopyGrantsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -23778,14 +20624,7 @@ export const getActionDescribeSnapshotSchedulesRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -23805,14 +20644,7 @@ export const getActionDescribeSnapshotSchedulesRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -24337,14 +21169,7 @@ export const getActionDescribeTagsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -24365,14 +21190,7 @@ export const getActionDescribeTagsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -24605,14 +21423,7 @@ export const getActionDescribeUsageLimitsRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .exactOptional()
         .openapi({
@@ -24633,14 +21444,7 @@ export const getActionDescribeUsageLimitsRoute = createRoute({
       TagValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'TagValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -25753,14 +22557,7 @@ export const getActionGetClusterCredentialsRoute = createRoute({
       DbGroups: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'DbGroup' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'DbGroup' } })),
         )
         .exactOptional()
         .openapi({
@@ -26877,14 +23674,7 @@ export const getActionModifyClusterRoute = createRoute({
       ClusterSecurityGroups: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ClusterSecurityGroupName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'ClusterSecurityGroupName' } })),
         )
         .exactOptional()
         .openapi({
@@ -26908,14 +23698,7 @@ export const getActionModifyClusterRoute = createRoute({
       VpcSecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -27619,14 +24402,7 @@ export const getActionModifyClusterIamRolesRoute = createRoute({
       AddIamRoles: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'IamRoleArn' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'IamRoleArn' } })),
         )
         .exactOptional()
         .openapi({
@@ -27647,14 +24423,7 @@ export const getActionModifyClusterIamRolesRoute = createRoute({
       RemoveIamRoles: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'IamRoleArn' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'IamRoleArn' } })),
         )
         .exactOptional()
         .openapi({
@@ -28007,42 +24776,30 @@ export const getActionModifyClusterParameterGroupRoute = createRoute({
           z.array(
             z
               .object({
-                ParameterName: StringSchema.and(
-                  z.any().openapi({ description: 'The name of the parameter.' }),
-                ).exactOptional(),
-                ParameterValue: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The value of the parameter. If <code>ParameterName</code> is <code>wlm_json_configuration</code>, then the maximum size of <code>ParameterValue</code> is 8000 characters.',
-                    }),
-                ).exactOptional(),
-                Description: StringSchema.and(
-                  z.any().openapi({ description: 'A description of the parameter.' }),
-                ).exactOptional(),
-                Source: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The source of the parameter value, such as "engine-default" or "user".',
-                    }),
-                ).exactOptional(),
-                DataType: StringSchema.and(
-                  z.any().openapi({ description: 'The data type of the parameter.' }),
-                ).exactOptional(),
-                AllowedValues: StringSchema.and(
-                  z.any().openapi({ description: 'The valid range of values for the parameter.' }),
-                ).exactOptional(),
-                ApplyType: ParameterApplyTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specifies how to apply the WLM configuration parameter. Some properties can be applied dynamically, while other properties require that any associated clusters be rebooted for the configuration changes to be applied. For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.',
-                    }),
-                ).exactOptional(),
+                ParameterName: StringSchema.exactOptional().openapi({
+                  description: 'The name of the parameter.',
+                }),
+                ParameterValue: StringSchema.exactOptional().openapi({
+                  description:
+                    'The value of the parameter. If <code>ParameterName</code> is <code>wlm_json_configuration</code>, then the maximum size of <code>ParameterValue</code> is 8000 characters.',
+                }),
+                Description: StringSchema.exactOptional().openapi({
+                  description: 'A description of the parameter.',
+                }),
+                Source: StringSchema.exactOptional().openapi({
+                  description:
+                    'The source of the parameter value, such as "engine-default" or "user".',
+                }),
+                DataType: StringSchema.exactOptional().openapi({
+                  description: 'The data type of the parameter.',
+                }),
+                AllowedValues: StringSchema.exactOptional().openapi({
+                  description: 'The valid range of values for the parameter.',
+                }),
+                ApplyType: ParameterApplyTypeSchema.exactOptional().openapi({
+                  description:
+                    'Specifies how to apply the WLM configuration parameter. Some properties can be applied dynamically, while other properties require that any associated clusters be rebooted for the configuration changes to be applied. For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.',
+                }),
                 IsModifiable: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -28051,33 +24808,20 @@ export const getActionModifyClusterParameterGroupRoute = createRoute({
                     })(z.stringbool()),
                     BooleanSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If <code>true</code>, the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed. ',
-                      }),
-                  )
-                  .exactOptional(),
-                MinimumEngineVersion: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The earliest engine version to which the parameter can apply.',
-                    }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'If <code>true</code>, the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed. ',
+                  }),
+                MinimumEngineVersion: StringSchema.exactOptional().openapi({
+                  description: 'The earliest engine version to which the parameter can apply.',
+                }),
               })
               .openapi({
                 description: 'Describes a parameter in a cluster parameter group.',
                 required: [],
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'Parameter' } }),
-              ),
+              .openapi({ xml: { name: 'Parameter' } }),
           ),
         )
         .openapi({
@@ -28627,14 +25371,7 @@ export const getActionModifyClusterSubnetGroupRoute = createRoute({
       SubnetIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SubnetIdentifier' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } })),
         )
         .openapi({
           param: {
@@ -28805,14 +25542,7 @@ export const getActionModifyEndpointAccessRoute = createRoute({
       VpcSecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -29012,14 +25742,7 @@ export const getActionModifyEventSubscriptionRoute = createRoute({
       SourceIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SourceId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SourceId' } })),
         )
         .exactOptional()
         .openapi({
@@ -29040,14 +25763,7 @@ export const getActionModifyEventSubscriptionRoute = createRoute({
       EventCategories: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'EventCategory' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'EventCategory' } })),
         )
         .exactOptional()
         .openapi({
@@ -29306,24 +26022,16 @@ export const getActionModifyScheduledActionRoute = createRoute({
             .object({
               ResizeCluster: z
                 .object({
-                  ClusterIdentifier: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The unique identifier for the cluster to resize.' }),
-                  ),
-                  ClusterType: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The new cluster type for the specified cluster.' }),
-                  ).exactOptional(),
-                  NodeType: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The new node type for the nodes you are adding. If not specified, the cluster's current node type is used.",
-                      }),
-                  ).exactOptional(),
+                  ClusterIdentifier: StringSchema.openapi({
+                    description: 'The unique identifier for the cluster to resize.',
+                  }),
+                  ClusterType: StringSchema.exactOptional().openapi({
+                    description: 'The new cluster type for the specified cluster.',
+                  }),
+                  NodeType: StringSchema.exactOptional().openapi({
+                    description:
+                      "The new node type for the nodes you are adding. If not specified, the cluster's current node type is used.",
+                  }),
                   NumberOfNodes: z
                     .preprocess(
                       (val) =>
@@ -29334,15 +26042,11 @@ export const getActionModifyScheduledActionRoute = createRoute({
                           : val,
                       IntegerOptionalSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The new number of nodes for the cluster. If not specified, the cluster's current number of nodes is used.",
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "The new number of nodes for the cluster. If not specified, the cluster's current number of nodes is used.",
+                    }),
                   Classic: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -29351,25 +26055,17 @@ export const getActionModifyScheduledActionRoute = createRoute({
                       })(z.stringbool()),
                       BooleanOptionalSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "A boolean value indicating whether the resize operation is using the classic resize process. If you don't provide this parameter or set the value to <code>false</code>, the resize type is elastic. ",
-                        }),
-                    )
-                    .exactOptional(),
-                  ReservedNodeId: StringSchema.and(
-                    z.any().openapi({ description: 'The identifier of the reserved node.' }),
-                  ).exactOptional(),
-                  TargetReservedNodeOfferingId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The identifier of the target reserved node offering.',
-                      }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "A boolean value indicating whether the resize operation is using the classic resize process. If you don't provide this parameter or set the value to <code>false</code>, the resize type is elastic. ",
+                    }),
+                  ReservedNodeId: StringSchema.exactOptional().openapi({
+                    description: 'The identifier of the reserved node.',
+                  }),
+                  TargetReservedNodeOfferingId: StringSchema.exactOptional().openapi({
+                    description: 'The identifier of the target reserved node offering.',
+                  }),
                 })
                 .openapi({
                   required: ['ClusterIdentifier'],
@@ -29377,29 +26073,16 @@ export const getActionModifyScheduledActionRoute = createRoute({
                   description:
                     'Describes a resize cluster operation. For example, a scheduled action to run the <code>ResizeCluster</code> API operation. ',
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'An action that runs a <code>ResizeCluster</code> API operation. ',
-                    }),
-                )
-                .exactOptional(),
-              PauseCluster: PauseClusterMessageSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'An action that runs a <code>PauseCluster</code> API operation. ',
-                  }),
-              ).exactOptional(),
-              ResumeCluster: ResumeClusterMessageSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'An action that runs a <code>ResumeCluster</code> API operation. ',
-                  }),
-              ).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description: 'An action that runs a <code>ResizeCluster</code> API operation. ',
+                }),
+              PauseCluster: PauseClusterMessageSchema.exactOptional().openapi({
+                description: 'An action that runs a <code>PauseCluster</code> API operation. ',
+              }),
+              ResumeCluster: ResumeClusterMessageSchema.exactOptional().openapi({
+                description: 'An action that runs a <code>ResumeCluster</code> API operation. ',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -29915,14 +26598,7 @@ export const getActionModifySnapshotScheduleRoute = createRoute({
       ScheduleDefinitions: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ScheduleDefinition' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'ScheduleDefinition' } })),
         )
         .openapi({
           param: {
@@ -30745,42 +27421,30 @@ export const getActionResetClusterParameterGroupRoute = createRoute({
           z.array(
             z
               .object({
-                ParameterName: StringSchema.and(
-                  z.any().openapi({ description: 'The name of the parameter.' }),
-                ).exactOptional(),
-                ParameterValue: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The value of the parameter. If <code>ParameterName</code> is <code>wlm_json_configuration</code>, then the maximum size of <code>ParameterValue</code> is 8000 characters.',
-                    }),
-                ).exactOptional(),
-                Description: StringSchema.and(
-                  z.any().openapi({ description: 'A description of the parameter.' }),
-                ).exactOptional(),
-                Source: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The source of the parameter value, such as "engine-default" or "user".',
-                    }),
-                ).exactOptional(),
-                DataType: StringSchema.and(
-                  z.any().openapi({ description: 'The data type of the parameter.' }),
-                ).exactOptional(),
-                AllowedValues: StringSchema.and(
-                  z.any().openapi({ description: 'The valid range of values for the parameter.' }),
-                ).exactOptional(),
-                ApplyType: ParameterApplyTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specifies how to apply the WLM configuration parameter. Some properties can be applied dynamically, while other properties require that any associated clusters be rebooted for the configuration changes to be applied. For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.',
-                    }),
-                ).exactOptional(),
+                ParameterName: StringSchema.exactOptional().openapi({
+                  description: 'The name of the parameter.',
+                }),
+                ParameterValue: StringSchema.exactOptional().openapi({
+                  description:
+                    'The value of the parameter. If <code>ParameterName</code> is <code>wlm_json_configuration</code>, then the maximum size of <code>ParameterValue</code> is 8000 characters.',
+                }),
+                Description: StringSchema.exactOptional().openapi({
+                  description: 'A description of the parameter.',
+                }),
+                Source: StringSchema.exactOptional().openapi({
+                  description:
+                    'The source of the parameter value, such as "engine-default" or "user".',
+                }),
+                DataType: StringSchema.exactOptional().openapi({
+                  description: 'The data type of the parameter.',
+                }),
+                AllowedValues: StringSchema.exactOptional().openapi({
+                  description: 'The valid range of values for the parameter.',
+                }),
+                ApplyType: ParameterApplyTypeSchema.exactOptional().openapi({
+                  description:
+                    'Specifies how to apply the WLM configuration parameter. Some properties can be applied dynamically, while other properties require that any associated clusters be rebooted for the configuration changes to be applied. For more information about parameters and parameter groups, go to <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift Parameter Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.',
+                }),
                 IsModifiable: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -30789,33 +27453,20 @@ export const getActionResetClusterParameterGroupRoute = createRoute({
                     })(z.stringbool()),
                     BooleanSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If <code>true</code>, the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed. ',
-                      }),
-                  )
-                  .exactOptional(),
-                MinimumEngineVersion: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The earliest engine version to which the parameter can apply.',
-                    }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'If <code>true</code>, the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed. ',
+                  }),
+                MinimumEngineVersion: StringSchema.exactOptional().openapi({
+                  description: 'The earliest engine version to which the parameter can apply.',
+                }),
               })
               .openapi({
                 description: 'Describes a parameter in a cluster parameter group.',
                 required: [],
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'Parameter' } }),
-              ),
+              .openapi({ xml: { name: 'Parameter' } }),
           ),
         )
         .exactOptional()
@@ -31533,14 +28184,7 @@ export const getActionRestoreFromClusterSnapshotRoute = createRoute({
       ClusterSecurityGroups: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ClusterSecurityGroupName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'ClusterSecurityGroupName' } })),
         )
         .exactOptional()
         .openapi({
@@ -31564,14 +28208,7 @@ export const getActionRestoreFromClusterSnapshotRoute = createRoute({
       VpcSecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -31705,14 +28342,7 @@ export const getActionRestoreFromClusterSnapshotRoute = createRoute({
       IamRoles: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'IamRoleArn' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'IamRoleArn' } })),
         )
         .exactOptional()
         .openapi({
@@ -32790,14 +29420,7 @@ export const getActionRevokeEndpointAccessRoute = createRoute({
       VpcIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'VpcIdentifier' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'VpcIdentifier' } })),
         )
         .exactOptional()
         .openapi({

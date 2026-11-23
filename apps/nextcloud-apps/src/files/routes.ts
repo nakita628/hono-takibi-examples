@@ -5,13 +5,7 @@ const CapabilitiesSchema = z
     files: z
       .object({
         windows_compatible_filenames: z.boolean(),
-        $comment: z.string().nullable(),
         bigfilechunking: z.boolean(),
-        blacklisted_files: z.array(z.object({})),
-        forbidden_filenames: z.array(z.string()),
-        forbidden_filename_basenames: z.array(z.string()),
-        forbidden_filename_characters: z.array(z.string()),
-        forbidden_filename_extensions: z.array(z.string()),
         chunked_upload: z
           .object({
             max_size: z
@@ -55,13 +49,7 @@ const CapabilitiesSchema = z
       .openapi({
         required: [
           'windows_compatible_filenames',
-          '$comment',
           'bigfilechunking',
-          'blacklisted_files',
-          'forbidden_filenames',
-          'forbidden_filename_basenames',
-          'forbidden_filename_characters',
-          'forbidden_filename_extensions',
           'chunked_upload',
           'file_conversions',
           'directEditing',
@@ -88,7 +76,7 @@ const FolderTreeSchema = z
           .openapi({ type: 'integer', format: 'int64' }),
         basename: z.string(),
         displayName: z.string().exactOptional(),
-        children: z.array(z.object({})),
+        children: z.array(z.looseObject({})),
       })
       .openapi({ required: ['id', 'basename', 'children'] }),
   )
@@ -104,6 +92,31 @@ const OCSMetaSchema = z
   })
   .openapi({ required: ['status', 'statuscode'] })
   .openapi('OCSMeta')
+
+const PublicCapabilitiesSchema = z
+  .object({
+    files: z
+      .object({
+        $comment: z.string().nullable(),
+        blacklisted_files: z.array(z.looseObject({})),
+        forbidden_filenames: z.array(z.string()),
+        forbidden_filename_basenames: z.array(z.string()),
+        forbidden_filename_characters: z.array(z.string()),
+        forbidden_filename_extensions: z.array(z.string()),
+      })
+      .openapi({
+        required: [
+          '$comment',
+          'blacklisted_files',
+          'forbidden_filenames',
+          'forbidden_filename_basenames',
+          'forbidden_filename_characters',
+          'forbidden_filename_extensions',
+        ],
+      }),
+  })
+  .openapi({ required: ['files'] })
+  .openapi('PublicCapabilities')
 
 const TemplateFieldSchema = z
   .object({
@@ -1726,6 +1739,7 @@ export const getOcsV2PhpAppsFilesApiV1FolderTreeRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1 },
             required: false,
           },
+          default: 1,
         }),
       withParents: z
         .stringbool()

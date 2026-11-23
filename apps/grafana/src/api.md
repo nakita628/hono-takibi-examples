@@ -4489,7 +4489,6 @@ Starting in Grafana v6.4 regions annotations are now returned in one entity that
 |to|query|integer(int64)|false|Find annotations created before specific epoch datetime in milliseconds.|
 |userId|query|integer(int64)|false|Limit response to annotations created by specific user.|
 |userUID|query|string|false|Limit response to annotations created by a specific user, identified by UID.|
-|alertId|query|integer(int64)|false|Find annotations for a specified alert rule by its ID.<br>deprecated: AlertID is deprecated and will be removed in future versions. Please use AlertUID instead.|
 |alertUID|query|string|false|Find annotations for a specified alert rule by its UID.|
 |dashboardId|query|integer(int64)|false|Find annotations that are scoped to a specific dashboard|
 |dashboardUID|query|string|false|Find annotations that are scoped to a specific dashboard|
@@ -4515,6 +4514,7 @@ Starting in Grafana v6.4 regions annotations are now returned in one entity that
   {
     "alertId": 0,
     "alertName": "string",
+    "alertUID": "string",
     "avatarUrl": "string",
     "created": 0,
     "dashboardId": 0,
@@ -4537,6 +4537,16 @@ Starting in Grafana v6.4 regions annotations are now returned in one entity that
     "userUID": "string"
   }
 ]
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
 ```
 
 > 401 Response
@@ -4564,6 +4574,7 @@ Starting in Grafana v6.4 regions annotations are now returned in one entity that
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|(empty)|Inline|
+|400|Bad Request|BadRequestError is returned when the request is invalid and it cannot be processed.|[ErrorResponseBody](#schemaerrorresponsebody)|
 |401|Unauthorized|UnauthorizedError is returned when the request is not authenticated.|[ErrorResponseBody](#schemaerrorresponsebody)|
 |500|Internal Server Error|InternalServerError is a general error indicating something went wrong internally.|[ErrorResponseBody](#schemaerrorresponsebody)|
 
@@ -5025,6 +5036,7 @@ curl https://grafana.example.com/annotations/string \
 {
   "alertId": 0,
   "alertName": "string",
+  "alertUID": "string",
   "avatarUrl": "string",
   "created": 0,
   "dashboardId": 0,
@@ -22250,9 +22262,9 @@ Get list of public dashboards
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|(empty)|[PublicDashboardListResponseWithPagination](#schemapublicdashboardlistresponsewithpagination)|
-|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError](#schemapublicerror-1)|
-|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError](#schemapublicerror-1)|
-|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError](#schemapublicerror-1)|
+|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError2](#schemapublicerror2)|
+|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError2](#schemapublicerror2)|
+|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError2](#schemapublicerror2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -22454,11 +22466,11 @@ Get public dashboard by dashboardUid
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|(empty)|[PublicDashboard](#schemapublicdashboard)|
-|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError](#schemapublicerror-1)|
-|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError](#schemapublicerror-1)|
-|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError](#schemapublicerror-1)|
-|404|Not Found|NotFoundPublicError is returned when the requested resource was not found.|[publicError](#schemapublicerror-1)|
-|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError](#schemapublicerror-1)|
+|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError2](#schemapublicerror2)|
+|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError2](#schemapublicerror2)|
+|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError2](#schemapublicerror2)|
+|404|Not Found|NotFoundPublicError is returned when the requested resource was not found.|[publicError2](#schemapublicerror2)|
+|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError2](#schemapublicerror2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -22604,10 +22616,10 @@ Create public dashboard for a dashboard
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|(empty)|[PublicDashboard](#schemapublicdashboard)|
-|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError](#schemapublicerror-1)|
-|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError](#schemapublicerror-1)|
-|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError](#schemapublicerror-1)|
-|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError](#schemapublicerror-1)|
+|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError2](#schemapublicerror2)|
+|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError2](#schemapublicerror2)|
+|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError2](#schemapublicerror2)|
+|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError2](#schemapublicerror2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -22709,10 +22721,10 @@ Delete public dashboard for a dashboard
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|An OKResponse is returned if the request was successful.|[SuccessResponseBody](#schemasuccessresponsebody)|
-|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError](#schemapublicerror-1)|
-|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError](#schemapublicerror-1)|
-|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError](#schemapublicerror-1)|
-|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError](#schemapublicerror-1)|
+|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError2](#schemapublicerror2)|
+|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError2](#schemapublicerror2)|
+|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError2](#schemapublicerror2)|
+|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError2](#schemapublicerror2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -22859,10 +22871,10 @@ Update public dashboard for a dashboard
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|(empty)|[PublicDashboard](#schemapublicdashboard)|
-|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError](#schemapublicerror-1)|
-|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError](#schemapublicerror-1)|
-|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError](#schemapublicerror-1)|
-|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError](#schemapublicerror-1)|
+|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError2](#schemapublicerror2)|
+|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError2](#schemapublicerror2)|
+|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError2](#schemapublicerror2)|
+|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError2](#schemapublicerror2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -23854,11 +23866,11 @@ Get public dashboard for view
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|(empty)|[DashboardFullWithMeta](#schemadashboardfullwithmeta)|
-|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError](#schemapublicerror-1)|
-|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError](#schemapublicerror-1)|
-|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError](#schemapublicerror-1)|
-|404|Not Found|NotFoundPublicError is returned when the requested resource was not found.|[publicError](#schemapublicerror-1)|
-|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError](#schemapublicerror-1)|
+|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError2](#schemapublicerror2)|
+|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError2](#schemapublicerror2)|
+|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError2](#schemapublicerror2)|
+|404|Not Found|NotFoundPublicError is returned when the requested resource was not found.|[publicError2](#schemapublicerror2)|
+|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError2](#schemapublicerror2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -24012,11 +24024,11 @@ Get annotations for a public dashboard
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|(empty)|Inline|
-|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError](#schemapublicerror-1)|
-|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError](#schemapublicerror-1)|
-|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError](#schemapublicerror-1)|
-|404|Not Found|NotFoundPublicError is returned when the requested resource was not found.|[publicError](#schemapublicerror-1)|
-|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError](#schemapublicerror-1)|
+|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError2](#schemapublicerror2)|
+|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError2](#schemapublicerror2)|
+|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError2](#schemapublicerror2)|
+|404|Not Found|NotFoundPublicError is returned when the requested resource was not found.|[publicError2](#schemapublicerror2)|
+|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError2](#schemapublicerror2)|
 
 <h3 id="getpublicannotations-responseschema">Response Schema</h3>
 
@@ -24537,11 +24549,11 @@ Get results for a given panel on a public dashboard
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|(empty)|[QueryDataResponse](#schemaquerydataresponse)|
-|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError](#schemapublicerror-1)|
-|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError](#schemapublicerror-1)|
-|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError](#schemapublicerror-1)|
-|404|Not Found|NotFoundPublicError is returned when the requested resource was not found.|[publicError](#schemapublicerror-1)|
-|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError](#schemapublicerror-1)|
+|400|Bad Request|BadRequestPublicError is returned when the request is invalid and it cannot be processed.|[publicError2](#schemapublicerror2)|
+|401|Unauthorized|UnauthorisedPublicError is returned when the request is not authenticated.|[publicError2](#schemapublicerror2)|
+|403|Forbidden|ForbiddenPublicError is returned if the user/token has insufficient permissions to access the requested resource.|[publicError2](#schemapublicerror2)|
+|404|Not Found|NotFoundPublicError is returned when the requested resource was not found.|[publicError2](#schemapublicerror2)|
+|500|Internal Server Error|InternalServerPublicError is a general error indicating something went wrong internally.|[publicError2](#schemapublicerror2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -24946,6 +24958,455 @@ curl https://grafana.example.com/snapshots/string \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|An OKResponse is returned if the request was successful.|[SuccessResponseBody](#schemasuccessresponsebody)|
+|403|Forbidden|ForbiddenError is returned if the user/token has insufficient permissions to access the requested resource.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|404|Not Found|NotFoundError is returned when the requested resource was not found.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|500|Internal Server Error|InternalServerError is a general error indicating something went wrong internally.|[ErrorResponseBody](#schemaerrorresponsebody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basic, api_key
+</aside>
+
+<h1 id="grafana-http-api-dashboardvariables">dashboard_variables</h1>
+
+## Turns a cluster into a shared Variable and removes the matching local copies from its dashboards.
+
+<a id="opIdpromoteSharedVariableCluster"></a>
+
+> Code samples
+
+```bash
+curl https://grafana.example.com/dashboards/variables/promote \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "clusterId": "string",
+    "dashboardUIDs": [
+      "string"
+    ],
+    "folderUID": "string",
+    "scope": "string"
+  }'
+```
+
+`POST /dashboards/variables/promote`
+
+Creates the Variable if it does not exist yet, then removes the local variable from each
+dashboard and opts the dashboard in to the shared one. Provisioned dashboards and ones
+this tool cannot convert are skipped and reported in `results`. A cluster with more than
+200 dashboards is promoted in batches: pass up to 200 `dashboardUIDs` per call and repeat
+until `remaining` is 0.
+
+Requires the same permissions as `GET /dashboards/variables/shared-clusters`, plus
+`variables:create` with scope `folders:*`.
+
+> Body parameter
+
+```json
+{
+  "clusterId": "string",
+  "dashboardUIDs": [
+    "string"
+  ],
+  "folderUID": "string",
+  "scope": "string"
+}
+```
+
+<h3 id="turns-a-cluster-into-a-shared-variable-and-removes-the-matching-local-copies-from-its-dashboards-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[SharedVariablePromoteRequest](#schemasharedvariablepromoterequest)|true|none|
+|» clusterId|body|string|false|ClusterID is the cluster to promote, from the org's latest snapshot.|
+|» dashboardUIDs|body|[string]|false|DashboardUIDs limits which dashboards are updated, at most MaxPromoteBatch (200). Empty means<br>the whole cluster, which is allowed only when it fits in one batch.|
+|» folderUID|body|string|false|FolderUID is the folder for a folder Scope override.|
+|» scope|body|[SharedVariableScope](#schemasharedvariablescope)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "clusterId": "string",
+  "folderUID": "string",
+  "remaining": 0,
+  "results": [
+    {
+      "dashboardUID": "string",
+      "error": "string",
+      "skipReason": "string",
+      "status": "string"
+    }
+  ],
+  "scope": "string",
+  "variableAction": "string",
+  "variableName": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+<h3 id="turns-a-cluster-into-a-shared-variable-and-removes-the-matching-local-copies-from-its-dashboards-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|(empty)|[SharedVariablePromoteResult](#schemasharedvariablepromoteresult)|
+|400|Bad Request|BadRequestError is returned when the request is invalid and it cannot be processed.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|401|Unauthorized|UnauthorizedError is returned when the request is not authenticated.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|403|Forbidden|ForbiddenError is returned if the user/token has insufficient permissions to access the requested resource.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|404|Not Found|NotFoundError is returned when the requested resource was not found.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|500|Internal Server Error|InternalServerError is a general error indicating something went wrong internally.|[ErrorResponseBody](#schemaerrorresponsebody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basic, api_key
+</aside>
+
+## Returns the dashboard variables that are defined identically in several dashboards, from the org's latest background scan.
+
+<a id="opIdgetSharedVariableClusters"></a>
+
+> Code samples
+
+```bash
+curl https://grafana.example.com/dashboards/variables/shared-clusters \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /dashboards/variables/shared-clusters`
+
+The scan runs in the background, so this returns immediately. While a scan runs, `status`
+is `scanning` and `clusters` holds the previous result. At most 50 clusters are returned,
+largest first; `truncated` is set when there are more. Opening this endpoint marks the org
+as active, which keeps its scheduled scans running.
+
+Requires the `dashboardGlobalVariables` and `dashboardVariablesMigration` feature toggles;
+every endpoint returns 404 while either is off. Requires `dashboards:read` and
+`dashboards:write` on every dashboard in the org (scope `dashboards:*` or `folders:*`).
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "clusters": [
+    {
+      "conflictReason": "string",
+      "count": 0,
+      "fingerprint": "string",
+      "folderUID": "string",
+      "id": "string",
+      "kind": "string",
+      "name": "string",
+      "nameConflict": true,
+      "noWritableDashboards": true,
+      "promoted": true,
+      "scope": "string",
+      "spec": null
+    }
+  ],
+  "dashboards": 0,
+  "error": "string",
+  "progress": 0,
+  "scannedAt": "1970-01-01T00:00:00Z",
+  "startedAt": "1970-01-01T00:00:00Z",
+  "status": "string",
+  "totalClusters": 0,
+  "truncated": true
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+<h3 id="returns-the-dashboard-variables-that-are-defined-identically-in-several-dashboards-from-the-orgs-latest-background-scan-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|(empty)|[SharedVariableClusters](#schemasharedvariableclusters)|
+|401|Unauthorized|UnauthorizedError is returned when the request is not authenticated.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|403|Forbidden|ForbiddenError is returned if the user/token has insufficient permissions to access the requested resource.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|404|Not Found|NotFoundError is returned when the requested resource was not found.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|500|Internal Server Error|InternalServerError is a general error indicating something went wrong internally.|[ErrorResponseBody](#schemaerrorresponsebody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basic, api_key
+</aside>
+
+## Returns the dashboards in one cluster from the org's latest scan, and whether this tool can update each one.
+
+<a id="opIdgetSharedVariableClusterOccurrences"></a>
+
+> Code samples
+
+```bash
+curl 'https://grafana.example.com/dashboards/variables/shared-clusters/occurrences?id=string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /dashboards/variables/shared-clusters/occurrences`
+
+Requires the same permissions as `GET /dashboards/variables/shared-clusters`.
+
+<h3 id="returns-the-dashboards-in-one-cluster-from-the-orgs-latest-scan-and-whether-this-tool-can-update-each-one-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|query|string|true|The cluster's id, from `GET /dashboards/variables/shared-clusters`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "string",
+  "occurrences": [
+    {
+      "dashboardUID": "string",
+      "folderUID": "string",
+      "markedReadOnly": true,
+      "skipReason": "string",
+      "storedVersion": "string",
+      "title": "string",
+      "writable": true
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+<h3 id="returns-the-dashboards-in-one-cluster-from-the-orgs-latest-scan-and-whether-this-tool-can-update-each-one-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|(empty)|[SharedVariableOccurrences](#schemasharedvariableoccurrences)|
+|400|Bad Request|BadRequestError is returned when the request is invalid and it cannot be processed.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|401|Unauthorized|UnauthorizedError is returned when the request is not authenticated.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|403|Forbidden|ForbiddenError is returned if the user/token has insufficient permissions to access the requested resource.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|404|Not Found|NotFoundError is returned when the requested resource was not found.|[ErrorResponseBody](#schemaerrorresponsebody)|
+|500|Internal Server Error|InternalServerError is a general error indicating something went wrong internally.|[ErrorResponseBody](#schemaerrorresponsebody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basic, api_key
+</aside>
+
+## Starts a background scan of the org's dashboards. Poll `GET /dashboards/variables/shared-clusters` for progress. If a scan is already running, this does not start another.
+
+<a id="opIdrescanSharedVariableClusters"></a>
+
+> Code samples
+
+```bash
+curl https://grafana.example.com/dashboards/variables/shared-clusters/rescan \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`POST /dashboards/variables/shared-clusters/rescan`
+
+Requires the same permissions as `GET /dashboards/variables/shared-clusters`.
+
+> Example responses
+
+> 202 Response
+
+```json
+{
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": "string",
+  "message": "string",
+  "status": "string"
+}
+```
+
+<h3 id="starts-a-background-scan-of-the-orgs-dashboards-poll-get-dashboardsvariablesshared-clusters-for-progress-if-a-scan-is-already-running-this-does-not-start-another-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|(empty)|[SharedVariableRescanResult](#schemasharedvariablerescanresult)|
+|401|Unauthorized|UnauthorizedError is returned when the request is not authenticated.|[ErrorResponseBody](#schemaerrorresponsebody)|
 |403|Forbidden|ForbiddenError is returned if the user/token has insufficient permissions to access the requested resource.|[ErrorResponseBody](#schemaerrorresponsebody)|
 |404|Not Found|NotFoundError is returned when the requested resource was not found.|[ErrorResponseBody](#schemaerrorresponsebody)|
 |500|Internal Server Error|InternalServerError is a general error indicating something went wrong internally.|[ErrorResponseBody](#schemaerrorresponsebody)|
@@ -36935,6 +37396,7 @@ adapted from cortex
 {
   "alertId": 0,
   "alertName": "string",
+  "alertUID": "string",
   "avatarUrl": "string",
   "created": 0,
   "dashboardId": 0,
@@ -36962,8 +37424,9 @@ adapted from cortex
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|alertId|integer(int64)|false|none|none|
+|alertId|integer(int64)|false|none|Deprecated. Use alertUID instead.|
 |alertName|string|false|none|none|
+|alertUID|string|false|none|none|
 |avatarUrl|string|false|none|none|
 |created|integer(int64)|false|none|none|
 |dashboardId|integer(int64)|false|none|Deprecated: Use DashboardUID and OrgID instead|
@@ -65462,6 +65925,285 @@ it is a histogram sample.
 "string"
 ```
 
+<h2 id="tocS_SharedVariableCluster">SharedVariableCluster</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariablecluster"></a>
+<a id="schema_SharedVariableCluster"></a>
+<a id="tocSsharedvariablecluster"></a>
+<a id="tocssharedvariablecluster"></a>
+
+```json
+{
+  "conflictReason": "string",
+  "count": 0,
+  "fingerprint": "string",
+  "folderUID": "string",
+  "id": "string",
+  "kind": "string",
+  "name": "string",
+  "nameConflict": true,
+  "noWritableDashboards": true,
+  "promoted": true,
+  "scope": "string",
+  "spec": null
+}
+```
+
+SharedVariableCluster is a set of dashboards that share an identical local variable
+definition.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|conflictReason|string|false|none|none|
+|count|integer(int64)|false|none|none|
+|fingerprint|string|false|none|none|
+|folderUID|string|false|none|none|
+|id|string|false|none|none|
+|kind|string|false|none|none|
+|name|string|false|none|none|
+|nameConflict|boolean|false|none|none|
+|noWritableDashboards|boolean|false|none|NoWritableDashboards means promote would change nothing: every dashboard is locked.|
+|promoted|boolean|false|none|Promoted means the Variable exists and only local copies remain to strip.|
+|scope|string|false|none|none|
+|spec|object|false|none|none|
+
+<h2 id="tocS_SharedVariableClusters">SharedVariableClusters</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariableclusters"></a>
+<a id="schema_SharedVariableClusters"></a>
+<a id="tocSsharedvariableclusters"></a>
+<a id="tocssharedvariableclusters"></a>
+
+```json
+{
+  "clusters": [
+    {
+      "conflictReason": "string",
+      "count": 0,
+      "fingerprint": "string",
+      "folderUID": "string",
+      "id": "string",
+      "kind": "string",
+      "name": "string",
+      "nameConflict": true,
+      "noWritableDashboards": true,
+      "promoted": true,
+      "scope": "string",
+      "spec": null
+    }
+  ],
+  "dashboards": 0,
+  "error": "string",
+  "progress": 0,
+  "scannedAt": "1970-01-01T00:00:00Z",
+  "startedAt": "1970-01-01T00:00:00Z",
+  "status": "string",
+  "totalClusters": 0,
+  "truncated": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clusters|[[SharedVariableCluster](#schemasharedvariablecluster)]|false|none|none|
+|dashboards|integer(int64)|false|none|none|
+|error|string|false|none|none|
+|progress|integer(int64)|false|none|none|
+|scannedAt|string(date-time)|false|none|ScannedAt is when the clusters were computed; dashboards may have changed since.|
+|startedAt|string(date-time)|false|none|none|
+|status|string|false|none|Status is "scanning", "ready" or "failed". While scanning, clusters are the previous result.|
+|totalClusters|integer(int64)|false|none|TotalClusters counts every qualifying cluster; Truncated is set when clusters holds<br>only the largest of them.|
+|truncated|boolean|false|none|none|
+
+<h2 id="tocS_SharedVariableDashboardPromoteResult">SharedVariableDashboardPromoteResult</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariabledashboardpromoteresult"></a>
+<a id="schema_SharedVariableDashboardPromoteResult"></a>
+<a id="tocSsharedvariabledashboardpromoteresult"></a>
+<a id="tocssharedvariabledashboardpromoteresult"></a>
+
+```json
+{
+  "dashboardUID": "string",
+  "error": "string",
+  "skipReason": "string",
+  "status": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dashboardUID|string|false|none|none|
+|error|string|false|none|none|
+|skipReason|string|false|none|SkipReason is the scanner's reason for a dashboard this tool cannot write.|
+|status|string|false|none|none|
+
+<h2 id="tocS_SharedVariableOccurrence">SharedVariableOccurrence</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariableoccurrence"></a>
+<a id="schema_SharedVariableOccurrence"></a>
+<a id="tocSsharedvariableoccurrence"></a>
+<a id="tocssharedvariableoccurrence"></a>
+
+```json
+{
+  "dashboardUID": "string",
+  "folderUID": "string",
+  "markedReadOnly": true,
+  "skipReason": "string",
+  "storedVersion": "string",
+  "title": "string",
+  "writable": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dashboardUID|string|false|none|none|
+|folderUID|string|false|none|none|
+|markedReadOnly|boolean|false|none|MarkedReadOnly is a dashboard whose own Editable setting is off. That is not a lock:<br>anyone who can edit the dashboard can still save it, so promote still writes it. But it<br>often means the dashboard is maintained as code elsewhere, whose next push would bring<br>the local copy back, so the UI calls it out.|
+|skipReason|string|false|none|none|
+|storedVersion|string|false|none|none|
+|title|string|false|none|none|
+|writable|boolean|false|none|none|
+
+<h2 id="tocS_SharedVariableOccurrences">SharedVariableOccurrences</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariableoccurrences"></a>
+<a id="schema_SharedVariableOccurrences"></a>
+<a id="tocSsharedvariableoccurrences"></a>
+<a id="tocssharedvariableoccurrences"></a>
+
+```json
+{
+  "id": "string",
+  "occurrences": [
+    {
+      "dashboardUID": "string",
+      "folderUID": "string",
+      "markedReadOnly": true,
+      "skipReason": "string",
+      "storedVersion": "string",
+      "title": "string",
+      "writable": true
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|none|
+|occurrences|[[SharedVariableOccurrence](#schemasharedvariableoccurrence)]|false|none|none|
+
+<h2 id="tocS_SharedVariablePromoteRequest">SharedVariablePromoteRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariablepromoterequest"></a>
+<a id="schema_SharedVariablePromoteRequest"></a>
+<a id="tocSsharedvariablepromoterequest"></a>
+<a id="tocssharedvariablepromoterequest"></a>
+
+```json
+{
+  "clusterId": "string",
+  "dashboardUIDs": [
+    "string"
+  ],
+  "folderUID": "string",
+  "scope": "string"
+}
+```
+
+PromoteRequest creates/ensures a cluster's Variable and strips matching locals from its
+dashboards.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clusterId|string|false|none|ClusterID is the cluster to promote, from the org's latest snapshot.|
+|dashboardUIDs|[string]|false|none|DashboardUIDs limits which dashboards are updated, at most MaxPromoteBatch (200). Empty means<br>the whole cluster, which is allowed only when it fits in one batch.|
+|folderUID|string|false|none|FolderUID is the folder for a folder Scope override.|
+|scope|[SharedVariableScope](#schemasharedvariablescope)|false|none|none|
+
+<h2 id="tocS_SharedVariablePromoteResult">SharedVariablePromoteResult</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariablepromoteresult"></a>
+<a id="schema_SharedVariablePromoteResult"></a>
+<a id="tocSsharedvariablepromoteresult"></a>
+<a id="tocssharedvariablepromoteresult"></a>
+
+```json
+{
+  "clusterId": "string",
+  "folderUID": "string",
+  "remaining": 0,
+  "results": [
+    {
+      "dashboardUID": "string",
+      "error": "string",
+      "skipReason": "string",
+      "status": "string"
+    }
+  ],
+  "scope": "string",
+  "variableAction": "string",
+  "variableName": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clusterId|string|false|none|none|
+|folderUID|string|false|none|none|
+|remaining|integer(int64)|false|none|Remaining counts the cluster's dashboards in the snapshot still to strip after this<br>batch; ones this tool cannot write, or that the Variable's scope does not cover, are<br>not counted.|
+|results|[[SharedVariableDashboardPromoteResult](#schemasharedvariabledashboardpromoteresult)]|false|none|none|
+|scope|[SharedVariableScope](#schemasharedvariablescope)|false|none|none|
+|variableAction|string|false|none|none|
+|variableName|string|false|none|none|
+
+<h2 id="tocS_SharedVariableRescanResult">SharedVariableRescanResult</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariablerescanresult"></a>
+<a id="schema_SharedVariableRescanResult"></a>
+<a id="tocSsharedvariablerescanresult"></a>
+<a id="tocssharedvariablerescanresult"></a>
+
+```json
+{
+  "status": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|string|false|none|Status is always "scanning".|
+
+<h2 id="tocS_SharedVariableScope">SharedVariableScope</h2>
+<!-- backwards compatibility -->
+<a id="schemasharedvariablescope"></a>
+<a id="schema_SharedVariableScope"></a>
+<a id="tocSsharedvariablescope"></a>
+<a id="tocssharedvariablescope"></a>
+
+```json
+"string"
+```
+
 <h2 id="tocS_SigV4Config">SigV4Config</h2>
 <!-- backwards compatibility -->
 <a id="schemasigv4config"></a>
@@ -68845,12 +69587,12 @@ in a Vector, all Samples have the same timestamp.
 |to_tag|string|false|none|none|
 |to_user|string|false|none|none|
 
-<h2 id="tocS_alert">alert</h2>
+<h2 id="tocS_alert2">alert2</h2>
 <!-- backwards compatibility -->
-<a id="schemaalert-1"></a>
-<a id="schema_alert"></a>
-<a id="tocSalert-1"></a>
-<a id="tocsalert-1"></a>
+<a id="schemaalert2"></a>
+<a id="schema_alert2"></a>
+<a id="tocSalert2"></a>
+<a id="tocsalert2"></a>
 
 ```json
 {
@@ -68929,7 +69671,7 @@ AlertGroup alert group
 |---|---|---|---|---|
 |alerts|[[gettableAlert](#schemagettablealert)]|true|none|alerts|
 |labels|[labelSet](#schemalabelset)|true|none|LabelSet label set|
-|receiver|[receiver](#schemareceiver-1)|true|none|Receiver receiver|
+|receiver|[receiver2](#schemareceiver2)|true|none|Receiver receiver|
 
 <h2 id="tocS_alertGroups">alertGroups</h2>
 <!-- backwards compatibility -->
@@ -69203,7 +69945,7 @@ GettableAlert gettable alert
 |fingerprint|string|true|none|fingerprint|
 |generatorURL|string|false|none|generator URL<br>Format: uri|
 |labels|[labelSet](#schemalabelset)|true|none|LabelSet label set|
-|receivers|[[receiver](#schemareceiver-1)]|true|none|receivers|
+|receivers|[[receiver2](#schemareceiver2)]|true|none|receivers|
 |startsAt|string|true|none|starts at|
 |status|[alertStatus](#schemaalertstatus)|true|none|AlertStatus alert status|
 |updatedAt|string|true|none|updated at|
@@ -69299,7 +70041,7 @@ GettableAlerts gettable alerts
 |createdBy|string|true|none|created by|
 |endsAt|string|true|none|ends at|
 |id|string|true|none|id|
-|matchers|[matchers](#schemamatchers-1)|true|none|Matchers matchers|
+|matchers|[matchers2](#schemamatchers2)|true|none|Matchers matchers|
 |metadata|[SilenceMetadata](#schemasilencemetadata)|false|none|none|
 |startsAt|string|true|none|starts at|
 |status|[silenceStatus](#schemasilencestatus)|true|none|SilenceStatus silence status|
@@ -69385,7 +70127,7 @@ GettableSilence gettable silence
 |createdBy|string|true|none|created by|
 |endsAt|string|true|none|ends at|
 |id|string|true|none|id|
-|matchers|[matchers](#schemamatchers-1)|true|none|Matchers matchers|
+|matchers|[matchers2](#schemamatchers2)|true|none|Matchers matchers|
 |startsAt|string|true|none|starts at|
 |status|[silenceStatus](#schemasilencestatus)|true|none|SilenceStatus silence status|
 |updatedAt|string|true|none|updated at|
@@ -69472,12 +70214,12 @@ LabelSet label set
 |---|---|---|---|---|
 |**additionalProperties**|string|false|none|none|
 
-<h2 id="tocS_matcher">matcher</h2>
+<h2 id="tocS_matcher2">matcher2</h2>
 <!-- backwards compatibility -->
-<a id="schemamatcher-1"></a>
-<a id="schema_matcher"></a>
-<a id="tocSmatcher-1"></a>
-<a id="tocsmatcher-1"></a>
+<a id="schemamatcher2"></a>
+<a id="schema_matcher2"></a>
+<a id="tocSmatcher2"></a>
+<a id="tocsmatcher2"></a>
 
 ```json
 {
@@ -69499,12 +70241,12 @@ Matcher matcher
 |name|string|true|none|name|
 |value|string|true|none|value|
 
-<h2 id="tocS_matchers">matchers</h2>
+<h2 id="tocS_matchers2">matchers2</h2>
 <!-- backwards compatibility -->
-<a id="schemamatchers-1"></a>
-<a id="schema_matchers"></a>
-<a id="tocSmatchers-1"></a>
-<a id="tocsmatchers-1"></a>
+<a id="schemamatchers2"></a>
+<a id="schema_matchers2"></a>
+<a id="tocSmatchers2"></a>
+<a id="tocsmatchers2"></a>
 
 ```json
 [
@@ -69658,15 +70400,15 @@ PostableSilence postable silence
 |createdBy|string|true|none|created by|
 |endsAt|string|true|none|ends at|
 |id|string|false|none|id|
-|matchers|[matchers](#schemamatchers-1)|true|none|Matchers matchers|
+|matchers|[matchers2](#schemamatchers2)|true|none|Matchers matchers|
 |startsAt|string|true|none|starts at|
 
-<h2 id="tocS_publicError">publicError</h2>
+<h2 id="tocS_publicError2">publicError2</h2>
 <!-- backwards compatibility -->
-<a id="schemapublicerror-1"></a>
-<a id="schema_publicError"></a>
-<a id="tocSpublicerror-1"></a>
-<a id="tocspublicerror-1"></a>
+<a id="schemapublicerror2"></a>
+<a id="schema_publicError2"></a>
+<a id="tocSpublicerror2"></a>
+<a id="tocspublicerror2"></a>
 
 ```json
 {
@@ -69692,12 +70434,12 @@ available to the end user.
 |messageId|string|true|none|MessageID A unique identifier for the error|
 |statusCode|integer(int64)|true|none|StatusCode The HTTP status code returned|
 
-<h2 id="tocS_receiver">receiver</h2>
+<h2 id="tocS_receiver2">receiver2</h2>
 <!-- backwards compatibility -->
-<a id="schemareceiver-1"></a>
-<a id="schema_receiver"></a>
-<a id="tocSreceiver-1"></a>
-<a id="tocsreceiver-1"></a>
+<a id="schemareceiver2"></a>
+<a id="schema_receiver2"></a>
+<a id="tocSreceiver2"></a>
+<a id="tocsreceiver2"></a>
 
 ```json
 {
@@ -69842,7 +70584,7 @@ Silence silence
 |comment|string|true|none|comment|
 |createdBy|string|true|none|created by|
 |endsAt|string|true|none|ends at|
-|matchers|[matchers](#schemamatchers-1)|true|none|Matchers matchers|
+|matchers|[matchers2](#schemamatchers2)|true|none|Matchers matchers|
 |startsAt|string|true|none|starts at|
 
 <h2 id="tocS_silenceStatus">silenceStatus</h2>

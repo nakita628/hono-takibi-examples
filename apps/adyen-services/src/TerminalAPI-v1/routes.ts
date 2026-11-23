@@ -64,19 +64,19 @@ const MessageHeaderSchema = z
       .regex(/^.{1,10}$/)
       .exactOptional()
       .openapi({
-        description:
-          'Identification of a message pair, which processes a transaction.\nRequired if Service or Event MessageClass message or if Device MessageClass and request from POI or response from Sale.',
         'x-nexo-min': 1,
         'x-nexo-max': 10,
+        description:
+          'Identification of a message pair, which processes a transaction.\nRequired if Service or Event MessageClass message or if Device MessageClass and request from POI or response from Sale.',
       }),
     DeviceID: z
       .string()
       .regex(/^.{1,10}$/)
       .exactOptional()
       .openapi({
-        description: 'Identification of a device message pair.\nIf Device MessageClass.',
         'x-nexo-min': 1,
         'x-nexo-max': 10,
+        description: 'Identification of a device message pair.\nIf Device MessageClass.',
       }),
     SaleID: z
       .string()
@@ -112,18 +112,18 @@ const MessageReferenceSchema = z
       .regex(/^.{1,10}$/)
       .exactOptional()
       .openapi({
-        description: 'Identification of a message pair, which processes a transaction.',
         'x-nexo-min': 1,
         'x-nexo-max': 10,
+        description: 'Identification of a message pair, which processes a transaction.',
       }),
     DeviceID: z
       .string()
       .regex(/^.{1,10}$/)
       .exactOptional()
       .openapi({
-        description: 'Identification of a device message pair.',
         'x-nexo-min': 1,
         'x-nexo-max': 10,
+        description: 'Identification of a device message pair.',
       }),
     SaleID: z
       .string()
@@ -192,9 +192,9 @@ const PredefinedContentSchema = z
       .openapi({ description: 'Identification of a predefined message to display or print.' }),
     Language: z
       .string()
-      .regex(/^[a-z]{2,2}$/)
+      .regex(/^[A-Za-z]{2,2}$/)
       .exactOptional()
-      .openapi({ description: 'Identification of a language.' }),
+      .openapi({ description: 'Identification of a language.', 'x-nexo-kind': 'isolanguage2a' }),
   })
   .openapi({
     description:
@@ -329,10 +329,10 @@ const OutputContentSchema = z
       .regex(/^.{0,262144}$/)
       .exactOptional()
       .openapi({
-        description:
-          'XHTML document body containing the message to display or print.\nMandatory if `OutputFormat` is XHTML, not allowed otherwise.',
         'x-nexo-min': 0,
         'x-nexo-max': 262144,
+        description:
+          'XHTML document body containing the message to display or print.\nMandatory if `OutputFormat` is XHTML, not allowed otherwise.',
       }),
     OutputBarcode: OutputBarcodeSchema.exactOptional().openapi({
       description:
@@ -547,13 +547,14 @@ const TrackDataSchema = z
       .exactOptional()
       .openapi({ description: 'Card track number.', 'x-nexo-kind': 'integer' }),
     TrackFormat: TrackFormatSchema.exactOptional().openapi({
-      description: 'Card track format.\nPossible values:\n* **AAMVA**\n* **ISO**',
+      description:
+        'Card track format.\nPossible values:\n* **AAMVA**\n* **CMC-7**\n* **E-13B**\n* **ISO**\n* **JIS-I**\n* **JIS-II**',
       'x-nexo-default': 'ISO',
     }),
     TrackValue: z
       .string()
       .regex(/^.{1,104}$/)
-      .openapi({ description: 'Card track content.', 'x-nexo-min': 1, 'x-nexo-max': 104 }),
+      .openapi({ 'x-nexo-min': 1, 'x-nexo-max': 104, description: 'Card track content.' }),
   })
   .openapi({
     description:
@@ -565,24 +566,21 @@ const TrackDataSchema = z
 const SensitiveCardDataSchema = z
   .object({
     PAN: z
-      .int()
-      .min(8)
-      .max(28)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({ description: 'Primary Account Number.', 'x-nexo-kind': 'digitstring' }),
     CardSeqNumb: z
-      .int()
-      .min(2)
-      .max(3)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Card Sequence Number.\nIf EntryMode is File, Keyed, or Manual.',
         'x-nexo-kind': 'digitstring',
       }),
     ExpiryDate: z
-      .int()
-      .min(4)
-      .max(4)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Date after which the card cannot be used.\nIf EntryMode is File.',
@@ -592,10 +590,10 @@ const SensitiveCardDataSchema = z
       .array(TrackDataSchema)
       .exactOptional()
       .openapi({
-        description:
-          'Magnetic track or magnetic ink characters line.\nIf EntryMode is MagStripe or RFID .',
         'x-nexo-list-min': 0,
         'x-nexo-list-max': 3,
+        description:
+          'Magnetic track or magnetic ink characters line.\nIf EntryMode is MagStripe or RFID .',
       }),
   })
   .openapi({
@@ -669,9 +667,8 @@ const CardDataSchema = z
         'Entry mode of the payment instrument information. In the Payment, Loyalty or StoredValue Request messages, it informs the POI System the entry mode of the payment instrument information when read by the Sale Terminal. In the Payment, Loyalty or StoredValue Response messages, it informs the Sale System the entry mode of the payment instrument.\nPossible values:\n* **Contactless**\n* **File**\n* **ICC**\n* **Keyed**\n* **MagStripe**\n* **Manual**\n* **Mobile**\n* **RFID**\n* **Scanned**\n* **SynchronousICC**\n* **Tapped**',
     }),
     CardCountryCode: z
-      .int()
-      .min(3)
-      .max(3)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Country Code attached to the card (3 numerics).\nIf available in the card.',
@@ -811,14 +808,16 @@ const GeolocationSchema = z
 const SensitiveMobileDataSchema = z
   .object({
     MSISDN: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .openapi({
         description:
           'Mobile Subscriber Integrated Service Digital Network (i.e. mobile phone number of the SIM card). Country, National Destination Code, and Subscriber Number.',
         'x-nexo-kind': 'digitstring',
       }),
     IMSI: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -826,7 +825,8 @@ const SensitiveMobileDataSchema = z
         'x-nexo-kind': 'digitstring',
       }),
     IMEI: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -840,25 +840,24 @@ const SensitiveMobileDataSchema = z
 const MobileDataSchema = z
   .object({
     MobileCountryCode: z
-      .int()
-      .min(3)
-      .max(3)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Identifies the country of a mobile phone operator.\nIf data available.',
         'x-nexo-kind': 'digitstring',
       }),
     MobileNetworkCode: z
-      .int()
-      .min(2)
-      .max(3)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Identifies the mobile phone operator inside a country.\nIf data available.',
         'x-nexo-kind': 'digitstring',
       }),
     MaskedMSISDN: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -922,9 +921,8 @@ const StoredValueAccountIDSchema = z
       .exactOptional()
       .openapi({ description: 'Name of the owner of a stored value account.' }),
     ExpiryDate: z
-      .int()
-      .min(4)
-      .max(4)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -1069,10 +1067,10 @@ const SaleTerminalDataSchema = z
       .regex(/^.{1,16}$/)
       .exactOptional()
       .openapi({
-        description:
-          'Identification of a group of transactions on a POI Terminal, having the same Sale features.\nCould be used to group POI for reconciliation or other purpose defined by the Sale System. The default value is assigned by the Login Request.',
         'x-nexo-min': 1,
         'x-nexo-max': 16,
+        description:
+          'Identification of a group of transactions on a POI Terminal, having the same Sale features.\nCould be used to group POI for reconciliation or other purpose defined by the Sale System. The default value is assigned by the Login Request.',
       }),
   })
   .openapi({
@@ -1114,10 +1112,11 @@ const SaleDataSchema = z
       .openapi({ description: 'Identification of the Cashier or Operator.' }),
     OperatorLanguage: z
       .string()
-      .regex(/^[a-z]{2,2}$/)
+      .regex(/^[A-Za-z]{2,2}$/)
       .exactOptional()
       .openapi({
         description: 'Language of the Cashier or Operator.\nIf different from the Login.',
+        'x-nexo-kind': 'isolanguage2a',
       }),
     ShiftNumber: z
       .string()
@@ -1263,11 +1262,12 @@ const CardAcquisitionTransactionSchema = z
     }),
     CustomerLanguage: z
       .string()
-      .regex(/^[a-z]{2,2}$/)
+      .regex(/^[A-Za-z]{2,2}$/)
       .exactOptional()
       .openapi({
         description:
           'The language used on the terminal screen or in text printed by the terminal.\n  Typical use case is setting the language on unattended terminals. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.',
+        'x-nexo-kind': 'isolanguage2a',
       }),
     ForceEntryMode: ForceEntryModeSchema.exactOptional().openapi({
       description:
@@ -1280,7 +1280,7 @@ const CardAcquisitionTransactionSchema = z
         description: 'Indicates if the Customer realises the selection of the card application.',
       }),
     TotalAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -1352,7 +1352,8 @@ const DiagnosisRequestSchema = z
     AcquirerID: z
       .array(
         z
-          .int()
+          .string()
+          .regex(/^[0-9]*$/)
           .openapi({
             description:
               'Identification of the Acquirer.\nPresent if requesting the diagnosis of these hosts only.',
@@ -1543,10 +1544,10 @@ const TotalFilterSchema = z
       .regex(/^.{1,16}$/)
       .exactOptional()
       .openapi({
-        description:
-          'Sent if totals in the response have to be computed only for this particular value of TotalsGroupID.',
         'x-nexo-min': 1,
         'x-nexo-max': 16,
+        description:
+          'Sent if totals in the response have to be computed only for this particular value of TotalsGroupID.',
       }),
   })
   .openapi({ required: [] })
@@ -1828,10 +1829,11 @@ const LoginRequestSchema = z
       }),
     OperatorLanguage: z
       .string()
-      .regex(/^[a-z]{2,2}$/)
+      .regex(/^[A-Za-z]{2,2}$/)
       .openapi({
         description:
           'Language of the Cashier or Operator.\nDefault value for Device type displays.',
+        'x-nexo-kind': 'isolanguage2a',
       }),
     OperatorID: z
       .string()
@@ -1896,7 +1898,7 @@ const AmountsReqSchema = z
       .regex(/^[A-Z]{3,3}$/)
       .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
     RequestedAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .openapi({
@@ -1904,7 +1906,7 @@ const AmountsReqSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     CashBackAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -1913,7 +1915,7 @@ const AmountsReqSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     TipAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -1923,7 +1925,7 @@ const AmountsReqSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     PaidAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -1933,7 +1935,7 @@ const AmountsReqSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     MinimumAmountToDeliver: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -1943,7 +1945,7 @@ const AmountsReqSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     MaximumCashBackAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -1953,7 +1955,7 @@ const AmountsReqSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     MinimumSplitAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -2003,14 +2005,15 @@ const OriginalPOITransactionSchema = z
         description: 'Code assigned to a transaction approval by the Acquirer.\nIf referral.',
       }),
     AcquirerID: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Identification of the Acquirer.\nRestrict to the Acquirer if present.',
         'x-nexo-kind': 'digitstring',
       }),
     AmountValue: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -2047,7 +2050,8 @@ const TransactionConditionsSchema = z
     AcquirerID: z
       .array(
         z
-          .int()
+          .string()
+          .regex(/^[0-9]*$/)
           .openapi({
             description: 'Identification of the Acquirer.\nRestrict to these Acquirer if present.',
             'x-nexo-kind': 'digitstring',
@@ -2086,11 +2090,12 @@ const TransactionConditionsSchema = z
     }),
     CustomerLanguage: z
       .string()
-      .regex(/^[a-z]{2,2}$/)
+      .regex(/^[A-Za-z]{2,2}$/)
       .exactOptional()
       .openapi({
         description:
           'The language used on the terminal screen or in text printed by the terminal.\nTypical use case is setting the language on unattended terminals. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.',
+        'x-nexo-kind': 'isolanguage2a',
       }),
     ForceOnlineFlag: z
       .boolean()
@@ -2109,10 +2114,10 @@ const TransactionConditionsSchema = z
       .regex(/^.{3,4}$/)
       .exactOptional()
       .openapi({
-        description:
-          'The code which identifies the category of the transaction (MCC).\nThe payment implies a specific MCC.',
         'x-nexo-min': 3,
         'x-nexo-max': 4,
+        description:
+          'The code which identifies the category of the transaction (MCC).\nThe payment implies a specific MCC.',
       }),
   })
   .openapi({ description: 'Conditions on which the transaction must be processed.', required: [] })
@@ -2192,7 +2197,7 @@ const InstalmentSchema = z
         'x-nexo-kind': 'integer',
       }),
     CumulativeAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -2201,7 +2206,7 @@ const InstalmentSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     FirstAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -2210,7 +2215,7 @@ const InstalmentSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     Charges: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -2367,34 +2372,34 @@ const CardReaderAPDURequestSchema = z
       .string()
       .regex(/^.{1,1}$/)
       .openapi({
-        description:
-          'Class field of the APDU command (CLA). APDU request for Card Reader device request. For specific card like synchronous card, a private value should be used in accordance to ISO 7816- 4 (private range D0-FE).',
         'x-nexo-min': 1,
         'x-nexo-max': 1,
+        description:
+          'Class field of the APDU command (CLA). APDU request for Card Reader device request. For specific card like synchronous card, a private value should be used in accordance to ISO 7816- 4 (private range D0-FE).',
       }),
     APDUInstruction: z
       .string()
       .regex(/^.{1,1}$/)
       .openapi({
-        description: 'Instruction field of the APDU command (INS).',
         'x-nexo-min': 1,
         'x-nexo-max': 1,
+        description: 'Instruction field of the APDU command (INS).',
       }),
     APDUPar1: z
       .string()
       .regex(/^.{1,1}$/)
       .openapi({
-        description: 'Parameter 1 field of the APDU command (P1).',
         'x-nexo-min': 1,
         'x-nexo-max': 1,
+        description: 'Parameter 1 field of the APDU command (P1).',
       }),
     APDUPar2: z
       .string()
       .regex(/^.{1,1}$/)
       .openapi({
-        description: 'Parameter 2 field of the APDU command(P2).',
         'x-nexo-min': 1,
         'x-nexo-max': 1,
+        description: 'Parameter 2 field of the APDU command(P2).',
       }),
     APDUData: z
       .string()
@@ -2406,9 +2411,9 @@ const CardReaderAPDURequestSchema = z
       .regex(/^.{1,1}$/)
       .exactOptional()
       .openapi({
-        description: 'Expected length of the data field of the APDU response to the command (Le).',
         'x-nexo-min': 1,
         'x-nexo-max': 1,
+        description: 'Expected length of the data field of the APDU response to the command (Le).',
       }),
   })
   .openapi({
@@ -2440,7 +2445,8 @@ const ReconciliationRequestSchema = z
     AcquirerID: z
       .array(
         z
-          .int()
+          .string()
+          .regex(/^[0-9]*$/)
           .openapi({
             description:
               'Identification of the Acquirer.\nCould be present only if ReconciliationType is AcquirerReconciliation or AcquirerSynchronisation.',
@@ -2453,7 +2459,8 @@ const ReconciliationRequestSchema = z
           'Identification of the Acquirer.\nCould be present only if ReconciliationType is AcquirerReconciliation or AcquirerSynchronisation.',
       }),
     POIReconciliationID: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -2484,7 +2491,7 @@ const ReversalRequestSchema = z
       description: 'Identification of a previous POI transaction.',
     }),
     ReversedAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -2537,23 +2544,23 @@ const StoredValueDataSchema = z
         'Identification of a previous POI transaction.\nIf StoredValueTransactionType is Reverse or Duplicate.',
     }),
     ProductCode: z
-      .int()
-      .min(1)
-      .max(20)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Product code of item purchased with the transaction.',
         'x-nexo-kind': 'digitstring',
       }),
     EanUpc: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Standard product code of item purchased with the transaction.',
         'x-nexo-kind': 'digitstring',
       }),
     ItemAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -2577,9 +2584,9 @@ const StoredValueRequestSchema = z
     StoredValueData: z
       .array(StoredValueDataSchema)
       .openapi({
-        description: 'Data related to the stored value card.',
         'x-nexo-list-min': 1,
         'x-nexo-list-max': 100,
+        description: 'Data related to the stored value card.',
       }),
   })
   .openapi({
@@ -2608,10 +2615,10 @@ const TransactionStatusRequestSchema = z
       .array(DocumentQualifierSchema)
       .exactOptional()
       .openapi({
-        description:
-          'Qualification of the document to print to the Cashier or the Customer. Allows the manager of the printer, Sale or POI Terminal, to send the information to a particular physical printer or to use the paper type accordingly.\nPossible values:\n* **CashierReceipt**\n* **CustomerReceipt**\n* **Document**\n* **Journal**\n* **SaleReceipt**\n* **Voucher**',
         'x-nexo-list-min': 0,
         'x-nexo-list-max': 2,
+        description:
+          'Qualification of the document to print to the Cashier or the Customer. Allows the manager of the printer, Sale or POI Terminal, to send the information to a particular physical printer or to use the paper type accordingly.\nPossible values:\n* **CashierReceipt**\n* **CustomerReceipt**\n* **Document**\n* **Journal**\n* **SaleReceipt**\n* **Voucher**',
       }),
   })
   .openapi({
@@ -2779,7 +2786,8 @@ const ResponseSchema = z
 const PaymentAcquirerDataSchema = z
   .object({
     AcquirerID: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -2824,7 +2832,7 @@ const PaymentAccountStatusSchema = z
   .object({
     PaymentInstrumentData: PaymentInstrumentDataSchema.exactOptional(),
     CurrentBalance: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -2892,7 +2900,8 @@ const POIDataSchema = z
       description: 'Unique identification of a POI transaction for a POI.',
     }),
     POIReconciliationID: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -3042,7 +3051,8 @@ const POIStatusSchema = z
 const HostStatusSchema = z
   .object({
     AcquirerID: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .openapi({ description: 'Identification of the Acquirer.', 'x-nexo-kind': 'digitstring' }),
     IsReachableFlag: z
       .boolean()
@@ -3164,7 +3174,7 @@ const PaymentTotalsSchema = z
         'x-nexo-kind': 'integer',
       }),
     TransactionAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .openapi({
@@ -3185,7 +3195,8 @@ const TransactionTotalsSchema = z
         'Type of payment instrument.\nPossible values:\n* **Card**\n* **Cash**\n* **Check**\n* **Mobile**\n* **StoredValue**',
     }),
     AcquirerID: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({ description: 'Identification of the Acquirer.', 'x-nexo-kind': 'digitstring' }),
     HostReconciliationID: z
@@ -3237,10 +3248,10 @@ const TransactionTotalsSchema = z
       .regex(/^.{1,16}$/)
       .exactOptional()
       .openapi({
-        description:
-          'Identification of a group of transaction on a POI Terminal, having the same Sale features.\nSent if requested in the message request.',
         'x-nexo-min': 1,
         'x-nexo-max': 16,
+        description:
+          'Identification of a group of transaction on a POI Terminal, having the same Sale features.\nSent if requested in the message request.',
       }),
     PaymentCurrency: z
       .string()
@@ -3251,10 +3262,10 @@ const TransactionTotalsSchema = z
       .array(PaymentTotalsSchema)
       .exactOptional()
       .openapi({
-        description:
-          'Totals of the payment transaction during the reconciliation period.\nIf both `TransactionCount` and `TransactionAmount` are not equal to zero.',
         'x-nexo-list-min': 0,
         'x-nexo-list-max': 10,
+        description:
+          'Totals of the payment transaction during the reconciliation period.\nIf both `TransactionCount` and `TransactionAmount` are not equal to zero.',
       }),
   })
   .openapi({
@@ -3268,7 +3279,8 @@ const GetTotalsResponseSchema = z
   .object({
     Response: ResponseSchema.openapi({ description: 'Result of a message request processing.' }),
     POIReconciliationID: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .openapi({
         description: 'Identification of the reconciliation period between Sale and POI.',
         'x-nexo-kind': 'digitstring',
@@ -3302,7 +3314,8 @@ const InputSchema = z
         description: 'Indicates te response of the user from the `GetConfirmation` input command.',
       }),
     FunctionKey: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -3318,7 +3331,8 @@ const InputSchema = z
         'x-nexo-kind': 'unicode',
       }),
     DigitInput: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -3505,7 +3519,7 @@ const LoyaltyResultSchema = z
       description: 'Data related to a loyalty account processed in the transaction.',
     }),
     CurrentBalance: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -3555,7 +3569,7 @@ const AmountsRespSchema = z
       .exactOptional()
       .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
     AuthorizedAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .openapi({
@@ -3563,7 +3577,7 @@ const AmountsRespSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     TotalRebatesAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -3573,13 +3587,13 @@ const AmountsRespSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     TotalFeesAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
       .openapi({ description: 'Total amount of financial fees.', 'x-nexo-kind': 'simpleamount' }),
     CashBackAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -3588,7 +3602,7 @@ const AmountsRespSchema = z
         'x-nexo-kind': 'simpleamount',
       }),
     TipAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -3604,7 +3618,7 @@ const AmountsRespSchema = z
 const ConvertedAmountSchema = z
   .object({
     AmountValue: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .openapi({ description: 'Value of an amount.', 'x-nexo-kind': 'simpleamount' }),
@@ -3630,18 +3644,18 @@ const CurrencyConversionSchema = z
       description: 'Amount after a currency conversion.',
     }),
     Rate: z
-      .number()
+      .float64()
       .exactOptional()
       .openapi({ description: 'Rate of currency conversion.', 'x-nexo-kind': 'decimal' }),
     Markup: z
-      .number()
+      .float64()
       .exactOptional()
       .openapi({
         description: 'Markup of a currency conversion amount as a percentage.',
         'x-nexo-kind': 'decimal',
       }),
     Commission: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -3669,21 +3683,23 @@ const AreaSizeSchema = z
   .object({
     X: z
       .string()
+      .regex(/^[0-9a-fA-F]*$/)
       .openapi({
+        'x-nexo-min': 1,
+        'x-nexo-max': 4,
         description:
           'Abscissa of a point coordinates. The hexadecimal value in text of the abscissa of the coordinates of a point. Leading zero can be removed (e.g. 3BC, 0, and 1287).',
         'x-nexo-kind': 'hexstring',
-        'x-nexo-min': 1,
-        'x-nexo-max': 4,
       }),
     Y: z
       .string()
+      .regex(/^[0-9a-fA-F]*$/)
       .openapi({
+        'x-nexo-min': 1,
+        'x-nexo-max': 4,
         description:
           'Ordinate of a point coordinates. The hexadecimal value in text of the ordinate of the coordinates of a point. Leading zero can be removed (e.g. 3BC, 0, and 1287).',
         'x-nexo-kind': 'hexstring',
-        'x-nexo-min': 1,
-        'x-nexo-max': 4,
       }),
   })
   .openapi({ required: ['X', 'Y'] })
@@ -3693,19 +3709,21 @@ const PointSchema = z
   .object({
     X: z
       .string()
+      .regex(/^[0-9a-fA-F]*$/)
       .openapi({
-        description: 'The hexadecimal value of the coordinates of a point on the abscissa.',
-        'x-nexo-kind': 'hexstring',
         'x-nexo-min': 1,
         'x-nexo-max': 4,
+        description: 'The hexadecimal value of the coordinates of a point on the abscissa.',
+        'x-nexo-kind': 'hexstring',
       }),
     Y: z
       .string()
+      .regex(/^[0-9a-fA-F]*$/)
       .openapi({
-        description: 'The hexadecimal value of the coordinates of a point on the ordinate.',
-        'x-nexo-kind': 'hexstring',
         'x-nexo-min': 1,
         'x-nexo-max': 4,
+        description: 'The hexadecimal value of the coordinates of a point on the ordinate.',
+        'x-nexo-kind': 'hexstring',
       }),
   })
   .openapi({ required: ['X', 'Y'] })
@@ -3795,11 +3813,12 @@ const PaymentResultSchema = z
       }),
     CustomerLanguage: z
       .string()
-      .regex(/^[a-z]{2,2}$/)
+      .regex(/^[A-Za-z]{2,2}$/)
       .exactOptional()
       .openapi({
         description:
           'The language of the customer that was used on the terminal screen or in text printed by the terminal. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.',
+        'x-nexo-kind': 'isolanguage2a',
       }),
     OnlineFlag: z
       .boolean()
@@ -3885,9 +3904,9 @@ const CardReaderAPDUResponseSchema = z
       .string()
       .regex(/^.{2,2}$/)
       .openapi({
-        description: 'Status of a smartcard response to a command (SW1-SW2).',
         'x-nexo-min': 2,
         'x-nexo-max': 2,
+        description: 'Status of a smartcard response to a command (SW1-SW2).',
       }),
   })
   .openapi({
@@ -3906,7 +3925,8 @@ const ReconciliationResponseSchema = z
         'Type of Reconciliation requested by the Sale to the POI.\nPossible values:\n* **AcquirerReconciliation**\n* **AcquirerSynchronisation**\n* **PreviousReconciliation**\n* **SaleReconciliation**',
     }),
     POIReconciliationID: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description:
@@ -3937,7 +3957,7 @@ const ReversalResponseSchema = z
     }),
     OriginalPOITransaction: OriginalPOITransactionSchema.exactOptional(),
     ReversedAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -3959,7 +3979,7 @@ const StoredValueAccountStatusSchema = z
   .object({
     StoredValueAccountID: StoredValueAccountIDSchema,
     CurrentBalance: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -3975,23 +3995,23 @@ const StoredValueResultSchema = z
         'Identification of operation to proceed on the stored value account or the stored value card.\nCopy.\nPossible values:\n* **Activate**\n* **Duplicate**\n* **Load**\n* **Reserve**\n* **Reverse**\n* **Unload**',
     }),
     ProductCode: z
-      .int()
-      .min(1)
-      .max(20)
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Product code of item purchased with the transaction.\nCopy.',
         'x-nexo-kind': 'digitstring',
       }),
     EanUpc: z
-      .int()
+      .string()
+      .regex(/^[0-9]*$/)
       .exactOptional()
       .openapi({
         description: 'Standard product code of item purchased with the transaction.\nCopy.',
         'x-nexo-kind': 'digitstring',
       }),
     ItemAmount: z
-      .number()
+      .float64()
       .min(0)
       .max(99999999.999999)
       .exactOptional()
@@ -4190,54 +4210,6 @@ const SaleToPOIResponseSchema: z.ZodType<SaleToPOIResponseType> = z
 
 type TerminalAPIResponseType = { SaleToPOIResponse: z.infer<typeof SaleToPOIResponseSchema> }
 
-const SaleCapabilitiesSchema = z
-  .array(
-    z.enum([
-      'CashierStatus',
-      'CashierError',
-      'CashierDisplay',
-      'POIReplication',
-      'CashierInput',
-      'CustomerAssistance',
-      'CustomerDisplay',
-      'CustomerError',
-      'CustomerInput',
-      'PrinterReceipt',
-      'PrinterDocument',
-      'PrinterVoucher',
-      'MagStripe',
-      'ICC',
-      'EMVContactless',
-    ]),
-  )
-  .openapi({
-    description:
-      'place holder!\nPossible values:\n* **CashierDisplay**\n* **CashierError**\n* **CashierInput**\n* **CashierStatus**\n* **CustomerAssistance**\n* **CustomerDisplay**\n* **CustomerError**\n* **CustomerInput**\n* **EMVContactless**\n* **ICC**\n* **MagStripe**\n* **POIReplication**\n* **PrinterDocument**\n* **PrinterReceipt**\n* **PrinterVoucher**',
-  })
-  .openapi('SaleCapabilities')
-
-const SoundFormatSchema = z
-  .enum(['SoundRef', 'MessageRef', 'Text'])
-  .openapi({ description: '\nPossible values:\n* **SoundRef**\n* **MessageRef**\n* **Text**' })
-  .openapi('SoundFormat')
-
-const SoundActionSchema = z
-  .enum(['StartSound', 'StopSound', 'SetDefaultVolume'])
-  .openapi({
-    description: '\nPossible values:\n* **StartSound**\n* **StopSound**\n* **SetDefaultVolume**',
-  })
-  .openapi('SoundAction')
-
-const PINFormatSchema = z.enum(['ISO0', 'ISO1', 'ISO2', 'ISO3']).openapi('PINFormat')
-
-const PINRequestTypeSchema = z
-  .enum(['PINVerify', 'PINVerifyOnly', 'PINEnter'])
-  .openapi({
-    description:
-      'Type of PIN Service.\nPossible values:\n* **PINVerify**\n* **PINVerifyOnly**\n* **PINEnter**',
-  })
-  .openapi('PINRequestType')
-
 const TerminalAPIRequestSchema: z.ZodType<TerminalAPIRequestType> = z
   .object({ SaleToPOIRequest: SaleToPOIRequestSchema })
   .openapi({
@@ -4253,65 +4225,6 @@ const TerminalAPIResponseSchema: z.ZodType<TerminalAPIResponseType> = z
     required: ['SaleToPOIResponse'],
   })
   .openapi('TerminalAPIResponse')
-
-const PerformedTransactionSchema = z
-  .object({
-    Response: ResponseSchema,
-    SaleData: SaleDataSchema.exactOptional(),
-    POIData: POIDataSchema.exactOptional(),
-    PaymentResult: PaymentResultSchema.exactOptional(),
-    LoyaltyResult: z.array(LoyaltyResultSchema).exactOptional(),
-    ReversedAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({ 'x-nexo-kind': 'simpleamount' }),
-  })
-  .openapi({ required: ['Response'] })
-  .openapi('PerformedTransaction')
-
-const SoundContentSchema = z
-  .object({
-    SoundFormat: SoundFormatSchema.openapi({
-      description: 'Possible values:\n* **MessageRef**\n* **SoundRef**\n* **Text**',
-    }),
-    Language: z
-      .string()
-      .regex(/^[a-z]{2,2}$/)
-      .exactOptional(),
-    ReferenceID: z.string().regex(/^.+$/).exactOptional(),
-    Text: z.string().regex(/^.+$/).exactOptional(),
-  })
-  .openapi({ required: ['SoundFormat'] })
-  .openapi('SoundContent')
-
-const CardHolderPINSchema = z
-  .object({
-    EncrPINBlock: z.string().openapi({ 'x-nexo-kind': 'contentinformation' }),
-    PINFormat: PINFormatSchema.openapi({
-      description: 'Possible values:\n* **ISO0**\n* **ISO1**\n* **ISO2**\n* **ISO3**',
-    }),
-    AdditionalInput: z.string().regex(/^.+$/).exactOptional(),
-  })
-  .openapi({ required: ['EncrPINBlock', 'PINFormat'] })
-  .openapi('CardHolderPIN')
-
-const ICCResetDataSchema = z
-  .object({
-    ATRValue: z
-      .string()
-      .regex(/^.{1,100}$/)
-      .exactOptional()
-      .openapi({ 'x-nexo-min': 1, 'x-nexo-max': 100 }),
-    CardStatusWords: z
-      .string()
-      .regex(/^.{2,2}$/)
-      .exactOptional()
-      .openapi({ 'x-nexo-min': 2, 'x-nexo-max': 2 }),
-  })
-  .openapi({ required: [] })
-  .openapi('ICCResetData')
 
 const SecurityTrailerSchema = z
   .object({
@@ -4625,23 +4538,6 @@ export const postPrintRoute = createRoute({
       description:
         'It conveys the result of the print, parallel to the message request, except if response not required and absent.\nContent of the Print Response message.',
       content: { 'application/json': { schema: PrintResponseSchema } },
-    },
-  },
-  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
-})
-
-export const postCardreaderapduRoute = createRoute({
-  method: 'post',
-  path: '/cardreaderapdu',
-  summary: 'CardReaderAPDU Request',
-  description:
-    'It contains the APDU request to send to the chip of the card, and a possible invitation message to display on the CashierInterface or the CustomerInterface.\nContent of the Card Reader APDU Request message.',
-  request: { body: { content: { 'application/json': { schema: CardReaderAPDURequestSchema } } } },
-  responses: {
-    200: {
-      description:
-        'Content of the Card Reader APDU Response message.\nIt contains the result of the requested service, APDU response sent by the chip of the card in response to the APDU request.',
-      content: { 'application/json': { schema: CardReaderAPDUResponseSchema } },
     },
   },
   security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],

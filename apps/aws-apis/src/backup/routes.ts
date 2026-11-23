@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CancelLegalHoldOutputSchema = z.object({}).openapi('CancelLegalHoldOutput')
+const CancelLegalHoldOutputSchema = z.looseObject({}).openapi('CancelLegalHoldOutput')
 
 const InvalidParameterValueExceptionSchema = z.any().openapi('InvalidParameterValueException')
 
@@ -32,22 +32,14 @@ const BackupOptionsSchema = z.record(z.string(), BackupOptionValueSchema).openap
 
 const AdvancedBackupSettingSchema = z
   .object({
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies an object containing resource type and backup options. The only supported resource type is Amazon EC2 instances with Windows Volume Shadow Copy Service (VSS). For a CloudFormation example, see the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/integrate-cloudformation-with-aws-backup.html">sample CloudFormation template to enable Windows VSS</a> in the <i>Backup User Guide</i>.</p> <p>Valid values: <code>EC2</code>.</p>',
-        }),
-    ).exactOptional(),
-    BackupOptions: BackupOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the backup option for a selected resource. This option is only available for Windows VSS backup jobs.</p> <p>Valid values: </p> <p>Set to <code>"WindowsVSS":"enabled"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. </p> <p>Set to <code>"WindowsVSS":"disabled"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p> <p>If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p> <p>For more information about Windows VSS backups, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/windows-backups.html">Creating a VSS-Enabled Windows Backup</a>.</p>',
-        }),
-    ).exactOptional(),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies an object containing resource type and backup options. The only supported resource type is Amazon EC2 instances with Windows Volume Shadow Copy Service (VSS). For a CloudFormation example, see the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/integrate-cloudformation-with-aws-backup.html">sample CloudFormation template to enable Windows VSS</a> in the <i>Backup User Guide</i>.</p> <p>Valid values: <code>EC2</code>.</p>',
+    }),
+    BackupOptions: BackupOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the backup option for a selected resource. This option is only available for Windows VSS backup jobs.</p> <p>Valid values: </p> <p>Set to <code>"WindowsVSS":"enabled"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. </p> <p>Set to <code>"WindowsVSS":"disabled"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p> <p>If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p> <p>For more information about Windows VSS backups, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/windows-backups.html">Creating a VSS-Enabled Windows Backup</a>.</p>',
+    }),
   })
   .openapi({ description: 'A list of backup options for each resource type.', required: [] })
   .openapi('AdvancedBackupSetting')
@@ -58,41 +50,25 @@ const AdvancedBackupSettingsSchema = z
 
 const CreateBackupPlanOutputSchema = z
   .object({
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    BackupPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    VersionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. They cannot be edited.',
-        }),
-    ).exactOptional(),
-    AdvancedBackupSettings: AdvancedBackupSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>BackupOptions</code> settings for a resource type. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.',
-        }),
-    ).exactOptional(),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    BackupPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    VersionId: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. They cannot be edited.',
+    }),
+    AdvancedBackupSettings: AdvancedBackupSettingsSchema.exactOptional().openapi({
+      description:
+        'A list of <code>BackupOptions</code> settings for a resource type. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBackupPlanOutput')
@@ -117,22 +93,14 @@ const LongSchema = z.int().openapi('Long')
 
 const LifecycleSchema = z
   .object({
-    MoveToColdStorageAfterDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of days after creation that a recovery point is moved to cold storage.',
-        }),
-    ).exactOptional(),
-    DeleteAfterDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.',
-        }),
-    ).exactOptional(),
+    MoveToColdStorageAfterDays: LongSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of days after creation that a recovery point is moved to cold storage.',
+    }),
+    DeleteAfterDays: LongSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.',
+    }),
   })
   .openapi({
     description:
@@ -148,14 +116,10 @@ const TagsSchema = z.record(z.string(), TagValueSchema).openapi('Tags')
 const CopyActionSchema = z
   .object({
     Lifecycle: LifecycleSchema.exactOptional(),
-    DestinationBackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. For example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ),
+    DestinationBackupVaultArn: ARNSchema.openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. For example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
   })
   .openapi({
     required: ['DestinationBackupVaultArn'],
@@ -169,77 +133,41 @@ const Boolean2Schema = z.boolean().openapi('Boolean2')
 
 const BackupRuleInputSchema = z
   .object({
-    RuleName: BackupRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A display name for a backup rule. Must contain 1 to 50 alphanumeric or '-_.' characters.",
-        }),
-    ),
-    TargetBackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ),
-    ScheduleExpression: CronExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A CRON expression in UTC specifying when Backup initiates a backup job.',
-        }),
-    ).exactOptional(),
-    StartWindowMinutes: WindowMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.",
-        }),
-    ).exactOptional(),
-    CompletionWindowMinutes: WindowMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value in minutes after a backup job is successfully started before it must be completed or it will be canceled by Backup. This value is optional.',
-        }),
-    ).exactOptional(),
-    Lifecycle: LifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
-        }),
-    ).exactOptional(),
-    RecoveryPointTags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair.',
-        }),
-    ).exactOptional(),
-    CopyActions: CopyActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>CopyAction</code> objects, which contains the details of the copy operation.',
-        }),
-    ).exactOptional(),
-    EnableContinuousBackup: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether Backup creates continuous backups. True causes Backup to create continuous backups capable of point-in-time restore (PITR). False (or not specified) causes Backup to create snapshot backups.',
-        }),
-    ).exactOptional(),
+    RuleName: BackupRuleNameSchema.openapi({
+      description:
+        "A display name for a backup rule. Must contain 1 to 50 alphanumeric or '-_.' characters.",
+    }),
+    TargetBackupVaultName: BackupVaultNameSchema.openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    ScheduleExpression: CronExpressionSchema.exactOptional().openapi({
+      description: 'A CRON expression in UTC specifying when Backup initiates a backup job.',
+    }),
+    StartWindowMinutes: WindowMinutesSchema.exactOptional().openapi({
+      description:
+        "A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.",
+    }),
+    CompletionWindowMinutes: WindowMinutesSchema.exactOptional().openapi({
+      description:
+        'A value in minutes after a backup job is successfully started before it must be completed or it will be canceled by Backup. This value is optional.',
+    }),
+    Lifecycle: LifecycleSchema.exactOptional().openapi({
+      description:
+        '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
+    }),
+    RecoveryPointTags: TagsSchema.exactOptional().openapi({
+      description:
+        'To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair.',
+    }),
+    CopyActions: CopyActionsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>CopyAction</code> objects, which contains the details of the copy operation.',
+    }),
+    EnableContinuousBackup: Boolean2Schema.exactOptional().openapi({
+      description:
+        'Specifies whether Backup creates continuous backups. True causes Backup to create continuous backups capable of point-in-time restore (PITR). False (or not specified) causes Backup to create snapshot backups.',
+    }),
   })
   .openapi({
     required: ['RuleName', 'TargetBackupVaultName'],
@@ -255,25 +183,17 @@ const AlreadyExistsExceptionSchema = z.any().openapi('AlreadyExistsException')
 
 const CreateBackupSelectionOutputSchema = z
   .object({
-    SelectionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Uniquely identifies the body of a request to assign a set of resources to a backup plan.',
-        }),
-    ).exactOptional(),
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup selection is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
+    SelectionId: StringSchema.exactOptional().openapi({
+      description:
+        'Uniquely identifies the body of a request to assign a set of resources to a backup plan.',
+    }),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup selection is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBackupSelectionOutput')
@@ -295,30 +215,18 @@ const ConditionValueSchema = z.string().openapi('ConditionValue')
 
 const ConditionSchema = z
   .object({
-    ConditionType: ConditionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An operation applied to a key-value pair used to assign resources to your backup plan. Condition only supports <code>StringEquals</code>. For more flexible assignment options, including <code>StringLike</code> and the ability to exclude resources from your backup plan, use <code>Conditions</code> (with an "s" on the end) for your <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BackupSelection.html"> <code>BackupSelection</code> </a>.',
-        }),
-    ),
-    ConditionKey: ConditionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Department</code> is the key.',
-        }),
-    ),
-    ConditionValue: ConditionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Accounting</code> is the value.',
-        }),
-    ),
+    ConditionType: ConditionTypeSchema.openapi({
+      description:
+        'An operation applied to a key-value pair used to assign resources to your backup plan. Condition only supports <code>StringEquals</code>. For more flexible assignment options, including <code>StringLike</code> and the ability to exclude resources from your backup plan, use <code>Conditions</code> (with an "s" on the end) for your <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BackupSelection.html"> <code>BackupSelection</code> </a>.',
+    }),
+    ConditionKey: ConditionKeySchema.openapi({
+      description:
+        'The key in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Department</code> is the key.',
+    }),
+    ConditionValue: ConditionValueSchema.openapi({
+      description:
+        'The value in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Accounting</code> is the value.',
+    }),
   })
   .openapi({
     required: ['ConditionType', 'ConditionKey', 'ConditionValue'],
@@ -331,22 +239,14 @@ const ListOfTagsSchema = z.array(ConditionSchema).openapi('ListOfTags')
 
 const ConditionParameterSchema = z
   .object({
-    ConditionKey: ConditionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Department</code> is the key.',
-        }),
-    ).exactOptional(),
-    ConditionValue: ConditionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Accounting</code> is the value.',
-        }),
-    ).exactOptional(),
+    ConditionKey: ConditionKeySchema.exactOptional().openapi({
+      description:
+        'The key in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Department</code> is the key.',
+    }),
+    ConditionValue: ConditionValueSchema.exactOptional().openapi({
+      description:
+        'The value in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Accounting</code> is the value.',
+    }),
   })
   .openapi({
     description:
@@ -359,38 +259,22 @@ const ConditionParametersSchema = z.array(ConditionParameterSchema).openapi('Con
 
 const ConditionsSchema = z
   .object({
-    StringEquals: ConditionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the values of your tagged resources for only those resources that you tagged with the same value. Also called "exact matching."',
-        }),
-    ).exactOptional(),
-    StringNotEquals: ConditionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the values of your tagged resources for only those resources that you tagged that do not have the same value. Also called "negated matching."',
-        }),
-    ).exactOptional(),
-    StringLike: ConditionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the values of your tagged resources for matching tag values with the use of a wildcard character (*) anywhere in the string. For example, "prod*" or "*rod*" matches the tag value "production".',
-        }),
-    ).exactOptional(),
-    StringNotLike: ConditionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the values of your tagged resources for non-matching tag values with the use of a wildcard character (*) anywhere in the string.',
-        }),
-    ).exactOptional(),
+    StringEquals: ConditionParametersSchema.exactOptional().openapi({
+      description:
+        'Filters the values of your tagged resources for only those resources that you tagged with the same value. Also called "exact matching."',
+    }),
+    StringNotEquals: ConditionParametersSchema.exactOptional().openapi({
+      description:
+        'Filters the values of your tagged resources for only those resources that you tagged that do not have the same value. Also called "negated matching."',
+    }),
+    StringLike: ConditionParametersSchema.exactOptional().openapi({
+      description:
+        'Filters the values of your tagged resources for matching tag values with the use of a wildcard character (*) anywhere in the string. For example, "prod*" or "*rod*" matches the tag value "production".',
+    }),
+    StringNotLike: ConditionParametersSchema.exactOptional().openapi({
+      description:
+        'Filters the values of your tagged resources for non-matching tag values with the use of a wildcard character (*) anywhere in the string.',
+    }),
   })
   .openapi({
     description:
@@ -401,30 +285,18 @@ const ConditionsSchema = z
 
 const CreateBackupVaultOutputSchema = z
   .object({
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBackupVaultOutput')
@@ -438,22 +310,14 @@ const FrameworkNameSchema = z
 
 const CreateFrameworkOutputSchema = z
   .object({
-    FrameworkName: FrameworkNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the framework. The name must be between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
-        }),
-    ).exactOptional(),
-    FrameworkArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
+    FrameworkName: FrameworkNameSchema.exactOptional().openapi({
+      description:
+        'The unique name of the framework. The name must be between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
+    }),
+    FrameworkArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFrameworkOutput')
@@ -466,16 +330,12 @@ const ParameterValueSchema = z.string().openapi('ParameterValue')
 
 const ControlInputParameterSchema = z
   .object({
-    ParameterName: ParameterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a parameter, for example, <code>BackupPlanFrequency</code>.',
-        }),
-    ).exactOptional(),
-    ParameterValue: ParameterValueSchema.and(
-      z.any().openapi({ description: 'The value of parameter, for example, <code>hourly</code>.' }),
-    ).exactOptional(),
+    ParameterName: ParameterNameSchema.exactOptional().openapi({
+      description: 'The name of a parameter, for example, <code>BackupPlanFrequency</code>.',
+    }),
+    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+      description: 'The value of parameter, for example, <code>hourly</code>.',
+    }),
   })
   .openapi({
     description:
@@ -500,30 +360,18 @@ const StringMapSchema = z.record(z.string(), StringSchema).openapi('StringMap')
 
 const ControlScopeSchema = z
   .object({
-    ComplianceResourceIds: ComplianceResourceIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the only Amazon Web Services resource that you want your control scope to contain.',
-        }),
-    ).exactOptional(),
-    ComplianceResourceTypes: ResourceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether the control scope includes one or more types of resources, such as <code>EFS</code> or <code>RDS</code>.',
-        }),
-    ).exactOptional(),
-    Tags: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag key-value pair applied to those Amazon Web Services resources that you want to trigger an evaluation for a rule. A maximum of one key-value pair can be provided. The tag value is optional, but it cannot be an empty string. The structure to assign a tag is: <code>[{"Key":"string","Value":"string"}]</code>.',
-        }),
-    ).exactOptional(),
+    ComplianceResourceIds: ComplianceResourceIdListSchema.exactOptional().openapi({
+      description:
+        'The ID of the only Amazon Web Services resource that you want your control scope to contain.',
+    }),
+    ComplianceResourceTypes: ResourceTypeListSchema.exactOptional().openapi({
+      description:
+        'Describes whether the control scope includes one or more types of resources, such as <code>EFS</code> or <code>RDS</code>.',
+    }),
+    Tags: StringMapSchema.exactOptional().openapi({
+      description:
+        'The tag key-value pair applied to those Amazon Web Services resources that you want to trigger an evaluation for a rule. A maximum of one key-value pair can be provided. The tag value is optional, but it cannot be an empty string. The structure to assign a tag is: <code>[{"Key":"string","Value":"string"}]</code>.',
+    }),
   })
   .openapi({
     description:
@@ -534,29 +382,16 @@ const ControlScopeSchema = z
 
 const FrameworkControlSchema = z
   .object({
-    ControlName: ControlNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a control. This name is between 1 and 256 characters.',
-        }),
-    ),
-    ControlInputParameters: ControlInputParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ParameterName</code> and <code>ParameterValue</code> pairs.',
-        }),
-    ).exactOptional(),
-    ControlScope: ControlScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scope of a control. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans. For more information, see <a href="aws-backup/latest/devguide/API_ControlScope.html"> <code>ControlScope</code>.</a> ',
-        }),
-    ).exactOptional(),
+    ControlName: ControlNameSchema.openapi({
+      description: 'The name of a control. This name is between 1 and 256 characters.',
+    }),
+    ControlInputParameters: ControlInputParametersSchema.exactOptional().openapi({
+      description: 'A list of <code>ParameterName</code> and <code>ParameterValue</code> pairs.',
+    }),
+    ControlScope: ControlScopeSchema.exactOptional().openapi({
+      description:
+        'The scope of a control. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans. For more information, see <a href="aws-backup/latest/devguide/API_ControlScope.html"> <code>ControlScope</code>.</a> ',
+    }),
   })
   .openapi({
     required: ['ControlName'],
@@ -575,22 +410,14 @@ const ResourceIdentifiersSchema = z.array(StringSchema).openapi('ResourceIdentif
 
 const DateRangeSchema = z
   .object({
-    FromDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This value is the beginning date, inclusive.</p> <p>The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds (milliseconds are optional).</p>',
-        }),
-    ),
-    ToDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This value is the end date, inclusive.</p> <p>The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds (milliseconds are optional).</p>',
-        }),
-    ),
+    FromDate: TimestampSchema.openapi({
+      description:
+        '<p>This value is the beginning date, inclusive.</p> <p>The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds (milliseconds are optional).</p>',
+    }),
+    ToDate: TimestampSchema.openapi({
+      description:
+        '<p>This value is the end date, inclusive.</p> <p>The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds (milliseconds are optional).</p>',
+    }),
   })
   .openapi({
     required: ['FromDate', 'ToDate'],
@@ -601,22 +428,14 @@ const DateRangeSchema = z
 
 const RecoveryPointSelectionSchema = z
   .object({
-    VaultNames: VaultNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'These are the names of the vaults in which the selected recovery points are contained.',
-        }),
-    ).exactOptional(),
-    ResourceIdentifiers: ResourceIdentifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'These are the resources included in the resource selection (including type of resources and vaults).',
-        }),
-    ).exactOptional(),
+    VaultNames: VaultNamesSchema.exactOptional().openapi({
+      description:
+        'These are the names of the vaults in which the selected recovery points are contained.',
+    }),
+    ResourceIdentifiers: ResourceIdentifiersSchema.exactOptional().openapi({
+      description:
+        'These are the resources included in the resource selection (including type of resources and vaults).',
+    }),
     DateRange: DateRangeSchema.exactOptional(),
   })
   .openapi({
@@ -628,52 +447,30 @@ const RecoveryPointSelectionSchema = z
 
 const CreateLegalHoldOutputSchema = z
   .object({
-    Title: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the string title of the legal hold returned after creating the legal hold.',
-        }),
-    ).exactOptional(),
-    Status: LegalHoldStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This displays the status of the legal hold returned after creating the legal hold. Statuses can be <code>ACTIVE</code>, <code>PENDING</code>, <code>CANCELED</code>, <code>CANCELING</code>, or <code>FAILED</code>.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This is the returned string description of the legal hold.' }),
-    ).exactOptional(),
-    LegalHoldId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Legal hold ID returned for the specified legal hold on a recovery point.',
-        }),
-    ).exactOptional(),
-    LegalHoldArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This is the ARN (Amazon Resource Number) of the created legal hold.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'Time in number format when legal hold was created.' }),
-    ).exactOptional(),
-    RecoveryPointSelection: RecoveryPointSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This specifies criteria to assign a set of resources, such as resource types or backup vaults.',
-        }),
-    ).exactOptional(),
+    Title: StringSchema.exactOptional().openapi({
+      description:
+        'This is the string title of the legal hold returned after creating the legal hold.',
+    }),
+    Status: LegalHoldStatusSchema.exactOptional().openapi({
+      description:
+        'This displays the status of the legal hold returned after creating the legal hold. Statuses can be <code>ACTIVE</code>, <code>PENDING</code>, <code>CANCELED</code>, <code>CANCELING</code>, or <code>FAILED</code>.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'This is the returned string description of the legal hold.',
+    }),
+    LegalHoldId: StringSchema.exactOptional().openapi({
+      description: 'Legal hold ID returned for the specified legal hold on a recovery point.',
+    }),
+    LegalHoldArn: ARNSchema.exactOptional().openapi({
+      description: 'This is the ARN (Amazon Resource Number) of the created legal hold.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'Time in number format when legal hold was created.',
+    }),
+    RecoveryPointSelection: RecoveryPointSelectionSchema.exactOptional().openapi({
+      description:
+        'This specifies criteria to assign a set of resources, such as resource types or backup vaults.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLegalHoldOutput')
@@ -687,25 +484,17 @@ const ReportPlanNameSchema = z
 
 const CreateReportPlanOutputSchema = z
   .object({
-    ReportPlanName: ReportPlanNameSchema.and(
-      z.any().openapi({ description: 'The unique name of the report plan.' }),
-    ).exactOptional(),
-    ReportPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
+    ReportPlanName: ReportPlanNameSchema.exactOptional().openapi({
+      description: 'The unique name of the report plan.',
+    }),
+    ReportPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateReportPlanOutput')
@@ -718,33 +507,21 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const DeleteBackupPlanOutputSchema = z
   .object({
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    BackupPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
-        }),
-    ).exactOptional(),
-    DeletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup plan is deleted, in Unix format and Coordinated Universal Time (UTC). The value of <code>DeletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    VersionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.',
-        }),
-    ).exactOptional(),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    BackupPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
+    }),
+    DeletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup plan is deleted, in Unix format and Coordinated Universal Time (UTC). The value of <code>DeletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    VersionId: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBackupPlanOutput')
@@ -774,33 +551,21 @@ const BackupJobStateSchema = z
 
 const RecoveryPointCreatorSchema = z
   .object({
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    BackupPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
-        }),
-    ).exactOptional(),
-    BackupPlanVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version IDs are unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. They cannot be edited.',
-        }),
-    ).exactOptional(),
-    BackupRuleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Uniquely identifies a rule used to schedule the backup of a selection of resources.',
-        }),
-    ).exactOptional(),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    BackupPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
+    }),
+    BackupPlanVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version IDs are unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. They cannot be edited.',
+    }),
+    BackupRuleId: StringSchema.exactOptional().openapi({
+      description:
+        'Uniquely identifies a rule used to schedule the backup of a selection of resources.',
+    }),
   })
   .openapi({
     description:
@@ -817,178 +582,97 @@ const BackupJobChildJobsInStateSchema = z
 
 const DescribeBackupJobOutputSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'Returns the account ID that owns the backup job.' }),
-    ).exactOptional(),
-    BackupJobId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Uniquely identifies a request to Backup to back up a resource.' }),
-    ).exactOptional(),
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a saved resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a job to create a backup job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    State: BackupJobStateSchema.and(
-      z.any().openapi({ description: 'The current state of a resource recovery point.' }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A detailed message explaining the status of the job to back up a resource.',
-        }),
-    ).exactOptional(),
-    PercentDone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains an estimated percentage that is complete of a job at the time the job status was queried.',
-        }),
-    ).exactOptional(),
-    BackupSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of a backup.' }),
-    ).exactOptional(),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ).exactOptional(),
-    CreatedBy: RecoveryPointCreatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains identifying information about the creation of a backup job, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan that is used to create it.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of Amazon Web Services resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.',
-        }),
-    ).exactOptional(),
-    BytesTransferred: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size in bytes transferred to a backup vault at the time that the job status was queried.',
-        }),
-    ).exactOptional(),
-    ExpectedCompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a job to back up resources is expected to be completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>ExpectedCompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    StartBy: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time in Unix format and Coordinated Universal Time (UTC) when a backup job must be started before it is canceled. The value is calculated by adding the start window to the scheduled time. So if the scheduled time were 6:00 PM and the start window is 2 hours, the <code>StartBy</code> time would be 8:00 PM on the date specified. The value of <code>StartBy</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    BackupOptions: BackupOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the options specified as part of backup plan or on-demand backup job.',
-        }),
-    ).exactOptional(),
-    BackupType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the actual backup type selected for a backup job. For example, if a successful Windows Volume Shadow Copy Service (VSS) backup was taken, <code>BackupType</code> returns <code>"WindowsVSS"</code>. If <code>BackupType</code> is empty, then the backup type was a regular backup.',
-        }),
-    ).exactOptional(),
-    ParentJobId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This returns the parent (composite) resource backup job ID.' }),
-    ).exactOptional(),
-    IsParent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This returns the boolean value that a backup job is a parent (composite) job.',
-        }),
-    ).exactOptional(),
-    NumberOfChildJobs: LongSchema.and(
-      z.any().openapi({ description: 'This returns the number of child (nested) backup jobs.' }),
-    ).exactOptional(),
-    ChildJobsInState: BackupJobChildJobsInStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This returns the statistics of the included child (nested) backup jobs.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the non-unique name of the resource that belongs to the specified backup.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'Returns the account ID that owns the backup job.',
+    }),
+    BackupJobId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a request to Backup to back up a resource.',
+    }),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    ResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a saved resource. The format of the ARN depends on the resource type.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a job to create a backup job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    State: BackupJobStateSchema.exactOptional().openapi({
+      description: 'The current state of a resource recovery point.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'A detailed message explaining the status of the job to back up a resource.',
+    }),
+    PercentDone: StringSchema.exactOptional().openapi({
+      description:
+        'Contains an estimated percentage that is complete of a job at the time the job status was queried.',
+    }),
+    BackupSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of a backup.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    CreatedBy: RecoveryPointCreatorSchema.exactOptional().openapi({
+      description:
+        'Contains identifying information about the creation of a backup job, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan that is used to create it.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of Amazon Web Services resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.',
+    }),
+    BytesTransferred: LongSchema.exactOptional().openapi({
+      description:
+        'The size in bytes transferred to a backup vault at the time that the job status was queried.',
+    }),
+    ExpectedCompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a job to back up resources is expected to be completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>ExpectedCompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    StartBy: TimestampSchema.exactOptional().openapi({
+      description:
+        'Specifies the time in Unix format and Coordinated Universal Time (UTC) when a backup job must be started before it is canceled. The value is calculated by adding the start window to the scheduled time. So if the scheduled time were 6:00 PM and the start window is 2 hours, the <code>StartBy</code> time would be 8:00 PM on the date specified. The value of <code>StartBy</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    BackupOptions: BackupOptionsSchema.exactOptional().openapi({
+      description:
+        'Represents the options specified as part of backup plan or on-demand backup job.',
+    }),
+    BackupType: StringSchema.exactOptional().openapi({
+      description:
+        'Represents the actual backup type selected for a backup job. For example, if a successful Windows Volume Shadow Copy Service (VSS) backup was taken, <code>BackupType</code> returns <code>"WindowsVSS"</code>. If <code>BackupType</code> is empty, then the backup type was a regular backup.',
+    }),
+    ParentJobId: StringSchema.exactOptional().openapi({
+      description: 'This returns the parent (composite) resource backup job ID.',
+    }),
+    IsParent: BooleanSchema.exactOptional().openapi({
+      description: 'This returns the boolean value that a backup job is a parent (composite) job.',
+    }),
+    NumberOfChildJobs: LongSchema.exactOptional().openapi({
+      description: 'This returns the number of child (nested) backup jobs.',
+    }),
+    ChildJobsInState: BackupJobChildJobsInStateSchema.exactOptional().openapi({
+      description: 'This returns the statistics of the included child (nested) backup jobs.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'This is the non-unique name of the resource that belongs to the specified backup.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBackupJobOutput')
@@ -999,85 +683,45 @@ const Long2Schema = z.int().openapi('Long2')
 
 const DescribeBackupVaultOutputSchema = z
   .object({
-    BackupVaultName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    EncryptionKeyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The server-side encryption key that is used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.',
-        }),
-    ).exactOptional(),
-    NumberOfRecoveryPoints: Long2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of recovery points that are stored in a backup vault.',
-        }),
-    ).exactOptional(),
-    Locked: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean that indicates whether Backup Vault Lock is currently protecting the backup vault. <code>True</code> means that Vault Lock causes delete or update operations on the recovery points stored in the vault to fail.',
-        }),
-    ).exactOptional(),
-    MinRetentionDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Backup Vault Lock setting that specifies the minimum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a minimum retention period.</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>",
-        }),
-    ).exactOptional(),
-    MaxRetentionDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Backup Vault Lock setting that specifies the maximum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a maximum retention period on the recovery points in the vault (allowing indefinite storage).</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or shorter than the maximum retention period. If the job's retention period is longer than that maximum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>",
-        }),
-    ).exactOptional(),
-    LockDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time when Backup Vault Lock configuration cannot be changed or deleted.</p> <p>If you applied Vault Lock to your vault without specifying a lock date, you can change any of your Vault Lock settings, or delete Vault Lock from the vault entirely, at any time.</p> <p>This value is in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>',
-        }),
-    ).exactOptional(),
+    BackupVaultName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    EncryptionKeyArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The server-side encryption key that is used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.',
+    }),
+    NumberOfRecoveryPoints: Long2Schema.exactOptional().openapi({
+      description: 'The number of recovery points that are stored in a backup vault.',
+    }),
+    Locked: Boolean2Schema.exactOptional().openapi({
+      description:
+        'A Boolean that indicates whether Backup Vault Lock is currently protecting the backup vault. <code>True</code> means that Vault Lock causes delete or update operations on the recovery points stored in the vault to fail.',
+    }),
+    MinRetentionDays: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The Backup Vault Lock setting that specifies the minimum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a minimum retention period.</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>",
+    }),
+    MaxRetentionDays: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The Backup Vault Lock setting that specifies the maximum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a maximum retention period on the recovery points in the vault (allowing indefinite storage).</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or shorter than the maximum retention period. If the job's retention period is longer than that maximum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>",
+    }),
+    LockDate: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time when Backup Vault Lock configuration cannot be changed or deleted.</p> <p>If you applied Vault Lock to your vault without specifying a lock date, you can change any of your Vault Lock settings, or delete Vault Lock from the vault entirely, at any time.</p> <p>This value is in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBackupVaultOutput')
@@ -1092,148 +736,88 @@ const CopyJobChildJobsInStateSchema = z
 
 const CopyJobSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The account ID that owns the copy job.' }),
-    ).exactOptional(),
-    CopyJobId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a copy job.' }),
-    ).exactOptional(),
-    SourceBackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a source copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>. ',
-        }),
-    ).exactOptional(),
-    SourceRecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a source recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    DestinationBackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a destination copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    DestinationRecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a destination recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a copy job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a copy job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    State: CopyJobStateSchema.and(
-      z.any().openapi({ description: 'The current state of a copy job.' }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A detailed message explaining the status of the job to copy a resource.',
-        }),
-    ).exactOptional(),
-    BackupSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of a copy job.' }),
-    ).exactOptional(),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to copy the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The account ID that owns the copy job.',
+    }),
+    CopyJobId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a copy job.',
+    }),
+    SourceBackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a source copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>. ',
+    }),
+    SourceRecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a source recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    DestinationBackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a destination copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    DestinationRecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a destination recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    ResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a copy job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a copy job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    State: CopyJobStateSchema.exactOptional().openapi({
+      description: 'The current state of a copy job.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'A detailed message explaining the status of the job to copy a resource.',
+    }),
+    BackupSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of a copy job.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the IAM role ARN used to copy the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
     CreatedBy: RecoveryPointCreatorSchema.exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.',
-        }),
-    ).exactOptional(),
-    ParentJobId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This uniquely identifies a request to Backup to copy a resource. The return will be the parent (composite) job ID.',
-        }),
-    ).exactOptional(),
-    IsParent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This is a boolean value indicating this is a parent (composite) copy job.',
-        }),
-    ).exactOptional(),
-    CompositeMemberIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax"> logical ID</a> within a stack.',
-        }),
-    ).exactOptional(),
-    NumberOfChildJobs: LongSchema.and(
-      z.any().openapi({ description: 'This is the number of child (nested) copy jobs.' }),
-    ).exactOptional(),
-    ChildJobsInState: CopyJobChildJobsInStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This returns the statistics of the included child (nested) copy jobs.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the non-unique name of the resource that belongs to the specified backup.',
-        }),
-    ).exactOptional(),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.',
+    }),
+    ParentJobId: StringSchema.exactOptional().openapi({
+      description:
+        'This uniquely identifies a request to Backup to copy a resource. The return will be the parent (composite) job ID.',
+    }),
+    IsParent: BooleanSchema.exactOptional().openapi({
+      description: 'This is a boolean value indicating this is a parent (composite) copy job.',
+    }),
+    CompositeMemberIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax"> logical ID</a> within a stack.',
+    }),
+    NumberOfChildJobs: LongSchema.exactOptional().openapi({
+      description: 'This is the number of child (nested) copy jobs.',
+    }),
+    ChildJobsInState: CopyJobChildJobsInStateSchema.exactOptional().openapi({
+      description: 'This returns the statistics of the included child (nested) copy jobs.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'This is the non-unique name of the resource that belongs to the specified backup.',
+    }),
   })
   .openapi({ description: 'Contains detailed information about a copy job.', required: [] })
   .openapi('CopyJob')
 
 const DescribeCopyJobOutputSchema = z
   .object({
-    CopyJob: CopyJobSchema.and(
-      z.any().openapi({ description: 'Contains detailed information about a copy job.' }),
-    ).exactOptional(),
+    CopyJob: CopyJobSchema.exactOptional().openapi({
+      description: 'Contains detailed information about a copy job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCopyJobOutput')
@@ -1249,60 +833,36 @@ const FrameworkControlsSchema = z.array(FrameworkControlSchema).openapi('Framewo
 
 const DescribeFrameworkOutputSchema = z
   .object({
-    FrameworkName: FrameworkNameSchema.and(
-      z.any().openapi({ description: 'The unique name of a framework.' }),
-    ).exactOptional(),
-    FrameworkArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    FrameworkDescription: FrameworkDescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description of the framework.' }),
-    ).exactOptional(),
-    FrameworkControls: FrameworkControlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.',
-        }),
-    ).exactOptional(),
-    DeploymentStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deployment status of a framework. The statuses are:</p> <p> <code>CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED | FAILED</code> </p>',
-        }),
-    ).exactOptional(),
-    FrameworkStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A framework consists of one or more controls. Each control governs a resource, such as backup plans, backup selections, backup vaults, or recovery points. You can also turn Config recording on or off for each resource. The statuses are:</p> <ul> <li> <p> <code>ACTIVE</code> when recording is turned on for all resources governed by the framework.</p> </li> <li> <p> <code>PARTIALLY_ACTIVE</code> when recording is turned off for at least one resource governed by the framework.</p> </li> <li> <p> <code>INACTIVE</code> when recording is turned off for all resources governed by the framework.</p> </li> <li> <p> <code>UNAVAILABLE</code> when Backup is unable to validate recording status at this time.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>DescribeFrameworkOutput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
+    FrameworkName: FrameworkNameSchema.exactOptional().openapi({
+      description: 'The unique name of a framework.',
+    }),
+    FrameworkArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    FrameworkDescription: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the framework.',
+    }),
+    FrameworkControls: FrameworkControlsSchema.exactOptional().openapi({
+      description:
+        'A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.',
+    }),
+    DeploymentStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The deployment status of a framework. The statuses are:</p> <p> <code>CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED | FAILED</code> </p>',
+    }),
+    FrameworkStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A framework consists of one or more controls. Each control governs a resource, such as backup plans, backup selections, backup vaults, or recovery points. You can also turn Config recording on or off for each resource. The statuses are:</p> <ul> <li> <p> <code>ACTIVE</code> when recording is turned on for all resources governed by the framework.</p> </li> <li> <p> <code>PARTIALLY_ACTIVE</code> when recording is turned off for at least one resource governed by the framework.</p> </li> <li> <p> <code>INACTIVE</code> when recording is turned off for all resources governed by the framework.</p> </li> <li> <p> <code>UNAVAILABLE</code> when Backup is unable to validate recording status at this time.</p> </li> </ul>',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>DescribeFrameworkOutput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFrameworkOutput')
@@ -1315,59 +875,35 @@ const GlobalSettingsSchema = z
 
 const DescribeGlobalSettingsOutputSchema = z
   .object({
-    GlobalSettings: GlobalSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the flag <code>isCrossAccountBackupEnabled</code>.',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the flag <code>isCrossAccountBackupEnabled</code> was last updated. This update is in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdateTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
+    GlobalSettings: GlobalSettingsSchema.exactOptional().openapi({
+      description: 'The status of the flag <code>isCrossAccountBackupEnabled</code>.',
+    }),
+    LastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the flag <code>isCrossAccountBackupEnabled</code> was last updated. This update is in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdateTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGlobalSettingsOutput')
 
 const DescribeProtectedResourceOutputSchema = z
   .object({
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of Amazon Web Services resource saved as a recovery point; for example, an Amazon EBS volume or an Amazon RDS database.',
-        }),
-    ).exactOptional(),
-    LastBackupTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a resource was last backed up, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastBackupTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the non-unique name of the resource that belongs to the specified backup.',
-        }),
-    ).exactOptional(),
+    ResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of Amazon Web Services resource saved as a recovery point; for example, an Amazon EBS volume or an Amazon RDS database.',
+    }),
+    LastBackupTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a resource was last backed up, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastBackupTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'This is the non-unique name of the resource that belongs to the specified backup.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProtectedResourceOutput')
@@ -1378,19 +914,13 @@ const RecoveryPointStatusSchema = z
 
 const CalculatedLifecycleSchema = z
   .object({
-    MoveToColdStorageAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp that specifies when to transition a recovery point to cold storage.',
-        }),
-    ).exactOptional(),
-    DeleteAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A timestamp that specifies when to delete a recovery point.' }),
-    ).exactOptional(),
+    MoveToColdStorageAt: TimestampSchema.exactOptional().openapi({
+      description:
+        'A timestamp that specifies when to transition a recovery point to cold storage.',
+    }),
+    DeleteAt: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that specifies when to delete a recovery point.',
+    }),
   })
   .openapi({
     description:
@@ -1403,185 +933,97 @@ const StorageClassSchema = z.enum(['WARM', 'COLD', 'DELETED']).openapi('StorageC
 
 const DescribeRecoveryPointOutputSchema = z
   .object({
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    SourceBackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies the source vault where the resource was originally backed up in; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:BackupVault</code>. If the recovery is restored to the same Amazon Web Services account or Region, this value will be <code>null</code>.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a saved resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of Amazon Web Services resource to save as a recovery point; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.',
-        }),
-    ).exactOptional(),
-    CreatedBy: RecoveryPointCreatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains identifying information about the creation of a recovery point, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan used to create it.',
-        }),
-    ).exactOptional(),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ).exactOptional(),
-    Status: RecoveryPointStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A status code specifying the state of the recovery point.</p> <p> <code>PARTIAL</code> status indicates Backup could not create the recovery point before the backup window closed. To increase your backup plan window using the API, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html">UpdateBackupPlan</a>. You can also increase your backup plan window using the Console by choosing and editing your backup plan.</p> <p> <code>EXPIRED</code> status indicates that the recovery point has exceeded its retention period, but Backup lacks permission or is otherwise unable to delete it. To manually delete these recovery points, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups"> Step 3: Delete the recovery points</a> in the <i>Clean up resources</i> section of <i>Getting started</i>.</p> <p> <code>STOPPED</code> status occurs on a continuous backup where a user has taken some action that causes the continuous backup to be disabled. This can be caused by the removal of permissions, turning off versioning, turning off events being sent to EventBridge, or disabling the EventBridge rules that are put in place by Backup.</p> <p>To resolve <code>STOPPED</code> status, ensure that all requested permissions are in place and that versioning is enabled on the S3 bucket. Once these conditions are met, the next instance of a backup rule running will result in a new continuous recovery point being created. The recovery points with STOPPED status do not need to be deleted.</p>',
-        }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A status message explaining the reason for the recovery point deletion failure.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a recovery point is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a job to create a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    BackupSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of a backup.' }),
-    ).exactOptional(),
-    CalculatedLifecycle: CalculatedLifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CalculatedLifecycle</code> object containing <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps.',
-        }),
-    ).exactOptional(),
-    Lifecycle: LifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups that are transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
-        }),
-    ).exactOptional(),
-    EncryptionKeyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The server-side encryption key used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
-        }),
-    ).exactOptional(),
-    IsEncrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that is returned as <code>TRUE</code> if the specified recovery point is encrypted, or <code>FALSE</code> if the recovery point is not encrypted.',
-        }),
-    ).exactOptional(),
-    StorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the storage class of the recovery point. Valid values are <code>WARM</code> or <code>COLD</code>.',
-        }),
-    ).exactOptional(),
-    LastRestoreTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a recovery point was last restored, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastRestoreTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    ParentRecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is an ARN that uniquely identifies a parent (composite) recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    CompositeMemberIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax"> logical ID</a> within a stack.',
-        }),
-    ).exactOptional(),
-    IsParent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This returns the boolean value that a recovery point is a parent (composite) job.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the non-unique name of the resource that belongs to the specified backup.',
-        }),
-    ).exactOptional(),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    SourceBackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies the source vault where the resource was originally backed up in; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:BackupVault</code>. If the recovery is restored to the same Amazon Web Services account or Region, this value will be <code>null</code>.',
+    }),
+    ResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a saved resource. The format of the ARN depends on the resource type.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of Amazon Web Services resource to save as a recovery point; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.',
+    }),
+    CreatedBy: RecoveryPointCreatorSchema.exactOptional().openapi({
+      description:
+        'Contains identifying information about the creation of a recovery point, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan used to create it.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    Status: RecoveryPointStatusSchema.exactOptional().openapi({
+      description:
+        '<p>A status code specifying the state of the recovery point.</p> <p> <code>PARTIAL</code> status indicates Backup could not create the recovery point before the backup window closed. To increase your backup plan window using the API, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html">UpdateBackupPlan</a>. You can also increase your backup plan window using the Console by choosing and editing your backup plan.</p> <p> <code>EXPIRED</code> status indicates that the recovery point has exceeded its retention period, but Backup lacks permission or is otherwise unable to delete it. To manually delete these recovery points, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups"> Step 3: Delete the recovery points</a> in the <i>Clean up resources</i> section of <i>Getting started</i>.</p> <p> <code>STOPPED</code> status occurs on a continuous backup where a user has taken some action that causes the continuous backup to be disabled. This can be caused by the removal of permissions, turning off versioning, turning off events being sent to EventBridge, or disabling the EventBridge rules that are put in place by Backup.</p> <p>To resolve <code>STOPPED</code> status, ensure that all requested permissions are in place and that versioning is enabled on the S3 bucket. Once these conditions are met, the next instance of a backup rule running will result in a new continuous recovery point being created. The recovery points with STOPPED status do not need to be deleted.</p>',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description:
+        'A status message explaining the reason for the recovery point deletion failure.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a recovery point is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a job to create a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    BackupSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of a backup.',
+    }),
+    CalculatedLifecycle: CalculatedLifecycleSchema.exactOptional().openapi({
+      description:
+        'A <code>CalculatedLifecycle</code> object containing <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps.',
+    }),
+    Lifecycle: LifecycleSchema.exactOptional().openapi({
+      description:
+        '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups that are transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
+    }),
+    EncryptionKeyArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The server-side encryption key used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
+    }),
+    IsEncrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that is returned as <code>TRUE</code> if the specified recovery point is encrypted, or <code>FALSE</code> if the recovery point is not encrypted.',
+    }),
+    StorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        'Specifies the storage class of the recovery point. Valid values are <code>WARM</code> or <code>COLD</code>.',
+    }),
+    LastRestoreTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a recovery point was last restored, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastRestoreTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    ParentRecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'This is an ARN that uniquely identifies a parent (composite) recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    CompositeMemberIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax"> logical ID</a> within a stack.',
+    }),
+    IsParent: BooleanSchema.exactOptional().openapi({
+      description:
+        'This returns the boolean value that a recovery point is a parent (composite) job.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'This is the non-unique name of the resource that belongs to the specified backup.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRecoveryPointOutput')
@@ -1598,22 +1040,15 @@ const ResourceTypeManagementPreferenceSchema = z
 
 const DescribeRegionSettingsOutputSchema = z
   .object({
-    ResourceTypeOptInPreference: ResourceTypeOptInPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of all services along with the opt-in preferences in the Region.',
-        }),
-    ).exactOptional(),
-    ResourceTypeManagementPreference: ResourceTypeManagementPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Returns whether Backup fully manages the backups for a resource type.</p> <p>For the benefits of full Backup management, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#full-management"> Full Backup management</a>.</p> <p>For a list of resource types and whether each supports full Backup management, see the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table.</p> <p>If <code>"DynamoDB":false</code>, you can enable full Backup management for DynamoDB backup by enabling <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli"> Backup\'s advanced DynamoDB backup features</a>.</p>',
-        }),
-    ).exactOptional(),
+    ResourceTypeOptInPreference: ResourceTypeOptInPreferenceSchema.exactOptional().openapi({
+      description:
+        'Returns a list of all services along with the opt-in preferences in the Region.',
+    }),
+    ResourceTypeManagementPreference:
+      ResourceTypeManagementPreferenceSchema.exactOptional().openapi({
+        description:
+          '<p>Returns whether Backup fully manages the backups for a resource type.</p> <p>For the benefits of full Backup management, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#full-management"> Full Backup management</a>.</p> <p>For a list of resource types and whether each supports full Backup management, see the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table.</p> <p>If <code>"DynamoDB":false</code>, you can enable full Backup management for DynamoDB backup by enabling <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli"> Backup\'s advanced DynamoDB backup features</a>.</p>',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRegionSettingsOutput')
@@ -1622,20 +1057,12 @@ const ReportJobIdSchema = z.string().openapi('ReportJobId')
 
 const ReportDestinationSchema = z
   .object({
-    S3BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique name of the Amazon S3 bucket that receives your reports.',
-        }),
-    ).exactOptional(),
-    S3Keys: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The object key that uniquely identifies your reports in your S3 bucket.',
-        }),
-    ).exactOptional(),
+    S3BucketName: StringSchema.exactOptional().openapi({
+      description: 'The unique name of the Amazon S3 bucket that receives your reports.',
+    }),
+    S3Keys: StringListSchema.exactOptional().openapi({
+      description: 'The object key that uniquely identifies your reports in your S3 bucket.',
+    }),
   })
   .openapi({
     description: 'Contains information from your report job about your report destination.',
@@ -1645,65 +1072,37 @@ const ReportDestinationSchema = z
 
 const ReportJobSchema = z
   .object({
-    ReportJobId: ReportJobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for a report job. A unique, randomly generated, Unicode, UTF-8 encoded string that is at most 1,024 bytes long. Report job IDs cannot be edited.',
-        }),
-    ).exactOptional(),
-    ReportPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    ReportTemplate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are: </p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a report job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CompletionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a report job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of a report job. The statuses are:</p> <p> <code>CREATED | RUNNING | COMPLETED | FAILED</code> </p> <p> <code>COMPLETED</code> means that the report is available for your review at your designated destination. If the status is <code>FAILED</code>, review the <code>StatusMessage</code> for the reason.</p>',
-        }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z.any().openapi({ description: 'A message explaining the status of the report job.' }),
-    ).exactOptional(),
-    ReportDestination: ReportDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 bucket name and S3 keys for the destination where the report job publishes the report.',
-        }),
-    ).exactOptional(),
+    ReportJobId: ReportJobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for a report job. A unique, randomly generated, Unicode, UTF-8 encoded string that is at most 1,024 bytes long. Report job IDs cannot be edited.',
+    }),
+    ReportPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    ReportTemplate: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are: </p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a report job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CompletionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a report job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of a report job. The statuses are:</p> <p> <code>CREATED | RUNNING | COMPLETED | FAILED</code> </p> <p> <code>COMPLETED</code> means that the report is available for your review at your designated destination. If the status is <code>FAILED</code>, review the <code>StatusMessage</code> for the reason.</p>',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'A message explaining the status of the report job.',
+    }),
+    ReportDestination: ReportDestinationSchema.exactOptional().openapi({
+      description:
+        'The S3 bucket name and S3 keys for the destination where the report job publishes the report.',
+    }),
   })
   .openapi({
     description:
@@ -1714,14 +1113,10 @@ const ReportJobSchema = z
 
 const DescribeReportJobOutputSchema = z
   .object({
-    ReportJob: ReportJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of information about a report job, including its completion and creation times, report destination, unique report job ID, Amazon Resource Name (ARN), report template, status, and status message.',
-        }),
-    ).exactOptional(),
+    ReportJob: ReportJobSchema.exactOptional().openapi({
+      description:
+        'A list of information about a report job, including its completion and creation times, report destination, unique report job ID, Amazon Resource Name (ARN), report template, status, and status message.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReportJobOutput')
@@ -1735,37 +1130,25 @@ const ReportPlanDescriptionSchema = z
 
 const ReportSettingSchema = z
   .object({
-    ReportTemplate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>',
-        }),
-    ),
-    FrameworkArns: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Names (ARNs) of the frameworks a report covers.',
-        }),
-    ).exactOptional(),
-    NumberOfFrameworks: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of frameworks a report covers.' }),
-    ).exactOptional(),
-    Accounts: StringListSchema.and(
-      z.any().openapi({ description: 'These are the accounts to be included in the report.' }),
-    ).exactOptional(),
-    OrganizationUnits: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'These are the Organizational Units to be included in the report.',
-        }),
-    ).exactOptional(),
-    Regions: StringListSchema.and(
-      z.any().openapi({ description: 'These are the Regions to be included in the report.' }),
-    ).exactOptional(),
+    ReportTemplate: StringSchema.openapi({
+      description:
+        '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>',
+    }),
+    FrameworkArns: StringListSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Names (ARNs) of the frameworks a report covers.',
+    }),
+    NumberOfFrameworks: IntegerSchema.exactOptional().openapi({
+      description: 'The number of frameworks a report covers.',
+    }),
+    Accounts: StringListSchema.exactOptional().openapi({
+      description: 'These are the accounts to be included in the report.',
+    }),
+    OrganizationUnits: StringListSchema.exactOptional().openapi({
+      description: 'These are the Organizational Units to be included in the report.',
+    }),
+    Regions: StringListSchema.exactOptional().openapi({
+      description: 'These are the Regions to be included in the report.',
+    }),
   })
   .openapi({
     required: ['ReportTemplate'],
@@ -1775,27 +1158,17 @@ const ReportSettingSchema = z
 
 const ReportDeliveryChannelSchema = z
   .object({
-    S3BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique name of the S3 bucket that receives your reports.' }),
-    ),
-    S3KeyPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix for where Backup Audit Manager delivers your reports to Amazon S3. The prefix is this part of the following path: s3://your-bucket-name/<code>prefix</code>/Backup/us-west-2/year/month/day/report-name. If not specified, there is no prefix.',
-        }),
-    ).exactOptional(),
-    Formats: FormatListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the format of your reports: <code>CSV</code>, <code>JSON</code>, or both. If not specified, the default format is <code>CSV</code>.',
-        }),
-    ).exactOptional(),
+    S3BucketName: StringSchema.openapi({
+      description: 'The unique name of the S3 bucket that receives your reports.',
+    }),
+    S3KeyPrefix: StringSchema.exactOptional().openapi({
+      description:
+        'The prefix for where Backup Audit Manager delivers your reports to Amazon S3. The prefix is this part of the following path: s3://your-bucket-name/<code>prefix</code>/Backup/us-west-2/year/month/day/report-name. If not specified, there is no prefix.',
+    }),
+    Formats: FormatListSchema.exactOptional().openapi({
+      description:
+        'A list of the format of your reports: <code>CSV</code>, <code>JSON</code>, or both. If not specified, the default format is <code>CSV</code>.',
+    }),
   })
   .openapi({
     required: ['S3BucketName'],
@@ -1806,92 +1179,51 @@ const ReportDeliveryChannelSchema = z
 
 const ReportPlanSchema = z
   .object({
-    ReportPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    ReportPlanName: ReportPlanNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the report plan. This name is between 1 and 256 characters starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
-        }),
-    ).exactOptional(),
-    ReportPlanDescription: ReportPlanDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional description of the report plan with a maximum 1,024 characters.',
-        }),
-    ).exactOptional(),
-    ReportSetting: ReportSettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>',
-        }),
-    ).exactOptional(),
-    ReportDeliveryChannel: ReportDeliveryChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about where and how to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.',
-        }),
-    ).exactOptional(),
-    DeploymentStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deployment status of a report plan. The statuses are:</p> <p> <code>CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED</code> </p>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a report plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    LastAttemptedExecutionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a report job associated with this report plan last attempted to run, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastAttemptedExecutionTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    LastSuccessfulExecutionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a report job associated with this report plan last successfully ran, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastSuccessfulExecutionTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
+    ReportPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    ReportPlanName: ReportPlanNameSchema.exactOptional().openapi({
+      description:
+        'The unique name of the report plan. This name is between 1 and 256 characters starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
+    }),
+    ReportPlanDescription: ReportPlanDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the report plan with a maximum 1,024 characters.',
+    }),
+    ReportSetting: ReportSettingSchema.exactOptional().openapi({
+      description:
+        '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>',
+    }),
+    ReportDeliveryChannel: ReportDeliveryChannelSchema.exactOptional().openapi({
+      description:
+        'Contains information about where and how to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.',
+    }),
+    DeploymentStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The deployment status of a report plan. The statuses are:</p> <p> <code>CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED</code> </p>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a report plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    LastAttemptedExecutionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a report job associated with this report plan last attempted to run, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastAttemptedExecutionTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    LastSuccessfulExecutionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a report job associated with this report plan last successfully ran, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastSuccessfulExecutionTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
   })
   .openapi({ description: 'Contains detailed information about a report plan.', required: [] })
   .openapi('ReportPlan')
 
 const DescribeReportPlanOutputSchema = z
   .object({
-    ReportPlan: ReportPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Returns details about the report plan that is specified by its name. These details include the report plan's Amazon Resource Name (ARN), description, settings, delivery channel, deployment status, creation time, and last attempted and successful run times.",
-        }),
-    ).exactOptional(),
+    ReportPlan: ReportPlanSchema.exactOptional().openapi({
+      description:
+        "Returns details about the report plan that is specified by its name. These details include the report plan's Amazon Resource Name (ARN), description, settings, delivery channel, deployment status, creation time, and last attempted and successful run times.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReportPlanOutput')
@@ -1902,195 +1234,109 @@ const RestoreJobStatusSchema = z
 
 const DescribeRestoreJobOutputSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'Returns the account ID that owns the restore job.' }),
-    ).exactOptional(),
-    RestoreJobId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Uniquely identifies the job that restores a recovery point.' }),
-    ).exactOptional(),
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a restore job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a job to restore a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    Status: RestoreJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Status code specifying the state of the job that is initiated by Backup to restore a recovery point.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message showing the status of a job to restore a recovery point.',
-        }),
-    ).exactOptional(),
-    PercentDone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains an estimated percentage that is complete of a job at the time the job status was queried.',
-        }),
-    ).exactOptional(),
-    BackupSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of the restored resource.' }),
-    ).exactOptional(),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ).exactOptional(),
-    ExpectedCompletionTimeMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time in minutes that a job restoring a recovery point is expected to take.',
-        }),
-    ).exactOptional(),
-    CreatedResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource whose recovery point is being restored. The format of the ARN depends on the resource type of the backed-up resource.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns metadata associated with a restore job listed by resource type.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'Returns the account ID that owns the restore job.',
+    }),
+    RestoreJobId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies the job that restores a recovery point.',
+    }),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a restore job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a job to restore a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    Status: RestoreJobStatusSchema.exactOptional().openapi({
+      description:
+        'Status code specifying the state of the job that is initiated by Backup to restore a recovery point.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'A message showing the status of a job to restore a recovery point.',
+    }),
+    PercentDone: StringSchema.exactOptional().openapi({
+      description:
+        'Contains an estimated percentage that is complete of a job at the time the job status was queried.',
+    }),
+    BackupSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of the restored resource.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    ExpectedCompletionTimeMinutes: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of time in minutes that a job restoring a recovery point is expected to take.',
+    }),
+    CreatedResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource whose recovery point is being restored. The format of the ARN depends on the resource type of the backed-up resource.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'Returns metadata associated with a restore job listed by resource type.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRestoreJobOutput')
 
 const ExportBackupPlanTemplateOutputSchema = z
   .object({
-    BackupPlanTemplateJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The body of a backup plan template in JSON format.</p> <note> <p>This is a signed JSON document that cannot be modified before being passed to <code>GetBackupPlanFromJSON.</code> </p> </note>',
-        }),
-    ).exactOptional(),
+    BackupPlanTemplateJson: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The body of a backup plan template in JSON format.</p> <note> <p>This is a signed JSON document that cannot be modified before being passed to <code>GetBackupPlanFromJSON.</code> </p> </note>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExportBackupPlanTemplateOutput')
 
 const BackupRuleSchema = z
   .object({
-    RuleName: BackupRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A display name for a backup rule. Must contain 1 to 50 alphanumeric or '-_.' characters.",
-        }),
-    ),
-    TargetBackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ),
-    ScheduleExpression: CronExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A cron expression in UTC specifying when Backup initiates a backup job. For more information about Amazon Web Services cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html">Schedule Expressions for Rules</a> in the <i>Amazon CloudWatch Events User Guide.</i>. Two examples of Amazon Web Services cron expressions are <code> 15 * ? * * *</code> (take a backup every hour at 15 minutes past the hour) and <code>0 12 * * ? *</code> (take a backup every day at 12 noon UTC). For a table of examples, click the preceding link and scroll down the page.',
-        }),
-    ).exactOptional(),
-    StartWindowMinutes: WindowMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.",
-        }),
-    ).exactOptional(),
-    CompletionWindowMinutes: WindowMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value in minutes after a backup job is successfully started before it must be completed or it will be canceled by Backup. This value is optional.',
-        }),
-    ).exactOptional(),
-    Lifecycle: LifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
-        }),
-    ).exactOptional(),
-    RecoveryPointTags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pair strings that are assigned to resources that are associated with this rule when restored from backup.',
-        }),
-    ).exactOptional(),
-    RuleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Uniquely identifies a rule that is used to schedule the backup of a selection of resources.',
-        }),
-    ).exactOptional(),
-    CopyActions: CopyActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>CopyAction</code> objects, which contains the details of the copy operation.',
-        }),
-    ).exactOptional(),
-    EnableContinuousBackup: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether Backup creates continuous backups. True causes Backup to create continuous backups capable of point-in-time restore (PITR). False (or not specified) causes Backup to create snapshot backups.',
-        }),
-    ).exactOptional(),
+    RuleName: BackupRuleNameSchema.openapi({
+      description:
+        "A display name for a backup rule. Must contain 1 to 50 alphanumeric or '-_.' characters.",
+    }),
+    TargetBackupVaultName: BackupVaultNameSchema.openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    ScheduleExpression: CronExpressionSchema.exactOptional().openapi({
+      description:
+        'A cron expression in UTC specifying when Backup initiates a backup job. For more information about Amazon Web Services cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html">Schedule Expressions for Rules</a> in the <i>Amazon CloudWatch Events User Guide.</i>. Two examples of Amazon Web Services cron expressions are <code> 15 * ? * * *</code> (take a backup every hour at 15 minutes past the hour) and <code>0 12 * * ? *</code> (take a backup every day at 12 noon UTC). For a table of examples, click the preceding link and scroll down the page.',
+    }),
+    StartWindowMinutes: WindowMinutesSchema.exactOptional().openapi({
+      description:
+        "A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.",
+    }),
+    CompletionWindowMinutes: WindowMinutesSchema.exactOptional().openapi({
+      description:
+        'A value in minutes after a backup job is successfully started before it must be completed or it will be canceled by Backup. This value is optional.',
+    }),
+    Lifecycle: LifecycleSchema.exactOptional().openapi({
+      description:
+        '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
+    }),
+    RecoveryPointTags: TagsSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pair strings that are assigned to resources that are associated with this rule when restored from backup.',
+    }),
+    RuleId: StringSchema.exactOptional().openapi({
+      description:
+        'Uniquely identifies a rule that is used to schedule the backup of a selection of resources.',
+    }),
+    CopyActions: CopyActionsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>CopyAction</code> objects, which contains the details of the copy operation.',
+    }),
+    EnableContinuousBackup: Boolean2Schema.exactOptional().openapi({
+      description:
+        'Specifies whether Backup creates continuous backups. True causes Backup to create continuous backups capable of point-in-time restore (PITR). False (or not specified) causes Backup to create snapshot backups.',
+    }),
   })
   .openapi({
     required: ['RuleName', 'TargetBackupVaultName'],
@@ -2102,29 +1348,17 @@ const BackupRulesSchema = z.array(BackupRuleSchema).openapi('BackupRules')
 
 const BackupPlanSchema = z
   .object({
-    BackupPlanName: BackupPlanNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.",
-        }),
-    ),
-    Rules: BackupRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources. ',
-        }),
-    ),
-    AdvancedBackupSettings: AdvancedBackupSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains a list of <code>BackupOptions</code> for each resource type.',
-        }),
-    ).exactOptional(),
+    BackupPlanName: BackupPlanNameSchema.openapi({
+      description:
+        "The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.",
+    }),
+    Rules: BackupRulesSchema.openapi({
+      description:
+        'An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources. ',
+    }),
+    AdvancedBackupSettings: AdvancedBackupSettingsSchema.exactOptional().openapi({
+      description: 'Contains a list of <code>BackupOptions</code> for each resource type.',
+    }),
   })
   .openapi({
     required: ['BackupPlanName', 'Rules'],
@@ -2135,155 +1369,91 @@ const BackupPlanSchema = z
 
 const GetBackupPlanOutputSchema = z
   .object({
-    BackupPlan: BackupPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.',
-        }),
-    ).exactOptional(),
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    BackupPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
-        }),
-    ).exactOptional(),
-    VersionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    DeletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a backup plan is deleted, in Unix format and Coordinated Universal Time (UTC). The value of <code>DeletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    LastExecutionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last time a job to back up resources was run with this backup plan. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    AdvancedBackupSettings: AdvancedBackupSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a list of <code>BackupOptions</code> for each resource type. The list is populated only if the advanced option is set for the backup plan.',
-        }),
-    ).exactOptional(),
+    BackupPlan: BackupPlanSchema.exactOptional().openapi({
+      description:
+        'Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.',
+    }),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    BackupPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
+    }),
+    VersionId: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    DeletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a backup plan is deleted, in Unix format and Coordinated Universal Time (UTC). The value of <code>DeletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    LastExecutionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The last time a job to back up resources was run with this backup plan. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    AdvancedBackupSettings: AdvancedBackupSettingsSchema.exactOptional().openapi({
+      description:
+        'Contains a list of <code>BackupOptions</code> for each resource type. The list is populated only if the advanced option is set for the backup plan.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackupPlanOutput')
 
 const GetBackupPlanFromJSONOutputSchema = z
   .object({
-    BackupPlan: BackupPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.',
-        }),
-    ).exactOptional(),
+    BackupPlan: BackupPlanSchema.exactOptional().openapi({
+      description:
+        'Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackupPlanFromJSONOutput')
 
 const GetBackupPlanFromTemplateOutputSchema = z
   .object({
-    BackupPlanDocument: BackupPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the body of a backup plan based on the target template, including the name, rules, and backup vault of the plan.',
-        }),
-    ).exactOptional(),
+    BackupPlanDocument: BackupPlanSchema.exactOptional().openapi({
+      description:
+        'Returns the body of a backup plan based on the target template, including the name, rules, and backup vault of the plan.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackupPlanFromTemplateOutput')
 
 const BackupSelectionSchema = z
   .object({
-    SelectionName: BackupSelectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The display name of a resource selection document. Must contain 1 to 50 alphanumeric or '-_.' characters.",
-        }),
-    ),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role that Backup uses to authenticate when backing up the target resource; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ),
-    Resources: ResourceArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Amazon Resource Names (ARNs) to assign to a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to assign many resources to a backup plan, consider a different resource selection strategy, such as assigning all resources of a resource type or refining your resource selection using tags.</p>',
-        }),
-    ).exactOptional(),
-    ListOfTags: ListOfTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>"StringEquals": { "ConditionKey": "aws:ResourceTag/CreatedByCryo", "ConditionValue": "true" },</code>. Condition operators are case sensitive.</p> <p> <code>ListOfTags</code> differs from <code>Conditions</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you assign all resources that match AT LEAST ONE condition (using OR logic).</p> </li> <li> <p> <code>ListOfTags</code> only supports <code>StringEquals</code>. <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NotResources: ResourceArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Amazon Resource Names (ARNs) to exclude from a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to exclude many resources from a backup plan, consider a different resource selection strategy, such as assigning only one or a few resource types or refining your resource selection using tags.</p>',
-        }),
-    ).exactOptional(),
-    Conditions: ConditionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>"StringEquals": { "ConditionKey": "aws:ResourceTag/CreatedByCryo", "ConditionValue": "true" },</code>. Condition operators are case sensitive.</p> <p> <code>Conditions</code> differs from <code>ListOfTags</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you only assign the resources that match ALL conditions (using AND logic).</p> </li> <li> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. <code>ListOfTags</code> only supports <code>StringEquals</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    SelectionName: BackupSelectionNameSchema.openapi({
+      description:
+        "The display name of a resource selection document. Must contain 1 to 50 alphanumeric or '-_.' characters.",
+    }),
+    IamRoleArn: IAMRoleArnSchema.openapi({
+      description:
+        'The ARN of the IAM role that Backup uses to authenticate when backing up the target resource; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    Resources: ResourceArnsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Amazon Resource Names (ARNs) to assign to a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to assign many resources to a backup plan, consider a different resource selection strategy, such as assigning all resources of a resource type or refining your resource selection using tags.</p>',
+    }),
+    ListOfTags: ListOfTagsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>"StringEquals": { "ConditionKey": "aws:ResourceTag/CreatedByCryo", "ConditionValue": "true" },</code>. Condition operators are case sensitive.</p> <p> <code>ListOfTags</code> differs from <code>Conditions</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you assign all resources that match AT LEAST ONE condition (using OR logic).</p> </li> <li> <p> <code>ListOfTags</code> only supports <code>StringEquals</code>. <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. </p> </li> </ul>',
+    }),
+    NotResources: ResourceArnsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Amazon Resource Names (ARNs) to exclude from a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to exclude many resources from a backup plan, consider a different resource selection strategy, such as assigning only one or a few resource types or refining your resource selection using tags.</p>',
+    }),
+    Conditions: ConditionsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>"StringEquals": { "ConditionKey": "aws:ResourceTag/CreatedByCryo", "ConditionValue": "true" },</code>. Condition operators are case sensitive.</p> <p> <code>Conditions</code> differs from <code>ListOfTags</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you only assign the resources that match ALL conditions (using AND logic).</p> </li> <li> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. <code>ListOfTags</code> only supports <code>StringEquals</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['SelectionName', 'IamRoleArn'],
@@ -2294,41 +1464,24 @@ const BackupSelectionSchema = z
 
 const GetBackupSelectionOutputSchema = z
   .object({
-    BackupSelection: BackupSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the body of a request to assign a set of resources to a backup plan.',
-        }),
-    ).exactOptional(),
-    SelectionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Uniquely identifies the body of a request to assign a set of resources to a backup plan.',
-        }),
-    ).exactOptional(),
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup selection is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.',
-        }),
-    ).exactOptional(),
+    BackupSelection: BackupSelectionSchema.exactOptional().openapi({
+      description: 'Specifies the body of a request to assign a set of resources to a backup plan.',
+    }),
+    SelectionId: StringSchema.exactOptional().openapi({
+      description:
+        'Uniquely identifies the body of a request to assign a set of resources to a backup plan.',
+    }),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup selection is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackupSelectionOutput')
@@ -2337,25 +1490,17 @@ const IAMPolicySchema = z.string().openapi('IAMPolicy')
 
 const GetBackupVaultAccessPolicyOutputSchema = z
   .object({
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    Policy: IAMPolicySchema.and(
-      z.any().openapi({ description: 'The backup vault access policy document in JSON format.' }),
-    ).exactOptional(),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    Policy: IAMPolicySchema.exactOptional().openapi({
+      description: 'The backup vault access policy document in JSON format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackupVaultAccessPolicyOutput')
@@ -2386,100 +1531,61 @@ const BackupVaultEventsSchema = z.array(BackupVaultEventSchema).openapi('BackupV
 
 const GetBackupVaultNotificationsOutputSchema = z
   .object({
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    SNSTopicArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies an Amazon Simple Notification Service (Amazon SNS) topic; for example, <code>arn:aws:sns:us-west-2:111122223333:MyTopic</code>.',
-        }),
-    ).exactOptional(),
-    BackupVaultEvents: BackupVaultEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of events that indicate the status of jobs to back up resources to the backup vault.',
-        }),
-    ).exactOptional(),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    SNSTopicArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies an Amazon Simple Notification Service (Amazon SNS) topic; for example, <code>arn:aws:sns:us-west-2:111122223333:MyTopic</code>.',
+    }),
+    BackupVaultEvents: BackupVaultEventsSchema.exactOptional().openapi({
+      description:
+        'An array of events that indicate the status of jobs to back up resources to the backup vault.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackupVaultNotificationsOutput')
 
 const GetLegalHoldOutputSchema = z
   .object({
-    Title: StringSchema.and(
-      z.any().openapi({ description: 'This is the string title of the legal hold.' }),
-    ).exactOptional(),
-    Status: LegalHoldStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the status of the legal hold. Statuses can be <code>ACTIVE</code>, <code>CREATING</code>, <code>CANCELED</code>, and <code>CANCELING</code>.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This is the returned string description of the legal hold.' }),
-    ).exactOptional(),
-    CancelDescription: StringSchema.and(
-      z.any().openapi({ description: 'String describing the reason for removing the legal hold.' }),
-    ).exactOptional(),
-    LegalHoldId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This is the returned ID associated with a specified legal hold.',
-        }),
-    ).exactOptional(),
-    LegalHoldArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the returned framework ARN for the specified legal hold. An Amazon Resource Name (ARN) uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'Time in number format when legal hold was created.' }),
-    ).exactOptional(),
-    CancellationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'Time in number when legal hold was cancelled.' }),
-    ).exactOptional(),
-    RetainRecordUntil: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the date and time until which the legal hold record will be retained.',
-        }),
-    ).exactOptional(),
-    RecoveryPointSelection: RecoveryPointSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This specifies criteria to assign a set of resources, such as resource types or backup vaults.',
-        }),
-    ).exactOptional(),
+    Title: StringSchema.exactOptional().openapi({
+      description: 'This is the string title of the legal hold.',
+    }),
+    Status: LegalHoldStatusSchema.exactOptional().openapi({
+      description:
+        'This is the status of the legal hold. Statuses can be <code>ACTIVE</code>, <code>CREATING</code>, <code>CANCELED</code>, and <code>CANCELING</code>.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'This is the returned string description of the legal hold.',
+    }),
+    CancelDescription: StringSchema.exactOptional().openapi({
+      description: 'String describing the reason for removing the legal hold.',
+    }),
+    LegalHoldId: StringSchema.exactOptional().openapi({
+      description: 'This is the returned ID associated with a specified legal hold.',
+    }),
+    LegalHoldArn: ARNSchema.exactOptional().openapi({
+      description:
+        'This is the returned framework ARN for the specified legal hold. An Amazon Resource Name (ARN) uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'Time in number format when legal hold was created.',
+    }),
+    CancellationDate: TimestampSchema.exactOptional().openapi({
+      description: 'Time in number when legal hold was cancelled.',
+    }),
+    RetainRecordUntil: TimestampSchema.exactOptional().openapi({
+      description: 'This is the date and time until which the legal hold record will be retained.',
+    }),
+    RecoveryPointSelection: RecoveryPointSelectionSchema.exactOptional().openapi({
+      description:
+        'This specifies criteria to assign a set of resources, such as resource types or backup vaults.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLegalHoldOutput')
@@ -2490,30 +1596,18 @@ const MetadataSchema = z.record(z.string(), MetadataValueSchema).openapi('Metada
 
 const GetRecoveryPointRestoreMetadataOutputSchema = z
   .object({
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    RestoreMetadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of metadata key-value pairs that describe the original configuration of the backed-up resource. These values vary depending on the service that is being restored.',
-        }),
-    ).exactOptional(),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    RestoreMetadata: MetadataSchema.exactOptional().openapi({
+      description:
+        'The set of metadata key-value pairs that describe the original configuration of the backed-up resource. These values vary depending on the service that is being restored.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRecoveryPointRestoreMetadataOutput')
@@ -2522,180 +1616,101 @@ const ResourceTypesSchema = z.array(ResourceTypeSchema).openapi('ResourceTypes')
 
 const GetSupportedResourceTypesOutputSchema = z
   .object({
-    ResourceTypes: ResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains a string with the supported Amazon Web Services resource types:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSX</code> for Amazon FSx</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>DocDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ResourceTypes: ResourceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>Contains a string with the supported Amazon Web Services resource types:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSX</code> for Amazon FSx</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>DocDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSupportedResourceTypesOutput')
 
 const BackupJobSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The account ID that owns the backup job.' }),
-    ).exactOptional(),
-    BackupJobId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Uniquely identifies a request to Backup to back up a resource.' }),
-    ).exactOptional(),
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a job to create a backup job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    State: BackupJobStateSchema.and(
-      z.any().openapi({ description: 'The current state of a resource recovery point.' }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A detailed message explaining the status of the job to back up a resource.',
-        }),
-    ).exactOptional(),
-    PercentDone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains an estimated percentage complete of a job at the time the job status was queried.',
-        }),
-    ).exactOptional(),
-    BackupSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of a backup.' }),
-    ).exactOptional(),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to create the target recovery point. IAM roles other than the default role must include either <code>AWSBackup</code> or <code>AwsBackup</code> in the role name. For example, <code>arn:aws:iam::123456789012:role/AWSBackupRDSAccess</code>. Role names without those strings lack permissions to perform backup jobs.',
-        }),
-    ).exactOptional(),
-    CreatedBy: RecoveryPointCreatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains identifying information about the creation of a backup job, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan used to create it.',
-        }),
-    ).exactOptional(),
-    ExpectedCompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a job to back up resources is expected to be completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>ExpectedCompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    StartBy: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time in Unix format and Coordinated Universal Time (UTC) when a backup job must be started before it is canceled. The value is calculated by adding the start window to the scheduled time. So if the scheduled time were 6:00 PM and the start window is 2 hours, the <code>StartBy</code> time would be 8:00 PM on the date specified. The value of <code>StartBy</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of Amazon Web Services resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.',
-        }),
-    ).exactOptional(),
-    BytesTransferred: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size in bytes transferred to a backup vault at the time that the job status was queried.',
-        }),
-    ).exactOptional(),
-    BackupOptions: BackupOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p> <p>Valid values: Set to <code>"WindowsVSS":"enabled"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. Set to <code>"WindowsVSS":"disabled"</code> to create a regular backup. If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p>',
-        }),
-    ).exactOptional(),
-    BackupType: StringSchema.and(
-      z.any().openapi({ description: 'Represents the type of backup for a backup job.' }),
-    ).exactOptional(),
-    ParentJobId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This uniquely identifies a request to Backup to back up a resource. The return will be the parent (composite) job ID.',
-        }),
-    ).exactOptional(),
-    IsParent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is a boolean value indicating this is a parent (composite) backup job.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the non-unique name of the resource that belongs to the specified backup.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The account ID that owns the backup job.',
+    }),
+    BackupJobId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a request to Backup to back up a resource.',
+    }),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    ResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a job to create a backup job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    State: BackupJobStateSchema.exactOptional().openapi({
+      description: 'The current state of a resource recovery point.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'A detailed message explaining the status of the job to back up a resource.',
+    }),
+    PercentDone: StringSchema.exactOptional().openapi({
+      description:
+        'Contains an estimated percentage complete of a job at the time the job status was queried.',
+    }),
+    BackupSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of a backup.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the IAM role ARN used to create the target recovery point. IAM roles other than the default role must include either <code>AWSBackup</code> or <code>AwsBackup</code> in the role name. For example, <code>arn:aws:iam::123456789012:role/AWSBackupRDSAccess</code>. Role names without those strings lack permissions to perform backup jobs.',
+    }),
+    CreatedBy: RecoveryPointCreatorSchema.exactOptional().openapi({
+      description:
+        'Contains identifying information about the creation of a backup job, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan used to create it.',
+    }),
+    ExpectedCompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a job to back up resources is expected to be completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>ExpectedCompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    StartBy: TimestampSchema.exactOptional().openapi({
+      description:
+        'Specifies the time in Unix format and Coordinated Universal Time (UTC) when a backup job must be started before it is canceled. The value is calculated by adding the start window to the scheduled time. So if the scheduled time were 6:00 PM and the start window is 2 hours, the <code>StartBy</code> time would be 8:00 PM on the date specified. The value of <code>StartBy</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of Amazon Web Services resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.',
+    }),
+    BytesTransferred: LongSchema.exactOptional().openapi({
+      description:
+        'The size in bytes transferred to a backup vault at the time that the job status was queried.',
+    }),
+    BackupOptions: BackupOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p> <p>Valid values: Set to <code>"WindowsVSS":"enabled"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. Set to <code>"WindowsVSS":"disabled"</code> to create a regular backup. If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p>',
+    }),
+    BackupType: StringSchema.exactOptional().openapi({
+      description: 'Represents the type of backup for a backup job.',
+    }),
+    ParentJobId: StringSchema.exactOptional().openapi({
+      description:
+        'This uniquely identifies a request to Backup to back up a resource. The return will be the parent (composite) job ID.',
+    }),
+    IsParent: BooleanSchema.exactOptional().openapi({
+      description: 'This is a boolean value indicating this is a parent (composite) backup job.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'This is the non-unique name of the resource that belongs to the specified backup.',
+    }),
   })
   .openapi({ description: 'Contains detailed information about a backup job.', required: [] })
   .openapi('BackupJob')
@@ -2704,34 +1719,26 @@ const BackupJobsListSchema = z.array(BackupJobSchema).openapi('BackupJobsList')
 
 const ListBackupJobsOutputSchema = z
   .object({
-    BackupJobs: BackupJobsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of structures containing metadata about your backup jobs returned in JSON format.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
+    BackupJobs: BackupJobsListSchema.exactOptional().openapi({
+      description:
+        'An array of structures containing metadata about your backup jobs returned in JSON format.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBackupJobsOutput')
 
 const BackupPlanTemplatesListMemberSchema = z
   .object({
-    BackupPlanTemplateId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a stored backup plan template.' }),
-    ).exactOptional(),
-    BackupPlanTemplateName: StringSchema.and(
-      z.any().openapi({ description: 'The optional display name of a backup plan template.' }),
-    ).exactOptional(),
+    BackupPlanTemplateId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a stored backup plan template.',
+    }),
+    BackupPlanTemplateName: StringSchema.exactOptional().openapi({
+      description: 'The optional display name of a backup plan template.',
+    }),
   })
   .openapi({
     description: 'An object specifying metadata associated with a backup plan template.',
@@ -2745,89 +1752,53 @@ const BackupPlanTemplatesListSchema = z
 
 const ListBackupPlanTemplatesOutputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
-    BackupPlanTemplatesList: BackupPlanTemplatesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of template list items containing metadata about your saved templates.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
+    BackupPlanTemplatesList: BackupPlanTemplatesListSchema.exactOptional().openapi({
+      description:
+        'An array of template list items containing metadata about your saved templates.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBackupPlanTemplatesOutput')
 
 const BackupPlansListMemberSchema = z
   .object({
-    BackupPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
-        }),
-    ).exactOptional(),
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a resource backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    DeletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup plan is deleted, in Unix format and Coordinated Universal Time (UTC). The value of <code>DeletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    VersionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.',
-        }),
-    ).exactOptional(),
-    BackupPlanName: BackupPlanNameSchema.and(
-      z.any().openapi({ description: 'The display name of a saved backup plan.' }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
-        }),
-    ).exactOptional(),
-    LastExecutionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last time a job to back up resources was run with this rule. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    AdvancedBackupSettings: AdvancedBackupSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains a list of <code>BackupOptions</code> for a resource type.',
-        }),
-    ).exactOptional(),
+    BackupPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
+    }),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a resource backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    DeletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup plan is deleted, in Unix format and Coordinated Universal Time (UTC). The value of <code>DeletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    VersionId: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.',
+    }),
+    BackupPlanName: BackupPlanNameSchema.exactOptional().openapi({
+      description: 'The display name of a saved backup plan.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+    }),
+    LastExecutionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The last time a job to back up resources was run with this rule. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    AdvancedBackupSettings: AdvancedBackupSettingsSchema.exactOptional().openapi({
+      description: 'Contains a list of <code>BackupOptions</code> for a resource type.',
+    }),
   })
   .openapi({ description: 'Contains metadata about a backup plan.', required: [] })
   .openapi('BackupPlansListMember')
@@ -2838,22 +1809,13 @@ const BackupPlanVersionsListSchema = z
 
 const ListBackupPlanVersionsOutputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
-    BackupPlanVersionsList: BackupPlanVersionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of version list items containing metadata about your backup plans.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
+    BackupPlanVersionsList: BackupPlanVersionsListSchema.exactOptional().openapi({
+      description: 'An array of version list items containing metadata about your backup plans.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBackupPlanVersionsOutput')
@@ -2862,66 +1824,41 @@ const BackupPlansListSchema = z.array(BackupPlansListMemberSchema).openapi('Back
 
 const ListBackupPlansOutputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
-    BackupPlansList: BackupPlansListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of backup plan list items containing metadata about your saved backup plans.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
+    BackupPlansList: BackupPlansListSchema.exactOptional().openapi({
+      description:
+        'An array of backup plan list items containing metadata about your saved backup plans.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBackupPlansOutput')
 
 const BackupSelectionsListMemberSchema = z
   .object({
-    SelectionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Uniquely identifies a request to assign a set of resources to a backup plan.',
-        }),
-    ).exactOptional(),
-    SelectionName: BackupSelectionNameSchema.and(
-      z.any().openapi({ description: 'The display name of a resource selection document.' }),
-    ).exactOptional(),
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
-        }),
-    ).exactOptional(),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role Amazon Resource Name (ARN) to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ).exactOptional(),
+    SelectionId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a request to assign a set of resources to a backup plan.',
+    }),
+    SelectionName: BackupSelectionNameSchema.exactOptional().openapi({
+      description: 'The display name of a resource selection document.',
+    }),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the IAM role Amazon Resource Name (ARN) to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
   })
   .openapi({
     description: 'Contains metadata about a <code>BackupSelection</code> object.',
@@ -2935,107 +1872,59 @@ const BackupSelectionsListSchema = z
 
 const ListBackupSelectionsOutputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
-    BackupSelectionsList: BackupSelectionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of backup selection list items containing metadata about each resource in the list.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
+    BackupSelectionsList: BackupSelectionsListSchema.exactOptional().openapi({
+      description:
+        'An array of backup selection list items containing metadata about each resource in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBackupSelectionsOutput')
 
 const BackupVaultListMemberSchema = z
   .object({
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a resource backup is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    EncryptionKeyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A server-side encryption key you can specify to encrypt your backups from services that support full Backup management; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>. If you specify a key, you must specify its ARN, not its alias. If you do not specify a key, Backup creates a KMS key for you by default.</p> <p>To learn which Backup services support full Backup management and how Backup handles encryption for backups from services that do not yet support full Backup, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/encryption.html"> Encryption for backups in Backup</a> </p>',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
-        }),
-    ).exactOptional(),
-    NumberOfRecoveryPoints: Long2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of recovery points that are stored in a backup vault.',
-        }),
-    ).exactOptional(),
-    Locked: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether Backup Vault Lock applies to the selected backup vault. If <code>true</code>, Vault Lock prevents delete and update operations on the recovery points in the selected vault.',
-        }),
-    ).exactOptional(),
-    MinRetentionDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Backup Vault Lock setting that specifies the minimum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a minimum retention period.</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>",
-        }),
-    ).exactOptional(),
-    MaxRetentionDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Backup Vault Lock setting that specifies the maximum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a maximum retention period on the recovery points in the vault (allowing indefinite storage).</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or shorter than the maximum retention period. If the job's retention period is longer than that maximum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>",
-        }),
-    ).exactOptional(),
-    LockDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time when Backup Vault Lock configuration becomes immutable, meaning it cannot be changed or deleted.</p> <p>If you applied Vault Lock to your vault without specifying a lock date, you can change your Vault Lock settings, or delete Vault Lock from the vault entirely, at any time.</p> <p>This value is in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>',
-        }),
-    ).exactOptional(),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a resource backup is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    EncryptionKeyArn: ARNSchema.exactOptional().openapi({
+      description:
+        '<p>A server-side encryption key you can specify to encrypt your backups from services that support full Backup management; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>. If you specify a key, you must specify its ARN, not its alias. If you do not specify a key, Backup creates a KMS key for you by default.</p> <p>To learn which Backup services support full Backup management and how Backup handles encryption for backups from services that do not yet support full Backup, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/encryption.html"> Encryption for backups in Backup</a> </p>',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+    }),
+    NumberOfRecoveryPoints: Long2Schema.exactOptional().openapi({
+      description: 'The number of recovery points that are stored in a backup vault.',
+    }),
+    Locked: Boolean2Schema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether Backup Vault Lock applies to the selected backup vault. If <code>true</code>, Vault Lock prevents delete and update operations on the recovery points in the selected vault.',
+    }),
+    MinRetentionDays: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The Backup Vault Lock setting that specifies the minimum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a minimum retention period.</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>",
+    }),
+    MaxRetentionDays: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The Backup Vault Lock setting that specifies the maximum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a maximum retention period on the recovery points in the vault (allowing indefinite storage).</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or shorter than the maximum retention period. If the job's retention period is longer than that maximum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>",
+    }),
+    LockDate: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time when Backup Vault Lock configuration becomes immutable, meaning it cannot be changed or deleted.</p> <p>If you applied Vault Lock to your vault without specifying a lock date, you can change your Vault Lock settings, or delete Vault Lock from the vault entirely, at any time.</p> <p>This value is in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>',
+    }),
   })
   .openapi({ description: 'Contains metadata about a backup vault.', required: [] })
   .openapi('BackupVaultListMember')
@@ -3044,22 +1933,14 @@ const BackupVaultListSchema = z.array(BackupVaultListMemberSchema).openapi('Back
 
 const ListBackupVaultsOutputSchema = z
   .object({
-    BackupVaultList: BackupVaultListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of backup vault list members containing vault metadata, including Amazon Resource Name (ARN), display name, creation date, number of saved recovery points, and encryption information if the resources saved in the backup vault are encrypted.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
+    BackupVaultList: BackupVaultListSchema.exactOptional().openapi({
+      description:
+        'An array of backup vault list members containing vault metadata, including Amazon Resource Name (ARN), display name, creation date, number of saved recovery points, and encryption information if the resources saved in the backup vault are encrypted.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBackupVaultsOutput')
@@ -3068,70 +1949,42 @@ const CopyJobsListSchema = z.array(CopyJobSchema).openapi('CopyJobsList')
 
 const ListCopyJobsOutputSchema = z
   .object({
-    CopyJobs: CopyJobsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of structures containing metadata about your copy jobs returned in JSON format. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return maxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token. ',
-        }),
-    ).exactOptional(),
+    CopyJobs: CopyJobsListSchema.exactOptional().openapi({
+      description:
+        'An array of structures containing metadata about your copy jobs returned in JSON format. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return maxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCopyJobsOutput')
 
 const FrameworkSchema = z
   .object({
-    FrameworkName: FrameworkNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of a framework. This name is between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
-        }),
-    ).exactOptional(),
-    FrameworkArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    FrameworkDescription: FrameworkDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An optional description of the framework with a maximum 1,024 characters.',
-        }),
-    ).exactOptional(),
-    NumberOfControls: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of controls contained by the framework.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.',
-        }),
-    ).exactOptional(),
-    DeploymentStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deployment status of a framework. The statuses are:</p> <p> <code>CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED | FAILED</code> </p>',
-        }),
-    ).exactOptional(),
+    FrameworkName: FrameworkNameSchema.exactOptional().openapi({
+      description:
+        'The unique name of a framework. This name is between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
+    }),
+    FrameworkArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    FrameworkDescription: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the framework with a maximum 1,024 characters.',
+    }),
+    NumberOfControls: IntegerSchema.exactOptional().openapi({
+      description: 'The number of controls contained by the framework.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.',
+    }),
+    DeploymentStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The deployment status of a framework. The statuses are:</p> <p> <code>CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED | FAILED</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -3144,65 +1997,43 @@ const FrameworkListSchema = z.array(FrameworkSchema).openapi('FrameworkList')
 
 const ListFrameworksOutputSchema = z
   .object({
-    Frameworks: FrameworkListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of frameworks with details for each framework, including the framework name, Amazon Resource Name (ARN), description, number of controls, creation time, and deployment status.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    Frameworks: FrameworkListSchema.exactOptional().openapi({
+      description:
+        'A list of frameworks with details for each framework, including the framework name, Amazon Resource Name (ARN), description, number of controls, creation time, and deployment status.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFrameworksOutput')
 
 const LegalHoldSchema = z
   .object({
-    Title: StringSchema.and(
-      z.any().openapi({ description: 'This is the title of a legal hold.' }),
-    ).exactOptional(),
-    Status: LegalHoldStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the status of the legal hold. Statuses can be <code>ACTIVE</code>, <code>CREATING</code>, <code>CANCELED</code>, and <code>CANCELING</code>.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'This is the description of a legal hold.' }),
-    ).exactOptional(),
-    LegalHoldId: StringSchema.and(
-      z.any().openapi({ description: 'ID of specific legal hold on one or more recovery points.' }),
-    ).exactOptional(),
-    LegalHoldArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is an Amazon Resource Number (ARN) that uniquely identifies the legal hold; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This is the time in number format when legal hold was created.' }),
-    ).exactOptional(),
-    CancellationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This is the time in number format when legal hold was cancelled.',
-        }),
-    ).exactOptional(),
+    Title: StringSchema.exactOptional().openapi({
+      description: 'This is the title of a legal hold.',
+    }),
+    Status: LegalHoldStatusSchema.exactOptional().openapi({
+      description:
+        'This is the status of the legal hold. Statuses can be <code>ACTIVE</code>, <code>CREATING</code>, <code>CANCELED</code>, and <code>CANCELING</code>.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'This is the description of a legal hold.',
+    }),
+    LegalHoldId: StringSchema.exactOptional().openapi({
+      description: 'ID of specific legal hold on one or more recovery points.',
+    }),
+    LegalHoldArn: ARNSchema.exactOptional().openapi({
+      description:
+        'This is an Amazon Resource Number (ARN) that uniquely identifies the legal hold; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'This is the time in number format when legal hold was created.',
+    }),
+    CancellationDate: TimestampSchema.exactOptional().openapi({
+      description: 'This is the time in number format when legal hold was cancelled.',
+    }),
   })
   .openapi({
     description:
@@ -3215,59 +2046,35 @@ const LegalHoldsListSchema = z.array(LegalHoldSchema).openapi('LegalHoldsList')
 
 const ListLegalHoldsOutputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
-    LegalHolds: LegalHoldsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This is an array of returned legal holds, both active and previous.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
+    LegalHolds: LegalHoldsListSchema.exactOptional().openapi({
+      description: 'This is an array of returned legal holds, both active and previous.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLegalHoldsOutput')
 
 const ProtectedResourceSchema = z
   .object({
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of Amazon Web Services resource; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.',
-        }),
-    ).exactOptional(),
-    LastBackupTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a resource was last backed up, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastBackupTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the non-unique name of the resource that belongs to the specified backup.',
-        }),
-    ).exactOptional(),
+    ResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of Amazon Web Services resource; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.',
+    }),
+    LastBackupTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a resource was last backed up, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastBackupTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'This is the non-unique name of the resource that belongs to the specified backup.',
+    }),
   })
   .openapi({
     description: 'A structure that contains information about a backed-up resource.',
@@ -3281,193 +2088,105 @@ const ProtectedResourcesListSchema = z
 
 const ListProtectedResourcesOutputSchema = z
   .object({
-    Results: ProtectedResourcesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of resources successfully backed up by Backup including the time the resource was saved, an Amazon Resource Name (ARN) of the resource, and a resource type.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
+    Results: ProtectedResourcesListSchema.exactOptional().openapi({
+      description:
+        'An array of resources successfully backed up by Backup including the time the resource was saved, an Amazon Resource Name (ARN) of the resource, and a resource type.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProtectedResourcesOutput')
 
 const RecoveryPointByBackupVaultSchema = z
   .object({
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    SourceBackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The backup vault where the recovery point was originally copied from. If the recovery point is restored to the same account this value will be <code>null</code>.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of Amazon Web Services resource saved as a recovery point; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.',
-        }),
-    ).exactOptional(),
-    CreatedBy: RecoveryPointCreatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains identifying information about the creation of a recovery point, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan that is used to create it.',
-        }),
-    ).exactOptional(),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ).exactOptional(),
-    Status: RecoveryPointStatusSchema.and(
-      z.any().openapi({ description: 'A status code specifying the state of the recovery point.' }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message explaining the reason of the recovery point deletion failure.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a recovery point is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a job to restore a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    BackupSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of a backup.' }),
-    ).exactOptional(),
-    CalculatedLifecycle: CalculatedLifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CalculatedLifecycle</code> object containing <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps.',
-        }),
-    ).exactOptional(),
-    Lifecycle: LifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
-        }),
-    ).exactOptional(),
-    EncryptionKeyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The server-side encryption key that is used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
-        }),
-    ).exactOptional(),
-    IsEncrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that is returned as <code>TRUE</code> if the specified recovery point is encrypted, or <code>FALSE</code> if the recovery point is not encrypted.',
-        }),
-    ).exactOptional(),
-    LastRestoreTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a recovery point was last restored, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastRestoreTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    ParentRecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.',
-        }),
-    ).exactOptional(),
-    CompositeMemberIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax"> logical ID</a> within a stack.',
-        }),
-    ).exactOptional(),
-    IsParent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is a boolean value indicating this is a parent (composite) recovery point.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the non-unique name of the resource that belongs to the specified backup.',
-        }),
-    ).exactOptional(),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    SourceBackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The backup vault where the recovery point was originally copied from. If the recovery point is restored to the same account this value will be <code>null</code>.',
+    }),
+    ResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of Amazon Web Services resource saved as a recovery point; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.',
+    }),
+    CreatedBy: RecoveryPointCreatorSchema.exactOptional().openapi({
+      description:
+        'Contains identifying information about the creation of a recovery point, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan that is used to create it.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    Status: RecoveryPointStatusSchema.exactOptional().openapi({
+      description: 'A status code specifying the state of the recovery point.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'A message explaining the reason of the recovery point deletion failure.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a recovery point is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a job to restore a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    BackupSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of a backup.',
+    }),
+    CalculatedLifecycle: CalculatedLifecycleSchema.exactOptional().openapi({
+      description:
+        'A <code>CalculatedLifecycle</code> object containing <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps.',
+    }),
+    Lifecycle: LifecycleSchema.exactOptional().openapi({
+      description:
+        '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
+    }),
+    EncryptionKeyArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The server-side encryption key that is used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
+    }),
+    IsEncrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that is returned as <code>TRUE</code> if the specified recovery point is encrypted, or <code>FALSE</code> if the recovery point is not encrypted.',
+    }),
+    LastRestoreTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a recovery point was last restored, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastRestoreTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    ParentRecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.',
+    }),
+    CompositeMemberIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax"> logical ID</a> within a stack.',
+    }),
+    IsParent: BooleanSchema.exactOptional().openapi({
+      description:
+        'This is a boolean value indicating this is a parent (composite) recovery point.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'This is the non-unique name of the resource that belongs to the specified backup.',
+    }),
   })
   .openapi({
     description:
@@ -3482,36 +2201,24 @@ const RecoveryPointByBackupVaultListSchema = z
 
 const ListRecoveryPointsByBackupVaultOutputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
-    RecoveryPoints: RecoveryPointByBackupVaultListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that contain detailed information about recovery points saved in a backup vault.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
+    RecoveryPoints: RecoveryPointByBackupVaultListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that contain detailed information about recovery points saved in a backup vault.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRecoveryPointsByBackupVaultOutput')
 
 const RecoveryPointMemberSchema = z
   .object({
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.',
-        }),
-    ).exactOptional(),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.',
+    }),
   })
   .openapi({
     description:
@@ -3524,97 +2231,56 @@ const RecoveryPointsListSchema = z.array(RecoveryPointMemberSchema).openapi('Rec
 
 const ListRecoveryPointsByLegalHoldOutputSchema = z
   .object({
-    RecoveryPoints: RecoveryPointsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is a list of the recovery points returned by <code>ListRecoveryPointsByLegalHold</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This return is the next item following a partial list of returned resources.',
-        }),
-    ).exactOptional(),
+    RecoveryPoints: RecoveryPointsListSchema.exactOptional().openapi({
+      description:
+        'This is a list of the recovery points returned by <code>ListRecoveryPointsByLegalHold</code>.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'This return is the next item following a partial list of returned resources.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRecoveryPointsByLegalHoldOutput')
 
 const RecoveryPointByResourceSchema = z
   .object({
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a recovery point is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    Status: RecoveryPointStatusSchema.and(
-      z.any().openapi({ description: 'A status code specifying the state of the recovery point.' }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message explaining the reason of the recovery point deletion failure.',
-        }),
-    ).exactOptional(),
-    EncryptionKeyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The server-side encryption key that is used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
-        }),
-    ).exactOptional(),
-    BackupSizeBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of a backup.' }),
-    ).exactOptional(),
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ).exactOptional(),
-    IsParent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is a boolean value indicating this is a parent (composite) recovery point.',
-        }),
-    ).exactOptional(),
-    ParentRecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the non-unique name of the resource that belongs to the specified backup.',
-        }),
-    ).exactOptional(),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a recovery point is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    Status: RecoveryPointStatusSchema.exactOptional().openapi({
+      description: 'A status code specifying the state of the recovery point.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'A message explaining the reason of the recovery point deletion failure.',
+    }),
+    EncryptionKeyArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The server-side encryption key that is used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
+    }),
+    BackupSizeBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of a backup.',
+    }),
+    BackupVaultName: BackupVaultNameSchema.exactOptional().openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    IsParent: BooleanSchema.exactOptional().openapi({
+      description:
+        'This is a boolean value indicating this is a parent (composite) recovery point.',
+    }),
+    ParentRecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      description:
+        'This is the non-unique name of the resource that belongs to the specified backup.',
+    }),
   })
   .openapi({
     description: 'Contains detailed information about a saved recovery point.',
@@ -3628,22 +2294,14 @@ const RecoveryPointByResourceListSchema = z
 
 const ListRecoveryPointsByResourceOutputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
-    RecoveryPoints: RecoveryPointByResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of objects that contain detailed information about recovery points of the specified resource type.</p> <note> <p>Only Amazon EFS and Amazon EC2 recovery points return BackupVaultName.</p> </note>',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
+    RecoveryPoints: RecoveryPointByResourceListSchema.exactOptional().openapi({
+      description:
+        '<p>An array of objects that contain detailed information about recovery points of the specified resource type.</p> <note> <p>Only Amazon EFS and Amazon EC2 recovery points return BackupVaultName.</p> </note>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRecoveryPointsByResourceOutput')
@@ -3652,17 +2310,13 @@ const ReportJobListSchema = z.array(ReportJobSchema).openapi('ReportJobList')
 
 const ListReportJobsOutputSchema = z
   .object({
-    ReportJobs: ReportJobListSchema.and(
-      z.any().openapi({ description: 'Details about your report jobs in JSON format.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    ReportJobs: ReportJobListSchema.exactOptional().openapi({
+      description: 'Details about your report jobs in JSON format.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReportJobsOutput')
@@ -3671,119 +2325,69 @@ const ReportPlanListSchema = z.array(ReportPlanSchema).openapi('ReportPlanList')
 
 const ListReportPlansOutputSchema = z
   .object({
-    ReportPlans: ReportPlanListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of your report plans with detailed information for each plan. This information includes the Amazon Resource Name (ARN), report plan name, description, settings, delivery channel, deployment status, creation time, and last times the report plan attempted to and successfully ran.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    ReportPlans: ReportPlanListSchema.exactOptional().openapi({
+      description:
+        'A list of your report plans with detailed information for each plan. This information includes the Amazon Resource Name (ARN), report plan name, description, settings, delivery channel, deployment status, creation time, and last times the report plan attempted to and successfully ran.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReportPlansOutput')
 
 const RestoreJobsListMemberSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The account ID that owns the restore job.' }),
-    ).exactOptional(),
-    RestoreJobId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Uniquely identifies the job that restores a recovery point.' }),
-    ).exactOptional(),
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a restore job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CompletionDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a job to restore a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    Status: RestoreJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A status code specifying the state of the job initiated by Backup to restore a recovery point.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A detailed message explaining the status of the job to restore a recovery point.',
-        }),
-    ).exactOptional(),
-    PercentDone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains an estimated percentage complete of a job at the time the job status was queried.',
-        }),
-    ).exactOptional(),
-    BackupSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of the restored resource.' }),
-    ).exactOptional(),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ).exactOptional(),
-    ExpectedCompletionTimeMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time in minutes that a job restoring a recovery point is expected to take.',
-        }),
-    ).exactOptional(),
-    CreatedResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type of the listed restore jobs; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The account ID that owns the restore job.',
+    }),
+    RestoreJobId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies the job that restores a recovery point.',
+    }),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a restore job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CompletionDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a job to restore a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    Status: RestoreJobStatusSchema.exactOptional().openapi({
+      description:
+        'A status code specifying the state of the job initiated by Backup to restore a recovery point.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description:
+        'A detailed message explaining the status of the job to restore a recovery point.',
+    }),
+    PercentDone: StringSchema.exactOptional().openapi({
+      description:
+        'Contains an estimated percentage complete of a job at the time the job status was queried.',
+    }),
+    BackupSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of the restored resource.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    ExpectedCompletionTimeMinutes: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of time in minutes that a job restoring a recovery point is expected to take.',
+    }),
+    CreatedResourceArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The resource type of the listed restore jobs; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.',
+    }),
   })
   .openapi({ description: 'Contains metadata about a restore job.', required: [] })
   .openapi('RestoreJobsListMember')
@@ -3792,118 +2396,76 @@ const RestoreJobsListSchema = z.array(RestoreJobsListMemberSchema).openapi('Rest
 
 const ListRestoreJobsOutputSchema = z
   .object({
-    RestoreJobs: RestoreJobsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that contain detailed information about jobs to restore saved resources.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
+    RestoreJobs: RestoreJobsListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that contain detailed information about jobs to restore saved resources.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRestoreJobsOutput')
 
 const ListTagsOutputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To help organize your resources, you can assign your own metadata to the resources you create. Each tag is a key-value pair.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'To help organize your resources, you can assign your own metadata to the resources you create. Each tag is a key-value pair.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsOutput')
 
 const StartBackupJobOutputSchema = z
   .object({
-    BackupJobId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Uniquely identifies a request to Backup to back up a resource.' }),
-    ).exactOptional(),
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <i>Note: This field is only returned for Amazon EFS and Advanced DynamoDB resources.</i> </p> <p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    IsParent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is a returned boolean value indicating this is a parent (composite) backup job.',
-        }),
-    ).exactOptional(),
+    BackupJobId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a request to Backup to back up a resource.',
+    }),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        '<p> <i>Note: This field is only returned for Amazon EFS and Advanced DynamoDB resources.</i> </p> <p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    IsParent: BooleanSchema.exactOptional().openapi({
+      description:
+        'This is a returned boolean value indicating this is a parent (composite) backup job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartBackupJobOutput')
 
 const StartCopyJobOutputSchema = z
   .object({
-    CopyJobId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a copy job.' }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a copy job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    IsParent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is a returned boolean value indicating this is a parent (composite) copy job.',
-        }),
-    ).exactOptional(),
+    CopyJobId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a copy job.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a copy job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    IsParent: BooleanSchema.exactOptional().openapi({
+      description:
+        'This is a returned boolean value indicating this is a parent (composite) copy job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartCopyJobOutput')
 
 const StartReportJobOutputSchema = z
   .object({
-    ReportJobId: ReportJobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the report job. A unique, randomly generated, Unicode, UTF-8 encoded string that is at most 1,024 bytes long. The report job ID cannot be edited.',
-        }),
-    ).exactOptional(),
+    ReportJobId: ReportJobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the report job. A unique, randomly generated, Unicode, UTF-8 encoded string that is at most 1,024 bytes long. The report job ID cannot be edited.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartReportJobOutput')
@@ -3912,144 +2474,90 @@ const RestoreJobIdSchema = z.string().openapi('RestoreJobId')
 
 const StartRestoreJobOutputSchema = z
   .object({
-    RestoreJobId: RestoreJobIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Uniquely identifies the job that restores a recovery point.' }),
-    ).exactOptional(),
+    RestoreJobId: RestoreJobIdSchema.exactOptional().openapi({
+      description: 'Uniquely identifies the job that restores a recovery point.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartRestoreJobOutput')
 
 const UpdateBackupPlanOutputSchema = z
   .object({
-    BackupPlanId: StringSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies a backup plan.' }),
-    ).exactOptional(),
-    BackupPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    VersionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version Ids cannot be edited.',
-        }),
-    ).exactOptional(),
-    AdvancedBackupSettings: AdvancedBackupSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains a list of <code>BackupOptions</code> for each resource type.',
-        }),
-    ).exactOptional(),
+    BackupPlanId: StringSchema.exactOptional().openapi({
+      description: 'Uniquely identifies a backup plan.',
+    }),
+    BackupPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    VersionId: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version Ids cannot be edited.',
+    }),
+    AdvancedBackupSettings: AdvancedBackupSettingsSchema.exactOptional().openapi({
+      description: 'Contains a list of <code>BackupOptions</code> for each resource type.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBackupPlanOutput')
 
 const UpdateFrameworkOutputSchema = z
   .object({
-    FrameworkName: FrameworkNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of a framework. This name is between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
-        }),
-    ).exactOptional(),
-    FrameworkArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.',
-        }),
-    ).exactOptional(),
+    FrameworkName: FrameworkNameSchema.exactOptional().openapi({
+      description:
+        'The unique name of a framework. This name is between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
+    }),
+    FrameworkArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFrameworkOutput')
 
 const UpdateRecoveryPointLifecycleOutputSchema = z
   .object({
-    BackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ).exactOptional(),
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ).exactOptional(),
-    Lifecycle: LifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
-        }),
-    ).exactOptional(),
-    CalculatedLifecycle: CalculatedLifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CalculatedLifecycle</code> object containing <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps.',
-        }),
-    ).exactOptional(),
+    BackupVaultArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    RecoveryPointArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    Lifecycle: LifecycleSchema.exactOptional().openapi({
+      description:
+        '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
+    }),
+    CalculatedLifecycle: CalculatedLifecycleSchema.exactOptional().openapi({
+      description:
+        'A <code>CalculatedLifecycle</code> object containing <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRecoveryPointLifecycleOutput')
 
 const UpdateReportPlanOutputSchema = z
   .object({
-    ReportPlanName: ReportPlanNameSchema.and(
-      z.any().openapi({ description: 'The unique name of the report plan.' }),
-    ).exactOptional(),
-    ReportPlanArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a report plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
+    ReportPlanName: ReportPlanNameSchema.exactOptional().openapi({
+      description: 'The unique name of the report plan.',
+    }),
+    ReportPlanArn: ARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a report plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateReportPlanOutput')
@@ -4061,30 +2569,18 @@ const BackupOptionKeySchema = z
 
 const BackupPlanInputSchema = z
   .object({
-    BackupPlanName: BackupPlanNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.",
-        }),
-    ),
-    Rules: BackupRulesInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources.',
-        }),
-    ),
-    AdvancedBackupSettings: AdvancedBackupSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a list of <code>BackupOptions</code> for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.',
-        }),
-    ).exactOptional(),
+    BackupPlanName: BackupPlanNameSchema.openapi({
+      description:
+        "The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.",
+    }),
+    Rules: BackupRulesInputSchema.openapi({
+      description:
+        'An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources.',
+    }),
+    AdvancedBackupSettings: AdvancedBackupSettingsSchema.exactOptional().openapi({
+      description:
+        'Specifies a list of <code>BackupOptions</code> for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.',
+    }),
   })
   .openapi({
     required: ['BackupPlanName', 'Rules'],
@@ -4094,224 +2590,131 @@ const BackupPlanInputSchema = z
   .openapi('BackupPlanInput')
 
 const CancelLegalHoldInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelLegalHoldInput' })
   .openapi('CancelLegalHoldInput')
 
 const CreateBackupPlanInputSchema = z
   .object({
-    BackupPlan: BackupPlanInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.',
-        }),
-    ),
-    BackupPlanTags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair. The specified tags are assigned to all backups created with this plan.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Identifies the request and allows failed requests to be retried without the risk of running the operation twice. If the request includes a <code>CreatorRequestId</code> that matches an existing backup plan, that plan is returned. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
-        }),
-    ).exactOptional(),
+    BackupPlan: BackupPlanInputSchema.openapi({
+      description:
+        'Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.',
+    }),
+    BackupPlanTags: TagsSchema.exactOptional().openapi({
+      description:
+        'To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair. The specified tags are assigned to all backups created with this plan.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>Identifies the request and allows failed requests to be retried without the risk of running the operation twice. If the request includes a <code>CreatorRequestId</code> that matches an existing backup plan, that plan is returned. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+    }),
   })
   .openapi({ required: ['BackupPlan'], title: 'CreateBackupPlanInput' })
   .openapi('CreateBackupPlanInput')
 
 const CreateBackupSelectionInputSchema = z
   .object({
-    BackupSelection: BackupSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the body of a request to assign a set of resources to a backup plan.',
-        }),
-    ),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
-        }),
-    ).exactOptional(),
+    BackupSelection: BackupSelectionSchema.openapi({
+      description: 'Specifies the body of a request to assign a set of resources to a backup plan.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+    }),
   })
   .openapi({ required: ['BackupSelection'], title: 'CreateBackupSelectionInput' })
   .openapi('CreateBackupSelectionInput')
 
 const CreateBackupVaultInputSchema = z
   .object({
-    BackupVaultTags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata that you can assign to help organize the resources that you create. Each tag is a key-value pair.',
-        }),
-    ).exactOptional(),
-    EncryptionKeyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The server-side encryption key that is used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
-        }),
-    ).exactOptional(),
+    BackupVaultTags: TagsSchema.exactOptional().openapi({
+      description:
+        'Metadata that you can assign to help organize the resources that you create. Each tag is a key-value pair.',
+    }),
+    EncryptionKeyArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The server-side encryption key that is used to protect your backups; for example, <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+    }),
   })
   .openapi({ title: 'CreateBackupVaultInput', required: [] })
   .openapi('CreateBackupVaultInput')
 
 const CreateFrameworkInputSchema = z
   .object({
-    FrameworkName: FrameworkNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the framework. The name must be between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
-        }),
-    ),
-    FrameworkDescription: FrameworkDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional description of the framework with a maximum of 1,024 characters.',
-        }),
-    ).exactOptional(),
-    FrameworkControls: FrameworkControlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.',
-        }),
-    ),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>CreateFrameworkInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
-    FrameworkTags: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata that you can assign to help organize the frameworks that you create. Each tag is a key-value pair.',
-        }),
-    ).exactOptional(),
+    FrameworkName: FrameworkNameSchema.openapi({
+      description:
+        'The unique name of the framework. The name must be between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
+    }),
+    FrameworkDescription: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the framework with a maximum of 1,024 characters.',
+    }),
+    FrameworkControls: FrameworkControlsSchema.openapi({
+      description:
+        'A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>CreateFrameworkInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
+    FrameworkTags: StringMapSchema.exactOptional().openapi({
+      description:
+        'Metadata that you can assign to help organize the frameworks that you create. Each tag is a key-value pair.',
+    }),
   })
   .openapi({ required: ['FrameworkName', 'FrameworkControls'], title: 'CreateFrameworkInput' })
   .openapi('CreateFrameworkInput')
 
 const CreateLegalHoldInputSchema = z
   .object({
-    Title: StringSchema.and(
-      z.any().openapi({ description: 'This is the string title of the legal hold.' }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'This is the string description of the legal hold.' }),
-    ),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is a user-chosen string used to distinguish between otherwise identical calls. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
-    RecoveryPointSelection: RecoveryPointSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This specifies criteria to assign a set of resources, such as resource types or backup vaults.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional tags to include. A tag is a key-value pair you can use to manage, filter, and search for your resources. Allowed characters include UTF-8 letters, numbers, spaces, and the following characters: + - = . _ : /. ',
-        }),
-    ).exactOptional(),
+    Title: StringSchema.openapi({ description: 'This is the string title of the legal hold.' }),
+    Description: StringSchema.openapi({
+      description: 'This is the string description of the legal hold.',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'This is a user-chosen string used to distinguish between otherwise identical calls. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
+    RecoveryPointSelection: RecoveryPointSelectionSchema.exactOptional().openapi({
+      description:
+        'This specifies criteria to assign a set of resources, such as resource types or backup vaults.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'Optional tags to include. A tag is a key-value pair you can use to manage, filter, and search for your resources. Allowed characters include UTF-8 letters, numbers, spaces, and the following characters: + - = . _ : /. ',
+    }),
   })
   .openapi({ required: ['Title', 'Description'], title: 'CreateLegalHoldInput' })
   .openapi('CreateLegalHoldInput')
 
 const CreateReportPlanInputSchema = z
   .object({
-    ReportPlanName: ReportPlanNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the report plan. The name must be between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
-        }),
-    ),
-    ReportPlanDescription: ReportPlanDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional description of the report plan with a maximum of 1,024 characters.',
-        }),
-    ).exactOptional(),
-    ReportDeliveryChannel: ReportDeliveryChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains information about where and how to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.',
-        }),
-    ),
-    ReportSetting: ReportSettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>',
-        }),
-    ),
-    ReportPlanTags: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata that you can assign to help organize the report plans that you create. Each tag is a key-value pair.',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>CreateReportPlanInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
+    ReportPlanName: ReportPlanNameSchema.openapi({
+      description:
+        'The unique name of the report plan. The name must be between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).',
+    }),
+    ReportPlanDescription: ReportPlanDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the report plan with a maximum of 1,024 characters.',
+    }),
+    ReportDeliveryChannel: ReportDeliveryChannelSchema.openapi({
+      description:
+        'A structure that contains information about where and how to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.',
+    }),
+    ReportSetting: ReportSettingSchema.openapi({
+      description:
+        '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>',
+    }),
+    ReportPlanTags: StringMapSchema.exactOptional().openapi({
+      description:
+        'Metadata that you can assign to help organize the report plans that you create. Each tag is a key-value pair.',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>CreateReportPlanInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
   })
   .openapi({
     required: ['ReportPlanName', 'ReportDeliveryChannel', 'ReportSetting'],
@@ -4320,161 +2723,161 @@ const CreateReportPlanInputSchema = z
   .openapi('CreateReportPlanInput')
 
 const DeleteBackupPlanInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBackupPlanInput' })
   .openapi('DeleteBackupPlanInput')
 
 const DeleteBackupSelectionInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBackupSelectionInput' })
   .openapi('DeleteBackupSelectionInput')
 
 const DeleteBackupVaultAccessPolicyInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBackupVaultAccessPolicyInput' })
   .openapi('DeleteBackupVaultAccessPolicyInput')
 
 const DeleteBackupVaultInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBackupVaultInput' })
   .openapi('DeleteBackupVaultInput')
 
 const DeleteBackupVaultLockConfigurationInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBackupVaultLockConfigurationInput' })
   .openapi('DeleteBackupVaultLockConfigurationInput')
 
 const DeleteBackupVaultNotificationsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBackupVaultNotificationsInput' })
   .openapi('DeleteBackupVaultNotificationsInput')
 
 const DeleteFrameworkInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFrameworkInput' })
   .openapi('DeleteFrameworkInput')
 
 const DeleteRecoveryPointInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRecoveryPointInput' })
   .openapi('DeleteRecoveryPointInput')
 
 const DeleteReportPlanInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteReportPlanInput' })
   .openapi('DeleteReportPlanInput')
 
 const DescribeBackupJobInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBackupJobInput' })
   .openapi('DescribeBackupJobInput')
 
 const DescribeBackupVaultInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBackupVaultInput' })
   .openapi('DescribeBackupVaultInput')
 
 const DescribeCopyJobInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeCopyJobInput' })
   .openapi('DescribeCopyJobInput')
 
 const DescribeFrameworkInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeFrameworkInput' })
   .openapi('DescribeFrameworkInput')
 
 const DescribeGlobalSettingsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGlobalSettingsInput' })
   .openapi('DescribeGlobalSettingsInput')
 
 const DescribeProtectedResourceInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeProtectedResourceInput' })
   .openapi('DescribeProtectedResourceInput')
 
 const DescribeRecoveryPointInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRecoveryPointInput' })
   .openapi('DescribeRecoveryPointInput')
 
 const DescribeRegionSettingsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRegionSettingsInput' })
   .openapi('DescribeRegionSettingsInput')
 
 const DescribeReportJobInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeReportJobInput' })
   .openapi('DescribeReportJobInput')
 
 const DescribeReportPlanInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeReportPlanInput' })
   .openapi('DescribeReportPlanInput')
 
 const DescribeRestoreJobInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRestoreJobInput' })
   .openapi('DescribeRestoreJobInput')
 
 const DisassociateRecoveryPointFromParentInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateRecoveryPointFromParentInput' })
   .openapi('DisassociateRecoveryPointFromParentInput')
 
 const DisassociateRecoveryPointInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateRecoveryPointInput' })
   .openapi('DisassociateRecoveryPointInput')
 
 const ExportBackupPlanTemplateInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ExportBackupPlanTemplateInput' })
   .openapi('ExportBackupPlanTemplateInput')
 
 const GetBackupPlanFromJSONInputSchema = z
   .object({
-    BackupPlanTemplateJson: StringSchema.and(
-      z.any().openapi({ description: 'A customer-supplied backup plan document in JSON format.' }),
-    ),
+    BackupPlanTemplateJson: StringSchema.openapi({
+      description: 'A customer-supplied backup plan document in JSON format.',
+    }),
   })
   .openapi({ required: ['BackupPlanTemplateJson'], title: 'GetBackupPlanFromJSONInput' })
   .openapi('GetBackupPlanFromJSONInput')
 
 const GetBackupPlanFromTemplateInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBackupPlanFromTemplateInput' })
   .openapi('GetBackupPlanFromTemplateInput')
 
 const GetBackupPlanInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBackupPlanInput' })
   .openapi('GetBackupPlanInput')
 
 const GetBackupSelectionInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBackupSelectionInput' })
   .openapi('GetBackupSelectionInput')
 
 const GetBackupVaultAccessPolicyInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBackupVaultAccessPolicyInput' })
   .openapi('GetBackupVaultAccessPolicyInput')
 
 const GetBackupVaultNotificationsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBackupVaultNotificationsInput' })
   .openapi('GetBackupVaultNotificationsInput')
 
 const GetLegalHoldInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLegalHoldInput' })
   .openapi('GetLegalHoldInput')
 
 const GetRecoveryPointRestoreMetadataInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRecoveryPointRestoreMetadataInput' })
   .openapi('GetRecoveryPointRestoreMetadataInput')
 
@@ -4483,89 +2886,89 @@ const GlobalSettingsNameSchema = z.string().openapi('GlobalSettingsName')
 const MaxResultsSchema = z.int().min(1).max(1000).openapi('MaxResults')
 
 const ListBackupJobsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBackupJobsInput' })
   .openapi('ListBackupJobsInput')
 
 const ListBackupPlanTemplatesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBackupPlanTemplatesInput' })
   .openapi('ListBackupPlanTemplatesInput')
 
 const ListBackupPlanVersionsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBackupPlanVersionsInput' })
   .openapi('ListBackupPlanVersionsInput')
 
 const ListBackupPlansInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBackupPlansInput' })
   .openapi('ListBackupPlansInput')
 
 const ListBackupSelectionsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBackupSelectionsInput' })
   .openapi('ListBackupSelectionsInput')
 
 const ListBackupVaultsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBackupVaultsInput' })
   .openapi('ListBackupVaultsInput')
 
 const ListCopyJobsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCopyJobsInput' })
   .openapi('ListCopyJobsInput')
 
 const MaxFrameworkInputsSchema = z.int().min(1).max(1000).openapi('MaxFrameworkInputs')
 
 const ListFrameworksInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFrameworksInput' })
   .openapi('ListFrameworksInput')
 
 const ListLegalHoldsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLegalHoldsInput' })
   .openapi('ListLegalHoldsInput')
 
 const ListProtectedResourcesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProtectedResourcesInput' })
   .openapi('ListProtectedResourcesInput')
 
 const ListRecoveryPointsByBackupVaultInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRecoveryPointsByBackupVaultInput' })
   .openapi('ListRecoveryPointsByBackupVaultInput')
 
 const ListRecoveryPointsByLegalHoldInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRecoveryPointsByLegalHoldInput' })
   .openapi('ListRecoveryPointsByLegalHoldInput')
 
 const ListRecoveryPointsByResourceInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRecoveryPointsByResourceInput' })
   .openapi('ListRecoveryPointsByResourceInput')
 
 const ListReportJobsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListReportJobsInput' })
   .openapi('ListReportJobsInput')
 
 const ListReportPlansInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListReportPlansInput' })
   .openapi('ListReportPlansInput')
 
 const ListRestoreJobsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRestoreJobsInput' })
   .openapi('ListRestoreJobsInput')
 
 const ListTagsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsInput' })
   .openapi('ListTagsInput')
 
@@ -4573,61 +2976,41 @@ const MetadataKeySchema = z.string().openapi('MetadataKey')
 
 const PutBackupVaultAccessPolicyInputSchema = z
   .object({
-    Policy: IAMPolicySchema.and(
-      z.any().openapi({ description: 'The backup vault access policy document in JSON format.' }),
-    ).exactOptional(),
+    Policy: IAMPolicySchema.exactOptional().openapi({
+      description: 'The backup vault access policy document in JSON format.',
+    }),
   })
   .openapi({ title: 'PutBackupVaultAccessPolicyInput', required: [] })
   .openapi('PutBackupVaultAccessPolicyInput')
 
 const PutBackupVaultLockConfigurationInputSchema = z
   .object({
-    MinRetentionDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Backup Vault Lock configuration that specifies the minimum retention period that the vault retains its recovery points. This setting can be useful if, for example, your organization's policies require you to retain certain data for at least seven years (2555 days).</p> <p>If this parameter is not specified, Vault Lock will not enforce a minimum retention period.</p> <p>If this parameter is specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails that backup or copy job, and you should either modify your lifecycle settings or use a different vault. The shortest minimum retention period you can specify is 1 day. Recovery points already saved in the vault prior to Vault Lock are not affected.</p>",
-        }),
-    ).exactOptional(),
-    MaxRetentionDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Backup Vault Lock configuration that specifies the maximum retention period that the vault retains its recovery points. This setting can be useful if, for example, your organization's policies require you to destroy certain data after retaining it for four years (1460 days).</p> <p>If this parameter is not included, Vault Lock does not enforce a maximum retention period on the recovery points in the vault. If this parameter is included without a value, Vault Lock will not enforce a maximum retention period.</p> <p>If this parameter is specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or shorter than the maximum retention period. If the job's retention period is longer than that maximum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. The longest maximum retention period you can specify is 36500 days (approximately 100 years). Recovery points already saved in the vault prior to Vault Lock are not affected.</p>",
-        }),
-    ).exactOptional(),
-    ChangeableForDays: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Backup Vault Lock configuration that specifies the number of days before the lock date. For example, setting <code>ChangeableForDays</code> to 30 on Jan. 1, 2022 at 8pm UTC will set the lock date to Jan. 31, 2022 at 8pm UTC.</p> <p>Backup enforces a 72-hour cooling-off period before Vault Lock takes effect and becomes immutable. Therefore, you must set <code>ChangeableForDays</code> to 3 or greater.</p> <p>Before the lock date, you can delete Vault Lock from the vault using <code>DeleteBackupVaultLockConfiguration</code> or change the Vault Lock configuration using <code>PutBackupVaultLockConfiguration</code>. On and after the lock date, the Vault Lock becomes immutable and cannot be changed or deleted.</p> <p>If this parameter is not specified, you can delete Vault Lock from the vault using <code>DeleteBackupVaultLockConfiguration</code> or change the Vault Lock configuration using <code>PutBackupVaultLockConfiguration</code> at any time.</p>',
-        }),
-    ).exactOptional(),
+    MinRetentionDays: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The Backup Vault Lock configuration that specifies the minimum retention period that the vault retains its recovery points. This setting can be useful if, for example, your organization's policies require you to retain certain data for at least seven years (2555 days).</p> <p>If this parameter is not specified, Vault Lock will not enforce a minimum retention period.</p> <p>If this parameter is specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails that backup or copy job, and you should either modify your lifecycle settings or use a different vault. The shortest minimum retention period you can specify is 1 day. Recovery points already saved in the vault prior to Vault Lock are not affected.</p>",
+    }),
+    MaxRetentionDays: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The Backup Vault Lock configuration that specifies the maximum retention period that the vault retains its recovery points. This setting can be useful if, for example, your organization's policies require you to destroy certain data after retaining it for four years (1460 days).</p> <p>If this parameter is not included, Vault Lock does not enforce a maximum retention period on the recovery points in the vault. If this parameter is included without a value, Vault Lock will not enforce a maximum retention period.</p> <p>If this parameter is specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or shorter than the maximum retention period. If the job's retention period is longer than that maximum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. The longest maximum retention period you can specify is 36500 days (approximately 100 years). Recovery points already saved in the vault prior to Vault Lock are not affected.</p>",
+    }),
+    ChangeableForDays: LongSchema.exactOptional().openapi({
+      description:
+        '<p>The Backup Vault Lock configuration that specifies the number of days before the lock date. For example, setting <code>ChangeableForDays</code> to 30 on Jan. 1, 2022 at 8pm UTC will set the lock date to Jan. 31, 2022 at 8pm UTC.</p> <p>Backup enforces a 72-hour cooling-off period before Vault Lock takes effect and becomes immutable. Therefore, you must set <code>ChangeableForDays</code> to 3 or greater.</p> <p>Before the lock date, you can delete Vault Lock from the vault using <code>DeleteBackupVaultLockConfiguration</code> or change the Vault Lock configuration using <code>PutBackupVaultLockConfiguration</code>. On and after the lock date, the Vault Lock becomes immutable and cannot be changed or deleted.</p> <p>If this parameter is not specified, you can delete Vault Lock from the vault using <code>DeleteBackupVaultLockConfiguration</code> or change the Vault Lock configuration using <code>PutBackupVaultLockConfiguration</code> at any time.</p>',
+    }),
   })
   .openapi({ title: 'PutBackupVaultLockConfigurationInput', required: [] })
   .openapi('PutBackupVaultLockConfigurationInput')
 
 const PutBackupVaultNotificationsInputSchema = z
   .object({
-    SNSTopicArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events; for example, <code>arn:aws:sns:us-west-2:111122223333:MyVaultTopic</code>.',
-        }),
-    ),
-    BackupVaultEvents: BackupVaultEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED</code> | <code>S3_RESTORE_OBJECT_FAILED</code> </p> </li> </ul> <note> <p>The list below shows items that are deprecated events (for reference) and are no longer in use. They are no longer supported and will not return statuses or notifications. Refer to the list above for current supported events.</p> </note>',
-        }),
-    ),
+    SNSTopicArn: ARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events; for example, <code>arn:aws:sns:us-west-2:111122223333:MyVaultTopic</code>.',
+    }),
+    BackupVaultEvents: BackupVaultEventsSchema.openapi({
+      description:
+        '<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED</code> | <code>S3_RESTORE_OBJECT_FAILED</code> </p> </li> </ul> <note> <p>The list below shows items that are deprecated events (for reference) and are no longer in use. They are no longer supported and will not return statuses or notifications. Refer to the list above for current supported events.</p> </note>',
+    }),
   })
   .openapi({
     required: ['SNSTopicArn', 'BackupVaultEvents'],
@@ -4637,78 +3020,42 @@ const PutBackupVaultNotificationsInputSchema = z
 
 const StartBackupJobInputSchema = z
   .object({
-    BackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ),
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
-        }),
-    ),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartBackupJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
-    StartWindowMinutes: WindowMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional, and the default is 8 hours. If this value is included, it must be at least 60 minutes to avoid errors.",
-        }),
-    ).exactOptional(),
-    CompleteWindowMinutes: WindowMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value in minutes during which a successfully started backup must complete, or else Backup will cancel the job. This value is optional. This value begins counting down from when the backup was scheduled. It does not add additional time for <code>StartWindowMinutes</code>, or if the backup started later than scheduled.',
-        }),
-    ).exactOptional(),
-    Lifecycle: LifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
-        }),
-    ).exactOptional(),
-    RecoveryPointTags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair.',
-        }),
-    ).exactOptional(),
-    BackupOptions: BackupOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p> <p>Valid values: Set to <code>"WindowsVSS":"enabled"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. Set to <code>"WindowsVSS""disabled"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p>',
-        }),
-    ).exactOptional(),
+    BackupVaultName: BackupVaultNameSchema.openapi({
+      description:
+        'The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    ResourceArn: ARNSchema.openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.openapi({
+      description:
+        'Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartBackupJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
+    StartWindowMinutes: WindowMinutesSchema.exactOptional().openapi({
+      description:
+        "A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional, and the default is 8 hours. If this value is included, it must be at least 60 minutes to avoid errors.",
+    }),
+    CompleteWindowMinutes: WindowMinutesSchema.exactOptional().openapi({
+      description:
+        'A value in minutes during which a successfully started backup must complete, or else Backup will cancel the job. This value is optional. This value begins counting down from when the backup was scheduled. It does not add additional time for <code>StartWindowMinutes</code>, or if the backup started later than scheduled.',
+    }),
+    Lifecycle: LifecycleSchema.exactOptional().openapi({
+      description:
+        '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the "Lifecycle to cold storage" section of the <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>',
+    }),
+    RecoveryPointTags: TagsSchema.exactOptional().openapi({
+      description:
+        'To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair.',
+    }),
+    BackupOptions: BackupOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p> <p>Valid values: Set to <code>"WindowsVSS":"enabled"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. Set to <code>"WindowsVSS""disabled"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p>',
+    }),
   })
   .openapi({
     required: ['BackupVaultName', 'ResourceArn', 'IamRoleArn'],
@@ -4718,46 +3065,26 @@ const StartBackupJobInputSchema = z
 
 const StartCopyJobInputSchema = z
   .object({
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a recovery point to use for the copy job; for example, arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45. ',
-        }),
-    ),
-    SourceBackupVaultName: BackupVaultNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a logical source container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
-        }),
-    ),
-    DestinationBackupVaultArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that uniquely identifies a destination backup vault to copy to; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
-        }),
-    ),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role ARN used to copy the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartCopyJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
+    RecoveryPointArn: ARNSchema.openapi({
+      description:
+        'An ARN that uniquely identifies a recovery point to use for the copy job; for example, arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45. ',
+    }),
+    SourceBackupVaultName: BackupVaultNameSchema.openapi({
+      description:
+        'The name of a logical source container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.',
+    }),
+    DestinationBackupVaultArn: ARNSchema.openapi({
+      description:
+        'An Amazon Resource Name (ARN) that uniquely identifies a destination backup vault to copy to; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.',
+    }),
+    IamRoleArn: IAMRoleArnSchema.openapi({
+      description:
+        'Specifies the IAM role ARN used to copy the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartCopyJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
     Lifecycle: LifecycleSchema.exactOptional(),
   })
   .openapi({
@@ -4773,66 +3100,42 @@ const StartCopyJobInputSchema = z
 
 const StartReportJobInputSchema = z
   .object({
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartReportJobInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartReportJobInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
   })
   .openapi({ title: 'StartReportJobInput', required: [] })
   .openapi('StartReportJobInput')
 
 const StartRestoreJobInputSchema = z
   .object({
-    RecoveryPointArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
-        }),
-    ),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A set of metadata key-value pairs. Contains information, such as a resource name, required to restore a recovery point.</p> <p> You can get configuration metadata about a resource at the time it was backed up by calling <code>GetRecoveryPointRestoreMetadata</code>. However, values in addition to those provided by <code>GetRecoveryPointRestoreMetadata</code> might be required to restore a resource. For example, you might need to provide a new resource name if the original already exists.</p> <p>You need to specify specific metadata to restore an Amazon Elastic File System (Amazon EFS) instance:</p> <ul> <li> <p> <code>file-system-id</code>: The ID of the Amazon EFS file system that is backed up by Backup. Returned in <code>GetRecoveryPointRestoreMetadata</code>.</p> </li> <li> <p> <code>Encrypted</code>: A Boolean value that, if true, specifies that the file system is encrypted. If <code>KmsKeyId</code> is specified, <code>Encrypted</code> must be set to <code>true</code>.</p> </li> <li> <p> <code>KmsKeyId</code>: Specifies the Amazon Web Services KMS key that is used to encrypt the restored file system. You can specify a key from another Amazon Web Services account provided that key it is properly shared with your account via Amazon Web Services KMS.</p> </li> <li> <p> <code>PerformanceMode</code>: Specifies the throughput mode of the file system.</p> </li> <li> <p> <code>CreationToken</code>: A user-supplied value that ensures the uniqueness (idempotency) of the request.</p> </li> <li> <p> <code>newFileSystem</code>: A Boolean value that, if true, specifies that the recovery point is restored to a new Amazon EFS file system.</p> </li> <li> <p> <code>ItemsToRestore</code>: An array of one to five strings where each string is a file path. Use <code>ItemsToRestore</code> to restore specific files or directories rather than the entire file system. This parameter is optional. For example, <code>"itemsToRestore":"[\\"/my.test\\"]"</code>.</p> </li> </ul>',
-        }),
-    ),
-    IamRoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartRestoreJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Starts a job to restore a recovery point for one of the following resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    RecoveryPointArn: ARNSchema.openapi({
+      description:
+        'An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.',
+    }),
+    Metadata: MetadataSchema.openapi({
+      description:
+        '<p>A set of metadata key-value pairs. Contains information, such as a resource name, required to restore a recovery point.</p> <p> You can get configuration metadata about a resource at the time it was backed up by calling <code>GetRecoveryPointRestoreMetadata</code>. However, values in addition to those provided by <code>GetRecoveryPointRestoreMetadata</code> might be required to restore a resource. For example, you might need to provide a new resource name if the original already exists.</p> <p>You need to specify specific metadata to restore an Amazon Elastic File System (Amazon EFS) instance:</p> <ul> <li> <p> <code>file-system-id</code>: The ID of the Amazon EFS file system that is backed up by Backup. Returned in <code>GetRecoveryPointRestoreMetadata</code>.</p> </li> <li> <p> <code>Encrypted</code>: A Boolean value that, if true, specifies that the file system is encrypted. If <code>KmsKeyId</code> is specified, <code>Encrypted</code> must be set to <code>true</code>.</p> </li> <li> <p> <code>KmsKeyId</code>: Specifies the Amazon Web Services KMS key that is used to encrypt the restored file system. You can specify a key from another Amazon Web Services account provided that key it is properly shared with your account via Amazon Web Services KMS.</p> </li> <li> <p> <code>PerformanceMode</code>: Specifies the throughput mode of the file system.</p> </li> <li> <p> <code>CreationToken</code>: A user-supplied value that ensures the uniqueness (idempotency) of the request.</p> </li> <li> <p> <code>newFileSystem</code>: A Boolean value that, if true, specifies that the recovery point is restored to a new Amazon EFS file system.</p> </li> <li> <p> <code>ItemsToRestore</code>: An array of one to five strings where each string is a file path. Use <code>ItemsToRestore</code> to restore specific files or directories rather than the entire file system. This parameter is optional. For example, <code>"itemsToRestore":"[\\"/my.test\\"]"</code>.</p> </li> </ul>',
+    }),
+    IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartRestoreJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Starts a job to restore a recovery point for one of the following resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['RecoveryPointArn', 'Metadata'], title: 'StartRestoreJobInput' })
   .openapi('StartRestoreJobInput')
 
 const StopBackupJobInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopBackupJobInput' })
   .openapi('StopBackupJobInput')
 
@@ -4842,158 +3145,101 @@ const TagKeyListSchema = z.array(StringSchema).openapi('TagKeyList')
 
 const TagResourceInputSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Key-value pairs that are used to help organize your resources. You can assign your own metadata to the resources you create. For clarity, this is the structure to assign tags: <code>[{"Key":"string","Value":"string"}]</code>.',
-        }),
-    ),
+    Tags: TagsSchema.openapi({
+      description:
+        'Key-value pairs that are used to help organize your resources. You can assign your own metadata to the resources you create. For clarity, this is the structure to assign tags: <code>[{"Key":"string","Value":"string"}]</code>.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
 const UntagResourceInputSchema = z
   .object({
-    TagKeyList: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of keys to identify which key-value tags to remove from a resource.',
-        }),
-    ),
+    TagKeyList: TagKeyListSchema.openapi({
+      description: 'A list of keys to identify which key-value tags to remove from a resource.',
+    }),
   })
   .openapi({ required: ['TagKeyList'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
 
 const UpdateBackupPlanInputSchema = z
   .object({
-    BackupPlan: BackupPlanInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.',
-        }),
-    ),
+    BackupPlan: BackupPlanInputSchema.openapi({
+      description:
+        'Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.',
+    }),
   })
   .openapi({ required: ['BackupPlan'], title: 'UpdateBackupPlanInput' })
   .openapi('UpdateBackupPlanInput')
 
 const UpdateFrameworkInputSchema = z
   .object({
-    FrameworkDescription: FrameworkDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An optional description of the framework with a maximum 1,024 characters.',
-        }),
-    ).exactOptional(),
-    FrameworkControls: FrameworkControlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>UpdateFrameworkInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
+    FrameworkDescription: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the framework with a maximum 1,024 characters.',
+    }),
+    FrameworkControls: FrameworkControlsSchema.exactOptional().openapi({
+      description:
+        'A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>UpdateFrameworkInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
   })
   .openapi({ title: 'UpdateFrameworkInput', required: [] })
   .openapi('UpdateFrameworkInput')
 
 const UpdateGlobalSettingsInputSchema = z
   .object({
-    GlobalSettings: GlobalSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.',
-        }),
-    ).exactOptional(),
+    GlobalSettings: GlobalSettingsSchema.exactOptional().openapi({
+      description:
+        'A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.',
+    }),
   })
   .openapi({ title: 'UpdateGlobalSettingsInput', required: [] })
   .openapi('UpdateGlobalSettingsInput')
 
 const UpdateRecoveryPointLifecycleInputSchema = z
   .object({
-    Lifecycle: LifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p>',
-        }),
-    ).exactOptional(),
+    Lifecycle: LifecycleSchema.exactOptional().openapi({
+      description:
+        '<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p>',
+    }),
   })
   .openapi({ title: 'UpdateRecoveryPointLifecycleInput', required: [] })
   .openapi('UpdateRecoveryPointLifecycleInput')
 
 const UpdateRegionSettingsInputSchema = z
   .object({
-    ResourceTypeOptInPreference: ResourceTypeOptInPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates the list of services along with the opt-in preferences for the Region.',
-        }),
-    ).exactOptional(),
-    ResourceTypeManagementPreference: ResourceTypeManagementPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables full Backup management of backups for a resource type. To enable full Backup management for DynamoDB along with <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html"> Backup\'s advanced DynamoDB backup features</a>, follow the procedure to <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli"> enable advanced DynamoDB backup programmatically</a>.',
-        }),
-    ).exactOptional(),
+    ResourceTypeOptInPreference: ResourceTypeOptInPreferenceSchema.exactOptional().openapi({
+      description: 'Updates the list of services along with the opt-in preferences for the Region.',
+    }),
+    ResourceTypeManagementPreference:
+      ResourceTypeManagementPreferenceSchema.exactOptional().openapi({
+        description:
+          'Enables or disables full Backup management of backups for a resource type. To enable full Backup management for DynamoDB along with <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html"> Backup\'s advanced DynamoDB backup features</a>, follow the procedure to <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli"> enable advanced DynamoDB backup programmatically</a>.',
+      }),
   })
   .openapi({ title: 'UpdateRegionSettingsInput', required: [] })
   .openapi('UpdateRegionSettingsInput')
 
 const UpdateReportPlanInputSchema = z
   .object({
-    ReportPlanDescription: ReportPlanDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional description of the report plan with a maximum 1,024 characters.',
-        }),
-    ).exactOptional(),
-    ReportDeliveryChannel: ReportDeliveryChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains information about where to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.',
-        }),
-    ).exactOptional(),
-    ReportSetting: ReportSettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>UpdateReportPlanInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
-        }),
-    ).exactOptional(),
+    ReportPlanDescription: ReportPlanDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the report plan with a maximum 1,024 characters.',
+    }),
+    ReportDeliveryChannel: ReportDeliveryChannelSchema.exactOptional().openapi({
+      description:
+        'A structure that contains information about where to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.',
+    }),
+    ReportSetting: ReportSettingSchema.exactOptional().openapi({
+      description:
+        '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>',
+    }),
+    IdempotencyToken: StringSchema.exactOptional().openapi({
+      description:
+        'A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>UpdateReportPlanInput</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.',
+    }),
   })
   .openapi({ title: 'UpdateReportPlanInput', required: [] })
   .openapi('UpdateReportPlanInput')
@@ -5299,30 +3545,18 @@ export const putBackupPlansIndexRoute = createRoute({
             .object({
               BackupPlan: z
                 .object({
-                  BackupPlanName: BackupPlanNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.",
-                      }),
-                  ).exactOptional(),
-                  Rules: BackupRulesInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources.',
-                      }),
-                  ).exactOptional(),
-                  AdvancedBackupSettings: AdvancedBackupSettingsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies a list of <code>BackupOptions</code> for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.',
-                      }),
-                  ).exactOptional(),
+                  BackupPlanName: BackupPlanNameSchema.exactOptional().openapi({
+                    description:
+                      "The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.",
+                  }),
+                  Rules: BackupRulesInputSchema.exactOptional().openapi({
+                    description:
+                      'An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources.',
+                  }),
+                  AdvancedBackupSettings: AdvancedBackupSettingsSchema.exactOptional().openapi({
+                    description:
+                      'Specifies a list of <code>BackupOptions</code> for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -5528,54 +3762,30 @@ export const putBackupPlansBackupPlanIdSelectionsIndexRoute = createRoute({
             .object({
               BackupSelection: z
                 .object({
-                  SelectionName: BackupSelectionNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The display name of a resource selection document. Must contain 1 to 50 alphanumeric or '-_.' characters.",
-                      }),
-                  ).exactOptional(),
-                  IamRoleArn: IAMRoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the IAM role that Backup uses to authenticate when backing up the target resource; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
-                      }),
-                  ).exactOptional(),
-                  Resources: ResourceArnsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of Amazon Resource Names (ARNs) to assign to a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to assign many resources to a backup plan, consider a different resource selection strategy, such as assigning all resources of a resource type or refining your resource selection using tags.</p>',
-                      }),
-                  ).exactOptional(),
-                  ListOfTags: ListOfTagsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>"StringEquals": { "ConditionKey": "aws:ResourceTag/CreatedByCryo", "ConditionValue": "true" },</code>. Condition operators are case sensitive.</p> <p> <code>ListOfTags</code> differs from <code>Conditions</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you assign all resources that match AT LEAST ONE condition (using OR logic).</p> </li> <li> <p> <code>ListOfTags</code> only supports <code>StringEquals</code>. <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. </p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  NotResources: ResourceArnsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of Amazon Resource Names (ARNs) to exclude from a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to exclude many resources from a backup plan, consider a different resource selection strategy, such as assigning only one or a few resource types or refining your resource selection using tags.</p>',
-                      }),
-                  ).exactOptional(),
-                  Conditions: ConditionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>"StringEquals": { "ConditionKey": "aws:ResourceTag/CreatedByCryo", "ConditionValue": "true" },</code>. Condition operators are case sensitive.</p> <p> <code>Conditions</code> differs from <code>ListOfTags</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you only assign the resources that match ALL conditions (using AND logic).</p> </li> <li> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. <code>ListOfTags</code> only supports <code>StringEquals</code>.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  SelectionName: BackupSelectionNameSchema.exactOptional().openapi({
+                    description:
+                      "The display name of a resource selection document. Must contain 1 to 50 alphanumeric or '-_.' characters.",
+                  }),
+                  IamRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+                    description:
+                      'The ARN of the IAM role that Backup uses to authenticate when backing up the target resource; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.',
+                  }),
+                  Resources: ResourceArnsSchema.exactOptional().openapi({
+                    description:
+                      '<p>A list of Amazon Resource Names (ARNs) to assign to a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to assign many resources to a backup plan, consider a different resource selection strategy, such as assigning all resources of a resource type or refining your resource selection using tags.</p>',
+                  }),
+                  ListOfTags: ListOfTagsSchema.exactOptional().openapi({
+                    description:
+                      '<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>"StringEquals": { "ConditionKey": "aws:ResourceTag/CreatedByCryo", "ConditionValue": "true" },</code>. Condition operators are case sensitive.</p> <p> <code>ListOfTags</code> differs from <code>Conditions</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you assign all resources that match AT LEAST ONE condition (using OR logic).</p> </li> <li> <p> <code>ListOfTags</code> only supports <code>StringEquals</code>. <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. </p> </li> </ul>',
+                  }),
+                  NotResources: ResourceArnsSchema.exactOptional().openapi({
+                    description:
+                      '<p>A list of Amazon Resource Names (ARNs) to exclude from a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to exclude many resources from a backup plan, consider a different resource selection strategy, such as assigning only one or a few resource types or refining your resource selection using tags.</p>',
+                  }),
+                  Conditions: ConditionsSchema.exactOptional().openapi({
+                    description:
+                      '<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>"StringEquals": { "ConditionKey": "aws:ResourceTag/CreatedByCryo", "ConditionValue": "true" },</code>. Condition operators are case sensitive.</p> <p> <code>Conditions</code> differs from <code>ListOfTags</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you only assign the resources that match ALL conditions (using AND logic).</p> </li> <li> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. <code>ListOfTags</code> only supports <code>StringEquals</code>.</p> </li> </ul>',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6117,22 +4327,14 @@ export const postLegalHoldsIndexRoute = createRoute({
                 }),
               RecoveryPointSelection: z
                 .object({
-                  VaultNames: VaultNamesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'These are the names of the vaults in which the selected recovery points are contained.',
-                      }),
-                  ).exactOptional(),
-                  ResourceIdentifiers: ResourceIdentifiersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'These are the resources included in the resource selection (including type of resources and vaults).',
-                      }),
-                  ).exactOptional(),
+                  VaultNames: VaultNamesSchema.exactOptional().openapi({
+                    description:
+                      'These are the names of the vaults in which the selected recovery points are contained.',
+                  }),
+                  ResourceIdentifiers: ResourceIdentifiersSchema.exactOptional().openapi({
+                    description:
+                      'These are the resources included in the resource selection (including type of resources and vaults).',
+                  }),
                   DateRange: DateRangeSchema.exactOptional(),
                 })
                 .exactOptional()
@@ -6290,29 +4492,17 @@ export const postAuditReportPlansRoute = createRoute({
                 }),
               ReportDeliveryChannel: z
                 .object({
-                  S3BucketName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The unique name of the S3 bucket that receives your reports.',
-                      }),
-                  ).exactOptional(),
-                  S3KeyPrefix: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The prefix for where Backup Audit Manager delivers your reports to Amazon S3. The prefix is this part of the following path: s3://your-bucket-name/<code>prefix</code>/Backup/us-west-2/year/month/day/report-name. If not specified, there is no prefix.',
-                      }),
-                  ).exactOptional(),
-                  Formats: FormatListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of the format of your reports: <code>CSV</code>, <code>JSON</code>, or both. If not specified, the default format is <code>CSV</code>.',
-                      }),
-                  ).exactOptional(),
+                  S3BucketName: StringSchema.exactOptional().openapi({
+                    description: 'The unique name of the S3 bucket that receives your reports.',
+                  }),
+                  S3KeyPrefix: StringSchema.exactOptional().openapi({
+                    description:
+                      'The prefix for where Backup Audit Manager delivers your reports to Amazon S3. The prefix is this part of the following path: s3://your-bucket-name/<code>prefix</code>/Backup/us-west-2/year/month/day/report-name. If not specified, there is no prefix.',
+                  }),
+                  Formats: FormatListSchema.exactOptional().openapi({
+                    description:
+                      'A list of the format of your reports: <code>CSV</code>, <code>JSON</code>, or both. If not specified, the default format is <code>CSV</code>.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6321,47 +4511,26 @@ export const postAuditReportPlansRoute = createRoute({
                 }),
               ReportSetting: z
                 .object({
-                  ReportTemplate: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  FrameworkArns: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Names (ARNs) of the frameworks a report covers.',
-                      }),
-                  ).exactOptional(),
-                  NumberOfFrameworks: IntegerSchema.and(
-                    z.any().openapi({ description: 'The number of frameworks a report covers.' }),
-                  ).exactOptional(),
-                  Accounts: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'These are the accounts to be included in the report.',
-                      }),
-                  ).exactOptional(),
-                  OrganizationUnits: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'These are the Organizational Units to be included in the report.',
-                      }),
-                  ).exactOptional(),
-                  Regions: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'These are the Regions to be included in the report.',
-                      }),
-                  ).exactOptional(),
+                  ReportTemplate: StringSchema.exactOptional().openapi({
+                    description:
+                      '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>',
+                  }),
+                  FrameworkArns: StringListSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Names (ARNs) of the frameworks a report covers.',
+                  }),
+                  NumberOfFrameworks: IntegerSchema.exactOptional().openapi({
+                    description: 'The number of frameworks a report covers.',
+                  }),
+                  Accounts: StringListSchema.exactOptional().openapi({
+                    description: 'These are the accounts to be included in the report.',
+                  }),
+                  OrganizationUnits: StringListSchema.exactOptional().openapi({
+                    description: 'These are the Organizational Units to be included in the report.',
+                  }),
+                  Regions: StringListSchema.exactOptional().openapi({
+                    description: 'These are the Regions to be included in the report.',
+                  }),
                 })
                 .openapi({
                   description: 'Contains detailed information about a report setting.',
@@ -6452,30 +4621,18 @@ export const postBackupPlansBackupPlanIdRoute = createRoute({
             .object({
               BackupPlan: z
                 .object({
-                  BackupPlanName: BackupPlanNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.",
-                      }),
-                  ).exactOptional(),
-                  Rules: BackupRulesInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources.',
-                      }),
-                  ).exactOptional(),
-                  AdvancedBackupSettings: AdvancedBackupSettingsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies a list of <code>BackupOptions</code> for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.',
-                      }),
-                  ).exactOptional(),
+                  BackupPlanName: BackupPlanNameSchema.exactOptional().openapi({
+                    description:
+                      "The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.",
+                  }),
+                  Rules: BackupRulesInputSchema.exactOptional().openapi({
+                    description:
+                      'An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources.',
+                  }),
+                  AdvancedBackupSettings: AdvancedBackupSettingsSchema.exactOptional().openapi({
+                    description:
+                      'Specifies a list of <code>BackupOptions</code> for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -7555,22 +5712,14 @@ export const postBackupVaultsBackupVaultNameRecoveryPointsRecoveryPointArnRoute 
             .object({
               Lifecycle: z
                 .object({
-                  MoveToColdStorageAfterDays: LongSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the number of days after creation that a recovery point is moved to cold storage.',
-                      }),
-                  ).exactOptional(),
-                  DeleteAfterDays: LongSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.',
-                      }),
-                  ).exactOptional(),
+                  MoveToColdStorageAfterDays: LongSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the number of days after creation that a recovery point is moved to cold storage.',
+                  }),
+                  DeleteAfterDays: LongSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7803,29 +5952,17 @@ export const putAuditReportPlansReportPlanNameRoute = createRoute({
                 }),
               ReportDeliveryChannel: z
                 .object({
-                  S3BucketName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The unique name of the S3 bucket that receives your reports.',
-                      }),
-                  ).exactOptional(),
-                  S3KeyPrefix: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The prefix for where Backup Audit Manager delivers your reports to Amazon S3. The prefix is this part of the following path: s3://your-bucket-name/<code>prefix</code>/Backup/us-west-2/year/month/day/report-name. If not specified, there is no prefix.',
-                      }),
-                  ).exactOptional(),
-                  Formats: FormatListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of the format of your reports: <code>CSV</code>, <code>JSON</code>, or both. If not specified, the default format is <code>CSV</code>.',
-                      }),
-                  ).exactOptional(),
+                  S3BucketName: StringSchema.exactOptional().openapi({
+                    description: 'The unique name of the S3 bucket that receives your reports.',
+                  }),
+                  S3KeyPrefix: StringSchema.exactOptional().openapi({
+                    description:
+                      'The prefix for where Backup Audit Manager delivers your reports to Amazon S3. The prefix is this part of the following path: s3://your-bucket-name/<code>prefix</code>/Backup/us-west-2/year/month/day/report-name. If not specified, there is no prefix.',
+                  }),
+                  Formats: FormatListSchema.exactOptional().openapi({
+                    description:
+                      'A list of the format of your reports: <code>CSV</code>, <code>JSON</code>, or both. If not specified, the default format is <code>CSV</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7835,47 +5972,26 @@ export const putAuditReportPlansReportPlanNameRoute = createRoute({
                 }),
               ReportSetting: z
                 .object({
-                  ReportTemplate: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  FrameworkArns: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Names (ARNs) of the frameworks a report covers.',
-                      }),
-                  ).exactOptional(),
-                  NumberOfFrameworks: IntegerSchema.and(
-                    z.any().openapi({ description: 'The number of frameworks a report covers.' }),
-                  ).exactOptional(),
-                  Accounts: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'These are the accounts to be included in the report.',
-                      }),
-                  ).exactOptional(),
-                  OrganizationUnits: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'These are the Organizational Units to be included in the report.',
-                      }),
-                  ).exactOptional(),
-                  Regions: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'These are the Regions to be included in the report.',
-                      }),
-                  ).exactOptional(),
+                  ReportTemplate: StringSchema.exactOptional().openapi({
+                    description:
+                      '<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>',
+                  }),
+                  FrameworkArns: StringListSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Names (ARNs) of the frameworks a report covers.',
+                  }),
+                  NumberOfFrameworks: IntegerSchema.exactOptional().openapi({
+                    description: 'The number of frameworks a report covers.',
+                  }),
+                  Accounts: StringListSchema.exactOptional().openapi({
+                    description: 'These are the accounts to be included in the report.',
+                  }),
+                  OrganizationUnits: StringListSchema.exactOptional().openapi({
+                    description: 'These are the Organizational Units to be included in the report.',
+                  }),
+                  Regions: StringListSchema.exactOptional().openapi({
+                    description: 'These are the Regions to be included in the report.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10792,22 +8908,14 @@ export const putBackupJobsRoute = createRoute({
                 }),
               Lifecycle: z
                 .object({
-                  MoveToColdStorageAfterDays: LongSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the number of days after creation that a recovery point is moved to cold storage.',
-                      }),
-                  ).exactOptional(),
-                  DeleteAfterDays: LongSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.',
-                      }),
-                  ).exactOptional(),
+                  MoveToColdStorageAfterDays: LongSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the number of days after creation that a recovery point is moved to cold storage.',
+                  }),
+                  DeleteAfterDays: LongSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10923,22 +9031,14 @@ export const putCopyJobsRoute = createRoute({
                 }),
               Lifecycle: z
                 .object({
-                  MoveToColdStorageAfterDays: LongSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the number of days after creation that a recovery point is moved to cold storage.',
-                      }),
-                  ).exactOptional(),
-                  DeleteAfterDays: LongSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.',
-                      }),
-                  ).exactOptional(),
+                  MoveToColdStorageAfterDays: LongSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the number of days after creation that a recovery point is moved to cold storage.',
+                  }),
+                  DeleteAfterDays: LongSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

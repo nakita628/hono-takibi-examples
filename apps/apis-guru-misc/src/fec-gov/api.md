@@ -24,7 +24,7 @@ This application programming interface (API) allows you to explore the way candi
 
 Base URLs:
 
-* <a href="https://api.apis.guru/v1">https://api.apis.guru/v1</a>
+* <a href="/v1">/v1</a>
 
 # Authentication
 

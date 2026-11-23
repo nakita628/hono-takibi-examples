@@ -8,6 +8,7 @@ const AdditionalServiceTypeSchema = z
 const AircraftEntrySchema = z
   .object({ key: z.string().exactOptional() })
   .catchall(z.string().openapi({ description: 'the manufacturer/model of aircraft' }))
+  .openapi({ required: [] })
   .openapi('AircraftEntry')
 
 const AircraftEquipmentSchema = z
@@ -42,6 +43,7 @@ const BaggageAllowanceSchema = z
 const CarrierEntrySchema = z
   .object({ key: z.string().exactOptional() })
   .catchall(z.string().openapi({ description: 'the carrier name' }))
+  .openapi({ required: [] })
   .openapi('CarrierEntry')
 
 const TravelClassSchema = z

@@ -8,7 +8,7 @@ You may find our [automatically generated clients](./clients) for various progra
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api/v1">https://api.apis.guru/api/v1</a>
+* <a href="/api/v1">/api/v1</a>
 
 Email: <a href="mailto:info@obono.at">CodeWerkstatt OG</a> 
 Web: <a href="https://obono.at">CodeWerkstatt OG</a> 

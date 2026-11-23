@@ -1,5 +1,22 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AttributeValSchema = z
+  .object({ spec_id: z.int(), value: z.string().max(4096) })
+  .openapi({ required: ['spec_id', 'value'] })
+  .openapi('AttributeVal')
+
+const LabeledImageSchema = z
+  .object({
+    id: z.int().nullable().exactOptional(),
+    label_id: z.int().min(0),
+    group: z.int().min(0).nullable().default(0).exactOptional(),
+    source: z.string().default('manual').exactOptional(),
+    frame: z.int().min(0),
+    attributes: z.array(AttributeValSchema).default([]).exactOptional(),
+  })
+  .openapi({ required: ['frame', 'label_id'] })
+  .openapi('LabeledImage')
+
 const ShapeTypeSchema = z
   .enum(['rectangle', 'polygon', 'polyline', 'points', 'ellipse', 'cuboid', 'mask', 'skeleton'])
   .openapi({
@@ -7,11 +24,6 @@ const ShapeTypeSchema = z
       '* `rectangle` - RECTANGLE\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `points` - POINTS\n* `ellipse` - ELLIPSE\n* `cuboid` - CUBOID\n* `mask` - MASK\n* `skeleton` - SKELETON',
   })
   .openapi('ShapeType')
-
-const AttributeValSchema = z
-  .object({ spec_id: z.int(), value: z.string().max(4096) })
-  .openapi({ required: ['spec_id', 'value'] })
-  .openapi('AttributeVal')
 
 const SubLabeledShapeSchema = z
   .object({
@@ -32,29 +44,7 @@ const SubLabeledShapeSchema = z
   .openapi({ required: ['frame', 'label_id', 'type'] })
   .openapi('SubLabeledShape')
 
-type LabeledShapeType = {
-  type: z.infer<typeof ShapeTypeSchema>
-  occluded?: boolean
-  outside?: boolean
-  z_order?: number
-  rotation?: number
-  points?: number[]
-  id?: number | null
-  label_id: number
-  group?: number | null
-  source?: string
-  frame: number
-  attributes?: z.infer<typeof AttributeValSchema>[]
-  score?: number
-  elements?: z.infer<typeof SubLabeledShapeSchema>[]
-}
-
-const AttributeValRequestSchema = z
-  .object({ spec_id: z.int(), value: z.string().max(4096) })
-  .openapi({ required: ['spec_id', 'value'] })
-  .openapi('AttributeValRequest')
-
-const SubLabeledShapeRequestSchema = z
+const LabeledShapeSchema = z
   .object({
     type: ShapeTypeSchema,
     occluded: z.boolean().default(false).exactOptional(),
@@ -65,30 +55,14 @@ const SubLabeledShapeRequestSchema = z
     id: z.int().nullable().exactOptional(),
     label_id: z.int().min(0),
     group: z.int().min(0).nullable().default(0).exactOptional(),
-    source: z.string().min(1).default('manual').exactOptional(),
+    source: z.string().default('manual').exactOptional(),
     frame: z.int().min(0),
-    attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
+    attributes: z.array(AttributeValSchema).default([]).exactOptional(),
     score: z.float64().min(0).max(1).default(1).exactOptional(),
+    elements: z.array(SubLabeledShapeSchema).exactOptional(),
   })
   .openapi({ required: ['frame', 'label_id', 'type'] })
-  .openapi('SubLabeledShapeRequest')
-
-type LabeledShapeRequestType = {
-  type: z.infer<typeof ShapeTypeSchema>
-  occluded?: boolean
-  outside?: boolean
-  z_order?: number
-  rotation?: number
-  points?: number[]
-  id?: number | null
-  label_id: number
-  group?: number | null
-  source?: string
-  frame: number
-  attributes?: z.infer<typeof AttributeValRequestSchema>[]
-  score?: number
-  elements?: z.infer<typeof SubLabeledShapeRequestSchema>[]
-}
+  .openapi('LabeledShape')
 
 const TrackedShapeSchema = z
   .object({
@@ -118,16 +92,103 @@ const SubLabeledTrackSchema = z
   .openapi({ required: ['frame', 'label_id', 'shapes'] })
   .openapi('SubLabeledTrack')
 
-type LabeledTrackType = {
-  id?: number | null
-  label_id: number
-  group?: number | null
-  source?: string
-  frame: number
-  attributes?: z.infer<typeof AttributeValSchema>[]
-  shapes: z.infer<typeof TrackedShapeSchema>[]
-  elements?: z.infer<typeof SubLabeledTrackSchema>[]
+const LabeledTrackSchema = z
+  .object({
+    id: z.int().nullable().exactOptional(),
+    label_id: z.int().min(0),
+    group: z.int().min(0).nullable().default(0).exactOptional(),
+    source: z.string().default('manual').exactOptional(),
+    frame: z.int().min(0),
+    attributes: z.array(AttributeValSchema).default([]).exactOptional(),
+    shapes: z.array(TrackedShapeSchema),
+    elements: z.array(SubLabeledTrackSchema).exactOptional(),
+  })
+  .openapi({ required: ['frame', 'label_id', 'shapes'] })
+  .openapi('LabeledTrack')
+
+const LabeledIntervalSchema = z
+  .object({
+    id: z.int().nullable().exactOptional(),
+    label_id: z.int().min(0),
+    group: z.int().min(0).nullable().default(0).exactOptional(),
+    source: z.string().default('manual').exactOptional(),
+    attributes: z.array(AttributeValSchema).default([]).exactOptional(),
+    score: z.float64().min(0).max(1).default(1).exactOptional(),
+    start: z.int().min(0).openapi({ description: 'Must be within the task frame bounds.' }),
+    stop: z
+      .int()
+      .min(0)
+      .nullable()
+      .openapi({
+        description: 'Exclusive interval end. May be one greater than the task stop frame.',
+      }),
+  })
+  .openapi({ required: ['label_id', 'start', 'stop'] })
+  .openapi('LabeledInterval')
+
+type LabeledDataType = {
+  version?: number
+  tags?: z.infer<typeof LabeledImageSchema>[]
+  shapes?: z.infer<typeof LabeledShapeSchema>[]
+  tracks?: z.infer<typeof LabeledTrackSchema>[]
+  intervals?: z.infer<typeof LabeledIntervalSchema>[]
 }
+
+const AttributeValRequestSchema = z
+  .object({ spec_id: z.int(), value: z.string().max(4096) })
+  .openapi({ required: ['spec_id', 'value'] })
+  .openapi('AttributeValRequest')
+
+const LabeledImageRequestSchema = z
+  .object({
+    id: z.int().nullable().exactOptional(),
+    label_id: z.int().min(0),
+    group: z.int().min(0).nullable().default(0).exactOptional(),
+    source: z.string().min(1).default('manual').exactOptional(),
+    frame: z.int().min(0),
+    attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
+  })
+  .openapi({ required: ['frame', 'label_id'] })
+  .openapi('LabeledImageRequest')
+
+const SubLabeledShapeRequestSchema = z
+  .object({
+    type: ShapeTypeSchema,
+    occluded: z.boolean().default(false).exactOptional(),
+    outside: z.boolean().default(false).exactOptional(),
+    z_order: z.int().default(0).exactOptional(),
+    rotation: z.float64().min(0).max(360).default(0).exactOptional(),
+    points: z.array(z.float64()).exactOptional(),
+    id: z.int().nullable().exactOptional(),
+    label_id: z.int().min(0),
+    group: z.int().min(0).nullable().default(0).exactOptional(),
+    source: z.string().min(1).default('manual').exactOptional(),
+    frame: z.int().min(0),
+    attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
+    score: z.float64().min(0).max(1).default(1).exactOptional(),
+  })
+  .openapi({ required: ['frame', 'label_id', 'type'] })
+  .openapi('SubLabeledShapeRequest')
+
+const LabeledShapeRequestSchema = z
+  .object({
+    type: ShapeTypeSchema,
+    occluded: z.boolean().default(false).exactOptional(),
+    outside: z.boolean().default(false).exactOptional(),
+    z_order: z.int().default(0).exactOptional(),
+    rotation: z.float64().min(0).max(360).default(0).exactOptional(),
+    points: z.array(z.float64()).exactOptional(),
+    id: z.int().nullable().exactOptional(),
+    label_id: z.int().min(0),
+    group: z.int().min(0).nullable().default(0).exactOptional(),
+    source: z.string().min(1).default('manual').exactOptional(),
+    frame: z.int().min(0),
+    attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
+    score: z.float64().min(0).max(1).default(1).exactOptional(),
+    elements: z.array(SubLabeledShapeRequestSchema).exactOptional(),
+  })
+  .openapi({ required: ['frame', 'label_id', 'type'] })
+  .openapi('LabeledShapeRequest')
 
 const TrackedShapeRequestSchema = z
   .object({
@@ -157,38 +218,185 @@ const SubLabeledTrackRequestSchema = z
   .openapi({ required: ['frame', 'label_id', 'shapes'] })
   .openapi('SubLabeledTrackRequest')
 
-type LabeledTrackRequestType = {
-  id?: number | null
-  label_id: number
-  group?: number | null
-  source?: string
-  frame: number
-  attributes?: z.infer<typeof AttributeValRequestSchema>[]
-  shapes: z.infer<typeof TrackedShapeRequestSchema>[]
-  elements?: z.infer<typeof SubLabeledTrackRequestSchema>[]
+const LabeledTrackRequestSchema = z
+  .object({
+    id: z.int().nullable().exactOptional(),
+    label_id: z.int().min(0),
+    group: z.int().min(0).nullable().default(0).exactOptional(),
+    source: z.string().min(1).default('manual').exactOptional(),
+    frame: z.int().min(0),
+    attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
+    shapes: z.array(TrackedShapeRequestSchema),
+    elements: z.array(SubLabeledTrackRequestSchema).exactOptional(),
+  })
+  .openapi({ required: ['frame', 'label_id', 'shapes'] })
+  .openapi('LabeledTrackRequest')
+
+const LabeledIntervalRequestSchema = z
+  .object({
+    id: z.int().nullable().exactOptional(),
+    label_id: z.int().min(0),
+    group: z.int().min(0).nullable().default(0).exactOptional(),
+    source: z.string().min(1).default('manual').exactOptional(),
+    attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
+    score: z.float64().min(0).max(1).default(1).exactOptional(),
+    start: z.int().min(0).openapi({ description: 'Must be within the task frame bounds.' }),
+    stop: z
+      .int()
+      .min(0)
+      .nullable()
+      .openapi({
+        description: 'Exclusive interval end. May be one greater than the task stop frame.',
+      }),
+  })
+  .openapi({ required: ['label_id', 'start', 'stop'] })
+  .openapi('LabeledIntervalRequest')
+
+type LabeledDataRequestType = {
+  version?: number
+  tags?: z.infer<typeof LabeledImageRequestSchema>[]
+  shapes?: z.infer<typeof LabeledShapeRequestSchema>[]
+  tracks?: z.infer<typeof LabeledTrackRequestSchema>[]
+  intervals?: z.infer<typeof LabeledIntervalRequestSchema>[]
 }
 
-const AnnotationTypeEnumSchema = z
+const InputTypeEnumSchema = z
+  .enum(['checkbox', 'radio', 'number', 'text', 'select'])
+  .openapi({
+    description:
+      '* `checkbox` - CHECKBOX\n* `radio` - RADIO\n* `number` - NUMBER\n* `text` - TEXT\n* `select` - SELECT',
+  })
+  .openapi('InputTypeEnum')
+
+const AttributeSchema = z
+  .object({
+    id: z.int().exactOptional(),
+    name: z.string().max(64),
+    mutable: z.boolean(),
+    input_type: InputTypeEnumSchema,
+    default_value: z.string().max(128).exactOptional(),
+    values: z.array(z.string().max(200)),
+  })
+  .openapi({ required: ['input_type', 'mutable', 'name', 'values'] })
+  .openapi('Attribute')
+
+const LabelTypeSchema = z
   .enum([
-    'tag',
+    'any',
+    'cuboid',
+    'ellipse',
+    'mask',
+    'points',
+    'polygon',
+    'polyline',
     'rectangle',
     'skeleton',
-    'skeleton_keypoint',
-    'points',
-    'polyline',
-    'mask',
-    'polygon',
-    'ellipse',
+    'interval',
+    'tag',
   ])
   .openapi({
     description:
-      '* `tag` - Tag\n* `rectangle` - Rectangle\n* `skeleton` - Skeleton\n* `skeleton_keypoint` - Skeleton Keypoint\n* `points` - Points\n* `polyline` - Polyline\n* `mask` - Mask\n* `polygon` - Polygon\n* `ellipse` - Ellipse',
+      '* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
   })
-  .openapi('AnnotationTypeEnum')
+  .openapi('LabelType')
 
-const BlankEnumSchema = z.literal('').openapi('BlankEnum')
+const SublabelSchema = z
+  .object({
+    id: z.int().exactOptional(),
+    name: z.string().max(64),
+    color: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The hex value for the RGB color. Will be generated automatically, unless specified explicitly.',
+      }),
+    attributes: z
+      .array(AttributeSchema)
+      .default([])
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of attributes. To remove an attribute, pass the full attribute body with deleted=true. Related annotation attribute values will be deleted.',
+      }),
+    type: LabelTypeSchema.exactOptional().openapi({
+      description:
+        'Associated annotation type for this label\n\n* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
+    }),
+    has_parent: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('Sublabel')
 
-const NullEnumSchema = z.literal(null).openapi('NullEnum')
+const LabelSchema = z
+  .object({
+    id: z.int().exactOptional(),
+    name: z.string().max(64),
+    color: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The hex value for the RGB color. Will be generated automatically, unless specified explicitly.',
+      }),
+    attributes: z
+      .array(AttributeSchema)
+      .default([])
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of attributes. To remove an attribute, pass the full attribute body with deleted=true. Related annotation attribute values will be deleted.',
+      }),
+    type: LabelTypeSchema.exactOptional().openapi({
+      description:
+        'Associated annotation type for this label\n\n* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
+    }),
+    svg: z.string().exactOptional(),
+    sublabels: z.array(SublabelSchema).exactOptional(),
+    project_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    task_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    parent_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    has_parent: z.boolean().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('Label')
+
+type PaginatedLabelListType = {
+  count: number
+  next?: string | null
+  previous?: string | null
+  results: z.infer<typeof LabelSchema>[]
+}
+
+const QualityReportTargetSchema = z
+  .enum(['job', 'task', 'project'])
+  .openapi({ description: '* `job` - JOB\n* `task` - TASK\n* `project` - PROJECT' })
+  .openapi('QualityReportTarget')
+
+const QualityReportTasksSummarySchema = z
+  .object({
+    total: z.int().openapi({ description: 'Total task count' }),
+    custom: z.int().openapi({ description: 'Tasks with individual settings' }),
+    not_configured: z.int().openapi({ description: 'Tasks with validation not configured' }),
+    excluded: z.int().openapi({ description: 'Tasks excluded by filters' }),
+    included: z
+      .int()
+      .openapi({ description: 'Included task count = total - custom - non_configured - excluded' }),
+    completed: z.int().openapi({ description: 'Tasks with all enabled requirements met' }),
+  })
+  .openapi({ required: ['completed', 'custom', 'excluded', 'included', 'not_configured', 'total'] })
+  .openapi('QualityReportTasksSummary')
+
+const QualityReportJobsSummarySchema = z
+  .object({
+    total: z.int().openapi({ description: 'Non-GT jobs in included tasks' }),
+    excluded: z.int().openapi({ description: 'Jobs excluded by filters' }),
+    not_checkable: z.int().openapi({ description: 'Included jobs without validation frames' }),
+    included: z.int().openapi({ description: 'Included job count = total - excluded' }),
+    completed: z.int().openapi({ description: 'Jobs with all enabled requirements met' }),
+  })
+  .openapi({ required: ['completed', 'excluded', 'included', 'not_checkable', 'total'] })
+  .openapi('QualityReportJobsSummary')
 
 const QualityTargetMetricSchema = z
   .enum([
@@ -214,6 +422,172 @@ const QualityTargetMetricSchema = z
   })
   .openapi('QualityTargetMetric')
 
+const QualityReportScoreComponentsSchema = z
+  .object({ valid_count: z.int(), missing_count: z.int(), extra_count: z.int() })
+  .openapi({ required: ['extra_count', 'missing_count', 'valid_count'] })
+  .openapi('QualityReportScoreComponents')
+
+const QualityReportRequirementCalculationStatusEnumSchema = z
+  .enum(['computed', 'not_computed'])
+  .openapi({ description: '* `computed` - computed\n* `not_computed` - not_computed' })
+  .openapi('QualityReportRequirementCalculationStatusEnum')
+
+const ReasonEnumSchema = z
+  .enum(['no_annotations', 'filter_no_matches', 'required_attributes_missing'])
+  .openapi({
+    description:
+      '* `no_annotations` - no_annotations\n* `filter_no_matches` - filter_no_matches\n* `required_attributes_missing` - required_attributes_missing',
+  })
+  .openapi('ReasonEnum')
+
+const NullEnumSchema = z.literal(null).openapi('NullEnum')
+
+const QualityReportRequirementCalculationSchema = z
+  .object({
+    status: QualityReportRequirementCalculationStatusEnumSchema,
+    reason: z.xor([ReasonEnumSchema, NullEnumSchema]).nullable().exactOptional(),
+  })
+  .openapi({ required: ['status'] })
+  .openapi('QualityReportRequirementCalculation')
+
+const QualityReportRequirementSummaryItemSchema = z
+  .object({
+    requirement_id: z.int().nullable(),
+    name: z.string(),
+    metric: QualityTargetMetricSchema,
+    score: z.float64().nullable(),
+    score_components: QualityReportScoreComponentsSchema,
+    calculation: QualityReportRequirementCalculationSchema,
+    threshold: z.float64(),
+  })
+  .openapi({
+    required: [
+      'calculation',
+      'metric',
+      'name',
+      'requirement_id',
+      'score',
+      'score_components',
+      'threshold',
+    ],
+  })
+  .openapi('QualityReportRequirementSummaryItem')
+
+const QualityReportRequirementsSummarySchema = z
+  .object({
+    total: z.int(),
+    enabled: z.int(),
+    completed: z.int(),
+    not_computed: z.int(),
+    items: z.array(QualityReportRequirementSummaryItemSchema),
+  })
+  .openapi({ required: ['completed', 'enabled', 'items', 'not_computed', 'total'] })
+  .openapi('QualityReportRequirementsSummary')
+
+const QualityReportSummarySchema = z
+  .object({
+    total_frames: z.int(),
+    validation_frames: z.int(),
+    validation_frame_share: z.float64(),
+    conflict_count: z.int(),
+    error_count: z.int(),
+    conflicts_by_type: z.record(z.string(), z.int()),
+    tasks: QualityReportTasksSummarySchema.exactOptional().openapi({
+      description: 'Included only in project reports',
+    }),
+    jobs: QualityReportJobsSummarySchema.exactOptional().openapi({
+      description: 'Included only in task and project reports',
+    }),
+    requirements: QualityReportRequirementsSummarySchema.exactOptional(),
+  })
+  .openapi({
+    required: [
+      'conflict_count',
+      'conflicts_by_type',
+      'error_count',
+      'total_frames',
+      'validation_frame_share',
+      'validation_frames',
+    ],
+  })
+  .openapi('QualityReportSummary')
+
+const BasicUserSchema = z
+  .object({
+    url: z.url().exactOptional().openapi({ readOnly: true }),
+    id: z.int().exactOptional().openapi({ readOnly: true }),
+    username: z
+      .string()
+      .regex(/^[\w.@+-]+$/)
+      .max(150)
+      .openapi({
+        description: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
+      }),
+    first_name: z.string().max(150).exactOptional(),
+    last_name: z.string().max(150).exactOptional(),
+  })
+  .openapi({ required: ['username'] })
+  .openapi('BasicUser')
+
+const QualityReportSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true }),
+    job_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    task_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    project_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    parent_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    target: QualityReportTargetSchema,
+    summary: QualityReportSummarySchema,
+    created_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    target_last_updated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    gt_last_updated: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    assignee: BasicUserSchema.nullable().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['summary', 'target'] })
+  .openapi('QualityReport')
+
+type PaginatedQualityReportListType = {
+  count: number
+  next?: string | null
+  previous?: string | null
+  results: z.infer<typeof QualityReportSchema>[]
+}
+
+const AnnotationTypeEnumSchema = z
+  .enum([
+    'tag',
+    'rectangle',
+    'skeleton',
+    'skeleton_keypoint',
+    'points',
+    'polyline',
+    'mask',
+    'polygon',
+    'ellipse',
+  ])
+  .openapi({
+    description:
+      '* `tag` - Tag\n* `rectangle` - Rectangle\n* `skeleton` - Skeleton\n* `skeleton_keypoint` - Skeleton Keypoint\n* `points` - Points\n* `polyline` - Polyline\n* `mask` - Mask\n* `polygon` - Polygon\n* `ellipse` - Ellipse',
+  })
+  .openapi('AnnotationTypeEnum')
+
+const BlankEnumSchema = z.literal('').openapi('BlankEnum')
+
+const SimilarityMetricEnumSchema = z
+  .enum(['iou', 'oks', 'boundary_f', 'equality'])
+  .openapi({
+    description:
+      '* `iou` - IoU\n* `oks` - OKS\n* `boundary_f` - Boundary F\n* `equality` - Equality',
+  })
+  .openapi('SimilarityMetricEnum')
+
 const SimilarityThresholdPolicyTypeEnumSchema = z
   .literal('iou')
   .openapi({ description: '* `iou` - iou' })
@@ -233,6 +607,443 @@ const ExtrapolationEnumSchema = z
   .literal('clamp')
   .openapi({ description: '* `clamp` - clamp' })
   .openapi('ExtrapolationEnum')
+
+const ThresholdPolicyPointSchema = z
+  .object({
+    x: z
+      .float64()
+      .min(0)
+      .openapi({ description: 'Finite GT shape area in px², strictly greater than zero.' }),
+    y: z.float64().min(0).max(1),
+  })
+  .openapi({ required: ['x', 'y'] })
+  .openapi('ThresholdPolicyPoint')
+
+const SimilarityThresholdPolicySchema = z
+  .object({
+    type: SimilarityThresholdPolicyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Threshold type. Omitted type is accepted as IoU for compatibility; responses always include it.\n\n* `iou` - iou',
+    }),
+    mode: SimilarityThresholdPolicyModeEnumSchema,
+    value: z.float64().min(0).max(1).exactOptional(),
+    input: InputEnumSchema.exactOptional(),
+    extrapolation: ExtrapolationEnumSchema.exactOptional(),
+    points: z
+      .array(ThresholdPolicyPointSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Required in linear mode: 2-200 points sorted by unique positive GT area.',
+      }),
+  })
+  .openapi({
+    description:
+      'An IoU threshold policy for rectangle, polygon, mask, and ellipse requirements.\n\nThe `iou_threshold` field also accepts a finite number between 0 and 1, such as `0.7`.\nExisting numeric thresholds are returned as numbers.\n\nA constant policy uses one threshold for all shapes:\n\n```json\n{"type": "iou", "mode": "constant", "value": 0.7}\n```\n\nA linear policy chooses a threshold from the GT shape area in px²:\n\n```json\n{\n  "type": "iou",\n  "mode": "linear",\n  "input": "gt.shape_area",\n  "extrapolation": "clamp",\n  "points": [{"x": 100, "y": 0.4}, {"x": 1000, "y": 0.9}]\n}\n```\n\nLinear policies require 2-200 points with unique positive areas sorted in ascending order\nand thresholds between 0 and 1. Outside the curve, the nearest endpoint applies.\nPolicies without `type` are accepted as IoU for compatibility; responses include it.\nOther threshold types are not supported.\n\nSetting a child\'s threshold to `null` restores inheritance of the whole threshold.\nRoot requirements cannot inherit their threshold.',
+    required: ['mode'],
+  })
+  .openapi('SimilarityThresholdPolicy')
+
+const QualityPointSizeBaseSchema = z
+  .enum(['image_size', 'group_bbox_size'])
+  .openapi({ description: '* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE' })
+  .openapi('QualityPointSizeBase')
+
+const ComparatorEnumSchema = z
+  .enum(['exact', 'levenshtein'])
+  .openapi({ description: '* `exact` - exact\n* `levenshtein` - levenshtein' })
+  .openapi('ComparatorEnum')
+
+const AttributeComparisonDefaultRuleSchema = z
+  .object({
+    enabled: z.boolean().nullable().exactOptional(),
+    comparator: z.xor([ComparatorEnumSchema, NullEnumSchema]).nullable().exactOptional(),
+    threshold: z.float64().min(0).max(1).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AttributeComparisonDefaultRule')
+
+const AttributeComparisonRuleSchema = z
+  .object({
+    spec_id: z.int().openapi({ description: 'AttributeSpec id to override.' }),
+    enabled: z.boolean(),
+    comparator: z.xor([ComparatorEnumSchema, NullEnumSchema]).nullable().exactOptional(),
+    threshold: z.float64().min(0).max(1).nullable().exactOptional(),
+  })
+  .openapi({ required: ['enabled', 'spec_id'] })
+  .openapi('AttributeComparisonRule')
+
+const AttributeComparisonSchema = z
+  .object({
+    default: AttributeComparisonDefaultRuleSchema.nullable().exactOptional(),
+    rules: z.array(AttributeComparisonRuleSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AttributeComparison')
+
+const QualityRequirementListItemSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true }),
+    settings_id: z.int().exactOptional(),
+    task_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    project_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
+    name: z.string().max(250).exactOptional(),
+    is_base: z.boolean().exactOptional().openapi({ readOnly: true }),
+    sort_order: z.int().min(-2147483648).max(2147483647).exactOptional(),
+    filter: z.string().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    annotation_type: z
+      .xor([AnnotationTypeEnumSchema, BlankEnumSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional(),
+    metric: z
+      .xor([QualityTargetMetricSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The primary metric used for quality estimation\n\n* `accuracy` - ACCURACY\n* `precision` - PRECISION\n* `recall` - RECALL\n* `jaccard_index` - JACCARD_INDEX\n* `dice` - DICE\n* `mean_accuracy` - MEAN_ACCURACY\n* `mean_precision` - MEAN_PRECISION\n* `mean_recall` - MEAN_RECALL\n* `mean_jaccard_index` - MEAN_JACCARD_INDEX\n* `mean_dice` - MEAN_DICE\n* `label_accuracy` - LABEL_ACCURACY\n* `label_precision` - LABEL_PRECISION\n* `label_recall` - LABEL_RECALL\n* `label_jaccard_index` - LABEL_JACCARD_INDEX\n* `label_dice` - LABEL_DICE',
+      }),
+    required_score: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the minimal quality requirements in terms of the selected target metric.',
+      }),
+    parent_requirement: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The parent requirement. Child requirements inherit comparison settings from it.',
+      }),
+    similarity_metric: z
+      .xor([SimilarityMetricEnumSchema, BlankEnumSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The similarity metric used to match the objects. The supported metrics\ndepend on the annotation type:\n- ellipse: 'boundary_f', 'iou' (default);\n- mask: 'boundary_f', 'iou' (default);\n- points: 'oks' (default);\n- polygon: 'boundary_f', 'iou' (default);\n- polyline: 'boundary_f', 'iou' (default);\n- rectangle: 'boundary_f', 'iou' (default);\n- skeleton: 'oks' (default);\n- skeleton_keypoint: 'oks' (default);\n- tag: 'equality' (default)\n\n\n* `iou` - IoU\n* `oks` - OKS\n* `boundary_f` - Boundary F\n* `equality` - Equality",
+      }),
+    iou_threshold: z
+      .xor([z.number().min(0).max(1), SimilarityThresholdPolicySchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.",
+      }),
+    oks_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal OKS for distinction between matched / unmatched objects.\nOnly used with the 'oks' similarity metric.\n",
+      }),
+    boundary_f_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal Boundary F score for distinction between matched / unmatched\nobjects. Only used with the 'boundary_f' similarity metric.\n",
+      }),
+    boundary_f_tolerance: z
+      .float64()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The maximum allowed boundary deviation, in pixels. The boundary points\nwithin this distance from the other object boundary are considered matching.\nOnly used with the 'boundary_f' similarity metric.\n",
+      }),
+    point_size: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The point "size" (the OKS sigma), as a fraction of the object size, defined by\nthe point size base. Corresponds to the standard deviation of the keypoint position.\nLarger values give larger areas around the GT points, where the checked points\nare accepted.\nRead more about the point matching in the documentation.',
+      }),
+    point_size_base: z
+      .xor([QualityPointSizeBaseSchema, BlankEnumSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When comparing point groups, skeletons, and skeleton keypoints,\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size. Single points without a group are always compared\nusing the image size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group or skeleton bbox size. Useful if each point group represents\nan object or there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
+      }),
+    line_thickness: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be.\nWith the 'boundary_f' similarity metric, the boundary tolerance is used instead\n",
+      }),
+    match_orientation: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Enables or disables polyline orientation comparison' }),
+    line_orientation_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal gain in the GT IoU between the given and reversed line directions\nto consider the line inverted.\nOnly used when the 'match_orientation' parameter is true\n",
+      }),
+    match_groups: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.',
+      }),
+    group_match_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Minimal IoU for groups to be considered matching.\nOnly used when the 'match_groups' parameter is true\n",
+      }),
+    check_covered_annotations: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Check for partially-covered annotations, useful in segmentation tasks\n',
+      }),
+    object_visibility_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Minimal visible area percent of the spatial annotations (polygons, masks)\nfor reporting covered annotations.\nOnly used when the 'object_visibility_threshold' parameter is true\n",
+      }),
+    panoptic_comparison: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Use only the visible part of the masks and polygons in comparisons\n',
+      }),
+    attribute_comparison: AttributeComparisonSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Incremental attribute comparison settings. The default rule applies to attributes without an override; rules override behavior for individual AttributeSpec ids.',
+      }),
+    created_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    updated_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('QualityRequirementListItem')
+
+const QualitySettingsSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true }),
+    task_id: z.int().nullable().exactOptional(),
+    project_id: z.int().nullable().exactOptional(),
+    job_filter: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description:
+          "A JSON-based logic expression used to filter jobs for quality validation.\nThe filter supports various terms to specify conditions on job: ['assignee', 'id', 'stage', 'state', 'task_id', 'task_name', 'type']\n",
+      }),
+    inherit: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Allow using project settings when computing task quality.\nOnly applicable to task quality settings inside projects\n',
+      }),
+    max_validations_per_job: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of job validation attempts for the job assignee.\nThe job can be automatically accepted if the job quality is above the required\nthreshold, defined by the target threshold parameter.\n',
+      }),
+    requirements: z.array(QualityRequirementListItemSchema).exactOptional(),
+    created_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    updated_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('QualitySettings')
+
+type PaginatedQualitySettingsListType = {
+  count: number
+  next?: string | null
+  previous?: string | null
+  results: z.infer<typeof QualitySettingsSchema>[]
+}
+
+type PatchedLabeledDataRequestType = {
+  version?: number
+  tags?: z.infer<typeof LabeledImageRequestSchema>[]
+  shapes?: z.infer<typeof LabeledShapeRequestSchema>[]
+  tracks?: z.infer<typeof LabeledTrackRequestSchema>[]
+  intervals?: z.infer<typeof LabeledIntervalRequestSchema>[]
+}
+
+const AttributeRequestSchema = z
+  .object({
+    id: z.int().exactOptional(),
+    name: z.string().min(1).max(64),
+    mutable: z.boolean(),
+    input_type: InputTypeEnumSchema,
+    default_value: z.string().max(128).exactOptional(),
+    values: z.array(z.string().max(200)),
+    deleted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        writeOnly: true,
+        description: 'Delete the attribute and all related annotation values.',
+      }),
+  })
+  .openapi({ required: ['input_type', 'mutable', 'name', 'values'] })
+  .openapi('AttributeRequest')
+
+const SublabelRequestSchema = z
+  .object({
+    id: z.int().exactOptional(),
+    name: z.string().min(1).max(64),
+    color: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The hex value for the RGB color. Will be generated automatically, unless specified explicitly.',
+      }),
+    attributes: z
+      .array(AttributeRequestSchema)
+      .default([])
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of attributes. To remove an attribute, pass the full attribute body with deleted=true. Related annotation attribute values will be deleted.',
+      }),
+    type: LabelTypeSchema.exactOptional().openapi({
+      description:
+        'Associated annotation type for this label\n\n* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
+    }),
+    has_parent: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('SublabelRequest')
+
+const PatchedLabelRequestSchema = z
+  .object({
+    id: z.int().exactOptional(),
+    name: z.string().min(1).max(64).exactOptional(),
+    color: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The hex value for the RGB color. Will be generated automatically, unless specified explicitly.',
+      }),
+    attributes: z
+      .array(AttributeRequestSchema)
+      .default([])
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of attributes. To remove an attribute, pass the full attribute body with deleted=true. Related annotation attribute values will be deleted.',
+      }),
+    deleted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        writeOnly: true,
+        description:
+          'Delete the label. Only applicable in the PATCH methods of a project or a task.',
+      }),
+    type: LabelTypeSchema.exactOptional().openapi({
+      description:
+        'Associated annotation type for this label\n\n* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
+    }),
+    svg: z.string().exactOptional(),
+    sublabels: z.array(SublabelRequestSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PatchedLabelRequest')
+
+const LocationEnumSchema = z
+  .enum(['cloud_storage', 'local'])
+  .openapi({ description: '* `cloud_storage` - CLOUD_STORAGE\n* `local` - LOCAL' })
+  .openapi('LocationEnum')
+
+const StorageRequestSchema = z
+  .object({
+    location: LocationEnumSchema.exactOptional(),
+    cloud_storage_id: z.int().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('StorageRequest')
+
+type PatchedProjectWriteRequestType = {
+  name?: string
+  labels?: z.infer<typeof PatchedLabelRequestSchema>[]
+  owner_id?: number | null
+  assignee_id?: number | null
+  bug_tracker?: string
+  target_storage?: z.infer<typeof StorageRequestSchema>
+  source_storage?: z.infer<typeof StorageRequestSchema>
+  organization_id?: number | null
+}
+
+type PatchedTaskWriteRequestType = {
+  name?: string
+  project_id?: number | null
+  owner_id?: number | null
+  assignee_id?: number | null
+  bug_tracker?: string
+  labels?: z.infer<typeof PatchedLabelRequestSchema>[]
+  subset?: string
+  target_storage?: z.infer<typeof StorageRequestSchema>
+  source_storage?: z.infer<typeof StorageRequestSchema>
+  organization_id?: number | null
+}
+
+type ProjectWriteRequestType = {
+  name: string
+  labels?: z.infer<typeof PatchedLabelRequestSchema>[]
+  owner_id?: number | null
+  assignee_id?: number | null
+  bug_tracker?: string
+  target_storage?: z.infer<typeof StorageRequestSchema>
+  source_storage?: z.infer<typeof StorageRequestSchema>
+}
 
 const ThresholdPolicyPointRequestSchema = z
   .object({
@@ -268,16 +1079,6 @@ const SimilarityThresholdPolicyRequestSchema = z
     required: ['mode'],
   })
   .openapi('SimilarityThresholdPolicyRequest')
-
-const QualityPointSizeBaseSchema = z
-  .enum(['image_size', 'group_bbox_size'])
-  .openapi({ description: '* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE' })
-  .openapi('QualityPointSizeBase')
-
-const ComparatorEnumSchema = z
-  .enum(['exact', 'levenshtein'])
-  .openapi({ description: '* `exact` - exact\n* `levenshtein` - levenshtein' })
-  .openapi('ComparatorEnum')
 
 const AttributeComparisonDefaultRuleRequestSchema = z
   .object({
@@ -321,7 +1122,17 @@ type QualityRequirementBulkCreateNodeRequestType = {
   metric?: (z.infer<typeof QualityTargetMetricSchema> | z.infer<typeof NullEnumSchema>) | null
   required_score?: number | null
   parent_requirement?: number | null
+  similarity_metric?:
+    | (
+        | z.infer<typeof SimilarityMetricEnumSchema>
+        | z.infer<typeof BlankEnumSchema>
+        | z.infer<typeof NullEnumSchema>
+      )
+    | null
   iou_threshold?: (number | z.infer<typeof SimilarityThresholdPolicyRequestSchema>) | null
+  oks_threshold?: number | null
+  boundary_f_threshold?: number | null
+  boundary_f_tolerance?: number | null
   point_size?: number | null
   point_size_base?:
     | (
@@ -342,6 +1153,22 @@ type QualityRequirementBulkCreateNodeRequestType = {
   children?: QualityRequirementBulkCreateNodeRequestType[]
 }
 
+type TaskWriteRequestType = {
+  name: string
+  project_id?: number | null
+  owner_id?: number | null
+  assignee_id?: number | null
+  bug_tracker?: string
+  overlap?: number | null
+  segment_size?: number
+  labels?: z.infer<typeof PatchedLabelRequestSchema>[]
+  subset?: string
+  target_storage?: z.infer<typeof StorageRequestSchema>
+  source_storage?: z.infer<typeof StorageRequestSchema>
+  initial_replicas?: number
+  consensus_replicas?: number
+}
+
 const AboutSchema = z
   .object({
     name: z.string().max(128),
@@ -357,23 +1184,6 @@ const AcceptInvitationReadSchema = z
   .object({ organization_slug: z.string() })
   .openapi({ required: ['organization_slug'] })
   .openapi('AcceptInvitationRead')
-
-const BasicUserSchema = z
-  .object({
-    url: z.url().exactOptional().openapi({ readOnly: true }),
-    id: z.int().exactOptional().openapi({ readOnly: true }),
-    username: z
-      .string()
-      .regex(/^[\w.@+-]+$/)
-      .max(150)
-      .openapi({
-        description: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
-      }),
-    first_name: z.string().max(150).exactOptional(),
-    last_name: z.string().max(150).exactOptional(),
-  })
-  .openapi({ required: ['username'] })
-  .openapi('BasicUser')
 
 const AccessTokenReadSchema = z
   .object({
@@ -488,6 +1298,14 @@ const AnnotationConflictSeveritySchema = z
   .openapi({ description: '* `error` - ERROR' })
   .openapi('AnnotationConflictSeverity')
 
+const AnnotationConflictRequirementSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true }),
+    name: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('AnnotationConflictRequirement')
+
 const AnnotationConflictSchema = z
   .object({
     id: z.int().exactOptional().openapi({ readOnly: true }),
@@ -497,6 +1315,10 @@ const AnnotationConflictSchema = z
     report_id: z.int().exactOptional().openapi({ readOnly: true }),
     severity: AnnotationConflictSeveritySchema.exactOptional().openapi({ readOnly: true }),
     attribute_names: z.array(z.string()).exactOptional().openapi({ readOnly: true }),
+    requirements: z
+      .array(AnnotationConflictRequirementSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
   })
   .openapi({ required: ['annotation_ids'] })
   .openapi('AnnotationConflict')
@@ -545,72 +1367,6 @@ const AssetWriteRequestSchema = z
   })
   .openapi({ required: ['file', 'guide_id'] })
   .openapi('AssetWriteRequest')
-
-const InputTypeEnumSchema = z
-  .enum(['checkbox', 'radio', 'number', 'text', 'select'])
-  .openapi({
-    description:
-      '* `checkbox` - CHECKBOX\n* `radio` - RADIO\n* `number` - NUMBER\n* `text` - TEXT\n* `select` - SELECT',
-  })
-  .openapi('InputTypeEnum')
-
-const AttributeSchema = z
-  .object({
-    id: z.int().exactOptional(),
-    name: z.string().max(64),
-    mutable: z.boolean(),
-    input_type: InputTypeEnumSchema,
-    default_value: z.string().max(128).exactOptional(),
-    values: z.array(z.string().max(200)),
-  })
-  .openapi({ required: ['input_type', 'mutable', 'name', 'values'] })
-  .openapi('Attribute')
-
-const AttributeComparisonDefaultRuleSchema = z
-  .object({
-    enabled: z.boolean().nullable().exactOptional(),
-    comparator: z.xor([ComparatorEnumSchema, NullEnumSchema]).nullable().exactOptional(),
-    threshold: z.float64().min(0).max(1).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AttributeComparisonDefaultRule')
-
-const AttributeComparisonRuleSchema = z
-  .object({
-    spec_id: z.int().openapi({ description: 'AttributeSpec id to override.' }),
-    enabled: z.boolean(),
-    comparator: z.xor([ComparatorEnumSchema, NullEnumSchema]).nullable().exactOptional(),
-    threshold: z.float64().min(0).max(1).nullable().exactOptional(),
-  })
-  .openapi({ required: ['enabled', 'spec_id'] })
-  .openapi('AttributeComparisonRule')
-
-const AttributeComparisonSchema = z
-  .object({
-    default: AttributeComparisonDefaultRuleSchema.nullable().exactOptional(),
-    rules: z.array(AttributeComparisonRuleSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AttributeComparison')
-
-const AttributeRequestSchema = z
-  .object({
-    id: z.int().exactOptional(),
-    name: z.string().min(1).max(64),
-    mutable: z.boolean(),
-    input_type: InputTypeEnumSchema,
-    default_value: z.string().max(128).exactOptional(),
-    values: z.array(z.string().max(200)),
-    deleted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        writeOnly: true,
-        description: 'Delete the attribute and all related annotation values.',
-      }),
-  })
-  .openapi({ required: ['input_type', 'mutable', 'name', 'values'] })
-  .openapi('AttributeRequest')
 
 const BasicOrganizationSchema = z
   .object({
@@ -867,12 +1623,57 @@ const CvatUsageReasonEnumSchema = z
   })
   .openapi('CvatUsageReasonEnum')
 
+const FileMetadataTypeEnumSchema = z
+  .literal('file')
+  .openapi({ description: '* `file` - file' })
+  .openapi('FileMetadataTypeEnum')
+
+const FileMetadataSchema = z
+  .object({
+    name: z.string().max(1024),
+    type: FileMetadataTypeEnumSchema.default('file').exactOptional(),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('FileMetadata')
+
+const RelatedImageMetadataTypeEnumSchema = z
+  .literal('related_image')
+  .openapi({ description: '* `related_image` - related_image' })
+  .openapi('RelatedImageMetadataTypeEnum')
+
+const RelatedImageMetadataSchema = z
+  .object({
+    name: z.string().max(1024),
+    type: RelatedImageMetadataTypeEnumSchema.default('related_image').exactOptional(),
+    intrinsic_matrix: z.array(z.array(z.float64()).length(3)).length(3).exactOptional(),
+    extrinsic_matrix: z.array(z.array(z.float64()).length(4)).length(3).exactOptional(),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('RelatedImageMetadata')
+
+const RelatedFileMetadataSchema = z
+  .xor([FileMetadataSchema, RelatedImageMetadataSchema])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        file: '#/components/schemas/FileMetadata',
+        related_image: '#/components/schemas/RelatedImageMetadata',
+      },
+    },
+  })
+  .openapi('RelatedFileMetadata')
+
 const FrameMetaSchema = z
   .object({
     width: z.int().exactOptional(),
     height: z.int().exactOptional(),
     name: z.string().max(1024),
     related_files: z.int(),
+    related_files_metadata: z
+      .array(RelatedFileMetadataSchema)
+      .exactOptional()
+      .openapi({ description: 'It is only included in job "meta" responses.' }),
     has_related_context: z.boolean().exactOptional().openapi({ readOnly: true }),
   })
   .openapi({ required: ['name', 'related_files'] })
@@ -1473,11 +2274,6 @@ const JobTypeSchema = z
   })
   .openapi('JobType')
 
-const LocationEnumSchema = z
-  .enum(['cloud_storage', 'local'])
-  .openapi({ description: '* `cloud_storage` - CLOUD_STORAGE\n* `local` - LOCAL' })
-  .openapi('LocationEnum')
-
 const StorageSchema = z
   .object({
     id: z.int().exactOptional().openapi({ readOnly: true }),
@@ -1600,160 +2396,7 @@ const JobsSummarySchema = z
   .openapi({ required: ['completed', 'validation'] })
   .openapi('JobsSummary')
 
-const LabelTypeSchema = z
-  .enum([
-    'any',
-    'cuboid',
-    'ellipse',
-    'mask',
-    'points',
-    'polygon',
-    'polyline',
-    'rectangle',
-    'skeleton',
-    'interval',
-    'tag',
-  ])
-  .openapi({
-    description:
-      '* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
-  })
-  .openapi('LabelType')
-
-const SublabelSchema = z
-  .object({
-    id: z.int().exactOptional(),
-    name: z.string().max(64),
-    color: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The hex value for the RGB color. Will be generated automatically, unless specified explicitly.',
-      }),
-    attributes: z
-      .array(AttributeSchema)
-      .default([])
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of attributes. To remove an attribute, pass the full attribute body with deleted=true. Related annotation attribute values will be deleted.',
-      }),
-    type: LabelTypeSchema.exactOptional().openapi({
-      description:
-        'Associated annotation type for this label\n\n* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
-    }),
-    has_parent: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('Sublabel')
-
-const LabelSchema = z
-  .object({
-    id: z.int().exactOptional(),
-    name: z.string().max(64),
-    color: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The hex value for the RGB color. Will be generated automatically, unless specified explicitly.',
-      }),
-    attributes: z
-      .array(AttributeSchema)
-      .default([])
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of attributes. To remove an attribute, pass the full attribute body with deleted=true. Related annotation attribute values will be deleted.',
-      }),
-    type: LabelTypeSchema.exactOptional().openapi({
-      description:
-        'Associated annotation type for this label\n\n* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
-    }),
-    svg: z.string().exactOptional(),
-    sublabels: z.array(SublabelSchema).exactOptional(),
-    project_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    task_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    parent_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    has_parent: z.boolean().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('Label')
-
-const LabeledImageSchema = z
-  .object({
-    id: z.int().nullable().exactOptional(),
-    label_id: z.int().min(0),
-    group: z.int().min(0).nullable().default(0).exactOptional(),
-    source: z.string().default('manual').exactOptional(),
-    frame: z.int().min(0),
-    attributes: z.array(AttributeValSchema).default([]).exactOptional(),
-  })
-  .openapi({ required: ['frame', 'label_id'] })
-  .openapi('LabeledImage')
-
-const LabeledShapeSchema: z.ZodType<LabeledShapeType> = z
-  .lazy(() =>
-    z
-      .object({
-        type: ShapeTypeSchema,
-        occluded: z.boolean().default(false).exactOptional(),
-        outside: z.boolean().default(false).exactOptional(),
-        z_order: z.int().default(0).exactOptional(),
-        rotation: z.float64().min(0).max(360).default(0).exactOptional(),
-        points: z.array(z.float64()).exactOptional(),
-        id: z.int().nullable().exactOptional(),
-        label_id: z.int().min(0),
-        group: z.int().min(0).nullable().default(0).exactOptional(),
-        source: z.string().default('manual').exactOptional(),
-        frame: z.int().min(0),
-        attributes: z.array(AttributeValSchema).default([]).exactOptional(),
-        score: z.float64().min(0).max(1).default(1).exactOptional(),
-        elements: z.array(SubLabeledShapeSchema).exactOptional(),
-      })
-      .openapi({ required: ['frame', 'label_id', 'type'] }),
-  )
-  .openapi('LabeledShape')
-
-const LabeledTrackSchema: z.ZodType<LabeledTrackType> = z
-  .lazy(() =>
-    z
-      .object({
-        id: z.int().nullable().exactOptional(),
-        label_id: z.int().min(0),
-        group: z.int().min(0).nullable().default(0).exactOptional(),
-        source: z.string().default('manual').exactOptional(),
-        frame: z.int().min(0),
-        attributes: z.array(AttributeValSchema).default([]).exactOptional(),
-        shapes: z.array(TrackedShapeSchema),
-        elements: z.array(SubLabeledTrackSchema).exactOptional(),
-      })
-      .openapi({ required: ['frame', 'label_id', 'shapes'] }),
-  )
-  .openapi('LabeledTrack')
-
-const LabeledIntervalSchema = z
-  .object({
-    id: z.int().nullable().exactOptional(),
-    label_id: z.int().min(0),
-    group: z.int().min(0).nullable().default(0).exactOptional(),
-    source: z.string().default('manual').exactOptional(),
-    attributes: z.array(AttributeValSchema).default([]).exactOptional(),
-    score: z.float64().min(0).max(1).default(1).exactOptional(),
-    start: z.int().min(0).openapi({ description: 'Must be within the task frame bounds.' }),
-    stop: z
-      .int()
-      .min(0)
-      .nullable()
-      .openapi({
-        description: 'Exclusive interval end. May be one greater than the task stop frame.',
-      }),
-  })
-  .openapi({ required: ['label_id', 'start', 'stop'] })
-  .openapi('LabeledInterval')
-
-const LabeledDataSchema = z
+const LabeledDataSchema: z.ZodType<LabeledDataType> = z
   .object({
     version: z.int().default(0).exactOptional(),
     tags: z.array(LabeledImageSchema).default([]).exactOptional(),
@@ -1764,79 +2407,7 @@ const LabeledDataSchema = z
   .openapi({ required: [] })
   .openapi('LabeledData')
 
-const LabeledImageRequestSchema = z
-  .object({
-    id: z.int().nullable().exactOptional(),
-    label_id: z.int().min(0),
-    group: z.int().min(0).nullable().default(0).exactOptional(),
-    source: z.string().min(1).default('manual').exactOptional(),
-    frame: z.int().min(0),
-    attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
-  })
-  .openapi({ required: ['frame', 'label_id'] })
-  .openapi('LabeledImageRequest')
-
-const LabeledShapeRequestSchema: z.ZodType<LabeledShapeRequestType> = z
-  .lazy(() =>
-    z
-      .object({
-        type: ShapeTypeSchema,
-        occluded: z.boolean().default(false).exactOptional(),
-        outside: z.boolean().default(false).exactOptional(),
-        z_order: z.int().default(0).exactOptional(),
-        rotation: z.float64().min(0).max(360).default(0).exactOptional(),
-        points: z.array(z.float64()).exactOptional(),
-        id: z.int().nullable().exactOptional(),
-        label_id: z.int().min(0),
-        group: z.int().min(0).nullable().default(0).exactOptional(),
-        source: z.string().min(1).default('manual').exactOptional(),
-        frame: z.int().min(0),
-        attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
-        score: z.float64().min(0).max(1).default(1).exactOptional(),
-        elements: z.array(SubLabeledShapeRequestSchema).exactOptional(),
-      })
-      .openapi({ required: ['frame', 'label_id', 'type'] }),
-  )
-  .openapi('LabeledShapeRequest')
-
-const LabeledTrackRequestSchema: z.ZodType<LabeledTrackRequestType> = z
-  .lazy(() =>
-    z
-      .object({
-        id: z.int().nullable().exactOptional(),
-        label_id: z.int().min(0),
-        group: z.int().min(0).nullable().default(0).exactOptional(),
-        source: z.string().min(1).default('manual').exactOptional(),
-        frame: z.int().min(0),
-        attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
-        shapes: z.array(TrackedShapeRequestSchema),
-        elements: z.array(SubLabeledTrackRequestSchema).exactOptional(),
-      })
-      .openapi({ required: ['frame', 'label_id', 'shapes'] }),
-  )
-  .openapi('LabeledTrackRequest')
-
-const LabeledIntervalRequestSchema = z
-  .object({
-    id: z.int().nullable().exactOptional(),
-    label_id: z.int().min(0),
-    group: z.int().min(0).nullable().default(0).exactOptional(),
-    source: z.string().min(1).default('manual').exactOptional(),
-    attributes: z.array(AttributeValRequestSchema).default([]).exactOptional(),
-    score: z.float64().min(0).max(1).default(1).exactOptional(),
-    start: z.int().min(0).openapi({ description: 'Must be within the task frame bounds.' }),
-    stop: z
-      .int()
-      .min(0)
-      .nullable()
-      .openapi({
-        description: 'Exclusive interval end. May be one greater than the task stop frame.',
-      }),
-  })
-  .openapi({ required: ['label_id', 'start', 'stop'] })
-  .openapi('LabeledIntervalRequest')
-
-const LabeledDataRequestSchema = z
+const LabeledDataRequestSchema: z.ZodType<LabeledDataRequestType> = z
   .object({
     version: z.int().default(0).exactOptional(),
     tags: z.array(LabeledImageRequestSchema).default([]).exactOptional(),
@@ -2153,7 +2724,7 @@ const PaginatedJobReadListSchema = z
   .openapi({ required: ['count', 'results'] })
   .openapi('PaginatedJobReadList')
 
-const PaginatedLabelListSchema = z
+const PaginatedLabelListSchema: z.ZodType<PaginatedLabelListType> = z
   .object({
     count: z.int().openapi({ example: 123 }),
     next: z
@@ -2280,149 +2851,7 @@ const PaginatedProjectReadListSchema = z
   .openapi({ required: ['count', 'results'] })
   .openapi('PaginatedProjectReadList')
 
-const QualityReportTargetSchema = z
-  .enum(['job', 'task', 'project'])
-  .openapi({ description: '* `job` - JOB\n* `task` - TASK\n* `project` - PROJECT' })
-  .openapi('QualityReportTarget')
-
-const QualityReportTasksSummarySchema = z
-  .object({
-    total: z.int().openapi({ description: 'Total task count' }),
-    custom: z.int().openapi({ description: 'Tasks with individual settings' }),
-    not_configured: z.int().openapi({ description: 'Tasks with validation not configured' }),
-    excluded: z.int().openapi({ description: 'Tasks excluded by filters' }),
-    included: z
-      .int()
-      .openapi({ description: 'Included task count = total - custom - non_configured - excluded' }),
-    completed: z.int().openapi({ description: 'Tasks with all enabled requirements met' }),
-  })
-  .openapi({ required: ['completed', 'custom', 'excluded', 'included', 'not_configured', 'total'] })
-  .openapi('QualityReportTasksSummary')
-
-const QualityReportJobsSummarySchema = z
-  .object({
-    total: z.int().openapi({ description: 'Non-GT jobs in included tasks' }),
-    excluded: z.int().openapi({ description: 'Jobs excluded by filters' }),
-    not_checkable: z.int().openapi({ description: 'Included jobs without validation frames' }),
-    included: z.int().openapi({ description: 'Included job count = total - excluded' }),
-    completed: z.int().openapi({ description: 'Jobs with all enabled requirements met' }),
-  })
-  .openapi({ required: ['completed', 'excluded', 'included', 'not_checkable', 'total'] })
-  .openapi('QualityReportJobsSummary')
-
-const QualityReportScoreComponentsSchema = z
-  .object({ valid_count: z.int(), missing_count: z.int(), extra_count: z.int() })
-  .openapi({ required: ['extra_count', 'missing_count', 'valid_count'] })
-  .openapi('QualityReportScoreComponents')
-
-const QualityReportRequirementCalculationStatusEnumSchema = z
-  .enum(['computed', 'not_computed'])
-  .openapi({ description: '* `computed` - computed\n* `not_computed` - not_computed' })
-  .openapi('QualityReportRequirementCalculationStatusEnum')
-
-const ReasonEnumSchema = z
-  .enum(['no_annotations', 'filter_no_matches', 'required_attributes_missing'])
-  .openapi({
-    description:
-      '* `no_annotations` - no_annotations\n* `filter_no_matches` - filter_no_matches\n* `required_attributes_missing` - required_attributes_missing',
-  })
-  .openapi('ReasonEnum')
-
-const QualityReportRequirementCalculationSchema = z
-  .object({
-    status: QualityReportRequirementCalculationStatusEnumSchema,
-    reason: z.xor([ReasonEnumSchema, NullEnumSchema]).nullable().exactOptional(),
-  })
-  .openapi({ required: ['status'] })
-  .openapi('QualityReportRequirementCalculation')
-
-const QualityReportRequirementSummaryItemSchema = z
-  .object({
-    requirement_id: z.int().nullable(),
-    name: z.string(),
-    metric: QualityTargetMetricSchema,
-    score: z.float64().nullable(),
-    score_components: QualityReportScoreComponentsSchema,
-    calculation: QualityReportRequirementCalculationSchema,
-    threshold: z.float64(),
-  })
-  .openapi({
-    required: [
-      'calculation',
-      'metric',
-      'name',
-      'requirement_id',
-      'score',
-      'score_components',
-      'threshold',
-    ],
-  })
-  .openapi('QualityReportRequirementSummaryItem')
-
-const QualityReportRequirementsSummarySchema = z
-  .object({
-    total: z.int(),
-    enabled: z.int(),
-    completed: z.int(),
-    not_computed: z.int(),
-    items: z.array(QualityReportRequirementSummaryItemSchema),
-  })
-  .openapi({ required: ['completed', 'enabled', 'items', 'not_computed', 'total'] })
-  .openapi('QualityReportRequirementsSummary')
-
-const QualityReportSummarySchema = z
-  .object({
-    total_frames: z.int(),
-    validation_frames: z.int(),
-    validation_frame_share: z.float64(),
-    conflict_count: z.int(),
-    error_count: z.int(),
-    conflicts_by_type: z.record(z.string(), z.int()),
-    tasks: QualityReportTasksSummarySchema.exactOptional().openapi({
-      description: 'Included only in project reports',
-    }),
-    jobs: QualityReportJobsSummarySchema.exactOptional().openapi({
-      description: 'Included only in task and project reports',
-    }),
-    requirements: QualityReportRequirementsSummarySchema.exactOptional(),
-  })
-  .openapi({
-    required: [
-      'conflict_count',
-      'conflicts_by_type',
-      'error_count',
-      'total_frames',
-      'validation_frame_share',
-      'validation_frames',
-    ],
-  })
-  .openapi('QualityReportSummary')
-
-const QualityReportSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true }),
-    job_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    task_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    project_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    parent_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    target: QualityReportTargetSchema,
-    summary: QualityReportSummarySchema,
-    created_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    target_last_updated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    gt_last_updated: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    assignee: BasicUserSchema.nullable().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['summary', 'target'] })
-  .openapi('QualityReport')
-
-const PaginatedQualityReportListSchema = z
+const PaginatedQualityReportListSchema: z.ZodType<PaginatedQualityReportListType> = z
   .object({
     count: z.int().openapi({ example: 123 }),
     next: z
@@ -2439,187 +2868,6 @@ const PaginatedQualityReportListSchema = z
   })
   .openapi({ required: ['count', 'results'] })
   .openapi('PaginatedQualityReportList')
-
-const ThresholdPolicyPointSchema = z
-  .object({
-    x: z
-      .float64()
-      .min(0)
-      .openapi({ description: 'Finite GT shape area in px², strictly greater than zero.' }),
-    y: z.float64().min(0).max(1),
-  })
-  .openapi({ required: ['x', 'y'] })
-  .openapi('ThresholdPolicyPoint')
-
-const SimilarityThresholdPolicySchema = z
-  .object({
-    type: SimilarityThresholdPolicyTypeEnumSchema.exactOptional().openapi({
-      description:
-        'Threshold type. Omitted type is accepted as IoU for compatibility; responses always include it.\n\n* `iou` - iou',
-    }),
-    mode: SimilarityThresholdPolicyModeEnumSchema,
-    value: z.float64().min(0).max(1).exactOptional(),
-    input: InputEnumSchema.exactOptional(),
-    extrapolation: ExtrapolationEnumSchema.exactOptional(),
-    points: z
-      .array(ThresholdPolicyPointSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Required in linear mode: 2-200 points sorted by unique positive GT area.',
-      }),
-  })
-  .openapi({
-    description:
-      'An IoU threshold policy for rectangle, polygon, mask, and ellipse requirements.\n\nThe `iou_threshold` field also accepts a finite number between 0 and 1, such as `0.7`.\nExisting numeric thresholds are returned as numbers.\n\nA constant policy uses one threshold for all shapes:\n\n```json\n{"type": "iou", "mode": "constant", "value": 0.7}\n```\n\nA linear policy chooses a threshold from the GT shape area in px²:\n\n```json\n{\n  "type": "iou",\n  "mode": "linear",\n  "input": "gt.shape_area",\n  "extrapolation": "clamp",\n  "points": [{"x": 100, "y": 0.4}, {"x": 1000, "y": 0.9}]\n}\n```\n\nLinear policies require 2-200 points with unique positive areas sorted in ascending order\nand thresholds between 0 and 1. Outside the curve, the nearest endpoint applies.\nPolicies without `type` are accepted as IoU for compatibility; responses include it.\nOther threshold types are not supported.\n\nSetting a child\'s threshold to `null` restores inheritance of the whole threshold.\nRoot requirements cannot inherit their threshold.',
-    required: ['mode'],
-  })
-  .openapi('SimilarityThresholdPolicy')
-
-const QualityRequirementListItemSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true }),
-    settings_id: z.int().exactOptional(),
-    task_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    project_id: z.int().nullable().exactOptional().openapi({ readOnly: true }),
-    name: z.string().max(250).exactOptional(),
-    is_base: z.boolean().exactOptional().openapi({ readOnly: true }),
-    sort_order: z.int().min(-2147483648).max(2147483647).exactOptional(),
-    filter: z.string().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    annotation_type: z
-      .xor([AnnotationTypeEnumSchema, BlankEnumSchema, NullEnumSchema])
-      .nullable()
-      .exactOptional(),
-    metric: z
-      .xor([QualityTargetMetricSchema, NullEnumSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The primary metric used for quality estimation\n\n* `accuracy` - ACCURACY\n* `precision` - PRECISION\n* `recall` - RECALL\n* `jaccard_index` - JACCARD_INDEX\n* `dice` - DICE\n* `mean_accuracy` - MEAN_ACCURACY\n* `mean_precision` - MEAN_PRECISION\n* `mean_recall` - MEAN_RECALL\n* `mean_jaccard_index` - MEAN_JACCARD_INDEX\n* `mean_dice` - MEAN_DICE\n* `label_accuracy` - LABEL_ACCURACY\n* `label_precision` - LABEL_PRECISION\n* `label_recall` - LABEL_RECALL\n* `label_jaccard_index` - LABEL_JACCARD_INDEX\n* `label_dice` - LABEL_DICE',
-      }),
-    required_score: z
-      .float64()
-      .min(0)
-      .max(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the minimal quality requirements in terms of the selected target metric.',
-      }),
-    parent_requirement: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The parent requirement. Child requirements inherit comparison settings from it.',
-      }),
-    iou_threshold: z
-      .xor([z.number().min(0).max(1), SimilarityThresholdPolicySchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.',
-      }),
-    point_size: z
-      .float64()
-      .min(0)
-      .max(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The point "size" (the OKS sigma), as a fraction of the object size, defined by\nthe point size base. Corresponds to the standard deviation of the keypoint position.\nLarger values give larger areas around the GT points, where the checked points\nare accepted.\nRead more about the point matching in the documentation.',
-      }),
-    point_size_base: z
-      .xor([QualityPointSizeBaseSchema, BlankEnumSchema, NullEnumSchema])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When comparing point annotations (including both separate points and point groups),\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group bbox size. Useful if each point group represents an object\nor there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
-      }),
-    line_thickness: z
-      .float64()
-      .min(0)
-      .max(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be\n',
-      }),
-    match_orientation: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Enables or disables polyline orientation comparison' }),
-    line_orientation_threshold: z
-      .float64()
-      .min(0)
-      .max(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The minimal gain in the GT IoU between the given and reversed line directions\nto consider the line inverted.\nOnly used when the 'match_orientation' parameter is true\n",
-      }),
-    match_groups: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.',
-      }),
-    group_match_threshold: z
-      .float64()
-      .min(0)
-      .max(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Minimal IoU for groups to be considered matching.\nOnly used when the 'match_groups' parameter is true\n",
-      }),
-    check_covered_annotations: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Check for partially-covered annotations, useful in segmentation tasks\n',
-      }),
-    object_visibility_threshold: z
-      .float64()
-      .min(0)
-      .max(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Minimal visible area percent of the spatial annotations (polygons, masks)\nfor reporting covered annotations.\nOnly used when the 'object_visibility_threshold' parameter is true\n",
-      }),
-    panoptic_comparison: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Use only the visible part of the masks and polygons in comparisons\n',
-      }),
-    attribute_comparison: AttributeComparisonSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Incremental attribute comparison settings. The default rule applies to attributes without an override; rules override behavior for individual AttributeSpec ids.',
-      }),
-    created_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    updated_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('QualityRequirementListItem')
 
 const PaginatedQualityRequirementListItemListSchema = z
   .object({
@@ -2639,43 +2887,7 @@ const PaginatedQualityRequirementListItemListSchema = z
   .openapi({ required: ['count', 'results'] })
   .openapi('PaginatedQualityRequirementListItemList')
 
-const QualitySettingsSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true }),
-    task_id: z.int().nullable().exactOptional(),
-    project_id: z.int().nullable().exactOptional(),
-    job_filter: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description:
-          "A JSON-based logic expression used to filter jobs for quality validation.\nThe filter supports various terms to specify conditions on job: ['assignee', 'id', 'stage', 'state', 'task_id', 'task_name', 'type']\n",
-      }),
-    inherit: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Allow using project settings when computing task quality.\nOnly applicable to task quality settings inside projects\n',
-      }),
-    max_validations_per_job: z
-      .int()
-      .min(0)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of job validation attempts for the job assignee.\nThe job can be automatically accepted if the job quality is above the required\nthreshold, defined by the target threshold parameter.\n',
-      }),
-    requirements: z.array(QualityRequirementListItemSchema).exactOptional(),
-    created_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    updated_date: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('QualitySettings')
-
-const PaginatedQualitySettingsListSchema = z
+const PaginatedQualitySettingsListSchema: z.ZodType<PaginatedQualitySettingsListType> = z
   .object({
     count: z.int().openapi({ example: 123 }),
     next: z
@@ -3111,72 +3323,7 @@ const PatchedJobWriteRequestSchema = z
   .openapi({ required: [] })
   .openapi('PatchedJobWriteRequest')
 
-const SublabelRequestSchema = z
-  .object({
-    id: z.int().exactOptional(),
-    name: z.string().min(1).max(64),
-    color: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The hex value for the RGB color. Will be generated automatically, unless specified explicitly.',
-      }),
-    attributes: z
-      .array(AttributeRequestSchema)
-      .default([])
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of attributes. To remove an attribute, pass the full attribute body with deleted=true. Related annotation attribute values will be deleted.',
-      }),
-    type: LabelTypeSchema.exactOptional().openapi({
-      description:
-        'Associated annotation type for this label\n\n* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
-    }),
-    has_parent: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('SublabelRequest')
-
-const PatchedLabelRequestSchema = z
-  .object({
-    id: z.int().exactOptional(),
-    name: z.string().min(1).max(64).exactOptional(),
-    color: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The hex value for the RGB color. Will be generated automatically, unless specified explicitly.',
-      }),
-    attributes: z
-      .array(AttributeRequestSchema)
-      .default([])
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of attributes. To remove an attribute, pass the full attribute body with deleted=true. Related annotation attribute values will be deleted.',
-      }),
-    deleted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        writeOnly: true,
-        description:
-          'Delete the label. Only applicable in the PATCH methods of a project or a task.',
-      }),
-    type: LabelTypeSchema.exactOptional().openapi({
-      description:
-        'Associated annotation type for this label\n\n* `any` - ANY\n* `cuboid` - CUBOID\n* `ellipse` - ELLIPSE\n* `mask` - MASK\n* `points` - POINTS\n* `polygon` - POLYGON\n* `polyline` - POLYLINE\n* `rectangle` - RECTANGLE\n* `skeleton` - SKELETON\n* `interval` - INTERVAL\n* `tag` - TAG',
-    }),
-    svg: z.string().exactOptional(),
-    sublabels: z.array(SublabelRequestSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PatchedLabelRequest')
-
-const PatchedLabeledDataRequestSchema = z
+const PatchedLabeledDataRequestSchema: z.ZodType<PatchedLabeledDataRequestType> = z
   .object({
     version: z.int().default(0).exactOptional(),
     tags: z.array(LabeledImageRequestSchema).default([]).exactOptional(),
@@ -3207,15 +3354,7 @@ const PatchedOrganizationWriteRequestSchema = z
   .openapi({ required: [] })
   .openapi('PatchedOrganizationWriteRequest')
 
-const StorageRequestSchema = z
-  .object({
-    location: LocationEnumSchema.exactOptional(),
-    cloud_storage_id: z.int().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('StorageRequest')
-
-const PatchedProjectWriteRequestSchema = z
+const PatchedProjectWriteRequestSchema: z.ZodType<PatchedProjectWriteRequestType> = z
   .object({
     name: z.string().min(1).max(256).exactOptional(),
     labels: z
@@ -3270,13 +3409,50 @@ const PatchedQualityRequirementRequestSchema = z
         description:
           'The parent requirement. Child requirements inherit comparison settings from it.',
       }),
+    similarity_metric: z
+      .xor([SimilarityMetricEnumSchema, BlankEnumSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The similarity metric used to match the objects. The supported metrics\ndepend on the annotation type:\n- ellipse: 'boundary_f', 'iou' (default);\n- mask: 'boundary_f', 'iou' (default);\n- points: 'oks' (default);\n- polygon: 'boundary_f', 'iou' (default);\n- polyline: 'boundary_f', 'iou' (default);\n- rectangle: 'boundary_f', 'iou' (default);\n- skeleton: 'oks' (default);\n- skeleton_keypoint: 'oks' (default);\n- tag: 'equality' (default)\n\n\n* `iou` - IoU\n* `oks` - OKS\n* `boundary_f` - Boundary F\n* `equality` - Equality",
+      }),
     iou_threshold: z
       .xor([z.number().min(0).max(1), SimilarityThresholdPolicyRequestSchema])
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.',
+          "The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.",
+      }),
+    oks_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal OKS for distinction between matched / unmatched objects.\nOnly used with the 'oks' similarity metric.\n",
+      }),
+    boundary_f_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal Boundary F score for distinction between matched / unmatched\nobjects. Only used with the 'boundary_f' similarity metric.\n",
+      }),
+    boundary_f_tolerance: z
+      .float64()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The maximum allowed boundary deviation, in pixels. The boundary points\nwithin this distance from the other object boundary are considered matching.\nOnly used with the 'boundary_f' similarity metric.\n",
       }),
     point_size: z
       .float64()
@@ -3294,7 +3470,7 @@ const PatchedQualityRequirementRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'When comparing point annotations (including both separate points and point groups),\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group bbox size. Useful if each point group represents an object\nor there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
+          'When comparing point groups, skeletons, and skeleton keypoints,\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size. Single points without a group are always compared\nusing the image size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group or skeleton bbox size. Useful if each point group represents\nan object or there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
       }),
     line_thickness: z
       .float64()
@@ -3304,7 +3480,7 @@ const PatchedQualityRequirementRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be\n',
+          "Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be.\nWith the 'boundary_f' similarity metric, the boundary tolerance is used instead\n",
       }),
     match_orientation: z
       .boolean()
@@ -3410,13 +3586,50 @@ const QualityRequirementListItemRequestSchema = z
         description:
           'The parent requirement. Child requirements inherit comparison settings from it.',
       }),
+    similarity_metric: z
+      .xor([SimilarityMetricEnumSchema, BlankEnumSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The similarity metric used to match the objects. The supported metrics\ndepend on the annotation type:\n- ellipse: 'boundary_f', 'iou' (default);\n- mask: 'boundary_f', 'iou' (default);\n- points: 'oks' (default);\n- polygon: 'boundary_f', 'iou' (default);\n- polyline: 'boundary_f', 'iou' (default);\n- rectangle: 'boundary_f', 'iou' (default);\n- skeleton: 'oks' (default);\n- skeleton_keypoint: 'oks' (default);\n- tag: 'equality' (default)\n\n\n* `iou` - IoU\n* `oks` - OKS\n* `boundary_f` - Boundary F\n* `equality` - Equality",
+      }),
     iou_threshold: z
       .xor([z.number().min(0).max(1), SimilarityThresholdPolicyRequestSchema])
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.',
+          "The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.",
+      }),
+    oks_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal OKS for distinction between matched / unmatched objects.\nOnly used with the 'oks' similarity metric.\n",
+      }),
+    boundary_f_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal Boundary F score for distinction between matched / unmatched\nobjects. Only used with the 'boundary_f' similarity metric.\n",
+      }),
+    boundary_f_tolerance: z
+      .float64()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The maximum allowed boundary deviation, in pixels. The boundary points\nwithin this distance from the other object boundary are considered matching.\nOnly used with the 'boundary_f' similarity metric.\n",
       }),
     point_size: z
       .float64()
@@ -3434,7 +3647,7 @@ const QualityRequirementListItemRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'When comparing point annotations (including both separate points and point groups),\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group bbox size. Useful if each point group represents an object\nor there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
+          'When comparing point groups, skeletons, and skeleton keypoints,\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size. Single points without a group are always compared\nusing the image size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group or skeleton bbox size. Useful if each point group represents\nan object or there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
       }),
     line_thickness: z
       .float64()
@@ -3444,7 +3657,7 @@ const QualityRequirementListItemRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be\n',
+          "Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be.\nWith the 'boundary_f' similarity metric, the boundary tolerance is used instead\n",
       }),
     match_orientation: z
       .boolean()
@@ -3565,7 +3778,7 @@ const PatchedTaskValidationLayoutWriteRequestSchema = z
   .openapi({ required: [] })
   .openapi('PatchedTaskValidationLayoutWriteRequest')
 
-const PatchedTaskWriteRequestSchema = z
+const PatchedTaskWriteRequestSchema: z.ZodType<PatchedTaskWriteRequestType> = z
   .object({
     name: z.string().min(1).max(256).exactOptional(),
     project_id: z.int().nullable().exactOptional(),
@@ -3682,7 +3895,7 @@ const ProjectFileRequestSchema = z
   .openapi({ required: ['project_file'] })
   .openapi('ProjectFileRequest')
 
-const ProjectWriteRequestSchema = z
+const ProjectWriteRequestSchema: z.ZodType<ProjectWriteRequestType> = z
   .object({
     name: z.string().min(1).max(256),
     labels: z
@@ -3807,14 +4020,51 @@ const QualityRequirementSchema = z
         description:
           'The parent requirement. Child requirements inherit comparison settings from it.',
       }),
-    effective: z.object({}).exactOptional().openapi({ readOnly: true }),
+    effective: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    similarity_metric: z
+      .xor([SimilarityMetricEnumSchema, BlankEnumSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The similarity metric used to match the objects. The supported metrics\ndepend on the annotation type:\n- ellipse: 'boundary_f', 'iou' (default);\n- mask: 'boundary_f', 'iou' (default);\n- points: 'oks' (default);\n- polygon: 'boundary_f', 'iou' (default);\n- polyline: 'boundary_f', 'iou' (default);\n- rectangle: 'boundary_f', 'iou' (default);\n- skeleton: 'oks' (default);\n- skeleton_keypoint: 'oks' (default);\n- tag: 'equality' (default)\n\n\n* `iou` - IoU\n* `oks` - OKS\n* `boundary_f` - Boundary F\n* `equality` - Equality",
+      }),
     iou_threshold: z
       .xor([z.number().min(0).max(1), SimilarityThresholdPolicySchema])
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.',
+          "The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.",
+      }),
+    oks_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal OKS for distinction between matched / unmatched objects.\nOnly used with the 'oks' similarity metric.\n",
+      }),
+    boundary_f_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal Boundary F score for distinction between matched / unmatched\nobjects. Only used with the 'boundary_f' similarity metric.\n",
+      }),
+    boundary_f_tolerance: z
+      .float64()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The maximum allowed boundary deviation, in pixels. The boundary points\nwithin this distance from the other object boundary are considered matching.\nOnly used with the 'boundary_f' similarity metric.\n",
       }),
     point_size: z
       .float64()
@@ -3832,7 +4082,7 @@ const QualityRequirementSchema = z
       .exactOptional()
       .openapi({
         description:
-          'When comparing point annotations (including both separate points and point groups),\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group bbox size. Useful if each point group represents an object\nor there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
+          'When comparing point groups, skeletons, and skeleton keypoints,\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size. Single points without a group are always compared\nusing the image size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group or skeleton bbox size. Useful if each point group represents\nan object or there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
       }),
     line_thickness: z
       .float64()
@@ -3842,7 +4092,7 @@ const QualityRequirementSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be\n',
+          "Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be.\nWith the 'boundary_f' similarity metric, the boundary tolerance is used instead\n",
       }),
     match_orientation: z
       .boolean()
@@ -3952,13 +4202,50 @@ const QualityRequirementBulkCreateNodeRequestSchema: z.ZodType<QualityRequiremen
               description:
                 'Required for root requirements and forbidden for nested requirements. Must identify an existing requirement from the selected quality settings.',
             }),
+          similarity_metric: z
+            .xor([SimilarityMetricEnumSchema, BlankEnumSchema, NullEnumSchema])
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                "The similarity metric used to match the objects. The supported metrics\ndepend on the annotation type:\n- ellipse: 'boundary_f', 'iou' (default);\n- mask: 'boundary_f', 'iou' (default);\n- points: 'oks' (default);\n- polygon: 'boundary_f', 'iou' (default);\n- polyline: 'boundary_f', 'iou' (default);\n- rectangle: 'boundary_f', 'iou' (default);\n- skeleton: 'oks' (default);\n- skeleton_keypoint: 'oks' (default);\n- tag: 'equality' (default)\n\n\n* `iou` - IoU\n* `oks` - OKS\n* `boundary_f` - Boundary F\n* `equality` - Equality",
+            }),
           iou_threshold: z
             .xor([z.number().min(0).max(1), SimilarityThresholdPolicyRequestSchema])
             .nullable()
             .exactOptional()
             .openapi({
               description:
-                'A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.',
+                "The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.",
+            }),
+          oks_threshold: z
+            .float64()
+            .min(0)
+            .max(1)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                "The minimal OKS for distinction between matched / unmatched objects.\nOnly used with the 'oks' similarity metric.\n",
+            }),
+          boundary_f_threshold: z
+            .float64()
+            .min(0)
+            .max(1)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                "The minimal Boundary F score for distinction between matched / unmatched\nobjects. Only used with the 'boundary_f' similarity metric.\n",
+            }),
+          boundary_f_tolerance: z
+            .float64()
+            .min(0)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                "The maximum allowed boundary deviation, in pixels. The boundary points\nwithin this distance from the other object boundary are considered matching.\nOnly used with the 'boundary_f' similarity metric.\n",
             }),
           point_size: z
             .float64()
@@ -3976,7 +4263,7 @@ const QualityRequirementBulkCreateNodeRequestSchema: z.ZodType<QualityRequiremen
             .exactOptional()
             .openapi({
               description:
-                'When comparing point annotations (including both separate points and point groups),\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group bbox size. Useful if each point group represents an object\nor there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
+                'When comparing point groups, skeletons, and skeleton keypoints,\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size. Single points without a group are always compared\nusing the image size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group or skeleton bbox size. Useful if each point group represents\nan object or there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
             }),
           line_thickness: z
             .float64()
@@ -3986,7 +4273,7 @@ const QualityRequirementBulkCreateNodeRequestSchema: z.ZodType<QualityRequiremen
             .exactOptional()
             .openapi({
               description:
-                'Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be\n',
+                "Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be.\nWith the 'boundary_f' similarity metric, the boundary tolerance is used instead\n",
             }),
           match_orientation: z
             .boolean()
@@ -4109,13 +4396,50 @@ const QualityRequirementRequestSchema = z
         description:
           'The parent requirement. Child requirements inherit comparison settings from it.',
       }),
+    similarity_metric: z
+      .xor([SimilarityMetricEnumSchema, BlankEnumSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The similarity metric used to match the objects. The supported metrics\ndepend on the annotation type:\n- ellipse: 'boundary_f', 'iou' (default);\n- mask: 'boundary_f', 'iou' (default);\n- points: 'oks' (default);\n- polygon: 'boundary_f', 'iou' (default);\n- polyline: 'boundary_f', 'iou' (default);\n- rectangle: 'boundary_f', 'iou' (default);\n- skeleton: 'oks' (default);\n- skeleton_keypoint: 'oks' (default);\n- tag: 'equality' (default)\n\n\n* `iou` - IoU\n* `oks` - OKS\n* `boundary_f` - Boundary F\n* `equality` - Equality",
+      }),
     iou_threshold: z
       .xor([z.number().min(0).max(1), SimilarityThresholdPolicyRequestSchema])
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.',
+          "The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.",
+      }),
+    oks_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal OKS for distinction between matched / unmatched objects.\nOnly used with the 'oks' similarity metric.\n",
+      }),
+    boundary_f_threshold: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimal Boundary F score for distinction between matched / unmatched\nobjects. Only used with the 'boundary_f' similarity metric.\n",
+      }),
+    boundary_f_tolerance: z
+      .float64()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The maximum allowed boundary deviation, in pixels. The boundary points\nwithin this distance from the other object boundary are considered matching.\nOnly used with the 'boundary_f' similarity metric.\n",
       }),
     point_size: z
       .float64()
@@ -4133,7 +4457,7 @@ const QualityRequirementRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'When comparing point annotations (including both separate points and point groups),\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group bbox size. Useful if each point group represents an object\nor there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
+          'When comparing point groups, skeletons, and skeleton keypoints,\nthe point size parameter defines matching area for each GT point based to the\nobject size. The point size base parameter allows to configure how to determine\nthe object size. Single points without a group are always compared\nusing the image size.\nIf image_size, the image size is used. Useful if each point\nannotation represents a separate object or boxes grouped with points do not\nrepresent object boundaries.\nIf group_bbox_size, the object size is based on\nthe point group or skeleton bbox size. Useful if each point group represents\nan object or there is a bbox grouped with points, representing the object size.\n\n\n* `image_size` - IMAGE_SIZE\n* `group_bbox_size` - GROUP_BBOX_SIZE',
       }),
     line_thickness: z
       .float64()
@@ -4143,7 +4467,7 @@ const QualityRequirementRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be\n',
+          "Thickness of polylines, relatively to the (image area) ^ 0.5.\nThe distance to the boundary around the GT line,\ninside of which the checked line points should be.\nWith the 'boundary_f' similarity metric, the boundary tolerance is used instead\n",
       }),
     match_orientation: z
       .boolean()
@@ -4325,7 +4649,7 @@ const TaskValidationLayoutReadSchema = z
   .openapi({ required: [] })
   .openapi('TaskValidationLayoutRead')
 
-const TaskWriteRequestSchema = z
+const TaskWriteRequestSchema: z.ZodType<TaskWriteRequestType> = z
   .object({
     name: z.string().min(1).max(256),
     project_id: z.int().nullable().exactOptional(),
@@ -11107,36 +11431,27 @@ export const getApiJobsIdDataRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Checksum': {
-          description: 'Data checksum, applicable for chunks only',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Data checksum, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
-        'X-Chunk-Size': {
-          description: 'Decoded chunk size in bytes, applicable for chunks only',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Decoded chunk size in bytes, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
-        'X-Updated-Date': {
-          description: 'Data update date, applicable for chunks only',
-          schema: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description: 'Data update date, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
+        'X-Checksum': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Data checksum, applicable for chunks only',
+            param: { required: false },
+          }),
+        'X-Chunk-Size': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Decoded chunk size in bytes, applicable for chunks only',
+            param: { required: false },
+          }),
+        'X-Updated-Date': z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Data update date, applicable for chunks only',
+            param: { required: false },
+          }),
       }),
     },
     206: {
@@ -11147,51 +11462,39 @@ export const getApiJobsIdDataRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Checksum': {
-          description: 'Data checksum, applicable for chunks only',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Data checksum, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
-        'X-Chunk-Size': {
-          description: 'Decoded chunk size in bytes, applicable for chunks only',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Decoded chunk size in bytes, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
-        'X-Updated-Date': {
-          description: 'Data update date, applicable for chunks only',
-          schema: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description: 'Data update date, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
+        'X-Checksum': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Data checksum, applicable for chunks only',
+            param: { required: false },
+          }),
+        'X-Chunk-Size': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Decoded chunk size in bytes, applicable for chunks only',
+            param: { required: false },
+          }),
+        'X-Updated-Date': z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Data update date, applicable for chunks only',
+            param: { required: false },
+          }),
       }),
     },
     416: {
       description: 'Requested range is not satisfiable',
       headers: z.object({
-        'X-Chunk-Size': {
-          description: 'Decoded chunk size in bytes, applicable for chunks only',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Decoded chunk size in bytes, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
+        'X-Chunk-Size': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Decoded chunk size in bytes, applicable for chunks only',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12041,7 +12344,7 @@ export const getApiLambdaFunctionsFuncIdRoute = createRoute({
   responses: {
     200: {
       description: 'Information about the function',
-      content: { 'application/vnd.cvat+json': { schema: z.object({}) } },
+      content: { 'application/vnd.cvat+json': { schema: z.looseObject({}) } },
     },
   },
   security: [
@@ -15949,10 +16252,10 @@ export const getApiSchemaIndexRoute = createRoute({
     200: {
       description: '',
       content: {
-        'application/vnd.oai.openapi': { schema: z.object({}) },
-        'application/yaml': { schema: z.object({}) },
-        'application/vnd.oai.openapi+json': { schema: z.object({}) },
-        'application/json': { schema: z.object({}) },
+        'application/vnd.oai.openapi': { schema: z.looseObject({}) },
+        'application/yaml': { schema: z.looseObject({}) },
+        'application/vnd.oai.openapi+json': { schema: z.looseObject({}) },
+        'application/json': { schema: z.looseObject({}) },
       },
     },
   },
@@ -19119,86 +19422,65 @@ export const getApiTasksIdDataIndexRoute = createRoute({
     200: {
       description: 'Data of a specific type',
       headers: z.object({
-        'X-Checksum': {
-          description: 'Data checksum, applicable for chunks only',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Data checksum, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
-        'X-Chunk-Size': {
-          description: 'Decoded chunk size in bytes, applicable for chunks only',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Decoded chunk size in bytes, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
-        'X-Updated-Date': {
-          description: 'Data update date, applicable for chunks only',
-          schema: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description: 'Data update date, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
+        'X-Checksum': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Data checksum, applicable for chunks only',
+            param: { required: false },
+          }),
+        'X-Chunk-Size': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Decoded chunk size in bytes, applicable for chunks only',
+            param: { required: false },
+          }),
+        'X-Updated-Date': z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Data update date, applicable for chunks only',
+            param: { required: false },
+          }),
       }),
     },
     206: {
       description: 'Partial chunk data',
       headers: z.object({
-        'X-Checksum': {
-          description: 'Data checksum, applicable for chunks only',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Data checksum, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
-        'X-Chunk-Size': {
-          description: 'Decoded chunk size in bytes, applicable for chunks only',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Decoded chunk size in bytes, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
-        'X-Updated-Date': {
-          description: 'Data update date, applicable for chunks only',
-          schema: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description: 'Data update date, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
+        'X-Checksum': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Data checksum, applicable for chunks only',
+            param: { required: false },
+          }),
+        'X-Chunk-Size': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Decoded chunk size in bytes, applicable for chunks only',
+            param: { required: false },
+          }),
+        'X-Updated-Date': z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Data update date, applicable for chunks only',
+            param: { required: false },
+          }),
       }),
     },
     416: {
       description: 'Requested range is not satisfiable',
       headers: z.object({
-        'X-Chunk-Size': {
-          description: 'Decoded chunk size in bytes, applicable for chunks only',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Decoded chunk size in bytes, applicable for chunks only',
-              param: { required: false },
-            }),
-        },
+        'X-Chunk-Size': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Decoded chunk size in bytes, applicable for chunks only',
+            param: { required: false },
+          }),
       }),
     },
   },

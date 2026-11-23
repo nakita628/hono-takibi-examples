@@ -1179,6 +1179,14 @@ const SearchMetricNamesPostInputBodySchema = z
           'Form field: One or more search terms matched against metric names (OR logic).',
         example: ['http_req'],
       }),
+    search_expr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Form field: Boolean search expression matched against metric names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+        example: 'http AND NOT bucket',
+      }),
     fuzz_threshold: z
       .preprocess(
         (val) =>
@@ -1307,6 +1315,14 @@ const SearchLabelNamesPostInputBodySchema = z
       .openapi({
         description: 'Form field: One or more search terms matched against label names (OR logic).',
         example: ['inst'],
+      }),
+    search_expr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Form field: Boolean search expression matched against label names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+        example: 'inst OR job',
       }),
     fuzz_threshold: z
       .preprocess(
@@ -1439,6 +1455,14 @@ const SearchLabelValuesPostInputBodySchema = z
         description:
           'Form field: One or more search terms matched against label values (OR logic).',
         example: ['909'],
+      }),
+    search_expr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Form field: Boolean search expression matched against label values. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+        example: '909 AND NOT 9091',
       }),
     fuzz_threshold: z
       .preprocess(
@@ -6405,6 +6429,21 @@ export const getSearchMetricNamesRoute = createRoute({
             examples: { example: { value: ['http_req'] } },
           },
         }),
+      search_expr: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'search_expr',
+            in: 'query',
+            description:
+              'Boolean search expression matched against metric names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+            required: false,
+            explode: false,
+            schema: { type: 'string' },
+            examples: { example: { value: 'http AND NOT bucket' } },
+          },
+        }),
       fuzz_threshold: z
         .preprocess((val) => {
           if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
@@ -6610,6 +6649,7 @@ export const getSearchMetricNamesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 20 } },
           },
+          default: 100,
         }),
       batch_size: z
         .preprocess((val) => {
@@ -6632,6 +6672,7 @@ export const getSearchMetricNamesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 20 } },
           },
+          default: 100,
         }),
     }),
   },
@@ -6645,7 +6686,7 @@ export const getSearchMetricNamesRoute = createRoute({
             metricNamesStream: {
               summary: 'NDJSON stream of metric names',
               value:
-                '{"results":[{"name":"http_requests_total","type":"counter","help":"Total HTTP requests."}]}\n{"status":"success","has_more":false}\n',
+                '{"results":[{"name":"http_requests_total","type":"counter","help":"Total HTTP requests."}]}\n{"status":"success","has_more":false,"returned":1}\n',
             },
           },
         },
@@ -6703,6 +6744,14 @@ export const postSearchMetricNamesRoute = createRoute({
                   description:
                     'Form field: One or more search terms matched against metric names (OR logic).',
                   example: ['http_req'],
+                }),
+              search_expr: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Form field: Boolean search expression matched against metric names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+                  example: 'http AND NOT bucket',
                 }),
               fuzz_threshold: z
                 .preprocess((val) => {
@@ -6864,7 +6913,7 @@ export const postSearchMetricNamesRoute = createRoute({
             metricNamesStream: {
               summary: 'NDJSON stream of metric names',
               value:
-                '{"results":[{"name":"http_requests_total","type":"counter","help":"Total HTTP requests."}]}\n{"status":"success","has_more":false}\n',
+                '{"results":[{"name":"http_requests_total","type":"counter","help":"Total HTTP requests."}]}\n{"status":"success","has_more":false,"returned":1}\n',
             },
           },
         },
@@ -6937,6 +6986,21 @@ export const getSearchLabelNamesRoute = createRoute({
             explode: false,
             schema: { type: 'array', items: { type: 'string' } },
             examples: { example: { value: ['inst'] } },
+          },
+        }),
+      search_expr: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'search_expr',
+            in: 'query',
+            description:
+              'Boolean search expression matched against label names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+            required: false,
+            explode: false,
+            schema: { type: 'string' },
+            examples: { example: { value: 'inst OR job' } },
           },
         }),
       fuzz_threshold: z
@@ -7130,6 +7194,7 @@ export const getSearchLabelNamesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 20 } },
           },
+          default: 100,
         }),
       batch_size: z
         .preprocess((val) => {
@@ -7152,6 +7217,7 @@ export const getSearchLabelNamesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 20 } },
           },
+          default: 100,
         }),
     }),
   },
@@ -7165,7 +7231,7 @@ export const getSearchLabelNamesRoute = createRoute({
             labelNamesStream: {
               summary: 'NDJSON stream of label names',
               value:
-                '{"results":[{"name":"instance"},{"name":"job"}]}\n{"status":"success","has_more":false}\n',
+                '{"results":[{"name":"instance"},{"name":"job"}]}\n{"status":"success","has_more":false,"returned":2}\n',
             },
           },
         },
@@ -7223,6 +7289,14 @@ export const postSearchLabelNamesRoute = createRoute({
                   description:
                     'Form field: One or more search terms matched against label names (OR logic).',
                   example: ['inst'],
+                }),
+              search_expr: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Form field: Boolean search expression matched against label names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+                  example: 'inst OR job',
                 }),
               fuzz_threshold: z
                 .preprocess((val) => {
@@ -7374,7 +7448,7 @@ export const postSearchLabelNamesRoute = createRoute({
             labelNamesStream: {
               summary: 'NDJSON stream of label names',
               value:
-                '{"results":[{"name":"instance"},{"name":"job"}]}\n{"status":"success","has_more":false}\n',
+                '{"results":[{"name":"instance"},{"name":"job"}]}\n{"status":"success","has_more":false,"returned":2}\n',
             },
           },
         },
@@ -7460,6 +7534,21 @@ export const getSearchLabelValuesRoute = createRoute({
             explode: false,
             schema: { type: 'array', items: { type: 'string' } },
             examples: { example: { value: ['909'] } },
+          },
+        }),
+      search_expr: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'search_expr',
+            in: 'query',
+            description:
+              'Boolean search expression matched against label values. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+            required: false,
+            explode: false,
+            schema: { type: 'string' },
+            examples: { example: { value: '909 AND NOT 9091' } },
           },
         }),
       fuzz_threshold: z
@@ -7653,6 +7742,7 @@ export const getSearchLabelValuesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 10 } },
           },
+          default: 100,
         }),
       batch_size: z
         .preprocess((val) => {
@@ -7675,6 +7765,7 @@ export const getSearchLabelValuesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 10 } },
           },
+          default: 100,
         }),
     }),
   },
@@ -7688,7 +7779,7 @@ export const getSearchLabelValuesRoute = createRoute({
             labelValuesStream: {
               summary: 'NDJSON stream of label values',
               value:
-                '{"results":[{"value":"localhost:9090"},{"value":"localhost:9091"}]}\n{"status":"success","has_more":true}\n',
+                '{"results":[{"value":"localhost:9090"},{"value":"localhost:9091"}]}\n{"status":"success","has_more":true,"returned":2}\n',
             },
           },
         },
@@ -7752,6 +7843,14 @@ export const postSearchLabelValuesRoute = createRoute({
                   description:
                     'Form field: One or more search terms matched against label values (OR logic).',
                   example: ['909'],
+                }),
+              search_expr: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Form field: Boolean search expression matched against label values. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].',
+                  example: '909 AND NOT 9091',
                 }),
               fuzz_threshold: z
                 .preprocess((val) => {
@@ -7907,7 +8006,7 @@ export const postSearchLabelValuesRoute = createRoute({
             labelValuesStream: {
               summary: 'NDJSON stream of label values',
               value:
-                '{"results":[{"value":"localhost:9090"},{"value":"localhost:9091"}]}\n{"status":"success","has_more":true}\n',
+                '{"results":[{"value":"localhost:9090"},{"value":"localhost:9091"}]}\n{"status":"success","has_more":true,"returned":2}\n',
             },
           },
         },

@@ -30182,7 +30182,7 @@ export const getApiPatientsIdCcdaRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/xml': { schema: z.object({}).openapi({ description: '', title: '' }) },
+        'application/xml': { schema: z.looseObject({}).openapi({ description: '', title: '' }) },
       },
     },
     400: { description: 'Bad Request', content: {} },
@@ -30979,7 +30979,7 @@ export const getApiPatientsIdQrda1Route = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/xml': { schema: z.object({}).openapi({ description: '', title: '' }) },
+        'application/xml': { schema: z.looseObject({}).openapi({ description: '', title: '' }) },
       },
     },
     400: { description: 'Bad Request', content: {} },

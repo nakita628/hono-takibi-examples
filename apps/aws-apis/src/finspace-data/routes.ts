@@ -4,9 +4,9 @@ const StatusCodeSchema = z.int().openapi('StatusCode')
 
 const AssociateUserToPermissionGroupResponseSchema = z
   .object({
-    statusCode: StatusCodeSchema.and(
-      z.any().openapi({ description: 'The returned status code of the response.' }),
-    ).exactOptional(),
+    statusCode: StatusCodeSchema.exactOptional().openapi({
+      description: 'The returned status code of the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateUserToPermissionGroupResponse')
@@ -39,17 +39,12 @@ const ChangesetIdSchema = z
 
 const CreateChangesetResponseSchema = z
   .object({
-    datasetId: DatasetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the FinSpace Dataset where the Changeset is created.',
-        }),
-    ).exactOptional(),
-    changesetId: ChangesetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the Changeset that is created.' }),
-    ).exactOptional(),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the FinSpace Dataset where the Changeset is created.',
+    }),
+    changesetId: ChangesetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the Changeset that is created.',
+    }),
   })
   .openapi({ description: 'The response from a CreateChangeset operation.', required: [] })
   .openapi('CreateChangesetResponse')
@@ -71,14 +66,12 @@ const DataViewIdSchema = z
 
 const CreateDataViewResponseSchema = z
   .object({
-    datasetId: DatasetIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier of the Dataset used for the Dataview.' }),
-    ).exactOptional(),
-    dataViewId: DataViewIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the created Dataview.' }),
-    ).exactOptional(),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the Dataset used for the Dataview.',
+    }),
+    dataViewId: DataViewIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the created Dataview.',
+    }),
   })
   .openapi({ description: 'Response for creating a data view.', required: [] })
   .openapi('CreateDataViewResponse')
@@ -107,9 +100,9 @@ const S3DestinationFormatOptionsSchema = z
 
 const CreateDatasetResponseSchema = z
   .object({
-    datasetId: DatasetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the created Dataset.' }),
-    ).exactOptional(),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the created Dataset.',
+    }),
   })
   .openapi({ description: 'The response from a CreateDataset operation', required: [] })
   .openapi('CreateDatasetResponse')
@@ -154,9 +147,9 @@ const StringValueLength1to250Schema = z
 
 const ResourcePermissionSchema = z
   .object({
-    permission: StringValueLength1to250Schema.and(
-      z.any().openapi({ description: 'Permission for a resource.' }),
-    ).exactOptional(),
+    permission: StringValueLength1to250Schema.exactOptional().openapi({
+      description: 'Permission for a resource.',
+    }),
   })
   .openapi({
     description:
@@ -204,20 +197,14 @@ const ColumnDescriptionSchema = z
 
 const ColumnDefinitionSchema = z
   .object({
-    dataType: ColumnDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Data type of a column.</p> <ul> <li> <p> <code>STRING</code> – A String data type.</p> <p> <code>CHAR</code> – A char data type.</p> <p> <code>INTEGER</code> – An integer data type.</p> <p> <code>TINYINT</code> – A tinyint data type.</p> <p> <code>SMALLINT</code> – A smallint data type.</p> <p> <code>BIGINT</code> – A bigint data type.</p> <p> <code>FLOAT</code> – A float data type.</p> <p> <code>DOUBLE</code> – A double data type.</p> <p> <code>DATE</code> – A date data type.</p> <p> <code>DATETIME</code> – A datetime data type.</p> <p> <code>BOOLEAN</code> – A boolean data type.</p> <p> <code>BINARY</code> – A binary data type.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    columnName: ColumnNameSchema.and(
-      z.any().openapi({ description: 'The name of a column.' }),
-    ).exactOptional(),
-    columnDescription: ColumnDescriptionSchema.and(
-      z.any().openapi({ description: 'Description for a column.' }),
-    ).exactOptional(),
+    dataType: ColumnDataTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Data type of a column.</p> <ul> <li> <p> <code>STRING</code> – A String data type.</p> <p> <code>CHAR</code> – A char data type.</p> <p> <code>INTEGER</code> – An integer data type.</p> <p> <code>TINYINT</code> – A tinyint data type.</p> <p> <code>SMALLINT</code> – A smallint data type.</p> <p> <code>BIGINT</code> – A bigint data type.</p> <p> <code>FLOAT</code> – A float data type.</p> <p> <code>DOUBLE</code> – A double data type.</p> <p> <code>DATE</code> – A date data type.</p> <p> <code>DATETIME</code> – A datetime data type.</p> <p> <code>BOOLEAN</code> – A boolean data type.</p> <p> <code>BINARY</code> – A binary data type.</p> </li> </ul>',
+    }),
+    columnName: ColumnNameSchema.exactOptional().openapi({ description: 'The name of a column.' }),
+    columnDescription: ColumnDescriptionSchema.exactOptional().openapi({
+      description: 'Description for a column.',
+    }),
   })
   .openapi({ description: 'The definition of a column in a tabular Dataset.', required: [] })
   .openapi('ColumnDefinition')
@@ -234,21 +221,21 @@ const ColumnNameListSchema = z
 
 const SchemaDefinitionSchema = z
   .object({
-    columns: ColumnListSchema.and(
-      z.any().openapi({ description: 'List of column definitions.' }),
-    ).exactOptional(),
-    primaryKeyColumns: ColumnNameListSchema.and(
-      z.any().openapi({ description: 'List of column names used for primary key.' }),
-    ).exactOptional(),
+    columns: ColumnListSchema.exactOptional().openapi({
+      description: 'List of column definitions.',
+    }),
+    primaryKeyColumns: ColumnNameListSchema.exactOptional().openapi({
+      description: 'List of column names used for primary key.',
+    }),
   })
   .openapi({ description: 'Definition for a schema on a tabular Dataset.', required: [] })
   .openapi('SchemaDefinition')
 
 const CreatePermissionGroupResponseSchema = z
   .object({
-    permissionGroupId: PermissionGroupIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the permission group.' }),
-    ).exactOptional(),
+    permissionGroupId: PermissionGroupIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the permission group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePermissionGroupResponse')
@@ -274,54 +261,54 @@ const UserIdSchema = z
 
 const CreateUserResponseSchema = z
   .object({
-    userId: UserIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the user.' }),
-    ).exactOptional(),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUserResponse')
 
 const DeleteDatasetResponseSchema = z
   .object({
-    datasetId: DatasetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the deleted Dataset.' }),
-    ).exactOptional(),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the deleted Dataset.',
+    }),
   })
   .openapi({ description: 'The response from an DeleteDataset operation', required: [] })
   .openapi('DeleteDatasetResponse')
 
 const DeletePermissionGroupResponseSchema = z
   .object({
-    permissionGroupId: PermissionGroupIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the deleted permission group.' }),
-    ).exactOptional(),
+    permissionGroupId: PermissionGroupIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the deleted permission group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeletePermissionGroupResponse')
 
 const DisableUserResponseSchema = z
   .object({
-    userId: UserIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the disabled user account.' }),
-    ).exactOptional(),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the disabled user account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisableUserResponse')
 
 const DisassociateUserFromPermissionGroupResponseSchema = z
   .object({
-    statusCode: StatusCodeSchema.and(
-      z.any().openapi({ description: 'The returned status code of the response.' }),
-    ).exactOptional(),
+    statusCode: StatusCodeSchema.exactOptional().openapi({
+      description: 'The returned status code of the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateUserFromPermissionGroupResponse')
 
 const EnableUserResponseSchema = z
   .object({
-    userId: UserIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the enabled user account.' }),
-    ).exactOptional(),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the enabled user account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EnableUserResponse')
@@ -378,91 +365,62 @@ const ErrorCategorySchema = z
 
 const ChangesetErrorInfoSchema = z
   .object({
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The text of the error message.' }),
-    ).exactOptional(),
-    errorCategory: ErrorCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The category of the error.</p> <ul> <li> <p> <code>VALIDATION</code> – The inputs to this request are invalid.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> – Service quotas have been exceeded. Please contact AWS support to increase quotas.</p> </li> <li> <p> <code>ACCESS_DENIED</code> – Missing required permission to perform this request.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – One or more inputs to this request were not found.</p> </li> <li> <p> <code>THROTTLING</code> – The system temporarily lacks sufficient resources to process the request.</p> </li> <li> <p> <code>INTERNAL_SERVICE_EXCEPTION</code> – An internal service error has occurred.</p> </li> <li> <p> <code>CANCELLED</code> – Cancelled.</p> </li> <li> <p> <code>USER_RECOVERABLE</code> – A user recoverable error has occurred.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The text of the error message.',
+    }),
+    errorCategory: ErrorCategorySchema.exactOptional().openapi({
+      description:
+        '<p>The category of the error.</p> <ul> <li> <p> <code>VALIDATION</code> – The inputs to this request are invalid.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> – Service quotas have been exceeded. Please contact AWS support to increase quotas.</p> </li> <li> <p> <code>ACCESS_DENIED</code> – Missing required permission to perform this request.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – One or more inputs to this request were not found.</p> </li> <li> <p> <code>THROTTLING</code> – The system temporarily lacks sufficient resources to process the request.</p> </li> <li> <p> <code>INTERNAL_SERVICE_EXCEPTION</code> – An internal service error has occurred.</p> </li> <li> <p> <code>CANCELLED</code> – Cancelled.</p> </li> <li> <p> <code>USER_RECOVERABLE</code> – A user recoverable error has occurred.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'The structure with error messages.', required: [] })
   .openapi('ChangesetErrorInfo')
 
 const GetChangesetResponseSchema = z
   .object({
-    changesetId: ChangesetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a Changeset.' }),
-    ).exactOptional(),
-    changesetArn: ChangesetArnSchema.and(
-      z.any().openapi({ description: 'The ARN identifier of the Changeset.' }),
-    ).exactOptional(),
-    datasetId: DatasetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the FinSpace Dataset where the Changeset is created.',
-        }),
-    ).exactOptional(),
-    changeType: ChangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Type that indicates how a Changeset is applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> – Changeset is considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> – Changeset is considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> – Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    sourceParams: SourceParamsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Options that define the location of the data being ingested.' }),
-    ).exactOptional(),
-    formatParams: FormatParamsSchema.and(
-      z.any().openapi({ description: 'Structure of the source file(s).' }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the Changeset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    status: IngestionStatusSchema.and(
-      z.any().openapi({ description: 'The status of Changeset creation operation.' }),
-    ).exactOptional(),
-    errorInfo: ChangesetErrorInfoSchema.and(
-      z.any().openapi({ description: 'The structure with error messages.' }),
-    ).exactOptional(),
-    activeUntilTimestamp: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time until which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    activeFromTimestamp: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Beginning time from which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    updatesChangesetId: ChangesetIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier of the Changeset that is being updated.' }),
-    ).exactOptional(),
-    updatedByChangesetId: ChangesetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the updated Changeset.' }),
-    ).exactOptional(),
+    changesetId: ChangesetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for a Changeset.',
+    }),
+    changesetArn: ChangesetArnSchema.exactOptional().openapi({
+      description: 'The ARN identifier of the Changeset.',
+    }),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the FinSpace Dataset where the Changeset is created.',
+    }),
+    changeType: ChangeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Type that indicates how a Changeset is applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> – Changeset is considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> – Changeset is considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> – Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>',
+    }),
+    sourceParams: SourceParamsSchema.exactOptional().openapi({
+      description: 'Options that define the location of the data being ingested.',
+    }),
+    formatParams: FormatParamsSchema.exactOptional().openapi({
+      description: 'Structure of the source file(s).',
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the Changeset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    status: IngestionStatusSchema.exactOptional().openapi({
+      description: 'The status of Changeset creation operation.',
+    }),
+    errorInfo: ChangesetErrorInfoSchema.exactOptional().openapi({
+      description: 'The structure with error messages.',
+    }),
+    activeUntilTimestamp: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Time until which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    activeFromTimestamp: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Beginning time from which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    updatesChangesetId: ChangesetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the Changeset that is being updated.',
+    }),
+    updatedByChangesetId: ChangesetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the updated Changeset.',
+    }),
   })
   .openapi({ description: 'The response from a describe changeset operation', required: [] })
   .openapi('GetChangesetResponse')
@@ -479,17 +437,13 @@ const PartitionColumnListSchema = z
 
 const DataViewErrorInfoSchema = z
   .object({
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The text of the error message.' }),
-    ).exactOptional(),
-    errorCategory: ErrorCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The category of the error.</p> <ul> <li> <p> <code>VALIDATION</code> – The inputs to this request are invalid.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> – Service quotas have been exceeded. Please contact AWS support to increase quotas.</p> </li> <li> <p> <code>ACCESS_DENIED</code> – Missing required permission to perform this request.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – One or more inputs to this request were not found.</p> </li> <li> <p> <code>THROTTLING</code> – The system temporarily lacks sufficient resources to process the request.</p> </li> <li> <p> <code>INTERNAL_SERVICE_EXCEPTION</code> – An internal service error has occurred.</p> </li> <li> <p> <code>CANCELLED</code> – Cancelled.</p> </li> <li> <p> <code>USER_RECOVERABLE</code> – A user recoverable error has occurred.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The text of the error message.',
+    }),
+    errorCategory: ErrorCategorySchema.exactOptional().openapi({
+      description:
+        '<p>The category of the error.</p> <ul> <li> <p> <code>VALIDATION</code> – The inputs to this request are invalid.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> – Service quotas have been exceeded. Please contact AWS support to increase quotas.</p> </li> <li> <p> <code>ACCESS_DENIED</code> – Missing required permission to perform this request.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – One or more inputs to this request were not found.</p> </li> <li> <p> <code>THROTTLING</code> – The system temporarily lacks sufficient resources to process the request.</p> </li> <li> <p> <code>INTERNAL_SERVICE_EXCEPTION</code> – An internal service error has occurred.</p> </li> <li> <p> <code>CANCELLED</code> – Cancelled.</p> </li> <li> <p> <code>USER_RECOVERABLE</code> – A user recoverable error has occurred.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'The structure with error messages.', required: [] })
   .openapi('DataViewErrorInfo')
@@ -506,30 +460,18 @@ const DataViewArnSchema = z
 
 const DataViewDestinationTypeParamsSchema = z
   .object({
-    destinationType: DataViewDestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Destination type for a Dataview.</p> <ul> <li> <p> <code>GLUE_TABLE</code> – Glue table destination type.</p> </li> <li> <p> <code>S3</code> – S3 destination type.</p> </li> </ul>',
-        }),
-    ),
-    s3DestinationExportFileFormat: ExportFileFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Dataview export file format.</p> <ul> <li> <p> <code>PARQUET</code> – Parquet export file format.</p> </li> <li> <p> <code>DELIMITED_TEXT</code> – Delimited text export file format.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    s3DestinationExportFileFormatOptions: S3DestinationFormatOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Format Options for S3 Destination type.</p> <p>Here is an example of how you could specify the <code>s3DestinationExportFileFormatOptions</code> </p> <p> <code> { "header": "true", "delimiter": ",", "compression": "gzip" }</code> </p>',
-        }),
-    ).exactOptional(),
+    destinationType: DataViewDestinationTypeSchema.openapi({
+      description:
+        '<p>Destination type for a Dataview.</p> <ul> <li> <p> <code>GLUE_TABLE</code> – Glue table destination type.</p> </li> <li> <p> <code>S3</code> – S3 destination type.</p> </li> </ul>',
+    }),
+    s3DestinationExportFileFormat: ExportFileFormatSchema.exactOptional().openapi({
+      description:
+        '<p>Dataview export file format.</p> <ul> <li> <p> <code>PARQUET</code> – Parquet export file format.</p> </li> <li> <p> <code>DELIMITED_TEXT</code> – Delimited text export file format.</p> </li> </ul>',
+    }),
+    s3DestinationExportFileFormatOptions: S3DestinationFormatOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>Format Options for S3 Destination type.</p> <p>Here is an example of how you could specify the <code>s3DestinationExportFileFormatOptions</code> </p> <p> <code> { "header": "true", "delimiter": ",", "compression": "gzip" }</code> </p>',
+    }),
   })
   .openapi({
     required: ['destinationType'],
@@ -553,70 +495,46 @@ const DataViewStatusSchema = z
 
 const GetDataViewResponseSchema = z
   .object({
-    autoUpdate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Flag to indicate Dataview should be updated automatically.' }),
-    ).exactOptional(),
-    partitionColumns: PartitionColumnListSchema.and(
-      z.any().openapi({ description: 'Ordered set of column names used to partition data.' }),
-    ).exactOptional(),
-    datasetId: DatasetIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier for the Dataset used in the Dataview.' }),
-    ).exactOptional(),
-    asOfTimestamp: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time range to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    errorInfo: DataViewErrorInfoSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about an error that occurred for the Dataview.' }),
-    ).exactOptional(),
-    lastModifiedTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last time that a Dataview was modified. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the Dataview was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    sortColumns: SortColumnListSchema.and(
-      z.any().openapi({ description: 'Columns to be used for sorting the data.' }),
-    ).exactOptional(),
-    dataViewId: DataViewIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the Dataview.' }),
-    ).exactOptional(),
-    dataViewArn: DataViewArnSchema.and(
-      z.any().openapi({ description: 'The ARN identifier of the Dataview.' }),
-    ).exactOptional(),
-    destinationTypeParams: DataViewDestinationTypeParamsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Options that define the destination type for the Dataview.' }),
-    ).exactOptional(),
-    status: DataViewStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of a Dataview creation.</p> <ul> <li> <p> <code>RUNNING</code> – Dataview creation is running.</p> </li> <li> <p> <code>STARTING</code> – Dataview creation is starting.</p> </li> <li> <p> <code>FAILED</code> – Dataview creation has failed.</p> </li> <li> <p> <code>CANCELLED</code> – Dataview creation has been cancelled.</p> </li> <li> <p> <code>TIMEOUT</code> – Dataview creation has timed out.</p> </li> <li> <p> <code>SUCCESS</code> – Dataview creation has succeeded.</p> </li> <li> <p> <code>PENDING</code> – Dataview creation is pending.</p> </li> <li> <p> <code>FAILED_CLEANUP_FAILED</code> – Dataview creation failed and resource cleanup failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    autoUpdate: BooleanSchema.exactOptional().openapi({
+      description: 'Flag to indicate Dataview should be updated automatically.',
+    }),
+    partitionColumns: PartitionColumnListSchema.exactOptional().openapi({
+      description: 'Ordered set of column names used to partition data.',
+    }),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the Dataset used in the Dataview.',
+    }),
+    asOfTimestamp: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Time range to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    errorInfo: DataViewErrorInfoSchema.exactOptional().openapi({
+      description: 'Information about an error that occurred for the Dataview.',
+    }),
+    lastModifiedTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The last time that a Dataview was modified. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the Dataview was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    sortColumns: SortColumnListSchema.exactOptional().openapi({
+      description: 'Columns to be used for sorting the data.',
+    }),
+    dataViewId: DataViewIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the Dataview.',
+    }),
+    dataViewArn: DataViewArnSchema.exactOptional().openapi({
+      description: 'The ARN identifier of the Dataview.',
+    }),
+    destinationTypeParams: DataViewDestinationTypeParamsSchema.exactOptional().openapi({
+      description: 'Options that define the destination type for the Dataview.',
+    }),
+    status: DataViewStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of a Dataview creation.</p> <ul> <li> <p> <code>RUNNING</code> – Dataview creation is running.</p> </li> <li> <p> <code>STARTING</code> – Dataview creation is starting.</p> </li> <li> <p> <code>FAILED</code> – Dataview creation has failed.</p> </li> <li> <p> <code>CANCELLED</code> – Dataview creation has been cancelled.</p> </li> <li> <p> <code>TIMEOUT</code> – Dataview creation has timed out.</p> </li> <li> <p> <code>SUCCESS</code> – Dataview creation has succeeded.</p> </li> <li> <p> <code>PENDING</code> – Dataview creation is pending.</p> </li> <li> <p> <code>FAILED_CLEANUP_FAILED</code> – Dataview creation failed and resource cleanup failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -652,9 +570,9 @@ const DatasetDescriptionSchema = z
 
 const SchemaUnionSchema = z
   .object({
-    tabularSchemaConfig: SchemaDefinitionSchema.and(
-      z.any().openapi({ description: 'The configuration for a schema on a tabular Dataset.' }),
-    ).exactOptional(),
+    tabularSchemaConfig: SchemaDefinitionSchema.exactOptional().openapi({
+      description: 'The configuration for a schema on a tabular Dataset.',
+    }),
   })
   .openapi({ description: 'A union of schema types.', required: [] })
   .openapi('SchemaUnion')
@@ -673,56 +591,40 @@ const DatasetStatusSchema = z
 
 const GetDatasetResponseSchema = z
   .object({
-    datasetId: DatasetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a Dataset.' }),
-    ).exactOptional(),
-    datasetArn: DatasetArnSchema.and(
-      z.any().openapi({ description: 'The ARN identifier of the Dataset.' }),
-    ).exactOptional(),
-    datasetTitle: DatasetTitleSchema.and(
-      z.any().openapi({ description: 'Display title for a Dataset.' }),
-    ).exactOptional(),
-    kind: DatasetKindSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> – Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> – Data is structured in a non-tabular format.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    datasetDescription: DatasetDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the Dataset.' }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the Dataset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    lastModifiedTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last time that the Dataset was modified. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    schemaDefinition: SchemaUnionSchema.and(
-      z.any().openapi({ description: 'Definition for a schema on a tabular Dataset.' }),
-    ).exactOptional(),
-    alias: AliasStringSchema.and(
-      z.any().openapi({ description: 'The unique resource identifier for a Dataset.' }),
-    ).exactOptional(),
-    status: DatasetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Status of the Dataset creation.</p> <ul> <li> <p> <code>PENDING</code> – Dataset is pending creation.</p> </li> <li> <p> <code>FAILED</code> – Dataset creation has failed.</p> </li> <li> <p> <code>SUCCESS</code> – Dataset creation has succeeded.</p> </li> <li> <p> <code>RUNNING</code> – Dataset creation is running.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for a Dataset.',
+    }),
+    datasetArn: DatasetArnSchema.exactOptional().openapi({
+      description: 'The ARN identifier of the Dataset.',
+    }),
+    datasetTitle: DatasetTitleSchema.exactOptional().openapi({
+      description: 'Display title for a Dataset.',
+    }),
+    kind: DatasetKindSchema.exactOptional().openapi({
+      description:
+        '<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> – Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> – Data is structured in a non-tabular format.</p> </li> </ul>',
+    }),
+    datasetDescription: DatasetDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the Dataset.',
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the Dataset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    lastModifiedTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The last time that the Dataset was modified. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    schemaDefinition: SchemaUnionSchema.exactOptional().openapi({
+      description: 'Definition for a schema on a tabular Dataset.',
+    }),
+    alias: AliasStringSchema.exactOptional().openapi({
+      description: 'The unique resource identifier for a Dataset.',
+    }),
+    status: DatasetStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Status of the Dataset creation.</p> <ul> <li> <p> <code>PENDING</code> – Dataset is pending creation.</p> </li> <li> <p> <code>FAILED</code> – Dataset creation has failed.</p> </li> <li> <p> <code>SUCCESS</code> – Dataset creation has succeeded.</p> </li> <li> <p> <code>RUNNING</code> – Dataset creation is running.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Response for the GetDataset operation', required: [] })
   .openapi('GetDatasetResponse')
@@ -750,18 +652,18 @@ const SessionTokenSchema = z
 
 const AwsCredentialsSchema = z
   .object({
-    accessKeyId: AccessKeyIdSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the security credentials.' }),
-    ).exactOptional(),
-    secretAccessKey: SecretAccessKeySchema.and(
-      z.any().openapi({ description: ' The secret access key that can be used to sign requests.' }),
-    ).exactOptional(),
-    sessionToken: SessionTokenSchema.and(
-      z.any().openapi({ description: ' The token that users must pass to use the credentials.' }),
-    ).exactOptional(),
-    expiration: TimestampEpochSchema.and(
-      z.any().openapi({ description: ' The Epoch time when the current credentials expire.' }),
-    ).exactOptional(),
+    accessKeyId: AccessKeyIdSchema.exactOptional().openapi({
+      description: ' The unique identifier for the security credentials.',
+    }),
+    secretAccessKey: SecretAccessKeySchema.exactOptional().openapi({
+      description: ' The secret access key that can be used to sign requests.',
+    }),
+    sessionToken: SessionTokenSchema.exactOptional().openapi({
+      description: ' The token that users must pass to use the credentials.',
+    }),
+    expiration: TimestampEpochSchema.exactOptional().openapi({
+      description: ' The Epoch time when the current credentials expire.',
+    }),
   })
   .openapi({
     description: ' The credentials required to access the external Dataview from the S3 location.',
@@ -785,14 +687,10 @@ const S3KeySchema = z
 
 const S3LocationSchema = z
   .object({
-    bucket: S3BucketNameSchema.and(z.any().openapi({ description: ' The name of the S3 bucket.' })),
-    key: S3KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The path of the folder, within the S3 bucket that contains the Dataset.',
-        }),
-    ),
+    bucket: S3BucketNameSchema.openapi({ description: ' The name of the S3 bucket.' }),
+    key: S3KeySchema.openapi({
+      description: ' The path of the folder, within the S3 bucket that contains the Dataset.',
+    }),
   })
   .openapi({
     required: ['bucket', 'key'],
@@ -802,17 +700,12 @@ const S3LocationSchema = z
 
 const GetExternalDataViewAccessDetailsResponseSchema = z
   .object({
-    credentials: AwsCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The credentials required to access the external Dataview from the S3 location.',
-        }),
-    ).exactOptional(),
-    s3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The location where the external Dataview is stored.' }),
-    ).exactOptional(),
+    credentials: AwsCredentialsSchema.exactOptional().openapi({
+      description: 'The credentials required to access the external Dataview from the S3 location.',
+    }),
+    s3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The location where the external Dataview is stored.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetExternalDataViewAccessDetailsResponse')
@@ -841,47 +734,31 @@ const PermissionGroupMembershipStatusSchema = z
 
 const PermissionGroupSchema = z
   .object({
-    permissionGroupId: PermissionGroupIdSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the permission group.' }),
-    ).exactOptional(),
-    name: PermissionGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the permission group.' }),
-    ).exactOptional(),
-    description: PermissionGroupDescriptionSchema.and(
-      z.any().openapi({ description: ' A brief description for the permission group.' }),
-    ).exactOptional(),
-    applicationPermissions: ApplicationPermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates the permissions that are granted to a specific group for accessing the FinSpace application.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the group was created in FinSpace. The value is determined as epoch time in milliseconds. ',
-        }),
-    ).exactOptional(),
-    lastModifiedTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the last time the permission group was updated. The value is determined as epoch time in milliseconds. ',
-        }),
-    ).exactOptional(),
-    membershipStatus: PermissionGroupMembershipStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    permissionGroupId: PermissionGroupIdSchema.exactOptional().openapi({
+      description: ' The unique identifier for the permission group.',
+    }),
+    name: PermissionGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the permission group.',
+    }),
+    description: PermissionGroupDescriptionSchema.exactOptional().openapi({
+      description: ' A brief description for the permission group.',
+    }),
+    applicationPermissions: ApplicationPermissionListSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates the permissions that are granted to a specific group for accessing the FinSpace application.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>",
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the group was created in FinSpace. The value is determined as epoch time in milliseconds. ',
+    }),
+    lastModifiedTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Describes the last time the permission group was updated. The value is determined as epoch time in milliseconds. ',
+    }),
+    membershipStatus: PermissionGroupMembershipStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'The structure for a permission group.', required: [] })
   .openapi('PermissionGroup')
@@ -901,15 +778,15 @@ const StringValueMaxLength1000Schema = z.string().max(1000).openapi('StringValue
 
 const CredentialsSchema = z
   .object({
-    accessKeyId: StringValueLength1to2552Schema.and(
-      z.any().openapi({ description: 'The access key identifier.' }),
-    ).exactOptional(),
-    secretAccessKey: StringValueMaxLength1000Schema.and(
-      z.any().openapi({ description: 'The access key.' }),
-    ).exactOptional(),
-    sessionToken: StringValueMaxLength1000Schema.and(
-      z.any().openapi({ description: 'The session token.' }),
-    ).exactOptional(),
+    accessKeyId: StringValueLength1to2552Schema.exactOptional().openapi({
+      description: 'The access key identifier.',
+    }),
+    secretAccessKey: StringValueMaxLength1000Schema.exactOptional().openapi({
+      description: 'The access key.',
+    }),
+    sessionToken: StringValueMaxLength1000Schema.exactOptional().openapi({
+      description: 'The session token.',
+    }),
   })
   .openapi({ description: 'Short term API credentials.', required: [] })
   .openapi('Credentials')
@@ -918,16 +795,12 @@ const SessionDurationSchema = z.int().min(60).max(720).openapi('SessionDuration'
 
 const GetProgrammaticAccessCredentialsResponseSchema = z
   .object({
-    credentials: CredentialsSchema.and(
-      z.any().openapi({ description: 'Returns the programmatic credentials.' }),
-    ).exactOptional(),
-    durationInMinutes: SessionDurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns the duration in which the credentials will remain valid.',
-        }),
-    ).exactOptional(),
+    credentials: CredentialsSchema.exactOptional().openapi({
+      description: 'Returns the programmatic credentials.',
+    }),
+    durationInMinutes: SessionDurationSchema.exactOptional().openapi({
+      description: 'Returns the duration in which the credentials will remain valid.',
+    }),
   })
   .openapi({ description: 'Response for GetProgrammaticAccessCredentials operation', required: [] })
   .openapi('GetProgrammaticAccessCredentialsResponse')
@@ -961,92 +834,52 @@ const RoleArnSchema = z
 
 const GetUserResponseSchema = z
   .object({
-    userId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier for the user account that is retrieved.' }),
-    ).exactOptional(),
-    status: UserStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    firstName: FirstNameSchema.and(
-      z.any().openapi({ description: 'The first name of the user.' }),
-    ).exactOptional(),
-    lastName: LastNameSchema.and(
-      z.any().openapi({ description: 'The last name of the user.' }),
-    ).exactOptional(),
-    emailAddress: EmailSchema.and(
-      z.any().openapi({ description: 'The email address that is associated with the user.' }),
-    ).exactOptional(),
-    type: UserTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates the type of user. </p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> </ul> <ul> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    apiAccess: ApiAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations. </p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    apiAccessPrincipalArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN identifier of an AWS user or role that is allowed to call the <code>GetProgrammaticAccessCredentials</code> API to obtain a credentials token for a specific FinSpace user. This must be an IAM role within your FinSpace account.',
-        }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the user account was created in FinSpace. The value is determined as epoch time in milliseconds. ',
-        }),
-    ).exactOptional(),
-    lastEnabledTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the last time the user account was enabled. The value is determined as epoch time in milliseconds.',
-        }),
-    ).exactOptional(),
-    lastDisabledTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the last time the user account was disabled. The value is determined as epoch time in milliseconds.',
-        }),
-    ).exactOptional(),
-    lastModifiedTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the last time the user account was updated. The value is determined as epoch time in milliseconds.',
-        }),
-    ).exactOptional(),
-    lastLoginTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the last time that the user logged into their account. The value is determined as epoch time in milliseconds.',
-        }),
-    ).exactOptional(),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the user account that is retrieved.',
+    }),
+    status: UserStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>',
+    }),
+    firstName: FirstNameSchema.exactOptional().openapi({
+      description: 'The first name of the user.',
+    }),
+    lastName: LastNameSchema.exactOptional().openapi({ description: 'The last name of the user.' }),
+    emailAddress: EmailSchema.exactOptional().openapi({
+      description: 'The email address that is associated with the user.',
+    }),
+    type: UserTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates the type of user. </p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> </ul> <ul> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
+    }),
+    apiAccess: ApiAccessSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations. </p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>',
+    }),
+    apiAccessPrincipalArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN identifier of an AWS user or role that is allowed to call the <code>GetProgrammaticAccessCredentials</code> API to obtain a credentials token for a specific FinSpace user. This must be an IAM role within your FinSpace account.',
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the user account was created in FinSpace. The value is determined as epoch time in milliseconds. ',
+    }),
+    lastEnabledTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Describes the last time the user account was enabled. The value is determined as epoch time in milliseconds.',
+    }),
+    lastDisabledTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Describes the last time the user account was disabled. The value is determined as epoch time in milliseconds.',
+    }),
+    lastModifiedTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Describes the last time the user account was updated. The value is determined as epoch time in milliseconds.',
+    }),
+    lastLoginTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Describes the last time that the user logged into their account. The value is determined as epoch time in milliseconds.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetUserResponse')
@@ -1067,94 +900,66 @@ const StringValueLength1to63Schema = z
 
 const GetWorkingLocationResponseSchema = z
   .object({
-    s3Uri: StringValueLength1to1024Schema.and(
-      z.any().openapi({ description: 'Returns the Amazon S3 URI for the working location.' }),
-    ).exactOptional(),
-    s3Path: StringValueLength1to1024Schema.and(
-      z.any().openapi({ description: 'Returns the Amazon S3 Path for the working location.' }),
-    ).exactOptional(),
-    s3Bucket: StringValueLength1to63Schema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns the Amazon S3 bucket name for the working location.' }),
-    ).exactOptional(),
+    s3Uri: StringValueLength1to1024Schema.exactOptional().openapi({
+      description: 'Returns the Amazon S3 URI for the working location.',
+    }),
+    s3Path: StringValueLength1to1024Schema.exactOptional().openapi({
+      description: 'Returns the Amazon S3 Path for the working location.',
+    }),
+    s3Bucket: StringValueLength1to63Schema.exactOptional().openapi({
+      description: 'Returns the Amazon S3 bucket name for the working location.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWorkingLocationResponse')
 
 const ChangesetSummarySchema = z
   .object({
-    changesetId: ChangesetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a Changeset.' }),
-    ).exactOptional(),
-    changesetArn: ChangesetArnSchema.and(
-      z.any().openapi({ description: 'The ARN identifier of the Changeset.' }),
-    ).exactOptional(),
-    datasetId: DatasetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the FinSpace Dataset in which the Changeset is created.',
-        }),
-    ).exactOptional(),
-    changeType: ChangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Type that indicates how a Changeset is applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> – Changeset is considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> – Changeset is considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> – Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    sourceParams: SourceParamsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Options that define the location of the data being ingested.' }),
-    ).exactOptional(),
-    formatParams: FormatParamsSchema.and(
-      z.any().openapi({ description: 'Options that define the structure of the source file(s).' }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the Changeset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    status: IngestionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Status of the Changeset ingestion.</p> <ul> <li> <p> <code>PENDING</code> – Changeset is pending creation.</p> </li> <li> <p> <code>FAILED</code> – Changeset creation has failed.</p> </li> <li> <p> <code>SUCCESS</code> – Changeset creation has succeeded.</p> </li> <li> <p> <code>RUNNING</code> – Changeset creation is running.</p> </li> <li> <p> <code>STOP_REQUESTED</code> – User requested Changeset creation to stop.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    errorInfo: ChangesetErrorInfoSchema.and(
-      z.any().openapi({ description: 'The structure with error messages.' }),
-    ).exactOptional(),
-    activeUntilTimestamp: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time until which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    activeFromTimestamp: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Beginning time from which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    updatesChangesetId: ChangesetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the Changeset that is updated.' }),
-    ).exactOptional(),
-    updatedByChangesetId: ChangesetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the updated Changeset.' }),
-    ).exactOptional(),
+    changesetId: ChangesetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for a Changeset.',
+    }),
+    changesetArn: ChangesetArnSchema.exactOptional().openapi({
+      description: 'The ARN identifier of the Changeset.',
+    }),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the FinSpace Dataset in which the Changeset is created.',
+    }),
+    changeType: ChangeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Type that indicates how a Changeset is applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> – Changeset is considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> – Changeset is considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> – Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>',
+    }),
+    sourceParams: SourceParamsSchema.exactOptional().openapi({
+      description: 'Options that define the location of the data being ingested.',
+    }),
+    formatParams: FormatParamsSchema.exactOptional().openapi({
+      description: 'Options that define the structure of the source file(s).',
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the Changeset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    status: IngestionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Status of the Changeset ingestion.</p> <ul> <li> <p> <code>PENDING</code> – Changeset is pending creation.</p> </li> <li> <p> <code>FAILED</code> – Changeset creation has failed.</p> </li> <li> <p> <code>SUCCESS</code> – Changeset creation has succeeded.</p> </li> <li> <p> <code>RUNNING</code> – Changeset creation is running.</p> </li> <li> <p> <code>STOP_REQUESTED</code> – User requested Changeset creation to stop.</p> </li> </ul>',
+    }),
+    errorInfo: ChangesetErrorInfoSchema.exactOptional().openapi({
+      description: 'The structure with error messages.',
+    }),
+    activeUntilTimestamp: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Time until which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    activeFromTimestamp: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Beginning time from which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    updatesChangesetId: ChangesetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the Changeset that is updated.',
+    }),
+    updatedByChangesetId: ChangesetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the updated Changeset.',
+    }),
   })
   .openapi({ description: 'A Changeset is unit of data in a Dataset.', required: [] })
   .openapi('ChangesetSummary')
@@ -1168,12 +973,12 @@ const PaginationTokenSchema = z.string().openapi('PaginationToken')
 
 const ListChangesetsResponseSchema = z
   .object({
-    changesets: ChangesetListSchema.and(
-      z.any().openapi({ description: 'List of Changesets found.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'A token that indicates where a results page should begin.' }),
-    ).exactOptional(),
+    changesets: ChangesetListSchema.exactOptional().openapi({
+      description: 'List of Changesets found.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token that indicates where a results page should begin.',
+    }),
   })
   .openapi({
     description:
@@ -1184,64 +989,46 @@ const ListChangesetsResponseSchema = z
 
 const DataViewSummarySchema = z
   .object({
-    dataViewId: DataViewIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the Dataview.' }),
-    ).exactOptional(),
-    dataViewArn: DataViewArnSchema.and(
-      z.any().openapi({ description: 'The ARN identifier of the Dataview.' }),
-    ).exactOptional(),
-    datasetId: DatasetIdSchema.and(
-      z.any().openapi({ description: 'Th unique identifier for the Dataview Dataset.' }),
-    ).exactOptional(),
-    asOfTimestamp: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time range to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    partitionColumns: PartitionColumnListSchema.and(
-      z.any().openapi({ description: 'Ordered set of column names used to partition data.' }),
-    ).exactOptional(),
-    sortColumns: SortColumnListSchema.and(
-      z.any().openapi({ description: 'Columns to be used for sorting the data.' }),
-    ).exactOptional(),
-    status: DataViewStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of a Dataview creation.</p> <ul> <li> <p> <code>RUNNING</code> – Dataview creation is running.</p> </li> <li> <p> <code>STARTING</code> – Dataview creation is starting.</p> </li> <li> <p> <code>FAILED</code> – Dataview creation has failed.</p> </li> <li> <p> <code>CANCELLED</code> – Dataview creation has been cancelled.</p> </li> <li> <p> <code>TIMEOUT</code> – Dataview creation has timed out.</p> </li> <li> <p> <code>SUCCESS</code> – Dataview creation has succeeded.</p> </li> <li> <p> <code>PENDING</code> – Dataview creation is pending.</p> </li> <li> <p> <code>FAILED_CLEANUP_FAILED</code> – Dataview creation failed and resource cleanup failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    errorInfo: DataViewErrorInfoSchema.and(
-      z.any().openapi({ description: 'The structure with error messages.' }),
-    ).exactOptional(),
-    destinationTypeProperties: DataViewDestinationTypeParamsSchema.and(
-      z.any().openapi({ description: 'Information about the Dataview destination.' }),
-    ).exactOptional(),
-    autoUpdate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The flag to indicate Dataview should be updated automatically.' }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the Dataview was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    lastModifiedTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last time that a Dataview was modified. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
+    dataViewId: DataViewIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the Dataview.',
+    }),
+    dataViewArn: DataViewArnSchema.exactOptional().openapi({
+      description: 'The ARN identifier of the Dataview.',
+    }),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'Th unique identifier for the Dataview Dataset.',
+    }),
+    asOfTimestamp: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Time range to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    partitionColumns: PartitionColumnListSchema.exactOptional().openapi({
+      description: 'Ordered set of column names used to partition data.',
+    }),
+    sortColumns: SortColumnListSchema.exactOptional().openapi({
+      description: 'Columns to be used for sorting the data.',
+    }),
+    status: DataViewStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of a Dataview creation.</p> <ul> <li> <p> <code>RUNNING</code> – Dataview creation is running.</p> </li> <li> <p> <code>STARTING</code> – Dataview creation is starting.</p> </li> <li> <p> <code>FAILED</code> – Dataview creation has failed.</p> </li> <li> <p> <code>CANCELLED</code> – Dataview creation has been cancelled.</p> </li> <li> <p> <code>TIMEOUT</code> – Dataview creation has timed out.</p> </li> <li> <p> <code>SUCCESS</code> – Dataview creation has succeeded.</p> </li> <li> <p> <code>PENDING</code> – Dataview creation is pending.</p> </li> <li> <p> <code>FAILED_CLEANUP_FAILED</code> – Dataview creation failed and resource cleanup failed.</p> </li> </ul>',
+    }),
+    errorInfo: DataViewErrorInfoSchema.exactOptional().openapi({
+      description: 'The structure with error messages.',
+    }),
+    destinationTypeProperties: DataViewDestinationTypeParamsSchema.exactOptional().openapi({
+      description: 'Information about the Dataview destination.',
+    }),
+    autoUpdate: BooleanSchema.exactOptional().openapi({
+      description: 'The flag to indicate Dataview should be updated automatically.',
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the Dataview was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    lastModifiedTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The last time that a Dataview was modified. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
   })
   .openapi({ description: 'Structure for the summary of a Dataview.', required: [] })
   .openapi('DataViewSummary')
@@ -1253,78 +1040,64 @@ const DataViewListSchema = z
 
 const ListDataViewsResponseSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'A token that indicates where a results page should begin.' }),
-    ).exactOptional(),
-    dataViews: DataViewListSchema.and(
-      z.any().openapi({ description: 'A list of Dataviews.' }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token that indicates where a results page should begin.',
+    }),
+    dataViews: DataViewListSchema.exactOptional().openapi({ description: 'A list of Dataviews.' }),
   })
   .openapi({ required: [] })
   .openapi('ListDataViewsResponse')
 
 const DatasetOwnerInfoSchema = z
   .object({
-    name: OwnerNameSchema.and(
-      z.any().openapi({ description: 'The name of the Dataset owner.' }),
-    ).exactOptional(),
-    phoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'Phone number for the Dataset owner.' }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z.any().openapi({ description: 'Email address for the Dataset owner.' }),
-    ).exactOptional(),
+    name: OwnerNameSchema.exactOptional().openapi({
+      description: 'The name of the Dataset owner.',
+    }),
+    phoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description: 'Phone number for the Dataset owner.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description: 'Email address for the Dataset owner.',
+    }),
   })
   .openapi({ description: 'A structure for Dataset owner info.', required: [] })
   .openapi('DatasetOwnerInfo')
 
 const DatasetSchema = z
   .object({
-    datasetId: DatasetIdSchema.and(
-      z.any().openapi({ description: 'An identifier for a Dataset.' }),
-    ).exactOptional(),
-    datasetArn: DatasetArnSchema.and(
-      z.any().openapi({ description: 'The ARN identifier of the Dataset.' }),
-    ).exactOptional(),
-    datasetTitle: DatasetTitleSchema.and(
-      z.any().openapi({ description: 'Display title for a Dataset.' }),
-    ).exactOptional(),
-    kind: DatasetKindSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> – Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> – Data is structured in a non-tabular format.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    datasetDescription: DatasetDescriptionSchema.and(
-      z.any().openapi({ description: 'Description for a Dataset.' }),
-    ).exactOptional(),
-    ownerInfo: DatasetOwnerInfoSchema.and(
-      z.any().openapi({ description: 'Contact information for a Dataset owner.' }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the Dataset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    lastModifiedTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last time that the Dataset was modified. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    schemaDefinition: SchemaUnionSchema.and(
-      z.any().openapi({ description: 'Definition for a schema on a tabular Dataset.' }),
-    ).exactOptional(),
-    alias: AliasStringSchema.and(
-      z.any().openapi({ description: 'The unique resource identifier for a Dataset.' }),
-    ).exactOptional(),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'An identifier for a Dataset.',
+    }),
+    datasetArn: DatasetArnSchema.exactOptional().openapi({
+      description: 'The ARN identifier of the Dataset.',
+    }),
+    datasetTitle: DatasetTitleSchema.exactOptional().openapi({
+      description: 'Display title for a Dataset.',
+    }),
+    kind: DatasetKindSchema.exactOptional().openapi({
+      description:
+        '<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> – Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> – Data is structured in a non-tabular format.</p> </li> </ul>',
+    }),
+    datasetDescription: DatasetDescriptionSchema.exactOptional().openapi({
+      description: 'Description for a Dataset.',
+    }),
+    ownerInfo: DatasetOwnerInfoSchema.exactOptional().openapi({
+      description: 'Contact information for a Dataset owner.',
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the Dataset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    lastModifiedTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The last time that the Dataset was modified. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    schemaDefinition: SchemaUnionSchema.exactOptional().openapi({
+      description: 'Definition for a schema on a tabular Dataset.',
+    }),
+    alias: AliasStringSchema.exactOptional().openapi({
+      description: 'The unique resource identifier for a Dataset.',
+    }),
   })
   .openapi({ description: 'The structure for a Dataset.', required: [] })
   .openapi('Dataset')
@@ -1336,12 +1109,10 @@ const DatasetListSchema = z
 
 const ListDatasetsResponseSchema = z
   .object({
-    datasets: DatasetListSchema.and(
-      z.any().openapi({ description: 'List of Datasets.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'A token that indicates where a results page should begin.' }),
-    ).exactOptional(),
+    datasets: DatasetListSchema.exactOptional().openapi({ description: 'List of Datasets.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token that indicates where a results page should begin.',
+    }),
   })
   .openapi({ description: 'Response for the ListDatasets operation', required: [] })
   .openapi('ListDatasetsResponse')
@@ -1350,32 +1121,28 @@ const PermissionGroupListSchema = z.array(PermissionGroupSchema).openapi('Permis
 
 const ListPermissionGroupsResponseSchema = z
   .object({
-    permissionGroups: PermissionGroupListSchema.and(
-      z.any().openapi({ description: 'A list of all the permission groups.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'A token that indicates where a results page should begin.' }),
-    ).exactOptional(),
+    permissionGroups: PermissionGroupListSchema.exactOptional().openapi({
+      description: 'A list of all the permission groups.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token that indicates where a results page should begin.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPermissionGroupsResponse')
 
 const PermissionGroupByUserSchema = z
   .object({
-    permissionGroupId: PermissionGroupIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the permission group.' }),
-    ).exactOptional(),
-    name: PermissionGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the permission group.' }),
-    ).exactOptional(),
-    membershipStatus: PermissionGroupMembershipStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    permissionGroupId: PermissionGroupIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the permission group.',
+    }),
+    name: PermissionGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the permission group.',
+    }),
+    membershipStatus: PermissionGroupMembershipStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description: 'The structure of a permission group associated with a user account.',
@@ -1389,107 +1156,67 @@ const PermissionGroupByUserListSchema = z
 
 const ListPermissionGroupsByUserResponseSchema = z
   .object({
-    permissionGroups: PermissionGroupByUserListSchema.and(
-      z.any().openapi({ description: 'A list of returned permission groups.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'A token that indicates where a results page should begin.' }),
-    ).exactOptional(),
+    permissionGroups: PermissionGroupByUserListSchema.exactOptional().openapi({
+      description: 'A list of returned permission groups.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token that indicates where a results page should begin.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPermissionGroupsByUserResponse')
 
 const UserSchema = z
   .object({
-    userId: UserIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the user.' }),
-    ).exactOptional(),
-    status: UserStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    firstName: FirstNameSchema.and(
-      z.any().openapi({ description: 'The first name of the user.' }),
-    ).exactOptional(),
-    lastName: LastNameSchema.and(
-      z.any().openapi({ description: ' The last name of the user.' }),
-    ).exactOptional(),
-    emailAddress: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address of the user. The email address serves as a uniquer identifier for each user and cannot be changed after it's created.",
-        }),
-    ).exactOptional(),
-    type: UserTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Indicates the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    apiAccess: ApiAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    apiAccessPrincipalArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN identifier of an AWS user or role that is allowed to call the <code>GetProgrammaticAccessCredentials</code> API to obtain a credentials token for a specific FinSpace user. This must be an IAM role within your FinSpace account.',
-        }),
-    ).exactOptional(),
-    createTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the user account was created in FinSpace. The value is determined as epoch time in milliseconds. ',
-        }),
-    ).exactOptional(),
-    lastEnabledTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the last time the user account was enabled. The value is determined as epoch time in milliseconds. ',
-        }),
-    ).exactOptional(),
-    lastDisabledTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the last time the user account was disabled. The value is determined as epoch time in milliseconds.',
-        }),
-    ).exactOptional(),
-    lastModifiedTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the last time the user account was updated. The value is determined as epoch time in milliseconds. ',
-        }),
-    ).exactOptional(),
-    lastLoginTime: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the last time that the user logged into their account. The value is determined as epoch time in milliseconds. ',
-        }),
-    ).exactOptional(),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the user.',
+    }),
+    status: UserStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>',
+    }),
+    firstName: FirstNameSchema.exactOptional().openapi({
+      description: 'The first name of the user.',
+    }),
+    lastName: LastNameSchema.exactOptional().openapi({
+      description: ' The last name of the user.',
+    }),
+    emailAddress: EmailSchema.exactOptional().openapi({
+      description:
+        "The email address of the user. The email address serves as a uniquer identifier for each user and cannot be changed after it's created.",
+    }),
+    type: UserTypeSchema.exactOptional().openapi({
+      description:
+        '<p> Indicates the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
+    }),
+    apiAccess: ApiAccessSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>',
+    }),
+    apiAccessPrincipalArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN identifier of an AWS user or role that is allowed to call the <code>GetProgrammaticAccessCredentials</code> API to obtain a credentials token for a specific FinSpace user. This must be an IAM role within your FinSpace account.',
+    }),
+    createTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'The timestamp at which the user account was created in FinSpace. The value is determined as epoch time in milliseconds. ',
+    }),
+    lastEnabledTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        ' Describes the last time the user account was enabled. The value is determined as epoch time in milliseconds. ',
+    }),
+    lastDisabledTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Describes the last time the user account was disabled. The value is determined as epoch time in milliseconds.',
+    }),
+    lastModifiedTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Describes the last time the user account was updated. The value is determined as epoch time in milliseconds. ',
+    }),
+    lastLoginTime: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Describes the last time that the user logged into their account. The value is determined as epoch time in milliseconds. ',
+    }),
   })
   .openapi({ description: 'The details of the user account.', required: [] })
   .openapi('User')
@@ -1498,72 +1225,48 @@ const UserListSchema = z.array(UserSchema).openapi('UserList')
 
 const ListUsersResponseSchema = z
   .object({
-    users: UserListSchema.and(
-      z.any().openapi({ description: 'A list of all the user accounts.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'A token that indicates where a results page should begin.' }),
-    ).exactOptional(),
+    users: UserListSchema.exactOptional().openapi({
+      description: 'A list of all the user accounts.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token that indicates where a results page should begin.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUsersResponse')
 
 const UserByPermissionGroupSchema = z
   .object({
-    userId: UserIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the user.' }),
-    ).exactOptional(),
-    status: UserStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    firstName: FirstNameSchema.and(
-      z.any().openapi({ description: 'The first name of the user.' }),
-    ).exactOptional(),
-    lastName: LastNameSchema.and(
-      z.any().openapi({ description: 'The last name of the user.' }),
-    ).exactOptional(),
-    emailAddress: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address of the user. The email address serves as a unique identifier for each user and cannot be changed after it's created.",
-        }),
-    ).exactOptional(),
-    type: UserTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Indicates the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    apiAccess: ApiAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the user can access FinSpace API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the API operations.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any API operations.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    apiAccessPrincipalArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IAM ARN identifier that is attached to FinSpace API calls.' }),
-    ).exactOptional(),
-    membershipStatus: PermissionGroupMembershipStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the user.',
+    }),
+    status: UserStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>',
+    }),
+    firstName: FirstNameSchema.exactOptional().openapi({
+      description: 'The first name of the user.',
+    }),
+    lastName: LastNameSchema.exactOptional().openapi({ description: 'The last name of the user.' }),
+    emailAddress: EmailSchema.exactOptional().openapi({
+      description:
+        "The email address of the user. The email address serves as a unique identifier for each user and cannot be changed after it's created.",
+    }),
+    type: UserTypeSchema.exactOptional().openapi({
+      description:
+        '<p> Indicates the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
+    }),
+    apiAccess: ApiAccessSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the user can access FinSpace API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the API operations.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any API operations.</p> </li> </ul>',
+    }),
+    apiAccessPrincipalArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The IAM ARN identifier that is attached to FinSpace API calls.',
+    }),
+    membershipStatus: PermissionGroupMembershipStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description: 'The structure of a user account associated with a permission group.',
@@ -1577,14 +1280,12 @@ const UserByPermissionGroupListSchema = z
 
 const ListUsersByPermissionGroupResponseSchema = z
   .object({
-    users: UserByPermissionGroupListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Lists details of all users in a specific permission group.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'A token that indicates where a results page should begin.' }),
-    ).exactOptional(),
+    users: UserByPermissionGroupListSchema.exactOptional().openapi({
+      description: 'Lists details of all users in a specific permission group.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token that indicates where a results page should begin.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUsersByPermissionGroupResponse')
@@ -1598,65 +1299,53 @@ const PasswordSchema = z
 
 const ResetUserPasswordResponseSchema = z
   .object({
-    userId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the user that a new password is generated for.',
-        }),
-    ).exactOptional(),
-    temporaryPassword: PasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A randomly generated temporary password for the requested user account. This password expires in 7 days.',
-        }),
-    ).exactOptional(),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the user that a new password is generated for.',
+    }),
+    temporaryPassword: PasswordSchema.exactOptional().openapi({
+      description:
+        'A randomly generated temporary password for the requested user account. This password expires in 7 days.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResetUserPasswordResponse')
 
 const UpdateChangesetResponseSchema = z
   .object({
-    changesetId: ChangesetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the Changeset to update.' }),
-    ).exactOptional(),
-    datasetId: DatasetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the FinSpace Dataset in which the Changeset is created.',
-        }),
-    ).exactOptional(),
+    changesetId: ChangesetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the Changeset to update.',
+    }),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the FinSpace Dataset in which the Changeset is created.',
+    }),
   })
   .openapi({ description: 'The response from a update changeset operation.', required: [] })
   .openapi('UpdateChangesetResponse')
 
 const UpdateDatasetResponseSchema = z
   .object({
-    datasetId: DatasetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for updated Dataset.' }),
-    ).exactOptional(),
+    datasetId: DatasetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for updated Dataset.',
+    }),
   })
   .openapi({ description: 'The response from an UpdateDataset operation', required: [] })
   .openapi('UpdateDatasetResponse')
 
 const UpdatePermissionGroupResponseSchema = z
   .object({
-    permissionGroupId: PermissionGroupIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the updated permission group.' }),
-    ).exactOptional(),
+    permissionGroupId: PermissionGroupIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the updated permission group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePermissionGroupResponse')
 
 const UpdateUserResponseSchema = z
   .object({
-    userId: UserIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the updated user account.' }),
-    ).exactOptional(),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the updated user account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateUserResponse')
@@ -1671,50 +1360,30 @@ const ClientTokenSchema = z
 
 const AssociateUserToPermissionGroupRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
   })
   .openapi({ title: 'AssociateUserToPermissionGroupRequest', required: [] })
   .openapi('AssociateUserToPermissionGroupRequest')
 
 const CreateChangesetRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
-    changeType: ChangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The option to indicate how a Changeset will be applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> – Changeset will be considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> – Changeset will be considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> – Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>',
-        }),
-    ),
-    sourceParams: SourceParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Options that define the location of the data being ingested (<code>s3SourcePath</code>) and the source of the changeset (<code>sourceType</code>).</p> <p>Both <code>s3SourcePath</code> and <code>sourceType</code> are required attributes.</p> <p>Here is an example of how you could specify the <code>sourceParams</code>:</p> <p> <code> "sourceParams": { "s3SourcePath": "s3://finspace-landing-us-east-2-bk7gcfvitndqa6ebnvys4d/scratch/wr5hh8pwkpqqkxa4sxrmcw/ingestion/equity.csv", "sourceType": "S3" } </code> </p> <p>The S3 path that you specify must allow the FinSpace role access. To do that, you first need to configure the IAM policy on S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/finspace/latest/data-api/fs-using-the-finspace-api.html#access-s3-buckets">Loading data from an Amazon S3 Bucket using the FinSpace API</a> section.</p>',
-        }),
-    ),
-    formatParams: FormatParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Options that define the structure of the source file(s) including the format type (<code>formatType</code>), header row (<code>withHeader</code>), data separation character (<code>separator</code>) and the type of compression (<code>compression</code>). </p> <p> <code>formatType</code> is a required attribute and can have the following values: </p> <ul> <li> <p> <code>PARQUET</code> – Parquet source file format.</p> </li> <li> <p> <code>CSV</code> – CSV source file format.</p> </li> <li> <p> <code>JSON</code> – JSON source file format.</p> </li> <li> <p> <code>XML</code> – XML source file format.</p> </li> </ul> <p>Here is an example of how you could specify the <code>formatParams</code>:</p> <p> <code> "formatParams": { "formatType": "CSV", "withHeader": "true", "separator": ",", "compression":"None" } </code> </p> <p>Note that if you only provide <code>formatType</code> as <code>CSV</code>, the rest of the attributes will automatically default to CSV values as following:</p> <p> <code> { "withHeader": "true", "separator": "," } </code> </p> <p> For more information about supported file formats, see <a href="https://docs.aws.amazon.com/finspace/latest/userguide/supported-data-types.html">Supported Data Types and File Formats</a> in the FinSpace User Guide.</p>',
-        }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
+    changeType: ChangeTypeSchema.openapi({
+      description:
+        '<p>The option to indicate how a Changeset will be applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> – Changeset will be considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> – Changeset will be considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> – Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>',
+    }),
+    sourceParams: SourceParamsSchema.openapi({
+      description:
+        '<p>Options that define the location of the data being ingested (<code>s3SourcePath</code>) and the source of the changeset (<code>sourceType</code>).</p> <p>Both <code>s3SourcePath</code> and <code>sourceType</code> are required attributes.</p> <p>Here is an example of how you could specify the <code>sourceParams</code>:</p> <p> <code> "sourceParams": { "s3SourcePath": "s3://finspace-landing-us-east-2-bk7gcfvitndqa6ebnvys4d/scratch/wr5hh8pwkpqqkxa4sxrmcw/ingestion/equity.csv", "sourceType": "S3" } </code> </p> <p>The S3 path that you specify must allow the FinSpace role access. To do that, you first need to configure the IAM policy on S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/finspace/latest/data-api/fs-using-the-finspace-api.html#access-s3-buckets">Loading data from an Amazon S3 Bucket using the FinSpace API</a> section.</p>',
+    }),
+    formatParams: FormatParamsSchema.openapi({
+      description:
+        '<p>Options that define the structure of the source file(s) including the format type (<code>formatType</code>), header row (<code>withHeader</code>), data separation character (<code>separator</code>) and the type of compression (<code>compression</code>). </p> <p> <code>formatType</code> is a required attribute and can have the following values: </p> <ul> <li> <p> <code>PARQUET</code> – Parquet source file format.</p> </li> <li> <p> <code>CSV</code> – CSV source file format.</p> </li> <li> <p> <code>JSON</code> – JSON source file format.</p> </li> <li> <p> <code>XML</code> – XML source file format.</p> </li> </ul> <p>Here is an example of how you could specify the <code>formatParams</code>:</p> <p> <code> "formatParams": { "formatType": "CSV", "withHeader": "true", "separator": ",", "compression":"None" } </code> </p> <p>Note that if you only provide <code>formatType</code> as <code>CSV</code>, the rest of the attributes will automatically default to CSV values as following:</p> <p> <code> { "withHeader": "true", "separator": "," } </code> </p> <p> For more information about supported file formats, see <a href="https://docs.aws.amazon.com/finspace/latest/userguide/supported-data-types.html">Supported Data Types and File Formats</a> in the FinSpace User Guide.</p>',
+    }),
   })
   .openapi({
     required: ['changeType', 'sourceParams', 'formatParams'],
@@ -1725,37 +1394,25 @@ const CreateChangesetRequestSchema = z
 
 const CreateDataViewRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
-    autoUpdate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Flag to indicate Dataview should be updated automatically.' }),
-    ).exactOptional(),
-    sortColumns: SortColumnListSchema.and(
-      z.any().openapi({ description: 'Columns to be used for sorting the data.' }),
-    ).exactOptional(),
-    partitionColumns: PartitionColumnListSchema.and(
-      z.any().openapi({ description: 'Ordered set of column names used to partition data.' }),
-    ).exactOptional(),
-    asOfTimestamp: TimestampEpochSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Beginning time to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
-        }),
-    ).exactOptional(),
-    destinationTypeParams: DataViewDestinationTypeParamsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Options that define the destination type for the Dataview.' }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
+    autoUpdate: BooleanSchema.exactOptional().openapi({
+      description: 'Flag to indicate Dataview should be updated automatically.',
+    }),
+    sortColumns: SortColumnListSchema.exactOptional().openapi({
+      description: 'Columns to be used for sorting the data.',
+    }),
+    partitionColumns: PartitionColumnListSchema.exactOptional().openapi({
+      description: 'Ordered set of column names used to partition data.',
+    }),
+    asOfTimestamp: TimestampEpochSchema.exactOptional().openapi({
+      description:
+        'Beginning time to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.',
+    }),
+    destinationTypeParams: DataViewDestinationTypeParamsSchema.openapi({
+      description: 'Options that define the destination type for the Dataview.',
+    }),
   })
   .openapi({
     required: ['destinationTypeParams'],
@@ -1766,14 +1423,12 @@ const CreateDataViewRequestSchema = z
 
 const PermissionGroupParamsSchema = z
   .object({
-    permissionGroupId: PermissionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier for the <code>PermissionGroup</code>.' }),
-    ).exactOptional(),
-    datasetPermissions: ResourcePermissionsListSchema.and(
-      z.any().openapi({ description: 'List of resource permissions.' }),
-    ).exactOptional(),
+    permissionGroupId: PermissionGroupIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the <code>PermissionGroup</code>.',
+    }),
+    datasetPermissions: ResourcePermissionsListSchema.exactOptional().openapi({
+      description: 'List of resource permissions.',
+    }),
   })
   .openapi({
     description:
@@ -1784,39 +1439,31 @@ const PermissionGroupParamsSchema = z
 
 const CreateDatasetRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
-    datasetTitle: DatasetTitleSchema.and(
-      z.any().openapi({ description: 'Display title for a FinSpace Dataset.' }),
-    ),
-    kind: DatasetKindSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> – Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> – Data is structured in a non-tabular format.</p> </li> </ul>',
-        }),
-    ),
-    datasetDescription: DatasetDescriptionSchema.and(
-      z.any().openapi({ description: 'Description of a Dataset.' }),
-    ).exactOptional(),
-    ownerInfo: DatasetOwnerInfoSchema.and(
-      z.any().openapi({ description: 'Contact information for a Dataset owner.' }),
-    ).exactOptional(),
-    permissionGroupParams: PermissionGroupParamsSchema.and(
-      z.any().openapi({ description: 'Permission group parameters for Dataset permissions.' }),
-    ),
-    alias: AliasStringSchema.and(
-      z.any().openapi({ description: 'The unique resource identifier for a Dataset.' }),
-    ).exactOptional(),
-    schemaDefinition: SchemaUnionSchema.and(
-      z.any().openapi({ description: 'Definition for a schema on a tabular Dataset.' }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
+    datasetTitle: DatasetTitleSchema.openapi({
+      description: 'Display title for a FinSpace Dataset.',
+    }),
+    kind: DatasetKindSchema.openapi({
+      description:
+        '<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> – Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> – Data is structured in a non-tabular format.</p> </li> </ul>',
+    }),
+    datasetDescription: DatasetDescriptionSchema.exactOptional().openapi({
+      description: 'Description of a Dataset.',
+    }),
+    ownerInfo: DatasetOwnerInfoSchema.exactOptional().openapi({
+      description: 'Contact information for a Dataset owner.',
+    }),
+    permissionGroupParams: PermissionGroupParamsSchema.openapi({
+      description: 'Permission group parameters for Dataset permissions.',
+    }),
+    alias: AliasStringSchema.exactOptional().openapi({
+      description: 'The unique resource identifier for a Dataset.',
+    }),
+    schemaDefinition: SchemaUnionSchema.exactOptional().openapi({
+      description: 'Definition for a schema on a tabular Dataset.',
+    }),
   })
   .openapi({
     required: ['datasetTitle', 'kind', 'permissionGroupParams'],
@@ -1827,84 +1474,54 @@ const CreateDatasetRequestSchema = z
 
 const CreatePermissionGroupRequestSchema = z
   .object({
-    name: PermissionGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the permission group.' }),
-    ),
-    description: PermissionGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description for the permission group.' }),
-    ).exactOptional(),
-    applicationPermissions: ApplicationPermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The option to indicate FinSpace application permissions that are granted to a specific group.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>",
-        }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
+    name: PermissionGroupNameSchema.openapi({ description: 'The name of the permission group.' }),
+    description: PermissionGroupDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description for the permission group.',
+    }),
+    applicationPermissions: ApplicationPermissionListSchema.openapi({
+      description:
+        "<p>The option to indicate FinSpace application permissions that are granted to a specific group.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>",
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
   })
   .openapi({ required: ['name', 'applicationPermissions'], title: 'CreatePermissionGroupRequest' })
   .openapi('CreatePermissionGroupRequest')
 
 const CreateUserRequestSchema = z
   .object({
-    emailAddress: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address of the user that you want to register. The email address serves as a uniquer identifier for each user and cannot be changed after it's created.",
-        }),
-    ),
-    type: UserTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The option to indicate the type of user. Use one of the following options to specify this parameter:</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
-        }),
-    ),
-    firstName: FirstNameSchema.and(
-      z.any().openapi({ description: 'The first name of the user that you want to register.' }),
-    ).exactOptional(),
-    lastName: LastNameSchema.and(
-      z.any().openapi({ description: 'The last name of the user that you want to register.' }),
-    ).exactOptional(),
-    ApiAccess: ApiAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The option to indicate whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    apiAccessPrincipalArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN identifier of an AWS user or role that is allowed to call the <code>GetProgrammaticAccessCredentials</code> API to obtain a credentials token for a specific FinSpace user. This must be an IAM role within your FinSpace account.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
+    emailAddress: EmailSchema.openapi({
+      description:
+        "The email address of the user that you want to register. The email address serves as a uniquer identifier for each user and cannot be changed after it's created.",
+    }),
+    type: UserTypeSchema.openapi({
+      description:
+        '<p>The option to indicate the type of user. Use one of the following options to specify this parameter:</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
+    }),
+    firstName: FirstNameSchema.exactOptional().openapi({
+      description: 'The first name of the user that you want to register.',
+    }),
+    lastName: LastNameSchema.exactOptional().openapi({
+      description: 'The last name of the user that you want to register.',
+    }),
+    ApiAccess: ApiAccessSchema.exactOptional().openapi({
+      description:
+        '<p>The option to indicate whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>',
+    }),
+    apiAccessPrincipalArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN identifier of an AWS user or role that is allowed to call the <code>GetProgrammaticAccessCredentials</code> API to obtain a credentials token for a specific FinSpace user. This must be an IAM role within your FinSpace account.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
   })
   .openapi({ required: ['emailAddress', 'type'], title: 'CreateUserRequest' })
   .openapi('CreateUserRequest')
 
 const DeleteDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteDatasetRequest',
     description: 'The request for a DeleteDataset operation.',
@@ -1912,48 +1529,40 @@ const DeleteDatasetRequestSchema = z
   .openapi('DeleteDatasetRequest')
 
 const DeletePermissionGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePermissionGroupRequest' })
   .openapi('DeletePermissionGroupRequest')
 
 const DisableUserRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
   })
   .openapi({ title: 'DisableUserRequest', required: [] })
   .openapi('DisableUserRequest')
 
 const DisassociateUserFromPermissionGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateUserFromPermissionGroupRequest' })
   .openapi('DisassociateUserFromPermissionGroupRequest')
 
 const EnableUserRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
   })
   .openapi({ title: 'EnableUserRequest', required: [] })
   .openapi('EnableUserRequest')
 
 const GetChangesetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetChangesetRequest', description: 'Request to describe a changeset.' })
   .openapi('GetChangesetRequest')
 
 const GetDataViewRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDataViewRequest',
     description:
@@ -1962,24 +1571,24 @@ const GetDataViewRequestSchema = z
   .openapi('GetDataViewRequest')
 
 const GetDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDatasetRequest', description: 'Request for the GetDataset operation.' })
   .openapi('GetDatasetRequest')
 
 const GetExternalDataViewAccessDetailsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetExternalDataViewAccessDetailsRequest' })
   .openapi('GetExternalDataViewAccessDetailsRequest')
 
 const GetPermissionGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPermissionGroupRequest' })
   .openapi('GetPermissionGroupRequest')
 
 const IdTypeSchema = z.string().min(1).max(26).openapi('IdType')
 
 const GetProgrammaticAccessCredentialsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetProgrammaticAccessCredentialsRequest',
     description: 'Request for GetProgrammaticAccessCredentials operation',
@@ -1987,7 +1596,7 @@ const GetProgrammaticAccessCredentialsRequestSchema = z
   .openapi('GetProgrammaticAccessCredentialsRequest')
 
 const GetUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetUserRequest' })
   .openapi('GetUserRequest')
 
@@ -1995,14 +1604,10 @@ const LocationTypeSchema = z.enum(['INGESTION', 'SAGEMAKER']).openapi('LocationT
 
 const GetWorkingLocationRequestSchema = z
   .object({
-    locationType: LocationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the type of the working location.</p> <ul> <li> <p> <code>SAGEMAKER</code> – Use the Amazon S3 location as a temporary location to store data content when working with FinSpace Notebooks that run on SageMaker studio.</p> </li> <li> <p> <code>INGESTION</code> – Use the Amazon S3 location as a staging location to copy your data content and then use the location with the Changeset creation operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    locationType: LocationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the type of the working location.</p> <ul> <li> <p> <code>SAGEMAKER</code> – Use the Amazon S3 location as a temporary location to store data content when working with FinSpace Notebooks that run on SageMaker studio.</p> </li> <li> <p> <code>INGESTION</code> – Use the Amazon S3 location as a staging location to copy your data content and then use the location with the Changeset creation operation.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'GetWorkingLocationRequest', required: [] })
   .openapi('GetWorkingLocationRequest')
@@ -2010,7 +1615,7 @@ const GetWorkingLocationRequestSchema = z
 const ResultLimitSchema = z.int().min(1).max(100).openapi('ResultLimit')
 
 const ListChangesetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListChangesetsRequest',
     description: 'Request to ListChangesetsRequest. It exposes minimal query filters.',
@@ -2018,44 +1623,40 @@ const ListChangesetsRequestSchema = z
   .openapi('ListChangesetsRequest')
 
 const ListDataViewsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDataViewsRequest', description: 'Request for a list data views.' })
   .openapi('ListDataViewsRequest')
 
 const ListDatasetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDatasetsRequest', description: 'Request for the ListDatasets operation.' })
   .openapi('ListDatasetsRequest')
 
 const ListPermissionGroupsByUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPermissionGroupsByUserRequest' })
   .openapi('ListPermissionGroupsByUserRequest')
 
 const ListPermissionGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPermissionGroupsRequest' })
   .openapi('ListPermissionGroupsRequest')
 
 const ListUsersByPermissionGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListUsersByPermissionGroupRequest' })
   .openapi('ListUsersByPermissionGroupRequest')
 
 const ListUsersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListUsersRequest' })
   .openapi('ListUsersRequest')
 
 const ResetUserPasswordRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
   })
   .openapi({ title: 'ResetUserPasswordRequest', required: [] })
   .openapi('ResetUserPasswordRequest')
@@ -2068,29 +1669,17 @@ const StringMapKeySchema = z
 
 const UpdateChangesetRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
-    sourceParams: SourceParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Options that define the location of the data being ingested (<code>s3SourcePath</code>) and the source of the changeset (<code>sourceType</code>).</p> <p>Both <code>s3SourcePath</code> and <code>sourceType</code> are required attributes.</p> <p>Here is an example of how you could specify the <code>sourceParams</code>:</p> <p> <code> "sourceParams": { "s3SourcePath": "s3://finspace-landing-us-east-2-bk7gcfvitndqa6ebnvys4d/scratch/wr5hh8pwkpqqkxa4sxrmcw/ingestion/equity.csv", "sourceType": "S3" } </code> </p> <p>The S3 path that you specify must allow the FinSpace role access. To do that, you first need to configure the IAM policy on S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/finspace/latest/data-api/fs-using-the-finspace-api.html#access-s3-buckets">Loading data from an Amazon S3 Bucket using the FinSpace API</a>section.</p>',
-        }),
-    ),
-    formatParams: FormatParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Options that define the structure of the source file(s) including the format type (<code>formatType</code>), header row (<code>withHeader</code>), data separation character (<code>separator</code>) and the type of compression (<code>compression</code>). </p> <p> <code>formatType</code> is a required attribute and can have the following values: </p> <ul> <li> <p> <code>PARQUET</code> – Parquet source file format.</p> </li> <li> <p> <code>CSV</code> – CSV source file format.</p> </li> <li> <p> <code>JSON</code> – JSON source file format.</p> </li> <li> <p> <code>XML</code> – XML source file format.</p> </li> </ul> <p>Here is an example of how you could specify the <code>formatParams</code>:</p> <p> <code> "formatParams": { "formatType": "CSV", "withHeader": "true", "separator": ",", "compression":"None" } </code> </p> <p>Note that if you only provide <code>formatType</code> as <code>CSV</code>, the rest of the attributes will automatically default to CSV values as following:</p> <p> <code> { "withHeader": "true", "separator": "," } </code> </p> <p> For more information about supported file formats, see <a href="https://docs.aws.amazon.com/finspace/latest/userguide/supported-data-types.html">Supported Data Types and File Formats</a> in the FinSpace User Guide.</p>',
-        }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
+    sourceParams: SourceParamsSchema.openapi({
+      description:
+        '<p>Options that define the location of the data being ingested (<code>s3SourcePath</code>) and the source of the changeset (<code>sourceType</code>).</p> <p>Both <code>s3SourcePath</code> and <code>sourceType</code> are required attributes.</p> <p>Here is an example of how you could specify the <code>sourceParams</code>:</p> <p> <code> "sourceParams": { "s3SourcePath": "s3://finspace-landing-us-east-2-bk7gcfvitndqa6ebnvys4d/scratch/wr5hh8pwkpqqkxa4sxrmcw/ingestion/equity.csv", "sourceType": "S3" } </code> </p> <p>The S3 path that you specify must allow the FinSpace role access. To do that, you first need to configure the IAM policy on S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/finspace/latest/data-api/fs-using-the-finspace-api.html#access-s3-buckets">Loading data from an Amazon S3 Bucket using the FinSpace API</a>section.</p>',
+    }),
+    formatParams: FormatParamsSchema.openapi({
+      description:
+        '<p>Options that define the structure of the source file(s) including the format type (<code>formatType</code>), header row (<code>withHeader</code>), data separation character (<code>separator</code>) and the type of compression (<code>compression</code>). </p> <p> <code>formatType</code> is a required attribute and can have the following values: </p> <ul> <li> <p> <code>PARQUET</code> – Parquet source file format.</p> </li> <li> <p> <code>CSV</code> – CSV source file format.</p> </li> <li> <p> <code>JSON</code> – JSON source file format.</p> </li> <li> <p> <code>XML</code> – XML source file format.</p> </li> </ul> <p>Here is an example of how you could specify the <code>formatParams</code>:</p> <p> <code> "formatParams": { "formatType": "CSV", "withHeader": "true", "separator": ",", "compression":"None" } </code> </p> <p>Note that if you only provide <code>formatType</code> as <code>CSV</code>, the rest of the attributes will automatically default to CSV values as following:</p> <p> <code> { "withHeader": "true", "separator": "," } </code> </p> <p> For more information about supported file formats, see <a href="https://docs.aws.amazon.com/finspace/latest/userguide/supported-data-types.html">Supported Data Types and File Formats</a> in the FinSpace User Guide.</p>',
+    }),
   })
   .openapi({
     required: ['sourceParams', 'formatParams'],
@@ -2101,33 +1690,23 @@ const UpdateChangesetRequestSchema = z
 
 const UpdateDatasetRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
-    datasetTitle: DatasetTitleSchema.and(
-      z.any().openapi({ description: 'A display title for the Dataset.' }),
-    ),
-    kind: DatasetKindSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format in which the Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> – Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> – Data is structured in a non-tabular format.</p> </li> </ul>',
-        }),
-    ),
-    datasetDescription: DatasetDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the Dataset.' }),
-    ).exactOptional(),
-    alias: AliasStringSchema.and(
-      z.any().openapi({ description: 'The unique resource identifier for a Dataset.' }),
-    ).exactOptional(),
-    schemaDefinition: SchemaUnionSchema.and(
-      z.any().openapi({ description: 'Definition for a schema on a tabular Dataset.' }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
+    datasetTitle: DatasetTitleSchema.openapi({ description: 'A display title for the Dataset.' }),
+    kind: DatasetKindSchema.openapi({
+      description:
+        '<p>The format in which the Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> – Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> – Data is structured in a non-tabular format.</p> </li> </ul>',
+    }),
+    datasetDescription: DatasetDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the Dataset.',
+    }),
+    alias: AliasStringSchema.exactOptional().openapi({
+      description: 'The unique resource identifier for a Dataset.',
+    }),
+    schemaDefinition: SchemaUnionSchema.exactOptional().openapi({
+      description: 'Definition for a schema on a tabular Dataset.',
+    }),
   })
   .openapi({
     required: ['datasetTitle', 'kind'],
@@ -2138,70 +1717,44 @@ const UpdateDatasetRequestSchema = z
 
 const UpdatePermissionGroupRequestSchema = z
   .object({
-    name: PermissionGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the permission group.' }),
-    ).exactOptional(),
-    description: PermissionGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description for the permission group.' }),
-    ).exactOptional(),
-    applicationPermissions: ApplicationPermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The permissions that are granted to a specific group for accessing the FinSpace application.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
+    name: PermissionGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the permission group.',
+    }),
+    description: PermissionGroupDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description for the permission group.',
+    }),
+    applicationPermissions: ApplicationPermissionListSchema.exactOptional().openapi({
+      description:
+        "<p>The permissions that are granted to a specific group for accessing the FinSpace application.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>",
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
   })
   .openapi({ title: 'UpdatePermissionGroupRequest', required: [] })
   .openapi('UpdatePermissionGroupRequest')
 
 const UpdateUserRequestSchema = z
   .object({
-    type: UserTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The option to indicate the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code>– A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    firstName: FirstNameSchema.and(
-      z.any().openapi({ description: 'The first name of the user.' }),
-    ).exactOptional(),
-    lastName: LastNameSchema.and(
-      z.any().openapi({ description: 'The last name of the user.' }),
-    ).exactOptional(),
-    apiAccess: ApiAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The option to indicate whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    apiAccessPrincipalArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN identifier of an AWS user or role that is allowed to call the <code>GetProgrammaticAccessCredentials</code> API to obtain a credentials token for a specific FinSpace user. This must be an IAM role within your FinSpace account.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token that ensures idempotency. This token expires in 10 minutes.',
-        }),
-    ).exactOptional(),
+    type: UserTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The option to indicate the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code>– A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>',
+    }),
+    firstName: FirstNameSchema.exactOptional().openapi({
+      description: 'The first name of the user.',
+    }),
+    lastName: LastNameSchema.exactOptional().openapi({ description: 'The last name of the user.' }),
+    apiAccess: ApiAccessSchema.exactOptional().openapi({
+      description:
+        '<p>The option to indicate whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>',
+    }),
+    apiAccessPrincipalArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN identifier of an AWS user or role that is allowed to call the <code>GetProgrammaticAccessCredentials</code> API to obtain a credentials token for a specific FinSpace user. This must be an IAM role within your FinSpace account.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'A token that ensures idempotency. This token expires in 10 minutes.',
+    }),
   })
   .openapi({ title: 'UpdateUserRequest', required: [] })
   .openapi('UpdateUserRequest')
@@ -2851,30 +2404,19 @@ export const postDatasetsDatasetIdDataviewsv2Route = createRoute({
                 .openapi({ description: 'Milliseconds since UTC epoch' }),
               destinationTypeParams: z
                 .object({
-                  destinationType: DataViewDestinationTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Destination type for a Dataview.</p> <ul> <li> <p> <code>GLUE_TABLE</code> – Glue table destination type.</p> </li> <li> <p> <code>S3</code> – S3 destination type.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  s3DestinationExportFileFormat: ExportFileFormatSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Dataview export file format.</p> <ul> <li> <p> <code>PARQUET</code> – Parquet export file format.</p> </li> <li> <p> <code>DELIMITED_TEXT</code> – Delimited text export file format.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  s3DestinationExportFileFormatOptions: S3DestinationFormatOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Format Options for S3 Destination type.</p> <p>Here is an example of how you could specify the <code>s3DestinationExportFileFormatOptions</code> </p> <p> <code> { "header": "true", "delimiter": ",", "compression": "gzip" }</code> </p>',
-                      }),
-                  ).exactOptional(),
+                  destinationType: DataViewDestinationTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>Destination type for a Dataview.</p> <ul> <li> <p> <code>GLUE_TABLE</code> – Glue table destination type.</p> </li> <li> <p> <code>S3</code> – S3 destination type.</p> </li> </ul>',
+                  }),
+                  s3DestinationExportFileFormat: ExportFileFormatSchema.exactOptional().openapi({
+                    description:
+                      '<p>Dataview export file format.</p> <ul> <li> <p> <code>PARQUET</code> – Parquet export file format.</p> </li> <li> <p> <code>DELIMITED_TEXT</code> – Delimited text export file format.</p> </li> </ul>',
+                  }),
+                  s3DestinationExportFileFormatOptions:
+                    S3DestinationFormatOptionsSchema.exactOptional().openapi({
+                      description:
+                        '<p>Format Options for S3 Destination type.</p> <p>Here is an example of how you could specify the <code>s3DestinationExportFileFormatOptions</code> </p> <p> <code> { "header": "true", "delimiter": ",", "compression": "gzip" }</code> </p>',
+                    }),
                 })
                 .openapi({
                   description: 'Structure for the Dataview destination type parameters.',
@@ -3039,30 +2581,26 @@ export const postDatasetsv2Route = createRoute({
                 .openapi({ description: 'Description of a dataset' }),
               ownerInfo: z
                 .object({
-                  name: OwnerNameSchema.and(
-                    z.any().openapi({ description: 'The name of the Dataset owner.' }),
-                  ).exactOptional(),
-                  phoneNumber: PhoneNumberSchema.and(
-                    z.any().openapi({ description: 'Phone number for the Dataset owner.' }),
-                  ).exactOptional(),
-                  email: EmailSchema.and(
-                    z.any().openapi({ description: 'Email address for the Dataset owner.' }),
-                  ).exactOptional(),
+                  name: OwnerNameSchema.exactOptional().openapi({
+                    description: 'The name of the Dataset owner.',
+                  }),
+                  phoneNumber: PhoneNumberSchema.exactOptional().openapi({
+                    description: 'Phone number for the Dataset owner.',
+                  }),
+                  email: EmailSchema.exactOptional().openapi({
+                    description: 'Email address for the Dataset owner.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'A structure for Dataset owner info.', required: [] }),
               permissionGroupParams: z
                 .object({
-                  permissionGroupId: PermissionGroupIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The unique identifier for the <code>PermissionGroup</code>.',
-                      }),
-                  ).exactOptional(),
-                  datasetPermissions: ResourcePermissionsListSchema.and(
-                    z.any().openapi({ description: 'List of resource permissions.' }),
-                  ).exactOptional(),
+                  permissionGroupId: PermissionGroupIdSchema.exactOptional().openapi({
+                    description: 'The unique identifier for the <code>PermissionGroup</code>.',
+                  }),
+                  datasetPermissions: ResourcePermissionsListSchema.exactOptional().openapi({
+                    description: 'List of resource permissions.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3078,13 +2616,9 @@ export const postDatasetsv2Route = createRoute({
                 .openapi({ description: 'The unique resource identifier for a Dataset.' }),
               schemaDefinition: z
                 .object({
-                  tabularSchemaConfig: SchemaDefinitionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The configuration for a schema on a tabular Dataset.',
-                      }),
-                  ).exactOptional(),
+                  tabularSchemaConfig: SchemaDefinitionSchema.exactOptional().openapi({
+                    description: 'The configuration for a schema on a tabular Dataset.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'A union of schema types.', required: [] }),
@@ -3470,13 +3004,9 @@ export const putDatasetsv2DatasetIdRoute = createRoute({
                 .openapi({ description: 'The unique resource identifier for a Dataset.' }),
               schemaDefinition: z
                 .object({
-                  tabularSchemaConfig: SchemaDefinitionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The configuration for a schema on a tabular Dataset.',
-                      }),
-                  ).exactOptional(),
+                  tabularSchemaConfig: SchemaDefinitionSchema.exactOptional().openapi({
+                    description: 'The configuration for a schema on a tabular Dataset.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'A union of schema types.', required: [] }),

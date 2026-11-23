@@ -1,79 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleAppsScriptTypeAddOnEntryPointSchema = z
-  .object({
-    addOnType: z
-      .enum(['UNKNOWN_ADDON_TYPE', 'GMAIL', 'DATA_STUDIO'])
-      .exactOptional()
-      .openapi({ description: "The add-on's required list of supported container types." }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The add-on's optional description." }),
-    helpUrl: z.string().exactOptional().openapi({ description: "The add-on's optional help URL." }),
-    postInstallTipUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The add-on's required post install tip URL." }),
-    reportIssueUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The add-on's optional report issue URL." }),
-    title: z.string().exactOptional().openapi({ description: "The add-on's required title." }),
-  })
-  .openapi({ description: 'An add-on entry point.', required: [] })
-  .openapi('GoogleAppsScriptTypeAddOnEntryPoint')
-
-const GoogleAppsScriptTypeExecutionApiConfigSchema = z
-  .object({
-    access: z
-      .enum(['UNKNOWN_ACCESS', 'MYSELF', 'DOMAIN', 'ANYONE', 'ANYONE_ANONYMOUS'])
-      .exactOptional()
-      .openapi({ description: 'Who has permission to run the API executable.' }),
-  })
-  .openapi({ description: 'API executable entry point configuration.', required: [] })
-  .openapi('GoogleAppsScriptTypeExecutionApiConfig')
-
-const GoogleAppsScriptTypeExecutionApiEntryPointSchema = z
-  .object({
-    entryPointConfig: GoogleAppsScriptTypeExecutionApiConfigSchema.exactOptional().openapi({
-      description: "The entry point's configuration.",
-    }),
-  })
-  .openapi({ description: 'An API executable entry point.', required: [] })
-  .openapi('GoogleAppsScriptTypeExecutionApiEntryPoint')
-
-const GoogleAppsScriptTypeWebAppConfigSchema = z
-  .object({
-    access: z
-      .enum(['UNKNOWN_ACCESS', 'MYSELF', 'DOMAIN', 'ANYONE', 'ANYONE_ANONYMOUS'])
-      .exactOptional()
-      .openapi({ description: 'Who has permission to run the web app.' }),
-    executeAs: z
-      .enum(['UNKNOWN_EXECUTE_AS', 'USER_ACCESSING', 'USER_DEPLOYING'])
-      .exactOptional()
-      .openapi({ description: 'Who to execute the web app as.' }),
-  })
-  .openapi({ description: 'Web app entry point configuration.', required: [] })
-  .openapi('GoogleAppsScriptTypeWebAppConfig')
-
-const GoogleAppsScriptTypeWebAppEntryPointSchema = z
-  .object({
-    entryPointConfig: GoogleAppsScriptTypeWebAppConfigSchema.exactOptional().openapi({
-      description: "The entry point's configuration.",
-    }),
-    url: z.string().exactOptional().openapi({ description: 'The URL for the web application.' }),
-  })
-  .openapi({ description: 'A web application entry point.', required: [] })
-  .openapi('GoogleAppsScriptTypeWebAppEntryPoint')
-
-type EntryPointType = {
-  addOn?: z.infer<typeof GoogleAppsScriptTypeAddOnEntryPointSchema>
-  entryPointType?: 'ENTRY_POINT_TYPE_UNSPECIFIED' | 'WEB_APP' | 'EXECUTION_API' | 'ADD_ON'
-  executionApi?: z.infer<typeof GoogleAppsScriptTypeExecutionApiEntryPointSchema>
-  webApp?: z.infer<typeof GoogleAppsScriptTypeWebAppEntryPointSchema>
-}
-
 const ValueSchema: z.ZodType<ValueType> = z
   .lazy(() =>
     z
@@ -172,7 +98,7 @@ type ValueType = {
   listValue?: z.infer<typeof ListValueSchema>
   nullValue?: 'NULL_VALUE'
   numberValue?: number
-  protoValue?: { [key: string]: { [key: string]: unknown } }
+  protoValue?: { [key: string]: unknown }
   stringValue?: string
   structValue?: z.infer<typeof StructSchema>
 }
@@ -309,29 +235,93 @@ const DeploymentConfigSchema = z
   .openapi({ description: 'Metadata the defines how a deployment is configured.', required: [] })
   .openapi('DeploymentConfig')
 
-const EntryPointSchema: z.ZodType<EntryPointType> = z
-  .lazy(() =>
-    z
-      .object({
-        addOn: GoogleAppsScriptTypeAddOnEntryPointSchema.exactOptional().openapi({
-          description: 'Add-on properties.',
-        }),
-        entryPointType: z
-          .enum(['ENTRY_POINT_TYPE_UNSPECIFIED', 'WEB_APP', 'EXECUTION_API', 'ADD_ON'])
-          .exactOptional()
-          .openapi({ description: 'The type of the entry point.' }),
-        executionApi: GoogleAppsScriptTypeExecutionApiEntryPointSchema.exactOptional().openapi({
-          description: 'An entry point specification for Apps Script API execution calls.',
-        }),
-        webApp: GoogleAppsScriptTypeWebAppEntryPointSchema.exactOptional().openapi({
-          description: 'An entry point specification for web apps.',
-        }),
-      })
-      .openapi({
-        description: 'A configuration that defines how a deployment is accessed externally.',
-        required: [],
-      }),
-  )
+const GoogleAppsScriptTypeAddOnEntryPointSchema = z
+  .object({
+    addOnType: z
+      .enum(['UNKNOWN_ADDON_TYPE', 'GMAIL', 'DATA_STUDIO'])
+      .exactOptional()
+      .openapi({ description: "The add-on's required list of supported container types." }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The add-on's optional description." }),
+    helpUrl: z.string().exactOptional().openapi({ description: "The add-on's optional help URL." }),
+    postInstallTipUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The add-on's required post install tip URL." }),
+    reportIssueUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The add-on's optional report issue URL." }),
+    title: z.string().exactOptional().openapi({ description: "The add-on's required title." }),
+  })
+  .openapi({ description: 'An add-on entry point.', required: [] })
+  .openapi('GoogleAppsScriptTypeAddOnEntryPoint')
+
+const GoogleAppsScriptTypeExecutionApiConfigSchema = z
+  .object({
+    access: z
+      .enum(['UNKNOWN_ACCESS', 'MYSELF', 'DOMAIN', 'ANYONE', 'ANYONE_ANONYMOUS'])
+      .exactOptional()
+      .openapi({ description: 'Who has permission to run the API executable.' }),
+  })
+  .openapi({ description: 'API executable entry point configuration.', required: [] })
+  .openapi('GoogleAppsScriptTypeExecutionApiConfig')
+
+const GoogleAppsScriptTypeExecutionApiEntryPointSchema = z
+  .object({
+    entryPointConfig: GoogleAppsScriptTypeExecutionApiConfigSchema.exactOptional().openapi({
+      description: "The entry point's configuration.",
+    }),
+  })
+  .openapi({ description: 'An API executable entry point.', required: [] })
+  .openapi('GoogleAppsScriptTypeExecutionApiEntryPoint')
+
+const GoogleAppsScriptTypeWebAppConfigSchema = z
+  .object({
+    access: z
+      .enum(['UNKNOWN_ACCESS', 'MYSELF', 'DOMAIN', 'ANYONE', 'ANYONE_ANONYMOUS'])
+      .exactOptional()
+      .openapi({ description: 'Who has permission to run the web app.' }),
+    executeAs: z
+      .enum(['UNKNOWN_EXECUTE_AS', 'USER_ACCESSING', 'USER_DEPLOYING'])
+      .exactOptional()
+      .openapi({ description: 'Who to execute the web app as.' }),
+  })
+  .openapi({ description: 'Web app entry point configuration.', required: [] })
+  .openapi('GoogleAppsScriptTypeWebAppConfig')
+
+const GoogleAppsScriptTypeWebAppEntryPointSchema = z
+  .object({
+    entryPointConfig: GoogleAppsScriptTypeWebAppConfigSchema.exactOptional().openapi({
+      description: "The entry point's configuration.",
+    }),
+    url: z.string().exactOptional().openapi({ description: 'The URL for the web application.' }),
+  })
+  .openapi({ description: 'A web application entry point.', required: [] })
+  .openapi('GoogleAppsScriptTypeWebAppEntryPoint')
+
+const EntryPointSchema = z
+  .object({
+    addOn: GoogleAppsScriptTypeAddOnEntryPointSchema.exactOptional().openapi({
+      description: 'Add-on properties.',
+    }),
+    entryPointType: z
+      .enum(['ENTRY_POINT_TYPE_UNSPECIFIED', 'WEB_APP', 'EXECUTION_API', 'ADD_ON'])
+      .exactOptional()
+      .openapi({ description: 'The type of the entry point.' }),
+    executionApi: GoogleAppsScriptTypeExecutionApiEntryPointSchema.exactOptional().openapi({
+      description: 'An entry point specification for Apps Script API execution calls.',
+    }),
+    webApp: GoogleAppsScriptTypeWebAppEntryPointSchema.exactOptional().openapi({
+      description: 'An entry point specification for web apps.',
+    }),
+  })
+  .openapi({
+    description: 'A configuration that defines how a deployment is accessed externally.',
+    required: [],
+  })
   .openapi('EntryPoint')
 
 const DeploymentSchema = z
@@ -356,7 +346,7 @@ const DeploymentSchema = z
   .openapi('Deployment')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

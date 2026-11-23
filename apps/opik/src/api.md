@@ -6547,7 +6547,6 @@ Find dashboards in a workspace
       "workspace_id": "string",
       "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
-      "slug": "string",
       "type": "multi_project",
       "scope": "workspace",
       "description": "string",
@@ -6644,7 +6643,6 @@ Create a new dashboard in a workspace
   "workspace_id": "string",
   "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
-  "slug": "string",
   "type": "multi_project",
   "scope": "workspace",
   "description": "string",
@@ -6703,7 +6701,6 @@ Get dashboard by id
   "workspace_id": "string",
   "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
-  "slug": "string",
   "type": "multi_project",
   "scope": "workspace",
   "description": "string",
@@ -6819,7 +6816,6 @@ Update dashboard by id. Partial updates are supported - only provided fields wil
   "workspace_id": "string",
   "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
-  "slug": "string",
   "type": "multi_project",
   "scope": "workspace",
   "description": "string",
@@ -6837,7 +6833,6 @@ Update dashboard by id. Partial updates are supported - only provided fields wil
 |---|---|---|---|
 |200|OK|Updated dashboard|[Dashboard_Public](#schemadashboard_public)|
 |404|Not Found|Dashboard not found|None|
-|409|Conflict|Conflict - dashboard with this name already exists|None|
 
 <aside class="success">
 This operation does not require authentication
@@ -8435,7 +8430,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'http://localhost:5173/api/v1/private/datasets/497f6eca-6276-4993-bfeb-53cbbbba6f08/items/experiments/items?experiment_ids=string' \
+curl http://localhost:5173/api/v1/private/datasets/497f6eca-6276-4993-bfeb-53cbbbba6f08/items/experiments/items \
   -H 'Accept: application/json'
 ```
 
@@ -8450,7 +8445,8 @@ Find dataset items with experiment items
 |id|path|string(uuid)|true|none|
 |page|query|integer(int32)|false|none|
 |size|query|integer(int32)|false|none|
-|experiment_ids|query|string|true|none|
+|experiment_ids|query|string|false|none|
+|dataset_version|query|string|false|none|
 |filters|query|string|false|none|
 |sorting|query|string|false|none|
 |search|query|string|false|none|
@@ -12556,6 +12552,564 @@ Delete feedback definitions batch
 This operation does not require authentication
 </aside>
 
+<h1 id="opik-rest-api-guardrail-policies">Guardrail policies</h1>
+
+Workspace guardrail policy resources
+
+## Find guardrail policies
+
+<a id="opIdfindGuardrailPolicies"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:5173/api/v1/private/guardrails/policies \
+  -H 'Accept: application/json'
+```
+
+`GET /v1/private/guardrails/policies`
+
+Find guardrail policies in a workspace
+
+<h3 id="find-guardrail-policies-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|page|query|integer(int32)|false|none|
+|size|query|integer(int32)|false|none|
+|name|query|string|false|none|
+|names|query|string|false|none|
+|execution_scope|query|string|false|none|
+|sorting|query|string|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|execution_scope|on_request|
+|execution_scope|global|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "content": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "description": "string",
+      "execution_scope": "on_request",
+      "rules": [
+        {
+          "type": "TOPIC",
+          "config": {}
+        }
+      ],
+      "created_at": "1970-01-01T00:00:00Z",
+      "created_by": "string",
+      "last_updated_at": "1970-01-01T00:00:00Z",
+      "last_updated_by": "string"
+    }
+  ],
+  "page": 0,
+  "size": 0,
+  "total": 0,
+  "sortable_by": [
+    "string"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+<h3 id="find-guardrail-policies-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Guardrail policy page|[GuardrailPolicyPage_Public](#schemaguardrailpolicypage_public)|
+|400|Bad Request|Bad Request: names is not a JSON array of strings|[ErrorMessage_Public](#schemaerrormessage_public)|
+|403|Forbidden|Guardrails are not enabled for this deployment, or not enabled for the workspace's organization|[ErrorMessage_Public](#schemaerrormessage_public)|
+|503|Service Unavailable|Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later|[ErrorMessage_Public](#schemaerrormessage_public)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Create guardrail policy
+
+<a id="opIdcreateGuardrailPolicy"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:5173/api/v1/private/guardrails/policies \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "description": "string",
+    "execution_scope": "on_request",
+    "rules": [
+      {
+        "type": "TOPIC",
+        "config": {}
+      }
+    ]
+  }'
+```
+
+`POST /v1/private/guardrails/policies`
+
+Create a guardrail policy with its rules in a workspace
+
+> Body parameter
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "description": "string",
+  "execution_scope": "on_request",
+  "rules": [
+    {
+      "type": "TOPIC",
+      "config": {}
+    }
+  ]
+}
+```
+
+<h3 id="create-guardrail-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[GuardrailPolicy_Write](#schemaguardrailpolicy_write)|false|none|
+|» id|body|string(uuid)|false|Optional on create, generated when missing, as for prompts and datasets. Ignored on update, where the path names the policy|
+|» name|body|string|true|The SDK names policies by name, so it is unique in the workspace, ignoring case|
+|» description|body|string|false|none|
+|» execution_scope|body|string|false|on_request applies the policy when the SDK names it, global applies it to every guardrail built from stored policies in the workspace. Missing or null means on_request|
+|» rules|body|[[GuardrailPolicyRule_Write](#schemaguardrailpolicyrule_write)]|true|At most one rule per type|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» execution_scope|on_request|
+|» execution_scope|global|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+<h3 id="create-guardrail-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Created|None|
+|400|Bad Request|Bad Request|[ErrorMessage](#schemaerrormessage)|
+|403|Forbidden|The caller lacks the workspace settings permission, or guardrails are not enabled for this deployment or the workspace's organization|[ErrorMessage](#schemaerrormessage)|
+|409|Conflict|A policy with this name already exists|[ErrorMessage](#schemaerrormessage)|
+|422|Unprocessable Entity|Unprocessable Content|[ErrorMessage](#schemaerrormessage)|
+|429|Too Many Requests|Too many requests|[ErrorMessage](#schemaerrormessage)|
+|503|Service Unavailable|Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later|[ErrorMessage](#schemaerrormessage)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|201|Location|string||none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Get guardrail policy by id
+
+<a id="opIdgetGuardrailPolicyById"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:5173/api/v1/private/guardrails/policies/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -H 'Accept: application/json'
+```
+
+`GET /v1/private/guardrails/policies/{id}`
+
+Get guardrail policy by id
+
+<h3 id="get-guardrail-policy-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "description": "string",
+  "execution_scope": "on_request",
+  "rules": [
+    {
+      "type": "TOPIC",
+      "config": {}
+    }
+  ],
+  "created_at": "1970-01-01T00:00:00Z",
+  "created_by": "string",
+  "last_updated_at": "1970-01-01T00:00:00Z",
+  "last_updated_by": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+<h3 id="get-guardrail-policy-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Guardrail policy|[GuardrailPolicy_Public](#schemaguardrailpolicy_public)|
+|403|Forbidden|Guardrails are not enabled for this deployment, or not enabled for the workspace's organization|[ErrorMessage_Public](#schemaerrormessage_public)|
+|404|Not Found|Guardrail policy not found|[ErrorMessage_Public](#schemaerrormessage_public)|
+|503|Service Unavailable|Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later|[ErrorMessage_Public](#schemaerrormessage_public)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Update guardrail policy
+
+<a id="opIdupdateGuardrailPolicy"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:5173/api/v1/private/guardrails/policies/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "description": "string",
+    "execution_scope": "on_request",
+    "rules": [
+      {
+        "type": "TOPIC",
+        "config": {}
+      }
+    ]
+  }'
+```
+
+`PUT /v1/private/guardrails/policies/{id}`
+
+Replace a guardrail policy, rules included: a rule left out of the request is removed
+
+> Body parameter
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "description": "string",
+  "execution_scope": "on_request",
+  "rules": [
+    {
+      "type": "TOPIC",
+      "config": {}
+    }
+  ]
+}
+```
+
+<h3 id="update-guardrail-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|none|
+|body|body|[GuardrailPolicy_Write](#schemaguardrailpolicy_write)|false|none|
+|» id|body|string(uuid)|false|Optional on create, generated when missing, as for prompts and datasets. Ignored on update, where the path names the policy|
+|» name|body|string|true|The SDK names policies by name, so it is unique in the workspace, ignoring case|
+|» description|body|string|false|none|
+|» execution_scope|body|string|false|on_request applies the policy when the SDK names it, global applies it to every guardrail built from stored policies in the workspace. Missing or null means on_request|
+|» rules|body|[[GuardrailPolicyRule_Write](#schemaguardrailpolicyrule_write)]|true|At most one rule per type|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» execution_scope|on_request|
+|» execution_scope|global|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+<h3 id="update-guardrail-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No Content|None|
+|400|Bad Request|Bad Request|[ErrorMessage](#schemaerrormessage)|
+|403|Forbidden|The caller lacks the workspace settings permission, or guardrails are not enabled for this deployment or the workspace's organization|[ErrorMessage](#schemaerrormessage)|
+|404|Not Found|Guardrail policy not found|[ErrorMessage](#schemaerrormessage)|
+|409|Conflict|A policy with this name already exists|[ErrorMessage](#schemaerrormessage)|
+|422|Unprocessable Entity|Unprocessable Content|[ErrorMessage](#schemaerrormessage)|
+|429|Too Many Requests|Too many requests|[ErrorMessage](#schemaerrormessage)|
+|503|Service Unavailable|Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later|[ErrorMessage](#schemaerrormessage)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Delete guardrail policy
+
+<a id="opIddeleteGuardrailPolicy"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:5173/api/v1/private/guardrails/policies/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X DELETE \
+  -H 'Accept: application/json'
+```
+
+`DELETE /v1/private/guardrails/policies/{id}`
+
+Delete a guardrail policy and its rules
+
+<h3 id="delete-guardrail-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|none|
+
+> Example responses
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+<h3 id="delete-guardrail-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No Content|None|
+|403|Forbidden|The caller lacks the workspace settings permission, or guardrails are not enabled for this deployment or the workspace's organization|[ErrorMessage](#schemaerrormessage)|
+|503|Service Unavailable|Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later|[ErrorMessage](#schemaerrormessage)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 <h1 id="opik-rest-api-guardrails">Guardrails</h1>
 
 Guardrails related resources
@@ -12626,6 +13180,149 @@ Batch guardrails for traces
 This operation does not require authentication
 </aside>
 
+## Run guardrail checks on a text
+
+<a id="opIdvalidateGuardrails"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:5173/api/v1/private/guardrails/validations \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "text": "string",
+    "validations": [
+      {
+        "type": "TOPIC",
+        "config": {}
+      }
+    ]
+  }'
+```
+
+`POST /v1/private/guardrails/validations`
+
+Runs the requested checks on the text through the Opik inference decision service and returns a verdict per check. Writes nothing: the SDK reports the results to the guardrails batch endpoint, as before.
+
+> Body parameter
+
+```json
+{
+  "text": "string",
+  "validations": [
+    {
+      "type": "TOPIC",
+      "config": {}
+    }
+  ]
+}
+```
+
+<h3 id="run-guardrail-checks-on-a-text-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[GuardrailsValidationRequest](#schemaguardrailsvalidationrequest)|false|none|
+|» text|body|string|true|The text to check, at most 16384 characters as the decision service counts them: on the text's JSON encoding, so the two quotes count, a quote, backslash or line break counts as 2, and any other control or non-ASCII character as 6 (an emoji as 12). In practice about 16,380 characters of English text fit, about 2,730 of text in Cyrillic, Greek, Hebrew, Arabic, Chinese or Japanese, and about 1,365 emoji. A longer text is rejected rather than cut.|
+|» validations|body|[[ValidationDescriptor](#schemavalidationdescriptor)]|true|The checks to run. Together they must fit in 64 questions to the decision service, asked in up to two calls of 32: each PII class and each topic list is one question, prompt injection is one|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "validation_passed": true,
+  "validations": [
+    {
+      "validation_passed": true,
+      "type": "TOPIC",
+      "validation_config": {},
+      "validation_details": {},
+      "error": "string"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "details": "string"
+}
+```
+
+<h3 id="run-guardrail-checks-on-a-text-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A verdict per check|[GuardrailsValidationResponse](#schemaguardrailsvalidationresponse)|
+|400|Bad Request|Bad Request: invalid settings for a check, or checks that need more than 64 questions (each PII class and each topic list is one question)|[ErrorMessage](#schemaerrormessage)|
+|401|Unauthorized|Missing or unknown credentials|[ErrorMessage](#schemaerrormessage)|
+|403|Forbidden|Guardrail checks are not enabled for this deployment, or not enabled for the workspace's organization|[ErrorMessage](#schemaerrormessage)|
+|422|Unprocessable Entity|Unprocessable Content: blank text, text over the decision service's limit, or a validations list outside 1 to 32 entries|[ErrorMessage](#schemaerrormessage)|
+|429|Too Many Requests|Too many requests|[ErrorMessage](#schemaerrormessage)|
+|503|Service Unavailable|Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later|[ErrorMessage](#schemaerrormessage)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 <h1 id="opik-rest-api-insights-views">Insights Views</h1>
 
 Insights View resources
@@ -12668,7 +13365,6 @@ Find insights views in a workspace
       "workspace_id": "string",
       "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
-      "slug": "string",
       "type": "multi_project",
       "scope": "workspace",
       "description": "string",
@@ -12765,7 +13461,6 @@ Create a new insights view in a workspace
   "workspace_id": "string",
   "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
-  "slug": "string",
   "type": "multi_project",
   "scope": "workspace",
   "description": "string",
@@ -12824,7 +13519,6 @@ Get insights view by id
   "workspace_id": "string",
   "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
-  "slug": "string",
   "type": "multi_project",
   "scope": "workspace",
   "description": "string",
@@ -12940,7 +13634,6 @@ Update insights view by id. Partial updates are supported - only provided fields
   "workspace_id": "string",
   "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
-  "slug": "string",
   "type": "multi_project",
   "scope": "workspace",
   "description": "string",
@@ -12958,7 +13651,6 @@ Update insights view by id. Partial updates are supported - only provided fields
 |---|---|---|---|
 |200|OK|Updated insights view|[Dashboard_Public](#schemadashboard_public)|
 |404|Not Found|Insights view not found|None|
-|409|Conflict|Conflict - insights view with this name already exists|None|
 
 <aside class="success">
 This operation does not require authentication
@@ -13225,6 +13917,7 @@ Get the params each provider's unlisted models take, keyed by provider
     },
     "samplingExclusive": true,
     "thinksByDefault": true,
+    "onlyRoute": "string",
     "routes": {
       "property1": {},
       "property2": {}
@@ -13288,6 +13981,7 @@ Get the params each provider's unlisted models take, keyed by provider
     },
     "samplingExclusive": true,
     "thinksByDefault": true,
+    "onlyRoute": "string",
     "routes": {
       "property1": {},
       "property2": {}
@@ -17173,7 +17867,6 @@ Find dashboards scoped to a project
       "workspace_id": "string",
       "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
-      "slug": "string",
       "type": "multi_project",
       "scope": "workspace",
       "description": "string",
@@ -20988,6 +21681,7 @@ Get Service Toggles
   "spanLlmAsJudgeEnabled": true,
   "spanUserDefinedMetricPythonEnabled": true,
   "guardrailsEnabled": true,
+  "guardrailsValidationsEnabled": true,
   "opikAIEnabled": true,
   "alertsEnabled": true,
   "welcomeWizardEnabled": true,
@@ -21008,7 +21702,6 @@ Get Service Toggles
   "agentInsightsEnabled": true,
   "agentInsightsGuidanceEnabled": true,
   "projectHomepageEnabled": true,
-  "onlineScoringTracingEnabled": true,
   "annotationQueueAutomationEnabled": true,
   "eventBridgeAlertsEnabled": true,
   "defaultPageSize": 5,
@@ -30817,7 +31510,8 @@ Batch of annotation queues to create
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -30941,7 +31635,8 @@ Batch of annotation queues to create
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -31151,7 +31846,8 @@ Batch of annotation queues to create
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -31431,7 +32127,8 @@ Batch of annotation queues to create
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -31580,7 +32277,8 @@ Batch of annotation queues to create
   "name": "string",
   "temperature": 0,
   "seed": 0,
-  "custom_parameters": {}
+  "custom_parameters": {},
+  "api": "decisions"
 }
 ```
 
@@ -31592,6 +32290,13 @@ Batch of annotation queues to create
 |temperature|number(double)|false|none|none|
 |seed|integer(int32)|false|none|none|
 |custom_parameters|[JsonNode](#schemajsonnode)|false|none|none|
+|api|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|api|decisions|
 
 <h2 id="tocS_LlmAsJudgeOutputSchema">LlmAsJudgeOutputSchema</h2>
 <!-- backwards compatibility -->
@@ -31704,7 +32409,8 @@ Project reference with ID and name
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -31878,7 +32584,8 @@ Project reference with ID and name
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -32037,7 +32744,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -32142,7 +32850,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -32314,7 +33023,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -32611,7 +33321,8 @@ Project reference with ID and name
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -32760,7 +33471,8 @@ Project reference with ID and name
   "name": "string",
   "temperature": 0,
   "seed": 0,
-  "custom_parameters": {}
+  "custom_parameters": {},
+  "api": "decisions"
 }
 ```
 
@@ -32772,6 +33484,13 @@ Project reference with ID and name
 |temperature|number(double)|false|none|none|
 |seed|integer(int32)|false|none|none|
 |custom_parameters|[JsonNode_Write](#schemajsonnode_write)|false|none|none|
+|api|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|api|decisions|
 
 <h2 id="tocS_LlmAsJudgeOutputSchema_Write">LlmAsJudgeOutputSchema_Write</h2>
 <!-- backwards compatibility -->
@@ -32861,7 +33580,8 @@ Project reference with ID and name
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -33035,7 +33755,8 @@ Project reference with ID and name
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -33203,7 +33924,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -33440,7 +34162,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -33642,7 +34365,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -33924,7 +34648,8 @@ Project reference with ID and name
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -34073,7 +34798,8 @@ Project reference with ID and name
   "name": "string",
   "temperature": 0,
   "seed": 0,
-  "custom_parameters": {}
+  "custom_parameters": {},
+  "api": "decisions"
 }
 ```
 
@@ -34085,6 +34811,13 @@ Project reference with ID and name
 |temperature|number(double)|false|none|none|
 |seed|integer(int32)|false|none|none|
 |custom_parameters|[JsonNode_Public](#schemajsonnode_public)|false|none|none|
+|api|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|api|decisions|
 
 <h2 id="tocS_LlmAsJudgeOutputSchema_Public">LlmAsJudgeOutputSchema_Public</h2>
 <!-- backwards compatibility -->
@@ -34197,7 +34930,8 @@ Project reference with ID and name
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -34371,7 +35105,8 @@ Project reference with ID and name
     "name": "string",
     "temperature": 0,
     "seed": 0,
-    "custom_parameters": {}
+    "custom_parameters": {},
+    "api": "decisions"
   },
   "messages": [
     {
@@ -34704,7 +35439,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -34809,7 +35545,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -34981,7 +35718,8 @@ Project reference with ID and name
       "name": "string",
       "temperature": 0,
       "seed": 0,
-      "custom_parameters": {}
+      "custom_parameters": {},
+      "api": "decisions"
     },
     "messages": [
       {
@@ -35960,7 +36698,6 @@ Project reference with ID and name
   "workspace_id": "string",
   "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
-  "slug": "string",
   "type": "multi_project",
   "scope": "workspace",
   "description": "string",
@@ -35980,7 +36717,6 @@ Project reference with ID and name
 |workspace_id|string|false|read-only|none|
 |project_id|string(uuid)|false|none|Project ID. Takes precedence over project_name when both are provided.|
 |name|string|true|none|none|
-|slug|string|false|read-only|none|
 |type|string|false|none|none|
 |scope|string|false|read-only|none|
 |description|string|false|none|none|
@@ -36050,7 +36786,6 @@ Project reference with ID and name
       "workspace_id": "string",
       "project_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
-      "slug": "string",
       "type": "multi_project",
       "scope": "workspace",
       "description": "string",
@@ -44200,6 +44935,284 @@ Per-assertion average pass rates for test suite experiments. Null for regular ex
 |max|number|true|none|none|
 |min|number|true|none|none|
 
+<h2 id="tocS_GuardrailPolicy">GuardrailPolicy</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpolicy"></a>
+<a id="schema_GuardrailPolicy"></a>
+<a id="tocSguardrailpolicy"></a>
+<a id="tocsguardrailpolicy"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "description": "string",
+  "execution_scope": "on_request",
+  "rules": [
+    {
+      "type": "TOPIC",
+      "config": {}
+    }
+  ],
+  "created_at": "1970-01-01T00:00:00Z",
+  "created_by": "string",
+  "last_updated_at": "1970-01-01T00:00:00Z",
+  "last_updated_by": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|false|none|Optional on create, generated when missing, as for prompts and datasets. Ignored on update, where the path names the policy|
+|name|string|true|none|The SDK names policies by name, so it is unique in the workspace, ignoring case|
+|description|string|false|none|none|
+|execution_scope|string|false|none|on_request applies the policy when the SDK names it, global applies it to every guardrail built from stored policies in the workspace. Missing or null means on_request|
+|rules|[[GuardrailPolicyRule](#schemaguardrailpolicyrule)]|true|none|At most one rule per type|
+|created_at|string(date-time)|false|read-only|none|
+|created_by|string|false|read-only|none|
+|last_updated_at|string(date-time)|false|read-only|none|
+|last_updated_by|string|false|read-only|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|execution_scope|on_request|
+|execution_scope|global|
+
+<h2 id="tocS_GuardrailPolicyRule">GuardrailPolicyRule</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpolicyrule"></a>
+<a id="schema_GuardrailPolicyRule"></a>
+<a id="tocSguardrailpolicyrule"></a>
+<a id="tocsguardrailpolicyrule"></a>
+
+```json
+{
+  "type": "TOPIC",
+  "config": {}
+}
+```
+
+At most one rule per type
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|config|[JsonNode](#schemajsonnode)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|TOPIC|
+|type|PII|
+|type|LLM_JUDGE|
+|type|PROMPT_INJECTION|
+|type|CUSTOM_CLASSIFIER|
+
+<h2 id="tocS_GuardrailPolicyRule_Write">GuardrailPolicyRule_Write</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpolicyrule_write"></a>
+<a id="schema_GuardrailPolicyRule_Write"></a>
+<a id="tocSguardrailpolicyrule_write"></a>
+<a id="tocsguardrailpolicyrule_write"></a>
+
+```json
+{
+  "type": "TOPIC",
+  "config": {}
+}
+```
+
+At most one rule per type
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|config|[JsonNode](#schemajsonnode)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|TOPIC|
+|type|PII|
+|type|LLM_JUDGE|
+|type|PROMPT_INJECTION|
+|type|CUSTOM_CLASSIFIER|
+
+<h2 id="tocS_GuardrailPolicy_Write">GuardrailPolicy_Write</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpolicy_write"></a>
+<a id="schema_GuardrailPolicy_Write"></a>
+<a id="tocSguardrailpolicy_write"></a>
+<a id="tocsguardrailpolicy_write"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "description": "string",
+  "execution_scope": "on_request",
+  "rules": [
+    {
+      "type": "TOPIC",
+      "config": {}
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|false|none|Optional on create, generated when missing, as for prompts and datasets. Ignored on update, where the path names the policy|
+|name|string|true|none|The SDK names policies by name, so it is unique in the workspace, ignoring case|
+|description|string|false|none|none|
+|execution_scope|string|false|none|on_request applies the policy when the SDK names it, global applies it to every guardrail built from stored policies in the workspace. Missing or null means on_request|
+|rules|[[GuardrailPolicyRule_Write](#schemaguardrailpolicyrule_write)]|true|none|At most one rule per type|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|execution_scope|on_request|
+|execution_scope|global|
+
+<h2 id="tocS_GuardrailPolicyPage_Public">GuardrailPolicyPage_Public</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpolicypage_public"></a>
+<a id="schema_GuardrailPolicyPage_Public"></a>
+<a id="tocSguardrailpolicypage_public"></a>
+<a id="tocsguardrailpolicypage_public"></a>
+
+```json
+{
+  "content": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "description": "string",
+      "execution_scope": "on_request",
+      "rules": [
+        {
+          "type": "TOPIC",
+          "config": {}
+        }
+      ],
+      "created_at": "1970-01-01T00:00:00Z",
+      "created_by": "string",
+      "last_updated_at": "1970-01-01T00:00:00Z",
+      "last_updated_by": "string"
+    }
+  ],
+  "page": 0,
+  "size": 0,
+  "total": 0,
+  "sortable_by": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|content|[[GuardrailPolicy_Public](#schemaguardrailpolicy_public)]|false|none|none|
+|page|integer(int32)|false|none|none|
+|size|integer(int32)|false|none|none|
+|total|integer(int64)|false|none|none|
+|sortable_by|[string]|false|none|none|
+
+<h2 id="tocS_GuardrailPolicyRule_Public">GuardrailPolicyRule_Public</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpolicyrule_public"></a>
+<a id="schema_GuardrailPolicyRule_Public"></a>
+<a id="tocSguardrailpolicyrule_public"></a>
+<a id="tocsguardrailpolicyrule_public"></a>
+
+```json
+{
+  "type": "TOPIC",
+  "config": {}
+}
+```
+
+At most one rule per type
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|config|[JsonNode](#schemajsonnode)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|TOPIC|
+|type|PII|
+|type|LLM_JUDGE|
+|type|PROMPT_INJECTION|
+|type|CUSTOM_CLASSIFIER|
+
+<h2 id="tocS_GuardrailPolicy_Public">GuardrailPolicy_Public</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpolicy_public"></a>
+<a id="schema_GuardrailPolicy_Public"></a>
+<a id="tocSguardrailpolicy_public"></a>
+<a id="tocsguardrailpolicy_public"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "description": "string",
+  "execution_scope": "on_request",
+  "rules": [
+    {
+      "type": "TOPIC",
+      "config": {}
+    }
+  ],
+  "created_at": "1970-01-01T00:00:00Z",
+  "created_by": "string",
+  "last_updated_at": "1970-01-01T00:00:00Z",
+  "last_updated_by": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|false|none|Optional on create, generated when missing, as for prompts and datasets. Ignored on update, where the path names the policy|
+|name|string|true|none|The SDK names policies by name, so it is unique in the workspace, ignoring case|
+|description|string|false|none|none|
+|execution_scope|string|false|none|on_request applies the policy when the SDK names it, global applies it to every guardrail built from stored policies in the workspace. Missing or null means on_request|
+|rules|[[GuardrailPolicyRule_Public](#schemaguardrailpolicyrule_public)]|true|none|At most one rule per type|
+|created_at|string(date-time)|false|read-only|none|
+|created_by|string|false|read-only|none|
+|last_updated_at|string(date-time)|false|read-only|none|
+|last_updated_by|string|false|read-only|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|execution_scope|on_request|
+|execution_scope|global|
+
 <h2 id="tocS_Guardrail">Guardrail</h2>
 <!-- backwards compatibility -->
 <a id="schemaguardrail"></a>
@@ -44353,6 +45366,131 @@ Per-assertion average pass rates for test suite experiments. Null for regular ex
 |result|passed|
 |result|failed|
 
+<h2 id="tocS_GuardrailsValidationResponse">GuardrailsValidationResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailsvalidationresponse"></a>
+<a id="schema_GuardrailsValidationResponse"></a>
+<a id="tocSguardrailsvalidationresponse"></a>
+<a id="tocsguardrailsvalidationresponse"></a>
+
+```json
+{
+  "validation_passed": true,
+  "validations": [
+    {
+      "validation_passed": true,
+      "type": "TOPIC",
+      "validation_config": {},
+      "validation_details": {},
+      "error": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|validation_passed|boolean|false|none|none|
+|validations|[[ValidationResult](#schemavalidationresult)]|true|none|none|
+
+<h2 id="tocS_ValidationResult">ValidationResult</h2>
+<!-- backwards compatibility -->
+<a id="schemavalidationresult"></a>
+<a id="schema_ValidationResult"></a>
+<a id="tocSvalidationresult"></a>
+<a id="tocsvalidationresult"></a>
+
+```json
+{
+  "validation_passed": true,
+  "type": "TOPIC",
+  "validation_config": {},
+  "validation_details": {},
+  "error": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|validation_passed|boolean|false|none|none|
+|type|string|true|none|none|
+|validation_config|[JsonNode](#schemajsonnode)|true|none|none|
+|validation_details|[JsonNode](#schemajsonnode)|true|none|none|
+|error|string|false|none|Set when the check could not run; the entry then passes|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|TOPIC|
+|type|PII|
+|type|LLM_JUDGE|
+|type|PROMPT_INJECTION|
+|type|CUSTOM_CLASSIFIER|
+
+<h2 id="tocS_GuardrailsValidationRequest">GuardrailsValidationRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailsvalidationrequest"></a>
+<a id="schema_GuardrailsValidationRequest"></a>
+<a id="tocSguardrailsvalidationrequest"></a>
+<a id="tocsguardrailsvalidationrequest"></a>
+
+```json
+{
+  "text": "string",
+  "validations": [
+    {
+      "type": "TOPIC",
+      "config": {}
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|text|string|true|none|The text to check, at most 16384 characters as the decision service counts them: on the text's JSON encoding, so the two quotes count, a quote, backslash or line break counts as 2, and any other control or non-ASCII character as 6 (an emoji as 12). In practice about 16,380 characters of English text fit, about 2,730 of text in Cyrillic, Greek, Hebrew, Arabic, Chinese or Japanese, and about 1,365 emoji. A longer text is rejected rather than cut.|
+|validations|[[ValidationDescriptor](#schemavalidationdescriptor)]|true|none|The checks to run. Together they must fit in 64 questions to the decision service, asked in up to two calls of 32: each PII class and each topic list is one question, prompt injection is one|
+
+<h2 id="tocS_ValidationDescriptor">ValidationDescriptor</h2>
+<!-- backwards compatibility -->
+<a id="schemavalidationdescriptor"></a>
+<a id="schema_ValidationDescriptor"></a>
+<a id="tocSvalidationdescriptor"></a>
+<a id="tocsvalidationdescriptor"></a>
+
+```json
+{
+  "type": "TOPIC",
+  "config": {}
+}
+```
+
+The checks to run. Together they must fit in 64 questions to the decision service, asked in up to two calls of 32: each PII class and each topic list is one question, prompt injection is one
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|config|[JsonNode](#schemajsonnode)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|TOPIC|
+|type|PII|
+|type|LLM_JUDGE|
+|type|PROMPT_INJECTION|
+|type|CUSTOM_CLASSIFIER|
+
 <h2 id="tocS_EffortParam">EffortParam</h2>
 <!-- backwards compatibility -->
 <a id="schemaeffortparam"></a>
@@ -44463,6 +45601,7 @@ Per-assertion average pass rates for test suite experiments. Null for regular ex
   },
   "samplingExclusive": true,
   "thinksByDefault": true,
+  "onlyRoute": "string",
   "routes": {
     "property1": {
       "temperature": {
@@ -44522,6 +45661,7 @@ Per-assertion average pass rates for test suite experiments. Null for regular ex
       },
       "samplingExclusive": true,
       "thinksByDefault": true,
+      "onlyRoute": "string",
       "routes": {
         "property1": {},
         "property2": {}
@@ -44585,6 +45725,7 @@ Per-assertion average pass rates for test suite experiments. Null for regular ex
       },
       "samplingExclusive": true,
       "thinksByDefault": true,
+      "onlyRoute": "string",
       "routes": {
         "property1": {},
         "property2": {}
@@ -44610,6 +45751,7 @@ Per-assertion average pass rates for test suite experiments. Null for regular ex
 |tools|[ToolsParam](#schematoolsparam)|false|none|none|
 |samplingExclusive|boolean|false|none|none|
 |thinksByDefault|boolean|false|none|none|
+|onlyRoute|string|false|none|none|
 |routes|object|false|none|none|
 
 <h2 id="tocS_NumberParam">NumberParam</h2>
@@ -44864,9 +46006,9 @@ Dynamic token auth recipe. When set, Opik fetches a short-lived bearer from the 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |token_url|string|false|none|Auth service URL the credentials are sent to|
-|send_as|string|false|none|How credentials are sent: form body (default), JSON body, or basic auth (id/secret in an HTTP Basic header, remaining fields in the form body)|
+|send_as|string|false|none|How credentials are sent: form body (default), JSON body, or basic auth (client_id/client_secret, or username/password, in an HTTP Basic header; remaining fields in the form body)|
 |credentials|[[Credential_Public](#schemacredential_public)]|false|none|Fields sent to the token URL. Values flagged as secret are write-only: they read back as the '__SECRET__' sentinel|
-|token_field|string|false|none|Field holding the token in the reply; dot-path for nested replies|
+|token_field|string|false|none|Field holding the token in the reply; dot-path for nested replies. A reply that is the bare token itself (plain text or a JSON string) is used as-is and needs fallback_ttl_seconds|
 |expires_field|string|false|none|Field holding the token lifetime in seconds in the reply; dot-path for nested replies|
 |fallback_ttl_seconds|integer(int64)|false|none|Lifetime in seconds assumed when the reply doesn't state one, capped at one year; 0 disables caching for such replies. A reply-stated lifetime always wins|
 
@@ -45012,9 +46154,9 @@ Dynamic token auth recipe. Send the '__SECRET__' sentinel as a credential value 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |token_url|string|false|none|Auth service URL the credentials are sent to|
-|send_as|string|false|none|How credentials are sent: form body (default), JSON body, or basic auth (id/secret in an HTTP Basic header, remaining fields in the form body)|
+|send_as|string|false|none|How credentials are sent: form body (default), JSON body, or basic auth (client_id/client_secret, or username/password, in an HTTP Basic header; remaining fields in the form body)|
 |credentials|[[Credential](#schemacredential)]|false|none|Fields sent to the token URL. Values flagged as secret are write-only: they read back as the '__SECRET__' sentinel|
-|token_field|string|false|none|Field holding the token in the reply; dot-path for nested replies|
+|token_field|string|false|none|Field holding the token in the reply; dot-path for nested replies. A reply that is the bare token itself (plain text or a JSON string) is used as-is and needs fallback_ttl_seconds|
 |expires_field|string|false|none|Field holding the token lifetime in seconds in the reply; dot-path for nested replies|
 |fallback_ttl_seconds|integer(int64)|false|none|Lifetime in seconds assumed when the reply doesn't state one, capped at one year; 0 disables caching for such replies. A reply-stated lifetime always wins|
 
@@ -45148,9 +46290,9 @@ Dynamic token auth recipe. When set, Opik fetches a short-lived bearer from the 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |token_url|string|false|none|Auth service URL the credentials are sent to|
-|send_as|string|false|none|How credentials are sent: form body (default), JSON body, or basic auth (id/secret in an HTTP Basic header, remaining fields in the form body)|
+|send_as|string|false|none|How credentials are sent: form body (default), JSON body, or basic auth (client_id/client_secret, or username/password, in an HTTP Basic header; remaining fields in the form body)|
 |credentials|[[Credential_Write](#schemacredential_write)]|false|none|Fields sent to the token URL. Values flagged as secret are write-only: they read back as the '__SECRET__' sentinel|
-|token_field|string|false|none|Field holding the token in the reply; dot-path for nested replies|
+|token_field|string|false|none|Field holding the token in the reply; dot-path for nested replies. A reply that is the bare token itself (plain text or a JSON string) is used as-is and needs fallback_ttl_seconds|
 |expires_field|string|false|none|Field holding the token lifetime in seconds in the reply; dot-path for nested replies|
 |fallback_ttl_seconds|integer(int64)|false|none|Lifetime in seconds assumed when the reply doesn't state one, capped at one year; 0 disables caching for such replies. A reply-stated lifetime always wins|
 
@@ -47829,7 +48971,7 @@ Response from Ollama connection test.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|field|string|false|none|none|
+|field|string|false|none|Field to group by. Tags are overlapping groups: each tag receives the full metric value. For cost, adding tag groups can exceed actual spend; use provider or model for additive span cost totals.|
 |metadata_key|string|false|none|none|
 |sub_metric|string|false|none|none|
 
@@ -49489,6 +50631,7 @@ Response for report generation trigger
   "spanLlmAsJudgeEnabled": true,
   "spanUserDefinedMetricPythonEnabled": true,
   "guardrailsEnabled": true,
+  "guardrailsValidationsEnabled": true,
   "opikAIEnabled": true,
   "alertsEnabled": true,
   "welcomeWizardEnabled": true,
@@ -49509,7 +50652,6 @@ Response for report generation trigger
   "agentInsightsEnabled": true,
   "agentInsightsGuidanceEnabled": true,
   "projectHomepageEnabled": true,
-  "onlineScoringTracingEnabled": true,
   "annotationQueueAutomationEnabled": true,
   "eventBridgeAlertsEnabled": true,
   "defaultPageSize": 5,
@@ -49526,6 +50668,7 @@ Response for report generation trigger
 |spanLlmAsJudgeEnabled|boolean|true|none|none|
 |spanUserDefinedMetricPythonEnabled|boolean|true|none|none|
 |guardrailsEnabled|boolean|true|none|none|
+|guardrailsValidationsEnabled|boolean|true|none|none|
 |opikAIEnabled|boolean|true|none|none|
 |alertsEnabled|boolean|true|none|none|
 |welcomeWizardEnabled|boolean|true|none|none|
@@ -49546,7 +50689,6 @@ Response for report generation trigger
 |agentInsightsEnabled|boolean|true|none|none|
 |agentInsightsGuidanceEnabled|boolean|true|none|none|
 |projectHomepageEnabled|boolean|true|none|none|
-|onlineScoringTracingEnabled|boolean|true|none|none|
 |annotationQueueAutomationEnabled|boolean|true|none|none|
 |eventBridgeAlertsEnabled|boolean|true|none|none|
 |defaultPageSize|integer(int32)|false|none|none|
@@ -52281,7 +53423,7 @@ Experiment reference with ID, name, dataset ID, and dataset item ID
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|field|string|false|none|none|
+|field|string|false|none|Field to group by. Tags are overlapping groups: each tag receives the full metric value. For cost, adding tag groups can exceed actual spend; use provider or model for additive span cost totals.|
 |metadata_key|string|false|none|none|
 |sub_metric|string|false|none|none|
 

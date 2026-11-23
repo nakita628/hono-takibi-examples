@@ -7,6 +7,17 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/ably/open-specs/main/definitions/control-v1.yaml',
   output: './src/control/routes.ts',
+  template: {},
+  type: { output: './src/control/types.ts' },
+  client: { output: './src/control/client.ts', baseUrl: '/' },
+  rpc: { output: './src/control/rpc.ts', parseResponse: true },
+  swr: { output: './src/control/hooks/swr.ts' },
+  'tanstack-query': { output: './src/control/hooks/tanstack-query.ts' },
+  'preact-query': { output: './src/control/hooks/preact-query.ts' },
+  'solid-query': { output: './src/control/hooks/solid-query.ts' },
+  'vue-query': { output: './src/control/hooks/vue-query.ts' },
+  'svelte-query': { output: './src/control/hooks/svelte-query.ts' },
+  'angular-query': { output: './src/control/hooks/angular-query.ts' },
   docs: {
     output: './src/control/api.md',
     curl: true,

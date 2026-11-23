@@ -1,5 +1,409 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AmazonResourceNameSchema = z.string().min(1).max(2048).openapi('AmazonResourceName')
+
+const ScheduledQueryNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_.-]+/)
+  .min(1)
+  .max(64)
+  .openapi('ScheduledQueryName')
+
+const QueryStringSchema = z.string().min(1).max(262144).openapi('QueryString')
+
+const TimeSchema = z.iso.datetime({ offset: true }).openapi('Time')
+
+const ScheduledQueryStateSchema = z.enum(['ENABLED', 'DISABLED']).openapi('ScheduledQueryState')
+
+const ScheduleExpressionSchema = z.string().min(1).max(256).openapi('ScheduleExpression')
+
+const ScheduleConfigurationSchema = z
+  .object({
+    ScheduleExpression: ScheduleExpressionSchema.openapi({
+      description:
+        'An expression that denotes when to trigger the scheduled query run. This can be a cron expression or a rate expression. ',
+    }),
+  })
+  .openapi({
+    required: ['ScheduleExpression'],
+    description: 'Configuration of the schedule of the query.',
+  })
+  .openapi('ScheduleConfiguration')
+
+const SnsConfigurationSchema = z
+  .object({
+    TopicArn: AmazonResourceNameSchema.openapi({
+      description: 'SNS topic ARN that the scheduled query status notifications will be sent to.',
+    }),
+  })
+  .openapi({
+    required: ['TopicArn'],
+    description: 'Details on SNS that are required to send the notification.',
+  })
+  .openapi('SnsConfiguration')
+
+const NotificationConfigurationSchema = z
+  .object({
+    SnsConfiguration: SnsConfigurationSchema.openapi({
+      description: 'Details on SNS configuration. ',
+    }),
+  })
+  .openapi({
+    required: ['SnsConfiguration'],
+    description:
+      'Notification configuration for a scheduled query. A notification is sent by Timestream when a scheduled query is created, its state is updated or when it is deleted. ',
+  })
+  .openapi('NotificationConfiguration')
+
+const ResourceNameSchema = z.string().openapi('ResourceName')
+
+const SchemaNameSchema = z.string().openapi('SchemaName')
+
+const DimensionValueTypeSchema = z.literal('VARCHAR').openapi('DimensionValueType')
+
+const DimensionMappingSchema = z
+  .object({
+    Name: SchemaNameSchema.openapi({ description: 'Column name from query result.' }),
+    DimensionValueType: DimensionValueTypeSchema.openapi({
+      description: 'Type for the dimension. ',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'DimensionValueType'],
+    description:
+      'This type is used to map column(s) from the query result to a dimension in the destination table.',
+  })
+  .openapi('DimensionMapping')
+
+const DimensionMappingListSchema = z.array(DimensionMappingSchema).openapi('DimensionMappingList')
+
+const ScalarMeasureValueTypeSchema = z
+  .enum(['BIGINT', 'BOOLEAN', 'DOUBLE', 'VARCHAR', 'TIMESTAMP'])
+  .openapi('ScalarMeasureValueType')
+
+const MultiMeasureAttributeMappingSchema = z
+  .object({
+    SourceColumn: SchemaNameSchema.openapi({
+      description: 'Source column from where the attribute value is to be read.',
+    }),
+    TargetMultiMeasureAttributeName: SchemaNameSchema.exactOptional().openapi({
+      description:
+        'Custom name to be used for attribute name in derived table. If not provided, source column name would be used.',
+    }),
+    MeasureValueType: ScalarMeasureValueTypeSchema.openapi({
+      description: 'Type of the attribute to be read from the source column.',
+    }),
+  })
+  .openapi({
+    required: ['SourceColumn', 'MeasureValueType'],
+    description: 'Attribute mapping for MULTI value measures.',
+  })
+  .openapi('MultiMeasureAttributeMapping')
+
+const MultiMeasureAttributeMappingListSchema = z
+  .array(MultiMeasureAttributeMappingSchema)
+  .min(1)
+  .openapi('MultiMeasureAttributeMappingList')
+
+const MultiMeasureMappingsSchema = z
+  .object({
+    TargetMultiMeasureName: SchemaNameSchema.exactOptional().openapi({
+      description:
+        'The name of the target multi-measure name in the derived table. This input is required when measureNameColumn is not provided. If MeasureNameColumn is provided, then value from that column will be used as multi-measure name.',
+    }),
+    MultiMeasureAttributeMappings: MultiMeasureAttributeMappingListSchema.openapi({
+      description:
+        'Required. Attribute mappings to be used for mapping query results to ingest data for multi-measure attributes.',
+    }),
+  })
+  .openapi({
+    required: ['MultiMeasureAttributeMappings'],
+    description:
+      'Only one of MixedMeasureMappings or MultiMeasureMappings is to be provided. MultiMeasureMappings can be used to ingest data as multi measures in the derived table.',
+  })
+  .openapi('MultiMeasureMappings')
+
+const MeasureValueTypeSchema = z
+  .enum(['BIGINT', 'BOOLEAN', 'DOUBLE', 'VARCHAR', 'MULTI'])
+  .openapi('MeasureValueType')
+
+const MixedMeasureMappingSchema = z
+  .object({
+    MeasureName: SchemaNameSchema.exactOptional().openapi({
+      description:
+        'Refers to the value of measure_name in a result row. This field is required if MeasureNameColumn is provided.',
+    }),
+    SourceColumn: SchemaNameSchema.exactOptional().openapi({
+      description:
+        'This field refers to the source column from which measure-value is to be read for result materialization.',
+    }),
+    TargetMeasureName: SchemaNameSchema.exactOptional().openapi({
+      description:
+        'Target measure name to be used. If not provided, the target measure name by default would be measure-name if provided, or sourceColumn otherwise. ',
+    }),
+    MeasureValueType: MeasureValueTypeSchema.openapi({
+      description:
+        'Type of the value that is to be read from sourceColumn. If the mapping is for MULTI, use MeasureValueType.MULTI.',
+    }),
+    MultiMeasureAttributeMappings: MultiMeasureAttributeMappingListSchema.exactOptional().openapi({
+      description:
+        'Required when measureValueType is MULTI. Attribute mappings for MULTI value measures.',
+    }),
+  })
+  .openapi({
+    required: ['MeasureValueType'],
+    description:
+      'MixedMeasureMappings are mappings that can be used to ingest data into a mixture of narrow and multi measures in the derived table.',
+  })
+  .openapi('MixedMeasureMapping')
+
+const MixedMeasureMappingListSchema = z
+  .array(MixedMeasureMappingSchema)
+  .min(1)
+  .openapi('MixedMeasureMappingList')
+
+const TimestreamConfigurationSchema = z
+  .object({
+    DatabaseName: ResourceNameSchema.openapi({
+      description: 'Name of Timestream database to which the query result will be written.',
+    }),
+    TableName: ResourceNameSchema.openapi({
+      description:
+        'Name of Timestream table that the query result will be written to. The table should be within the same database that is provided in Timestream configuration.',
+    }),
+    TimeColumn: SchemaNameSchema.openapi({
+      description:
+        'Column from query result that should be used as the time column in destination table. Column type for this should be TIMESTAMP.',
+    }),
+    DimensionMappings: DimensionMappingListSchema.openapi({
+      description:
+        ' This is to allow mapping column(s) from the query result to the dimension in the destination table. ',
+    }),
+    MultiMeasureMappings: MultiMeasureMappingsSchema.exactOptional().openapi({
+      description: 'Multi-measure mappings.',
+    }),
+    MixedMeasureMappings: MixedMeasureMappingListSchema.exactOptional().openapi({
+      description: 'Specifies how to map measures to multi-measure records.',
+    }),
+    MeasureNameColumn: SchemaNameSchema.exactOptional().openapi({
+      description: 'Name of the measure column.',
+    }),
+  })
+  .openapi({
+    required: ['DatabaseName', 'TableName', 'TimeColumn', 'DimensionMappings'],
+    description:
+      ' Configuration to write data into Timestream database and table. This configuration allows the user to map the query result select columns into the destination table columns. ',
+  })
+  .openapi('TimestreamConfiguration')
+
+const TargetConfigurationSchema = z
+  .object({
+    TimestreamConfiguration: TimestreamConfigurationSchema.openapi({
+      description: 'Configuration needed to write data into the Timestream database and table.',
+    }),
+  })
+  .openapi({
+    required: ['TimestreamConfiguration'],
+    description: 'Configuration used for writing the output of a query.',
+  })
+  .openapi('TargetConfiguration')
+
+const StringValue2048Schema = z.string().min(1).max(2048).openapi('StringValue2048')
+
+const S3BucketNameSchema = z
+  .string()
+  .regex(/[a-z0-9][\.\-a-z0-9]{1,61}[a-z0-9]/)
+  .min(3)
+  .max(63)
+  .openapi('S3BucketName')
+
+const S3ObjectKeyPrefixSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9|!\-_*'\(\)]([a-zA-Z0-9]|[!\-_*'\(\)\/.])+/)
+  .min(1)
+  .max(896)
+  .openapi('S3ObjectKeyPrefix')
+
+const S3EncryptionOptionSchema = z.enum(['SSE_S3', 'SSE_KMS']).openapi('S3EncryptionOption')
+
+const S3ConfigurationSchema = z
+  .object({
+    BucketName: S3BucketNameSchema.openapi({
+      description: ' Name of the S3 bucket under which error reports will be created.',
+    }),
+    ObjectKeyPrefix: S3ObjectKeyPrefixSchema.exactOptional().openapi({
+      description:
+        ' Prefix for the error report key. Timestream by default adds the following prefix to the error report path. ',
+    }),
+    EncryptionOption: S3EncryptionOptionSchema.exactOptional().openapi({
+      description:
+        ' Encryption at rest options for the error reports. If no encryption option is specified, Timestream will choose SSE_S3 as default. ',
+    }),
+  })
+  .openapi({
+    required: ['BucketName'],
+    description: 'Details on S3 location for error reports that result from running a query. ',
+  })
+  .openapi('S3Configuration')
+
+const ErrorReportConfigurationSchema = z
+  .object({
+    S3Configuration: S3ConfigurationSchema.openapi({
+      description: 'The S3 configuration for the error reports.',
+    }),
+  })
+  .openapi({
+    required: ['S3Configuration'],
+    description: 'Configuration required for error reporting.',
+  })
+  .openapi('ErrorReportConfiguration')
+
+const ScheduledQueryRunStatusSchema = z
+  .enum([
+    'AUTO_TRIGGER_SUCCESS',
+    'AUTO_TRIGGER_FAILURE',
+    'MANUAL_TRIGGER_SUCCESS',
+    'MANUAL_TRIGGER_FAILURE',
+  ])
+  .openapi('ScheduledQueryRunStatus')
+
+const LongSchema = z.int().openapi('Long')
+
+const ExecutionStatsSchema = z
+  .object({
+    ExecutionTimeInMillis: LongSchema.exactOptional().openapi({
+      description:
+        'Total time, measured in milliseconds, that was needed for the scheduled query run to complete.',
+    }),
+    DataWrites: LongSchema.exactOptional().openapi({
+      description: 'Data writes metered for records ingested in a single scheduled query run.',
+    }),
+    BytesMetered: LongSchema.exactOptional().openapi({
+      description: 'Bytes metered for a single scheduled query run.',
+    }),
+    RecordsIngested: LongSchema.exactOptional().openapi({
+      description: 'The number of records ingested for a single scheduled query run. ',
+    }),
+    QueryResultRows: LongSchema.exactOptional().openapi({
+      description:
+        'Number of rows present in the output from running a query before ingestion to destination data source.',
+    }),
+  })
+  .openapi({ description: 'Statistics for a single scheduled query run.', required: [] })
+  .openapi('ExecutionStats')
+
+const S3ObjectKeySchema = z.string().openapi('S3ObjectKey')
+
+const S3ReportLocationSchema = z
+  .object({
+    BucketName: S3BucketNameSchema.exactOptional().openapi({ description: ' S3 bucket name. ' }),
+    ObjectKey: S3ObjectKeySchema.exactOptional().openapi({ description: 'S3 key. ' }),
+  })
+  .openapi({ description: ' S3 report location for the scheduled query run.', required: [] })
+  .openapi('S3ReportLocation')
+
+const ErrorReportLocationSchema = z
+  .object({
+    S3ReportLocation: S3ReportLocationSchema.exactOptional().openapi({
+      description: 'The S3 location where error reports are written.',
+    }),
+  })
+  .openapi({
+    description:
+      'This contains the location of the error report for a single scheduled query call. ',
+    required: [],
+  })
+  .openapi('ErrorReportLocation')
+
+const ErrorMessageSchema = z.string().openapi('ErrorMessage')
+
+const ScheduledQueryRunSummarySchema = z
+  .object({
+    InvocationTime: TimeSchema.exactOptional().openapi({
+      description:
+        'InvocationTime for this run. This is the time at which the query is scheduled to run. Parameter <code>@scheduled_runtime</code> can be used in the query to get the value. ',
+    }),
+    TriggerTime: TimeSchema.exactOptional().openapi({
+      description: 'The actual time when the query was run.',
+    }),
+    RunStatus: ScheduledQueryRunStatusSchema.exactOptional().openapi({
+      description: 'The status of a scheduled query run.',
+    }),
+    ExecutionStats: ExecutionStatsSchema.exactOptional().openapi({
+      description: 'Runtime statistics for a scheduled run.',
+    }),
+    ErrorReportLocation: ErrorReportLocationSchema.exactOptional().openapi({
+      description: 'S3 location for error report.',
+    }),
+    FailureReason: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'Error message for the scheduled query in case of failure. You might have to look at the error report to get more detailed error reasons. ',
+    }),
+  })
+  .openapi({ description: 'Run summary for the scheduled query', required: [] })
+  .openapi('ScheduledQueryRunSummary')
+
+const ScheduledQueryRunSummaryListSchema = z
+  .array(ScheduledQueryRunSummarySchema)
+  .openapi('ScheduledQueryRunSummaryList')
+
+const ScheduledQueryDescriptionSchema = z
+  .object({
+    Arn: AmazonResourceNameSchema.openapi({ description: 'Scheduled query ARN.' }),
+    Name: ScheduledQueryNameSchema.openapi({ description: 'Name of the scheduled query.' }),
+    QueryString: QueryStringSchema.openapi({ description: 'The query to be run.' }),
+    CreationTime: TimeSchema.exactOptional().openapi({
+      description: 'Creation time of the scheduled query.',
+    }),
+    State: ScheduledQueryStateSchema.openapi({ description: 'State of the scheduled query. ' }),
+    PreviousInvocationTime: TimeSchema.exactOptional().openapi({
+      description: 'Last time the query was run.',
+    }),
+    NextInvocationTime: TimeSchema.exactOptional().openapi({
+      description: 'The next time the scheduled query is scheduled to run.',
+    }),
+    ScheduleConfiguration: ScheduleConfigurationSchema.openapi({
+      description: 'Schedule configuration.',
+    }),
+    NotificationConfiguration: NotificationConfigurationSchema.openapi({
+      description: 'Notification configuration.',
+    }),
+    TargetConfiguration: TargetConfigurationSchema.exactOptional().openapi({
+      description: 'Scheduled query target store configuration.',
+    }),
+    ScheduledQueryExecutionRoleArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'IAM role that Timestream uses to run the schedule query.',
+    }),
+    KmsKeyId: StringValue2048Schema.exactOptional().openapi({
+      description: 'A customer provided KMS key used to encrypt the scheduled query resource.',
+    }),
+    ErrorReportConfiguration: ErrorReportConfigurationSchema.exactOptional().openapi({
+      description: 'Error-reporting configuration for the scheduled query.',
+    }),
+    LastRunSummary: ScheduledQueryRunSummarySchema.exactOptional().openapi({
+      description: 'Runtime summary for the last scheduled query run. ',
+    }),
+    RecentlyFailedRuns: ScheduledQueryRunSummaryListSchema.exactOptional().openapi({
+      description: 'Runtime summary for the last five failed scheduled query runs.',
+    }),
+  })
+  .openapi({
+    required: [
+      'Arn',
+      'Name',
+      'QueryString',
+      'State',
+      'ScheduleConfiguration',
+      'NotificationConfiguration',
+    ],
+    description: 'Structure that describes scheduled query.',
+  })
+  .openapi('ScheduledQueryDescription')
+
+type DescribeScheduledQueryResponseType = {
+  ScheduledQuery: z.infer<typeof ScheduledQueryDescriptionSchema> & unknown
+}
+
 type StringType = string
 
 type ScalarTypeType =
@@ -35,22 +439,14 @@ const ColumnInfoSchema: z.ZodType<ColumnInfoType> = z
   .lazy(() =>
     z
       .object({
-        Name: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                ' The name of the result set column. The name of the result set is available for columns of all data types except for arrays. ',
-            }),
-        ).exactOptional(),
-        Type: TypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The data type of the result set column. The data type can be a scalar or complex. Scalar data types are integers, strings, doubles, Booleans, and others. Complex data types are types such as arrays, rows, and others. ',
-            }),
-        ),
+        Name: StringSchema.exactOptional().openapi({
+          description:
+            ' The name of the result set column. The name of the result set is available for columns of all data types except for arrays. ',
+        }),
+        Type: TypeSchema.openapi({
+          description:
+            'The data type of the result set column. The data type can be a scalar or complex. Scalar data types are integers, strings, doubles, Booleans, and others. Complex data types are types such as arrays, rows, and others. ',
+        }),
       })
       .openapi({
         required: ['Type'],
@@ -65,10 +461,10 @@ const ColumnInfoListSchema: z.ZodType<ColumnInfoListType> = z
   .openapi('ColumnInfoList')
 
 type TypeType = {
-  ScalarType?: z.infer<typeof ScalarTypeSchema> & { [key: string]: unknown }
-  ArrayColumnInfo?: z.infer<typeof ColumnInfoSchema> & { [key: string]: unknown }
-  TimeSeriesMeasureValueColumnInfo?: z.infer<typeof ColumnInfoSchema> & { [key: string]: unknown }
-  RowColumnInfo?: z.infer<typeof ColumnInfoListSchema> & { [key: string]: unknown }
+  ScalarType?: z.infer<typeof ScalarTypeSchema> & unknown
+  ArrayColumnInfo?: z.infer<typeof ColumnInfoSchema> & unknown
+  TimeSeriesMeasureValueColumnInfo?: z.infer<typeof ColumnInfoSchema> & unknown
+  RowColumnInfo?: z.infer<typeof ColumnInfoListSchema> & unknown
 }
 
 const StringSchema: z.ZodType<StringType> = z.string().openapi('String')
@@ -77,23 +473,19 @@ const TypeSchema: z.ZodType<TypeType> = z
   .lazy(() =>
     z
       .object({
-        ScalarType: ScalarTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Indicates if the column is of type string, integer, Boolean, double, timestamp, date, time. ',
-            }),
-        ).exactOptional(),
-        ArrayColumnInfo: ColumnInfoSchema.and(
-          z.any().openapi({ description: 'Indicates if the column is an array.' }),
-        ).exactOptional(),
-        TimeSeriesMeasureValueColumnInfo: ColumnInfoSchema.and(
-          z.any().openapi({ description: 'Indicates if the column is a timeseries data type.' }),
-        ).exactOptional(),
-        RowColumnInfo: ColumnInfoListSchema.and(
-          z.any().openapi({ description: 'Indicates if the column is a row.' }),
-        ).exactOptional(),
+        ScalarType: ScalarTypeSchema.exactOptional().openapi({
+          description:
+            'Indicates if the column is of type string, integer, Boolean, double, timestamp, date, time. ',
+        }),
+        ArrayColumnInfo: ColumnInfoSchema.exactOptional().openapi({
+          description: 'Indicates if the column is an array.',
+        }),
+        TimeSeriesMeasureValueColumnInfo: ColumnInfoSchema.exactOptional().openapi({
+          description: 'Indicates if the column is a timeseries data type.',
+        }),
+        RowColumnInfo: ColumnInfoListSchema.exactOptional().openapi({
+          description: 'Indicates if the column is a row.',
+        }),
       })
       .openapi({
         description:
@@ -104,8 +496,8 @@ const TypeSchema: z.ZodType<TypeType> = z
   .openapi('Type')
 
 type ColumnInfoType = {
-  Name?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  Type: z.infer<typeof TypeSchema> & { [key: string]: unknown }
+  Name?: z.infer<typeof StringSchema> & unknown
+  Type: z.infer<typeof TypeSchema> & unknown
 }
 
 type ColumnInfoListType = z.infer<typeof ColumnInfoSchema>[]
@@ -116,12 +508,10 @@ const TimeSeriesDataPointSchema: z.ZodType<TimeSeriesDataPointType> = z
   .lazy(() =>
     z
       .object({
-        Time: TimestampSchema.and(
-          z.any().openapi({ description: 'The timestamp when the measure value was collected.' }),
-        ),
-        Value: DatumSchema.and(
-          z.any().openapi({ description: 'The measure value for the data point.' }),
-        ),
+        Time: TimestampSchema.openapi({
+          description: 'The timestamp when the measure value was collected.',
+        }),
+        Value: DatumSchema.openapi({ description: 'The measure value for the data point.' }),
       })
       .openapi({
         required: ['Time', 'Value'],
@@ -137,28 +527,22 @@ const DatumSchema: z.ZodType<DatumType> = z
   .lazy(() =>
     z
       .object({
-        ScalarValue: ScalarValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                ' Indicates if the data point is a scalar value such as integer, string, double, or Boolean. ',
-            }),
-        ).exactOptional(),
-        TimeSeriesValue: TimeSeriesDataPointListSchema.and(
-          z
-            .any()
-            .openapi({ description: ' Indicates if the data point is a timeseries data type. ' }),
-        ).exactOptional(),
-        ArrayValue: DatumListSchema.and(
-          z.any().openapi({ description: ' Indicates if the data point is an array. ' }),
-        ).exactOptional(),
-        RowValue: RowSchema.and(
-          z.any().openapi({ description: ' Indicates if the data point is a row. ' }),
-        ).exactOptional(),
-        NullValue: NullableBooleanSchema.and(
-          z.any().openapi({ description: ' Indicates if the data point is null. ' }),
-        ).exactOptional(),
+        ScalarValue: ScalarValueSchema.exactOptional().openapi({
+          description:
+            ' Indicates if the data point is a scalar value such as integer, string, double, or Boolean. ',
+        }),
+        TimeSeriesValue: TimeSeriesDataPointListSchema.exactOptional().openapi({
+          description: ' Indicates if the data point is a timeseries data type. ',
+        }),
+        ArrayValue: DatumListSchema.exactOptional().openapi({
+          description: ' Indicates if the data point is an array. ',
+        }),
+        RowValue: RowSchema.exactOptional().openapi({
+          description: ' Indicates if the data point is a row. ',
+        }),
+        NullValue: NullableBooleanSchema.exactOptional().openapi({
+          description: ' Indicates if the data point is null. ',
+        }),
       })
       .openapi({
         description: ' Datum represents a single data point in a query result. ',
@@ -173,7 +557,7 @@ const DatumListSchema: z.ZodType<DatumListType> = z
   .lazy(() => z.array(DatumSchema))
   .openapi('DatumList')
 
-type RowType = { Data: z.infer<typeof DatumListSchema> & { [key: string]: unknown } }
+type RowType = { Data: z.infer<typeof DatumListSchema> & unknown }
 
 type NullableBooleanType = boolean
 
@@ -187,11 +571,9 @@ const RowSchema: z.ZodType<RowType> = z
   .lazy(() =>
     z
       .object({
-        Data: DatumListSchema.and(
-          z
-            .any()
-            .openapi({ description: 'List of data points in a single row of the result set.' }),
-        ),
+        Data: DatumListSchema.openapi({
+          description: 'List of data points in a single row of the result set.',
+        }),
       })
       .openapi({
         required: ['Data'],
@@ -203,11 +585,11 @@ const RowSchema: z.ZodType<RowType> = z
 const NullableBooleanSchema: z.ZodType<NullableBooleanType> = z.boolean().openapi('NullableBoolean')
 
 type DatumType = {
-  ScalarValue?: z.infer<typeof ScalarValueSchema> & { [key: string]: unknown }
-  TimeSeriesValue?: z.infer<typeof TimeSeriesDataPointListSchema> & { [key: string]: unknown }
-  ArrayValue?: z.infer<typeof DatumListSchema> & { [key: string]: unknown }
-  RowValue?: z.infer<typeof RowSchema> & { [key: string]: unknown }
-  NullValue?: z.infer<typeof NullableBooleanSchema> & { [key: string]: unknown }
+  ScalarValue?: z.infer<typeof ScalarValueSchema> & unknown
+  TimeSeriesValue?: z.infer<typeof TimeSeriesDataPointListSchema> & unknown
+  ArrayValue?: z.infer<typeof DatumListSchema> & unknown
+  RowValue?: z.infer<typeof RowSchema> & unknown
+  NullValue?: z.infer<typeof NullableBooleanSchema> & unknown
 }
 
 type TimestampType = string
@@ -215,20 +597,16 @@ type TimestampType = string
 const TimestampSchema: z.ZodType<TimestampType> = z.string().openapi('Timestamp')
 
 type TimeSeriesDataPointType = {
-  Time: z.infer<typeof TimestampSchema> & { [key: string]: unknown }
-  Value: z.infer<typeof DatumSchema> & { [key: string]: unknown }
+  Time: z.infer<typeof TimestampSchema> & unknown
+  Value: z.infer<typeof DatumSchema> & unknown
 }
 
 const CancelQueryResponseSchema = z
   .object({
-    CancellationMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>CancellationMessage</code> is returned when a <code>CancelQuery</code> request for the query specified by <code>QueryId</code> has already been issued. ',
-        }),
-    ).exactOptional(),
+    CancellationMessage: StringSchema.exactOptional().openapi({
+      description:
+        ' A <code>CancellationMessage</code> is returned when a <code>CancelQuery</code> request for the query specified by <code>QueryId</code> has already been issued. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CancelQueryResponse')
@@ -242,14 +620,10 @@ const QueryIdSchema = z
 
 const CancelQueryRequestSchema = z
   .object({
-    QueryId: QueryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the query that needs to be cancelled. <code>QueryID</code> is returned as part of the query result. ',
-        }),
-    ),
+    QueryId: QueryIdSchema.openapi({
+      description:
+        ' The ID of the query that needs to be cancelled. <code>QueryID</code> is returned as part of the query result. ',
+    }),
   })
   .openapi({ required: ['QueryId'], title: 'CancelQueryRequest' })
   .openapi('CancelQueryRequest')
@@ -264,281 +638,12 @@ const ValidationExceptionSchema = z.any().openapi('ValidationException')
 
 const InvalidEndpointExceptionSchema = z.any().openapi('InvalidEndpointException')
 
-const AmazonResourceNameSchema = z.string().min(1).max(2048).openapi('AmazonResourceName')
-
 const CreateScheduledQueryResponseSchema = z
   .object({
-    Arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'ARN for the created scheduled query.' }),
-    ),
+    Arn: AmazonResourceNameSchema.openapi({ description: 'ARN for the created scheduled query.' }),
   })
   .openapi({ required: ['Arn'] })
   .openapi('CreateScheduledQueryResponse')
-
-const ScheduledQueryNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_.-]+/)
-  .min(1)
-  .max(64)
-  .openapi('ScheduledQueryName')
-
-const QueryStringSchema = z.string().min(1).max(262144).openapi('QueryString')
-
-const ScheduleExpressionSchema = z.string().min(1).max(256).openapi('ScheduleExpression')
-
-const ScheduleConfigurationSchema = z
-  .object({
-    ScheduleExpression: ScheduleExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An expression that denotes when to trigger the scheduled query run. This can be a cron expression or a rate expression. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ScheduleExpression'],
-    description: 'Configuration of the schedule of the query.',
-  })
-  .openapi('ScheduleConfiguration')
-
-const SnsConfigurationSchema = z
-  .object({
-    TopicArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'SNS topic ARN that the scheduled query status notifications will be sent to.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['TopicArn'],
-    description: 'Details on SNS that are required to send the notification.',
-  })
-  .openapi('SnsConfiguration')
-
-const NotificationConfigurationSchema = z
-  .object({
-    SnsConfiguration: SnsConfigurationSchema.and(
-      z.any().openapi({ description: 'Details on SNS configuration. ' }),
-    ),
-  })
-  .openapi({
-    required: ['SnsConfiguration'],
-    description:
-      'Notification configuration for a scheduled query. A notification is sent by Timestream when a scheduled query is created, its state is updated or when it is deleted. ',
-  })
-  .openapi('NotificationConfiguration')
-
-const ResourceNameSchema = z.string().openapi('ResourceName')
-
-const SchemaNameSchema = z.string().openapi('SchemaName')
-
-const DimensionValueTypeSchema = z.literal('VARCHAR').openapi('DimensionValueType')
-
-const DimensionMappingSchema = z
-  .object({
-    Name: SchemaNameSchema.and(z.any().openapi({ description: 'Column name from query result.' })),
-    DimensionValueType: DimensionValueTypeSchema.and(
-      z.any().openapi({ description: 'Type for the dimension. ' }),
-    ),
-  })
-  .openapi({
-    required: ['Name', 'DimensionValueType'],
-    description:
-      'This type is used to map column(s) from the query result to a dimension in the destination table.',
-  })
-  .openapi('DimensionMapping')
-
-const DimensionMappingListSchema = z.array(DimensionMappingSchema).openapi('DimensionMappingList')
-
-const ScalarMeasureValueTypeSchema = z
-  .enum(['BIGINT', 'BOOLEAN', 'DOUBLE', 'VARCHAR', 'TIMESTAMP'])
-  .openapi('ScalarMeasureValueType')
-
-const MultiMeasureAttributeMappingSchema = z
-  .object({
-    SourceColumn: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Source column from where the attribute value is to be read.' }),
-    ),
-    TargetMultiMeasureAttributeName: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom name to be used for attribute name in derived table. If not provided, source column name would be used.',
-        }),
-    ).exactOptional(),
-    MeasureValueType: ScalarMeasureValueTypeSchema.and(
-      z.any().openapi({ description: 'Type of the attribute to be read from the source column.' }),
-    ),
-  })
-  .openapi({
-    required: ['SourceColumn', 'MeasureValueType'],
-    description: 'Attribute mapping for MULTI value measures.',
-  })
-  .openapi('MultiMeasureAttributeMapping')
-
-const MultiMeasureAttributeMappingListSchema = z
-  .array(MultiMeasureAttributeMappingSchema)
-  .min(1)
-  .openapi('MultiMeasureAttributeMappingList')
-
-const MultiMeasureMappingsSchema = z
-  .object({
-    TargetMultiMeasureName: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the target multi-measure name in the derived table. This input is required when measureNameColumn is not provided. If MeasureNameColumn is provided, then value from that column will be used as multi-measure name.',
-        }),
-    ).exactOptional(),
-    MultiMeasureAttributeMappings: MultiMeasureAttributeMappingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required. Attribute mappings to be used for mapping query results to ingest data for multi-measure attributes.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['MultiMeasureAttributeMappings'],
-    description:
-      'Only one of MixedMeasureMappings or MultiMeasureMappings is to be provided. MultiMeasureMappings can be used to ingest data as multi measures in the derived table.',
-  })
-  .openapi('MultiMeasureMappings')
-
-const MeasureValueTypeSchema = z
-  .enum(['BIGINT', 'BOOLEAN', 'DOUBLE', 'VARCHAR', 'MULTI'])
-  .openapi('MeasureValueType')
-
-const MixedMeasureMappingSchema = z
-  .object({
-    MeasureName: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Refers to the value of measure_name in a result row. This field is required if MeasureNameColumn is provided.',
-        }),
-    ).exactOptional(),
-    SourceColumn: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This field refers to the source column from which measure-value is to be read for result materialization.',
-        }),
-    ).exactOptional(),
-    TargetMeasureName: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Target measure name to be used. If not provided, the target measure name by default would be measure-name if provided, or sourceColumn otherwise. ',
-        }),
-    ).exactOptional(),
-    MeasureValueType: MeasureValueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of the value that is to be read from sourceColumn. If the mapping is for MULTI, use MeasureValueType.MULTI.',
-        }),
-    ),
-    MultiMeasureAttributeMappings: MultiMeasureAttributeMappingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required when measureValueType is MULTI. Attribute mappings for MULTI value measures.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['MeasureValueType'],
-    description:
-      'MixedMeasureMappings are mappings that can be used to ingest data into a mixture of narrow and multi measures in the derived table.',
-  })
-  .openapi('MixedMeasureMapping')
-
-const MixedMeasureMappingListSchema = z
-  .array(MixedMeasureMappingSchema)
-  .min(1)
-  .openapi('MixedMeasureMappingList')
-
-const TimestreamConfigurationSchema = z
-  .object({
-    DatabaseName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Name of Timestream database to which the query result will be written.',
-        }),
-    ),
-    TableName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of Timestream table that the query result will be written to. The table should be within the same database that is provided in Timestream configuration.',
-        }),
-    ),
-    TimeColumn: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Column from query result that should be used as the time column in destination table. Column type for this should be TIMESTAMP.',
-        }),
-    ),
-    DimensionMappings: DimensionMappingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This is to allow mapping column(s) from the query result to the dimension in the destination table. ',
-        }),
-    ),
-    MultiMeasureMappings: MultiMeasureMappingsSchema.and(
-      z.any().openapi({ description: 'Multi-measure mappings.' }),
-    ).exactOptional(),
-    MixedMeasureMappings: MixedMeasureMappingListSchema.and(
-      z.any().openapi({ description: 'Specifies how to map measures to multi-measure records.' }),
-    ).exactOptional(),
-    MeasureNameColumn: SchemaNameSchema.and(
-      z.any().openapi({ description: 'Name of the measure column.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['DatabaseName', 'TableName', 'TimeColumn', 'DimensionMappings'],
-    description:
-      ' Configuration to write data into Timestream database and table. This configuration allows the user to map the query result select columns into the destination table columns. ',
-  })
-  .openapi('TimestreamConfiguration')
-
-const TargetConfigurationSchema = z
-  .object({
-    TimestreamConfiguration: TimestreamConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration needed to write data into the Timestream database and table.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['TimestreamConfiguration'],
-    description: 'Configuration used for writing the output of a query.',
-  })
-  .openapi('TargetConfiguration')
 
 const ClientTokenSchema = z.string().min(32).max(128).openapi('ClientToken')
 
@@ -548,16 +653,10 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: 'The key of the tag. Tag keys are case sensitive. ' }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value of the tag. Tag values are case sensitive and can be null. ',
-        }),
-    ),
+    Key: TagKeySchema.openapi({ description: 'The key of the tag. Tag keys are case sensitive. ' }),
+    Value: TagValueSchema.openapi({
+      description: 'The value of the tag. Tag values are case sensitive and can be null. ',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -568,130 +667,42 @@ const TagSchema = z
 
 const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
-const StringValue2048Schema = z.string().min(1).max(2048).openapi('StringValue2048')
-
-const S3BucketNameSchema = z
-  .string()
-  .regex(/[a-z0-9][\.\-a-z0-9]{1,61}[a-z0-9]/)
-  .min(3)
-  .max(63)
-  .openapi('S3BucketName')
-
-const S3ObjectKeyPrefixSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9|!\-_*'\(\)]([a-zA-Z0-9]|[!\-_*'\(\)\/.])+/)
-  .min(1)
-  .max(896)
-  .openapi('S3ObjectKeyPrefix')
-
-const S3EncryptionOptionSchema = z.enum(['SSE_S3', 'SSE_KMS']).openapi('S3EncryptionOption')
-
-const S3ConfigurationSchema = z
-  .object({
-    BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Name of the S3 bucket under which error reports will be created.',
-        }),
-    ),
-    ObjectKeyPrefix: S3ObjectKeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Prefix for the error report key. Timestream by default adds the following prefix to the error report path. ',
-        }),
-    ).exactOptional(),
-    EncryptionOption: S3EncryptionOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Encryption at rest options for the error reports. If no encryption option is specified, Timestream will choose SSE_S3 as default. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['BucketName'],
-    description: 'Details on S3 location for error reports that result from running a query. ',
-  })
-  .openapi('S3Configuration')
-
-const ErrorReportConfigurationSchema = z
-  .object({
-    S3Configuration: S3ConfigurationSchema.and(
-      z.any().openapi({ description: 'The S3 configuration for the error reports.' }),
-    ),
-  })
-  .openapi({
-    required: ['S3Configuration'],
-    description: 'Configuration required for error reporting.',
-  })
-  .openapi('ErrorReportConfiguration')
-
 const CreateScheduledQueryRequestSchema = z
   .object({
-    Name: ScheduledQueryNameSchema.and(
-      z.any().openapi({ description: 'Name of the scheduled query.' }),
-    ),
-    QueryString: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The query string to run. Parameter names can be specified in the query string <code>@</code> character followed by an identifier. The named Parameter <code>@scheduled_runtime</code> is reserved and can be used in the query to get the time at which the query is scheduled to run.</p> <p>The timestamp calculated according to the ScheduleConfiguration parameter, will be the value of <code>@scheduled_runtime</code> paramater for each query run. For example, consider an instance of a scheduled query executing on 2021-12-01 00:00:00. For this instance, the <code>@scheduled_runtime</code> parameter is initialized to the timestamp 2021-12-01 00:00:00 when invoking the query.</p>',
-        }),
-    ),
-    ScheduleConfiguration: ScheduleConfigurationSchema.and(
-      z.any().openapi({ description: 'The schedule configuration for the query.' }),
-    ),
-    NotificationConfiguration: NotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Notification configuration for the scheduled query. A notification is sent by Timestream when a query run finishes, when the state is updated or when you delete it. ',
-        }),
-    ),
-    TargetConfiguration: TargetConfigurationSchema.and(
-      z.any().openapi({ description: 'Configuration used for writing the result of a query.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Using a ClientToken makes the call to CreateScheduledQuery idempotent, in other words, making the same request repeatedly will produce the same result. Making multiple identical CreateScheduledQuery requests has the same effect as making a single request. </p> <ul> <li> <p> If CreateScheduledQuery is called without a <code>ClientToken</code>, the Query SDK generates a <code>ClientToken</code> on your behalf.</p> </li> <li> <p> After 8 hours, any request with the same <code>ClientToken</code> is treated as a new request. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ScheduledQueryExecutionRoleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN for the IAM role that Timestream will assume when running the scheduled query. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of key-value pairs to label the scheduled query.' }),
-    ).exactOptional(),
-    KmsKeyId: StringValue2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon KMS key used to encrypt the scheduled query resource, at-rest. If the Amazon KMS key is not specified, the scheduled query resource will be encrypted with a Timestream owned Amazon KMS key. To specify a KMS key, use the key ID, key ARN, alias name, or alias ARN. When using an alias name, prefix the name with <i>alias/</i> </p> <p>If ErrorReportConfiguration uses <code>SSE_KMS</code> as encryption type, the same KmsKeyId is used to encrypt the error report at rest.</p>',
-        }),
-    ).exactOptional(),
-    ErrorReportConfiguration: ErrorReportConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for error reporting. Error reports will be generated when a problem is encountered when writing the query results. ',
-        }),
-    ),
+    Name: ScheduledQueryNameSchema.openapi({ description: 'Name of the scheduled query.' }),
+    QueryString: QueryStringSchema.openapi({
+      description:
+        '<p>The query string to run. Parameter names can be specified in the query string <code>@</code> character followed by an identifier. The named Parameter <code>@scheduled_runtime</code> is reserved and can be used in the query to get the time at which the query is scheduled to run.</p> <p>The timestamp calculated according to the ScheduleConfiguration parameter, will be the value of <code>@scheduled_runtime</code> paramater for each query run. For example, consider an instance of a scheduled query executing on 2021-12-01 00:00:00. For this instance, the <code>@scheduled_runtime</code> parameter is initialized to the timestamp 2021-12-01 00:00:00 when invoking the query.</p>',
+    }),
+    ScheduleConfiguration: ScheduleConfigurationSchema.openapi({
+      description: 'The schedule configuration for the query.',
+    }),
+    NotificationConfiguration: NotificationConfigurationSchema.openapi({
+      description:
+        'Notification configuration for the scheduled query. A notification is sent by Timestream when a query run finishes, when the state is updated or when you delete it. ',
+    }),
+    TargetConfiguration: TargetConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration used for writing the result of a query.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        '<p>Using a ClientToken makes the call to CreateScheduledQuery idempotent, in other words, making the same request repeatedly will produce the same result. Making multiple identical CreateScheduledQuery requests has the same effect as making a single request. </p> <ul> <li> <p> If CreateScheduledQuery is called without a <code>ClientToken</code>, the Query SDK generates a <code>ClientToken</code> on your behalf.</p> </li> <li> <p> After 8 hours, any request with the same <code>ClientToken</code> is treated as a new request. </p> </li> </ul>',
+    }),
+    ScheduledQueryExecutionRoleArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN for the IAM role that Timestream will assume when running the scheduled query. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of key-value pairs to label the scheduled query.',
+    }),
+    KmsKeyId: StringValue2048Schema.exactOptional().openapi({
+      description:
+        '<p>The Amazon KMS key used to encrypt the scheduled query resource, at-rest. If the Amazon KMS key is not specified, the scheduled query resource will be encrypted with a Timestream owned Amazon KMS key. To specify a KMS key, use the key ID, key ARN, alias name, or alias ARN. When using an alias name, prefix the name with <i>alias/</i> </p> <p>If ErrorReportConfiguration uses <code>SSE_KMS</code> as encryption type, the same KmsKeyId is used to encrypt the error report at rest.</p>',
+    }),
+    ErrorReportConfiguration: ErrorReportConfigurationSchema.openapi({
+      description:
+        'Configuration for error reporting. Error reports will be generated when a problem is encountered when writing the query results. ',
+    }),
   })
   .openapi({
     required: [
@@ -712,23 +723,21 @@ const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceede
 
 const DeleteScheduledQueryRequestSchema = z
   .object({
-    ScheduledQueryArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the scheduled query. ' }),
-    ),
+    ScheduledQueryArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the scheduled query. ',
+    }),
   })
   .openapi({ required: ['ScheduledQueryArn'], title: 'DeleteScheduledQueryRequest' })
   .openapi('DeleteScheduledQueryRequest')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const LongSchema = z.int().openapi('Long')
-
 const EndpointSchema = z
   .object({
-    Address: StringSchema.and(z.any().openapi({ description: 'An endpoint address.' })),
-    CachePeriodInMinutes: LongSchema.and(
-      z.any().openapi({ description: 'The TTL for the endpoint, in minutes.' }),
-    ),
+    Address: StringSchema.openapi({ description: 'An endpoint address.' }),
+    CachePeriodInMinutes: LongSchema.openapi({
+      description: 'The TTL for the endpoint, in minutes.',
+    }),
   })
   .openapi({
     required: ['Address', 'CachePeriodInMinutes'],
@@ -741,237 +750,47 @@ const EndpointsSchema = z.array(EndpointSchema).openapi('Endpoints')
 
 const DescribeEndpointsResponseSchema = z
   .object({
-    Endpoints: EndpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>Endpoints</code> object is returned when a <code>DescribeEndpoints</code> request is made.',
-        }),
-    ),
+    Endpoints: EndpointsSchema.openapi({
+      description:
+        'An <code>Endpoints</code> object is returned when a <code>DescribeEndpoints</code> request is made.',
+    }),
   })
   .openapi({ required: ['Endpoints'] })
   .openapi('DescribeEndpointsResponse')
 
 const DescribeEndpointsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeEndpointsRequest' })
   .openapi('DescribeEndpointsRequest')
 
-const TimeSchema = z.iso.datetime({ offset: true }).openapi('Time')
-
-const ScheduledQueryStateSchema = z.enum(['ENABLED', 'DISABLED']).openapi('ScheduledQueryState')
-
-const ScheduledQueryRunStatusSchema = z
-  .enum([
-    'AUTO_TRIGGER_SUCCESS',
-    'AUTO_TRIGGER_FAILURE',
-    'MANUAL_TRIGGER_SUCCESS',
-    'MANUAL_TRIGGER_FAILURE',
-  ])
-  .openapi('ScheduledQueryRunStatus')
-
-const ExecutionStatsSchema = z
+const DescribeScheduledQueryResponseSchema: z.ZodType<DescribeScheduledQueryResponseType> = z
   .object({
-    ExecutionTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total time, measured in milliseconds, that was needed for the scheduled query run to complete.',
-        }),
-    ).exactOptional(),
-    DataWrites: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Data writes metered for records ingested in a single scheduled query run.',
-        }),
-    ).exactOptional(),
-    BytesMetered: LongSchema.and(
-      z.any().openapi({ description: 'Bytes metered for a single scheduled query run.' }),
-    ).exactOptional(),
-    RecordsIngested: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of records ingested for a single scheduled query run. ',
-        }),
-    ).exactOptional(),
-    QueryResultRows: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Number of rows present in the output from running a query before ingestion to destination data source.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Statistics for a single scheduled query run.', required: [] })
-  .openapi('ExecutionStats')
-
-const S3ObjectKeySchema = z.string().openapi('S3ObjectKey')
-
-const S3ReportLocationSchema = z
-  .object({
-    BucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: ' S3 bucket name. ' }),
-    ).exactOptional(),
-    ObjectKey: S3ObjectKeySchema.and(z.any().openapi({ description: 'S3 key. ' })).exactOptional(),
-  })
-  .openapi({ description: ' S3 report location for the scheduled query run.', required: [] })
-  .openapi('S3ReportLocation')
-
-const ErrorReportLocationSchema = z
-  .object({
-    S3ReportLocation: S3ReportLocationSchema.and(
-      z.any().openapi({ description: 'The S3 location where error reports are written.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'This contains the location of the error report for a single scheduled query call. ',
-    required: [],
-  })
-  .openapi('ErrorReportLocation')
-
-const ErrorMessageSchema = z.string().openapi('ErrorMessage')
-
-const ScheduledQueryRunSummarySchema = z
-  .object({
-    InvocationTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'InvocationTime for this run. This is the time at which the query is scheduled to run. Parameter <code>@scheduled_runtime</code> can be used in the query to get the value. ',
-        }),
-    ).exactOptional(),
-    TriggerTime: TimeSchema.and(
-      z.any().openapi({ description: 'The actual time when the query was run.' }),
-    ).exactOptional(),
-    RunStatus: ScheduledQueryRunStatusSchema.and(
-      z.any().openapi({ description: 'The status of a scheduled query run.' }),
-    ).exactOptional(),
-    ExecutionStats: ExecutionStatsSchema.and(
-      z.any().openapi({ description: 'Runtime statistics for a scheduled run.' }),
-    ).exactOptional(),
-    ErrorReportLocation: ErrorReportLocationSchema.and(
-      z.any().openapi({ description: 'S3 location for error report.' }),
-    ).exactOptional(),
-    FailureReason: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Error message for the scheduled query in case of failure. You might have to look at the error report to get more detailed error reasons. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Run summary for the scheduled query', required: [] })
-  .openapi('ScheduledQueryRunSummary')
-
-const ScheduledQueryRunSummaryListSchema = z
-  .array(ScheduledQueryRunSummarySchema)
-  .openapi('ScheduledQueryRunSummaryList')
-
-const ScheduledQueryDescriptionSchema = z
-  .object({
-    Arn: AmazonResourceNameSchema.and(z.any().openapi({ description: 'Scheduled query ARN.' })),
-    Name: ScheduledQueryNameSchema.and(
-      z.any().openapi({ description: 'Name of the scheduled query.' }),
-    ),
-    QueryString: QueryStringSchema.and(z.any().openapi({ description: 'The query to be run.' })),
-    CreationTime: TimeSchema.and(
-      z.any().openapi({ description: 'Creation time of the scheduled query.' }),
-    ).exactOptional(),
-    State: ScheduledQueryStateSchema.and(
-      z.any().openapi({ description: 'State of the scheduled query. ' }),
-    ),
-    PreviousInvocationTime: TimeSchema.and(
-      z.any().openapi({ description: 'Last time the query was run.' }),
-    ).exactOptional(),
-    NextInvocationTime: TimeSchema.and(
-      z.any().openapi({ description: 'The next time the scheduled query is scheduled to run.' }),
-    ).exactOptional(),
-    ScheduleConfiguration: ScheduleConfigurationSchema.and(
-      z.any().openapi({ description: 'Schedule configuration.' }),
-    ),
-    NotificationConfiguration: NotificationConfigurationSchema.and(
-      z.any().openapi({ description: 'Notification configuration.' }),
-    ),
-    TargetConfiguration: TargetConfigurationSchema.and(
-      z.any().openapi({ description: 'Scheduled query target store configuration.' }),
-    ).exactOptional(),
-    ScheduledQueryExecutionRoleArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'IAM role that Timestream uses to run the schedule query.' }),
-    ).exactOptional(),
-    KmsKeyId: StringValue2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A customer provided KMS key used to encrypt the scheduled query resource.',
-        }),
-    ).exactOptional(),
-    ErrorReportConfiguration: ErrorReportConfigurationSchema.and(
-      z.any().openapi({ description: 'Error-reporting configuration for the scheduled query.' }),
-    ).exactOptional(),
-    LastRunSummary: ScheduledQueryRunSummarySchema.and(
-      z.any().openapi({ description: 'Runtime summary for the last scheduled query run. ' }),
-    ).exactOptional(),
-    RecentlyFailedRuns: ScheduledQueryRunSummaryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Runtime summary for the last five failed scheduled query runs.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: [
-      'Arn',
-      'Name',
-      'QueryString',
-      'State',
-      'ScheduleConfiguration',
-      'NotificationConfiguration',
-    ],
-    description: 'Structure that describes scheduled query.',
-  })
-  .openapi('ScheduledQueryDescription')
-
-const DescribeScheduledQueryResponseSchema = z
-  .object({
-    ScheduledQuery: ScheduledQueryDescriptionSchema.and(
-      z.any().openapi({ description: 'The scheduled query.' }),
-    ),
+    ScheduledQuery: ScheduledQueryDescriptionSchema.openapi({
+      description: 'The scheduled query.',
+    }),
   })
   .openapi({ required: ['ScheduledQuery'] })
   .openapi('DescribeScheduledQueryResponse')
 
 const DescribeScheduledQueryRequestSchema = z
   .object({
-    ScheduledQueryArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the scheduled query.' }),
-    ),
+    ScheduledQueryArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the scheduled query.',
+    }),
   })
   .openapi({ required: ['ScheduledQueryArn'], title: 'DescribeScheduledQueryRequest' })
   .openapi('DescribeScheduledQueryRequest')
 
 const ExecuteScheduledQueryRequestSchema = z
   .object({
-    ScheduledQueryArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'ARN of the scheduled query.' }),
-    ),
-    InvocationTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp in UTC. Query will be run as if it was invoked at this timestamp. ',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'Not used. ' }),
-    ).exactOptional(),
+    ScheduledQueryArn: AmazonResourceNameSchema.openapi({
+      description: 'ARN of the scheduled query.',
+    }),
+    InvocationTime: TimeSchema.openapi({
+      description:
+        'The timestamp in UTC. Query will be run as if it was invoked at this timestamp. ',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({ description: 'Not used. ' }),
   })
   .openapi({
     required: ['ScheduledQueryArn', 'InvocationTime'],
@@ -981,23 +800,21 @@ const ExecuteScheduledQueryRequestSchema = z
 
 const TimestreamDestinationSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'Timestream database name. ' }),
-    ).exactOptional(),
-    TableName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'Timestream table name. ' }),
-    ).exactOptional(),
+    DatabaseName: ResourceNameSchema.exactOptional().openapi({
+      description: 'Timestream database name. ',
+    }),
+    TableName: ResourceNameSchema.exactOptional().openapi({
+      description: 'Timestream table name. ',
+    }),
   })
   .openapi({ description: 'Destination for scheduled query.', required: [] })
   .openapi('TimestreamDestination')
 
 const TargetDestinationSchema = z
   .object({
-    TimestreamDestination: TimestreamDestinationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Query result destination details for Timestream data source.' }),
-    ).exactOptional(),
+    TimestreamDestination: TimestreamDestinationSchema.exactOptional().openapi({
+      description: 'Query result destination details for Timestream data source.',
+    }),
   })
   .openapi({
     description:
@@ -1008,37 +825,27 @@ const TargetDestinationSchema = z
 
 const ScheduledQuerySchema = z
   .object({
-    Arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name.' }),
-    ),
-    Name: ScheduledQueryNameSchema.and(
-      z.any().openapi({ description: 'The name of the scheduled query.' }),
-    ),
-    CreationTime: TimeSchema.and(
-      z.any().openapi({ description: 'The creation time of the scheduled query.' }),
-    ).exactOptional(),
-    State: ScheduledQueryStateSchema.and(
-      z.any().openapi({ description: 'State of scheduled query. ' }),
-    ),
-    PreviousInvocationTime: TimeSchema.and(
-      z.any().openapi({ description: 'The last time the scheduled query was run.' }),
-    ).exactOptional(),
-    NextInvocationTime: TimeSchema.and(
-      z.any().openapi({ description: 'The next time the scheduled query is to be run.' }),
-    ).exactOptional(),
-    ErrorReportConfiguration: ErrorReportConfigurationSchema.and(
-      z.any().openapi({ description: 'Configuration for scheduled query error reporting.' }),
-    ).exactOptional(),
-    TargetDestination: TargetDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Target data source where final scheduled query result will be written.',
-        }),
-    ).exactOptional(),
-    LastRunStatus: ScheduledQueryRunStatusSchema.and(
-      z.any().openapi({ description: 'Status of the last scheduled query run.' }),
-    ).exactOptional(),
+    Arn: AmazonResourceNameSchema.openapi({ description: 'The Amazon Resource Name.' }),
+    Name: ScheduledQueryNameSchema.openapi({ description: 'The name of the scheduled query.' }),
+    CreationTime: TimeSchema.exactOptional().openapi({
+      description: 'The creation time of the scheduled query.',
+    }),
+    State: ScheduledQueryStateSchema.openapi({ description: 'State of scheduled query. ' }),
+    PreviousInvocationTime: TimeSchema.exactOptional().openapi({
+      description: 'The last time the scheduled query was run.',
+    }),
+    NextInvocationTime: TimeSchema.exactOptional().openapi({
+      description: 'The next time the scheduled query is to be run.',
+    }),
+    ErrorReportConfiguration: ErrorReportConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration for scheduled query error reporting.',
+    }),
+    TargetDestination: TargetDestinationSchema.exactOptional().openapi({
+      description: 'Target data source where final scheduled query result will be written.',
+    }),
+    LastRunStatus: ScheduledQueryRunStatusSchema.exactOptional().openapi({
+      description: 'Status of the last scheduled query run.',
+    }),
   })
   .openapi({ required: ['Arn', 'Name', 'State'], description: 'Scheduled Query' })
   .openapi('ScheduledQuery')
@@ -1051,17 +858,13 @@ const NextScheduledQueriesResultsTokenSchema = z
 
 const ListScheduledQueriesResponseSchema = z
   .object({
-    ScheduledQueries: ScheduledQueryListSchema.and(
-      z.any().openapi({ description: 'A list of scheduled queries.' }),
-    ),
-    NextToken: NextScheduledQueriesResultsTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token to specify where to start paginating. This is the NextToken from a previously truncated response.',
-        }),
-    ).exactOptional(),
+    ScheduledQueries: ScheduledQueryListSchema.openapi({
+      description: 'A list of scheduled queries.',
+    }),
+    NextToken: NextScheduledQueriesResultsTokenSchema.exactOptional().openapi({
+      description:
+        'A token to specify where to start paginating. This is the NextToken from a previously truncated response.',
+    }),
   })
   .openapi({ required: ['ScheduledQueries'] })
   .openapi('ListScheduledQueriesResponse')
@@ -1074,17 +877,13 @@ const MaxScheduledQueriesResultsSchema = z
 
 const ListScheduledQueriesRequestSchema = z
   .object({
-    MaxResults: MaxScheduledQueriesResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return in the output. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the output. To resume pagination, provide the <code>NextToken</code> value as the argument to the subsequent call to <code>ListScheduledQueriesRequest</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: NextScheduledQueriesResultsTokenSchema.and(
-      z.any().openapi({ description: ' A pagination token to resume pagination.' }),
-    ).exactOptional(),
+    MaxResults: MaxScheduledQueriesResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return in the output. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the output. To resume pagination, provide the <code>NextToken</code> value as the argument to the subsequent call to <code>ListScheduledQueriesRequest</code>.',
+    }),
+    NextToken: NextScheduledQueriesResultsTokenSchema.exactOptional().openapi({
+      description: ' A pagination token to resume pagination.',
+    }),
   })
   .openapi({ title: 'ListScheduledQueriesRequest', required: [] })
   .openapi('ListScheduledQueriesRequest')
@@ -1093,19 +892,13 @@ const NextTagsForResourceResultsTokenSchema = z.string().openapi('NextTagsForRes
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags currently associated with the Timestream resource. ' }),
-    ),
-    NextToken: NextTagsForResourceResultsTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token to resume pagination with a subsequent call to <code>ListTagsForResourceResponse</code>.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.openapi({
+      description: 'The tags currently associated with the Timestream resource. ',
+    }),
+    NextToken: NextTagsForResourceResultsTokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token to resume pagination with a subsequent call to <code>ListTagsForResourceResponse</code>.',
+    }),
   })
   .openapi({ required: ['Tags'] })
   .openapi('ListTagsForResourceResponse')
@@ -1114,41 +907,33 @@ const MaxTagsForResourceResultSchema = z.int().min(1).max(200).openapi('MaxTagsF
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Timestream resource with tags to be listed. This value is an Amazon Resource Name (ARN).',
-        }),
-    ),
-    MaxResults: MaxTagsForResourceResultSchema.and(
-      z.any().openapi({ description: 'The maximum number of tags to return.' }),
-    ).exactOptional(),
-    NextToken: NextTagsForResourceResultsTokenSchema.and(
-      z.any().openapi({ description: 'A pagination token to resume pagination.' }),
-    ).exactOptional(),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Timestream resource with tags to be listed. This value is an Amazon Resource Name (ARN).',
+    }),
+    MaxResults: MaxTagsForResourceResultSchema.exactOptional().openapi({
+      description: 'The maximum number of tags to return.',
+    }),
+    NextToken: NextTagsForResourceResultsTokenSchema.exactOptional().openapi({
+      description: 'A pagination token to resume pagination.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const SelectColumnSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Name of the column.' })).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'Name of the column.' }),
     Type: TypeSchema.exactOptional(),
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: ' Database that has this column.' }),
-    ).exactOptional(),
-    TableName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'Table within the database that has this column. ' }),
-    ).exactOptional(),
-    Aliased: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'True, if the column name was aliased by the query. False otherwise.',
-        }),
-    ).exactOptional(),
+    DatabaseName: ResourceNameSchema.exactOptional().openapi({
+      description: ' Database that has this column.',
+    }),
+    TableName: ResourceNameSchema.exactOptional().openapi({
+      description: 'Table within the database that has this column. ',
+    }),
+    Aliased: NullableBooleanSchema.exactOptional().openapi({
+      description: 'True, if the column name was aliased by the query. False otherwise.',
+    }),
   })
   .openapi({ description: 'Details of the column that is returned by the query. ', required: [] })
   .openapi('SelectColumn')
@@ -1156,10 +941,7 @@ const SelectColumnSchema = z
 const SelectColumnListSchema = z.array(SelectColumnSchema).openapi('SelectColumnList')
 
 const ParameterMappingSchema = z
-  .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Parameter name.' })),
-    Type: TypeSchema,
-  })
+  .object({ Name: StringSchema.openapi({ description: 'Parameter name.' }), Type: TypeSchema })
   .openapi({ required: ['Name', 'Type'], description: 'Mapping for named parameters.' })
   .openapi('ParameterMapping')
 
@@ -1167,41 +949,29 @@ const ParameterMappingListSchema = z.array(ParameterMappingSchema).openapi('Para
 
 const PrepareQueryResponseSchema = z
   .object({
-    QueryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The query string that you want prepare.' }),
-    ),
-    Columns: SelectColumnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of SELECT clause columns of the submitted query string. ',
-        }),
-    ),
-    Parameters: ParameterMappingListSchema.and(
-      z.any().openapi({ description: 'A list of parameters used in the submitted query string. ' }),
-    ),
+    QueryString: QueryStringSchema.openapi({
+      description: 'The query string that you want prepare.',
+    }),
+    Columns: SelectColumnListSchema.openapi({
+      description: 'A list of SELECT clause columns of the submitted query string. ',
+    }),
+    Parameters: ParameterMappingListSchema.openapi({
+      description: 'A list of parameters used in the submitted query string. ',
+    }),
   })
   .openapi({ required: ['QueryString', 'Columns', 'Parameters'] })
   .openapi('PrepareQueryResponse')
 
 const PrepareQueryRequestSchema = z
   .object({
-    QueryString: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Timestream query string that you want to use as a prepared statement. Parameter names can be specified in the query string <code>@</code> character followed by an identifier. ',
-        }),
-    ),
-    ValidateOnly: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'By setting this value to <code>true</code>, Timestream will only validate that the query string is a valid Timestream query, and not store the prepared query for later use.',
-        }),
-    ).exactOptional(),
+    QueryString: QueryStringSchema.openapi({
+      description:
+        'The Timestream query string that you want to use as a prepared statement. Parameter names can be specified in the query string <code>@</code> character followed by an identifier. ',
+    }),
+    ValidateOnly: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'By setting this value to <code>true</code>, Timestream will only validate that the query string is a valid Timestream query, and not store the prepared query for later use.',
+    }),
   })
   .openapi({ required: ['QueryString'], title: 'PrepareQueryRequest' })
   .openapi('PrepareQueryRequest')
@@ -1214,25 +984,17 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const QueryStatusSchema = z
   .object({
-    ProgressPercentage: DoubleSchema.and(
-      z.any().openapi({ description: 'The progress of the query, expressed as a percentage.' }),
-    ).exactOptional(),
-    CumulativeBytesScanned: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of data scanned by the query in bytes. This is a cumulative sum and represents the total amount of bytes scanned since the query was started. ',
-        }),
-    ).exactOptional(),
-    CumulativeBytesMetered: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of data scanned by the query in bytes that you will be charged for. This is a cumulative sum and represents the total amount of data that you will be charged for since the query was started. The charge is applied only once and is either applied when the query completes running or when the query is cancelled. ',
-        }),
-    ).exactOptional(),
+    ProgressPercentage: DoubleSchema.exactOptional().openapi({
+      description: 'The progress of the query, expressed as a percentage.',
+    }),
+    CumulativeBytesScanned: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of data scanned by the query in bytes. This is a cumulative sum and represents the total amount of bytes scanned since the query was started. ',
+    }),
+    CumulativeBytesMetered: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of data scanned by the query in bytes that you will be charged for. This is a cumulative sum and represents the total amount of data that you will be charged for since the query was started. The charge is applied only once and is either applied when the query completes running or when the query is cancelled. ',
+    }),
   })
   .openapi({
     description: 'Information about the status of the query, including progress and bytes scanned.',
@@ -1242,31 +1004,19 @@ const QueryStatusSchema = z
 
 const QueryResponseSchema = z
   .object({
-    QueryId: QueryIdSchema.and(
-      z.any().openapi({ description: ' A unique ID for the given query. ' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token that can be used again on a <code>Query</code> call to get the next set of results. ',
-        }),
-    ).exactOptional(),
-    Rows: RowListSchema.and(
-      z.any().openapi({ description: ' The result set rows returned by the query. ' }),
-    ),
-    ColumnInfo: ColumnInfoListSchema.and(
-      z.any().openapi({ description: ' The column data types of the returned result set. ' }),
-    ),
-    QueryStatus: QueryStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the status of the query, including progress and bytes scanned.',
-        }),
-    ).exactOptional(),
+    QueryId: QueryIdSchema.openapi({ description: ' A unique ID for the given query. ' }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token that can be used again on a <code>Query</code> call to get the next set of results. ',
+    }),
+    Rows: RowListSchema.openapi({ description: ' The result set rows returned by the query. ' }),
+    ColumnInfo: ColumnInfoListSchema.openapi({
+      description: ' The column data types of the returned result set. ',
+    }),
+    QueryStatus: QueryStatusSchema.exactOptional().openapi({
+      description:
+        'Information about the status of the query, including progress and bytes scanned.',
+    }),
   })
   .openapi({ required: ['QueryId', 'Rows', 'ColumnInfo'] })
   .openapi('QueryResponse')
@@ -1277,92 +1027,64 @@ const MaxQueryResultsSchema = z.int().min(1).max(1000).openapi('MaxQueryResults'
 
 const QueryRequestSchema = z
   .object({
-    QueryString: QueryStringSchema.and(
-      z.any().openapi({ description: ' The query to be run by Timestream. ' }),
-    ),
-    ClientToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Unique, case-sensitive string of up to 64 ASCII characters specified when a <code>Query</code> request is made. Providing a <code>ClientToken</code> makes the call to <code>Query</code> <i>idempotent</i>. This means that running the same query repeatedly will produce the same result. In other words, making multiple identical <code>Query</code> requests has the same effect as making a single request. When using <code>ClientToken</code> in a query, note the following: </p> <ul> <li> <p> If the Query API is instantiated without a <code>ClientToken</code>, the Query SDK generates a <code>ClientToken</code> on your behalf.</p> </li> <li> <p>If the <code>Query</code> invocation only contains the <code>ClientToken</code> but does not include a <code>NextToken</code>, that invocation of <code>Query</code> is assumed to be a new query run.</p> </li> <li> <p>If the invocation contains <code>NextToken</code>, that particular invocation is assumed to be a subsequent invocation of a prior call to the Query API, and a result set is returned.</p> </li> <li> <p> After 4 hours, any request with the same <code>ClientToken</code> is treated as a new request. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A pagination token used to return a set of results. When the <code>Query</code> API is invoked using <code>NextToken</code>, that particular invocation is assumed to be a subsequent invocation of a prior call to <code>Query</code>, and a result set is returned. However, if the <code>Query</code> invocation only contains the <code>ClientToken</code>, that invocation of <code>Query</code> is assumed to be a new query run. </p> <p>Note the following when using NextToken in a query:</p> <ul> <li> <p>A pagination token can be used for up to five <code>Query</code> invocations, OR for a duration of up to 1 hour – whichever comes first.</p> </li> <li> <p>Using the same <code>NextToken</code> will return the same set of records. To keep paginating through the result set, you must to use the most recent <code>nextToken</code>.</p> </li> <li> <p>Suppose a <code>Query</code> invocation returns two <code>NextToken</code> values, <code>TokenA</code> and <code>TokenB</code>. If <code>TokenB</code> is used in a subsequent <code>Query</code> invocation, then <code>TokenA</code> is invalidated and cannot be reused.</p> </li> <li> <p>To request a previous result set from a query after pagination has begun, you must re-invoke the Query API.</p> </li> <li> <p>The latest <code>NextToken</code> should be used to paginate until <code>null</code> is returned, at which point a new <code>NextToken</code> should be used.</p> </li> <li> <p> If the IAM principal of the query initiator and the result reader are not the same and/or the query initiator and the result reader do not have the same query string in the query requests, the query will fail with an <code>Invalid pagination token</code> error. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MaxRows: MaxQueryResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The total number of rows to be returned in the <code>Query</code> output. The initial run of <code>Query</code> with a <code>MaxRows</code> value specified will return the result set of the query in two cases: </p> <ul> <li> <p>The size of the result is less than <code>1MB</code>.</p> </li> <li> <p>The number of rows in the result set is less than the value of <code>maxRows</code>.</p> </li> </ul> <p>Otherwise, the initial invocation of <code>Query</code> only returns a <code>NextToken</code>, which can then be used in subsequent calls to fetch the result set. To resume pagination, provide the <code>NextToken</code> value in the subsequent command.</p> <p>If the row size is large (e.g. a row has many columns), Timestream may return fewer rows to keep the response size from exceeding the 1 MB limit. If <code>MaxRows</code> is not provided, Timestream will send the necessary number of rows to meet the 1 MB limit.</p>',
-        }),
-    ).exactOptional(),
+    QueryString: QueryStringSchema.openapi({ description: ' The query to be run by Timestream. ' }),
+    ClientToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p> Unique, case-sensitive string of up to 64 ASCII characters specified when a <code>Query</code> request is made. Providing a <code>ClientToken</code> makes the call to <code>Query</code> <i>idempotent</i>. This means that running the same query repeatedly will produce the same result. In other words, making multiple identical <code>Query</code> requests has the same effect as making a single request. When using <code>ClientToken</code> in a query, note the following: </p> <ul> <li> <p> If the Query API is instantiated without a <code>ClientToken</code>, the Query SDK generates a <code>ClientToken</code> on your behalf.</p> </li> <li> <p>If the <code>Query</code> invocation only contains the <code>ClientToken</code> but does not include a <code>NextToken</code>, that invocation of <code>Query</code> is assumed to be a new query run.</p> </li> <li> <p>If the invocation contains <code>NextToken</code>, that particular invocation is assumed to be a subsequent invocation of a prior call to the Query API, and a result set is returned.</p> </li> <li> <p> After 4 hours, any request with the same <code>ClientToken</code> is treated as a new request. </p> </li> </ul>',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        '<p> A pagination token used to return a set of results. When the <code>Query</code> API is invoked using <code>NextToken</code>, that particular invocation is assumed to be a subsequent invocation of a prior call to <code>Query</code>, and a result set is returned. However, if the <code>Query</code> invocation only contains the <code>ClientToken</code>, that invocation of <code>Query</code> is assumed to be a new query run. </p> <p>Note the following when using NextToken in a query:</p> <ul> <li> <p>A pagination token can be used for up to five <code>Query</code> invocations, OR for a duration of up to 1 hour – whichever comes first.</p> </li> <li> <p>Using the same <code>NextToken</code> will return the same set of records. To keep paginating through the result set, you must to use the most recent <code>nextToken</code>.</p> </li> <li> <p>Suppose a <code>Query</code> invocation returns two <code>NextToken</code> values, <code>TokenA</code> and <code>TokenB</code>. If <code>TokenB</code> is used in a subsequent <code>Query</code> invocation, then <code>TokenA</code> is invalidated and cannot be reused.</p> </li> <li> <p>To request a previous result set from a query after pagination has begun, you must re-invoke the Query API.</p> </li> <li> <p>The latest <code>NextToken</code> should be used to paginate until <code>null</code> is returned, at which point a new <code>NextToken</code> should be used.</p> </li> <li> <p> If the IAM principal of the query initiator and the result reader are not the same and/or the query initiator and the result reader do not have the same query string in the query requests, the query will fail with an <code>Invalid pagination token</code> error. </p> </li> </ul>',
+    }),
+    MaxRows: MaxQueryResultsSchema.exactOptional().openapi({
+      description:
+        '<p> The total number of rows to be returned in the <code>Query</code> output. The initial run of <code>Query</code> with a <code>MaxRows</code> value specified will return the result set of the query in two cases: </p> <ul> <li> <p>The size of the result is less than <code>1MB</code>.</p> </li> <li> <p>The number of rows in the result set is less than the value of <code>maxRows</code>.</p> </li> </ul> <p>Otherwise, the initial invocation of <code>Query</code> only returns a <code>NextToken</code>, which can then be used in subsequent calls to fetch the result set. To resume pagination, provide the <code>NextToken</code> value in the subsequent command.</p> <p>If the row size is large (e.g. a row has many columns), Timestream may return fewer rows to keep the response size from exceeding the 1 MB limit. If <code>MaxRows</code> is not provided, Timestream will send the necessary number of rows to meet the 1 MB limit.</p>',
+    }),
   })
   .openapi({ required: ['QueryString'], title: 'QueryRequest' })
   .openapi('QueryRequest')
 
 const QueryExecutionExceptionSchema = z.any().openapi('QueryExecutionException')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the Timestream resource to which tags should be added. This value is an Amazon Resource Name (ARN).',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the Timestream resource.' }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'Identifies the Timestream resource to which tags should be added. This value is an Amazon Resource Name (ARN).',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The tags to be assigned to the Timestream resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Timestream resource that the tags will be removed from. This value is an Amazon Resource Name (ARN). ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags keys. Existing tags of the resource whose keys are members of this list will be removed from the Timestream resource. ',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Timestream resource that the tags will be removed from. This value is an Amazon Resource Name (ARN). ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'A list of tags keys. Existing tags of the resource whose keys are members of this list will be removed from the Timestream resource. ',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateScheduledQueryRequestSchema = z
   .object({
-    ScheduledQueryArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'ARN of the scheuled query.' }),
-    ),
-    State: ScheduledQueryStateSchema.and(
-      z.any().openapi({ description: 'State of the scheduled query. ' }),
-    ),
+    ScheduledQueryArn: AmazonResourceNameSchema.openapi({
+      description: 'ARN of the scheuled query.',
+    }),
+    State: ScheduledQueryStateSchema.openapi({ description: 'State of the scheduled query. ' }),
   })
   .openapi({ required: ['ScheduledQueryArn', 'State'], title: 'UpdateScheduledQueryRequest' })
   .openapi('UpdateScheduledQueryRequest')

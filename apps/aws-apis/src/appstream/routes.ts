@@ -11,12 +11,12 @@ const ArnSchema = z
 
 const ApplicationFleetAssociationSchema = z
   .object({
-    FleetName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the fleet associated with the application.' }),
-    ),
-    ApplicationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the application associated with the fleet.' }),
-    ),
+    FleetName: StringSchema.openapi({
+      description: 'The name of the fleet associated with the application.',
+    }),
+    ApplicationArn: ArnSchema.openapi({
+      description: 'The ARN of the application associated with the fleet.',
+    }),
   })
   .openapi({
     required: ['FleetName', 'ApplicationArn'],
@@ -26,14 +26,10 @@ const ApplicationFleetAssociationSchema = z
 
 const AssociateApplicationFleetResultSchema = z
   .object({
-    ApplicationFleetAssociation: ApplicationFleetAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If fleet name is specified, this returns the list of applications that are associated to it. If application ARN is specified, this returns the list of fleets to which it is associated.',
-        }),
-    ).exactOptional(),
+    ApplicationFleetAssociation: ApplicationFleetAssociationSchema.exactOptional().openapi({
+      description:
+        'If fleet name is specified, this returns the list of applications that are associated to it. If application ARN is specified, this returns the list of fleets to which it is associated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateApplicationFleetResult')
@@ -45,8 +41,8 @@ const NameSchema = z
 
 const AssociateApplicationFleetRequestSchema = z
   .object({
-    FleetName: NameSchema.and(z.any().openapi({ description: 'The name of the fleet.' })),
-    ApplicationArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the application.' })),
+    FleetName: NameSchema.openapi({ description: 'The name of the fleet.' }),
+    ApplicationArn: ArnSchema.openapi({ description: 'The ARN of the application.' }),
   })
   .openapi({ required: ['FleetName', 'ApplicationArn'], title: 'AssociateApplicationFleetRequest' })
   .openapi('AssociateApplicationFleetRequest')
@@ -64,18 +60,16 @@ const InvalidParameterCombinationExceptionSchema = z
 const OperationNotPermittedExceptionSchema = z.any().openapi('OperationNotPermittedException')
 
 const AssociateApplicationToEntitlementResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateApplicationToEntitlementResult')
 
 const AssociateApplicationToEntitlementRequestSchema = z
   .object({
-    StackName: NameSchema.and(z.any().openapi({ description: 'The name of the stack.' })),
-    EntitlementName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the entitlement.' }),
-    ),
-    ApplicationIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the application.' }),
-    ),
+    StackName: NameSchema.openapi({ description: 'The name of the stack.' }),
+    EntitlementName: NameSchema.openapi({ description: 'The name of the entitlement.' }),
+    ApplicationIdentifier: StringSchema.openapi({
+      description: 'The identifier of the application.',
+    }),
   })
   .openapi({
     required: ['StackName', 'EntitlementName', 'ApplicationIdentifier'],
@@ -85,12 +79,12 @@ const AssociateApplicationToEntitlementRequestSchema = z
 
 const EntitlementNotFoundExceptionSchema = z.any().openapi('EntitlementNotFoundException')
 
-const AssociateFleetResultSchema = z.object({}).openapi('AssociateFleetResult')
+const AssociateFleetResultSchema = z.looseObject({}).openapi('AssociateFleetResult')
 
 const AssociateFleetRequestSchema = z
   .object({
-    FleetName: StringSchema.and(z.any().openapi({ description: 'The name of the fleet. ' })),
-    StackName: StringSchema.and(z.any().openapi({ description: 'The name of the stack.' })),
+    FleetName: StringSchema.openapi({ description: 'The name of the fleet. ' }),
+    StackName: StringSchema.openapi({ description: 'The name of the stack.' }),
   })
   .openapi({ required: ['FleetName', 'StackName'], title: 'AssociateFleetRequest' })
   .openapi('AssociateFleetRequest')
@@ -114,28 +108,20 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const UserStackAssociationSchema = z
   .object({
-    StackName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the stack that is associated with the user.' }),
-    ),
-    UserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The email address of the user who is associated with the stack.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
-        }),
-    ),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z.any().openapi({ description: 'The authentication type for the user.' }),
-    ),
-    SendEmailNotification: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether a welcome email is sent to a user after the user is created in the user pool.',
-        }),
-    ).exactOptional(),
+    StackName: StringSchema.openapi({
+      description: 'The name of the stack that is associated with the user.',
+    }),
+    UserName: UsernameSchema.openapi({
+      description:
+        "<p>The email address of the user who is associated with the stack.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
+    }),
+    AuthenticationType: AuthenticationTypeSchema.openapi({
+      description: 'The authentication type for the user.',
+    }),
+    SendEmailNotification: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether a welcome email is sent to a user after the user is created in the user pool.',
+    }),
   })
   .openapi({
     required: ['StackName', 'UserName', 'AuthenticationType'],
@@ -149,25 +135,17 @@ const UserStackAssociationErrorCodeSchema = z
 
 const UserStackAssociationErrorSchema = z
   .object({
-    UserStackAssociation: UserStackAssociationSchema.and(
-      z.any().openapi({ description: 'Information about the user and associated stack.' }),
-    ).exactOptional(),
-    ErrorCode: UserStackAssociationErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code for the error that is returned when a user can’t be associated with or disassociated from a stack.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error message for the error that is returned when a user can’t be associated with or disassociated from a stack.',
-        }),
-    ).exactOptional(),
+    UserStackAssociation: UserStackAssociationSchema.exactOptional().openapi({
+      description: 'Information about the user and associated stack.',
+    }),
+    ErrorCode: UserStackAssociationErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The error code for the error that is returned when a user can’t be associated with or disassociated from a stack.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'The error message for the error that is returned when a user can’t be associated with or disassociated from a stack.',
+    }),
   })
   .openapi({
     description:
@@ -182,9 +160,9 @@ const UserStackAssociationErrorListSchema = z
 
 const BatchAssociateUserStackResultSchema = z
   .object({
-    errors: UserStackAssociationErrorListSchema.and(
-      z.any().openapi({ description: 'The list of UserStackAssociationError objects.' }),
-    ).exactOptional(),
+    errors: UserStackAssociationErrorListSchema.exactOptional().openapi({
+      description: 'The list of UserStackAssociationError objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchAssociateUserStackResult')
@@ -197,36 +175,36 @@ const UserStackAssociationListSchema = z
 
 const BatchAssociateUserStackRequestSchema = z
   .object({
-    UserStackAssociations: UserStackAssociationListSchema.and(
-      z.any().openapi({ description: 'The list of UserStackAssociation objects.' }),
-    ),
+    UserStackAssociations: UserStackAssociationListSchema.openapi({
+      description: 'The list of UserStackAssociation objects.',
+    }),
   })
   .openapi({ required: ['UserStackAssociations'], title: 'BatchAssociateUserStackRequest' })
   .openapi('BatchAssociateUserStackRequest')
 
 const BatchDisassociateUserStackResultSchema = z
   .object({
-    errors: UserStackAssociationErrorListSchema.and(
-      z.any().openapi({ description: 'The list of UserStackAssociationError objects.' }),
-    ).exactOptional(),
+    errors: UserStackAssociationErrorListSchema.exactOptional().openapi({
+      description: 'The list of UserStackAssociationError objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDisassociateUserStackResult')
 
 const BatchDisassociateUserStackRequestSchema = z
   .object({
-    UserStackAssociations: UserStackAssociationListSchema.and(
-      z.any().openapi({ description: 'The list of UserStackAssociation objects.' }),
-    ),
+    UserStackAssociations: UserStackAssociationListSchema.openapi({
+      description: 'The list of UserStackAssociation objects.',
+    }),
   })
   .openapi({ required: ['UserStackAssociations'], title: 'BatchDisassociateUserStackRequest' })
   .openapi('BatchDisassociateUserStackRequest')
 
 const CopyImageResponseSchema = z
   .object({
-    DestinationImageName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the destination image.' }),
-    ).exactOptional(),
+    DestinationImageName: NameSchema.exactOptional().openapi({
+      description: 'The name of the destination image.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CopyImageResponse')
@@ -237,32 +215,17 @@ const DescriptionSchema = z.string().max(256).openapi('Description')
 
 const CopyImageRequestSchema = z
   .object({
-    SourceImageName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the image to copy.' }),
-    ),
-    DestinationImageName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name that the image will have when it is copied to the destination.',
-        }),
-    ),
-    DestinationRegion: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination region to which the image will be copied. This parameter is required, even if you are copying an image within the same region.',
-        }),
-    ),
-    DestinationImageDescription: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description that the image will have when it is copied to the destination.',
-        }),
-    ).exactOptional(),
+    SourceImageName: NameSchema.openapi({ description: 'The name of the image to copy.' }),
+    DestinationImageName: NameSchema.openapi({
+      description: 'The name that the image will have when it is copied to the destination.',
+    }),
+    DestinationRegion: RegionNameSchema.openapi({
+      description:
+        'The destination region to which the image will be copied. This parameter is required, even if you are copying an image within the same region.',
+    }),
+    DestinationImageDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'The description that the image will have when it is copied to the destination.',
+    }),
   })
   .openapi({
     required: ['SourceImageName', 'DestinationImageName', 'DestinationRegion'],
@@ -285,10 +248,8 @@ const S3KeySchema = z.string().min(1).max(1024).openapi('S3Key')
 
 const S3LocationSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z.any().openapi({ description: 'The S3 bucket of the S3 object.' }),
-    ),
-    S3Key: S3KeySchema.and(z.any().openapi({ description: 'The S3 key of the S3 object.' })),
+    S3Bucket: S3BucketSchema.openapi({ description: 'The S3 bucket of the S3 object.' }),
+    S3Key: S3KeySchema.openapi({ description: 'The S3 key of the S3 object.' }),
   })
   .openapi({ required: ['S3Bucket', 'S3Key'], description: 'Describes the S3 location.' })
   .openapi('S3Location')
@@ -297,20 +258,16 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const ScriptDetailsSchema = z
   .object({
-    ScriptS3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The S3 object location for the script.' }),
-    ),
-    ExecutablePath: StringSchema.and(
-      z.any().openapi({ description: 'The run path for the script.' }),
-    ),
-    ExecutableParameters: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The runtime parameters passed to the run path for the script.' }),
-    ).exactOptional(),
-    TimeoutInSeconds: IntegerSchema.and(
-      z.any().openapi({ description: 'The run timeout, in seconds, for the script.' }),
-    ),
+    ScriptS3Location: S3LocationSchema.openapi({
+      description: 'The S3 object location for the script.',
+    }),
+    ExecutablePath: StringSchema.openapi({ description: 'The run path for the script.' }),
+    ExecutableParameters: StringSchema.exactOptional().openapi({
+      description: 'The runtime parameters passed to the run path for the script.',
+    }),
+    TimeoutInSeconds: IntegerSchema.openapi({
+      description: 'The run timeout, in seconds, for the script.',
+    }),
   })
   .openapi({
     required: ['ScriptS3Location', 'ExecutablePath', 'TimeoutInSeconds'],
@@ -322,23 +279,23 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const AppBlockSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the app block.' })),
-    Arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the app block.' })),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the app block.' }),
-    ).exactOptional(),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The display name of the app block.' }),
-    ).exactOptional(),
-    SourceS3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The source S3 location of the app block.' }),
-    ).exactOptional(),
-    SetupScriptDetails: ScriptDetailsSchema.and(
-      z.any().openapi({ description: 'The setup script details of the app block.' }),
-    ),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The created time of the app block.' }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The name of the app block.' }),
+    Arn: ArnSchema.openapi({ description: 'The ARN of the app block.' }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the app block.',
+    }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'The display name of the app block.',
+    }),
+    SourceS3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The source S3 location of the app block.',
+    }),
+    SetupScriptDetails: ScriptDetailsSchema.openapi({
+      description: 'The setup script details of the app block.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The created time of the app block.',
+    }),
   })
   .openapi({
     required: ['Name', 'Arn', 'SetupScriptDetails'],
@@ -348,11 +305,7 @@ const AppBlockSchema = z
   .openapi('AppBlock')
 
 const CreateAppBlockResultSchema = z
-  .object({
-    AppBlock: AppBlockSchema.and(
-      z.any().openapi({ description: 'The app block.' }),
-    ).exactOptional(),
-  })
+  .object({ AppBlock: AppBlockSchema.exactOptional().openapi({ description: 'The app block.' }) })
   .openapi({ required: [] })
   .openapi('CreateAppBlockResult')
 
@@ -373,26 +326,22 @@ const TagsSchema = z
 
 const CreateAppBlockRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the app block.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the app block.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The display name of the app block. This is not displayed to the user.',
-        }),
-    ).exactOptional(),
-    SourceS3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The source S3 location of the app block.' }),
-    ),
-    SetupScriptDetails: ScriptDetailsSchema.and(
-      z.any().openapi({ description: 'The setup script details of the app block.' }),
-    ),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags assigned to the app block.' }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'The name of the app block.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the app block.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The display name of the app block. This is not displayed to the user.',
+    }),
+    SourceS3Location: S3LocationSchema.openapi({
+      description: 'The source S3 location of the app block.',
+    }),
+    SetupScriptDetails: ScriptDetailsSchema.openapi({
+      description: 'The setup script details of the app block.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags assigned to the app block.',
+    }),
   })
   .openapi({
     required: ['Name', 'SourceS3Location', 'SetupScriptDetails'],
@@ -412,66 +361,47 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const ApplicationSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ).exactOptional(),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The application name to display.' }),
-    ).exactOptional(),
-    IconURL: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URL for the application icon. This URL might be time-limited.',
-        }),
-    ).exactOptional(),
-    LaunchPath: StringSchema.and(
-      z.any().openapi({ description: 'The path to the application executable in the instance.' }),
-    ).exactOptional(),
-    LaunchParameters: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The arguments that are passed to the application at launch.' }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there is a problem, the application can be disabled after image creation.',
-        }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'Additional attributes that describe the application.' }),
-    ).exactOptional(),
-    WorkingDirectory: StringSchema.and(
-      z.any().openapi({ description: 'The working directory for the application.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the application.' }),
-    ).exactOptional(),
-    AppBlockArn: ArnSchema.and(
-      z.any().openapi({ description: 'The app block ARN of the application.' }),
-    ).exactOptional(),
-    IconS3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The S3 location of the application icon.' }),
-    ).exactOptional(),
-    Platforms: PlatformsSchema.and(
-      z.any().openapi({ description: 'The platforms on which the application can run.' }),
-    ).exactOptional(),
-    InstanceFamilies: StringListSchema.and(
-      z.any().openapi({ description: 'The instance families for the application.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the application was created within the app block.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the application.' }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'The application name to display.',
+    }),
+    IconURL: StringSchema.exactOptional().openapi({
+      description: 'The URL for the application icon. This URL might be time-limited.',
+    }),
+    LaunchPath: StringSchema.exactOptional().openapi({
+      description: 'The path to the application executable in the instance.',
+    }),
+    LaunchParameters: StringSchema.exactOptional().openapi({
+      description: 'The arguments that are passed to the application at launch.',
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'If there is a problem, the application can be disabled after image creation.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional attributes that describe the application.',
+    }),
+    WorkingDirectory: StringSchema.exactOptional().openapi({
+      description: 'The working directory for the application.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the application.' }),
+    AppBlockArn: ArnSchema.exactOptional().openapi({
+      description: 'The app block ARN of the application.',
+    }),
+    IconS3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The S3 location of the application icon.',
+    }),
+    Platforms: PlatformsSchema.exactOptional().openapi({
+      description: 'The platforms on which the application can run.',
+    }),
+    InstanceFamilies: StringListSchema.exactOptional().openapi({
+      description: 'The instance families for the application.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the application was created within the app block.',
+    }),
   })
   .openapi({ description: 'Describes an application in the application catalog.', required: [] })
   .openapi('Application')
@@ -483,63 +413,41 @@ const CreateApplicationResultSchema = z
 
 const CreateApplicationRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application. This name is visible to users when display name is not specified.',
-        }),
-    ),
-    DisplayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The display name of the application. This name is visible to users in the application catalog.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    IconS3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The location in S3 of the application icon.' }),
-    ),
-    LaunchPath: StringSchema.and(
-      z.any().openapi({ description: 'The launch path of the application.' }),
-    ),
-    WorkingDirectory: StringSchema.and(
-      z.any().openapi({ description: 'The working directory of the application.' }),
-    ).exactOptional(),
-    LaunchParameters: StringSchema.and(
-      z.any().openapi({ description: 'The launch parameters of the application.' }),
-    ).exactOptional(),
-    Platforms: PlatformsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The platforms the application supports. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets.',
-        }),
-    ),
-    InstanceFamilies: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance families the application supports. Valid values are GENERAL_PURPOSE and GRAPHICS_G4.',
-        }),
-    ),
-    AppBlockArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The app block ARN to which the application should be associated',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags assigned to the application.' }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      description:
+        'The name of the application. This name is visible to users when display name is not specified.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description:
+        'The display name of the application. This name is visible to users in the application catalog.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    IconS3Location: S3LocationSchema.openapi({
+      description: 'The location in S3 of the application icon.',
+    }),
+    LaunchPath: StringSchema.openapi({ description: 'The launch path of the application.' }),
+    WorkingDirectory: StringSchema.exactOptional().openapi({
+      description: 'The working directory of the application.',
+    }),
+    LaunchParameters: StringSchema.exactOptional().openapi({
+      description: 'The launch parameters of the application.',
+    }),
+    Platforms: PlatformsSchema.openapi({
+      description:
+        'The platforms the application supports. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets.',
+    }),
+    InstanceFamilies: StringListSchema.openapi({
+      description:
+        'The instance families the application supports. Valid values are GENERAL_PURPOSE and GRAPHICS_G4.',
+    }),
+    AppBlockArn: ArnSchema.openapi({
+      description: 'The app block ARN to which the application should be associated',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags assigned to the application.',
+    }),
   })
   .openapi({
     required: [
@@ -571,17 +479,13 @@ const AccountPasswordSchema = z.string().min(1).max(127).openapi('AccountPasswor
 
 const ServiceAccountCredentialsSchema = z
   .object({
-    AccountName: AccountNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user name of the account. This account must have the following privileges: create computer objects, join computers to the domain, and change/reset the password on descendant computer objects for the organizational units specified.',
-        }),
-    ),
-    AccountPassword: AccountPasswordSchema.and(
-      z.any().openapi({ description: 'The password for the account.' }),
-    ),
+    AccountName: AccountNameSchema.openapi({
+      description:
+        'The user name of the account. This account must have the following privileges: create computer objects, join computers to the domain, and change/reset the password on descendant computer objects for the organizational units specified.',
+    }),
+    AccountPassword: AccountPasswordSchema.openapi({
+      description: 'The password for the account.',
+    }),
   })
   .openapi({
     required: ['AccountName', 'AccountPassword'],
@@ -596,16 +500,12 @@ const CertificateBasedAuthStatusSchema = z
 
 const CertificateBasedAuthPropertiesSchema = z
   .object({
-    Status: CertificateBasedAuthStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status of the certificate-based authentication properties.' }),
-    ).exactOptional(),
-    CertificateAuthorityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the AWS Certificate Manager Private CA resource.' }),
-    ).exactOptional(),
+    Status: CertificateBasedAuthStatusSchema.exactOptional().openapi({
+      description: 'The status of the certificate-based authentication properties.',
+    }),
+    CertificateAuthorityArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the AWS Certificate Manager Private CA resource.',
+    }),
   })
   .openapi({
     description:
@@ -616,39 +516,24 @@ const CertificateBasedAuthPropertiesSchema = z
 
 const DirectoryConfigSchema = z
   .object({
-    DirectoryName: DirectoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fully qualified name of the directory (for example, corp.example.com).',
-        }),
-    ),
-    OrganizationalUnitDistinguishedNames: OrganizationalUnitDistinguishedNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The distinguished names of the organizational units for computer accounts.',
-        }),
-    ).exactOptional(),
-    ServiceAccountCredentials: ServiceAccountCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The credentials for the service account used by the fleet or image builder to connect to the directory.',
-        }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the directory configuration was created.' }),
-    ).exactOptional(),
-    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is <b>Enabled</b> . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. <b>Enabled_no_directory_login_fallback</b> enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.',
-        }),
-    ).exactOptional(),
+    DirectoryName: DirectoryNameSchema.openapi({
+      description: 'The fully qualified name of the directory (for example, corp.example.com).',
+    }),
+    OrganizationalUnitDistinguishedNames:
+      OrganizationalUnitDistinguishedNamesListSchema.exactOptional().openapi({
+        description: 'The distinguished names of the organizational units for computer accounts.',
+      }),
+    ServiceAccountCredentials: ServiceAccountCredentialsSchema.exactOptional().openapi({
+      description:
+        'The credentials for the service account used by the fleet or image builder to connect to the directory.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the directory configuration was created.',
+    }),
+    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.exactOptional().openapi({
+      description:
+        'The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is <b>Enabled</b> . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. <b>Enabled_no_directory_login_fallback</b> enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.',
+    }),
   })
   .openapi({
     required: ['DirectoryName'],
@@ -659,45 +544,29 @@ const DirectoryConfigSchema = z
 
 const CreateDirectoryConfigResultSchema = z
   .object({
-    DirectoryConfig: DirectoryConfigSchema.and(
-      z.any().openapi({ description: 'Information about the directory configuration.' }),
-    ).exactOptional(),
+    DirectoryConfig: DirectoryConfigSchema.exactOptional().openapi({
+      description: 'Information about the directory configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDirectoryConfigResult')
 
 const CreateDirectoryConfigRequestSchema = z
   .object({
-    DirectoryName: DirectoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fully qualified name of the directory (for example, corp.example.com).',
-        }),
-    ),
-    OrganizationalUnitDistinguishedNames: OrganizationalUnitDistinguishedNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The distinguished names of the organizational units for computer accounts.',
-        }),
-    ),
-    ServiceAccountCredentials: ServiceAccountCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The credentials for the service account used by the fleet or image builder to connect to the directory.',
-        }),
-    ).exactOptional(),
-    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is <b>Enabled</b> . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. <b>Enabled_no_directory_login_fallback</b> enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.',
-        }),
-    ).exactOptional(),
+    DirectoryName: DirectoryNameSchema.openapi({
+      description: 'The fully qualified name of the directory (for example, corp.example.com).',
+    }),
+    OrganizationalUnitDistinguishedNames: OrganizationalUnitDistinguishedNamesListSchema.openapi({
+      description: 'The distinguished names of the organizational units for computer accounts.',
+    }),
+    ServiceAccountCredentials: ServiceAccountCredentialsSchema.exactOptional().openapi({
+      description:
+        'The credentials for the service account used by the fleet or image builder to connect to the directory.',
+    }),
+    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.exactOptional().openapi({
+      description:
+        'The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is <b>Enabled</b> . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. <b>Enabled_no_directory_login_fallback</b> enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.',
+    }),
   })
   .openapi({
     required: ['DirectoryName', 'OrganizationalUnitDistinguishedNames'],
@@ -711,22 +580,14 @@ const AppVisibilitySchema = z.enum(['ALL', 'ASSOCIATED']).openapi('AppVisibility
 
 const EntitlementAttributeSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A supported AWS IAM SAML <code>PrincipalTag</code> attribute that is matched to the associated value when a user identity federates into an Amazon AppStream 2.0 SAML application.</p> <p>The following are valid values:</p> <ul> <li> <p>roles</p> </li> <li> <p>department </p> </li> <li> <p>organization </p> </li> <li> <p>groups </p> </li> <li> <p>title </p> </li> <li> <p>costCenter </p> </li> <li> <p>userType</p> </li> </ul> <p> </p>',
-        }),
-    ),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that is matched to a supported SAML attribute name when a user identity federates into an Amazon AppStream 2.0 SAML application. ',
-        }),
-    ),
+    Name: StringSchema.openapi({
+      description:
+        '<p>A supported AWS IAM SAML <code>PrincipalTag</code> attribute that is matched to the associated value when a user identity federates into an Amazon AppStream 2.0 SAML application.</p> <p>The following are valid values:</p> <ul> <li> <p>roles</p> </li> <li> <p>department </p> </li> <li> <p>organization </p> </li> <li> <p>groups </p> </li> <li> <p>title </p> </li> <li> <p>costCenter </p> </li> <li> <p>userType</p> </li> </ul> <p> </p>',
+    }),
+    Value: StringSchema.openapi({
+      description:
+        'A value that is matched to a supported SAML attribute name when a user identity federates into an Amazon AppStream 2.0 SAML application. ',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -742,29 +603,25 @@ const EntitlementAttributeListSchema = z
 
 const EntitlementSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the entitlement.' })),
-    StackName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stack with which the entitlement is associated.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the entitlement.' }),
-    ).exactOptional(),
-    AppVisibility: AppVisibilitySchema.and(
-      z.any().openapi({ description: 'Specifies whether all or selected apps are entitled.' }),
-    ),
-    Attributes: EntitlementAttributeListSchema.and(
-      z.any().openapi({ description: 'The attributes of the entitlement.' }),
-    ),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the entitlement was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the entitlement was last modified.' }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'The name of the entitlement.' }),
+    StackName: NameSchema.openapi({
+      description: 'The name of the stack with which the entitlement is associated.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the entitlement.',
+    }),
+    AppVisibility: AppVisibilitySchema.openapi({
+      description: 'Specifies whether all or selected apps are entitled.',
+    }),
+    Attributes: EntitlementAttributeListSchema.openapi({
+      description: 'The attributes of the entitlement.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the entitlement was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the entitlement was last modified.',
+    }),
   })
   .openapi({
     required: ['Name', 'StackName', 'AppVisibility', 'Attributes'],
@@ -775,32 +632,26 @@ const EntitlementSchema = z
 
 const CreateEntitlementResultSchema = z
   .object({
-    Entitlement: EntitlementSchema.and(
-      z.any().openapi({ description: 'The entitlement.' }),
-    ).exactOptional(),
+    Entitlement: EntitlementSchema.exactOptional().openapi({ description: 'The entitlement.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateEntitlementResult')
 
 const CreateEntitlementRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the entitlement.' })),
-    StackName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stack with which the entitlement is associated.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the entitlement.' }),
-    ).exactOptional(),
-    AppVisibility: AppVisibilitySchema.and(
-      z.any().openapi({ description: 'Specifies whether all or selected apps are entitled.' }),
-    ),
-    Attributes: EntitlementAttributeListSchema.and(
-      z.any().openapi({ description: 'The attributes of the entitlement.' }),
-    ),
+    Name: NameSchema.openapi({ description: 'The name of the entitlement.' }),
+    StackName: NameSchema.openapi({
+      description: 'The name of the stack with which the entitlement is associated.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the entitlement.',
+    }),
+    AppVisibility: AppVisibilitySchema.openapi({
+      description: 'Specifies whether all or selected apps are entitled.',
+    }),
+    Attributes: EntitlementAttributeListSchema.openapi({
+      description: 'The attributes of the entitlement.',
+    }),
   })
   .openapi({
     required: ['Name', 'StackName', 'AppVisibility', 'Attributes'],
@@ -814,27 +665,17 @@ const FleetTypeSchema = z.enum(['ALWAYS_ON', 'ON_DEMAND', 'ELASTIC']).openapi('F
 
 const ComputeCapacityStatusSchema = z
   .object({
-    Desired: IntegerSchema.and(
-      z.any().openapi({ description: 'The desired number of streaming instances.' }),
-    ),
-    Running: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total number of simultaneous streaming instances that are running.',
-        }),
-    ).exactOptional(),
-    InUse: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances in use for streaming.' }),
-    ).exactOptional(),
-    Available: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of currently available instances that can be used to stream sessions.',
-        }),
-    ).exactOptional(),
+    Desired: IntegerSchema.openapi({ description: 'The desired number of streaming instances.' }),
+    Running: IntegerSchema.exactOptional().openapi({
+      description: 'The total number of simultaneous streaming instances that are running.',
+    }),
+    InUse: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances in use for streaming.',
+    }),
+    Available: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of currently available instances that can be used to stream sessions.',
+    }),
   })
   .openapi({ required: ['Desired'], description: 'Describes the capacity status for a fleet.' })
   .openapi('ComputeCapacityStatus')
@@ -856,21 +697,13 @@ const SecurityGroupIdListSchema = z
 
 const VpcConfigSchema = z
   .object({
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the subnets to which a network interface is attached from the fleet instance or image builder instance. Fleet instances use one or more subnets. Image builder instances use one subnet.',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifiers of the security groups for the fleet or image builder.',
-        }),
-    ).exactOptional(),
+    SubnetIds: SubnetIdListSchema.exactOptional().openapi({
+      description:
+        'The identifiers of the subnets to which a network interface is attached from the fleet instance or image builder instance. Fleet instances use one or more subnets. Image builder instances use one subnet.',
+    }),
+    SecurityGroupIds: SecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'The identifiers of the security groups for the fleet or image builder.',
+    }),
   })
   .openapi({
     description: 'Describes VPC configuration information for fleets and image builders.',
@@ -915,12 +748,8 @@ const FleetErrorCodeSchema = z
 
 const FleetErrorSchema = z
   .object({
-    ErrorCode: FleetErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    ErrorCode: FleetErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({ description: 'Describes a fleet error.', required: [] })
   .openapi('FleetError')
@@ -931,20 +760,13 @@ const BooleanObjectSchema = z.boolean().openapi('BooleanObject')
 
 const DomainJoinInfoSchema = z
   .object({
-    DirectoryName: DirectoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fully qualified name of the directory (for example, corp.example.com).',
-        }),
-    ).exactOptional(),
-    OrganizationalUnitDistinguishedName: OrganizationalUnitDistinguishedNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The distinguished name of the organizational unit for computer accounts.',
-        }),
-    ).exactOptional(),
+    DirectoryName: DirectoryNameSchema.exactOptional().openapi({
+      description: 'The fully qualified name of the directory (for example, corp.example.com).',
+    }),
+    OrganizationalUnitDistinguishedName:
+      OrganizationalUnitDistinguishedNameSchema.exactOptional().openapi({
+        description: 'The distinguished name of the organizational unit for computer accounts.',
+      }),
   })
   .openapi({
     description:
@@ -970,125 +792,79 @@ const UsbDeviceFilterStringsSchema = z
 
 const FleetSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the fleet.' }),
-    ),
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the fleet.' })),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The fleet name to display.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    ImageName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the image used to create the fleet.' }),
-    ).exactOptional(),
-    ImageArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the public, private, or shared image.' }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>',
-        }),
-    ),
-    FleetType: FleetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The fleet type.</p> <dl> <dt>ALWAYS_ON</dt> <dd> <p>Provides users with instant-on access to their apps. You are charged for all running instances in your fleet, even if no users are streaming apps.</p> </dd> <dt>ON_DEMAND</dt> <dd> <p>Provide users with access to applications after they connect, which takes one to two minutes. You are charged for instance streaming when users are connected and a small hourly fee for instances that are not streaming apps.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    ComputeCapacityStatus: ComputeCapacityStatusSchema.and(
-      z.any().openapi({ description: 'The capacity status for the fleet.' }),
-    ),
-    MaxUserDurationInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance. </p> <p>Specify a value between 600 and 360000.</p>',
-        }),
-    ).exactOptional(),
-    DisconnectTimeoutInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time that a streaming session remains active after users disconnect. If they try to reconnect to the streaming session after a disconnection or network interruption within this time interval, they are connected to their previous session. Otherwise, they are connected to a new session with a new streaming instance.</p> <p>Specify a value between 60 and 360000.</p>',
-        }),
-    ).exactOptional(),
-    State: FleetStateSchema.and(
-      z.any().openapi({ description: 'The current state for the fleet.' }),
-    ),
-    VpcConfig: VpcConfigSchema.and(
-      z.any().openapi({ description: 'The VPC configuration for the fleet.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the fleet was created.' }),
-    ).exactOptional(),
-    FleetErrors: FleetErrorsSchema.and(
-      z.any().openapi({ description: 'The fleet errors.' }),
-    ).exactOptional(),
-    EnableDefaultInternetAccess: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether default internet access is enabled for the fleet.',
-        }),
-    ).exactOptional(),
-    DomainJoinInfo: DomainJoinInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the directory and organizational unit (OU) to use to join the fleet to a Microsoft Active Directory domain. ',
-        }),
-    ).exactOptional(),
-    IdleDisconnectTimeoutInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the <code>DisconnectTimeoutInSeconds</code> time interval begins. Users are notified before they are disconnected due to inactivity. If users try to reconnect to the streaming session before the time interval specified in <code>DisconnectTimeoutInSeconds</code> elapses, they are connected to their previous session. Users are considered idle when they stop providing keyboard or mouse input during their streaming session. File uploads and downloads, audio in, audio out, and pixels changing do not qualify as user activity. If users continue to be idle after the time interval in <code>IdleDisconnectTimeoutInSeconds</code> elapses, they are disconnected.</p> <p>To prevent users from being disconnected due to inactivity, specify a value of 0. Otherwise, specify a value between 60 and 3600. The default value is 0.</p> <note> <p>If you enable this feature, we recommend that you specify a value that corresponds exactly to a whole number of minutes (for example, 60, 120, and 180). If you don't do this, the value is rounded to the nearest minute. For example, if you specify a value of 70, users are disconnected after 1 minute of inactivity. If you specify a value that is at the midpoint between two different minutes, the value is rounded up. For example, if you specify a value of 90, users are disconnected after 2 minutes of inactivity. </p> </note>",
-        }),
-    ).exactOptional(),
-    IamRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that is applied to the fleet. To assume a role, the fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    StreamView: StreamViewSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>',
-        }),
-    ).exactOptional(),
-    Platform: PlatformTypeSchema.and(
-      z.any().openapi({ description: 'The platform of the fleet.' }),
-    ).exactOptional(),
-    MaxConcurrentSessions: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of concurrent sessions for the fleet.' }),
-    ).exactOptional(),
-    UsbDeviceFilterStrings: UsbDeviceFilterStringsSchema.and(
-      z.any().openapi({ description: 'The USB device filter strings associated with the fleet.' }),
-    ).exactOptional(),
-    SessionScriptS3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets.',
-        }),
-    ).exactOptional(),
+    Arn: ArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) for the fleet.' }),
+    Name: StringSchema.openapi({ description: 'The name of the fleet.' }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'The fleet name to display.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    ImageName: StringSchema.exactOptional().openapi({
+      description: 'The name of the image used to create the fleet.',
+    }),
+    ImageArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN for the public, private, or shared image.',
+    }),
+    InstanceType: StringSchema.openapi({
+      description:
+        '<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>',
+    }),
+    FleetType: FleetTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The fleet type.</p> <dl> <dt>ALWAYS_ON</dt> <dd> <p>Provides users with instant-on access to their apps. You are charged for all running instances in your fleet, even if no users are streaming apps.</p> </dd> <dt>ON_DEMAND</dt> <dd> <p>Provide users with access to applications after they connect, which takes one to two minutes. You are charged for instance streaming when users are connected and a small hourly fee for instances that are not streaming apps.</p> </dd> </dl>',
+    }),
+    ComputeCapacityStatus: ComputeCapacityStatusSchema.openapi({
+      description: 'The capacity status for the fleet.',
+    }),
+    MaxUserDurationInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance. </p> <p>Specify a value between 600 and 360000.</p>',
+    }),
+    DisconnectTimeoutInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The amount of time that a streaming session remains active after users disconnect. If they try to reconnect to the streaming session after a disconnection or network interruption within this time interval, they are connected to their previous session. Otherwise, they are connected to a new session with a new streaming instance.</p> <p>Specify a value between 60 and 360000.</p>',
+    }),
+    State: FleetStateSchema.openapi({ description: 'The current state for the fleet.' }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC configuration for the fleet.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the fleet was created.',
+    }),
+    FleetErrors: FleetErrorsSchema.exactOptional().openapi({ description: 'The fleet errors.' }),
+    EnableDefaultInternetAccess: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether default internet access is enabled for the fleet.',
+    }),
+    DomainJoinInfo: DomainJoinInfoSchema.exactOptional().openapi({
+      description:
+        'The name of the directory and organizational unit (OU) to use to join the fleet to a Microsoft Active Directory domain. ',
+    }),
+    IdleDisconnectTimeoutInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the <code>DisconnectTimeoutInSeconds</code> time interval begins. Users are notified before they are disconnected due to inactivity. If users try to reconnect to the streaming session before the time interval specified in <code>DisconnectTimeoutInSeconds</code> elapses, they are connected to their previous session. Users are considered idle when they stop providing keyboard or mouse input during their streaming session. File uploads and downloads, audio in, audio out, and pixels changing do not qualify as user activity. If users continue to be idle after the time interval in <code>IdleDisconnectTimeoutInSeconds</code> elapses, they are disconnected.</p> <p>To prevent users from being disconnected due to inactivity, specify a value of 0. Otherwise, specify a value between 60 and 3600. The default value is 0.</p> <note> <p>If you enable this feature, we recommend that you specify a value that corresponds exactly to a whole number of minutes (for example, 60, 120, and 180). If you don't do this, the value is rounded to the nearest minute. For example, if you specify a value of 70, users are disconnected after 1 minute of inactivity. If you specify a value that is at the midpoint between two different minutes, the value is rounded up. For example, if you specify a value of 90, users are disconnected after 2 minutes of inactivity. </p> </note>",
+    }),
+    IamRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that is applied to the fleet. To assume a role, the fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    StreamView: StreamViewSchema.exactOptional().openapi({
+      description:
+        '<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>',
+    }),
+    Platform: PlatformTypeSchema.exactOptional().openapi({
+      description: 'The platform of the fleet.',
+    }),
+    MaxConcurrentSessions: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of concurrent sessions for the fleet.',
+    }),
+    UsbDeviceFilterStrings: UsbDeviceFilterStringsSchema.exactOptional().openapi({
+      description: 'The USB device filter strings associated with the fleet.',
+    }),
+    SessionScriptS3Location: S3LocationSchema.exactOptional().openapi({
+      description:
+        'The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets.',
+    }),
   })
   .openapi({
     required: ['Arn', 'Name', 'InstanceType', 'ComputeCapacityStatus', 'State'],
@@ -1098,162 +874,98 @@ const FleetSchema = z
 
 const CreateFleetResultSchema = z
   .object({
-    Fleet: FleetSchema.and(
-      z.any().openapi({ description: 'Information about the fleet.' }),
-    ).exactOptional(),
+    Fleet: FleetSchema.exactOptional().openapi({ description: 'Information about the fleet.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateFleetResult')
 
 const ComputeCapacitySchema = z
   .object({
-    DesiredInstances: IntegerSchema.and(
-      z.any().openapi({ description: 'The desired number of streaming instances.' }),
-    ),
+    DesiredInstances: IntegerSchema.openapi({
+      description: 'The desired number of streaming instances.',
+    }),
   })
   .openapi({ required: ['DesiredInstances'], description: 'Describes the capacity for a fleet.' })
   .openapi('ComputeCapacity')
 
 const CreateFleetRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'A unique name for the fleet.' })),
-    ImageName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the image used to create the fleet.' }),
-    ).exactOptional(),
-    ImageArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the public, private, or shared image to use.' }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>',
-        }),
-    ),
-    FleetType: FleetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The fleet type.</p> <dl> <dt>ALWAYS_ON</dt> <dd> <p>Provides users with instant-on access to their apps. You are charged for all running instances in your fleet, even if no users are streaming apps.</p> </dd> <dt>ON_DEMAND</dt> <dd> <p>Provide users with access to applications after they connect, which takes one to two minutes. You are charged for instance streaming when users are connected and a small hourly fee for instances that are not streaming apps.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    ComputeCapacity: ComputeCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The desired capacity for the fleet. This is not allowed for Elastic fleets. For Elastic fleets, specify MaxConcurrentSessions instead.',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC configuration for the fleet. This is required for Elastic fleets, but not required for other fleet types. Elastic fleets require that you specify at least two subnets in different availability zones.',
-        }),
-    ).exactOptional(),
-    MaxUserDurationInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance.</p> <p>Specify a value between 600 and 360000.</p>',
-        }),
-    ).exactOptional(),
-    DisconnectTimeoutInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time that a streaming session remains active after users disconnect. If users try to reconnect to the streaming session after a disconnection or network interruption within this time interval, they are connected to their previous session. Otherwise, they are connected to a new session with a new streaming instance. </p> <p>Specify a value between 60 and 360000.</p>',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The fleet name to display.' }),
-    ).exactOptional(),
-    EnableDefaultInternetAccess: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Enables or disables default internet access for the fleet.' }),
-    ).exactOptional(),
-    DomainJoinInfo: DomainJoinInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the directory and organizational unit (OU) to use to join the fleet to a Microsoft Active Directory domain. This is not allowed for Elastic fleets. ',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tags to associate with the fleet. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    IdleDisconnectTimeoutInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the <code>DisconnectTimeoutInSeconds</code> time interval begins. Users are notified before they are disconnected due to inactivity. If they try to reconnect to the streaming session before the time interval specified in <code>DisconnectTimeoutInSeconds</code> elapses, they are connected to their previous session. Users are considered idle when they stop providing keyboard or mouse input during their streaming session. File uploads and downloads, audio in, audio out, and pixels changing do not qualify as user activity. If users continue to be idle after the time interval in <code>IdleDisconnectTimeoutInSeconds</code> elapses, they are disconnected.</p> <p>To prevent users from being disconnected due to inactivity, specify a value of 0. Otherwise, specify a value between 60 and 3600. The default value is 0.</p> <note> <p>If you enable this feature, we recommend that you specify a value that corresponds exactly to a whole number of minutes (for example, 60, 120, and 180). If you don't do this, the value is rounded to the nearest minute. For example, if you specify a value of 70, users are disconnected after 1 minute of inactivity. If you specify a value that is at the midpoint between two different minutes, the value is rounded up. For example, if you specify a value of 90, users are disconnected after 2 minutes of inactivity. </p> </note>",
-        }),
-    ).exactOptional(),
-    IamRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM role to apply to the fleet. To assume a role, a fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    StreamView: StreamViewSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>',
-        }),
-    ).exactOptional(),
-    Platform: PlatformTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet platform. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets. ',
-        }),
-    ).exactOptional(),
-    MaxConcurrentSessions: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum concurrent sessions of the Elastic fleet. This is required for Elastic fleets, and not allowed for other fleet types.',
-        }),
-    ).exactOptional(),
-    UsbDeviceFilterStrings: UsbDeviceFilterStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The USB device filter strings that specify which USB devices a user can redirect to the fleet streaming session, when using the Windows native client. This is allowed but not required for Elastic fleets.',
-        }),
-    ).exactOptional(),
-    SessionScriptS3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'A unique name for the fleet.' }),
+    ImageName: StringSchema.exactOptional().openapi({
+      description: 'The name of the image used to create the fleet.',
+    }),
+    ImageArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the public, private, or shared image to use.',
+    }),
+    InstanceType: StringSchema.openapi({
+      description:
+        '<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>',
+    }),
+    FleetType: FleetTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The fleet type.</p> <dl> <dt>ALWAYS_ON</dt> <dd> <p>Provides users with instant-on access to their apps. You are charged for all running instances in your fleet, even if no users are streaming apps.</p> </dd> <dt>ON_DEMAND</dt> <dd> <p>Provide users with access to applications after they connect, which takes one to two minutes. You are charged for instance streaming when users are connected and a small hourly fee for instances that are not streaming apps.</p> </dd> </dl>',
+    }),
+    ComputeCapacity: ComputeCapacitySchema.exactOptional().openapi({
+      description:
+        'The desired capacity for the fleet. This is not allowed for Elastic fleets. For Elastic fleets, specify MaxConcurrentSessions instead.',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'The VPC configuration for the fleet. This is required for Elastic fleets, but not required for other fleet types. Elastic fleets require that you specify at least two subnets in different availability zones.',
+    }),
+    MaxUserDurationInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance.</p> <p>Specify a value between 600 and 360000.</p>',
+    }),
+    DisconnectTimeoutInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The amount of time that a streaming session remains active after users disconnect. If users try to reconnect to the streaming session after a disconnection or network interruption within this time interval, they are connected to their previous session. Otherwise, they are connected to a new session with a new streaming instance. </p> <p>Specify a value between 60 and 360000.</p>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The fleet name to display.',
+    }),
+    EnableDefaultInternetAccess: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Enables or disables default internet access for the fleet.',
+    }),
+    DomainJoinInfo: DomainJoinInfoSchema.exactOptional().openapi({
+      description:
+        'The name of the directory and organizational unit (OU) to use to join the fleet to a Microsoft Active Directory domain. This is not allowed for Elastic fleets. ',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The tags to associate with the fleet. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    IdleDisconnectTimeoutInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the <code>DisconnectTimeoutInSeconds</code> time interval begins. Users are notified before they are disconnected due to inactivity. If they try to reconnect to the streaming session before the time interval specified in <code>DisconnectTimeoutInSeconds</code> elapses, they are connected to their previous session. Users are considered idle when they stop providing keyboard or mouse input during their streaming session. File uploads and downloads, audio in, audio out, and pixels changing do not qualify as user activity. If users continue to be idle after the time interval in <code>IdleDisconnectTimeoutInSeconds</code> elapses, they are disconnected.</p> <p>To prevent users from being disconnected due to inactivity, specify a value of 0. Otherwise, specify a value between 60 and 3600. The default value is 0.</p> <note> <p>If you enable this feature, we recommend that you specify a value that corresponds exactly to a whole number of minutes (for example, 60, 120, and 180). If you don't do this, the value is rounded to the nearest minute. For example, if you specify a value of 70, users are disconnected after 1 minute of inactivity. If you specify a value that is at the midpoint between two different minutes, the value is rounded up. For example, if you specify a value of 90, users are disconnected after 2 minutes of inactivity. </p> </note>",
+    }),
+    IamRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM role to apply to the fleet. To assume a role, a fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    StreamView: StreamViewSchema.exactOptional().openapi({
+      description:
+        '<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>',
+    }),
+    Platform: PlatformTypeSchema.exactOptional().openapi({
+      description:
+        'The fleet platform. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets. ',
+    }),
+    MaxConcurrentSessions: IntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum concurrent sessions of the Elastic fleet. This is required for Elastic fleets, and not allowed for other fleet types.',
+    }),
+    UsbDeviceFilterStrings: UsbDeviceFilterStringsSchema.exactOptional().openapi({
+      description:
+        'The USB device filter strings that specify which USB devices a user can redirect to the fleet streaming session, when using the Windows native client. This is allowed but not required for Elastic fleets.',
+    }),
+    SessionScriptS3Location: S3LocationSchema.exactOptional().openapi({
+      description:
+        'The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets.',
+    }),
   })
   .openapi({ required: ['Name', 'InstanceType'], title: 'CreateFleetRequest' })
   .openapi('CreateFleetRequest')
@@ -1282,12 +994,12 @@ const ImageBuilderStateChangeReasonCodeSchema = z
 
 const ImageBuilderStateChangeReasonSchema = z
   .object({
-    Code: ImageBuilderStateChangeReasonCodeSchema.and(
-      z.any().openapi({ description: 'The state change reason code.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The state change reason message.' }),
-    ).exactOptional(),
+    Code: ImageBuilderStateChangeReasonCodeSchema.exactOptional().openapi({
+      description: 'The state change reason code.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'The state change reason message.',
+    }),
   })
   .openapi({
     description: 'Describes the reason why the last image builder state change occurred.',
@@ -1297,22 +1009,14 @@ const ImageBuilderStateChangeReasonSchema = z
 
 const NetworkAccessConfigurationSchema = z
   .object({
-    EniPrivateIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The private IP address of the elastic network interface that is attached to instances in your VPC.',
-        }),
-    ).exactOptional(),
-    EniId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource identifier of the elastic network interface that is attached to instances in your VPC. All network interfaces have the eni-xxxxxxxx resource identifier.',
-        }),
-    ).exactOptional(),
+    EniPrivateIpAddress: StringSchema.exactOptional().openapi({
+      description:
+        'The private IP address of the elastic network interface that is attached to instances in your VPC.',
+    }),
+    EniId: StringSchema.exactOptional().openapi({
+      description:
+        'The resource identifier of the elastic network interface that is attached to instances in your VPC. All network interfaces have the eni-xxxxxxxx resource identifier.',
+    }),
   })
   .openapi({
     description: 'Describes the network details of the fleet or image builder instance.',
@@ -1322,15 +1026,11 @@ const NetworkAccessConfigurationSchema = z
 
 const ResourceErrorSchema = z
   .object({
-    ErrorCode: FleetErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
-    ErrorTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the error occurred.' }),
-    ).exactOptional(),
+    ErrorCode: FleetErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
+    ErrorTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time the error occurred.',
+    }),
   })
   .openapi({ description: 'Describes a resource error.', required: [] })
   .openapi('ResourceError')
@@ -1343,16 +1043,12 @@ const AccessEndpointTypeSchema = z.literal('STREAMING').openapi('AccessEndpointT
 
 const AccessEndpointSchema = z
   .object({
-    EndpointType: AccessEndpointTypeSchema.and(
-      z.any().openapi({ description: 'The type of interface endpoint.' }),
-    ),
-    VpceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (ID) of the VPC in which the interface endpoint is used.',
-        }),
-    ).exactOptional(),
+    EndpointType: AccessEndpointTypeSchema.openapi({
+      description: 'The type of interface endpoint.',
+    }),
+    VpceId: StringSchema.exactOptional().openapi({
+      description: 'The identifier (ID) of the VPC in which the interface endpoint is used.',
+    }),
   })
   .openapi({
     required: ['EndpointType'],
@@ -1369,85 +1065,59 @@ const AccessEndpointListSchema = z
 
 const ImageBuilderSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the image builder.' })),
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the image builder.' }),
-    ).exactOptional(),
-    ImageArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the image from which this builder was created.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The image builder name to display.' }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z.any().openapi({ description: 'The VPC configuration of the image builder.' }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance type for the image builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Platform: PlatformTypeSchema.and(
-      z.any().openapi({ description: 'The operating system platform of the image builder.' }),
-    ).exactOptional(),
-    IamRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that is applied to the image builder. To assume a role, the image builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    State: ImageBuilderStateSchema.and(
-      z.any().openapi({ description: 'The state of the image builder.' }),
-    ).exactOptional(),
-    StateChangeReason: ImageBuilderStateChangeReasonSchema.and(
-      z.any().openapi({ description: 'The reason why the last state change occurred.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time stamp when the image builder was created.' }),
-    ).exactOptional(),
-    EnableDefaultInternetAccess: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Enables or disables default internet access for the image builder.',
-        }),
-    ).exactOptional(),
-    DomainJoinInfo: DomainJoinInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the directory and organizational unit (OU) to use to join the image builder to a Microsoft Active Directory domain. ',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The name of the image builder.' }),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN for the image builder.' }),
+    ImageArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the image from which this builder was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'The image builder name to display.',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC configuration of the image builder.',
+    }),
+    InstanceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The instance type for the image builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>',
+    }),
+    Platform: PlatformTypeSchema.exactOptional().openapi({
+      description: 'The operating system platform of the image builder.',
+    }),
+    IamRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that is applied to the image builder. To assume a role, the image builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    State: ImageBuilderStateSchema.exactOptional().openapi({
+      description: 'The state of the image builder.',
+    }),
+    StateChangeReason: ImageBuilderStateChangeReasonSchema.exactOptional().openapi({
+      description: 'The reason why the last state change occurred.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time stamp when the image builder was created.',
+    }),
+    EnableDefaultInternetAccess: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Enables or disables default internet access for the image builder.',
+    }),
+    DomainJoinInfo: DomainJoinInfoSchema.exactOptional().openapi({
+      description:
+        'The name of the directory and organizational unit (OU) to use to join the image builder to a Microsoft Active Directory domain. ',
+    }),
     NetworkAccessConfiguration: NetworkAccessConfigurationSchema.exactOptional(),
-    ImageBuilderErrors: ResourceErrorsSchema.and(
-      z.any().openapi({ description: 'The image builder errors.' }),
-    ).exactOptional(),
-    AppstreamAgentVersion: AppstreamAgentVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the AppStream 2.0 agent that is currently being used by the image builder. ',
-        }),
-    ).exactOptional(),
-    AccessEndpoints: AccessEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of virtual private cloud (VPC) interface endpoint objects. Administrators can connect to the image builder only through the specified endpoints.',
-        }),
-    ).exactOptional(),
+    ImageBuilderErrors: ResourceErrorsSchema.exactOptional().openapi({
+      description: 'The image builder errors.',
+    }),
+    AppstreamAgentVersion: AppstreamAgentVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the AppStream 2.0 agent that is currently being used by the image builder. ',
+    }),
+    AccessEndpoints: AccessEndpointListSchema.exactOptional().openapi({
+      description:
+        'The list of virtual private cloud (VPC) interface endpoint objects. Administrators can connect to the image builder only through the specified endpoints.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -1457,107 +1127,70 @@ const ImageBuilderSchema = z
 
 const CreateImageBuilderResultSchema = z
   .object({
-    ImageBuilder: ImageBuilderSchema.and(
-      z.any().openapi({ description: 'Information about the image builder.' }),
-    ).exactOptional(),
+    ImageBuilder: ImageBuilderSchema.exactOptional().openapi({
+      description: 'Information about the image builder.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateImageBuilderResult')
 
 const CreateImageBuilderRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'A unique name for the image builder.' })),
-    ImageName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the image used to create the image builder.' }),
-    ).exactOptional(),
-    ImageArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the public, private, or shared image to use.' }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance type to use when launching the image builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The image builder name to display.' }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC configuration for the image builder. You can specify only one subnet.',
-        }),
-    ).exactOptional(),
-    IamRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM role to apply to the image builder. To assume a role, the image builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    EnableDefaultInternetAccess: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Enables or disables default internet access for the image builder.',
-        }),
-    ).exactOptional(),
-    DomainJoinInfo: DomainJoinInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the directory and organizational unit (OU) to use to join the image builder to a Microsoft Active Directory domain. ',
-        }),
-    ).exactOptional(),
-    AppstreamAgentVersion: AppstreamAgentVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the AppStream 2.0 agent to use for this image builder. To use the latest version of the AppStream 2.0 agent, specify [LATEST]. ',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tags to associate with the image builder. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>For more information about tags, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    AccessEndpoints: AccessEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the image builder only through the specified endpoints.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'A unique name for the image builder.' }),
+    ImageName: StringSchema.exactOptional().openapi({
+      description: 'The name of the image used to create the image builder.',
+    }),
+    ImageArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the public, private, or shared image to use.',
+    }),
+    InstanceType: StringSchema.openapi({
+      description:
+        '<p>The instance type to use when launching the image builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The image builder name to display.',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC configuration for the image builder. You can specify only one subnet.',
+    }),
+    IamRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM role to apply to the image builder. To assume a role, the image builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    EnableDefaultInternetAccess: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Enables or disables default internet access for the image builder.',
+    }),
+    DomainJoinInfo: DomainJoinInfoSchema.exactOptional().openapi({
+      description:
+        'The name of the directory and organizational unit (OU) to use to join the image builder to a Microsoft Active Directory domain. ',
+    }),
+    AppstreamAgentVersion: AppstreamAgentVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the AppStream 2.0 agent to use for this image builder. To use the latest version of the AppStream 2.0 agent, specify [LATEST]. ',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The tags to associate with the image builder. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>For more information about tags, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    AccessEndpoints: AccessEndpointListSchema.exactOptional().openapi({
+      description:
+        'The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the image builder only through the specified endpoints.',
+    }),
   })
   .openapi({ required: ['Name', 'InstanceType'], title: 'CreateImageBuilderRequest' })
   .openapi('CreateImageBuilderRequest')
 
 const CreateImageBuilderStreamingURLResultSchema = z
   .object({
-    StreamingURL: StringSchema.and(
-      z.any().openapi({ description: 'The URL to start the AppStream 2.0 streaming session.' }),
-    ).exactOptional(),
-    Expires: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The elapsed time, in seconds after the Unix epoch, when this URL expires.',
-        }),
-    ).exactOptional(),
+    StreamingURL: StringSchema.exactOptional().openapi({
+      description: 'The URL to start the AppStream 2.0 streaming session.',
+    }),
+    Expires: TimestampSchema.exactOptional().openapi({
+      description: 'The elapsed time, in seconds after the Unix epoch, when this URL expires.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateImageBuilderStreamingURLResult')
@@ -1566,15 +1199,11 @@ const LongSchema = z.int().openapi('Long')
 
 const CreateImageBuilderStreamingURLRequestSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the image builder.' })),
-    Validity: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the streaming URL will be valid, in seconds. Specify a value between 1 and 604800 seconds. The default is 3600 seconds.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The name of the image builder.' }),
+    Validity: LongSchema.exactOptional().openapi({
+      description:
+        'The time that the streaming URL will be valid, in seconds. Specify a value between 1 and 604800 seconds. The default is 3600 seconds.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateImageBuilderStreamingURLRequest' })
   .openapi('CreateImageBuilderStreamingURLRequest')
@@ -1602,15 +1231,15 @@ const DomainListSchema = z.array(DomainSchema).max(50).openapi('DomainList')
 
 const StorageConnectorSchema = z
   .object({
-    ConnectorType: StorageConnectorTypeSchema.and(
-      z.any().openapi({ description: 'The type of storage connector.' }),
-    ),
-    ResourceIdentifier: ResourceIdentifierSchema.and(
-      z.any().openapi({ description: 'The ARN of the storage connector.' }),
-    ).exactOptional(),
-    Domains: DomainListSchema.and(
-      z.any().openapi({ description: 'The names of the domains for the account.' }),
-    ).exactOptional(),
+    ConnectorType: StorageConnectorTypeSchema.openapi({
+      description: 'The type of storage connector.',
+    }),
+    ResourceIdentifier: ResourceIdentifierSchema.exactOptional().openapi({
+      description: 'The ARN of the storage connector.',
+    }),
+    Domains: DomainListSchema.exactOptional().openapi({
+      description: 'The names of the domains for the account.',
+    }),
   })
   .openapi({
     required: ['ConnectorType'],
@@ -1633,12 +1262,8 @@ const StackErrorCodeSchema = z
 
 const StackErrorSchema = z
   .object({
-    ErrorCode: StackErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    ErrorCode: StackErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({ description: 'Describes a stack error.', required: [] })
   .openapi('StackError')
@@ -1664,12 +1289,10 @@ const PermissionSchema = z.enum(['ENABLED', 'DISABLED']).openapi('Permission')
 
 const UserSettingSchema = z
   .object({
-    Action: ActionSchema.and(
-      z.any().openapi({ description: 'The action that is enabled or disabled.' }),
-    ),
-    Permission: PermissionSchema.and(
-      z.any().openapi({ description: 'Indicates whether the action is enabled or disabled.' }),
-    ),
+    Action: ActionSchema.openapi({ description: 'The action that is enabled or disabled.' }),
+    Permission: PermissionSchema.openapi({
+      description: 'Indicates whether the action is enabled or disabled.',
+    }),
   })
   .openapi({
     required: ['Action', 'Permission'],
@@ -1684,30 +1307,18 @@ const SettingsGroupSchema = z.string().max(100).openapi('SettingsGroup')
 
 const ApplicationSettingsResponseSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether persistent application settings are enabled for users during their streaming sessions.',
-        }),
-    ).exactOptional(),
-    SettingsGroup: SettingsGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path prefix for the S3 bucket where users’ persistent application settings are stored.',
-        }),
-    ).exactOptional(),
-    S3BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 bucket where users’ persistent application settings are stored. When persistent application settings are enabled for the first time for an account in an AWS Region, an S3 bucket is created. The bucket is unique to the AWS account and the Region. ',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether persistent application settings are enabled for users during their streaming sessions.',
+    }),
+    SettingsGroup: SettingsGroupSchema.exactOptional().openapi({
+      description:
+        'The path prefix for the S3 bucket where users’ persistent application settings are stored.',
+    }),
+    S3BucketName: StringSchema.exactOptional().openapi({
+      description:
+        'The S3 bucket where users’ persistent application settings are stored. When persistent application settings are enabled for the first time for an account in an AWS Region, an S3 bucket is created. The bucket is unique to the AWS account and the Region. ',
+    }),
   })
   .openapi({
     description: 'Describes the persistent application settings for users of a stack.',
@@ -1735,14 +1346,9 @@ const PreferredProtocolSchema = z.enum(['TCP', 'UDP']).openapi('PreferredProtoco
 
 const StreamingExperienceSettingsSchema = z
   .object({
-    PreferredProtocol: PreferredProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preferred protocol that you want to use while streaming your application.',
-        }),
-    ).exactOptional(),
+    PreferredProtocol: PreferredProtocolSchema.exactOptional().openapi({
+      description: 'The preferred protocol that you want to use while streaming your application.',
+    }),
   })
   .openapi({
     description:
@@ -1753,106 +1359,70 @@ const StreamingExperienceSettingsSchema = z
 
 const StackSchema = z
   .object({
-    Arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the stack.' })).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the stack.' })),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The stack name to display.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the stack was created.' }),
-    ).exactOptional(),
-    StorageConnectors: StorageConnectorListSchema.and(
-      z.any().openapi({ description: 'The storage connectors to enable.' }),
-    ).exactOptional(),
-    RedirectURL: RedirectURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URL that users are redirected to after their streaming session ends.',
-        }),
-    ).exactOptional(),
-    FeedbackURL: FeedbackURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that users are redirected to after they click the Send Feedback link. If no URL is specified, no Send Feedback link is displayed.',
-        }),
-    ).exactOptional(),
-    StackErrors: StackErrorsSchema.and(
-      z.any().openapi({ description: 'The errors for the stack.' }),
-    ).exactOptional(),
-    UserSettings: UserSettingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions that are enabled or disabled for users during their streaming sessions. By default these actions are enabled.',
-        }),
-    ).exactOptional(),
-    ApplicationSettings: ApplicationSettingsResponseSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The persistent application settings for users of the stack.' }),
-    ).exactOptional(),
-    AccessEndpoints: AccessEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of virtual private cloud (VPC) interface endpoint objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints. ',
-        }),
-    ).exactOptional(),
-    EmbedHostDomains: EmbedHostDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions.',
-        }),
-    ).exactOptional(),
-    StreamingExperienceSettings: StreamingExperienceSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.',
-        }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the stack.' }),
+    Name: StringSchema.openapi({ description: 'The name of the stack.' }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'The stack name to display.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the stack was created.',
+    }),
+    StorageConnectors: StorageConnectorListSchema.exactOptional().openapi({
+      description: 'The storage connectors to enable.',
+    }),
+    RedirectURL: RedirectURLSchema.exactOptional().openapi({
+      description: 'The URL that users are redirected to after their streaming session ends.',
+    }),
+    FeedbackURL: FeedbackURLSchema.exactOptional().openapi({
+      description:
+        'The URL that users are redirected to after they click the Send Feedback link. If no URL is specified, no Send Feedback link is displayed.',
+    }),
+    StackErrors: StackErrorsSchema.exactOptional().openapi({
+      description: 'The errors for the stack.',
+    }),
+    UserSettings: UserSettingListSchema.exactOptional().openapi({
+      description:
+        'The actions that are enabled or disabled for users during their streaming sessions. By default these actions are enabled.',
+    }),
+    ApplicationSettings: ApplicationSettingsResponseSchema.exactOptional().openapi({
+      description: 'The persistent application settings for users of the stack.',
+    }),
+    AccessEndpoints: AccessEndpointListSchema.exactOptional().openapi({
+      description:
+        'The list of virtual private cloud (VPC) interface endpoint objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints. ',
+    }),
+    EmbedHostDomains: EmbedHostDomainsSchema.exactOptional().openapi({
+      description:
+        'The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions.',
+    }),
+    StreamingExperienceSettings: StreamingExperienceSettingsSchema.exactOptional().openapi({
+      description:
+        'The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.',
+    }),
   })
   .openapi({ required: ['Name'], description: 'Describes a stack.' })
   .openapi('Stack')
 
 const CreateStackResultSchema = z
   .object({
-    Stack: StackSchema.and(
-      z.any().openapi({ description: 'Information about the stack.' }),
-    ).exactOptional(),
+    Stack: StackSchema.exactOptional().openapi({ description: 'Information about the stack.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateStackResult')
 
 const ApplicationSettingsSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables persistent application settings for users during their streaming sessions. ',
-        }),
-    ),
-    SettingsGroup: SettingsGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path prefix for the S3 bucket where users’ persistent application settings are stored. You can allow the same persistent application settings to be used across multiple stacks by specifying the same settings group for each stack. ',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.openapi({
+      description:
+        'Enables or disables persistent application settings for users during their streaming sessions. ',
+    }),
+    SettingsGroup: SettingsGroupSchema.exactOptional().openapi({
+      description:
+        'The path prefix for the S3 bucket where users’ persistent application settings are stored. You can allow the same persistent application settings to be used across multiple stacks by specifying the same settings group for each stack. ',
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -1862,95 +1432,59 @@ const ApplicationSettingsSchema = z
 
 const CreateStackRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the stack.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The stack name to display.' }),
-    ).exactOptional(),
-    StorageConnectors: StorageConnectorListSchema.and(
-      z.any().openapi({ description: 'The storage connectors to enable.' }),
-    ).exactOptional(),
-    RedirectURL: RedirectURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URL that users are redirected to after their streaming session ends.',
-        }),
-    ).exactOptional(),
-    FeedbackURL: FeedbackURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that users are redirected to after they click the Send Feedback link. If no URL is specified, no Send Feedback link is displayed.',
-        }),
-    ).exactOptional(),
-    UserSettings: UserSettingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions that are enabled or disabled for users during their streaming sessions. By default, these actions are enabled. ',
-        }),
-    ).exactOptional(),
-    ApplicationSettings: ApplicationSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The persistent application settings for users of a stack. When these settings are enabled, changes that users make to applications and Windows settings are automatically saved after each session and applied to the next session.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tags to associate with the stack. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information about tags, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    AccessEndpoints: AccessEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.',
-        }),
-    ).exactOptional(),
-    EmbedHostDomains: EmbedHostDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions. ',
-        }),
-    ).exactOptional(),
-    StreamingExperienceSettings: StreamingExperienceSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'The name of the stack.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The stack name to display.',
+    }),
+    StorageConnectors: StorageConnectorListSchema.exactOptional().openapi({
+      description: 'The storage connectors to enable.',
+    }),
+    RedirectURL: RedirectURLSchema.exactOptional().openapi({
+      description: 'The URL that users are redirected to after their streaming session ends.',
+    }),
+    FeedbackURL: FeedbackURLSchema.exactOptional().openapi({
+      description:
+        'The URL that users are redirected to after they click the Send Feedback link. If no URL is specified, no Send Feedback link is displayed.',
+    }),
+    UserSettings: UserSettingListSchema.exactOptional().openapi({
+      description:
+        'The actions that are enabled or disabled for users during their streaming sessions. By default, these actions are enabled. ',
+    }),
+    ApplicationSettings: ApplicationSettingsSchema.exactOptional().openapi({
+      description:
+        'The persistent application settings for users of a stack. When these settings are enabled, changes that users make to applications and Windows settings are automatically saved after each session and applied to the next session.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The tags to associate with the stack. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information about tags, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    AccessEndpoints: AccessEndpointListSchema.exactOptional().openapi({
+      description:
+        'The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.',
+    }),
+    EmbedHostDomains: EmbedHostDomainsSchema.exactOptional().openapi({
+      description:
+        'The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions. ',
+    }),
+    StreamingExperienceSettings: StreamingExperienceSettingsSchema.exactOptional().openapi({
+      description:
+        'The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateStackRequest' })
   .openapi('CreateStackRequest')
 
 const CreateStreamingURLResultSchema = z
   .object({
-    StreamingURL: StringSchema.and(
-      z.any().openapi({ description: 'The URL to start the AppStream 2.0 streaming session.' }),
-    ).exactOptional(),
-    Expires: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The elapsed time, in seconds after the Unix epoch, when this URL expires.',
-        }),
-    ).exactOptional(),
+    StreamingURL: StringSchema.exactOptional().openapi({
+      description: 'The URL to start the AppStream 2.0 streaming session.',
+    }),
+    Expires: TimestampSchema.exactOptional().openapi({
+      description: 'The elapsed time, in seconds after the Unix epoch, when this URL expires.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStreamingURLResult')
@@ -1964,35 +1498,21 @@ const StreamingUrlUserIdSchema = z
 
 const CreateStreamingURLRequestSchema = z
   .object({
-    StackName: StringSchema.and(z.any().openapi({ description: 'The name of the stack.' })),
-    FleetName: StringSchema.and(z.any().openapi({ description: 'The name of the fleet.' })),
-    UserId: StreamingUrlUserIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the user.' }),
-    ),
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application to launch after the session starts. This is the name that you specified as <b>Name</b> in the Image Assistant. If your fleet is enabled for the <b>Desktop</b> stream view, you can also choose to launch directly to the operating system desktop. To do so, specify <b>Desktop</b>.',
-        }),
-    ).exactOptional(),
-    Validity: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the streaming URL will be valid, in seconds. Specify a value between 1 and 604800 seconds. The default is 60 seconds.',
-        }),
-    ).exactOptional(),
-    SessionContext: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session context. For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/managing-stacks-fleets.html#managing-stacks-fleets-parameters">Session Context</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.',
-        }),
-    ).exactOptional(),
+    StackName: StringSchema.openapi({ description: 'The name of the stack.' }),
+    FleetName: StringSchema.openapi({ description: 'The name of the fleet.' }),
+    UserId: StreamingUrlUserIdSchema.openapi({ description: 'The identifier of the user.' }),
+    ApplicationId: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the application to launch after the session starts. This is the name that you specified as <b>Name</b> in the Image Assistant. If your fleet is enabled for the <b>Desktop</b> stream view, you can also choose to launch directly to the operating system desktop. To do so, specify <b>Desktop</b>.',
+    }),
+    Validity: LongSchema.exactOptional().openapi({
+      description:
+        'The time that the streaming URL will be valid, in seconds. Specify a value between 1 and 604800 seconds. The default is 60 seconds.',
+    }),
+    SessionContext: StringSchema.exactOptional().openapi({
+      description:
+        'The session context. For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/managing-stacks-fleets.html#managing-stacks-fleets-parameters">Session Context</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.',
+    }),
   })
   .openapi({ required: ['StackName', 'FleetName', 'UserId'], title: 'CreateStreamingURLRequest' })
   .openapi('CreateStreamingURLRequest')
@@ -2009,12 +1529,12 @@ const ImageStateChangeReasonCodeSchema = z
 
 const ImageStateChangeReasonSchema = z
   .object({
-    Code: ImageStateChangeReasonCodeSchema.and(
-      z.any().openapi({ description: 'The state change reason code.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The state change reason message.' }),
-    ).exactOptional(),
+    Code: ImageStateChangeReasonCodeSchema.exactOptional().openapi({
+      description: 'The state change reason code.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'The state change reason message.',
+    }),
   })
   .openapi({
     description: 'Describes the reason why the last image state change occurred.',
@@ -2026,100 +1546,70 @@ const ApplicationsSchema = z.array(ApplicationSchema).openapi('Applications')
 
 const ImagePermissionsSchema = z
   .object({
-    allowFleet: BooleanObjectSchema.and(
-      z.any().openapi({ description: 'Indicates whether the image can be used for a fleet.' }),
-    ).exactOptional(),
-    allowImageBuilder: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the image can be used for an image builder.' }),
-    ).exactOptional(),
+    allowFleet: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether the image can be used for a fleet.',
+    }),
+    allowImageBuilder: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether the image can be used for an image builder.',
+    }),
   })
   .openapi({ description: 'Describes the permissions for an image. ', required: [] })
   .openapi('ImagePermissions')
 
 const ImageSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the image.' })),
-    Arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the image.' })).exactOptional(),
-    BaseImageArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the image from which this image was created.' }),
-    ).exactOptional(),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'The image name to display.' }),
-    ).exactOptional(),
-    State: ImageStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The image starts in the <code>PENDING</code> state. If image creation succeeds, the state is <code>AVAILABLE</code>. If image creation fails, the state is <code>FAILED</code>.',
-        }),
-    ).exactOptional(),
-    Visibility: VisibilityTypeSchema.and(
-      z.any().openapi({ description: 'Indicates whether the image is public or private.' }),
-    ).exactOptional(),
-    ImageBuilderSupported: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether an image builder can be launched from this image.',
-        }),
-    ).exactOptional(),
-    ImageBuilderName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the image builder that was used to create the private image. If the image is shared, this value is null.',
-        }),
-    ).exactOptional(),
-    Platform: PlatformTypeSchema.and(
-      z.any().openapi({ description: 'The operating system platform of the image.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    StateChangeReason: ImageStateChangeReasonSchema.and(
-      z.any().openapi({ description: 'The reason why the last state change occurred.' }),
-    ).exactOptional(),
-    Applications: ApplicationsSchema.and(
-      z.any().openapi({ description: 'The applications associated with the image.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the image was created.' }),
-    ).exactOptional(),
-    PublicBaseImageReleasedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The release date of the public base image. For private images, this date is the release date of the base image from which the image was created.',
-        }),
-    ).exactOptional(),
-    AppstreamAgentVersion: AppstreamAgentVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the AppStream 2.0 agent to use for instances that are launched from this image. ',
-        }),
-    ).exactOptional(),
-    ImagePermissions: ImagePermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions to provide to the destination AWS account for the specified image.',
-        }),
-    ).exactOptional(),
-    ImageErrors: ResourceErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "Describes the errors that are returned when a new image can't be created.",
-        }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The name of the image.' }),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the image.' }),
+    BaseImageArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the image from which this image was created.',
+    }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'The image name to display.',
+    }),
+    State: ImageStateSchema.exactOptional().openapi({
+      description:
+        'The image starts in the <code>PENDING</code> state. If image creation succeeds, the state is <code>AVAILABLE</code>. If image creation fails, the state is <code>FAILED</code>.',
+    }),
+    Visibility: VisibilityTypeSchema.exactOptional().openapi({
+      description: 'Indicates whether the image is public or private.',
+    }),
+    ImageBuilderSupported: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether an image builder can be launched from this image.',
+    }),
+    ImageBuilderName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the image builder that was used to create the private image. If the image is shared, this value is null.',
+    }),
+    Platform: PlatformTypeSchema.exactOptional().openapi({
+      description: 'The operating system platform of the image.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    StateChangeReason: ImageStateChangeReasonSchema.exactOptional().openapi({
+      description: 'The reason why the last state change occurred.',
+    }),
+    Applications: ApplicationsSchema.exactOptional().openapi({
+      description: 'The applications associated with the image.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the image was created.',
+    }),
+    PublicBaseImageReleasedDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The release date of the public base image. For private images, this date is the release date of the base image from which the image was created.',
+    }),
+    AppstreamAgentVersion: AppstreamAgentVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the AppStream 2.0 agent to use for instances that are launched from this image. ',
+    }),
+    ImagePermissions: ImagePermissionsSchema.exactOptional().openapi({
+      description:
+        'The permissions to provide to the destination AWS account for the specified image.',
+    }),
+    ImageErrors: ResourceErrorsSchema.exactOptional().openapi({
+      description: "Describes the errors that are returned when a new image can't be created.",
+    }),
   })
   .openapi({ required: ['Name'], description: 'Describes an image.' })
   .openapi('Image')
@@ -2127,48 +1617,34 @@ const ImageSchema = z
 const CreateUpdatedImageResultSchema = z
   .object({
     image: ImageSchema.exactOptional(),
-    canUpdateImage: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether a new image can be created.' }),
-    ).exactOptional(),
+    canUpdateImage: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether a new image can be created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUpdatedImageResult')
 
 const CreateUpdatedImageRequestSchema = z
   .object({
-    existingImageName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the image to update.' }),
-    ),
-    newImageName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the new image. The name must be unique within the AWS account and Region.',
-        }),
-    ),
-    newImageDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description to display for the new image.' }),
-    ).exactOptional(),
-    newImageDisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to display for the new image.' }),
-    ).exactOptional(),
-    newImageTags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tags to associate with the new image. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>For more information about tags, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    dryRun: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to display the status of image update availability before AppStream 2.0 initiates the process of creating a new updated image. If this value is set to <code>true</code>, AppStream 2.0 displays whether image updates are available. If this value is set to <code>false</code>, AppStream 2.0 initiates the process of creating a new updated image without displaying whether image updates are available.',
-        }),
-    ).exactOptional(),
+    existingImageName: NameSchema.openapi({ description: 'The name of the image to update.' }),
+    newImageName: NameSchema.openapi({
+      description:
+        'The name of the new image. The name must be unique within the AWS account and Region.',
+    }),
+    newImageDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'The description to display for the new image.',
+    }),
+    newImageDisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The name to display for the new image.',
+    }),
+    newImageTags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The tags to associate with the new image. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>For more information about tags, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    dryRun: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to display the status of image update availability before AppStream 2.0 initiates the process of creating a new updated image. If this value is set to <code>true</code>, AppStream 2.0 displays whether image updates are available. If this value is set to <code>false</code>, AppStream 2.0 initiates the process of creating a new updated image without displaying whether image updates are available.',
+    }),
   })
   .openapi({ required: ['existingImageName', 'newImageName'], title: 'CreateUpdatedImageRequest' })
   .openapi('CreateUpdatedImageRequest')
@@ -2177,27 +1653,23 @@ const UsageReportScheduleSchema = z.literal('DAILY').openapi('UsageReportSchedul
 
 const CreateUsageReportSubscriptionResultSchema = z
   .object({
-    S3BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 bucket where generated reports are stored.</p> <p>If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, AppStream 2.0 created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, AppStream 2.0 uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, AppStream 2.0 creates a new S3 bucket.</p>",
-        }),
-    ).exactOptional(),
-    Schedule: UsageReportScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for generating usage reports.' }),
-    ).exactOptional(),
+    S3BucketName: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 bucket where generated reports are stored.</p> <p>If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, AppStream 2.0 created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, AppStream 2.0 uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, AppStream 2.0 creates a new S3 bucket.</p>",
+    }),
+    Schedule: UsageReportScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for generating usage reports.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUsageReportSubscriptionResult')
 
 const CreateUsageReportSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CreateUsageReportSubscriptionRequest' })
   .openapi('CreateUsageReportSubscriptionRequest')
 
-const CreateUserResultSchema = z.object({}).openapi('CreateUserResult')
+const CreateUserResultSchema = z.looseObject({}).openapi('CreateUserResult')
 
 const MessageActionSchema = z.enum(['SUPPRESS', 'RESEND']).openapi('MessageAction')
 
@@ -2209,175 +1681,141 @@ const UserAttributeValueSchema = z
 
 const CreateUserRequestSchema = z
   .object({
-    UserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address of the user.</p> <note> <p>Users\' email addresses are case-sensitive. During login, if they specify an email address that doesn\'t use the same capitalization as the email address specified when their user pool account was created, a "user does not exist" error message displays.</p> </note>',
-        }),
-    ),
-    MessageAction: MessageActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action to take for the welcome email that is sent to a user after the user is created in the user pool. If you specify SUPPRESS, no email is sent. If you specify RESEND, do not specify the first name or last name of the user. If the value is null, the email is sent. </p> <note> <p>The temporary password in the welcome email is valid for only 7 days. If users don’t set their passwords within 7 days, you must send them a new welcome email.</p> </note>',
-        }),
-    ).exactOptional(),
-    FirstName: UserAttributeValueSchema.and(
-      z.any().openapi({ description: 'The first name, or given name, of the user.' }),
-    ).exactOptional(),
-    LastName: UserAttributeValueSchema.and(
-      z.any().openapi({ description: 'The last name, or surname, of the user.' }),
-    ).exactOptional(),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The authentication type for the user. You must specify USERPOOL. ',
-        }),
-    ),
+    UserName: UsernameSchema.openapi({
+      description:
+        '<p>The email address of the user.</p> <note> <p>Users\' email addresses are case-sensitive. During login, if they specify an email address that doesn\'t use the same capitalization as the email address specified when their user pool account was created, a "user does not exist" error message displays.</p> </note>',
+    }),
+    MessageAction: MessageActionSchema.exactOptional().openapi({
+      description:
+        '<p>The action to take for the welcome email that is sent to a user after the user is created in the user pool. If you specify SUPPRESS, no email is sent. If you specify RESEND, do not specify the first name or last name of the user. If the value is null, the email is sent. </p> <note> <p>The temporary password in the welcome email is valid for only 7 days. If users don’t set their passwords within 7 days, you must send them a new welcome email.</p> </note>',
+    }),
+    FirstName: UserAttributeValueSchema.exactOptional().openapi({
+      description: 'The first name, or given name, of the user.',
+    }),
+    LastName: UserAttributeValueSchema.exactOptional().openapi({
+      description: 'The last name, or surname, of the user.',
+    }),
+    AuthenticationType: AuthenticationTypeSchema.openapi({
+      description: 'The authentication type for the user. You must specify USERPOOL. ',
+    }),
   })
   .openapi({ required: ['UserName', 'AuthenticationType'], title: 'CreateUserRequest' })
   .openapi('CreateUserRequest')
 
-const DeleteAppBlockResultSchema = z.object({}).openapi('DeleteAppBlockResult')
+const DeleteAppBlockResultSchema = z.looseObject({}).openapi('DeleteAppBlockResult')
 
 const DeleteAppBlockRequestSchema = z
-  .object({ Name: NameSchema.and(z.any().openapi({ description: 'The name of the app block.' })) })
+  .object({ Name: NameSchema.openapi({ description: 'The name of the app block.' }) })
   .openapi({ required: ['Name'], title: 'DeleteAppBlockRequest' })
   .openapi('DeleteAppBlockRequest')
 
 const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
-const DeleteApplicationResultSchema = z.object({}).openapi('DeleteApplicationResult')
+const DeleteApplicationResultSchema = z.looseObject({}).openapi('DeleteApplicationResult')
 
 const DeleteApplicationRequestSchema = z
-  .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the application.' })),
-  })
+  .object({ Name: NameSchema.openapi({ description: 'The name of the application.' }) })
   .openapi({ required: ['Name'], title: 'DeleteApplicationRequest' })
   .openapi('DeleteApplicationRequest')
 
-const DeleteDirectoryConfigResultSchema = z.object({}).openapi('DeleteDirectoryConfigResult')
+const DeleteDirectoryConfigResultSchema = z.looseObject({}).openapi('DeleteDirectoryConfigResult')
 
 const DeleteDirectoryConfigRequestSchema = z
   .object({
-    DirectoryName: DirectoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the directory configuration.' }),
-    ),
+    DirectoryName: DirectoryNameSchema.openapi({
+      description: 'The name of the directory configuration.',
+    }),
   })
   .openapi({ required: ['DirectoryName'], title: 'DeleteDirectoryConfigRequest' })
   .openapi('DeleteDirectoryConfigRequest')
 
-const DeleteEntitlementResultSchema = z.object({}).openapi('DeleteEntitlementResult')
+const DeleteEntitlementResultSchema = z.looseObject({}).openapi('DeleteEntitlementResult')
 
 const DeleteEntitlementRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the entitlement.' })),
-    StackName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stack with which the entitlement is associated.',
-        }),
-    ),
+    Name: NameSchema.openapi({ description: 'The name of the entitlement.' }),
+    StackName: NameSchema.openapi({
+      description: 'The name of the stack with which the entitlement is associated.',
+    }),
   })
   .openapi({ required: ['Name', 'StackName'], title: 'DeleteEntitlementRequest' })
   .openapi('DeleteEntitlementRequest')
 
-const DeleteFleetResultSchema = z.object({}).openapi('DeleteFleetResult')
+const DeleteFleetResultSchema = z.looseObject({}).openapi('DeleteFleetResult')
 
 const DeleteFleetRequestSchema = z
-  .object({ Name: StringSchema.and(z.any().openapi({ description: 'The name of the fleet.' })) })
+  .object({ Name: StringSchema.openapi({ description: 'The name of the fleet.' }) })
   .openapi({ required: ['Name'], title: 'DeleteFleetRequest' })
   .openapi('DeleteFleetRequest')
 
 const DeleteImageResultSchema = z
   .object({
-    Image: ImageSchema.and(
-      z.any().openapi({ description: 'Information about the image.' }),
-    ).exactOptional(),
+    Image: ImageSchema.exactOptional().openapi({ description: 'Information about the image.' }),
   })
   .openapi({ required: [] })
   .openapi('DeleteImageResult')
 
 const DeleteImageRequestSchema = z
-  .object({ Name: NameSchema.and(z.any().openapi({ description: 'The name of the image.' })) })
+  .object({ Name: NameSchema.openapi({ description: 'The name of the image.' }) })
   .openapi({ required: ['Name'], title: 'DeleteImageRequest' })
   .openapi('DeleteImageRequest')
 
 const DeleteImageBuilderResultSchema = z
   .object({
-    ImageBuilder: ImageBuilderSchema.and(
-      z.any().openapi({ description: 'Information about the image builder.' }),
-    ).exactOptional(),
+    ImageBuilder: ImageBuilderSchema.exactOptional().openapi({
+      description: 'Information about the image builder.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteImageBuilderResult')
 
 const DeleteImageBuilderRequestSchema = z
-  .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the image builder.' })),
-  })
+  .object({ Name: NameSchema.openapi({ description: 'The name of the image builder.' }) })
   .openapi({ required: ['Name'], title: 'DeleteImageBuilderRequest' })
   .openapi('DeleteImageBuilderRequest')
 
-const DeleteImagePermissionsResultSchema = z.object({}).openapi('DeleteImagePermissionsResult')
+const DeleteImagePermissionsResultSchema = z.looseObject({}).openapi('DeleteImagePermissionsResult')
 
 const AwsAccountIdSchema = z.string().regex(/^\d+$/).openapi('AwsAccountId')
 
 const DeleteImagePermissionsRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the private image.' })),
-    SharedAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 12-digit identifier of the AWS account for which to delete image permissions.',
-        }),
-    ),
+    Name: NameSchema.openapi({ description: 'The name of the private image.' }),
+    SharedAccountId: AwsAccountIdSchema.openapi({
+      description:
+        'The 12-digit identifier of the AWS account for which to delete image permissions.',
+    }),
   })
   .openapi({ required: ['Name', 'SharedAccountId'], title: 'DeleteImagePermissionsRequest' })
   .openapi('DeleteImagePermissionsRequest')
 
-const DeleteStackResultSchema = z.object({}).openapi('DeleteStackResult')
+const DeleteStackResultSchema = z.looseObject({}).openapi('DeleteStackResult')
 
 const DeleteStackRequestSchema = z
-  .object({ Name: StringSchema.and(z.any().openapi({ description: 'The name of the stack.' })) })
+  .object({ Name: StringSchema.openapi({ description: 'The name of the stack.' }) })
   .openapi({ required: ['Name'], title: 'DeleteStackRequest' })
   .openapi('DeleteStackRequest')
 
 const DeleteUsageReportSubscriptionResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteUsageReportSubscriptionResult')
 
 const DeleteUsageReportSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteUsageReportSubscriptionRequest' })
   .openapi('DeleteUsageReportSubscriptionRequest')
 
-const DeleteUserResultSchema = z.object({}).openapi('DeleteUserResult')
+const DeleteUserResultSchema = z.looseObject({}).openapi('DeleteUserResult')
 
 const DeleteUserRequestSchema = z
   .object({
-    UserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The email address of the user.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
-        }),
-    ),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The authentication type for the user. You must specify USERPOOL.',
-        }),
-    ),
+    UserName: UsernameSchema.openapi({
+      description:
+        "<p>The email address of the user.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
+    }),
+    AuthenticationType: AuthenticationTypeSchema.openapi({
+      description: 'The authentication type for the user. You must specify USERPOOL.',
+    }),
   })
   .openapi({ required: ['UserName', 'AuthenticationType'], title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
@@ -2386,17 +1824,13 @@ const AppBlocksSchema = z.array(AppBlockSchema).openapi('AppBlocks')
 
 const DescribeAppBlocksResultSchema = z
   .object({
-    AppBlocks: AppBlocksSchema.and(
-      z.any().openapi({ description: 'The app blocks in the list.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
+    AppBlocks: AppBlocksSchema.exactOptional().openapi({
+      description: 'The app blocks in the list.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAppBlocksResult')
@@ -2405,20 +1839,14 @@ const ArnListSchema = z.array(ArnSchema).openapi('ArnList')
 
 const DescribeAppBlocksRequestSchema = z
   .object({
-    Arns: ArnListSchema.and(
-      z.any().openapi({ description: 'The ARNs of the app blocks.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
+    Arns: ArnListSchema.exactOptional().openapi({ description: 'The ARNs of the app blocks.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
   })
   .openapi({ title: 'DescribeAppBlocksRequest', required: [] })
   .openapi('DescribeAppBlocksRequest')
@@ -2431,77 +1859,57 @@ const ApplicationFleetAssociationListSchema = z
 
 const DescribeApplicationFleetAssociationsResultSchema = z
   .object({
-    ApplicationFleetAssociations: ApplicationFleetAssociationListSchema.and(
-      z.any().openapi({ description: 'The application fleet associations in the list.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
+    ApplicationFleetAssociations: ApplicationFleetAssociationListSchema.exactOptional().openapi({
+      description: 'The application fleet associations in the list.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeApplicationFleetAssociationsResult')
 
 const DescribeApplicationFleetAssociationsRequestSchema = z
   .object({
-    FleetName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet.' }),
-    ).exactOptional(),
-    ApplicationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the application.' }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
+    FleetName: NameSchema.exactOptional().openapi({ description: 'The name of the fleet.' }),
+    ApplicationArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the application.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
   })
   .openapi({ title: 'DescribeApplicationFleetAssociationsRequest', required: [] })
   .openapi('DescribeApplicationFleetAssociationsRequest')
 
 const DescribeApplicationsResultSchema = z
   .object({
-    Applications: ApplicationsSchema.and(
-      z.any().openapi({ description: 'The applications in the list.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
+    Applications: ApplicationsSchema.exactOptional().openapi({
+      description: 'The applications in the list.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeApplicationsResult')
 
 const DescribeApplicationsRequestSchema = z
   .object({
-    Arns: ArnListSchema.and(
-      z.any().openapi({ description: 'The ARNs for the applications.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
+    Arns: ArnListSchema.exactOptional().openapi({ description: 'The ARNs for the applications.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
   })
   .openapi({ title: 'DescribeApplicationsRequest', required: [] })
   .openapi('DescribeApplicationsRequest')
@@ -2510,22 +1918,14 @@ const DirectoryConfigListSchema = z.array(DirectoryConfigSchema).openapi('Direct
 
 const DescribeDirectoryConfigsResultSchema = z
   .object({
-    DirectoryConfigs: DirectoryConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the directory configurations. Note that although the response syntax in this topic includes the account password, this password is not returned in the actual response. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    DirectoryConfigs: DirectoryConfigListSchema.exactOptional().openapi({
+      description:
+        'Information about the directory configurations. Note that although the response syntax in this topic includes the account password, this password is not returned in the actual response. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDirectoryConfigsResult')
@@ -2534,20 +1934,16 @@ const DirectoryNameListSchema = z.array(DirectoryNameSchema).openapi('DirectoryN
 
 const DescribeDirectoryConfigsRequestSchema = z
   .object({
-    DirectoryNames: DirectoryNameListSchema.and(
-      z.any().openapi({ description: 'The directory names.' }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    DirectoryNames: DirectoryNameListSchema.exactOptional().openapi({
+      description: 'The directory names.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ title: 'DescribeDirectoryConfigsRequest', required: [] })
   .openapi('DescribeDirectoryConfigsRequest')
@@ -2556,44 +1952,30 @@ const EntitlementListSchema = z.array(EntitlementSchema).openapi('EntitlementLis
 
 const DescribeEntitlementsResultSchema = z
   .object({
-    Entitlements: EntitlementListSchema.and(
-      z.any().openapi({ description: 'The entitlements.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
+    Entitlements: EntitlementListSchema.exactOptional().openapi({
+      description: 'The entitlements.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEntitlementsResult')
 
 const DescribeEntitlementsRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the entitlement.' }),
-    ).exactOptional(),
-    StackName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stack with which the entitlement is associated.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the entitlement.' }),
+    StackName: NameSchema.openapi({
+      description: 'The name of the stack with which the entitlement is associated.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
   })
   .openapi({ required: ['StackName'], title: 'DescribeEntitlementsRequest' })
   .openapi('DescribeEntitlementsRequest')
@@ -2605,34 +1987,26 @@ const FleetListSchema = z
 
 const DescribeFleetsResultSchema = z
   .object({
-    Fleets: FleetListSchema.and(
-      z.any().openapi({ description: 'Information about the fleets.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Fleets: FleetListSchema.exactOptional().openapi({
+      description: 'Information about the fleets.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetsResult')
 
 const DescribeFleetsRequestSchema = z
   .object({
-    Names: StringListSchema.and(
-      z.any().openapi({ description: 'The names of the fleets to describe.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    Names: StringListSchema.exactOptional().openapi({
+      description: 'The names of the fleets to describe.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ title: 'DescribeFleetsRequest', required: [] })
   .openapi('DescribeFleetsRequest')
@@ -2641,53 +2015,41 @@ const ImageBuilderListSchema = z.array(ImageBuilderSchema).openapi('ImageBuilder
 
 const DescribeImageBuildersResultSchema = z
   .object({
-    ImageBuilders: ImageBuilderListSchema.and(
-      z.any().openapi({ description: 'Information about the image builders.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    ImageBuilders: ImageBuilderListSchema.exactOptional().openapi({
+      description: 'Information about the image builders.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeImageBuildersResult')
 
 const DescribeImageBuildersRequestSchema = z
   .object({
-    Names: StringListSchema.and(
-      z.any().openapi({ description: 'The names of the image builders to describe.' }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    Names: StringListSchema.exactOptional().openapi({
+      description: 'The names of the image builders to describe.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ title: 'DescribeImageBuildersRequest', required: [] })
   .openapi('DescribeImageBuildersRequest')
 
 const SharedImagePermissionsSchema = z
   .object({
-    sharedAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit identifier of the AWS account with which the image is shared.',
-        }),
-    ),
-    imagePermissions: ImagePermissionsSchema.and(
-      z.any().openapi({ description: 'Describes the permissions for a shared image.' }),
-    ),
+    sharedAccountId: AwsAccountIdSchema.openapi({
+      description: 'The 12-digit identifier of the AWS account with which the image is shared.',
+    }),
+    imagePermissions: ImagePermissionsSchema.openapi({
+      description: 'Describes the permissions for a shared image.',
+    }),
   })
   .openapi({
     required: ['sharedAccountId', 'imagePermissions'],
@@ -2702,20 +2064,14 @@ const SharedImagePermissionsListSchema = z
 
 const DescribeImagePermissionsResultSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the private image.' }),
-    ).exactOptional(),
-    SharedImagePermissionsList: SharedImagePermissionsListSchema.and(
-      z.any().openapi({ description: 'The permissions for a private image that you own. ' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the private image.' }),
+    SharedImagePermissionsList: SharedImagePermissionsListSchema.exactOptional().openapi({
+      description: 'The permissions for a private image that you own. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeImagePermissionsResult')
@@ -2726,33 +2082,21 @@ const AwsAccountIdListSchema = z.array(AwsAccountIdSchema).min(1).max(5).openapi
 
 const DescribeImagePermissionsRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the private image for which to describe permissions. The image must be one that you own. ',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
-    SharedAwsAccountIds: AwsAccountIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 12-digit identifier of one or more AWS accounts with which the image is shared.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      description:
+        'The name of the private image for which to describe permissions. The image must be one that you own. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
+    SharedAwsAccountIds: AwsAccountIdListSchema.exactOptional().openapi({
+      description:
+        'The 12-digit identifier of one or more AWS accounts with which the image is shared.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DescribeImagePermissionsRequest' })
   .openapi('DescribeImagePermissionsRequest')
@@ -2761,17 +2105,13 @@ const ImageListSchema = z.array(ImageSchema).openapi('ImageList')
 
 const DescribeImagesResultSchema = z
   .object({
-    Images: ImageListSchema.and(
-      z.any().openapi({ description: 'Information about the images.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Images: ImageListSchema.exactOptional().openapi({
+      description: 'Information about the images.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeImagesResult')
@@ -2780,32 +2120,22 @@ const DescribeImagesMaxResultsSchema = z.int().min(0).max(25).openapi('DescribeI
 
 const DescribeImagesRequestSchema = z
   .object({
-    Names: StringListSchema.and(
-      z.any().openapi({ description: 'The names of the public or private images to describe.' }),
-    ).exactOptional(),
-    Arns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARNs of the public, private, and shared images to describe.',
-        }),
-    ).exactOptional(),
-    Type: VisibilityTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of image (public, private, or shared) to describe. ' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    MaxResults: DescribeImagesMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
+    Names: StringListSchema.exactOptional().openapi({
+      description: 'The names of the public or private images to describe.',
+    }),
+    Arns: ArnListSchema.exactOptional().openapi({
+      description: 'The ARNs of the public, private, and shared images to describe.',
+    }),
+    Type: VisibilityTypeSchema.exactOptional().openapi({
+      description: 'The type of image (public, private, or shared) to describe. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    MaxResults: DescribeImagesMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
   })
   .openapi({ title: 'DescribeImagesRequest', required: [] })
   .openapi('DescribeImagesRequest')
@@ -2823,54 +2153,36 @@ const SessionConnectionStateSchema = z
 
 const SessionSchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the streaming session.' }),
-    ),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the user for whom the session was created.' }),
-    ),
-    StackName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the stack for the streaming session.' }),
-    ),
-    FleetName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the fleet for the streaming session.' }),
-    ),
-    State: SessionStateSchema.and(
-      z.any().openapi({ description: 'The current state of the streaming session.' }),
-    ),
-    ConnectionState: SessionConnectionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether a user is connected to the streaming session.',
-        }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when a streaming instance is dedicated for the user.' }),
-    ).exactOptional(),
-    MaxExpirationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the streaming session is set to expire. This time is based on the <code>MaxUserDurationinSeconds</code> value, which determines the maximum length of time that a streaming session can run. A streaming session might end earlier than the time specified in <code>SessionMaxExpirationTime</code>, when the <code>DisconnectTimeOutInSeconds</code> elapses or the user chooses to end his or her session. If the <code>DisconnectTimeOutInSeconds</code> elapses, or the user chooses to end his or her session, the streaming instance is terminated and the streaming session ends.',
-        }),
-    ).exactOptional(),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication method. The user is authenticated using a streaming URL (<code>API</code>) or SAML 2.0 federation (<code>SAML</code>).',
-        }),
-    ).exactOptional(),
-    NetworkAccessConfiguration: NetworkAccessConfigurationSchema.and(
-      z.any().openapi({ description: 'The network details for the streaming session.' }),
-    ).exactOptional(),
+    Id: StringSchema.openapi({ description: 'The identifier of the streaming session.' }),
+    UserId: UserIdSchema.openapi({
+      description: 'The identifier of the user for whom the session was created.',
+    }),
+    StackName: StringSchema.openapi({
+      description: 'The name of the stack for the streaming session.',
+    }),
+    FleetName: StringSchema.openapi({
+      description: 'The name of the fleet for the streaming session.',
+    }),
+    State: SessionStateSchema.openapi({
+      description: 'The current state of the streaming session.',
+    }),
+    ConnectionState: SessionConnectionStateSchema.exactOptional().openapi({
+      description: 'Specifies whether a user is connected to the streaming session.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time when a streaming instance is dedicated for the user.',
+    }),
+    MaxExpirationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time when the streaming session is set to expire. This time is based on the <code>MaxUserDurationinSeconds</code> value, which determines the maximum length of time that a streaming session can run. A streaming session might end earlier than the time specified in <code>SessionMaxExpirationTime</code>, when the <code>DisconnectTimeOutInSeconds</code> elapses or the user chooses to end his or her session. If the <code>DisconnectTimeOutInSeconds</code> elapses, or the user chooses to end his or her session, the streaming instance is terminated and the streaming session ends.',
+    }),
+    AuthenticationType: AuthenticationTypeSchema.exactOptional().openapi({
+      description:
+        'The authentication method. The user is authenticated using a streaming URL (<code>API</code>) or SAML 2.0 federation (<code>SAML</code>).',
+    }),
+    NetworkAccessConfiguration: NetworkAccessConfigurationSchema.exactOptional().openapi({
+      description: 'The network details for the streaming session.',
+    }),
   })
   .openapi({
     required: ['Id', 'UserId', 'StackName', 'FleetName', 'State'],
@@ -2885,61 +2197,41 @@ const SessionListSchema = z
 
 const DescribeSessionsResultSchema = z
   .object({
-    Sessions: SessionListSchema.and(
-      z.any().openapi({ description: 'Information about the streaming sessions.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Sessions: SessionListSchema.exactOptional().openapi({
+      description: 'Information about the streaming sessions.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSessionsResult')
 
 const DescribeSessionsRequestSchema = z
   .object({
-    StackName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the stack. This value is case-sensitive.' }),
-    ),
-    FleetName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the fleet. This value is case-sensitive.' }),
-    ),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user identifier (ID). If you specify a user ID, you must also specify the authentication type.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    Limit: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of each page of results. The default value is 20 and the maximum value is 50.',
-        }),
-    ).exactOptional(),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication method. Specify <code>API</code> for a user authenticated using a streaming URL or <code>SAML</code> for a SAML federated user. The default is to authenticate users using a streaming URL.',
-        }),
-    ).exactOptional(),
+    StackName: StringSchema.openapi({
+      description: 'The name of the stack. This value is case-sensitive.',
+    }),
+    FleetName: StringSchema.openapi({
+      description: 'The name of the fleet. This value is case-sensitive.',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description:
+        'The user identifier (ID). If you specify a user ID, you must also specify the authentication type.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    Limit: IntegerSchema.exactOptional().openapi({
+      description:
+        'The size of each page of results. The default value is 20 and the maximum value is 50.',
+    }),
+    AuthenticationType: AuthenticationTypeSchema.exactOptional().openapi({
+      description:
+        'The authentication method. Specify <code>API</code> for a user authenticated using a streaming URL or <code>SAML</code> for a SAML federated user. The default is to authenticate users using a streaming URL.',
+    }),
   })
   .openapi({ required: ['StackName', 'FleetName'], title: 'DescribeSessionsRequest' })
   .openapi('DescribeSessionsRequest')
@@ -2951,34 +2243,26 @@ const StackListSchema = z
 
 const DescribeStacksResultSchema = z
   .object({
-    Stacks: StackListSchema.and(
-      z.any().openapi({ description: 'Information about the stacks.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Stacks: StackListSchema.exactOptional().openapi({
+      description: 'Information about the stacks.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStacksResult')
 
 const DescribeStacksRequestSchema = z
   .object({
-    Names: StringListSchema.and(
-      z.any().openapi({ description: 'The names of the stacks to describe.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    Names: StringListSchema.exactOptional().openapi({
+      description: 'The names of the stacks to describe.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ title: 'DescribeStacksRequest', required: [] })
   .openapi('DescribeStacksRequest')
@@ -2989,22 +2273,14 @@ const UsageReportExecutionErrorCodeSchema = z
 
 const LastReportGenerationExecutionErrorSchema = z
   .object({
-    ErrorCode: UsageReportExecutionErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The error code for the error that is returned when a usage report can't be generated.",
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The error message for the error that is returned when a usage report can't be generated.",
-        }),
-    ).exactOptional(),
+    ErrorCode: UsageReportExecutionErrorCodeSchema.exactOptional().openapi({
+      description:
+        "The error code for the error that is returned when a usage report can't be generated.",
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        "The error message for the error that is returned when a usage report can't be generated.",
+    }),
   })
   .openapi({
     description: "Describes the error that is returned when a usage report can't be generated.",
@@ -3018,27 +2294,19 @@ const LastReportGenerationExecutionErrorsSchema = z
 
 const UsageReportSubscriptionSchema = z
   .object({
-    S3BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 bucket where generated reports are stored.</p> <p>If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, AppStream 2.0 created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, AppStream 2.0 uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, AppStream 2.0 creates a new S3 bucket.</p>",
-        }),
-    ).exactOptional(),
-    Schedule: UsageReportScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for generating usage reports.' }),
-    ).exactOptional(),
-    LastGeneratedReportDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the last usage report was generated.' }),
-    ).exactOptional(),
-    SubscriptionErrors: LastReportGenerationExecutionErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The errors that were returned if usage reports couldn't be generated.",
-        }),
-    ).exactOptional(),
+    S3BucketName: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 bucket where generated reports are stored.</p> <p>If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, AppStream 2.0 created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, AppStream 2.0 uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, AppStream 2.0 creates a new S3 bucket.</p>",
+    }),
+    Schedule: UsageReportScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for generating usage reports.',
+    }),
+    LastGeneratedReportDate: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the last usage report was generated.',
+    }),
+    SubscriptionErrors: LastReportGenerationExecutionErrorsSchema.exactOptional().openapi({
+      description: "The errors that were returned if usage reports couldn't be generated.",
+    }),
   })
   .openapi({
     description: 'Describes information about the usage report subscription.',
@@ -3052,125 +2320,93 @@ const UsageReportSubscriptionListSchema = z
 
 const DescribeUsageReportSubscriptionsResultSchema = z
   .object({
-    UsageReportSubscriptions: UsageReportSubscriptionListSchema.and(
-      z.any().openapi({ description: 'Information about the usage report subscription.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    UsageReportSubscriptions: UsageReportSubscriptionListSchema.exactOptional().openapi({
+      description: 'Information about the usage report subscription.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUsageReportSubscriptionsResult')
 
 const DescribeUsageReportSubscriptionsRequestSchema = z
   .object({
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ title: 'DescribeUsageReportSubscriptionsRequest', required: [] })
   .openapi('DescribeUsageReportSubscriptionsRequest')
 
 const DescribeUserStackAssociationsResultSchema = z
   .object({
-    UserStackAssociations: UserStackAssociationListSchema.and(
-      z.any().openapi({ description: 'The UserStackAssociation objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    UserStackAssociations: UserStackAssociationListSchema.exactOptional().openapi({
+      description: 'The UserStackAssociation objects.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUserStackAssociationsResult')
 
 const DescribeUserStackAssociationsRequestSchema = z
   .object({
-    StackName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the stack that is associated with the user.' }),
-    ).exactOptional(),
-    UserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The email address of the user who is associated with the stack.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
-        }),
-    ).exactOptional(),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication type for the user who is associated with the stack. You must specify USERPOOL.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    StackName: StringSchema.exactOptional().openapi({
+      description: 'The name of the stack that is associated with the user.',
+    }),
+    UserName: UsernameSchema.exactOptional().openapi({
+      description:
+        "<p>The email address of the user who is associated with the stack.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
+    }),
+    AuthenticationType: AuthenticationTypeSchema.exactOptional().openapi({
+      description:
+        'The authentication type for the user who is associated with the stack. You must specify USERPOOL.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ title: 'DescribeUserStackAssociationsRequest', required: [] })
   .openapi('DescribeUserStackAssociationsRequest')
 
 const UserSchema = z
   .object({
-    Arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the user.' })).exactOptional(),
-    UserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The email address of the user.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether the user in the user pool is enabled.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the user in the user pool. The status can be one of the following:</p> <ul> <li> <p>UNCONFIRMED – The user is created but not confirmed.</p> </li> <li> <p>CONFIRMED – The user is confirmed.</p> </li> <li> <p>ARCHIVED – The user is no longer active.</p> </li> <li> <p>COMPROMISED – The user is disabled because of a potential security threat.</p> </li> <li> <p>UNKNOWN – The user status is not known.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FirstName: UserAttributeValueSchema.and(
-      z.any().openapi({ description: 'The first name, or given name, of the user.' }),
-    ).exactOptional(),
-    LastName: UserAttributeValueSchema.and(
-      z.any().openapi({ description: 'The last name, or surname, of the user.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the user was created in the user pool.' }),
-    ).exactOptional(),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z.any().openapi({ description: 'The authentication type for the user.' }),
-    ),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the user.' }),
+    UserName: UsernameSchema.exactOptional().openapi({
+      description:
+        "<p>The email address of the user.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the user in the user pool is enabled.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the user in the user pool. The status can be one of the following:</p> <ul> <li> <p>UNCONFIRMED – The user is created but not confirmed.</p> </li> <li> <p>CONFIRMED – The user is confirmed.</p> </li> <li> <p>ARCHIVED – The user is no longer active.</p> </li> <li> <p>COMPROMISED – The user is disabled because of a potential security threat.</p> </li> <li> <p>UNKNOWN – The user status is not known.</p> </li> </ul>',
+    }),
+    FirstName: UserAttributeValueSchema.exactOptional().openapi({
+      description: 'The first name, or given name, of the user.',
+    }),
+    LastName: UserAttributeValueSchema.exactOptional().openapi({
+      description: 'The last name, or surname, of the user.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the user was created in the user pool.',
+    }),
+    AuthenticationType: AuthenticationTypeSchema.openapi({
+      description: 'The authentication type for the user.',
+    }),
   })
   .openapi({ required: ['AuthenticationType'], description: 'Describes a user in the user pool.' })
   .openapi('User')
@@ -3179,77 +2415,57 @@ const UserListSchema = z.array(UserSchema).openapi('UserList')
 
 const DescribeUsersResultSchema = z
   .object({
-    Users: UserListSchema.and(
-      z.any().openapi({ description: 'Information about users in the user pool.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Users: UserListSchema.exactOptional().openapi({
+      description: 'Information about users in the user pool.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUsersResult')
 
 const DescribeUsersRequestSchema = z
   .object({
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication type for the users in the user pool to describe. You must specify USERPOOL.',
-        }),
-    ),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    AuthenticationType: AuthenticationTypeSchema.openapi({
+      description:
+        'The authentication type for the users in the user pool to describe. You must specify USERPOOL.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: ['AuthenticationType'], title: 'DescribeUsersRequest' })
   .openapi('DescribeUsersRequest')
 
-const DisableUserResultSchema = z.object({}).openapi('DisableUserResult')
+const DisableUserResultSchema = z.looseObject({}).openapi('DisableUserResult')
 
 const DisableUserRequestSchema = z
   .object({
-    UserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The email address of the user.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
-        }),
-    ),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The authentication type for the user. You must specify USERPOOL.',
-        }),
-    ),
+    UserName: UsernameSchema.openapi({
+      description:
+        "<p>The email address of the user.</p> <note> <p>Users' email addresses are case-sensitive.</p> </note>",
+    }),
+    AuthenticationType: AuthenticationTypeSchema.openapi({
+      description: 'The authentication type for the user. You must specify USERPOOL.',
+    }),
   })
   .openapi({ required: ['UserName', 'AuthenticationType'], title: 'DisableUserRequest' })
   .openapi('DisableUserRequest')
 
 const DisassociateApplicationFleetResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateApplicationFleetResult')
 
 const DisassociateApplicationFleetRequestSchema = z
   .object({
-    FleetName: NameSchema.and(z.any().openapi({ description: 'The name of the fleet.' })),
-    ApplicationArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the application.' })),
+    FleetName: NameSchema.openapi({ description: 'The name of the fleet.' }),
+    ApplicationArn: ArnSchema.openapi({ description: 'The ARN of the application.' }),
   })
   .openapi({
     required: ['FleetName', 'ApplicationArn'],
@@ -3258,28 +2474,18 @@ const DisassociateApplicationFleetRequestSchema = z
   .openapi('DisassociateApplicationFleetRequest')
 
 const DisassociateApplicationFromEntitlementResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateApplicationFromEntitlementResult')
 
 const DisassociateApplicationFromEntitlementRequestSchema = z
   .object({
-    StackName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stack with which the entitlement is associated.',
-        }),
-    ),
-    EntitlementName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the entitlement.' }),
-    ),
-    ApplicationIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the application to remove from the entitlement.',
-        }),
-    ),
+    StackName: NameSchema.openapi({
+      description: 'The name of the stack with which the entitlement is associated.',
+    }),
+    EntitlementName: NameSchema.openapi({ description: 'The name of the entitlement.' }),
+    ApplicationIdentifier: StringSchema.openapi({
+      description: 'The identifier of the application to remove from the entitlement.',
+    }),
   })
   .openapi({
     required: ['StackName', 'EntitlementName', 'ApplicationIdentifier'],
@@ -3287,119 +2493,89 @@ const DisassociateApplicationFromEntitlementRequestSchema = z
   })
   .openapi('DisassociateApplicationFromEntitlementRequest')
 
-const DisassociateFleetResultSchema = z.object({}).openapi('DisassociateFleetResult')
+const DisassociateFleetResultSchema = z.looseObject({}).openapi('DisassociateFleetResult')
 
 const DisassociateFleetRequestSchema = z
   .object({
-    FleetName: StringSchema.and(z.any().openapi({ description: 'The name of the fleet.' })),
-    StackName: StringSchema.and(z.any().openapi({ description: 'The name of the stack.' })),
+    FleetName: StringSchema.openapi({ description: 'The name of the fleet.' }),
+    StackName: StringSchema.openapi({ description: 'The name of the stack.' }),
   })
   .openapi({ required: ['FleetName', 'StackName'], title: 'DisassociateFleetRequest' })
   .openapi('DisassociateFleetRequest')
 
-const EnableUserResultSchema = z.object({}).openapi('EnableUserResult')
+const EnableUserResultSchema = z.looseObject({}).openapi('EnableUserResult')
 
 const EnableUserRequestSchema = z
   .object({
-    UserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address of the user.</p> <note> <p>Users\' email addresses are case-sensitive. During login, if they specify an email address that doesn\'t use the same capitalization as the email address specified when their user pool account was created, a "user does not exist" error message displays. </p> </note>',
-        }),
-    ),
-    AuthenticationType: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The authentication type for the user. You must specify USERPOOL.',
-        }),
-    ),
+    UserName: UsernameSchema.openapi({
+      description:
+        '<p>The email address of the user.</p> <note> <p>Users\' email addresses are case-sensitive. During login, if they specify an email address that doesn\'t use the same capitalization as the email address specified when their user pool account was created, a "user does not exist" error message displays. </p> </note>',
+    }),
+    AuthenticationType: AuthenticationTypeSchema.openapi({
+      description: 'The authentication type for the user. You must specify USERPOOL.',
+    }),
   })
   .openapi({ required: ['UserName', 'AuthenticationType'], title: 'EnableUserRequest' })
   .openapi('EnableUserRequest')
 
-const ExpireSessionResultSchema = z.object({}).openapi('ExpireSessionResult')
+const ExpireSessionResultSchema = z.looseObject({}).openapi('ExpireSessionResult')
 
 const ExpireSessionRequestSchema = z
   .object({
-    SessionId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the streaming session.' }),
-    ),
+    SessionId: StringSchema.openapi({ description: 'The identifier of the streaming session.' }),
   })
   .openapi({ required: ['SessionId'], title: 'ExpireSessionRequest' })
   .openapi('ExpireSessionRequest')
 
 const ListAssociatedFleetsResultSchema = z
   .object({
-    Names: StringListSchema.and(
-      z.any().openapi({ description: 'The name of the fleet.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Names: StringListSchema.exactOptional().openapi({ description: 'The name of the fleet.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssociatedFleetsResult')
 
 const ListAssociatedFleetsRequestSchema = z
   .object({
-    StackName: StringSchema.and(z.any().openapi({ description: 'The name of the stack.' })),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    StackName: StringSchema.openapi({ description: 'The name of the stack.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: ['StackName'], title: 'ListAssociatedFleetsRequest' })
   .openapi('ListAssociatedFleetsRequest')
 
 const ListAssociatedStacksResultSchema = z
   .object({
-    Names: StringListSchema.and(
-      z.any().openapi({ description: 'The name of the stack.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Names: StringListSchema.exactOptional().openapi({ description: 'The name of the stack.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssociatedStacksResult')
 
 const ListAssociatedStacksRequestSchema = z
   .object({
-    FleetName: StringSchema.and(z.any().openapi({ description: 'The name of the fleet.' })),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    FleetName: StringSchema.openapi({ description: 'The name of the fleet.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: ['FleetName'], title: 'ListAssociatedStacksRequest' })
   .openapi('ListAssociatedStacksRequest')
 
 const EntitledApplicationSchema = z
   .object({
-    ApplicationIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the application.' }),
-    ),
+    ApplicationIdentifier: StringSchema.openapi({
+      description: 'The identifier of the application.',
+    }),
   })
   .openapi({
     required: ['ApplicationIdentifier'],
@@ -3414,140 +2590,114 @@ const EntitledApplicationListSchema = z
 
 const ListEntitledApplicationsResultSchema = z
   .object({
-    EntitledApplications: EntitledApplicationListSchema.and(
-      z.any().openapi({ description: 'The entitled applications.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
+    EntitledApplications: EntitledApplicationListSchema.exactOptional().openapi({
+      description: 'The entitled applications.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEntitledApplicationsResult')
 
 const ListEntitledApplicationsRequestSchema = z
   .object({
-    StackName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stack with which the entitlement is associated.',
-        }),
-    ),
-    EntitlementName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the entitlement.' }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum size of each page of results.' }),
-    ).exactOptional(),
+    StackName: NameSchema.openapi({
+      description: 'The name of the stack with which the entitlement is associated.',
+    }),
+    EntitlementName: NameSchema.openapi({ description: 'The name of the entitlement.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum size of each page of results.',
+    }),
   })
   .openapi({ required: ['StackName', 'EntitlementName'], title: 'ListEntitledApplicationsRequest' })
   .openapi('ListEntitledApplicationsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The information about the tags.' }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({ description: 'The information about the tags.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
-const StartFleetResultSchema = z.object({}).openapi('StartFleetResult')
+const StartFleetResultSchema = z.looseObject({}).openapi('StartFleetResult')
 
 const StartFleetRequestSchema = z
-  .object({ Name: StringSchema.and(z.any().openapi({ description: 'The name of the fleet.' })) })
+  .object({ Name: StringSchema.openapi({ description: 'The name of the fleet.' }) })
   .openapi({ required: ['Name'], title: 'StartFleetRequest' })
   .openapi('StartFleetRequest')
 
 const StartImageBuilderResultSchema = z
   .object({
-    ImageBuilder: ImageBuilderSchema.and(
-      z.any().openapi({ description: 'Information about the image builder.' }),
-    ).exactOptional(),
+    ImageBuilder: ImageBuilderSchema.exactOptional().openapi({
+      description: 'Information about the image builder.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartImageBuilderResult')
 
 const StartImageBuilderRequestSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the image builder.' })),
-    AppstreamAgentVersion: AppstreamAgentVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the AppStream 2.0 agent to use for this image builder. To use the latest version of the AppStream 2.0 agent, specify [LATEST]. ',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The name of the image builder.' }),
+    AppstreamAgentVersion: AppstreamAgentVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the AppStream 2.0 agent to use for this image builder. To use the latest version of the AppStream 2.0 agent, specify [LATEST]. ',
+    }),
   })
   .openapi({ required: ['Name'], title: 'StartImageBuilderRequest' })
   .openapi('StartImageBuilderRequest')
 
-const StopFleetResultSchema = z.object({}).openapi('StopFleetResult')
+const StopFleetResultSchema = z.looseObject({}).openapi('StopFleetResult')
 
 const StopFleetRequestSchema = z
-  .object({ Name: StringSchema.and(z.any().openapi({ description: 'The name of the fleet.' })) })
+  .object({ Name: StringSchema.openapi({ description: 'The name of the fleet.' }) })
   .openapi({ required: ['Name'], title: 'StopFleetRequest' })
   .openapi('StopFleetRequest')
 
 const StopImageBuilderResultSchema = z
   .object({
-    ImageBuilder: ImageBuilderSchema.and(
-      z.any().openapi({ description: 'Information about the image builder.' }),
-    ).exactOptional(),
+    ImageBuilder: ImageBuilderSchema.exactOptional().openapi({
+      description: 'Information about the image builder.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopImageBuilderResult')
 
 const StopImageBuilderRequestSchema = z
-  .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the image builder.' })),
-  })
+  .object({ Name: StringSchema.openapi({ description: 'The name of the image builder.' }) })
   .openapi({ required: ['Name'], title: 'StopImageBuilderRequest' })
   .openapi('StopImageBuilderRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tags to associate. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p>',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        '<p>The tags to associate. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -3560,12 +2710,12 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The tag keys for the tags to disassociate.' }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The tag keys for the tags to disassociate.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
@@ -3586,125 +2736,96 @@ const ApplicationAttributesSchema = z
 
 const UpdateApplicationRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application. This name is visible to users when display name is not specified.',
-        }),
-    ),
-    DisplayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The display name of the application. This name is visible to users in the application catalog.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    IconS3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The icon S3 location of the application.' }),
-    ).exactOptional(),
-    LaunchPath: StringSchema.and(
-      z.any().openapi({ description: 'The launch path of the application.' }),
-    ).exactOptional(),
-    WorkingDirectory: StringSchema.and(
-      z.any().openapi({ description: 'The working directory of the application.' }),
-    ).exactOptional(),
-    LaunchParameters: StringSchema.and(
-      z.any().openapi({ description: 'The launch parameters of the application.' }),
-    ).exactOptional(),
-    AppBlockArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the app block.' }),
-    ).exactOptional(),
-    AttributesToDelete: ApplicationAttributesSchema.and(
-      z.any().openapi({ description: 'The attributes to delete for an application.' }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      description:
+        'The name of the application. This name is visible to users when display name is not specified.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description:
+        'The display name of the application. This name is visible to users in the application catalog.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    IconS3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The icon S3 location of the application.',
+    }),
+    LaunchPath: StringSchema.exactOptional().openapi({
+      description: 'The launch path of the application.',
+    }),
+    WorkingDirectory: StringSchema.exactOptional().openapi({
+      description: 'The working directory of the application.',
+    }),
+    LaunchParameters: StringSchema.exactOptional().openapi({
+      description: 'The launch parameters of the application.',
+    }),
+    AppBlockArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the app block.' }),
+    AttributesToDelete: ApplicationAttributesSchema.exactOptional().openapi({
+      description: 'The attributes to delete for an application.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateApplicationRequest' })
   .openapi('UpdateApplicationRequest')
 
 const UpdateDirectoryConfigResultSchema = z
   .object({
-    DirectoryConfig: DirectoryConfigSchema.and(
-      z.any().openapi({ description: 'Information about the Directory Config object.' }),
-    ).exactOptional(),
+    DirectoryConfig: DirectoryConfigSchema.exactOptional().openapi({
+      description: 'Information about the Directory Config object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDirectoryConfigResult')
 
 const UpdateDirectoryConfigRequestSchema = z
   .object({
-    DirectoryName: DirectoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the Directory Config object.' }),
-    ),
-    OrganizationalUnitDistinguishedNames: OrganizationalUnitDistinguishedNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The distinguished names of the organizational units for computer accounts.',
-        }),
-    ).exactOptional(),
-    ServiceAccountCredentials: ServiceAccountCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The credentials for the service account used by the fleet or image builder to connect to the directory.',
-        }),
-    ).exactOptional(),
-    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is <b>Enabled</b> . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. <b>Enabled_no_directory_login_fallback</b> enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.',
-        }),
-    ).exactOptional(),
+    DirectoryName: DirectoryNameSchema.openapi({
+      description: 'The name of the Directory Config object.',
+    }),
+    OrganizationalUnitDistinguishedNames:
+      OrganizationalUnitDistinguishedNamesListSchema.exactOptional().openapi({
+        description: 'The distinguished names of the organizational units for computer accounts.',
+      }),
+    ServiceAccountCredentials: ServiceAccountCredentialsSchema.exactOptional().openapi({
+      description:
+        'The credentials for the service account used by the fleet or image builder to connect to the directory.',
+    }),
+    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.exactOptional().openapi({
+      description:
+        'The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is <b>Enabled</b> . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. <b>Enabled_no_directory_login_fallback</b> enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.',
+    }),
   })
   .openapi({ required: ['DirectoryName'], title: 'UpdateDirectoryConfigRequest' })
   .openapi('UpdateDirectoryConfigRequest')
 
 const UpdateEntitlementResultSchema = z
   .object({
-    Entitlement: EntitlementSchema.and(
-      z.any().openapi({ description: 'The entitlement.' }),
-    ).exactOptional(),
+    Entitlement: EntitlementSchema.exactOptional().openapi({ description: 'The entitlement.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateEntitlementResult')
 
 const UpdateEntitlementRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the entitlement.' })),
-    StackName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stack with which the entitlement is associated.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the entitlement.' }),
-    ).exactOptional(),
-    AppVisibility: AppVisibilitySchema.and(
-      z.any().openapi({ description: 'Specifies whether all or only selected apps are entitled.' }),
-    ).exactOptional(),
-    Attributes: EntitlementAttributeListSchema.and(
-      z.any().openapi({ description: 'The attributes of the entitlement.' }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'The name of the entitlement.' }),
+    StackName: NameSchema.openapi({
+      description: 'The name of the stack with which the entitlement is associated.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the entitlement.',
+    }),
+    AppVisibility: AppVisibilitySchema.exactOptional().openapi({
+      description: 'Specifies whether all or only selected apps are entitled.',
+    }),
+    Attributes: EntitlementAttributeListSchema.exactOptional().openapi({
+      description: 'The attributes of the entitlement.',
+    }),
   })
   .openapi({ required: ['Name', 'StackName'], title: 'UpdateEntitlementRequest' })
   .openapi('UpdateEntitlementRequest')
 
 const UpdateFleetResultSchema = z
   .object({
-    Fleet: FleetSchema.and(
-      z.any().openapi({ description: 'Information about the fleet.' }),
-    ).exactOptional(),
+    Fleet: FleetSchema.exactOptional().openapi({ description: 'Information about the fleet.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFleetResult')
@@ -3728,156 +2849,95 @@ const FleetAttributesSchema = z
 
 const UpdateFleetRequestSchema = z
   .object({
-    ImageName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the image used to create the fleet.' }),
-    ).exactOptional(),
-    ImageArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the public, private, or shared image to use.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'A unique name for the fleet.' }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ComputeCapacity: ComputeCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The desired capacity for the fleet. This is not allowed for Elastic fleets.',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC configuration for the fleet. This is required for Elastic fleets, but not required for other fleet types. Elastic fleets require that you specify at least two subnets in different availability zones. ',
-        }),
-    ).exactOptional(),
-    MaxUserDurationInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance.</p> <p>Specify a value between 600 and 360000.</p>',
-        }),
-    ).exactOptional(),
-    DisconnectTimeoutInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time that a streaming session remains active after users disconnect. If users try to reconnect to the streaming session after a disconnection or network interruption within this time interval, they are connected to their previous session. Otherwise, they are connected to a new session with a new streaming instance. </p> <p>Specify a value between 60 and 360000.</p>',
-        }),
-    ).exactOptional(),
-    DeleteVpcConfig: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'Deletes the VPC association for the specified fleet.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The fleet name to display.' }),
-    ).exactOptional(),
-    EnableDefaultInternetAccess: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Enables or disables default internet access for the fleet.' }),
-    ).exactOptional(),
-    DomainJoinInfo: DomainJoinInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the directory and organizational unit (OU) to use to join the fleet to a Microsoft Active Directory domain. ',
-        }),
-    ).exactOptional(),
-    IdleDisconnectTimeoutInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the <code>DisconnectTimeoutInSeconds</code> time interval begins. Users are notified before they are disconnected due to inactivity. If users try to reconnect to the streaming session before the time interval specified in <code>DisconnectTimeoutInSeconds</code> elapses, they are connected to their previous session. Users are considered idle when they stop providing keyboard or mouse input during their streaming session. File uploads and downloads, audio in, audio out, and pixels changing do not qualify as user activity. If users continue to be idle after the time interval in <code>IdleDisconnectTimeoutInSeconds</code> elapses, they are disconnected. </p> <p>To prevent users from being disconnected due to inactivity, specify a value of 0. Otherwise, specify a value between 60 and 3600. The default value is 0.</p> <note> <p>If you enable this feature, we recommend that you specify a value that corresponds exactly to a whole number of minutes (for example, 60, 120, and 180). If you don't do this, the value is rounded to the nearest minute. For example, if you specify a value of 70, users are disconnected after 1 minute of inactivity. If you specify a value that is at the midpoint between two different minutes, the value is rounded up. For example, if you specify a value of 90, users are disconnected after 2 minutes of inactivity. </p> </note>",
-        }),
-    ).exactOptional(),
-    AttributesToDelete: FleetAttributesSchema.and(
-      z.any().openapi({ description: 'The fleet attributes to delete.' }),
-    ).exactOptional(),
-    IamRoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM role to apply to the fleet. To assume a role, a fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    StreamView: StreamViewSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>',
-        }),
-    ).exactOptional(),
-    Platform: PlatformTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The platform of the fleet. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets. ',
-        }),
-    ).exactOptional(),
-    MaxConcurrentSessions: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of concurrent sessions for a fleet.' }),
-    ).exactOptional(),
-    UsbDeviceFilterStrings: UsbDeviceFilterStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The USB device filter strings that specify which USB devices a user can redirect to the fleet streaming session, when using the Windows native client. This is allowed but not required for Elastic fleets.',
-        }),
-    ).exactOptional(),
-    SessionScriptS3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets. ',
-        }),
-    ).exactOptional(),
+    ImageName: StringSchema.exactOptional().openapi({
+      description: 'The name of the image used to create the fleet.',
+    }),
+    ImageArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the public, private, or shared image to use.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'A unique name for the fleet.' }),
+    InstanceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>',
+    }),
+    ComputeCapacity: ComputeCapacitySchema.exactOptional().openapi({
+      description: 'The desired capacity for the fleet. This is not allowed for Elastic fleets.',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'The VPC configuration for the fleet. This is required for Elastic fleets, but not required for other fleet types. Elastic fleets require that you specify at least two subnets in different availability zones. ',
+    }),
+    MaxUserDurationInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance.</p> <p>Specify a value between 600 and 360000.</p>',
+    }),
+    DisconnectTimeoutInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The amount of time that a streaming session remains active after users disconnect. If users try to reconnect to the streaming session after a disconnection or network interruption within this time interval, they are connected to their previous session. Otherwise, they are connected to a new session with a new streaming instance. </p> <p>Specify a value between 60 and 360000.</p>',
+    }),
+    DeleteVpcConfig: BooleanSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Deletes the VPC association for the specified fleet.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The fleet name to display.',
+    }),
+    EnableDefaultInternetAccess: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Enables or disables default internet access for the fleet.',
+    }),
+    DomainJoinInfo: DomainJoinInfoSchema.exactOptional().openapi({
+      description:
+        'The name of the directory and organizational unit (OU) to use to join the fleet to a Microsoft Active Directory domain. ',
+    }),
+    IdleDisconnectTimeoutInSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the <code>DisconnectTimeoutInSeconds</code> time interval begins. Users are notified before they are disconnected due to inactivity. If users try to reconnect to the streaming session before the time interval specified in <code>DisconnectTimeoutInSeconds</code> elapses, they are connected to their previous session. Users are considered idle when they stop providing keyboard or mouse input during their streaming session. File uploads and downloads, audio in, audio out, and pixels changing do not qualify as user activity. If users continue to be idle after the time interval in <code>IdleDisconnectTimeoutInSeconds</code> elapses, they are disconnected. </p> <p>To prevent users from being disconnected due to inactivity, specify a value of 0. Otherwise, specify a value between 60 and 3600. The default value is 0.</p> <note> <p>If you enable this feature, we recommend that you specify a value that corresponds exactly to a whole number of minutes (for example, 60, 120, and 180). If you don't do this, the value is rounded to the nearest minute. For example, if you specify a value of 70, users are disconnected after 1 minute of inactivity. If you specify a value that is at the midpoint between two different minutes, the value is rounded up. For example, if you specify a value of 90, users are disconnected after 2 minutes of inactivity. </p> </note>",
+    }),
+    AttributesToDelete: FleetAttributesSchema.exactOptional().openapi({
+      description: 'The fleet attributes to delete.',
+    }),
+    IamRoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM role to apply to the fleet. To assume a role, a fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>',
+    }),
+    StreamView: StreamViewSchema.exactOptional().openapi({
+      description:
+        '<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>',
+    }),
+    Platform: PlatformTypeSchema.exactOptional().openapi({
+      description:
+        'The platform of the fleet. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets. ',
+    }),
+    MaxConcurrentSessions: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of concurrent sessions for a fleet.',
+    }),
+    UsbDeviceFilterStrings: UsbDeviceFilterStringsSchema.exactOptional().openapi({
+      description:
+        'The USB device filter strings that specify which USB devices a user can redirect to the fleet streaming session, when using the Windows native client. This is allowed but not required for Elastic fleets.',
+    }),
+    SessionScriptS3Location: S3LocationSchema.exactOptional().openapi({
+      description:
+        'The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets. ',
+    }),
   })
   .openapi({ title: 'UpdateFleetRequest', required: [] })
   .openapi('UpdateFleetRequest')
 
-const UpdateImagePermissionsResultSchema = z.object({}).openapi('UpdateImagePermissionsResult')
+const UpdateImagePermissionsResultSchema = z.looseObject({}).openapi('UpdateImagePermissionsResult')
 
 const UpdateImagePermissionsRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the private image.' })),
-    SharedAccountId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 12-digit identifier of the AWS account for which you want add or update image permissions.',
-        }),
-    ),
-    ImagePermissions: ImagePermissionsSchema.and(
-      z.any().openapi({ description: 'The permissions for the image.' }),
-    ),
+    Name: NameSchema.openapi({ description: 'The name of the private image.' }),
+    SharedAccountId: AwsAccountIdSchema.openapi({
+      description:
+        'The 12-digit identifier of the AWS account for which you want add or update image permissions.',
+    }),
+    ImagePermissions: ImagePermissionsSchema.openapi({
+      description: 'The permissions for the image.',
+    }),
   })
   .openapi({
     required: ['Name', 'SharedAccountId', 'ImagePermissions'],
@@ -3887,9 +2947,7 @@ const UpdateImagePermissionsRequestSchema = z
 
 const UpdateStackResultSchema = z
   .object({
-    Stack: StackSchema.and(
-      z.any().openapi({ description: 'Information about the stack.' }),
-    ).exactOptional(),
+    Stack: StackSchema.exactOptional().openapi({ description: 'Information about the stack.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateStackResult')
@@ -3915,82 +2973,50 @@ const StackAttributesSchema = z.array(StackAttributeSchema).openapi('StackAttrib
 
 const UpdateStackRequestSchema = z
   .object({
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The stack name to display.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description to display.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the stack.' })),
-    StorageConnectors: StorageConnectorListSchema.and(
-      z.any().openapi({ description: 'The storage connectors to enable.' }),
-    ).exactOptional(),
-    DeleteStorageConnectors: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'Deletes the storage connectors currently enabled for the stack.',
-        }),
-    ).exactOptional(),
-    RedirectURL: RedirectURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URL that users are redirected to after their streaming session ends.',
-        }),
-    ).exactOptional(),
-    FeedbackURL: FeedbackURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that users are redirected to after they choose the Send Feedback link. If no URL is specified, no Send Feedback link is displayed.',
-        }),
-    ).exactOptional(),
-    AttributesToDelete: StackAttributesSchema.and(
-      z.any().openapi({ description: 'The stack attributes to delete.' }),
-    ).exactOptional(),
-    UserSettings: UserSettingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions that are enabled or disabled for users during their streaming sessions. By default, these actions are enabled.',
-        }),
-    ).exactOptional(),
-    ApplicationSettings: ApplicationSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The persistent application settings for users of a stack. When these settings are enabled, changes that users make to applications and Windows settings are automatically saved after each session and applied to the next session.',
-        }),
-    ).exactOptional(),
-    AccessEndpoints: AccessEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.',
-        }),
-    ).exactOptional(),
-    EmbedHostDomains: EmbedHostDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions. ',
-        }),
-    ).exactOptional(),
-    StreamingExperienceSettings: StreamingExperienceSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.',
-        }),
-    ).exactOptional(),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The stack name to display.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description to display.',
+    }),
+    Name: StringSchema.openapi({ description: 'The name of the stack.' }),
+    StorageConnectors: StorageConnectorListSchema.exactOptional().openapi({
+      description: 'The storage connectors to enable.',
+    }),
+    DeleteStorageConnectors: BooleanSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Deletes the storage connectors currently enabled for the stack.',
+    }),
+    RedirectURL: RedirectURLSchema.exactOptional().openapi({
+      description: 'The URL that users are redirected to after their streaming session ends.',
+    }),
+    FeedbackURL: FeedbackURLSchema.exactOptional().openapi({
+      description:
+        'The URL that users are redirected to after they choose the Send Feedback link. If no URL is specified, no Send Feedback link is displayed.',
+    }),
+    AttributesToDelete: StackAttributesSchema.exactOptional().openapi({
+      description: 'The stack attributes to delete.',
+    }),
+    UserSettings: UserSettingListSchema.exactOptional().openapi({
+      description:
+        'The actions that are enabled or disabled for users during their streaming sessions. By default, these actions are enabled.',
+    }),
+    ApplicationSettings: ApplicationSettingsSchema.exactOptional().openapi({
+      description:
+        'The persistent application settings for users of a stack. When these settings are enabled, changes that users make to applications and Windows settings are automatically saved after each session and applied to the next session.',
+    }),
+    AccessEndpoints: AccessEndpointListSchema.exactOptional().openapi({
+      description:
+        'The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.',
+    }),
+    EmbedHostDomains: EmbedHostDomainsSchema.exactOptional().openapi({
+      description:
+        'The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions. ',
+    }),
+    StreamingExperienceSettings: StreamingExperienceSettingsSchema.exactOptional().openapi({
+      description:
+        'The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateStackRequest' })
   .openapi('UpdateStackRequest')

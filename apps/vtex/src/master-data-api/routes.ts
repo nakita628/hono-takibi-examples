@@ -153,7 +153,7 @@ const GetversionSchema = z
   .openapi('Getversion')
 
 const ListversionSchema = z
-  .object({ date: z.string(), document: z.object({}).exactOptional(), id: z.string() })
+  .object({ date: z.string(), document: z.looseObject({}).exactOptional(), id: z.string() })
   .openapi({ required: ['id', 'date'], title: 'Listversion' })
   .openapi('Listversion')
 

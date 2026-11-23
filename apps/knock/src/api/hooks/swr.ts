@@ -519,7 +519,9 @@ export function usePutV1UsersUserIdPreferencesIdChannelTypes<TError = unknown>(o
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -530,12 +532,18 @@ export function usePutV1UsersUserIdPreferencesIdChannelTypes<TError = unknown>(o
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types']['$put']
+          >
+        },
+      ) =>
         parseResponse(
-          client.v1.users[':user_id'].preferences[':id'].channel_types.$put(
-            undefined,
-            clientOptions,
-          ),
+          client.v1.users[':user_id'].preferences[':id'].channel_types.$put(arg, clientOptions),
         ),
       restMutationOptions,
     ),
@@ -563,7 +571,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdCategories<
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -574,10 +584,19 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdCategories<
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories']['$put']
+          >
+        },
+      ) =>
         parseResponse(
           client.v1.objects[':collection'][':object_id'].preferences[':id'].categories.$put(
-            undefined,
+            arg,
             clientOptions,
           ),
         ),
@@ -671,7 +690,9 @@ export function usePutV1UsersUserIdPreferencesIdChannelTypesType<TError = unknow
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types'][':type']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -682,10 +703,19 @@ export function usePutV1UsersUserIdPreferencesIdChannelTypesType<TError = unknow
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types'][':type']['$put']
+          >
+        },
+      ) =>
         parseResponse(
           client.v1.users[':user_id'].preferences[':id'].channel_types[':type'].$put(
-            undefined,
+            arg,
             clientOptions,
           ),
         ),
@@ -1143,7 +1173,9 @@ export function usePutV1UsersUserIdPreferencesIdWorkflows<TError = unknown>(opti
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1154,9 +1186,18 @@ export function usePutV1UsersUserIdPreferencesIdWorkflows<TError = unknown>(opti
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows']['$put']
+          >
+        },
+      ) =>
         parseResponse(
-          client.v1.users[':user_id'].preferences[':id'].workflows.$put(undefined, clientOptions),
+          client.v1.users[':user_id'].preferences[':id'].workflows.$put(arg, clientOptions),
         ),
       restMutationOptions,
     ),
@@ -1382,7 +1423,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdCategoriesKey<
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories'][':key']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1393,10 +1436,19 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdCategoriesKey<
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories'][':key']['$put']
+          >
+        },
+      ) =>
         parseResponse(
           client.v1.objects[':collection'][':object_id'].preferences[':id'].categories[':key'].$put(
-            undefined,
+            arg,
             clientOptions,
           ),
         ),
@@ -1424,7 +1476,9 @@ export function usePutV1UsersUserIdPreferencesIdCategoriesKey<TError = unknown>(
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['categories'][':key']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1435,10 +1489,19 @@ export function usePutV1UsersUserIdPreferencesIdCategoriesKey<TError = unknown>(
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['categories'][':key']['$put']
+          >
+        },
+      ) =>
         parseResponse(
           client.v1.users[':user_id'].preferences[':id'].categories[':key'].$put(
-            undefined,
+            arg,
             clientOptions,
           ),
         ),
@@ -2154,7 +2217,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdWorkflows<
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -2165,10 +2230,19 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdWorkflows<
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows']['$put']
+          >
+        },
+      ) =>
         parseResponse(
           client.v1.objects[':collection'][':object_id'].preferences[':id'].workflows.$put(
-            undefined,
+            arg,
             clientOptions,
           ),
         ),
@@ -2674,7 +2748,9 @@ export function usePutV1UsersUserIdPreferencesIdCategories<TError = unknown>(opt
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['categories']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -2685,9 +2761,18 @@ export function usePutV1UsersUserIdPreferencesIdCategories<TError = unknown>(opt
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['categories']['$put']
+          >
+        },
+      ) =>
         parseResponse(
-          client.v1.users[':user_id'].preferences[':id'].categories.$put(undefined, clientOptions),
+          client.v1.users[':user_id'].preferences[':id'].categories.$put(arg, clientOptions),
         ),
       restMutationOptions,
     ),
@@ -3196,7 +3281,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdChannelTypesType<
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types'][':type']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -3207,11 +3294,20 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdChannelTypesType<
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types'][':type']['$put']
+          >
+        },
+      ) =>
         parseResponse(
           client.v1.objects[':collection'][':object_id'].preferences[':id'].channel_types[
             ':type'
-          ].$put(undefined, clientOptions),
+          ].$put(arg, clientOptions),
         ),
       restMutationOptions,
     ),
@@ -3239,7 +3335,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdChannelTypes<
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -3250,10 +3348,19 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdChannelTypes<
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types']['$put']
+          >
+        },
+      ) =>
         parseResponse(
           client.v1.objects[':collection'][':object_id'].preferences[':id'].channel_types.$put(
-            undefined,
+            arg,
             clientOptions,
           ),
         ),
@@ -4374,7 +4481,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKey<
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows'][':key']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -4385,10 +4494,19 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKey<
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows'][':key']['$put']
+          >
+        },
+      ) =>
         parseResponse(
           client.v1.objects[':collection'][':object_id'].preferences[':id'].workflows[':key'].$put(
-            undefined,
+            arg,
             clientOptions,
           ),
         ),
@@ -4825,7 +4943,9 @@ export function usePutV1UsersUserIdPreferencesIdWorkflowsKey<TError = unknown>(o
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows'][':key']['$put']
+    >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -4836,12 +4956,18 @@ export function usePutV1UsersUserIdPreferencesIdWorkflowsKey<TError = unknown>(o
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () =>
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows'][':key']['$put']
+          >
+        },
+      ) =>
         parseResponse(
-          client.v1.users[':user_id'].preferences[':id'].workflows[':key'].$put(
-            undefined,
-            clientOptions,
-          ),
+          client.v1.users[':user_id'].preferences[':id'].workflows[':key'].$put(arg, clientOptions),
         ),
       restMutationOptions,
     ),

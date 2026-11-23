@@ -21,42 +21,6 @@ const RootUIComponentRequestSchema = z
   .openapi({ description: 'The building block of all app component requests.', required: [] })
   .openapi('RootUIComponentRequest')
 
-const FormOnChangeFormSubmissionRequestSchema = z
-  .object({
-    values: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description:
-          'An object that maps each FormField’s GID to its value.\nRefer to the `value` property on the FormField schema: [FormField-Checkbox](/reference/modal-forms#formfield-checkbox), [FormField-Date](/reference/modal-forms#formfield-date), [FormField-Datetime](/reference/modal-forms#formfield-datetime), [FormField-Dropdown](/reference/modal-forms#formfield-dropdown), [FormField-MultiLineText](/reference/modal-forms#formfield-multilinetext), [FormField-RadioButton](/reference/modal-forms#formfield-radiobutton), [FormField-RichText](/reference/modal-forms#formfield-richtext), [FormField-SingleLineText](/reference/modal-forms#formfield-singlelinetext), [FormField-StaticText](/reference/modal-forms#formfield-statictext), [FormField-Typeahead](/reference/modal-forms#formfield-typeahead)',
-        example: {
-          checkbox_field_1: ['opt-in'],
-          date_field_1: '2021-12-31T08:00:00.000Z',
-          datetime_field_1: '2023-01-01T00:00:00.000Z',
-          dropdown_field_1: 'red',
-          multi_line_text_field_1: 'Multiline Text',
-          radio_button_field_1: 'blue',
-          rich_text_field_1: '<BODY>Rich Text</BODY>',
-          single_line_text_field_1: 'Single Line Text',
-          static_text_field_1: 'Static Text',
-          typeahead_field_1: {
-            icon_url: 'https://example.com/icon.png',
-            subtitle: 'Subtitle',
-            title: 'Title',
-            value: 'Typeahead',
-          },
-        },
-      }),
-  })
-  .openapi({
-    description: 'Common properties between app component on change and on submit requests.',
-    required: [],
-  })
-  .openapi('FormOnChangeFormSubmissionRequest')
-
-type FormSubmissionRequestType = z.infer<typeof RootUIComponentRequestSchema> &
-  z.infer<typeof FormOnChangeFormSubmissionRequestSchema> & { task?: string }
-
 const AttachResourceRequestSchema = RootUIComponentRequestSchema.and(
   z
     .object({
@@ -859,7 +823,7 @@ const FormFieldTypeaheadSchema = z
       }),
     value: TypeaheadItemSchema.and(
       z
-        .object({})
+        .looseObject({})
         .openapi({
           description:
             '*Optional*. The value for the form field, which is the chosen [TypeaheadItem](/reference/lookups#typeaheaditem) object.',
@@ -924,18 +888,51 @@ const FormMetadataResponseSchema = z
   })
   .openapi('FormMetadataResponse')
 
-const FormSubmissionRequestSchema: z.ZodType<FormSubmissionRequestType> = z
-  .lazy(() =>
-    RootUIComponentRequestSchema.and(FormOnChangeFormSubmissionRequestSchema).and(
-      z
-        .object({
-          task: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The task GID this hook is coming from.', example: '67890' }),
-        })
-        .openapi({ description: 'The body of a form submission.', required: [] }),
-    ),
+const FormOnChangeFormSubmissionRequestSchema = z
+  .object({
+    values: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'An object that maps each FormField’s GID to its value.\nRefer to the `value` property on the FormField schema: [FormField-Checkbox](/reference/modal-forms#formfield-checkbox), [FormField-Date](/reference/modal-forms#formfield-date), [FormField-Datetime](/reference/modal-forms#formfield-datetime), [FormField-Dropdown](/reference/modal-forms#formfield-dropdown), [FormField-MultiLineText](/reference/modal-forms#formfield-multilinetext), [FormField-RadioButton](/reference/modal-forms#formfield-radiobutton), [FormField-RichText](/reference/modal-forms#formfield-richtext), [FormField-SingleLineText](/reference/modal-forms#formfield-singlelinetext), [FormField-StaticText](/reference/modal-forms#formfield-statictext), [FormField-Typeahead](/reference/modal-forms#formfield-typeahead)',
+        example: {
+          checkbox_field_1: ['opt-in'],
+          date_field_1: '2021-12-31T08:00:00.000Z',
+          datetime_field_1: '2023-01-01T00:00:00.000Z',
+          dropdown_field_1: 'red',
+          multi_line_text_field_1: 'Multiline Text',
+          radio_button_field_1: 'blue',
+          rich_text_field_1: '<BODY>Rich Text</BODY>',
+          single_line_text_field_1: 'Single Line Text',
+          static_text_field_1: 'Static Text',
+          typeahead_field_1: {
+            icon_url: 'https://example.com/icon.png',
+            subtitle: 'Subtitle',
+            title: 'Title',
+            value: 'Typeahead',
+          },
+        },
+      }),
+  })
+  .openapi({
+    description: 'Common properties between app component on change and on submit requests.',
+    required: [],
+  })
+  .openapi('FormOnChangeFormSubmissionRequest')
+
+const FormSubmissionRequestSchema = RootUIComponentRequestSchema.and(
+  FormOnChangeFormSubmissionRequestSchema,
+)
+  .and(
+    z
+      .object({
+        task: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The task GID this hook is coming from.', example: '67890' }),
+      })
+      .openapi({ description: 'The body of a form submission.', required: [] }),
   )
   .openapi('FormSubmissionRequest')
 
@@ -1391,7 +1388,7 @@ const WidgetMetadataResponseSchema = z
             example: 'https://example-icon.png',
           }),
         footer: z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'Contains the information to display a footer on the widget.\n\nValid schemas: [WidgetFooter-Created](/reference/widgets#widgetfooter-created), [WidgetFooter-CustomText](/reference/widgets#widgetfooter-customtext), [WidgetFooter-Updated](/reference/widgets#widgetfooter-updated).',

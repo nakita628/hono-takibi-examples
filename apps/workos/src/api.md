@@ -286,6 +286,21 @@ Lists the agent blueprints in the current environment.
         "crm:read",
         "email:send"
       ],
+      "scoped_permissions": [
+        {
+          "slug": "crm:read",
+          "instance_types": [
+            "delegated",
+            "autonomous"
+          ]
+        },
+        {
+          "slug": "email:send",
+          "instance_types": [
+            "delegated"
+          ]
+        }
+      ],
       "invocable_by": {
         "role_slugs": [
           "manager"
@@ -360,8 +375,19 @@ curl https://api.workos.com/agents/blueprints \
     "name": "Prospecting Agent",
     "description": "Finds and qualifies sales prospects.",
     "permissions": [
-      "crm:read",
-      "email:send"
+      {
+        "slug": "crm:read",
+        "instance_types": [
+          "delegated",
+          "autonomous"
+        ]
+      },
+      {
+        "slug": "email:send",
+        "instance_types": [
+          "delegated"
+        ]
+      }
     ],
     "invocable_by": {},
     "invocable_as": {},
@@ -384,8 +410,19 @@ Creates an agent blueprint: the template describing what an agent may do (its pe
   "name": "Prospecting Agent",
   "description": "Finds and qualifies sales prospects.",
   "permissions": [
-    "crm:read",
-    "email:send"
+    {
+      "slug": "crm:read",
+      "instance_types": [
+        "delegated",
+        "autonomous"
+      ]
+    },
+    {
+      "slug": "email:send",
+      "instance_types": [
+        "delegated"
+      ]
+    }
   ],
   "invocable_by": {},
   "invocable_as": {},
@@ -404,7 +441,11 @@ Creates an agent blueprint: the template describing what an agent may do (its pe
 |body|body|object|true|none|
 |» name|body|string|true|Human-readable name of the agent blueprint.|
 |» description|body|string|false|Human-readable description of the agent blueprint.|
-|» permissions|body|[string]|false|Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.|
+|» permissions|body|[object \| string]|false|Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once.|
+|» » *oneOf*|body|object|false|A permission in the blueprint ceiling and the sessions it applies to.|
+|» » slug|body|string|true|Slug of a permission in the environment.|
+|» » instance_types|body|[string]|true|Instance types whose sessions receive the permission: `delegated`, `autonomous`, or both. Agent-delegated chaining and refreshes use the type of the presenting instance.|
+|» » *oneOf*|body|string|false|**Deprecated.** Deprecated: a bare permission slug. An existing permission keeps its instance types; a new one applies to both `delegated` and `autonomous`. Pass an object instead.|
 |» invocable_by|body|object|false|Who may mint sessions from this blueprint.|
 |» » role_slugs|body|[string]|false|Role slugs whose members may mint user-delegated sessions from this blueprint. An empty list allows any member.|
 |» » organization_ids|body|[string]|false|Organizations in which sessions may be minted from this blueprint, enforced on user-delegated, autonomous, and agent-delegated mints. An empty list allows any organization in the environment.|
@@ -421,6 +462,8 @@ Creates an agent blueprint: the template describing what an agent may do (its pe
 |---|---|
 |» » instance_types|delegated|
 |» » instance_types|autonomous|
+|» » instance_types|delegated|
+|» » instance_types|autonomous|
 
 > Example responses
 
@@ -435,6 +478,21 @@ Creates an agent blueprint: the template describing what an agent may do (its pe
   "permissions": [
     "crm:read",
     "email:send"
+  ],
+  "scoped_permissions": [
+    {
+      "slug": "crm:read",
+      "instance_types": [
+        "delegated",
+        "autonomous"
+      ]
+    },
+    {
+      "slug": "email:send",
+      "instance_types": [
+        "delegated"
+      ]
+    }
   ],
   "invocable_by": {
     "role_slugs": [
@@ -536,6 +594,21 @@ Retrieves an agent blueprint by ID.
   "permissions": [
     "crm:read",
     "email:send"
+  ],
+  "scoped_permissions": [
+    {
+      "slug": "crm:read",
+      "instance_types": [
+        "delegated",
+        "autonomous"
+      ]
+    },
+    {
+      "slug": "email:send",
+      "instance_types": [
+        "delegated"
+      ]
+    }
   ],
   "invocable_by": {
     "role_slugs": [
@@ -642,8 +715,19 @@ curl https://api.workos.com/agents/blueprints/agent_blueprint_01EHWNCE74X7JSDV0X
     "name": "Prospecting Agent",
     "description": "Finds and qualifies sales prospects.",
     "permissions": [
-      "crm:read",
-      "email:send"
+      {
+        "slug": "crm:read",
+        "instance_types": [
+          "delegated",
+          "autonomous"
+        ]
+      },
+      {
+        "slug": "email:send",
+        "instance_types": [
+          "delegated"
+        ]
+      }
     ],
     "invocable_by": {
       "role_slugs": [
@@ -678,8 +762,19 @@ Updates an agent blueprint. Omitted fields are left unchanged; provided lists re
   "name": "Prospecting Agent",
   "description": "Finds and qualifies sales prospects.",
   "permissions": [
-    "crm:read",
-    "email:send"
+    {
+      "slug": "crm:read",
+      "instance_types": [
+        "delegated",
+        "autonomous"
+      ]
+    },
+    {
+      "slug": "email:send",
+      "instance_types": [
+        "delegated"
+      ]
+    }
   ],
   "invocable_by": {
     "role_slugs": [
@@ -711,7 +806,11 @@ Updates an agent blueprint. Omitted fields are left unchanged; provided lists re
 |body|body|object|true|none|
 |» name|body|string|false|Human-readable name of the agent blueprint.|
 |» description|body|string \| null|false|Human-readable description of the agent blueprint. Pass `null` to clear it.|
-|» permissions|body|[string]|false|Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.|
+|» permissions|body|[object \| string]|false|Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once.|
+|» » *oneOf*|body|object|false|A permission in the blueprint ceiling and the sessions it applies to.|
+|» » slug|body|string|true|Slug of a permission in the environment.|
+|» » instance_types|body|[string]|true|Instance types whose sessions receive the permission: `delegated`, `autonomous`, or both. Agent-delegated chaining and refreshes use the type of the presenting instance.|
+|» » *oneOf*|body|string|false|**Deprecated.** Deprecated: a bare permission slug. An existing permission keeps its instance types; a new one applies to both `delegated` and `autonomous`. Pass an object instead.|
 |» invocable_by|body|object|false|Who may mint sessions from this blueprint. Omitted lists are left unchanged.|
 |» » role_slugs|body|[string]|false|Role slugs whose members may mint user-delegated sessions from this blueprint. An empty list allows any member.|
 |» » organization_ids|body|[string]|false|Organizations in which sessions may be minted from this blueprint, enforced on user-delegated, autonomous, and agent-delegated mints. An empty list allows any organization in the environment.|
@@ -728,6 +827,8 @@ Updates an agent blueprint. Omitted fields are left unchanged; provided lists re
 |---|---|
 |» » instance_types|delegated|
 |» » instance_types|autonomous|
+|» » instance_types|delegated|
+|» » instance_types|autonomous|
 
 > Example responses
 
@@ -742,6 +843,21 @@ Updates an agent blueprint. Omitted fields are left unchanged; provided lists re
   "permissions": [
     "crm:read",
     "email:send"
+  ],
+  "scoped_permissions": [
+    {
+      "slug": "crm:read",
+      "instance_types": [
+        "delegated",
+        "autonomous"
+      ]
+    },
+    {
+      "slug": "email:send",
+      "instance_types": [
+        "delegated"
+      ]
+    }
   ],
   "invocable_by": {
     "role_slugs": [
@@ -3626,7 +3742,7 @@ curl https://api.workos.com/audit_logs/exports \
   -d '{
     "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
     "range_start": "2022-07-02T18:09:06.996Z",
-    "range_end": "2022-09-02T18:09:06.996Z",
+    "range_end": "2022-08-02T18:09:06.996Z",
     "actions": [
       "user.signed_in"
     ],
@@ -3655,7 +3771,7 @@ Create an Audit Log Export. Exports are scoped to a single organization within a
 {
   "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
   "range_start": "2022-07-02T18:09:06.996Z",
-  "range_end": "2022-09-02T18:09:06.996Z",
+  "range_end": "2022-08-02T18:09:06.996Z",
   "actions": [
     "user.signed_in"
   ],
@@ -3680,8 +3796,8 @@ Create an Audit Log Export. Exports are scoped to a single organization within a
 |---|---|---|---|---|
 |body|body|[AuditLogExportCreationDto](#schemaauditlogexportcreationdto)|true|none|
 |» organization_id|body|string|true|The unique ID of the Organization.|
-|» range_start|body|string(date-time)|true|ISO-8601 value for start of the export range.|
-|» range_end|body|string(date-time)|true|ISO-8601 value for end of the export range.|
+|» range_start|body|string(date-time)|true|ISO-8601 value for start of the export range. The range must span no more than 31 days.|
+|» range_end|body|string(date-time)|true|ISO-8601 value for end of the export range. Must be no more than 31 days after the start.|
 |» actions|body|[string]|false|List of actions to filter against.|
 |» actors|body|[string]|false|**Deprecated.** Deprecated. Use `actor_names` instead.|
 |» actor_names|body|[string]|false|List of actor names to filter against.|
@@ -5284,7 +5400,7 @@ curl https://api.workos.com/authorization/organization_memberships/om_01HXYZ1234
 
 `POST /authorization/organization_memberships/{organization_membership_id}/role_assignments`
 
-Assign a role to an organization membership on a specific resource.
+Assign a role to an organization membership on a specific resource. If the role is already assigned to the membership on that resource, the existing role assignment is returned and no changes are made.
 
 > Body parameter
 
@@ -5461,6 +5577,147 @@ Remove a role assignment by role slug and resource.
 |403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
 |404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
 |422|Unprocessable Entity|Unprocessable Entity|[ErrorBody](#schemaerrorbody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Update role assignments for an organization membership
+
+<a id="opIdAuthorizationRoleAssignmentsController_patchRoleAssignments"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/authorization/organization_memberships/om_01HXYZ123456789ABCDEFGHIJ/role_assignments \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "add": [
+      {
+        "role_slug": "editor",
+        "resource_id": "authz_resource_01HXYZ123456789ABCDEFGH"
+      }
+    ],
+    "remove": [
+      {
+        "role_slug": "viewer",
+        "resource_type_slug": "project",
+        "resource_external_id": "project-ext-456"
+      }
+    ]
+  }'
+```
+
+`PATCH /authorization/organization_memberships/{organization_membership_id}/role_assignments`
+
+Add and remove role assignments for an organization membership in a single atomic operation. Each entry identifies a role and a resource, either by `resource_id` or by `resource_type_slug` and `resource_external_id`; to change an organization-level role, target the organization resource. Additions that already exist and removals that match no assignment are skipped. An assignment in both lists is rejected, as is a removal of a role granted only through a group. `add` and `remove` must contain between 1 and 100 entries combined.
+
+> Body parameter
+
+```json
+{
+  "add": [
+    {
+      "role_slug": "editor",
+      "resource_id": "authz_resource_01HXYZ123456789ABCDEFGH"
+    }
+  ],
+  "remove": [
+    {
+      "role_slug": "viewer",
+      "resource_type_slug": "project",
+      "resource_external_id": "project-ext-456"
+    }
+  ]
+}
+```
+
+<h3 id="update-role-assignments-for-an-organization-membership-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_membership_id|path|string|true|The ID of the organization membership.|
+|body|body|[PatchRoleAssignmentsDto](#schemapatchroleassignmentsdto)|true|none|
+|» add|body|[[PatchRoleAssignmentEntryDto](#schemapatchroleassignmententrydto)]|false|Role assignments to add to the organization membership. Assignments that already exist are skipped.|
+|» remove|body|[[PatchRoleAssignmentEntryDto](#schemapatchroleassignmententrydto)]|false|Role assignments to remove from the organization membership. Entries that match no assignment are skipped. Roles granted through a group cannot be removed.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": "role_assignment_update_overlap",
+  "message": "Request could not be processed."
+}
+```
+
+> 402 Response
+
+```json
+{
+  "code": "action_denied",
+  "message": "Request could not be processed."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "action_denied",
+  "message": "Request could not be processed."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="update-role-assignments-for-an-organization-membership-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No Content|None|
+|400|Bad Request|Bad Request|Inline|
+|402|Payment Required||[ErrorBodyWithCode](#schemaerrorbodywithcode)|
+|403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+|409|Conflict||[ErrorBodyWithCode](#schemaerrorbodywithcode)|
+|422|Unprocessable Entity|Unprocessable Entity|[ErrorBody](#schemaerrorbody)|
+
+<h3 id="update-role-assignments-for-an-organization-membership-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anyOf*|[RoleAssignmentUpdateOverlapErrorBody](#schemaroleassignmentupdateoverlaperrorbody)|false|none|none|
+|*anyOf*|[ErrorBodyWithError](#schemaerrorbodywitherror)|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -8508,9 +8765,9 @@ bearer
 
 <h1 id="workos-client">client</h1>
 
-Client GraphQL API token management.
+Widgets API token management.
 
-## Generate a Client API token
+## Generate a Widgets API token
 
 <a id="opIdClientApiTokenController_issueClientApiToken"></a>
 
@@ -8530,7 +8787,7 @@ curl https://api.workos.com/client/token \
 
 `POST /client/token`
 
-Generate a short-lived, session-bound token for the Client GraphQL API, scoped to an organization and user.
+Generate a short-lived, session-bound token for the Widgets API, scoped to an organization and user.
 
 > Body parameter
 
@@ -8541,13 +8798,13 @@ Generate a short-lived, session-bound token for the Client GraphQL API, scoped t
 }
 ```
 
-<h3 id="generate-a-client-api-token-parameters">Parameters</h3>
+<h3 id="generate-a-widgets-api-token-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[ClientApiTokenDto](#schemaclientapitokendto)|true|none|
-|» organization_id|body|string|true|The ID of the organization to scope the Client API token to.|
-|» user_id|body|string|true|The ID of the user to issue the Client API token for.|
+|» organization_id|body|string|true|The ID of the organization to scope the Widgets API token to.|
+|» user_id|body|string|true|The ID of the user to issue the Widgets API token for.|
 
 > Example responses
 
@@ -8583,7 +8840,7 @@ Generate a short-lived, session-bound token for the Client GraphQL API, scoped t
 }
 ```
 
-<h3 id="generate-a-client-api-token-responses">Responses</h3>
+<h3 id="generate-a-widgets-api-token-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -8629,6 +8886,7 @@ Get a list of all of your existing connections matching the criteria specified.
 |domain|query|string|false|Filter Connections by their associated domain.|
 |organization_id|query|string|false|Filter Connections by their associated organization.|
 |search|query|string|false|Searchable text to match against Connection names.|
+|state|query|string|false|Filter Connections by their state.|
 
 #### Enumerated Values
 
@@ -8684,6 +8942,9 @@ Get a list of all of your existing connections matching the criteria specified.
 |connection_type|VercelOAuth|
 |connection_type|VMwareSAML|
 |connection_type|XeroOAuth|
+|state|active|
+|state|inactive|
+|state|validating|
 
 > Example responses
 
@@ -10311,6 +10572,194 @@ bearer
 
 Manage directory groups.
 
+## List Groups for a Directory
+
+<a id="opIdDirectoriesGroupsController_list"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/directories/directory_01ECAZ4NV9QMV47GW873HDCX74/groups \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /directories/{directoryId}/groups`
+
+Get a list of the Directory Groups in a Directory, optionally filtered to the groups a Directory User belongs to.
+
+<h3 id="list-groups-for-a-directory-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|directoryId|path|string|true|Unique identifier of the Directory.|
+|before|query|string|false|An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.|
+|after|query|string|false|An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.|
+|limit|query|integer|false|Upper limit on the number of objects to return, between `1` and `100`.|
+|order|query|[PaginationOrder](#schemapaginationorder)|false|Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `normal`.|
+|user|query|string|false|Filter Directory Groups to those this Directory User belongs to.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|order|normal|
+|order|desc|
+|order|asc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "list",
+  "list_metadata": {
+    "before": "directory_group_01HXYZ123456789ABCDEFGHIJ",
+    "after": "directory_group_01HXYZ987654321KJIHGFEDCBA"
+  },
+  "data": [
+    {
+      "object": "directory_group",
+      "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+      "idp_id": "02grqrue4294w24",
+      "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+      "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+      "name": "Developers",
+      "raw_attributes": {
+        "property1": null,
+        "property2": null
+      },
+      "created_at": "2026-01-15T12:00:00.000Z",
+      "updated_at": "2026-01-15T12:00:00.000Z"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="list-groups-for-a-directory-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+|422|Unprocessable Entity|Unprocessable Entity|[ErrorBody](#schemaerrorbody)|
+
+<h3 id="list-groups-for-a-directory-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|false|none|Indicates this is a list response.|
+|list_metadata|object|false|none|Pagination cursors for navigating between pages of results.|
+|» before|string \| null|true|none|An object ID that defines your place in the list. When the ID is not present, you are at the start of the list.|
+|» after|string \| null|true|none|An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.|
+|data|[[DirectoryGroup](#schemadirectorygroup)]|false|none|The list of records for the current page.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Get a Group for a Directory
+
+<a id="opIdDirectoriesGroupsController_find"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/directories/directory_01ECAZ4NV9QMV47GW873HDCX74/groups/directory_group_01E1JJS84MFPPQ3G655FHTKX6Z \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /directories/{directoryId}/groups/{groupId}`
+
+Get the details of a Directory Group in a Directory.
+
+<h3 id="get-a-group-for-a-directory-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|directoryId|path|string|true|Unique identifier of the Directory.|
+|groupId|path|string|true|Unique identifier for the Directory Group.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "directory_group",
+  "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+  "idp_id": "02grqrue4294w24",
+  "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+  "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+  "name": "Developers",
+  "raw_attributes": {
+    "property1": null,
+    "property2": null
+  },
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="get-a-group-for-a-directory-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[DirectoryGroup](#schemadirectorygroup)|
+|403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
 ## List Directory Groups
 
 <a id="opIdDirectoryGroupsController_list"></a>
@@ -10325,7 +10774,11 @@ curl https://api.workos.com/directory_groups \
 
 `GET /directory_groups`
 
-Get a list of all of existing directory groups matching the criteria specified.
+<aside class="warning">
+This operation is deprecated
+</aside>
+
+Get a list of all of existing directory groups matching the criteria specified. Deprecated: use `GET /directories/{directoryId}/groups` instead.
 
 <h3 id="list-directory-groups-parameters">Parameters</h3>
 
@@ -10428,7 +10881,11 @@ curl https://api.workos.com/directory_groups/directory_group_01E1JJS84MFPPQ3G655
 
 `GET /directory_groups/{id}`
 
-Get the details of an existing Directory Group.
+<aside class="warning">
+This operation is deprecated
+</aside>
+
+Get the details of an existing Directory Group. Deprecated: use `GET /directories/{directoryId}/groups/{groupId}` instead.
 
 <h3 id="get-a-directory-group-parameters">Parameters</h3>
 
@@ -10490,6 +10947,246 @@ bearer
 
 Manage directory users.
 
+## List Users for a Directory
+
+<a id="opIdDirectoriesUsersController_list"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/directories/directory_01ECAZ4NV9QMV47GW873HDCX74/users \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /directories/{directoryId}/users`
+
+Get a list of the Directory Users in a Directory, optionally filtered to the members of a Directory Group.
+
+<h3 id="list-users-for-a-directory-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|directoryId|path|string|true|Unique identifier of the Directory.|
+|before|query|string|false|An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.|
+|after|query|string|false|An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.|
+|limit|query|integer|false|Upper limit on the number of objects to return, between `1` and `100`.|
+|order|query|[PaginationOrder](#schemapaginationorder)|false|Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `normal`.|
+|group|query|string|false|Filter Directory Users to the members of this Directory Group.|
+|idp_id|query|string|false|Filter Directory Users by the identity provider's unique identifier (`idp_id`).|
+|email|query|string|false|Filter Directory Users by their primary email address.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|order|normal|
+|order|desc|
+|order|asc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "list",
+  "list_metadata": {
+    "before": "directory_user_01HXYZ123456789ABCDEFGHIJ",
+    "after": "directory_user_01HXYZ987654321KJIHGFEDCBA"
+  },
+  "data": [
+    {
+      "object": "directory_user",
+      "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+      "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+      "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+      "idp_id": "2836",
+      "email": "marcelina.davis@example.com",
+      "first_name": "Marcelina",
+      "last_name": "Davis",
+      "name": "Marcelina Davis",
+      "emails": [
+        {
+          "primary": true,
+          "type": "work",
+          "value": "marcelina.davis@example.com"
+        }
+      ],
+      "job_title": "Software Engineer",
+      "username": "mdavis",
+      "state": "active",
+      "raw_attributes": {
+        "property1": null,
+        "property2": null
+      },
+      "custom_attributes": {
+        "department": "Engineering",
+        "job_title": "Software Engineer"
+      },
+      "role": {
+        "slug": "admin"
+      },
+      "roles": [
+        {
+          "slug": "admin"
+        }
+      ],
+      "created_at": "2026-01-15T12:00:00.000Z",
+      "updated_at": "2026-01-15T12:00:00.000Z"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="list-users-for-a-directory-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+|422|Unprocessable Entity|Unprocessable Entity|[ErrorBody](#schemaerrorbody)|
+
+<h3 id="list-users-for-a-directory-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|false|none|Indicates this is a list response.|
+|list_metadata|object|false|none|Pagination cursors for navigating between pages of results.|
+|» before|string \| null|true|none|An object ID that defines your place in the list. When the ID is not present, you are at the start of the list.|
+|» after|string \| null|true|none|An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.|
+|data|[[DirectoryUser](#schemadirectoryuser)]|false|none|The list of records for the current page.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Get a User for a Directory
+
+<a id="opIdDirectoriesUsersController_find"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/directories/directory_01ECAZ4NV9QMV47GW873HDCX74/users/directory_user_01E1JG7J09H96KYP8HM9B0G5SJ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /directories/{directoryId}/users/{userId}`
+
+Get the details of a Directory User in a Directory.
+
+<h3 id="get-a-user-for-a-directory-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|directoryId|path|string|true|Unique identifier of the Directory.|
+|userId|path|string|true|Unique identifier for the Directory User.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "directory_user",
+  "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+  "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+  "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+  "idp_id": "2836",
+  "email": "marcelina.davis@example.com",
+  "first_name": "Marcelina",
+  "last_name": "Davis",
+  "name": "Marcelina Davis",
+  "emails": [
+    {
+      "primary": true,
+      "type": "work",
+      "value": "marcelina.davis@example.com"
+    }
+  ],
+  "job_title": "Software Engineer",
+  "username": "mdavis",
+  "state": "active",
+  "raw_attributes": {
+    "property1": null,
+    "property2": null
+  },
+  "custom_attributes": {
+    "department": "Engineering",
+    "job_title": "Software Engineer"
+  },
+  "role": {
+    "slug": "admin"
+  },
+  "roles": [
+    {
+      "slug": "admin"
+    }
+  ],
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="get-a-user-for-a-directory-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[DirectoryUser](#schemadirectoryuser)|
+|403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
 ## List Directory Users
 
 <a id="opIdDirectoryUsersController_list"></a>
@@ -10504,7 +11201,11 @@ curl https://api.workos.com/directory_users \
 
 `GET /directory_users`
 
-Get a list of all of existing Directory Users matching the criteria specified.
+<aside class="warning">
+This operation is deprecated
+</aside>
+
+Get a list of all of existing Directory Users matching the criteria specified. Deprecated: use `GET /directories/{directoryId}/users` instead.
 
 <h3 id="list-directory-users-parameters">Parameters</h3>
 
@@ -10657,7 +11358,11 @@ curl https://api.workos.com/directory_users/directory_user_01E1JG7J09H96KYP8HM9B
 
 `GET /directory_users/{id}`
 
-Get the details of an existing Directory User.
+<aside class="warning">
+This operation is deprecated
+</aside>
+
+Get the details of an existing Directory User. Deprecated: use `GET /directories/{directoryId}/users/{userId}` instead.
 
 <h3 id="get-a-directory-user-parameters">Parameters</h3>
 
@@ -12564,6 +13269,16 @@ Verifies an Authentication Challenge.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "code": "too_many_failed_verification_attempts",
+  "message": "Request could not be processed.",
+  "retry_after": 900
+}
+```
+
 <h3 id="verify-challenge-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -12572,6 +13287,13 @@ Verifies an Authentication Challenge.
 |400|Bad Request|Bad Request|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
 |404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
 |422|Unprocessable Entity|Unprocessable Entity|[ErrorBody](#schemaerrorbody)|
+|429|Too Many Requests||[TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter](#schematoomanyfailedverificationattemptserrorbodywithretryafter)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||How many seconds to wait before verification can be retried.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -13962,6 +14684,7 @@ curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/connect
   -d '{
     "account_display_name": "Acme production",
     "account_identifier": "workspace_123",
+    "config": {},
     "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
     "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
     "expires_at": "2025-12-31T23:59:59.000Z",
@@ -13976,7 +14699,7 @@ curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/connect
 
 `PUT /organizations/{organization_id}/connected_accounts/{slug}`
 
-Updates an organization's [connected account](/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
+Updates an organization's [connected account](/reference/pipes/connected-account) tokens, scopes, state, or provider configuration for a specific provider.
 
 > Body parameter
 
@@ -13984,6 +14707,7 @@ Updates an organization's [connected account](/reference/pipes/connected-account
 {
   "account_display_name": "Acme production",
   "account_identifier": "workspace_123",
+  "config": {},
   "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
   "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
   "expires_at": "2025-12-31T23:59:59.000Z",
@@ -14008,6 +14732,8 @@ Updates an organization's [connected account](/reference/pipes/connected-account
 |body|body|[OrganizationConnectedAccountDto](#schemaorganizationconnectedaccountdto)|true|none|
 |» account_display_name|body|string \| null|false|A mutable, non-unique connection label; null clears it. Not an account identifier.|
 |» account_identifier|body|string \| null|false|A developer-attested account identifier; null clears it.|
+|» config|body|object|false|Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.|
+|» » **additionalProperties**|body|string|false|none|
 |» access_token|body|string|false|The OAuth access token for the connected account.|
 |» refresh_token|body|string|false|The OAuth refresh token for the connected account.|
 |» expires_at|body|string(date-time)|false|The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.|
@@ -14130,6 +14856,7 @@ curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/connect
   -d '{
     "account_display_name": "Acme production",
     "account_identifier": "workspace_123",
+    "config": {},
     "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
     "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
     "expires_at": "2025-12-31T23:59:59.000Z",
@@ -14139,6 +14866,7 @@ curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/connect
     ],
     "state": "connected",
     "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+    "metadata": {},
     "connection_intent": "add"
   }'
 ```
@@ -14153,6 +14881,7 @@ Imports an organization-owned [connected account](/reference/pipes/connected-acc
 {
   "account_display_name": "Acme production",
   "account_identifier": "workspace_123",
+  "config": {},
   "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
   "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
   "expires_at": "2025-12-31T23:59:59.000Z",
@@ -14162,6 +14891,7 @@ Imports an organization-owned [connected account](/reference/pipes/connected-acc
   ],
   "state": "connected",
   "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+  "metadata": {},
   "connection_intent": "add"
 }
 ```
@@ -14176,12 +14906,15 @@ Imports an organization-owned [connected account](/reference/pipes/connected-acc
 |body|body|[CreateOrganizationConnectedAccountDto](#schemacreateorganizationconnectedaccountdto)|true|none|
 |» account_display_name|body|string \| null|false|A mutable, non-unique connection label; null clears it. Not an account identifier.|
 |» account_identifier|body|string \| null|false|A developer-attested account identifier; null clears it.|
+|» config|body|object|false|Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.|
+|» » **additionalProperties**|body|string|false|none|
 |» access_token|body|string|false|The OAuth access token for the connected account.|
 |» refresh_token|body|string|false|The OAuth refresh token for the connected account.|
 |» expires_at|body|string(date-time)|false|The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.|
 |» scopes|body|[string]|false|The OAuth scopes granted for this connection.|
 |» state|body|string|false|Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.|
 |» user_id|body|string|true|The [User](/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.|
+|» metadata|body|object|false|Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.|
 |» connection_intent|body|string|false|Set to `add` to create another connected account. Omit this field for permanent compatibility behavior.|
 
 #### Enumerated Values
@@ -17786,6 +18519,14 @@ Returns a list of all providers available to the specified organization, along w
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |organizationId|path|string|true|An [Organization](/reference/organization) identifier to list provider configurations for.|
+|ownership|query|string|false|Select the provider configuration for `user` connections or `organization` shared connections. Defaults to `user`; never falls back to the other ownership.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|ownership|user|
+|ownership|organization|
 
 > Example responses
 
@@ -17831,6 +18572,14 @@ Returns a list of all providers available to the specified organization, along w
 }
 ```
 
+> 422 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
 <h3 id="list-providers-for-an-organization-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -17838,6 +18587,7 @@ Returns a list of all providers available to the specified organization, along w
 |200|OK|A list of provider configurations for the organization.|[DataIntegrationConfigurationListResponse](#schemadataintegrationconfigurationlistresponse)|
 |401|Unauthorized|The request is missing a valid API key.|None|
 |404|Not Found|The organization was not found.|[ErrorBody](#schemaerrorbody)|
+|422|Unprocessable Entity|The ownership selector is invalid.|[ErrorBody](#schemaerrorbody)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -17897,6 +18647,7 @@ Creates or updates an organization's provider configuration. Use this endpoint t
 |---|---|---|---|---|
 |organizationId|path|string|true|An [Organization](/reference/organization) identifier to configure the provider for.|
 |slug|path|string|true|The slug identifier of the provider to configure (e.g., `github`, `slack`, `notion`).|
+|ownership|query|string|false|Select the provider configuration for `user` connections or `organization` shared connections. Defaults to `user`; never falls back to the other ownership.|
 |body|body|[ConfigureDataIntegrationBody](#schemaconfiguredataintegrationbody)|true|none|
 |» enabled|body|boolean|false|Whether the provider is enabled for the organization.|
 |» scopes|body|[string] \| null|false|The OAuth scopes to request for the organization. Pass `null` to inherit the provider scopes.|
@@ -17906,6 +18657,13 @@ Creates or updates an organization's provider configuration. Use this endpoint t
 |» client_secret|body|string|false|The OAuth client secret of the organization's own application. Must be provided together with `client_id`.|
 |» config|body|object|false|Provider-specific config values to set for the organization, keyed by config field. Only fields the provider declares are accepted, and each value must match that field's pattern. Accepted only for providers whose credentials are organization-managed; for shared or custom credential providers, config belongs on the integration itself (via the data-integrations API) and supplying it here is rejected.|
 |» » **additionalProperties**|body|string|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|ownership|user|
+|ownership|organization|
 
 > Example responses
 
@@ -17969,8 +18727,8 @@ Creates or updates an organization's provider configuration. Use this endpoint t
 |200|OK|The provider configuration that was created or updated.|[DataIntegrationConfigurationResponse](#schemadataintegrationconfigurationresponse)|
 |400|Bad Request|The request body is invalid. Possible reasons: the body is empty (at least one of `enabled`, `scopes`, `client_id`, or `config` must be provided); `client_id` and `client_secret` are not provided together; `client_id`/`client_secret` were supplied for a provider that does not support organization-managed credentials; or `config` contains a field the provider does not declare, a value that does not match that field's pattern, or was supplied for a provider whose credentials are not organization-managed.|[ErrorBody](#schemaerrorbody)|
 |401|Unauthorized|The request is missing a valid API key.|None|
-|404|Not Found|The organization or provider was not found.|[ErrorBody](#schemaerrorbody)|
-|422|Unprocessable Entity|One or more of the supplied `scopes` are not valid for the provider. Only scopes configured on the provider may be used.|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|The organization or selected provider was not found.|[ErrorBody](#schemaerrorbody)|
+|422|Unprocessable Entity|The ownership selector is invalid, or one or more of the supplied `scopes` are not valid for the provider.|[ErrorBody](#schemaerrorbody)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -19295,6 +20053,7 @@ Status Code **429**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*anyOf*|[DailyQuotaExceededErrorBody](#schemadailyquotaexceedederrorbody)|false|none|none|
+|*anyOf*|[TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter](#schematoomanyfailedverificationattemptserrorbodywithretryafter)|false|none|none|
 |*anyOf*|[TooManyRequestsOAuthErrorBody](#schematoomanyrequestsoautherrorbody)|false|none|none|
 
 <aside class="warning">
@@ -20217,6 +20976,7 @@ curl https://api.workos.com/user_management/users/user_01EHZNVPK3SFK441A1RGBFSHR
   -d '{
     "account_display_name": "Acme production",
     "account_identifier": "workspace_123",
+    "config": {},
     "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
     "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
     "expires_at": "2025-12-31T23:59:59.000Z",
@@ -20230,7 +20990,7 @@ curl https://api.workos.com/user_management/users/user_01EHZNVPK3SFK441A1RGBFSHR
 
 `PUT /user_management/users/{user_id}/connected_accounts/{slug}`
 
-Updates a user's [connected account](/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
+Updates a user's [connected account](/reference/pipes/connected-account) tokens, scopes, state, or provider configuration for a specific provider.
 
 > Body parameter
 
@@ -20238,6 +20998,7 @@ Updates a user's [connected account](/reference/pipes/connected-account) tokens,
 {
   "account_display_name": "Acme production",
   "account_identifier": "workspace_123",
+  "config": {},
   "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
   "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
   "expires_at": "2025-12-31T23:59:59.000Z",
@@ -20262,6 +21023,8 @@ Updates a user's [connected account](/reference/pipes/connected-account) tokens,
 |body|body|[ConnectedAccountDto](#schemaconnectedaccountdto)|true|none|
 |» account_display_name|body|string \| null|false|A mutable, non-unique connection label; null clears it. Not an account identifier.|
 |» account_identifier|body|string \| null|false|A developer-attested account identifier; null clears it.|
+|» config|body|object|false|Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.|
+|» » **additionalProperties**|body|string|false|none|
 |» access_token|body|string|false|The OAuth access token for the connected account.|
 |» refresh_token|body|string|false|The OAuth refresh token for the connected account.|
 |» expires_at|body|string(date-time)|false|The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.|
@@ -20387,6 +21150,7 @@ curl https://api.workos.com/user_management/users/user_01EHZNVPK3SFK441A1RGBFSHR
   -d '{
     "account_display_name": "Acme production",
     "account_identifier": "workspace_123",
+    "config": {},
     "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
     "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
     "expires_at": "2025-12-31T23:59:59.000Z",
@@ -20395,6 +21159,7 @@ curl https://api.workos.com/user_management/users/user_01EHZNVPK3SFK441A1RGBFSHR
       "user:email"
     ],
     "state": "connected",
+    "metadata": {},
     "connection_intent": "add"
   }'
 ```
@@ -20409,6 +21174,7 @@ Imports a [connected account](/reference/pipes/connected-account) for a user by 
 {
   "account_display_name": "Acme production",
   "account_identifier": "workspace_123",
+  "config": {},
   "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
   "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
   "expires_at": "2025-12-31T23:59:59.000Z",
@@ -20417,6 +21183,7 @@ Imports a [connected account](/reference/pipes/connected-account) for a user by 
     "user:email"
   ],
   "state": "connected",
+  "metadata": {},
   "connection_intent": "add"
 }
 ```
@@ -20432,11 +21199,14 @@ Imports a [connected account](/reference/pipes/connected-account) for a user by 
 |body|body|[CreateConnectedAccountDto](#schemacreateconnectedaccountdto)|true|none|
 |» account_display_name|body|string \| null|false|A mutable, non-unique connection label; null clears it. Not an account identifier.|
 |» account_identifier|body|string \| null|false|A developer-attested account identifier; null clears it.|
+|» config|body|object|false|Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.|
+|» » **additionalProperties**|body|string|false|none|
 |» access_token|body|string|false|The OAuth access token for the connected account.|
 |» refresh_token|body|string|false|The OAuth refresh token for the connected account.|
 |» expires_at|body|string(date-time)|false|The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.|
 |» scopes|body|[string]|false|The OAuth scopes granted for this connection.|
 |» state|body|string|false|Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.|
+|» metadata|body|object|false|Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.|
 |» connection_intent|body|string|false|Set to `add` to create another connected account. Omit this field for permanent compatibility behavior.|
 
 #### Enumerated Values
@@ -21906,8 +22676,9 @@ Creates a one-time authentication code that can be sent to the user's email addr
 
 ```json
 {
-  "code": "action_denied",
-  "message": "Request could not be processed."
+  "code": "policy_denied",
+  "message": "Request could not be processed.",
+  "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X"
 }
 ```
 
@@ -21935,7 +22706,7 @@ Creates a one-time authentication code that can be sent to the user's email addr
 |---|---|---|---|
 |201|Created|Created|Inline|
 |400|Bad Request|Bad Request|Inline|
-|403|Forbidden|Forbidden|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
+|403|Forbidden|Forbidden|[PolicyDeniedErrorBody](#schemapolicydeniederrorbody)|
 |422|Unprocessable Entity|Unprocessable Entity|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
 |429|Too Many Requests||[ErrorBodyWithCode](#schemaerrorbodywithcode)|
 
@@ -24132,8 +24903,9 @@ Create a new user in the current environment.
 
 ```json
 {
-  "code": "action_denied",
-  "message": "Request could not be processed."
+  "code": "policy_denied",
+  "message": "Request could not be processed.",
+  "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X"
 }
 ```
 
@@ -24160,7 +24932,7 @@ Create a new user in the current environment.
 |---|---|---|---|
 |201|Created|Created|Inline|
 |400|Bad Request|Bad Request|Inline|
-|403|Forbidden|Forbidden|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
+|403|Forbidden|Forbidden|[PolicyDeniedErrorBody](#schemapolicydeniederrorbody)|
 |404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
 |422|Unprocessable Entity|Unprocessable Entity|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
 
@@ -27351,6 +28123,8 @@ Create a new webhook endpoint to receive event notifications.
 |» events|api_key.created|
 |» events|api_key.revoked|
 |» events|api_key.updated|
+|» events|application.token_exchange_failed|
+|» events|application.token_exchange_succeeded|
 |» events|connection.activated|
 |» events|connection.deactivated|
 |» events|connection.saml_certificate_renewal_required|
@@ -27376,6 +28150,14 @@ Create a new webhook endpoint to receive event notifications.
 |» events|flag.deleted|
 |» events|flag.updated|
 |» events|flag.rule_updated|
+|» events|feature_flags.flag.created|
+|» events|feature_flags.flag.updated|
+|» events|feature_flags.flag.deleted|
+|» events|feature_flags.flag_rule.created|
+|» events|feature_flags.flag_rule.updated|
+|» events|feature_flags.flag_target.created|
+|» events|feature_flags.flag_rule.deleted|
+|» events|feature_flags.flag_target.deleted|
 |» events|invitation.accepted|
 |» events|invitation.created|
 |» events|invitation.resent|
@@ -27618,6 +28400,8 @@ Update the properties of an existing webhook endpoint.
 |» events|api_key.created|
 |» events|api_key.revoked|
 |» events|api_key.updated|
+|» events|application.token_exchange_failed|
+|» events|application.token_exchange_succeeded|
 |» events|connection.activated|
 |» events|connection.deactivated|
 |» events|connection.saml_certificate_renewal_required|
@@ -27643,6 +28427,14 @@ Update the properties of an existing webhook endpoint.
 |» events|flag.deleted|
 |» events|flag.updated|
 |» events|flag.rule_updated|
+|» events|feature_flags.flag.created|
+|» events|feature_flags.flag.updated|
+|» events|feature_flags.flag.deleted|
+|» events|feature_flags.flag_rule.created|
+|» events|feature_flags.flag_rule.updated|
+|» events|feature_flags.flag_target.created|
+|» events|feature_flags.flag_rule.deleted|
+|» events|feature_flags.flag_target.deleted|
 |» events|invitation.accepted|
 |» events|invitation.created|
 |» events|invitation.resent|
@@ -27926,16 +28718,13 @@ curl https://api.workos.com/authkit/oauth2/complete \
 
 `POST /authkit/oauth2/complete`
 
-Completes an external authentication flow and returns control to AuthKit. This endpoint is used with [Standalone Connect](/authkit/connect/standalone) to bridge your existing authentication system with the Connect OAuth API infrastructure.
+Completes a [Standalone Connect](/authkit/connect/standalone) login by creating or updating the AuthKit user and returning a `redirect_uri` your application should redirect to so AuthKit can finish the flow.
 
-After successfully authenticating a user in your application, calling this endpoint will:
+The user is matched by `id`, stored as its `external_id`, and updated if found. Otherwise:
 
-- Create or update the user in AuthKit, using the given `id` as its `external_id`.
-- Return a `redirect_uri` your application should redirect to in order for AuthKit to complete the flow
-
-Users are automatically created or updated based on the `id` and `email` provided. If a user with the same `id` exists, their information is updated. Otherwise, a new user is created.
-
-If you provide a new `id` with an `email` that already belongs to an existing user, the request will fail with an error as email addresses are unique to a user.
+- If a user with the given `email` has no `external_id`, it is linked to `id`.
+- If a user with the given `email` has a different `external_id`, the request fails.
+- If no user has the given `email`, a new user is created.
 
 > Body parameter
 
@@ -28465,7 +29254,7 @@ bearer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |action|string|true|none|Identifier of what happened.|
-|occurred_at|string(date-time)|true|none|ISO-8601 value of when the action occurred.|
+|occurred_at|string(date-time)|false|none|ISO-8601 timestamp of when the action occurred. When omitted, defaults to the time WorkOS receives the event. Explicit JSON null is rejected.|
 |actor|[AuditLogEventActorDto](#schemaauditlogeventactordto)|true|none|The entity that performed the action.|
 |targets|[[AuditLogEventTargetDto](#schemaauditlogeventtargetdto)]|true|none|The resources affected by the action.|
 |context|[AuditLogEventContextDto](#schemaauditlogeventcontextdto)|true|none|Additional context about where and how the action occurred.|
@@ -28533,7 +29322,7 @@ bearer
 {
   "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
   "range_start": "2022-07-02T18:09:06.996Z",
-  "range_end": "2022-09-02T18:09:06.996Z",
+  "range_end": "2022-08-02T18:09:06.996Z",
   "actions": [
     "user.signed_in"
   ],
@@ -28557,8 +29346,8 @@ bearer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |organization_id|string|true|none|The unique ID of the Organization.|
-|range_start|string(date-time)|true|none|ISO-8601 value for start of the export range.|
-|range_end|string(date-time)|true|none|ISO-8601 value for end of the export range.|
+|range_start|string(date-time)|true|none|ISO-8601 value for start of the export range. The range must span no more than 31 days.|
+|range_end|string(date-time)|true|none|ISO-8601 value for end of the export range. Must be no more than 31 days after the start.|
 |actions|[string]|false|none|List of actions to filter against.|
 |actors|[string]|false|none|**Deprecated.** Deprecated. Use `actor_names` instead.|
 |actor_names|[string]|false|none|List of actor names to filter against.|
@@ -28922,6 +29711,63 @@ bearer
 |*oneOf*|object|false|none|none|
 |resource_external_id|string|true|none|The external ID of the resource. Required with `resource_type_slug`. Mutually exclusive with `resource_id`.|
 |resource_type_slug|string|true|none|The resource type slug. Required with `resource_external_id`. Mutually exclusive with `resource_id`.|
+
+<h2 id="tocS_PatchRoleAssignmentEntryDto">PatchRoleAssignmentEntryDto</h2>
+<!-- backwards compatibility -->
+<a id="schemapatchroleassignmententrydto"></a>
+<a id="schema_PatchRoleAssignmentEntryDto"></a>
+<a id="tocSpatchroleassignmententrydto"></a>
+<a id="tocspatchroleassignmententrydto"></a>
+
+```json
+{
+  "role_slug": "editor",
+  "resource_id": "authz_resource_01HXYZ123456789ABCDEFGH"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|role_slug|string|true|none|The slug of the role.|
+|*oneOf*|object|false|none|none|
+|resource_id|string|true|none|The ID of the resource. Mutually exclusive with `resource_external_id` and `resource_type_slug`.|
+|*oneOf*|object|false|none|none|
+|resource_external_id|string|true|none|The external ID of the resource. Required with `resource_type_slug`. Mutually exclusive with `resource_id`.|
+|resource_type_slug|string|true|none|The resource type slug. Required with `resource_external_id`. Mutually exclusive with `resource_id`.|
+
+<h2 id="tocS_PatchRoleAssignmentsDto">PatchRoleAssignmentsDto</h2>
+<!-- backwards compatibility -->
+<a id="schemapatchroleassignmentsdto"></a>
+<a id="schema_PatchRoleAssignmentsDto"></a>
+<a id="tocSpatchroleassignmentsdto"></a>
+<a id="tocspatchroleassignmentsdto"></a>
+
+```json
+{
+  "add": [
+    {
+      "role_slug": "editor",
+      "resource_id": "authz_resource_01HXYZ123456789ABCDEFGH"
+    }
+  ],
+  "remove": [
+    {
+      "role_slug": "viewer",
+      "resource_type_slug": "project",
+      "resource_external_id": "project-ext-456"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|add|[[PatchRoleAssignmentEntryDto](#schemapatchroleassignmententrydto)]|false|none|Role assignments to add to the organization membership. Assignments that already exist are skipped.|
+|remove|[[PatchRoleAssignmentEntryDto](#schemapatchroleassignmententrydto)]|false|none|Role assignments to remove from the organization membership. Entries that match no assignment are skipped. Roles granted through a group cannot be removed.|
 
 <h2 id="tocS_RemoveRoleDto">RemoveRoleDto</h2>
 <!-- backwards compatibility -->
@@ -30234,6 +31080,7 @@ bearer
 {
   "account_display_name": "Acme production",
   "account_identifier": "workspace_123",
+  "config": {},
   "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
   "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
   "expires_at": "2025-12-31T23:59:59.000Z",
@@ -30243,6 +31090,7 @@ bearer
   ],
   "state": "connected",
   "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+  "metadata": {},
   "connection_intent": "add"
 }
 ```
@@ -30253,12 +31101,14 @@ bearer
 |---|---|---|---|---|
 |account_display_name|string \| null|false|none|A mutable, non-unique connection label; null clears it. Not an account identifier.|
 |account_identifier|string \| null|false|none|A developer-attested account identifier; null clears it.|
+|config|object|false|none|Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.|
 |access_token|string|false|none|The OAuth access token for the connected account.|
 |refresh_token|string|false|none|The OAuth refresh token for the connected account.|
 |expires_at|string(date-time)|false|none|The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.|
 |scopes|[string]|false|none|The OAuth scopes granted for this connection.|
 |state|string|false|none|Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.|
 |user_id|string|true|none|The [User](/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.|
+|metadata|object|false|none|Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.|
 |connection_intent|string|false|none|Set to `add` to create another connected account. Omit this field for permanent compatibility behavior.|
 
 #### Enumerated Values
@@ -30279,6 +31129,7 @@ bearer
 {
   "account_display_name": "Acme production",
   "account_identifier": "workspace_123",
+  "config": {},
   "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
   "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
   "expires_at": "2025-12-31T23:59:59.000Z",
@@ -30297,6 +31148,7 @@ bearer
 |---|---|---|---|---|
 |account_display_name|string \| null|false|none|A mutable, non-unique connection label; null clears it. Not an account identifier.|
 |account_identifier|string \| null|false|none|A developer-attested account identifier; null clears it.|
+|config|object|false|none|Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.|
 |access_token|string|false|none|The OAuth access token for the connected account.|
 |refresh_token|string|false|none|The OAuth refresh token for the connected account.|
 |expires_at|string(date-time)|false|none|The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.|
@@ -30322,6 +31174,7 @@ bearer
 {
   "account_display_name": "Acme production",
   "account_identifier": "workspace_123",
+  "config": {},
   "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
   "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
   "expires_at": "2025-12-31T23:59:59.000Z",
@@ -30330,6 +31183,7 @@ bearer
     "user:email"
   ],
   "state": "connected",
+  "metadata": {},
   "connection_intent": "add"
 }
 ```
@@ -30340,11 +31194,13 @@ bearer
 |---|---|---|---|---|
 |account_display_name|string \| null|false|none|A mutable, non-unique connection label; null clears it. Not an account identifier.|
 |account_identifier|string \| null|false|none|A developer-attested account identifier; null clears it.|
+|config|object|false|none|Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.|
 |access_token|string|false|none|The OAuth access token for the connected account.|
 |refresh_token|string|false|none|The OAuth refresh token for the connected account.|
 |expires_at|string(date-time)|false|none|The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.|
 |scopes|[string]|false|none|The OAuth scopes granted for this connection.|
 |state|string|false|none|Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.|
+|metadata|object|false|none|Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.|
 |connection_intent|string|false|none|Set to `add` to create another connected account. Omit this field for permanent compatibility behavior.|
 
 #### Enumerated Values
@@ -30365,6 +31221,7 @@ bearer
 {
   "account_display_name": "Acme production",
   "account_identifier": "workspace_123",
+  "config": {},
   "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
   "refresh_token": "ghr_xxxxxxxxxxxxxxxxxxxx",
   "expires_at": "2025-12-31T23:59:59.000Z",
@@ -30382,6 +31239,7 @@ bearer
 |---|---|---|---|---|
 |account_display_name|string \| null|false|none|A mutable, non-unique connection label; null clears it. Not an account identifier.|
 |account_identifier|string \| null|false|none|A developer-attested account identifier; null clears it.|
+|config|object|false|none|Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.|
 |access_token|string|false|none|The OAuth access token for the connected account.|
 |refresh_token|string|false|none|The OAuth refresh token for the connected account.|
 |expires_at|string(date-time)|false|none|The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.|
@@ -31659,6 +32517,8 @@ bearer
 |events|api_key.created|
 |events|api_key.revoked|
 |events|api_key.updated|
+|events|application.token_exchange_failed|
+|events|application.token_exchange_succeeded|
 |events|connection.activated|
 |events|connection.deactivated|
 |events|connection.saml_certificate_renewal_required|
@@ -31684,6 +32544,14 @@ bearer
 |events|flag.deleted|
 |events|flag.updated|
 |events|flag.rule_updated|
+|events|feature_flags.flag.created|
+|events|feature_flags.flag.updated|
+|events|feature_flags.flag.deleted|
+|events|feature_flags.flag_rule.created|
+|events|feature_flags.flag_rule.updated|
+|events|feature_flags.flag_target.created|
+|events|feature_flags.flag_rule.deleted|
+|events|feature_flags.flag_target.deleted|
 |events|invitation.accepted|
 |events|invitation.created|
 |events|invitation.resent|
@@ -31797,6 +32665,8 @@ bearer
 |events|api_key.created|
 |events|api_key.revoked|
 |events|api_key.updated|
+|events|application.token_exchange_failed|
+|events|application.token_exchange_succeeded|
 |events|connection.activated|
 |events|connection.deactivated|
 |events|connection.saml_certificate_renewal_required|
@@ -31822,6 +32692,14 @@ bearer
 |events|flag.deleted|
 |events|flag.updated|
 |events|flag.rule_updated|
+|events|feature_flags.flag.created|
+|events|feature_flags.flag.updated|
+|events|feature_flags.flag.deleted|
+|events|feature_flags.flag_rule.created|
+|events|feature_flags.flag_rule.updated|
+|events|feature_flags.flag_target.created|
+|events|feature_flags.flag_rule.deleted|
+|events|feature_flags.flag_target.deleted|
 |events|invitation.accepted|
 |events|invitation.created|
 |events|invitation.resent|
@@ -31924,8 +32802,8 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|organization_id|string|true|none|The ID of the organization to scope the Client API token to.|
-|user_id|string|true|none|The ID of the user to issue the Client API token for.|
+|organization_id|string|true|none|The ID of the organization to scope the Widgets API token to.|
+|user_id|string|true|none|The ID of the user to issue the Widgets API token for.|
 
 <h2 id="tocS_TokenQueryDto">TokenQueryDto</h2>
 <!-- backwards compatibility -->
@@ -32011,7 +32889,7 @@ A machine-readable error code; additional values may be added over time.
 ```json
 {
   "error": "Bad Request",
-  "message": "Claim \"sub\" is reserved and cannot be used."
+  "message": "Request could not be processed."
 }
 ```
 
@@ -32205,6 +33083,29 @@ A machine-readable error code; additional values may be added over time.
 |---|---|---|---|---|
 |message|[string]|true|none|A list of human-readable error messages describing the validation failures.|
 |error|string|true|none|The error type.|
+
+<h2 id="tocS_TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter">TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter</h2>
+<!-- backwards compatibility -->
+<a id="schematoomanyfailedverificationattemptserrorbodywithretryafter"></a>
+<a id="schema_TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter"></a>
+<a id="tocStoomanyfailedverificationattemptserrorbodywithretryafter"></a>
+<a id="tocstoomanyfailedverificationattemptserrorbodywithretryafter"></a>
+
+```json
+{
+  "code": "too_many_failed_verification_attempts",
+  "message": "Request could not be processed.",
+  "retry_after": 900
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|The error code identifying the type of error.|
+|message|string|true|none|A human-readable description of the error.|
+|retry_after|integer|true|none|How many seconds to wait before verification can be retried.|
 
 <h2 id="tocS_RateLimitExceededErrorBodyWithRetryAfter">RateLimitExceededErrorBodyWithRetryAfter</h2>
 <!-- backwards compatibility -->
@@ -32565,6 +33466,7 @@ A machine-readable error code; additional values may be added over time.
 |code|cannot_deactivate_pending_organization_membership|
 |code|cannot_delete_last_certificate|
 |code|cannot_reactivate_pending_organization_membership|
+|code|cannot_remove_group_sourced_role|
 |code|certificate_expired|
 |code|chain_depth_exceeded|
 |code|claim_denied|
@@ -32588,6 +33490,7 @@ A machine-readable error code; additional values may be added over time.
 |code|directory_sync_rate_limited|
 |code|directory_sync_unsupported|
 |code|discovery_endpoint_must_use_https|
+|code|discovery_endpoint_tenant_not_allowed|
 |code|domain_already_exists|
 |code|domain_already_verified|
 |code|duplicate_endpoint|
@@ -32684,7 +33587,6 @@ A machine-readable error code; additional values may be added over time.
 |code|permission_not_found|
 |code|permission_slug_conflict|
 |code|phone_number_required|
-|code|policy_denied|
 |code|production_feature_requires_billing|
 |code|radar_challenge|
 |code|radar_sign_up_challenge|
@@ -32693,6 +33595,7 @@ A machine-readable error code; additional values may be added over time.
 |code|resource_has_dependents|
 |code|resource_limit_exceeded|
 |code|resource_type_update_in_progress|
+|code|role_assignment_update_overlap|
 |code|role_has_assignments|
 |code|role_has_group_role_mappings|
 |code|role_not_found|
@@ -32709,6 +33612,7 @@ A machine-readable error code; additional values may be added over time.
 |code|sub_resource_scoped_role_not_allowed|
 |code|team_not_found|
 |code|token_authentication_method_not_supported|
+|code|too_many_failed_verification_attempts|
 |code|too_many_sp_encryption_certs|
 |code|unsupported_invocation_type|
 |code|user_already_exists|
@@ -32801,6 +33705,29 @@ A machine-readable error code; additional values may be added over time.
 |---|---|---|---|---|
 |error|string|true|none|The OAuth error code.|
 |error_description|string|true|none|A human-readable description of the error.|
+
+<h2 id="tocS_PolicyDeniedErrorBody">PolicyDeniedErrorBody</h2>
+<!-- backwards compatibility -->
+<a id="schemapolicydeniederrorbody"></a>
+<a id="schema_PolicyDeniedErrorBody"></a>
+<a id="tocSpolicydeniederrorbody"></a>
+<a id="tocspolicydeniederrorbody"></a>
+
+```json
+{
+  "code": "policy_denied",
+  "message": "Request could not be processed.",
+  "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|The error code identifying the type of error.|
+|message|string|true|none|A human-readable description of the error.|
+|radar_detection_id|string|false|none|The ID of the Radar detection that blocked the request. Only set when Radar blocked it.|
 
 <h2 id="tocS_SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug">SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug</h2>
 <!-- backwards compatibility -->
@@ -33045,6 +33972,27 @@ A machine-readable error code; additional values may be added over time.
 ```json
 {
   "code": "sms_challenge_quota_reached",
+  "message": "Request could not be processed."
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|The error code identifying the type of error.|
+|message|string|true|none|A human-readable description of the error.|
+
+<h2 id="tocS_RoleAssignmentUpdateOverlapErrorBody">RoleAssignmentUpdateOverlapErrorBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaroleassignmentupdateoverlaperrorbody"></a>
+<a id="schema_RoleAssignmentUpdateOverlapErrorBody"></a>
+<a id="tocSroleassignmentupdateoverlaperrorbody"></a>
+<a id="tocsroleassignmentupdateoverlaperrorbody"></a>
+
+```json
+{
+  "code": "role_assignment_update_overlap",
   "message": "Request could not be processed."
 }
 ```
@@ -34482,27 +35430,6 @@ A machine-readable error code; additional values may be added over time.
 |code|string|true|none|The error code identifying the type of error.|
 |message|string|true|none|A human-readable description of the error.|
 
-<h2 id="tocS_PolicyDeniedErrorBody">PolicyDeniedErrorBody</h2>
-<!-- backwards compatibility -->
-<a id="schemapolicydeniederrorbody"></a>
-<a id="schema_PolicyDeniedErrorBody"></a>
-<a id="tocSpolicydeniederrorbody"></a>
-<a id="tocspolicydeniederrorbody"></a>
-
-```json
-{
-  "code": "policy_denied",
-  "message": "Request could not be processed."
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|code|string|true|none|The error code identifying the type of error.|
-|message|string|true|none|A human-readable description of the error.|
-
 <h2 id="tocS_ActionDeniedErrorBody">ActionDeniedErrorBody</h2>
 <!-- backwards compatibility -->
 <a id="schemaactiondeniederrorbody"></a>
@@ -35226,6 +36153,21 @@ An encrypted object's metadata (value excluded).
     "crm:read",
     "email:send"
   ],
+  "scoped_permissions": [
+    {
+      "slug": "crm:read",
+      "instance_types": [
+        "delegated",
+        "autonomous"
+      ]
+    },
+    {
+      "slug": "email:send",
+      "instance_types": [
+        "delegated"
+      ]
+    }
+  ],
   "invocable_by": {
     "role_slugs": [
       "manager"
@@ -35258,7 +36200,8 @@ An encrypted object's metadata (value excluded).
 |id|string|true|none|Unique identifier of the agent blueprint.|
 |name|string|true|none|Human-readable name of the agent blueprint.|
 |description|string \| null|true|none|Human-readable description of the agent blueprint.|
-|permissions|[string]|true|none|Permission slugs forming the ceiling on what sessions minted from this blueprint may do.|
+|permissions|[string]|true|none|**Deprecated.** Deprecated: use `scoped_permissions`. Slugs of every permission in the ceiling, across all instance types.|
+|scoped_permissions|[object]|true|none|Permissions forming the ceiling on what sessions minted from this blueprint may do, with the instance types that receive each one.|
 |invocable_by|object|true|none|Who may mint sessions from this blueprint.|
 |invocable_as|object|true|none|How sessions may be minted from this blueprint.|
 |session_settings|object|true|none|Token and session lifetimes for sessions minted from this blueprint.|
@@ -37167,6 +38110,87 @@ The user object.
 |data|[[DirectoryGroup](#schemadirectorygroup)]|true|none|The list of records for the current page.|
 |list_metadata|object|true|none|Pagination cursors for navigating between pages of results.|
 
+<h2 id="tocS_DirectoryUser">DirectoryUser</h2>
+<!-- backwards compatibility -->
+<a id="schemadirectoryuser"></a>
+<a id="schema_DirectoryUser"></a>
+<a id="tocSdirectoryuser"></a>
+<a id="tocsdirectoryuser"></a>
+
+```json
+{
+  "object": "directory_user",
+  "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+  "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+  "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+  "idp_id": "2836",
+  "email": "marcelina.davis@example.com",
+  "first_name": "Marcelina",
+  "last_name": "Davis",
+  "name": "Marcelina Davis",
+  "emails": [
+    {
+      "primary": true,
+      "type": "work",
+      "value": "marcelina.davis@example.com"
+    }
+  ],
+  "job_title": "Software Engineer",
+  "username": "mdavis",
+  "state": "active",
+  "raw_attributes": {
+    "property1": null,
+    "property2": null
+  },
+  "custom_attributes": {
+    "department": "Engineering",
+    "job_title": "Software Engineer"
+  },
+  "role": {
+    "slug": "admin"
+  },
+  "roles": [
+    {
+      "slug": "admin"
+    }
+  ],
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|Distinguishes the Directory User object.|
+|id|string|true|none|Unique identifier for the Directory User.|
+|directory_id|string|true|none|The identifier of the Directory the Directory User belongs to.|
+|organization_id|string|true|none|The identifier for the Organization in which the Directory resides.|
+|idp_id|string|true|none|Unique identifier for the user, assigned by the Directory Provider. Different Directory Providers use different ID formats.|
+|email|string \| null|true|none|The email address of the user.|
+|first_name|string \| null|false|none|The first name of the user.|
+|last_name|string \| null|false|none|The last name of the user.|
+|name|string \| null|false|none|The full name of the user.|
+|emails|[object]|false|none|**Deprecated.** A list of email addresses for the user.|
+|job_title|string \| null|false|none|**Deprecated.** The job title of the user.|
+|username|string \| null|false|none|**Deprecated.** The username of the user.|
+|state|string|true|none|The state of the user.|
+|raw_attributes|object|true|none|**Deprecated.** The raw attributes received from the directory provider.|
+|custom_attributes|object|true|none|An object containing the custom attribute mapping for the Directory Provider.|
+|role|[SlimRole](#schemaslimrole)|false|none|The primary role assigned to the user.|
+|roles|[[SlimRole](#schemaslimrole)]|false|none|All roles assigned to the user.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|active|
+|state|suspended|
+|state|inactive|
+
 <h2 id="tocS_DirectoryUserWithGroups">DirectoryUserWithGroups</h2>
 <!-- backwards compatibility -->
 <a id="schemadirectoryuserwithgroups"></a>
@@ -37255,7 +38279,7 @@ The user object.
 |roles|[[SlimRole](#schemaslimrole)]|false|none|All roles assigned to the user.|
 |created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
-|groups|[[DirectoryGroup](#schemadirectorygroup)]|true|none|**Deprecated.** The directory groups the user belongs to. Deprecated: starting May 1, 2026, this field returns an empty array by default for newly created teams. Existing teams currently depending on this field should migrate to the new access pattern for better throughput performance — the field is unbounded by user, so users with many group memberships produce large, slow response payloads. Use the List Directory Groups endpoint with a `user` filter to fetch a user's group memberships.|
+|groups|[[DirectoryGroup](#schemadirectorygroup)]|true|none|**Deprecated.** The directory groups the user belongs to. Deprecated: use `GET /directories/{directoryId}/groups?user={userId}` instead.|
 
 #### Enumerated Values
 
@@ -37535,50 +38559,24 @@ Additional context about the event.
 |actor|[EventContextActorDto](#schemaeventcontextactordto)|false|none|The actor who performed the action.|
 |previous_attributes|object|false|none|Attributes that changed from their previous values.|
 
-<h2 id="tocS_DirectoryUser">DirectoryUser</h2>
+<h2 id="tocS_FlagRule">FlagRule</h2>
 <!-- backwards compatibility -->
-<a id="schemadirectoryuser"></a>
-<a id="schema_DirectoryUser"></a>
-<a id="tocSdirectoryuser"></a>
-<a id="tocsdirectoryuser"></a>
+<a id="schemaflagrule"></a>
+<a id="schema_FlagRule"></a>
+<a id="tocSflagrule"></a>
+<a id="tocsflagrule"></a>
 
 ```json
 {
-  "object": "directory_user",
-  "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-  "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-  "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-  "idp_id": "2836",
-  "email": "marcelina.davis@example.com",
-  "first_name": "Marcelina",
-  "last_name": "Davis",
-  "name": "Marcelina Davis",
-  "emails": [
-    {
-      "primary": true,
-      "type": "work",
-      "value": "marcelina.davis@example.com"
-    }
-  ],
-  "job_title": "Software Engineer",
-  "username": "mdavis",
-  "state": "active",
-  "raw_attributes": {
-    "property1": null,
-    "property2": null
-  },
-  "custom_attributes": {
-    "department": "Engineering",
-    "job_title": "Software Engineer"
-  },
-  "role": {
-    "slug": "admin"
-  },
-  "roles": [
-    {
-      "slug": "admin"
-    }
-  ],
+  "object": "flag_rule",
+  "id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+  "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+  "flag_slug": "new-checkout",
+  "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "target_type": "organization",
+  "position": 0,
+  "value_type": "boolean",
+  "value": false,
   "created_at": "2026-01-15T12:00:00.000Z",
   "updated_at": "2026-01-15T12:00:00.000Z"
 }
@@ -37588,33 +38586,67 @@ Additional context about the event.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|object|string|true|none|Distinguishes the Directory User object.|
-|id|string|true|none|Unique identifier for the Directory User.|
-|directory_id|string|true|none|The identifier of the Directory the Directory User belongs to.|
-|organization_id|string|true|none|The identifier for the Organization in which the Directory resides.|
-|idp_id|string|true|none|Unique identifier for the user, assigned by the Directory Provider. Different Directory Providers use different ID formats.|
-|email|string \| null|true|none|The email address of the user.|
-|first_name|string \| null|false|none|The first name of the user.|
-|last_name|string \| null|false|none|The last name of the user.|
-|name|string \| null|false|none|The full name of the user.|
-|emails|[object]|false|none|**Deprecated.** A list of email addresses for the user.|
-|job_title|string \| null|false|none|**Deprecated.** The job title of the user.|
-|username|string \| null|false|none|**Deprecated.** The username of the user.|
-|state|string|true|none|The state of the user.|
-|raw_attributes|object|true|none|**Deprecated.** The raw attributes received from the directory provider.|
-|custom_attributes|object|true|none|An object containing the custom attribute mapping for the Directory Provider.|
-|role|[SlimRole](#schemaslimrole)|false|none|The primary role assigned to the user.|
-|roles|[[SlimRole](#schemaslimrole)]|false|none|All roles assigned to the user.|
+|object|string|true|none|none|
+|id|string|true|none|Unique identifier of the Flag Rule.|
+|flag_id|string|true|none|The ID of the Feature Flag the rule belongs to.|
+|flag_slug|string|true|none|The slug of the Feature Flag the rule belongs to.|
+|environment_id|string|true|none|The ID of the environment the Flag Rule belongs to.|
+|target_type|string \| null|true|none|The target type slug, if the rule targets a specific type.|
+|position|integer|true|none|The zero-based position of the rule in evaluation order.|
+|value_type|string|true|none|none|
+|value|boolean|true|none|The value the Feature Flag evaluates to when the rule matches.|
 |created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 
-#### Enumerated Values
+<h2 id="tocS_FlagTarget">FlagTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemaflagtarget"></a>
+<a id="schema_FlagTarget"></a>
+<a id="tocSflagtarget"></a>
+<a id="tocsflagtarget"></a>
 
-|Property|Value|
-|---|---|
-|state|active|
-|state|suspended|
-|state|inactive|
+```json
+{
+  "object": "flag_target",
+  "id": "flag_target_01EHZNVPK3SFK441A1RGBFSHRT",
+  "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+  "flag_slug": "new-checkout",
+  "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "target_type": "organization",
+  "target_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z",
+  "rule_id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|object|string|true|none|Distinguishes the Flag Target object.|
+|id|string|true|none|Unique identifier of the Flag Target.|
+|flag_id|string|true|none|The ID of the Feature Flag the target belongs to.|
+|flag_slug|string|true|none|The slug of the Feature Flag the target belongs to, which is how the Feature Flag endpoints address it.|
+|environment_id|string|true|none|The ID of the environment the Flag Target belongs to.|
+|target_type|string|true|none|The type of the target: `organization`, `user`, or a custom target type slug.|
+|target_id|string|true|none|The ID of the targeted entity.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|rule_id|string|true|none|The ID of the rule this target belongs to.|
+|*oneOf*|object|false|none|none|
+|object|string|true|none|Distinguishes the Flag Target object.|
+|id|string|true|none|Unique identifier of the Flag Target.|
+|flag_id|string|true|none|The ID of the Feature Flag the target belongs to.|
+|flag_slug|string|true|none|The slug of the Feature Flag the target belongs to, which is how the Feature Flag endpoints address it.|
+|environment_id|string|true|none|The ID of the environment the Flag Target belongs to.|
+|target_type|string|true|none|The type of the target: `organization`, `user`, or a custom target type slug.|
+|target_id|string|true|none|The ID of the targeted entity.|
+|value_type|string|true|none|The type of `value`. Only `boolean` is supported today; additional types are reserved for future multivariate Feature Flags.|
+|value|boolean|true|none|The value the Feature Flag evaluates to for this target.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 
 <h2 id="tocS_PipesConnectedAccount">PipesConnectedAccount</h2>
 <!-- backwards compatibility -->
@@ -38117,6 +39149,20 @@ An event emitted by WorkOS.
 |*oneOf*|object|false|none|none|
 |id|string|true|none|Unique identifier for the event.|
 |event|string|true|none|none|
+|data|object|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|object|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
 |data|[DirectoryGroup](#schemadirectorygroup)|true|none|The event payload.|
 |created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
@@ -38208,7 +39254,63 @@ An event emitted by WorkOS.
 |*oneOf*|object|false|none|none|
 |id|string|true|none|Unique identifier for the event.|
 |event|string|true|none|none|
+|data|[FlagRule](#schemaflagrule)|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|object|true|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|[FlagRule](#schemaflagrule)|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|object|true|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|[FlagRule](#schemaflagrule)|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|object|true|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
 |data|object|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|object|true|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|object|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|object|true|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|object|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|object|true|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|object|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|object|true|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|[FlagTarget](#schemaflagtarget)|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|object|true|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|[FlagTarget](#schemaflagtarget)|true|none|The event payload.|
 |created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |context|object|true|none|Additional context about the event.|
 |object|string|true|none|Distinguishes the Event object.|
@@ -41450,7 +42552,7 @@ Organization-managed OAuth credential configuration. Present only for integratio
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|token|string|true|none|The Client API token.|
+|token|string|true|none|The Widgets API token.|
 
 <h2 id="tocS_SsoAuthorizeUrlResponse">SsoAuthorizeUrlResponse</h2>
 <!-- backwards compatibility -->

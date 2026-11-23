@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetSecretsmanagerCancelRotateSecretRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetSecretsmanagerCancelRotateSecretHandler = app.openapi(
+  postXAmzTargetSecretsmanagerCancelRotateSecretRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

@@ -1315,6 +1315,7 @@ const SearchHitSchema = z
     _rankingScoreDetails: z.record(z.string(), z.any()).nullable().exactOptional(),
   })
   .catchall(z.any())
+  .openapi({ required: [] })
   .openapi('SearchHit')
 
 const FacetStatsSchema = z

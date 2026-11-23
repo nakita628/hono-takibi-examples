@@ -1,5 +1,181 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const LongSchema = z.int().openapi('Long')
+
+type StringType = string
+
+const StringSchema: z.ZodType<StringType> = z.string().openapi('String')
+
+const IntegerSchema = z.int().openapi('Integer')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const ColumnMetadataSchema = z
+  .object({
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the column.' }),
+    type: IntegerSchema.exactOptional().openapi({ description: 'The type of the column.' }),
+    typeName: StringSchema.exactOptional().openapi({
+      description: 'The database-specific data type of the column.',
+    }),
+    label: StringSchema.exactOptional().openapi({ description: 'The label for the column.' }),
+    schemaName: StringSchema.exactOptional().openapi({
+      description: 'The name of the schema that owns the table that includes the column.',
+    }),
+    tableName: StringSchema.exactOptional().openapi({
+      description: 'The name of the table that includes the column.',
+    }),
+    isAutoIncrement: BooleanSchema.exactOptional().openapi({
+      description: 'A value that indicates whether the column increments automatically.',
+    }),
+    isSigned: BooleanSchema.exactOptional().openapi({
+      description: 'A value that indicates whether an integer column is signed.',
+    }),
+    isCurrency: BooleanSchema.exactOptional().openapi({
+      description: 'A value that indicates whether the column contains currency values.',
+    }),
+    isCaseSensitive: BooleanSchema.exactOptional().openapi({
+      description: 'A value that indicates whether the column is case-sensitive.',
+    }),
+    nullable: IntegerSchema.exactOptional().openapi({
+      description: 'A value that indicates whether the column is nullable.',
+    }),
+    precision: IntegerSchema.exactOptional().openapi({
+      description: 'The precision value of a decimal number column.',
+    }),
+    scale: IntegerSchema.exactOptional().openapi({
+      description: 'The scale value of a decimal number column.',
+    }),
+    arrayBaseColumnType: IntegerSchema.exactOptional().openapi({
+      description: 'The type of the column.',
+    }),
+  })
+  .openapi({ description: 'Contains the metadata for a column.', required: [] })
+  .openapi('ColumnMetadata')
+
+const MetadataSchema = z.array(ColumnMetadataSchema).openapi('Metadata')
+
+const ResultSetMetadataSchema = z
+  .object({
+    columnCount: LongSchema.exactOptional().openapi({
+      description: 'The number of columns in the result set.',
+    }),
+    columnMetadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the columns in the result set.',
+    }),
+  })
+  .openapi({
+    description: 'The metadata of the result set returned by a SQL statement.',
+    required: [],
+  })
+  .openapi('ResultSetMetadata')
+
+const ValueSchema: z.ZodType<ValueType> = z
+  .lazy(() =>
+    z
+      .object({
+        isNull: BoxedBooleanSchema.exactOptional().openapi({ description: 'A NULL value.' }),
+        bitValue: BoxedBooleanSchema.exactOptional().openapi({
+          description: 'A value for a column of BIT data type.',
+        }),
+        bigIntValue: BoxedLongSchema.exactOptional().openapi({
+          description: 'A value for a column of big integer data type.',
+        }),
+        intValue: BoxedIntegerSchema.exactOptional().openapi({
+          description: 'A value for a column of integer data type.',
+        }),
+        doubleValue: BoxedDoubleSchema.exactOptional().openapi({
+          description: 'A value for a column of double data type.',
+        }),
+        realValue: BoxedFloatSchema.exactOptional().openapi({
+          description: 'A value for a column of real data type.',
+        }),
+        stringValue: StringSchema.exactOptional().openapi({
+          description: 'A value for a column of string data type.',
+        }),
+        blobValue: BlobSchema.exactOptional().openapi({
+          description: 'A value for a column of BLOB data type.',
+        }),
+        arrayValues: ArrayValueListSchema.exactOptional().openapi({
+          description: 'An array of column values.',
+        }),
+        structValue: StructValueSchema.exactOptional().openapi({
+          description: 'A value for a column of STRUCT data type.',
+        }),
+      })
+      .openapi({
+        description:
+          '<p>Contains the value of a column.</p> <pre><code> &lt;note&gt; &lt;p&gt;This data structure is only used with the deprecated &lt;code&gt;ExecuteSql&lt;/code&gt; operation. Use the &lt;code&gt;BatchExecuteStatement&lt;/code&gt; or &lt;code&gt;ExecuteStatement&lt;/code&gt; operation instead.&lt;/p&gt; &lt;/note&gt; </code></pre>',
+        required: [],
+      }),
+  )
+  .openapi('Value')
+
+const RowSchema = z.array(ValueSchema).openapi('Row')
+
+const RecordSchema = z
+  .object({
+    values: RowSchema.exactOptional().openapi({
+      description: 'The values returned in the record.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>A record returned by a call.</p> <note> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </note>',
+    required: [],
+  })
+  .openapi('Record')
+
+const RecordsSchema = z.array(RecordSchema).openapi('Records')
+
+const ResultFrameSchema = z
+  .object({
+    resultSetMetadata: ResultSetMetadataSchema.exactOptional().openapi({
+      description: 'The result-set metadata in the result set.',
+    }),
+    records: RecordsSchema.exactOptional().openapi({
+      description: 'The records in the result set.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The result set returned by a SQL statement.</p> <note> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </note>',
+    required: [],
+  })
+  .openapi('ResultFrame')
+
+const RecordsUpdatedSchema = z.int().openapi('RecordsUpdated')
+
+type SqlStatementResultType = {
+  resultFrame?: z.infer<typeof ResultFrameSchema> & unknown
+  numberOfRecordsUpdated?: z.infer<typeof RecordsUpdatedSchema> & unknown
+}
+
+const SqlStatementResultSchema: z.ZodType<SqlStatementResultType> = z
+  .object({
+    resultFrame: ResultFrameSchema.exactOptional().openapi({
+      description: 'The result set of the SQL statement.',
+    }),
+    numberOfRecordsUpdated: RecordsUpdatedSchema.exactOptional().openapi({
+      description: 'The number of records updated by a SQL statement.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The result of a SQL statement.</p> <pre><code> &lt;note&gt; &lt;p&gt;This data structure is only used with the deprecated &lt;code&gt;ExecuteSql&lt;/code&gt; operation. Use the &lt;code&gt;BatchExecuteStatement&lt;/code&gt; or &lt;code&gt;ExecuteStatement&lt;/code&gt; operation instead.&lt;/p&gt; &lt;/note&gt; </code></pre>',
+    required: [],
+  })
+  .openapi('SqlStatementResult')
+
+type SqlStatementResultsType = z.infer<typeof SqlStatementResultSchema>[]
+
+const SqlStatementResultsSchema: z.ZodType<SqlStatementResultsType> = z
+  .array(SqlStatementResultSchema)
+  .openapi('SqlStatementResults')
+
+type ExecuteSqlResponseType = {
+  sqlStatementResults?: z.infer<typeof SqlStatementResultsSchema> & unknown
+}
+
 type BoxedBooleanType = boolean
 
 const BoxedBooleanSchema: z.ZodType<BoxedBooleanType> = z.boolean().openapi('BoxedBoolean')
@@ -42,10 +218,6 @@ const DoubleArraySchema: z.ZodType<DoubleArrayType> = z
   })
   .openapi('DoubleArray')
 
-type StringType = string
-
-const StringSchema: z.ZodType<StringType> = z.string().openapi('String')
-
 type StringArrayType = z.infer<typeof StringSchema>[]
 
 const StringArraySchema: z.ZodType<StringArrayType> = z
@@ -68,32 +240,32 @@ const ArrayOfArraySchema: z.ZodType<ArrayOfArrayType> = z
   .openapi('ArrayOfArray')
 
 type ArrayValueType = {
-  booleanValues?: z.infer<typeof BooleanArraySchema> & { [key: string]: unknown }
-  longValues?: z.infer<typeof LongArraySchema> & { [key: string]: unknown }
-  doubleValues?: z.infer<typeof DoubleArraySchema> & { [key: string]: unknown }
-  stringValues?: z.infer<typeof StringArraySchema> & { [key: string]: unknown }
-  arrayValues?: z.infer<typeof ArrayOfArraySchema> & { [key: string]: unknown }
+  booleanValues?: z.infer<typeof BooleanArraySchema> & unknown
+  longValues?: z.infer<typeof LongArraySchema> & unknown
+  doubleValues?: z.infer<typeof DoubleArraySchema> & unknown
+  stringValues?: z.infer<typeof StringArraySchema> & unknown
+  arrayValues?: z.infer<typeof ArrayOfArraySchema> & unknown
 }
 
 const ArrayValueSchema: z.ZodType<ArrayValueType> = z
   .lazy(() =>
     z
       .object({
-        booleanValues: BooleanArraySchema.and(
-          z.any().openapi({ description: 'An array of Boolean values.' }),
-        ).exactOptional(),
-        longValues: LongArraySchema.and(
-          z.any().openapi({ description: 'An array of integers.' }),
-        ).exactOptional(),
-        doubleValues: DoubleArraySchema.and(
-          z.any().openapi({ description: 'An array of floating-point numbers.' }),
-        ).exactOptional(),
-        stringValues: StringArraySchema.and(
-          z.any().openapi({ description: 'An array of strings.' }),
-        ).exactOptional(),
-        arrayValues: ArrayOfArraySchema.and(
-          z.any().openapi({ description: 'An array of arrays.' }),
-        ).exactOptional(),
+        booleanValues: BooleanArraySchema.exactOptional().openapi({
+          description: 'An array of Boolean values.',
+        }),
+        longValues: LongArraySchema.exactOptional().openapi({
+          description: 'An array of integers.',
+        }),
+        doubleValues: DoubleArraySchema.exactOptional().openapi({
+          description: 'An array of floating-point numbers.',
+        }),
+        stringValues: StringArraySchema.exactOptional().openapi({
+          description: 'An array of strings.',
+        }),
+        arrayValues: ArrayOfArraySchema.exactOptional().openapi({
+          description: 'An array of arrays.',
+        }),
       })
       .openapi({ description: 'Contains an array.', required: [] }),
   )
@@ -121,9 +293,9 @@ const StructValueSchema: z.ZodType<StructValueType> = z
   .lazy(() =>
     z
       .object({
-        attributes: ArrayValueListSchema.and(
-          z.any().openapi({ description: 'The attributes returned in the record.' }),
-        ).exactOptional(),
+        attributes: ArrayValueListSchema.exactOptional().openapi({
+          description: 'The attributes returned in the record.',
+        }),
       })
       .openapi({
         description:
@@ -134,160 +306,39 @@ const StructValueSchema: z.ZodType<StructValueType> = z
   .openapi('StructValue')
 
 type ValueType = {
-  isNull?: z.infer<typeof BoxedBooleanSchema> & { [key: string]: unknown }
-  bitValue?: z.infer<typeof BoxedBooleanSchema> & { [key: string]: unknown }
-  bigIntValue?: z.infer<typeof BoxedLongSchema> & { [key: string]: unknown }
-  intValue?: z.infer<typeof BoxedIntegerSchema> & { [key: string]: unknown }
-  doubleValue?: z.infer<typeof BoxedDoubleSchema> & { [key: string]: unknown }
-  realValue?: z.infer<typeof BoxedFloatSchema> & { [key: string]: unknown }
-  stringValue?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  blobValue?: z.infer<typeof BlobSchema> & { [key: string]: unknown }
-  arrayValues?: z.infer<typeof ArrayValueListSchema> & { [key: string]: unknown }
-  structValue?: z.infer<typeof StructValueSchema> & { [key: string]: unknown }
+  isNull?: z.infer<typeof BoxedBooleanSchema> & unknown
+  bitValue?: z.infer<typeof BoxedBooleanSchema> & unknown
+  bigIntValue?: z.infer<typeof BoxedLongSchema> & unknown
+  intValue?: z.infer<typeof BoxedIntegerSchema> & unknown
+  doubleValue?: z.infer<typeof BoxedDoubleSchema> & unknown
+  realValue?: z.infer<typeof BoxedFloatSchema> & unknown
+  stringValue?: z.infer<typeof StringSchema> & unknown
+  blobValue?: z.infer<typeof BlobSchema> & unknown
+  arrayValues?: z.infer<typeof ArrayValueListSchema> & unknown
+  structValue?: z.infer<typeof StructValueSchema> & unknown
 }
-
-const ValueSchema: z.ZodType<ValueType> = z
-  .lazy(() =>
-    z
-      .object({
-        isNull: BoxedBooleanSchema.and(
-          z.any().openapi({ description: 'A NULL value.' }),
-        ).exactOptional(),
-        bitValue: BoxedBooleanSchema.and(
-          z.any().openapi({ description: 'A value for a column of BIT data type.' }),
-        ).exactOptional(),
-        bigIntValue: BoxedLongSchema.and(
-          z.any().openapi({ description: 'A value for a column of big integer data type.' }),
-        ).exactOptional(),
-        intValue: BoxedIntegerSchema.and(
-          z.any().openapi({ description: 'A value for a column of integer data type.' }),
-        ).exactOptional(),
-        doubleValue: BoxedDoubleSchema.and(
-          z.any().openapi({ description: 'A value for a column of double data type.' }),
-        ).exactOptional(),
-        realValue: BoxedFloatSchema.and(
-          z.any().openapi({ description: 'A value for a column of real data type.' }),
-        ).exactOptional(),
-        stringValue: StringSchema.and(
-          z.any().openapi({ description: 'A value for a column of string data type.' }),
-        ).exactOptional(),
-        blobValue: BlobSchema.and(
-          z.any().openapi({ description: 'A value for a column of BLOB data type.' }),
-        ).exactOptional(),
-        arrayValues: ArrayValueListSchema.and(
-          z.any().openapi({ description: 'An array of column values.' }),
-        ).exactOptional(),
-        structValue: StructValueSchema.and(
-          z.any().openapi({ description: 'A value for a column of STRUCT data type.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          '<p>Contains the value of a column.</p> <pre><code> &lt;note&gt; &lt;p&gt;This data structure is only used with the deprecated &lt;code&gt;ExecuteSql&lt;/code&gt; operation. Use the &lt;code&gt;BatchExecuteStatement&lt;/code&gt; or &lt;code&gt;ExecuteStatement&lt;/code&gt; operation instead.&lt;/p&gt; &lt;/note&gt; </code></pre>',
-        required: [],
-      }),
-  )
-  .openapi('Value')
 
 type ArrayValueListType = z.infer<typeof ValueSchema>[]
 
-const IntegerSchema = z.int().openapi('Integer')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const ColumnMetadataSchema = z
-  .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the column.' }),
-    ).exactOptional(),
-    type: IntegerSchema.and(
-      z.any().openapi({ description: 'The type of the column.' }),
-    ).exactOptional(),
-    typeName: StringSchema.and(
-      z.any().openapi({ description: 'The database-specific data type of the column.' }),
-    ).exactOptional(),
-    label: StringSchema.and(
-      z.any().openapi({ description: 'The label for the column.' }),
-    ).exactOptional(),
-    schemaName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the schema that owns the table that includes the column.',
-        }),
-    ).exactOptional(),
-    tableName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the table that includes the column.' }),
-    ).exactOptional(),
-    isAutoIncrement: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A value that indicates whether the column increments automatically.',
-        }),
-    ).exactOptional(),
-    isSigned: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A value that indicates whether an integer column is signed.' }),
-    ).exactOptional(),
-    isCurrency: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A value that indicates whether the column contains currency values.',
-        }),
-    ).exactOptional(),
-    isCaseSensitive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A value that indicates whether the column is case-sensitive.' }),
-    ).exactOptional(),
-    nullable: IntegerSchema.and(
-      z.any().openapi({ description: 'A value that indicates whether the column is nullable.' }),
-    ).exactOptional(),
-    precision: IntegerSchema.and(
-      z.any().openapi({ description: 'The precision value of a decimal number column.' }),
-    ).exactOptional(),
-    scale: IntegerSchema.and(
-      z.any().openapi({ description: 'The scale value of a decimal number column.' }),
-    ).exactOptional(),
-    arrayBaseColumnType: IntegerSchema.and(
-      z.any().openapi({ description: 'The type of the column.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains the metadata for a column.', required: [] })
-  .openapi('ColumnMetadata')
-
-type MetadataType = z.infer<typeof ColumnMetadataSchema>[]
-
-type StructValueType = {
-  attributes?: z.infer<typeof ArrayValueListSchema> & { [key: string]: unknown }
-}
+type StructValueType = { attributes?: z.infer<typeof ArrayValueListSchema> & unknown }
 
 const FieldSchema = z
   .object({
-    isNull: BoxedBooleanSchema.and(
-      z.any().openapi({ description: 'A NULL value.' }),
-    ).exactOptional(),
-    booleanValue: BoxedBooleanSchema.and(
-      z.any().openapi({ description: 'A value of Boolean data type.' }),
-    ).exactOptional(),
-    longValue: BoxedLongSchema.and(
-      z.any().openapi({ description: 'A value of long data type.' }),
-    ).exactOptional(),
-    doubleValue: BoxedDoubleSchema.and(
-      z.any().openapi({ description: 'A value of double data type.' }),
-    ).exactOptional(),
-    stringValue: StringSchema.and(
-      z.any().openapi({ description: 'A value of string data type.' }),
-    ).exactOptional(),
-    blobValue: BlobSchema.and(
-      z.any().openapi({ description: 'A value of BLOB data type.' }),
-    ).exactOptional(),
-    arrayValue: ArrayValueSchema.and(
-      z.any().openapi({ description: 'An array of values.' }),
-    ).exactOptional(),
+    isNull: BoxedBooleanSchema.exactOptional().openapi({ description: 'A NULL value.' }),
+    booleanValue: BoxedBooleanSchema.exactOptional().openapi({
+      description: 'A value of Boolean data type.',
+    }),
+    longValue: BoxedLongSchema.exactOptional().openapi({
+      description: 'A value of long data type.',
+    }),
+    doubleValue: BoxedDoubleSchema.exactOptional().openapi({
+      description: 'A value of double data type.',
+    }),
+    stringValue: StringSchema.exactOptional().openapi({
+      description: 'A value of string data type.',
+    }),
+    blobValue: BlobSchema.exactOptional().openapi({ description: 'A value of BLOB data type.' }),
+    arrayValue: ArrayValueSchema.exactOptional().openapi({ description: 'An array of values.' }),
   })
   .openapi({ description: 'Contains a value.', required: [] })
   .openapi('Field')
@@ -296,9 +347,9 @@ const FieldListSchema = z.array(FieldSchema).openapi('FieldList')
 
 const UpdateResultSchema = z
   .object({
-    generatedFields: FieldListSchema.and(
-      z.any().openapi({ description: 'Values for fields generated during the request.' }),
-    ).exactOptional(),
+    generatedFields: FieldListSchema.exactOptional().openapi({
+      description: 'Values for fields generated during the request.',
+    }),
   })
   .openapi({
     description: 'The response elements represent the results of an update.',
@@ -310,9 +361,9 @@ const UpdateResultsSchema = z.array(UpdateResultSchema).openapi('UpdateResults')
 
 const BatchExecuteStatementResponseSchema = z
   .object({
-    updateResults: UpdateResultsSchema.and(
-      z.any().openapi({ description: 'The execution results of each batch entry.' }),
-    ).exactOptional(),
+    updateResults: UpdateResultsSchema.exactOptional().openapi({
+      description: 'The execution results of each batch entry.',
+    }),
   })
   .openapi({
     description:
@@ -329,20 +380,14 @@ const TypeHintSchema = z
 
 const SqlParameterSchema = z
   .object({
-    name: ParameterNameSchema.and(
-      z.any().openapi({ description: 'The name of the parameter.' }),
-    ).exactOptional(),
-    value: FieldSchema.and(
-      z.any().openapi({ description: 'The value of the parameter.' }),
-    ).exactOptional(),
-    typeHint: TypeHintSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A hint that specifies the correct object type for data type mapping. Possible values are as follows:</p> <ul> <li> <p> <code>DATE</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>DATE</code> type to the database. The accepted format is <code>YYYY-MM-DD</code>.</p> </li> <li> <p> <code>DECIMAL</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>DECIMAL</code> type to the database.</p> </li> <li> <p> <code>JSON</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>JSON</code> type to the database.</p> </li> <li> <p> <code>TIME</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>TIME</code> type to the database. The accepted format is <code>HH:MM:SS[.FFF]</code>.</p> </li> <li> <p> <code>TIMESTAMP</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>TIMESTAMP</code> type to the database. The accepted format is <code>YYYY-MM-DD HH:MM:SS[.FFF]</code>.</p> </li> <li> <p> <code>UUID</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>UUID</code> type to the database. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    name: ParameterNameSchema.exactOptional().openapi({
+      description: 'The name of the parameter.',
+    }),
+    value: FieldSchema.exactOptional().openapi({ description: 'The value of the parameter.' }),
+    typeHint: TypeHintSchema.exactOptional().openapi({
+      description:
+        '<p>A hint that specifies the correct object type for data type mapping. Possible values are as follows:</p> <ul> <li> <p> <code>DATE</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>DATE</code> type to the database. The accepted format is <code>YYYY-MM-DD</code>.</p> </li> <li> <p> <code>DECIMAL</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>DECIMAL</code> type to the database.</p> </li> <li> <p> <code>JSON</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>JSON</code> type to the database.</p> </li> <li> <p> <code>TIME</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>TIME</code> type to the database. The accepted format is <code>HH:MM:SS[.FFF]</code>.</p> </li> <li> <p> <code>TIMESTAMP</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>TIMESTAMP</code> type to the database. The accepted format is <code>YYYY-MM-DD HH:MM:SS[.FFF]</code>.</p> </li> <li> <p> <code>UUID</code> - The corresponding <code>String</code> parameter value is sent as an object of <code>UUID</code> type to the database. </p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'A parameter used in a SQL statement.', required: [] })
   .openapi('SqlParameter')
@@ -365,11 +410,9 @@ const IdSchema = z.string().min(0).max(192).openapi('Id')
 
 const BeginTransactionResponseSchema = z
   .object({
-    transactionId: IdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The transaction ID of the transaction started by the call.' }),
-    ).exactOptional(),
+    transactionId: IdSchema.exactOptional().openapi({
+      description: 'The transaction ID of the transaction started by the call.',
+    }),
   })
   .openapi({
     description:
@@ -382,9 +425,9 @@ const TransactionStatusSchema = z.string().min(0).max(128).openapi('TransactionS
 
 const CommitTransactionResponseSchema = z
   .object({
-    transactionStatus: TransactionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the commit operation.' }),
-    ).exactOptional(),
+    transactionStatus: TransactionStatusSchema.exactOptional().openapi({
+      description: 'The status of the commit operation.',
+    }),
   })
   .openapi({
     description: 'The response elements represent the output of a commit transaction request.',
@@ -394,85 +437,11 @@ const CommitTransactionResponseSchema = z
 
 const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
 
-const LongSchema = z.int().openapi('Long')
-
-const MetadataSchema: z.ZodType<MetadataType> = z
-  .lazy(() => z.array(ColumnMetadataSchema))
-  .openapi('Metadata')
-
-const ResultSetMetadataSchema = z
+const ExecuteSqlResponseSchema: z.ZodType<ExecuteSqlResponseType> = z
   .object({
-    columnCount: LongSchema.and(
-      z.any().openapi({ description: 'The number of columns in the result set.' }),
-    ).exactOptional(),
-    columnMetadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the columns in the result set.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The metadata of the result set returned by a SQL statement.',
-    required: [],
-  })
-  .openapi('ResultSetMetadata')
-
-const RowSchema = z.array(ValueSchema).openapi('Row')
-
-const RecordSchema = z
-  .object({
-    values: RowSchema.and(
-      z.any().openapi({ description: 'The values returned in the record.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>A record returned by a call.</p> <note> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </note>',
-    required: [],
-  })
-  .openapi('Record')
-
-const RecordsSchema = z.array(RecordSchema).openapi('Records')
-
-const ResultFrameSchema = z
-  .object({
-    resultSetMetadata: ResultSetMetadataSchema.and(
-      z.any().openapi({ description: 'The result-set metadata in the result set.' }),
-    ).exactOptional(),
-    records: RecordsSchema.and(
-      z.any().openapi({ description: 'The records in the result set.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The result set returned by a SQL statement.</p> <note> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </note>',
-    required: [],
-  })
-  .openapi('ResultFrame')
-
-const RecordsUpdatedSchema = z.int().openapi('RecordsUpdated')
-
-const SqlStatementResultSchema = z
-  .object({
-    resultFrame: ResultFrameSchema.and(
-      z.any().openapi({ description: 'The result set of the SQL statement.' }),
-    ).exactOptional(),
-    numberOfRecordsUpdated: RecordsUpdatedSchema.and(
-      z.any().openapi({ description: 'The number of records updated by a SQL statement.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The result of a SQL statement.</p> <pre><code> &lt;note&gt; &lt;p&gt;This data structure is only used with the deprecated &lt;code&gt;ExecuteSql&lt;/code&gt; operation. Use the &lt;code&gt;BatchExecuteStatement&lt;/code&gt; or &lt;code&gt;ExecuteStatement&lt;/code&gt; operation instead.&lt;/p&gt; &lt;/note&gt; </code></pre>',
-    required: [],
-  })
-  .openapi('SqlStatementResult')
-
-const SqlStatementResultsSchema = z.array(SqlStatementResultSchema).openapi('SqlStatementResults')
-
-const ExecuteSqlResponseSchema = z
-  .object({
-    sqlStatementResults: SqlStatementResultsSchema.and(
-      z.any().openapi({ description: 'The results of the SQL statement or statements.' }),
-    ).exactOptional(),
+    sqlStatementResults: SqlStatementResultsSchema.exactOptional().openapi({
+      description: 'The results of the SQL statement or statements.',
+    }),
   })
   .openapi({
     description:
@@ -487,41 +456,25 @@ const FormattedSqlRecordsSchema = z.string().openapi('FormattedSqlRecords')
 
 const ExecuteStatementResponseSchema = z
   .object({
-    records: SqlRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The records returned by the SQL statement. This field is blank if the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.',
-        }),
-    ).exactOptional(),
-    columnMetadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata for the columns included in the results. This field is blank if the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.',
-        }),
-    ).exactOptional(),
-    numberOfRecordsUpdated: RecordsUpdatedSchema.and(
-      z.any().openapi({ description: 'The number of records updated by the request.' }),
-    ).exactOptional(),
-    generatedFields: FieldListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Values for fields generated during a DML request.</p> <pre><code> &lt;note&gt; &lt;p&gt;The &lt;code&gt;generatedFields&lt;/code&gt; data isn't supported by Aurora PostgreSQL. To get the values of generated fields, use the &lt;code&gt;RETURNING&lt;/code&gt; clause. For more information, see &lt;a href=&quot;https://www.postgresql.org/docs/10/dml-returning.html&quot;&gt;Returning Data From Modified Rows&lt;/a&gt; in the PostgreSQL documentation.&lt;/p&gt; &lt;/note&gt; </code></pre>",
-        }),
-    ).exactOptional(),
-    formattedRecords: FormattedSqlRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string value that represents the result set of a <code>SELECT</code> statement in JSON format. This value is only present when the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.</p> <p>The size limit for this field is currently 10 MB. If the JSON-formatted string representing the result set requires more than 10 MB, the call returns an error.</p>',
-        }),
-    ).exactOptional(),
+    records: SqlRecordsSchema.exactOptional().openapi({
+      description:
+        'The records returned by the SQL statement. This field is blank if the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.',
+    }),
+    columnMetadata: MetadataSchema.exactOptional().openapi({
+      description:
+        'Metadata for the columns included in the results. This field is blank if the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.',
+    }),
+    numberOfRecordsUpdated: RecordsUpdatedSchema.exactOptional().openapi({
+      description: 'The number of records updated by the request.',
+    }),
+    generatedFields: FieldListSchema.exactOptional().openapi({
+      description:
+        "<p>Values for fields generated during a DML request.</p> <pre><code> &lt;note&gt; &lt;p&gt;The &lt;code&gt;generatedFields&lt;/code&gt; data isn't supported by Aurora PostgreSQL. To get the values of generated fields, use the &lt;code&gt;RETURNING&lt;/code&gt; clause. For more information, see &lt;a href=&quot;https://www.postgresql.org/docs/10/dml-returning.html&quot;&gt;Returning Data From Modified Rows&lt;/a&gt; in the PostgreSQL documentation.&lt;/p&gt; &lt;/note&gt; </code></pre>",
+    }),
+    formattedRecords: FormattedSqlRecordsSchema.exactOptional().openapi({
+      description:
+        '<p>A string value that represents the result set of a <code>SELECT</code> statement in JSON format. This value is only present when the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.</p> <p>The size limit for this field is currently 10 MB. If the JSON-formatted string representing the result set requires more than 10 MB, the call returns an error.</p>',
+    }),
   })
   .openapi({
     description:
@@ -536,9 +489,9 @@ const LongReturnTypeSchema = z.enum(['STRING', 'LONG']).openapi('LongReturnType'
 
 const RollbackTransactionResponseSchema = z
   .object({
-    transactionStatus: TransactionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the rollback operation.' }),
-    ).exactOptional(),
+    transactionStatus: TransactionStatusSchema.exactOptional().openapi({
+      description: 'The status of the rollback operation.',
+    }),
   })
   .openapi({
     description:
@@ -557,56 +510,30 @@ const SqlParameterSetsSchema = z.array(SqlParametersListSchema).openapi('SqlPara
 
 const BatchExecuteStatementRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
-        }),
-    ),
-    secretArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the secret that enables access to the DB cluster. Enter the database user name and password for the credentials in the secret.</p> <p>For information about creating the secret, see <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_database_secret.html">Create a database secret</a>.</p>',
-        }),
-    ),
-    sql: SqlStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The SQL statement to run. Don't include a semicolon (;) at the end of the SQL statement.",
-        }),
-    ),
-    database: DbNameSchema.and(
-      z.any().openapi({ description: 'The name of the database.' }),
-    ).exactOptional(),
-    schema: DbNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the database schema.</p> <note> <p>Currently, the <code>schema</code> parameter isn't supported.</p> </note>",
-        }),
-    ).exactOptional(),
-    parameterSets: SqlParameterSetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The parameter set for the batch operation.</p> <p>The SQL statement is executed as many times as the number of parameter sets provided. To execute a SQL statement with no parameters, use one of the following options:</p> <ul> <li> <p>Specify one or more empty parameter sets.</p> </li> <li> <p>Use the <code>ExecuteStatement</code> operation instead of the <code>BatchExecuteStatement</code> operation.</p> </li> </ul> <note> <p>Array parameters are not supported.</p> </note>',
-        }),
-    ).exactOptional(),
-    transactionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The identifier of a transaction that was started by using the <code>BeginTransaction</code> operation. Specify the transaction ID of the transaction that you want to include the SQL statement in.</p> <p>If the SQL statement is not part of a transaction, don't set this parameter.</p>",
-        }),
-    ).exactOptional(),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
+    }),
+    secretArn: ArnSchema.openapi({
+      description:
+        '<p>The ARN of the secret that enables access to the DB cluster. Enter the database user name and password for the credentials in the secret.</p> <p>For information about creating the secret, see <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_database_secret.html">Create a database secret</a>.</p>',
+    }),
+    sql: SqlStatementSchema.openapi({
+      description:
+        "The SQL statement to run. Don't include a semicolon (;) at the end of the SQL statement.",
+    }),
+    database: DbNameSchema.exactOptional().openapi({ description: 'The name of the database.' }),
+    schema: DbNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the database schema.</p> <note> <p>Currently, the <code>schema</code> parameter isn't supported.</p> </note>",
+    }),
+    parameterSets: SqlParameterSetsSchema.exactOptional().openapi({
+      description:
+        '<p>The parameter set for the batch operation.</p> <p>The SQL statement is executed as many times as the number of parameter sets provided. To execute a SQL statement with no parameters, use one of the following options:</p> <ul> <li> <p>Specify one or more empty parameter sets.</p> </li> <li> <p>Use the <code>ExecuteStatement</code> operation instead of the <code>BatchExecuteStatement</code> operation.</p> </li> </ul> <note> <p>Array parameters are not supported.</p> </note>',
+    }),
+    transactionId: IdSchema.exactOptional().openapi({
+      description:
+        "<p>The identifier of a transaction that was started by using the <code>BeginTransaction</code> operation. Specify the transaction ID of the transaction that you want to include the SQL statement in.</p> <p>If the SQL statement is not part of a transaction, don't set this parameter.</p>",
+    }),
   })
   .openapi({
     required: ['resourceArn', 'secretArn', 'sql'],
@@ -618,26 +545,16 @@ const BatchExecuteStatementRequestSchema = z
 
 const BeginTransactionRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
-        }),
-    ),
-    secretArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or ARN of the secret that enables access to the DB cluster.',
-        }),
-    ),
-    database: DbNameSchema.and(
-      z.any().openapi({ description: 'The name of the database.' }),
-    ).exactOptional(),
-    schema: DbNameSchema.and(
-      z.any().openapi({ description: 'The name of the database schema.' }),
-    ).exactOptional(),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
+    }),
+    secretArn: ArnSchema.openapi({
+      description: 'The name or ARN of the secret that enables access to the DB cluster.',
+    }),
+    database: DbNameSchema.exactOptional().openapi({ description: 'The name of the database.' }),
+    schema: DbNameSchema.exactOptional().openapi({
+      description: 'The name of the database schema.',
+    }),
   })
   .openapi({
     required: ['resourceArn', 'secretArn'],
@@ -649,23 +566,15 @@ const BeginTransactionRequestSchema = z
 
 const CommitTransactionRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
-        }),
-    ),
-    secretArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or ARN of the secret that enables access to the DB cluster.',
-        }),
-    ),
-    transactionId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the transaction to end and commit.' }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
+    }),
+    secretArn: ArnSchema.openapi({
+      description: 'The name or ARN of the secret that enables access to the DB cluster.',
+    }),
+    transactionId: IdSchema.openapi({
+      description: 'The identifier of the transaction to end and commit.',
+    }),
   })
   .openapi({
     required: ['resourceArn', 'secretArn', 'transactionId'],
@@ -676,31 +585,21 @@ const CommitTransactionRequestSchema = z
 
 const ExecuteSqlRequestSchema = z
   .object({
-    dbClusterOrInstanceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the Aurora Serverless DB cluster.' }),
-    ),
-    awsSecretStoreArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the secret that enables access to the DB cluster. Enter the database user name and password for the credentials in the secret.</p> <p>For information about creating the secret, see <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_database_secret.html">Create a database secret</a>.</p>',
-        }),
-    ),
-    sqlStatements: SqlStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more SQL statements to run on the DB cluster.</p> <p>You can separate SQL statements from each other with a semicolon (;). Any valid SQL statement is permitted, including data definition, data manipulation, and commit statements. </p>',
-        }),
-    ),
-    database: DbNameSchema.and(
-      z.any().openapi({ description: 'The name of the database.' }),
-    ).exactOptional(),
-    schema: DbNameSchema.and(
-      z.any().openapi({ description: 'The name of the database schema.' }),
-    ).exactOptional(),
+    dbClusterOrInstanceArn: ArnSchema.openapi({
+      description: 'The ARN of the Aurora Serverless DB cluster.',
+    }),
+    awsSecretStoreArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the secret that enables access to the DB cluster. Enter the database user name and password for the credentials in the secret.</p> <p>For information about creating the secret, see <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_database_secret.html">Create a database secret</a>.</p>',
+    }),
+    sqlStatements: SqlStatementSchema.openapi({
+      description:
+        '<p>One or more SQL statements to run on the DB cluster.</p> <p>You can separate SQL statements from each other with a semicolon (;). Any valid SQL statement is permitted, including data definition, data manipulation, and commit statements. </p>',
+    }),
+    database: DbNameSchema.exactOptional().openapi({ description: 'The name of the database.' }),
+    schema: DbNameSchema.exactOptional().openapi({
+      description: 'The name of the database schema.',
+    }),
   })
   .openapi({
     required: ['dbClusterOrInstanceArn', 'awsSecretStoreArn', 'sqlStatements'],
@@ -712,22 +611,14 @@ const ExecuteSqlRequestSchema = z
 
 const ResultSetOptionsSchema = z
   .object({
-    decimalReturnType: DecimalReturnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that indicates how a field of <code>DECIMAL</code> type is represented in the response. The value of <code>STRING</code>, the default, specifies that it is converted to a String value. The value of <code>DOUBLE_OR_LONG</code> specifies that it is converted to a Long value if its scale is 0, or to a Double value otherwise.</p> <note> <p>Conversion to Double or Long can result in roundoff errors due to precision loss. We recommend converting to String, especially when working with currency values.</p> </note>',
-        }),
-    ).exactOptional(),
-    longReturnType: LongReturnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates how a field of <code>LONG</code> type is represented. Allowed values are <code>LONG</code> and <code>STRING</code>. The default is <code>LONG</code>. Specify <code>STRING</code> if the length or precision of numeric values might cause truncation or rounding errors. ',
-        }),
-    ).exactOptional(),
+    decimalReturnType: DecimalReturnTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A value that indicates how a field of <code>DECIMAL</code> type is represented in the response. The value of <code>STRING</code>, the default, specifies that it is converted to a String value. The value of <code>DOUBLE_OR_LONG</code> specifies that it is converted to a Long value if its scale is 0, or to a Double value otherwise.</p> <note> <p>Conversion to Double or Long can result in roundoff errors due to precision loss. We recommend converting to String, especially when working with currency values.</p> </note>',
+    }),
+    longReturnType: LongReturnTypeSchema.exactOptional().openapi({
+      description:
+        'A value that indicates how a field of <code>LONG</code> type is represented. Allowed values are <code>LONG</code> and <code>STRING</code>. The default is <code>LONG</code>. Specify <code>STRING</code> if the length or precision of numeric values might cause truncation or rounding errors. ',
+    }),
   })
   .openapi({ description: 'Options that control how the result set is returned.', required: [] })
   .openapi('ResultSetOptions')
@@ -736,75 +627,41 @@ const RecordsFormatTypeSchema = z.enum(['NONE', 'JSON']).openapi('RecordsFormatT
 
 const ExecuteStatementRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
-        }),
-    ),
-    secretArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the secret that enables access to the DB cluster. Enter the database user name and password for the credentials in the secret.</p> <p>For information about creating the secret, see <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_database_secret.html">Create a database secret</a>.</p>',
-        }),
-    ),
-    sql: SqlStatementSchema.and(z.any().openapi({ description: 'The SQL statement to run.' })),
-    database: DbNameSchema.and(
-      z.any().openapi({ description: 'The name of the database.' }),
-    ).exactOptional(),
-    schema: DbNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the database schema.</p> <note> <p>Currently, the <code>schema</code> parameter isn't supported.</p> </note>",
-        }),
-    ).exactOptional(),
-    parameters: SqlParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The parameters for the SQL statement.</p> <note> <p>Array parameters are not supported.</p> </note>',
-        }),
-    ).exactOptional(),
-    transactionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The identifier of a transaction that was started by using the <code>BeginTransaction</code> operation. Specify the transaction ID of the transaction that you want to include the SQL statement in.</p> <p>If the SQL statement is not part of a transaction, don't set this parameter.</p>",
-        }),
-    ).exactOptional(),
-    includeResultMetadata: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A value that indicates whether to include metadata in the results.',
-        }),
-    ).exactOptional(),
-    continueAfterTimeout: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that indicates whether to continue running the statement after the call times out. By default, the statement stops running when the call times out.</p> <note> <p>For DDL statements, we recommend continuing to run the statement after the call times out. When a DDL statement terminates before it is finished running, it can result in errors and possibly corrupted data structures.</p> </note>',
-        }),
-    ).exactOptional(),
-    resultSetOptions: ResultSetOptionsSchema.and(
-      z.any().openapi({ description: 'Options that control how the result set is returned.' }),
-    ).exactOptional(),
-    formatRecordsAs: RecordsFormatTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that indicates whether to format the result set as a single JSON string. This parameter only applies to <code>SELECT</code> statements and is ignored for other types of statements. Allowed values are <code>NONE</code> and <code>JSON</code>. The default value is <code>NONE</code>. The result is returned in the <code>formattedRecords</code> field.</p> <p>For usage information about the JSON format for result sets, see <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html">Using the Data API</a> in the <i>Amazon Aurora User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
+    }),
+    secretArn: ArnSchema.openapi({
+      description:
+        '<p>The ARN of the secret that enables access to the DB cluster. Enter the database user name and password for the credentials in the secret.</p> <p>For information about creating the secret, see <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_database_secret.html">Create a database secret</a>.</p>',
+    }),
+    sql: SqlStatementSchema.openapi({ description: 'The SQL statement to run.' }),
+    database: DbNameSchema.exactOptional().openapi({ description: 'The name of the database.' }),
+    schema: DbNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the database schema.</p> <note> <p>Currently, the <code>schema</code> parameter isn't supported.</p> </note>",
+    }),
+    parameters: SqlParametersListSchema.exactOptional().openapi({
+      description:
+        '<p>The parameters for the SQL statement.</p> <note> <p>Array parameters are not supported.</p> </note>',
+    }),
+    transactionId: IdSchema.exactOptional().openapi({
+      description:
+        "<p>The identifier of a transaction that was started by using the <code>BeginTransaction</code> operation. Specify the transaction ID of the transaction that you want to include the SQL statement in.</p> <p>If the SQL statement is not part of a transaction, don't set this parameter.</p>",
+    }),
+    includeResultMetadata: BooleanSchema.exactOptional().openapi({
+      description: 'A value that indicates whether to include metadata in the results.',
+    }),
+    continueAfterTimeout: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A value that indicates whether to continue running the statement after the call times out. By default, the statement stops running when the call times out.</p> <note> <p>For DDL statements, we recommend continuing to run the statement after the call times out. When a DDL statement terminates before it is finished running, it can result in errors and possibly corrupted data structures.</p> </note>',
+    }),
+    resultSetOptions: ResultSetOptionsSchema.exactOptional().openapi({
+      description: 'Options that control how the result set is returned.',
+    }),
+    formatRecordsAs: RecordsFormatTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A value that indicates whether to format the result set as a single JSON string. This parameter only applies to <code>SELECT</code> statements and is ignored for other types of statements. Allowed values are <code>NONE</code> and <code>JSON</code>. The default value is <code>NONE</code>. The result is returned in the <code>formattedRecords</code> field.</p> <p>For usage information about the JSON format for result sets, see <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html">Using the Data API</a> in the <i>Amazon Aurora User Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['resourceArn', 'secretArn', 'sql'],
@@ -816,23 +673,15 @@ const ExecuteStatementRequestSchema = z
 
 const RollbackTransactionRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
-        }),
-    ),
-    secretArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or ARN of the secret that enables access to the DB cluster.',
-        }),
-    ),
-    transactionId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the transaction to roll back.' }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.',
+    }),
+    secretArn: ArnSchema.openapi({
+      description: 'The name or ARN of the secret that enables access to the DB cluster.',
+    }),
+    transactionId: IdSchema.openapi({
+      description: 'The identifier of the transaction to roll back.',
+    }),
   })
   .openapi({
     required: ['resourceArn', 'secretArn', 'transactionId'],
@@ -1382,22 +1231,14 @@ export const postExecuteRoute = createRoute({
                 }),
               resultSetOptions: z
                 .object({
-                  decimalReturnType: DecimalReturnTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A value that indicates how a field of <code>DECIMAL</code> type is represented in the response. The value of <code>STRING</code>, the default, specifies that it is converted to a String value. The value of <code>DOUBLE_OR_LONG</code> specifies that it is converted to a Long value if its scale is 0, or to a Double value otherwise.</p> <note> <p>Conversion to Double or Long can result in roundoff errors due to precision loss. We recommend converting to String, especially when working with currency values.</p> </note>',
-                      }),
-                  ).exactOptional(),
-                  longReturnType: LongReturnTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A value that indicates how a field of <code>LONG</code> type is represented. Allowed values are <code>LONG</code> and <code>STRING</code>. The default is <code>LONG</code>. Specify <code>STRING</code> if the length or precision of numeric values might cause truncation or rounding errors. ',
-                      }),
-                  ).exactOptional(),
+                  decimalReturnType: DecimalReturnTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>A value that indicates how a field of <code>DECIMAL</code> type is represented in the response. The value of <code>STRING</code>, the default, specifies that it is converted to a String value. The value of <code>DOUBLE_OR_LONG</code> specifies that it is converted to a Long value if its scale is 0, or to a Double value otherwise.</p> <note> <p>Conversion to Double or Long can result in roundoff errors due to precision loss. We recommend converting to String, especially when working with currency values.</p> </note>',
+                  }),
+                  longReturnType: LongReturnTypeSchema.exactOptional().openapi({
+                    description:
+                      'A value that indicates how a field of <code>LONG</code> type is represented. Allowed values are <code>LONG</code> and <code>STRING</code>. The default is <code>LONG</code>. Specify <code>STRING</code> if the length or precision of numeric values might cause truncation or rounding errors. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

@@ -2749,7 +2749,142 @@ const TransactionEventAmountsSchema = z
   .openapi('TransactionEventAmounts')
 
 const NetworkInfoSchema = z
-  .xor([z.null().nullable(), z.looseObject({})])
+  .xor([
+    z.null().nullable(),
+    z
+      .looseObject({})
+      .and(
+        z
+          .object({
+            acquirer: z
+              .xor([
+                z.null().nullable(),
+                z
+                  .looseObject({})
+                  .and(
+                    z
+                      .object({
+                        acquirer_reference_number: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by the acquirer, applicable to dual-message transactions only. The acquirer reference number (ARN) is only populated once a transaction has been cleared, and it is not available in all transactions (such as automated fuel dispenser transactions). A single transaction can contain multiple ARNs if the merchant sends multiple clearings.',
+                          }),
+                        retrieval_reference_number: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({ description: 'Identifier assigned by the acquirer.' }),
+                      })
+                      .openapi({
+                        required: ['acquirer_reference_number', 'retrieval_reference_number'],
+                      }),
+                  ),
+              ])
+              .openapi({ required: ['acquirer_reference_number', 'retrieval_reference_number'] }),
+            amex: z
+              .xor([
+                z.null().nullable(),
+                z
+                  .looseObject({})
+                  .and(
+                    z
+                      .object({
+                        transaction_id: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by American Express to link original messages to subsequent messages. Guaranteed by American Express to be unique for each original authorization and financial authorization.',
+                          }),
+                        original_transaction_id: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by American Express. Matches the `transaction_id` of a prior related event. May be populated in incremental authorizations (authorization requests that augment a previously authorized amount), authorization advices, financial authorizations, and clearings.',
+                          }),
+                      })
+                      .openapi({ required: ['transaction_id', 'original_transaction_id'] }),
+                  ),
+              ])
+              .openapi({ required: ['transaction_id', 'original_transaction_id'] }),
+            mastercard: z
+              .xor([
+                z.null().nullable(),
+                z
+                  .looseObject({})
+                  .and(
+                    z
+                      .object({
+                        banknet_reference_number: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by Mastercard. Guaranteed by Mastercard to be unique for any transaction within a specific financial network on any processing day.',
+                          }),
+                        switch_serial_number: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by Mastercard, applicable to single-message transactions only.',
+                          }),
+                        original_banknet_reference_number: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by Mastercard. Matches the `banknet_reference_number` of a prior related event. May be populated in authorization reversals, incremental authorizations (authorization requests that augment a previously authorized amount), automated fuel dispenser authorization advices and clearings, and financial authorizations. If the original banknet reference number contains all zeroes, then no actual reference number could be found by the network or acquirer. If Mastercard converts a transaction from dual-message to single-message, such as for certain ATM transactions, it will populate the original banknet reference number in the resulting financial authorization with the banknet reference number of the initial authorization, which Lithic does not receive.',
+                          }),
+                        original_switch_serial_number: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by Mastercard. Matches the `switch_serial_number` of a prior related event. May be populated in returns and return reversals. Applicable to single-message transactions only.',
+                          }),
+                      })
+                      .openapi({
+                        required: [
+                          'banknet_reference_number',
+                          'switch_serial_number',
+                          'original_banknet_reference_number',
+                          'original_switch_serial_number',
+                        ],
+                      }),
+                  ),
+              ])
+              .openapi({
+                required: [
+                  'banknet_reference_number',
+                  'switch_serial_number',
+                  'original_banknet_reference_number',
+                  'original_switch_serial_number',
+                ],
+              }),
+            visa: z
+              .xor([
+                z.null().nullable(),
+                z
+                  .looseObject({})
+                  .and(
+                    z
+                      .object({
+                        transaction_id: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by Visa to link original messages to subsequent messages. Guaranteed by Visa to be unique for each original authorization and financial authorization.',
+                          }),
+                        original_transaction_id: z
+                          .xor([z.null().nullable(), z.string()])
+                          .openapi({
+                            description:
+                              'Identifier assigned by Visa. Matches the `transaction_id` of a prior related event. May be populated in incremental authorizations (authorization requests that augment a previously authorized amount), authorization advices, financial authorizations, and clearings.',
+                          }),
+                      })
+                      .openapi({ required: ['transaction_id', 'original_transaction_id'] }),
+                  ),
+              ])
+              .openapi({ required: ['transaction_id', 'original_transaction_id'] }),
+          })
+          .openapi({ required: ['acquirer', 'amex', 'mastercard', 'visa'] }),
+      ),
+  ])
   .openapi({
     title: 'Network Information',
     description:
@@ -4130,23 +4265,71 @@ const ExternalPaymentDirectionSchema = z
 
 const ExternalPaymentResponseSchema = BaseTransactionSchema.and(
   z
-    .object({
-      family: z
-        .literal('EXTERNAL_PAYMENT')
-        .exactOptional()
-        .openapi({ description: 'EXTERNAL_PAYMENT - External Payment Response' }),
-      result: TransactionResultSchema.exactOptional(),
-      category: ExternalPaymentCategorySchema.exactOptional(),
-      settled_amount: z.int().exactOptional(),
-      pending_amount: z.int().exactOptional(),
-      currency: z.string().exactOptional(),
-      events: z.array(ExternalPaymentEventSchema).exactOptional(),
-      user_defined_id: z.string().nullable().exactOptional(),
-      financial_account_token: z.uuid().exactOptional(),
-      payment_type: ExternalPaymentDirectionSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: [
+        'result',
+        'category',
+        'family',
+        'settled_amount',
+        'pending_amount',
+        'currency',
+        'events',
+        'financial_account_token',
+        'payment_type',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'result')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'category')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'family')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'settled_amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'pending_amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'currency')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'events')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'financial_account_token')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'payment_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        family: z
+          .literal('EXTERNAL_PAYMENT')
+          .exactOptional()
+          .openapi({ description: 'EXTERNAL_PAYMENT - External Payment Response' }),
+        result: TransactionResultSchema.exactOptional(),
+        category: ExternalPaymentCategorySchema.exactOptional(),
+        settled_amount: z.int().exactOptional(),
+        pending_amount: z.int().exactOptional(),
+        currency: z.string().exactOptional(),
+        events: z.array(ExternalPaymentEventSchema).exactOptional(),
+        user_defined_id: z.string().nullable().exactOptional(),
+        financial_account_token: z.uuid().exactOptional(),
+        payment_type: ExternalPaymentDirectionSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     title: 'External Payment Response',
     required: [
@@ -4243,25 +4426,77 @@ const ManagementOperationDirectionSchema = z
 
 const ManagementOperationTransactionSchema = BaseTransactionSchema.and(
   z
-    .object({
-      family: z
-        .literal('MANAGEMENT_OPERATION')
-        .exactOptional()
-        .openapi({ description: 'MANAGEMENT_OPERATION - Management Operation Transaction' }),
-      result: TransactionResultSchema.exactOptional(),
-      category: ManagementOperationCategorySchema.exactOptional(),
-      settled_amount: z.int().exactOptional(),
-      pending_amount: z.int().exactOptional(),
-      currency: z.string().exactOptional(),
-      events: z.array(ManagementOperationEventSchema).exactOptional(),
-      user_defined_id: z.string().nullable().exactOptional(),
-      financial_account_token: z.uuid().exactOptional(),
-      direction: ManagementOperationDirectionSchema.exactOptional(),
-      transaction_series: z.xor([TransactionSeriesSchema, z.null().nullable()]).exactOptional(),
-      external_resource: z.xor([ExternalResourceSchema, z.null().nullable()]).exactOptional(),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: [
+        'result',
+        'category',
+        'family',
+        'settled_amount',
+        'pending_amount',
+        'currency',
+        'events',
+        'financial_account_token',
+        'direction',
+        'transaction_series',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'result')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'category')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'family')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'settled_amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'pending_amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'currency')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'events')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'financial_account_token')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'direction')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'transaction_series')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        family: z
+          .literal('MANAGEMENT_OPERATION')
+          .exactOptional()
+          .openapi({ description: 'MANAGEMENT_OPERATION - Management Operation Transaction' }),
+        result: TransactionResultSchema.exactOptional(),
+        category: ManagementOperationCategorySchema.exactOptional(),
+        settled_amount: z.int().exactOptional(),
+        pending_amount: z.int().exactOptional(),
+        currency: z.string().exactOptional(),
+        events: z.array(ManagementOperationEventSchema).exactOptional(),
+        user_defined_id: z.string().nullable().exactOptional(),
+        financial_account_token: z.uuid().exactOptional(),
+        direction: ManagementOperationDirectionSchema.exactOptional(),
+        transaction_series: z.xor([TransactionSeriesSchema, z.null().nullable()]).exactOptional(),
+        external_resource: z.xor([ExternalResourceSchema, z.null().nullable()]).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     title: 'Management Operation Transaction',
     required: [
@@ -4324,26 +4559,77 @@ const HoldEventSchema = z
 
 const HoldTransactionSchema = BaseTransactionFieldsSchema.and(
   z
-    .object({
-      family: z.literal('HOLD').exactOptional().openapi({ description: 'HOLD - Hold Transaction' }),
-      result: TransactionResultSchema.exactOptional(),
-      status: HoldStatusSchema.exactOptional(),
-      financial_account_token: z.uuid().exactOptional(),
-      pending_amount: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'Current pending amount (0 when resolved)' }),
-      currency: z.string().exactOptional(),
-      events: z.array(HoldEventSchema).exactOptional(),
-      user_defined_id: z.string().nullable().exactOptional(),
-      expiration_datetime: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'When the hold will auto-expire if not resolved' }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: [
+        'family',
+        'result',
+        'status',
+        'financial_account_token',
+        'pending_amount',
+        'currency',
+        'events',
+        'user_defined_id',
+        'expiration_datetime',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'family')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'result')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'financial_account_token')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'pending_amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'currency')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'events')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'user_defined_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'expiration_datetime')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        family: z
+          .literal('HOLD')
+          .exactOptional()
+          .openapi({ description: 'HOLD - Hold Transaction' }),
+        result: TransactionResultSchema.exactOptional(),
+        status: HoldStatusSchema.exactOptional(),
+        financial_account_token: z.uuid().exactOptional(),
+        pending_amount: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Current pending amount (0 when resolved)' }),
+        currency: z.string().exactOptional(),
+        events: z.array(HoldEventSchema).exactOptional(),
+        user_defined_id: z.string().nullable().exactOptional(),
+        expiration_datetime: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'When the hold will auto-expire if not resolved' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     title: 'Hold Transaction',
     description:
@@ -6952,6 +7238,37 @@ const AuthRuleResultSchema = z
         ],
       }),
   ])
+  .and(
+    z
+      .object({
+        token: z
+          .uuid()
+          .exactOptional()
+          .openapi({ description: 'Globally unique identifier for the evaluation' }),
+        auth_rule_token: z.uuid().exactOptional().openapi({ description: 'The Auth Rule token' }),
+        event_token: z
+          .uuid()
+          .exactOptional()
+          .openapi({ description: 'Token of the event that triggered the evaluation' }),
+        evaluation_time: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ description: 'Timestamp of the rule evaluation' }),
+        rule_version: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Version of the rule that was evaluated' }),
+        transaction_token: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The token of the transaction that triggered the rule evaluation',
+          }),
+        mode: AuthRuleStateSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ title: 'Auth Rule Result', description: 'Result of an Auth Rule evaluation' })
   .openapi('AuthRuleResult')
 
@@ -7962,6 +8279,7 @@ const GoogleWebPushProvisioningResponseSchema = z
         .openapi({ required: ['jws'] })
         .safeParse(val).success,
   )
+  .openapi({ not: { properties: { jws: {} }, required: ['jws'] } })
   .openapi('GoogleWebPushProvisioningResponse')
 
 const WebPushProvisioningResponseSchema = z
@@ -10178,28 +10496,53 @@ const VoidHoldRequestSchema = z
   .openapi('VoidHoldRequest')
 
 const PaymentDetailsSchema = z
-  .strictObject({})
+  .looseObject({})
+  .superRefine((o, ctx) => {
+    const keys = Object.keys(o).filter((k) => !['^.*$'].some((p) => new RegExp(p).test(k)))
+    if (keys.length > 0) {
+      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+    }
+  })
   .superRefine((o, ctx) => {
     const regex = new RegExp('^.*$')
-    const Schema = z.strictObject({}).superRefine((o, ctx) => {
-      const regex = new RegExp('^.*$')
-      const Schema = z
-        .int()
-        .openapi({
-          description: 'Amount in cents for this payment category and event type combination',
-        })
-      for (const [k, val] of Object.entries(o)) {
-        if (!regex.test(k)) {
-          continue
+    const Schema = z
+      .looseObject({})
+      .superRefine((o, ctx) => {
+        const keys = Object.keys(o).filter((k) => !['^.*$'].some((p) => new RegExp(p).test(k)))
+        if (keys.length > 0) {
+          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
         }
-        const result = Schema.safeParse(val)
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+      })
+      .superRefine((o, ctx) => {
+        const regex = new RegExp('^.*$')
+        const Schema = z
+          .int()
+          .openapi({
+            description: 'Amount in cents for this payment category and event type combination',
+          })
+        for (const [k, val] of Object.entries(o)) {
+          if (!regex.test(k)) {
+            continue
+          }
+          const result = Schema.safeParse(val)
+          if (!result.success) {
+            for (const issue of result.error.issues) {
+              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+            }
           }
         }
-      }
-    })
+      })
+      .openapi({
+        ...{
+          patternProperties: {
+            '^.*$': {
+              type: 'integer',
+              description: 'Amount in cents for this payment category and event type combination',
+            },
+          },
+        },
+        additionalProperties: false,
+      })
     for (const [k, val] of Object.entries(o)) {
       if (!regex.test(k)) {
         continue
@@ -10212,32 +10555,75 @@ const PaymentDetailsSchema = z
       }
     }
   })
-  .openapi({ title: 'Payment Details', description: 'Breakdown of payments' })
+  .openapi({
+    ...{
+      patternProperties: {
+        '^.*$': {
+          type: 'object',
+          patternProperties: {
+            '^.*$': {
+              type: 'integer',
+              description: 'Amount in cents for this payment category and event type combination',
+            },
+          },
+          additionalProperties: false,
+        },
+      },
+    },
+    additionalProperties: false,
+    title: 'Payment Details',
+    description: 'Breakdown of payments',
+  })
   .openapi('PaymentDetails')
 
 const DebitDetailsSchema = z
-  .strictObject({})
+  .looseObject({})
+  .superRefine((o, ctx) => {
+    const keys = Object.keys(o).filter((k) => !['^.*$'].some((p) => new RegExp(p).test(k)))
+    if (keys.length > 0) {
+      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+    }
+  })
   .superRefine((o, ctx) => {
     const regex = new RegExp('^.*$')
-    const Schema = z.strictObject({}).superRefine((o, ctx) => {
-      const regex = new RegExp('^.*$')
-      const Schema = z
-        .int()
-        .openapi({
-          description: 'Amount in cents for this debit category and event type combination',
-        })
-      for (const [k, val] of Object.entries(o)) {
-        if (!regex.test(k)) {
-          continue
+    const Schema = z
+      .looseObject({})
+      .superRefine((o, ctx) => {
+        const keys = Object.keys(o).filter((k) => !['^.*$'].some((p) => new RegExp(p).test(k)))
+        if (keys.length > 0) {
+          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
         }
-        const result = Schema.safeParse(val)
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+      })
+      .superRefine((o, ctx) => {
+        const regex = new RegExp('^.*$')
+        const Schema = z
+          .int()
+          .openapi({
+            description: 'Amount in cents for this debit category and event type combination',
+          })
+        for (const [k, val] of Object.entries(o)) {
+          if (!regex.test(k)) {
+            continue
+          }
+          const result = Schema.safeParse(val)
+          if (!result.success) {
+            for (const issue of result.error.issues) {
+              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+            }
           }
         }
-      }
-    })
+      })
+      .openapi({
+        ...{
+          patternProperties: {
+            '^.*$': {
+              type: 'integer',
+              description: 'Amount in cents for this debit category and event type combination',
+            },
+          },
+        },
+        additionalProperties: false,
+      })
     for (const [k, val] of Object.entries(o)) {
       if (!regex.test(k)) {
         continue
@@ -10250,32 +10636,75 @@ const DebitDetailsSchema = z
       }
     }
   })
-  .openapi({ title: 'Debit Details', description: 'Breakdown of debits' })
+  .openapi({
+    ...{
+      patternProperties: {
+        '^.*$': {
+          type: 'object',
+          patternProperties: {
+            '^.*$': {
+              type: 'integer',
+              description: 'Amount in cents for this debit category and event type combination',
+            },
+          },
+          additionalProperties: false,
+        },
+      },
+    },
+    additionalProperties: false,
+    title: 'Debit Details',
+    description: 'Breakdown of debits',
+  })
   .openapi('DebitDetails')
 
 const CreditDetailsSchema = z
-  .strictObject({})
+  .looseObject({})
+  .superRefine((o, ctx) => {
+    const keys = Object.keys(o).filter((k) => !['^.*$'].some((p) => new RegExp(p).test(k)))
+    if (keys.length > 0) {
+      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+    }
+  })
   .superRefine((o, ctx) => {
     const regex = new RegExp('^.*$')
-    const Schema = z.strictObject({}).superRefine((o, ctx) => {
-      const regex = new RegExp('^.*$')
-      const Schema = z
-        .int()
-        .openapi({
-          description: 'Amount in cents for this credit category and event type combination',
-        })
-      for (const [k, val] of Object.entries(o)) {
-        if (!regex.test(k)) {
-          continue
+    const Schema = z
+      .looseObject({})
+      .superRefine((o, ctx) => {
+        const keys = Object.keys(o).filter((k) => !['^.*$'].some((p) => new RegExp(p).test(k)))
+        if (keys.length > 0) {
+          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
         }
-        const result = Schema.safeParse(val)
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+      })
+      .superRefine((o, ctx) => {
+        const regex = new RegExp('^.*$')
+        const Schema = z
+          .int()
+          .openapi({
+            description: 'Amount in cents for this credit category and event type combination',
+          })
+        for (const [k, val] of Object.entries(o)) {
+          if (!regex.test(k)) {
+            continue
+          }
+          const result = Schema.safeParse(val)
+          if (!result.success) {
+            for (const issue of result.error.issues) {
+              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+            }
           }
         }
-      }
-    })
+      })
+      .openapi({
+        ...{
+          patternProperties: {
+            '^.*$': {
+              type: 'integer',
+              description: 'Amount in cents for this credit category and event type combination',
+            },
+          },
+        },
+        additionalProperties: false,
+      })
     for (const [k, val] of Object.entries(o)) {
       if (!regex.test(k)) {
         continue
@@ -10288,7 +10717,25 @@ const CreditDetailsSchema = z
       }
     }
   })
-  .openapi({ title: 'Credit Details', description: 'Breakdown of credits' })
+  .openapi({
+    ...{
+      patternProperties: {
+        '^.*$': {
+          type: 'object',
+          patternProperties: {
+            '^.*$': {
+              type: 'integer',
+              description: 'Amount in cents for this credit category and event type combination',
+            },
+          },
+          additionalProperties: false,
+        },
+      },
+    },
+    additionalProperties: false,
+    title: 'Credit Details',
+    description: 'Breakdown of credits',
+  })
   .openapi('CreditDetails')
 
 const StatementTotalsSchema = z
@@ -10396,7 +10843,7 @@ const AmountDueSchema = z
       .int()
       .openapi({
         description:
-          'Payment due at the end of the billing period in cents. Negative amount indicates something is owed. If the amount owed is positive there was a net credit. If auto-collections are enabled this is the amount that will be requested on the payment due date',
+          'Payment due at the end of the billing period in cents, excluding any past due amount. A positive amount indicates something is owed. A negative amount indicates a net credit. The minimum payment for the statement is the sum of `amount` and `past_due`. If auto-collections are enabled, this sum is the amount that will be requested on the payment due date',
       }),
     past_due: z.int().openapi({ description: 'Amount past due for statement in cents' }),
   })
@@ -10906,7 +11353,28 @@ const TierScheduleEntrySchema = z
       })
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Custom rates per category.  Mutually exclusive with tier_name' }),
+      .openapi({
+        ...{
+          patternProperties: {
+            '^.*$': {
+              title: 'Category Tier',
+              description: 'Rate and rate cap for interest on a category',
+              type: 'object',
+              properties: {
+                rate: {
+                  type: 'string',
+                  description: "Interest rate for this category, e.g. '0.0525' for 5.25%",
+                },
+                cap_rate: {
+                  type: 'string',
+                  description: "Maximum interest rate for this category, e.g. '0.0525' for 5.25%",
+                },
+              },
+            },
+          },
+        },
+        description: 'Custom rates per category.  Mutually exclusive with tier_name',
+      }),
     penalty_rates: z
       .looseObject({})
       .superRefine((o, ctx) => {
@@ -10926,7 +11394,28 @@ const TierScheduleEntrySchema = z
       })
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Custom rates per category for penalties' }),
+      .openapi({
+        ...{
+          patternProperties: {
+            '^.*$': {
+              title: 'Category Tier',
+              description: 'Rate and rate cap for interest on a category',
+              type: 'object',
+              properties: {
+                rate: {
+                  type: 'string',
+                  description: "Interest rate for this category, e.g. '0.0525' for 5.25%",
+                },
+                cap_rate: {
+                  type: 'string',
+                  description: "Maximum interest rate for this category, e.g. '0.0525' for 5.25%",
+                },
+              },
+            },
+          },
+        },
+        description: 'Custom rates per category for penalties',
+      }),
     credit_product_token: z
       .string()
       .openapi({ description: 'Globally unique identifier for a credit product' }),
@@ -10977,7 +11466,28 @@ const UpdateTierScheduleEntryRequestSchema = z
       })
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Custom rates per category.  Mutually exclusive with tier_name' }),
+      .openapi({
+        ...{
+          patternProperties: {
+            '^.*$': {
+              title: 'Category Tier',
+              description: 'Rate and rate cap for interest on a category',
+              type: 'object',
+              properties: {
+                rate: {
+                  type: 'string',
+                  description: "Interest rate for this category, e.g. '0.0525' for 5.25%",
+                },
+                cap_rate: {
+                  type: 'string',
+                  description: "Maximum interest rate for this category, e.g. '0.0525' for 5.25%",
+                },
+              },
+            },
+          },
+        },
+        description: 'Custom rates per category.  Mutually exclusive with tier_name',
+      }),
     penalty_rates: z
       .looseObject({})
       .superRefine((o, ctx) => {
@@ -10997,7 +11507,28 @@ const UpdateTierScheduleEntryRequestSchema = z
       })
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Custom rates per category for penalties' }),
+      .openapi({
+        ...{
+          patternProperties: {
+            '^.*$': {
+              title: 'Category Tier',
+              description: 'Rate and rate cap for interest on a category',
+              type: 'object',
+              properties: {
+                rate: {
+                  type: 'string',
+                  description: "Interest rate for this category, e.g. '0.0525' for 5.25%",
+                },
+                cap_rate: {
+                  type: 'string',
+                  description: "Maximum interest rate for this category, e.g. '0.0525' for 5.25%",
+                },
+              },
+            },
+          },
+        },
+        description: 'Custom rates per category for penalties',
+      }),
   })
   .openapi({
     title: 'Update Tier Schedule Entry Request',
@@ -11327,7 +11858,7 @@ const SettlementDetailSchema = z
       .int()
       .openapi({ description: 'The total amount of interchange.', example: -7 }),
     network: z
-      .enum(['AMEX', 'INTERLINK', 'MAESTRO', 'MASTERCARD', 'UNKNOWN', 'VISA'])
+      .enum(['ALLPOINT', 'AMEX', 'INTERLINK', 'MAESTRO', 'MASTERCARD', 'UNKNOWN', 'VISA'])
       .openapi({
         description: 'Card network where the transaction took place.',
         example: 'MASTERCARD',
@@ -11446,7 +11977,7 @@ const SettlementSummaryDetailsSchema = z
       .exactOptional()
       .openapi({ description: 'The total amount of interchange.', example: -7 }),
     network: z
-      .enum(['AMEX', 'INTERLINK', 'MAESTRO', 'MASTERCARD', 'UNKNOWN', 'VISA'])
+      .enum(['ALLPOINT', 'AMEX', 'INTERLINK', 'MAESTRO', 'MASTERCARD', 'UNKNOWN', 'VISA'])
       .exactOptional()
       .openapi({
         description: 'Card network where the transaction took place',
@@ -11577,10 +12108,10 @@ const NetworkTotalSchema = z
   .object({
     token: z.uuid().openapi({ description: 'Globally unique identifier.' }),
     network: z
-      .enum(['AMEX', 'VISA', 'MASTERCARD', 'MAESTRO', 'INTERLINK'])
+      .enum(['ALLPOINT', 'AMEX', 'VISA', 'MASTERCARD', 'MAESTRO', 'INTERLINK'])
       .openapi({
         description:
-          'Card network where the transaction took place. AMEX, VISA, MASTERCARD, MAESTRO, or INTERLINK.',
+          'Card network where the transaction took place. ALLPOINT, AMEX, VISA, MASTERCARD, MAESTRO, or INTERLINK.',
       }),
     institution_id: z
       .string()
@@ -27728,7 +28259,7 @@ export const getV1ReportsSettlementNetworkTotalsRoute = createRoute({
           },
         }),
       network: z
-        .enum(['AMEX', 'VISA', 'MASTERCARD', 'MAESTRO', 'INTERLINK'])
+        .enum(['ALLPOINT', 'AMEX', 'VISA', 'MASTERCARD', 'MAESTRO', 'INTERLINK'])
         .exactOptional()
         .openapi({
           param: {
@@ -27737,7 +28268,7 @@ export const getV1ReportsSettlementNetworkTotalsRoute = createRoute({
             name: 'network',
             schema: {
               type: 'string',
-              enum: ['AMEX', 'VISA', 'MASTERCARD', 'MAESTRO', 'INTERLINK'],
+              enum: ['ALLPOINT', 'AMEX', 'VISA', 'MASTERCARD', 'MAESTRO', 'INTERLINK'],
             },
             required: false,
           },
@@ -32887,6 +33418,31 @@ export const claimCreatedPostWebhook = {
             })
             .openapi({ required: ['event_type'] })
             .and(ClaimSchema),
+          examples: {
+            claimCreated: {
+              summary: 'Claim Created Example',
+              value: {
+                event_type: 'claim.created',
+                token: '3f2a8c1e-5b7d-4e9a-8c2f-1d6e4b9a7c35',
+                reference_id: null,
+                card_tokens: ['78ddee49-4558-4a79-80ce-339e12cc141c'],
+                account_token: '82d7c408-2bbb-4f63-889a-8a2a2b1601af',
+                account_holder_token: '9b1e5c2a-6f3d-4a8e-b7c4-2e8f1a9d6b03',
+                created: '2024-02-07T10:00:00Z',
+                updated: '2024-02-07T10:00:00Z',
+                disputed_transactions: [
+                  {
+                    transaction_token: '98765432-e89b-12d3-a456-426614174000',
+                    event_tokens: ['7063f2ae-e806-44dd-9b1f-07e5df61e9e2'],
+                  },
+                ],
+                reason: 'PRODUCT_NOT_RECEIVED',
+                status: 'AWAITING_INFO',
+                outstanding_requirements: ['QUESTIONNAIRE'],
+                submitted: null,
+              },
+            },
+          },
         },
       },
     },
@@ -32919,6 +33475,31 @@ export const claimUpdatedPostWebhook = {
             })
             .openapi({ required: ['event_type'] })
             .and(ClaimSchema),
+          examples: {
+            claimUpdated: {
+              summary: 'Claim Updated Example',
+              value: {
+                event_type: 'claim.updated',
+                token: '3f2a8c1e-5b7d-4e9a-8c2f-1d6e4b9a7c35',
+                reference_id: 'ROL12345',
+                card_tokens: ['78ddee49-4558-4a79-80ce-339e12cc141c'],
+                account_token: '82d7c408-2bbb-4f63-889a-8a2a2b1601af',
+                account_holder_token: '9b1e5c2a-6f3d-4a8e-b7c4-2e8f1a9d6b03',
+                created: '2024-02-07T10:00:00Z',
+                updated: '2024-02-07T10:15:00Z',
+                disputed_transactions: [
+                  {
+                    transaction_token: '98765432-e89b-12d3-a456-426614174000',
+                    event_tokens: ['7063f2ae-e806-44dd-9b1f-07e5df61e9e2'],
+                  },
+                ],
+                reason: 'PRODUCT_NOT_RECEIVED',
+                status: 'SUBMITTED',
+                outstanding_requirements: [],
+                submitted: '2024-02-07T10:15:00Z',
+              },
+            },
+          },
         },
       },
     },
@@ -32950,6 +33531,30 @@ export const claimDocumentUploadedPostWebhook = {
             })
             .openapi({ required: ['event_type'] })
             .and(ClaimDocumentSchema),
+          examples: {
+            claimDocumentUploaded: {
+              summary: 'Claim Document Uploaded Example',
+              value: {
+                event_type: 'claim_document.uploaded',
+                token: 'c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81',
+                created: '2024-02-07T10:05:00Z',
+                updated: '2024-02-07T10:06:00Z',
+                requirement_id: 'proof_of_payment',
+                name: 'document.pdf',
+                status: 'VALIDATING',
+                failure_reason: null,
+                upload_url: null,
+                upload_url_expires_at: null,
+                upload_constraints: {
+                  accepted_mime_types: ['application/pdf'],
+                  max_size_bytes: 10485760,
+                },
+                download_url:
+                  'https://example.com/claim-documents/c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81',
+                download_url_expires_at: '2024-02-07T10:21:00Z',
+              },
+            },
+          },
         },
       },
     },
@@ -32981,6 +33586,30 @@ export const claimDocumentAcceptedPostWebhook = {
             })
             .openapi({ required: ['event_type'] })
             .and(ClaimDocumentSchema),
+          examples: {
+            claimDocumentAccepted: {
+              summary: 'Claim Document Accepted Example',
+              value: {
+                event_type: 'claim_document.accepted',
+                token: 'c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81',
+                created: '2024-02-07T10:05:00Z',
+                updated: '2024-02-07T10:07:00Z',
+                requirement_id: 'proof_of_payment',
+                name: 'document.pdf',
+                status: 'ACCEPTED',
+                failure_reason: null,
+                upload_url: null,
+                upload_url_expires_at: null,
+                upload_constraints: {
+                  accepted_mime_types: ['application/pdf'],
+                  max_size_bytes: 10485760,
+                },
+                download_url:
+                  'https://example.com/claim-documents/c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81',
+                download_url_expires_at: '2024-02-07T10:22:00Z',
+              },
+            },
+          },
         },
       },
     },
@@ -33012,6 +33641,29 @@ export const claimDocumentRejectedPostWebhook = {
             })
             .openapi({ required: ['event_type'] })
             .and(ClaimDocumentSchema),
+          examples: {
+            claimDocumentRejected: {
+              summary: 'Claim Document Rejected Example',
+              value: {
+                event_type: 'claim_document.rejected',
+                token: 'c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81',
+                created: '2024-02-07T10:05:00Z',
+                updated: '2024-02-07T10:07:00Z',
+                requirement_id: 'proof_of_payment',
+                name: 'document.pdf',
+                status: 'REJECTED',
+                failure_reason: 'INVALID_MIME_TYPE',
+                upload_url: null,
+                upload_url_expires_at: null,
+                upload_constraints: {
+                  accepted_mime_types: ['application/pdf'],
+                  max_size_bytes: 10485760,
+                },
+                download_url: null,
+                download_url_expires_at: null,
+              },
+            },
+          },
         },
       },
     },

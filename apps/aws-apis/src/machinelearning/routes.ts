@@ -13,12 +13,12 @@ const TaggableResourceTypeSchema = z
 
 const AddTagsOutputSchema = z
   .object({
-    ResourceId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the ML object that was tagged.' }),
-    ).exactOptional(),
-    ResourceType: TaggableResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the ML object that was tagged.' }),
-    ).exactOptional(),
+    ResourceId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the ML object that was tagged.',
+    }),
+    ResourceType: TaggableResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the ML object that was tagged.',
+    }),
   })
   .openapi({ description: 'Amazon ML returns the following elements.', required: [] })
   .openapi('AddTagsOutput')
@@ -39,22 +39,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the tag. Valid characters include Unicode letters, digits, white space, _, ., /, =, +, -, %, and @.',
-        }),
-    ).exactOptional(),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional string, typically used to describe or define the tag. Valid characters include Unicode letters, digits, white space, _, ., /, =, +, -, %, and @.',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the tag. Valid characters include Unicode letters, digits, white space, _, ., /, =, +, -, %, and @.',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description:
+        'An optional string, typically used to describe or define the tag. Valid characters include Unicode letters, digits, white space, _, ., /, =, +, -, %, and @.',
+    }),
   })
   .openapi({
     description: 'A custom key-value pair associated with an ML object, such as an ML model.',
@@ -66,24 +58,16 @@ const TagListSchema = z.array(TagSchema).max(100).openapi('TagList')
 
 const AddTagsInputSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value pairs to use to create tags. If you specify a key without specifying a value, Amazon ML creates a tag with the specified key and a value of null.',
-        }),
-    ),
-    ResourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the ML object to tag. For example, <code>exampleModelId</code>.',
-        }),
-    ),
-    ResourceType: TaggableResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the ML object to tag.' }),
-    ),
+    Tags: TagListSchema.openapi({
+      description:
+        'The key-value pairs to use to create tags. If you specify a key without specifying a value, Amazon ML creates a tag with the specified key and a value of null.',
+    }),
+    ResourceId: EntityIdSchema.openapi({
+      description: 'The ID of the ML object to tag. For example, <code>exampleModelId</code>.',
+    }),
+    ResourceType: TaggableResourceTypeSchema.openapi({
+      description: 'The type of the ML object to tag.',
+    }),
   })
   .openapi({ required: ['Tags', 'ResourceId', 'ResourceType'], title: 'AddTagsInput' })
   .openapi('AddTagsInput')
@@ -100,14 +84,10 @@ const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 
 const CreateBatchPredictionOutputSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>BatchPrediction</code>. This value is identical to the value of the <code>BatchPredictionId</code> in the request.',
-        }),
-    ).exactOptional(),
+    BatchPredictionId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>BatchPrediction</code>. This value is identical to the value of the <code>BatchPredictionId</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -134,46 +114,25 @@ const S3UrlSchema = z
 
 const CreateBatchPredictionInputSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>BatchPrediction</code>.',
-        }),
-    ),
-    BatchPredictionName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied name or description of the <code>BatchPrediction</code>. <code>BatchPredictionName</code> can only use the UTF-8 character set.',
-        }),
-    ).exactOptional(),
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>MLModel</code> that will generate predictions for the group of observations. ',
-        }),
-    ),
-    BatchPredictionDataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DataSource</code> that points to the group of observations to predict.',
-        }),
-    ),
-    OutputUri: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The location of an Amazon Simple Storage Service (Amazon S3) bucket or directory to store the batch prediction results. The following substrings are not allowed in the <code>s3 key</code> portion of the <code>outputURI</code> field: ':', '//', '/./', '/../'.</p> <p>Amazon ML needs permissions to store and retrieve the logs on your behalf. For information about how to set permissions, see the <a href=\"https://docs.aws.amazon.com/machine-learning/latest/dg\">Amazon Machine Learning Developer Guide</a>.</p>",
-        }),
-    ),
+    BatchPredictionId: EntityIdSchema.openapi({
+      description: 'A user-supplied ID that uniquely identifies the <code>BatchPrediction</code>.',
+    }),
+    BatchPredictionName: EntityNameSchema.exactOptional().openapi({
+      description:
+        'A user-supplied name or description of the <code>BatchPrediction</code>. <code>BatchPredictionName</code> can only use the UTF-8 character set.',
+    }),
+    MLModelId: EntityIdSchema.openapi({
+      description:
+        'The ID of the <code>MLModel</code> that will generate predictions for the group of observations. ',
+    }),
+    BatchPredictionDataSourceId: EntityIdSchema.openapi({
+      description:
+        'The ID of the <code>DataSource</code> that points to the group of observations to predict.',
+    }),
+    OutputUri: S3UrlSchema.openapi({
+      description:
+        "<p>The location of an Amazon Simple Storage Service (Amazon S3) bucket or directory to store the batch prediction results. The following substrings are not allowed in the <code>s3 key</code> portion of the <code>outputURI</code> field: ':', '//', '/./', '/../'.</p> <p>Amazon ML needs permissions to store and retrieve the logs on your behalf. For information about how to set permissions, see the <a href=\"https://docs.aws.amazon.com/machine-learning/latest/dg\">Amazon Machine Learning Developer Guide</a>.</p>",
+    }),
   })
   .openapi({
     required: ['BatchPredictionId', 'MLModelId', 'BatchPredictionDataSourceId', 'OutputUri'],
@@ -187,14 +146,10 @@ const IdempotentParameterMismatchExceptionSchema = z
 
 const CreateDataSourceFromRDSOutputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the datasource. This value should be identical to the value of the <code>DataSourceID</code> in the request. ',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the datasource. This value should be identical to the value of the <code>DataSourceID</code> in the request. ',
+    }),
   })
   .openapi({
     description:
@@ -220,9 +175,9 @@ const RDSDatabaseNameSchema = z
 
 const RDSDatabaseSchema = z
   .object({
-    InstanceIdentifier: RDSInstanceIdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of an RDS DB instance.' }),
-    ),
+    InstanceIdentifier: RDSInstanceIdentifierSchema.openapi({
+      description: 'The ID of an RDS DB instance.',
+    }),
     DatabaseName: RDSDatabaseNameSchema,
   })
   .openapi({
@@ -292,89 +247,49 @@ const EDPSecurityGroupIdsSchema = z.array(EDPSecurityGroupIdSchema).openapi('EDP
 
 const RDSDataSpecSchema = z
   .object({
-    DatabaseInformation: RDSDatabaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the <code>DatabaseName</code> and <code>InstanceIdentifier</code> of an Amazon RDS database.',
-        }),
-    ),
-    SelectSqlQuery: RDSSelectSqlQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The query that is used to retrieve the observation data for the <code>DataSource</code>.',
-        }),
-    ),
-    DatabaseCredentials: RDSDatabaseCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Identity and Access Management (IAM) credentials that are used connect to the Amazon RDS database.',
-        }),
-    ),
-    S3StagingLocation: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location for staging Amazon RDS data. The data retrieved from Amazon RDS using <code>SelectSqlQuery</code> is stored in this location.',
-        }),
-    ),
-    DataRearrangement: DataRearrangementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON string that represents the splitting and rearrangement processing to be applied to a <code>DataSource</code>. If the <code>DataRearrangement</code> parameter is not provided, all of the input data is used to create the <code>Datasource</code>.</p> <p>There are multiple parameters that control what data is used to create a datasource:</p> <ul> <li> <p> <b> <code>percentBegin</code> </b> </p> <p>Use <code>percentBegin</code> to indicate the beginning of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>percentEnd</code> </b> </p> <p>Use <code>percentEnd</code> to indicate the end of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>complement</code> </b> </p> <p>The <code>complement</code> parameter instructs Amazon ML to use the data that is not included in the range of <code>percentBegin</code> to <code>percentEnd</code> to create a datasource. The <code>complement</code> parameter is useful if you need to create complementary datasources for training and evaluation. To create a complementary datasource, use the same values for <code>percentBegin</code> and <code>percentEnd</code>, along with the <code>complement</code> parameter.</p> <p>For example, the following two datasources do not share any data, and can be used to train and evaluate a model. The first datasource has 25 percent of the data, and the second one has 75 percent of the data.</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":0, "percentEnd":25}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":0, "percentEnd":25, "complement":"true"}}</code> </p> </li> <li> <p> <b> <code>strategy</code> </b> </p> <p>To change how Amazon ML splits the data for a datasource, use the <code>strategy</code> parameter.</p> <p>The default value for the <code>strategy</code> parameter is <code>sequential</code>, meaning that Amazon ML takes all of the data records between the <code>percentBegin</code> and <code>percentEnd</code> parameters for the datasource, in the order that the records appear in the input data.</p> <p>The following two <code>DataRearrangement</code> lines are examples of sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential", "complement":"true"}}</code> </p> <p>To randomly split the input data into the proportions indicated by the percentBegin and percentEnd parameters, set the <code>strategy</code> parameter to <code>random</code> and provide a string that is used as the seed value for the random data splitting (for example, you can use the S3 path to your data as the random seed string). If you choose the random split strategy, Amazon ML assigns each row of data a pseudo-random number between 0 and 100, and then selects the rows that have an assigned number between <code>percentBegin</code> and <code>percentEnd</code>. Pseudo-random numbers are assigned using both the input seed string value and the byte offset as a seed, so changing the data results in a different split. Any existing ordering is preserved. The random splitting strategy ensures that variables in the training and evaluation data are distributed similarly. It is useful in the cases where the input data may have an implicit sort order, which would otherwise result in training and evaluation datasources containing non-similar data records.</p> <p>The following two <code>DataRearrangement</code> lines are examples of non-sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv", "complement":"true"}}</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DataSchema: DataSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON string that represents the schema for an Amazon RDS <code>DataSource</code>. The <code>DataSchema</code> defines the structure of the observation data in the data file(s) referenced in the <code>DataSource</code>.</p> <p>A <code>DataSchema</code> is not required if you specify a <code>DataSchemaUri</code> </p> <p>Define your <code>DataSchema</code> as a series of key-value pairs. <code>attributes</code> and <code>excludedVariableNames</code> have an array of key-value pairs for their value. Use the following format to define your <code>DataSchema</code>.</p> <p>{ "version": "1.0",</p> <p>"recordAnnotationFieldName": "F1",</p> <p>"recordWeightFieldName": "F2",</p> <p>"targetFieldName": "F3",</p> <p>"dataFormat": "CSV",</p> <p>"dataFileContainsHeader": true,</p> <p>"attributes": [</p> <p>{ "fieldName": "F1", "fieldType": "TEXT" }, { "fieldName": "F2", "fieldType": "NUMERIC" }, { "fieldName": "F3", "fieldType": "CATEGORICAL" }, { "fieldName": "F4", "fieldType": "NUMERIC" }, { "fieldName": "F5", "fieldType": "CATEGORICAL" }, { "fieldName": "F6", "fieldType": "TEXT" }, { "fieldName": "F7", "fieldType": "WEIGHTED_INT_SEQUENCE" }, { "fieldName": "F8", "fieldType": "WEIGHTED_STRING_SEQUENCE" } ],</p> <p>"excludedVariableNames": [ "F6" ] }</p>',
-        }),
-    ).exactOptional(),
-    DataSchemaUri: S3UrlSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of the <code>DataSchema</code>. ' }),
-    ).exactOptional(),
-    ResourceRole: EDPResourceRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role (DataPipelineDefaultResourceRole) assumed by an Amazon Elastic Compute Cloud (Amazon EC2) instance to carry out the copy operation from Amazon RDS to an Amazon S3 task. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.',
-        }),
-    ),
-    ServiceRole: EDPServiceRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role (DataPipelineDefaultRole) assumed by AWS Data Pipeline service to monitor the progress of the copy task from Amazon RDS to Amazon S3. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.',
-        }),
-    ),
-    SubnetId: EDPSubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subnet ID to be used to access a VPC-based RDS DB instance. This attribute is used by Data Pipeline to carry out the copy task from Amazon RDS to Amazon S3.',
-        }),
-    ),
-    SecurityGroupIds: EDPSecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security group IDs to be used to access a VPC-based RDS DB instance. Ensure that there are appropriate ingress rules set up to allow access to the RDS DB instance. This attribute is used by Data Pipeline to carry out the copy operation from Amazon RDS to an Amazon S3 task.',
-        }),
-    ),
+    DatabaseInformation: RDSDatabaseSchema.openapi({
+      description:
+        'Describes the <code>DatabaseName</code> and <code>InstanceIdentifier</code> of an Amazon RDS database.',
+    }),
+    SelectSqlQuery: RDSSelectSqlQuerySchema.openapi({
+      description:
+        'The query that is used to retrieve the observation data for the <code>DataSource</code>.',
+    }),
+    DatabaseCredentials: RDSDatabaseCredentialsSchema.openapi({
+      description:
+        'The AWS Identity and Access Management (IAM) credentials that are used connect to the Amazon RDS database.',
+    }),
+    S3StagingLocation: S3UrlSchema.openapi({
+      description:
+        'The Amazon S3 location for staging Amazon RDS data. The data retrieved from Amazon RDS using <code>SelectSqlQuery</code> is stored in this location.',
+    }),
+    DataRearrangement: DataRearrangementSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON string that represents the splitting and rearrangement processing to be applied to a <code>DataSource</code>. If the <code>DataRearrangement</code> parameter is not provided, all of the input data is used to create the <code>Datasource</code>.</p> <p>There are multiple parameters that control what data is used to create a datasource:</p> <ul> <li> <p> <b> <code>percentBegin</code> </b> </p> <p>Use <code>percentBegin</code> to indicate the beginning of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>percentEnd</code> </b> </p> <p>Use <code>percentEnd</code> to indicate the end of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>complement</code> </b> </p> <p>The <code>complement</code> parameter instructs Amazon ML to use the data that is not included in the range of <code>percentBegin</code> to <code>percentEnd</code> to create a datasource. The <code>complement</code> parameter is useful if you need to create complementary datasources for training and evaluation. To create a complementary datasource, use the same values for <code>percentBegin</code> and <code>percentEnd</code>, along with the <code>complement</code> parameter.</p> <p>For example, the following two datasources do not share any data, and can be used to train and evaluate a model. The first datasource has 25 percent of the data, and the second one has 75 percent of the data.</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":0, "percentEnd":25}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":0, "percentEnd":25, "complement":"true"}}</code> </p> </li> <li> <p> <b> <code>strategy</code> </b> </p> <p>To change how Amazon ML splits the data for a datasource, use the <code>strategy</code> parameter.</p> <p>The default value for the <code>strategy</code> parameter is <code>sequential</code>, meaning that Amazon ML takes all of the data records between the <code>percentBegin</code> and <code>percentEnd</code> parameters for the datasource, in the order that the records appear in the input data.</p> <p>The following two <code>DataRearrangement</code> lines are examples of sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential", "complement":"true"}}</code> </p> <p>To randomly split the input data into the proportions indicated by the percentBegin and percentEnd parameters, set the <code>strategy</code> parameter to <code>random</code> and provide a string that is used as the seed value for the random data splitting (for example, you can use the S3 path to your data as the random seed string). If you choose the random split strategy, Amazon ML assigns each row of data a pseudo-random number between 0 and 100, and then selects the rows that have an assigned number between <code>percentBegin</code> and <code>percentEnd</code>. Pseudo-random numbers are assigned using both the input seed string value and the byte offset as a seed, so changing the data results in a different split. Any existing ordering is preserved. The random splitting strategy ensures that variables in the training and evaluation data are distributed similarly. It is useful in the cases where the input data may have an implicit sort order, which would otherwise result in training and evaluation datasources containing non-similar data records.</p> <p>The following two <code>DataRearrangement</code> lines are examples of non-sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv", "complement":"true"}}</code> </p> </li> </ul>',
+    }),
+    DataSchema: DataSchemaSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON string that represents the schema for an Amazon RDS <code>DataSource</code>. The <code>DataSchema</code> defines the structure of the observation data in the data file(s) referenced in the <code>DataSource</code>.</p> <p>A <code>DataSchema</code> is not required if you specify a <code>DataSchemaUri</code> </p> <p>Define your <code>DataSchema</code> as a series of key-value pairs. <code>attributes</code> and <code>excludedVariableNames</code> have an array of key-value pairs for their value. Use the following format to define your <code>DataSchema</code>.</p> <p>{ "version": "1.0",</p> <p>"recordAnnotationFieldName": "F1",</p> <p>"recordWeightFieldName": "F2",</p> <p>"targetFieldName": "F3",</p> <p>"dataFormat": "CSV",</p> <p>"dataFileContainsHeader": true,</p> <p>"attributes": [</p> <p>{ "fieldName": "F1", "fieldType": "TEXT" }, { "fieldName": "F2", "fieldType": "NUMERIC" }, { "fieldName": "F3", "fieldType": "CATEGORICAL" }, { "fieldName": "F4", "fieldType": "NUMERIC" }, { "fieldName": "F5", "fieldType": "CATEGORICAL" }, { "fieldName": "F6", "fieldType": "TEXT" }, { "fieldName": "F7", "fieldType": "WEIGHTED_INT_SEQUENCE" }, { "fieldName": "F8", "fieldType": "WEIGHTED_STRING_SEQUENCE" } ],</p> <p>"excludedVariableNames": [ "F6" ] }</p>',
+    }),
+    DataSchemaUri: S3UrlSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of the <code>DataSchema</code>. ',
+    }),
+    ResourceRole: EDPResourceRoleSchema.openapi({
+      description:
+        'The role (DataPipelineDefaultResourceRole) assumed by an Amazon Elastic Compute Cloud (Amazon EC2) instance to carry out the copy operation from Amazon RDS to an Amazon S3 task. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.',
+    }),
+    ServiceRole: EDPServiceRoleSchema.openapi({
+      description:
+        'The role (DataPipelineDefaultRole) assumed by AWS Data Pipeline service to monitor the progress of the copy task from Amazon RDS to Amazon S3. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.',
+    }),
+    SubnetId: EDPSubnetIdSchema.openapi({
+      description:
+        'The subnet ID to be used to access a VPC-based RDS DB instance. This attribute is used by Data Pipeline to carry out the copy task from Amazon RDS to Amazon S3.',
+    }),
+    SecurityGroupIds: EDPSecurityGroupIdsSchema.openapi({
+      description:
+        'The security group IDs to be used to access a VPC-based RDS DB instance. Ensure that there are appropriate ingress rules set up to allow access to the RDS DB instance. This attribute is used by Data Pipeline to carry out the copy operation from Amazon RDS to an Amazon S3 task.',
+    }),
   })
   .openapi({
     required: [
@@ -406,45 +321,25 @@ const ComputeStatisticsSchema = z.boolean().openapi('ComputeStatistics')
 
 const CreateDataSourceFromRDSInputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>DataSource</code>. Typically, an Amazon Resource Number (ARN) becomes the ID for a <code>DataSource</code>.',
-        }),
-    ),
-    DataSourceName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
-    RDSData: RDSDataSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data specification of an Amazon RDS <code>DataSource</code>:</p> <ul> <li> <p>DatabaseInformation -</p> <ul> <li> <p> <code>DatabaseName</code> - The name of the Amazon RDS database.</p> </li> <li> <p> <code>InstanceIdentifier </code> - A unique identifier for the Amazon RDS database instance.</p> </li> </ul> </li> <li> <p>DatabaseCredentials - AWS Identity and Access Management (IAM) credentials that are used to connect to the Amazon RDS database.</p> </li> <li> <p>ResourceRole - A role (DataPipelineDefaultResourceRole) assumed by an EC2 instance to carry out the copy task from Amazon RDS to Amazon Simple Storage Service (Amazon S3). For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.</p> </li> <li> <p>ServiceRole - A role (DataPipelineDefaultRole) assumed by the AWS Data Pipeline service to monitor the progress of the copy task from Amazon RDS to Amazon S3. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.</p> </li> <li> <p>SecurityInfo - The security information to use to access an RDS DB instance. You need to set up appropriate ingress rules for the security entity IDs provided to allow access to the Amazon RDS instance. Specify a [<code>SubnetId</code>, <code>SecurityGroupIds</code>] pair for a VPC-based RDS DB instance.</p> </li> <li> <p>SelectSqlQuery - A query that is used to retrieve the observation data for the <code>Datasource</code>.</p> </li> <li> <p>S3StagingLocation - The Amazon S3 location for staging Amazon RDS data. The data retrieved from Amazon RDS using <code>SelectSqlQuery</code> is stored in this location.</p> </li> <li> <p>DataSchemaUri - The Amazon S3 location of the <code>DataSchema</code>.</p> </li> <li> <p>DataSchema - A JSON string representing the schema. This is not required if <code>DataSchemaUri</code> is specified. </p> </li> <li> <p>DataRearrangement - A JSON string that represents the splitting and rearrangement requirements for the <code>Datasource</code>. </p> <p> Sample - <code> "{\\"splitting\\":{\\"percentBegin\\":10,\\"percentEnd\\":60}}"</code> </p> </li> </ul>',
-        }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The role that Amazon ML assumes on behalf of the user to create and activate a data pipeline in the user's account and copy data using the <code>SelectSqlQuery</code> query from Amazon RDS to Amazon S3.</p> <p/>",
-        }),
-    ),
-    ComputeStatistics: ComputeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compute statistics for a <code>DataSource</code>. The statistics are generated from the observation data referenced by a <code>DataSource</code>. Amazon ML uses the statistics internally during <code>MLModel</code> training. This parameter must be set to <code>true</code> if the <code/>DataSource<code/> needs to be used for <code>MLModel</code> training. ',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>DataSource</code>. Typically, an Amazon Resource Number (ARN) becomes the ID for a <code>DataSource</code>.',
+    }),
+    DataSourceName: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>DataSource</code>.',
+    }),
+    RDSData: RDSDataSpecSchema.openapi({
+      description:
+        '<p>The data specification of an Amazon RDS <code>DataSource</code>:</p> <ul> <li> <p>DatabaseInformation -</p> <ul> <li> <p> <code>DatabaseName</code> - The name of the Amazon RDS database.</p> </li> <li> <p> <code>InstanceIdentifier </code> - A unique identifier for the Amazon RDS database instance.</p> </li> </ul> </li> <li> <p>DatabaseCredentials - AWS Identity and Access Management (IAM) credentials that are used to connect to the Amazon RDS database.</p> </li> <li> <p>ResourceRole - A role (DataPipelineDefaultResourceRole) assumed by an EC2 instance to carry out the copy task from Amazon RDS to Amazon Simple Storage Service (Amazon S3). For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.</p> </li> <li> <p>ServiceRole - A role (DataPipelineDefaultRole) assumed by the AWS Data Pipeline service to monitor the progress of the copy task from Amazon RDS to Amazon S3. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.</p> </li> <li> <p>SecurityInfo - The security information to use to access an RDS DB instance. You need to set up appropriate ingress rules for the security entity IDs provided to allow access to the Amazon RDS instance. Specify a [<code>SubnetId</code>, <code>SecurityGroupIds</code>] pair for a VPC-based RDS DB instance.</p> </li> <li> <p>SelectSqlQuery - A query that is used to retrieve the observation data for the <code>Datasource</code>.</p> </li> <li> <p>S3StagingLocation - The Amazon S3 location for staging Amazon RDS data. The data retrieved from Amazon RDS using <code>SelectSqlQuery</code> is stored in this location.</p> </li> <li> <p>DataSchemaUri - The Amazon S3 location of the <code>DataSchema</code>.</p> </li> <li> <p>DataSchema - A JSON string representing the schema. This is not required if <code>DataSchemaUri</code> is specified. </p> </li> <li> <p>DataRearrangement - A JSON string that represents the splitting and rearrangement requirements for the <code>Datasource</code>. </p> <p> Sample - <code> "{\\"splitting\\":{\\"percentBegin\\":10,\\"percentEnd\\":60}}"</code> </p> </li> </ul>',
+    }),
+    RoleARN: RoleARNSchema.openapi({
+      description:
+        "<p>The role that Amazon ML assumes on behalf of the user to create and activate a data pipeline in the user's account and copy data using the <code>SelectSqlQuery</code> query from Amazon RDS to Amazon S3.</p> <p/>",
+    }),
+    ComputeStatistics: ComputeStatisticsSchema.exactOptional().openapi({
+      description:
+        'The compute statistics for a <code>DataSource</code>. The statistics are generated from the observation data referenced by a <code>DataSource</code>. Amazon ML uses the statistics internally during <code>MLModel</code> training. This parameter must be set to <code>true</code> if the <code/>DataSource<code/> needs to be used for <code>MLModel</code> training. ',
+    }),
   })
   .openapi({
     required: ['DataSourceId', 'RDSData', 'RoleARN'],
@@ -454,14 +349,10 @@ const CreateDataSourceFromRDSInputSchema = z
 
 const CreateDataSourceFromRedshiftOutputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the datasource. This value should be identical to the value of the <code>DataSourceID</code> in the request. ',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the datasource. This value should be identical to the value of the <code>DataSourceID</code> in the request. ',
+    }),
   })
   .openapi({
     description:
@@ -539,62 +430,33 @@ const RedshiftDatabaseCredentialsSchema = z
 
 const RedshiftDataSpecSchema = z
   .object({
-    DatabaseInformation: RedshiftDatabaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the <code>DatabaseName</code> and <code>ClusterIdentifier</code> for an Amazon Redshift <code>DataSource</code>.',
-        }),
-    ),
-    SelectSqlQuery: RedshiftSelectSqlQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the SQL Query to execute on an Amazon Redshift database for an Amazon Redshift <code>DataSource</code>.',
-        }),
-    ),
-    DatabaseCredentials: RedshiftDatabaseCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes AWS Identity and Access Management (IAM) credentials that are used connect to the Amazon Redshift database.',
-        }),
-    ),
-    S3StagingLocation: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes an Amazon S3 location to store the result set of the <code>SelectSqlQuery</code> query.',
-        }),
-    ),
-    DataRearrangement: DataRearrangementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON string that represents the splitting and rearrangement processing to be applied to a <code>DataSource</code>. If the <code>DataRearrangement</code> parameter is not provided, all of the input data is used to create the <code>Datasource</code>.</p> <p>There are multiple parameters that control what data is used to create a datasource:</p> <ul> <li> <p> <b> <code>percentBegin</code> </b> </p> <p>Use <code>percentBegin</code> to indicate the beginning of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>percentEnd</code> </b> </p> <p>Use <code>percentEnd</code> to indicate the end of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>complement</code> </b> </p> <p>The <code>complement</code> parameter instructs Amazon ML to use the data that is not included in the range of <code>percentBegin</code> to <code>percentEnd</code> to create a datasource. The <code>complement</code> parameter is useful if you need to create complementary datasources for training and evaluation. To create a complementary datasource, use the same values for <code>percentBegin</code> and <code>percentEnd</code>, along with the <code>complement</code> parameter.</p> <p>For example, the following two datasources do not share any data, and can be used to train and evaluate a model. The first datasource has 25 percent of the data, and the second one has 75 percent of the data.</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":0, "percentEnd":25}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":0, "percentEnd":25, "complement":"true"}}</code> </p> </li> <li> <p> <b> <code>strategy</code> </b> </p> <p>To change how Amazon ML splits the data for a datasource, use the <code>strategy</code> parameter.</p> <p>The default value for the <code>strategy</code> parameter is <code>sequential</code>, meaning that Amazon ML takes all of the data records between the <code>percentBegin</code> and <code>percentEnd</code> parameters for the datasource, in the order that the records appear in the input data.</p> <p>The following two <code>DataRearrangement</code> lines are examples of sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential", "complement":"true"}}</code> </p> <p>To randomly split the input data into the proportions indicated by the percentBegin and percentEnd parameters, set the <code>strategy</code> parameter to <code>random</code> and provide a string that is used as the seed value for the random data splitting (for example, you can use the S3 path to your data as the random seed string). If you choose the random split strategy, Amazon ML assigns each row of data a pseudo-random number between 0 and 100, and then selects the rows that have an assigned number between <code>percentBegin</code> and <code>percentEnd</code>. Pseudo-random numbers are assigned using both the input seed string value and the byte offset as a seed, so changing the data results in a different split. Any existing ordering is preserved. The random splitting strategy ensures that variables in the training and evaluation data are distributed similarly. It is useful in the cases where the input data may have an implicit sort order, which would otherwise result in training and evaluation datasources containing non-similar data records.</p> <p>The following two <code>DataRearrangement</code> lines are examples of non-sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv", "complement":"true"}}</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DataSchema: DataSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON string that represents the schema for an Amazon Redshift <code>DataSource</code>. The <code>DataSchema</code> defines the structure of the observation data in the data file(s) referenced in the <code>DataSource</code>.</p> <p>A <code>DataSchema</code> is not required if you specify a <code>DataSchemaUri</code>.</p> <p>Define your <code>DataSchema</code> as a series of key-value pairs. <code>attributes</code> and <code>excludedVariableNames</code> have an array of key-value pairs for their value. Use the following format to define your <code>DataSchema</code>.</p> <p>{ "version": "1.0",</p> <p>"recordAnnotationFieldName": "F1",</p> <p>"recordWeightFieldName": "F2",</p> <p>"targetFieldName": "F3",</p> <p>"dataFormat": "CSV",</p> <p>"dataFileContainsHeader": true,</p> <p>"attributes": [</p> <p>{ "fieldName": "F1", "fieldType": "TEXT" }, { "fieldName": "F2", "fieldType": "NUMERIC" }, { "fieldName": "F3", "fieldType": "CATEGORICAL" }, { "fieldName": "F4", "fieldType": "NUMERIC" }, { "fieldName": "F5", "fieldType": "CATEGORICAL" }, { "fieldName": "F6", "fieldType": "TEXT" }, { "fieldName": "F7", "fieldType": "WEIGHTED_INT_SEQUENCE" }, { "fieldName": "F8", "fieldType": "WEIGHTED_STRING_SEQUENCE" } ],</p> <p>"excludedVariableNames": [ "F6" ] }</p>',
-        }),
-    ).exactOptional(),
-    DataSchemaUri: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the schema location for an Amazon Redshift <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
+    DatabaseInformation: RedshiftDatabaseSchema.openapi({
+      description:
+        'Describes the <code>DatabaseName</code> and <code>ClusterIdentifier</code> for an Amazon Redshift <code>DataSource</code>.',
+    }),
+    SelectSqlQuery: RedshiftSelectSqlQuerySchema.openapi({
+      description:
+        'Describes the SQL Query to execute on an Amazon Redshift database for an Amazon Redshift <code>DataSource</code>.',
+    }),
+    DatabaseCredentials: RedshiftDatabaseCredentialsSchema.openapi({
+      description:
+        'Describes AWS Identity and Access Management (IAM) credentials that are used connect to the Amazon Redshift database.',
+    }),
+    S3StagingLocation: S3UrlSchema.openapi({
+      description:
+        'Describes an Amazon S3 location to store the result set of the <code>SelectSqlQuery</code> query.',
+    }),
+    DataRearrangement: DataRearrangementSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON string that represents the splitting and rearrangement processing to be applied to a <code>DataSource</code>. If the <code>DataRearrangement</code> parameter is not provided, all of the input data is used to create the <code>Datasource</code>.</p> <p>There are multiple parameters that control what data is used to create a datasource:</p> <ul> <li> <p> <b> <code>percentBegin</code> </b> </p> <p>Use <code>percentBegin</code> to indicate the beginning of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>percentEnd</code> </b> </p> <p>Use <code>percentEnd</code> to indicate the end of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>complement</code> </b> </p> <p>The <code>complement</code> parameter instructs Amazon ML to use the data that is not included in the range of <code>percentBegin</code> to <code>percentEnd</code> to create a datasource. The <code>complement</code> parameter is useful if you need to create complementary datasources for training and evaluation. To create a complementary datasource, use the same values for <code>percentBegin</code> and <code>percentEnd</code>, along with the <code>complement</code> parameter.</p> <p>For example, the following two datasources do not share any data, and can be used to train and evaluate a model. The first datasource has 25 percent of the data, and the second one has 75 percent of the data.</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":0, "percentEnd":25}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":0, "percentEnd":25, "complement":"true"}}</code> </p> </li> <li> <p> <b> <code>strategy</code> </b> </p> <p>To change how Amazon ML splits the data for a datasource, use the <code>strategy</code> parameter.</p> <p>The default value for the <code>strategy</code> parameter is <code>sequential</code>, meaning that Amazon ML takes all of the data records between the <code>percentBegin</code> and <code>percentEnd</code> parameters for the datasource, in the order that the records appear in the input data.</p> <p>The following two <code>DataRearrangement</code> lines are examples of sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential", "complement":"true"}}</code> </p> <p>To randomly split the input data into the proportions indicated by the percentBegin and percentEnd parameters, set the <code>strategy</code> parameter to <code>random</code> and provide a string that is used as the seed value for the random data splitting (for example, you can use the S3 path to your data as the random seed string). If you choose the random split strategy, Amazon ML assigns each row of data a pseudo-random number between 0 and 100, and then selects the rows that have an assigned number between <code>percentBegin</code> and <code>percentEnd</code>. Pseudo-random numbers are assigned using both the input seed string value and the byte offset as a seed, so changing the data results in a different split. Any existing ordering is preserved. The random splitting strategy ensures that variables in the training and evaluation data are distributed similarly. It is useful in the cases where the input data may have an implicit sort order, which would otherwise result in training and evaluation datasources containing non-similar data records.</p> <p>The following two <code>DataRearrangement</code> lines are examples of non-sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv", "complement":"true"}}</code> </p> </li> </ul>',
+    }),
+    DataSchema: DataSchemaSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON string that represents the schema for an Amazon Redshift <code>DataSource</code>. The <code>DataSchema</code> defines the structure of the observation data in the data file(s) referenced in the <code>DataSource</code>.</p> <p>A <code>DataSchema</code> is not required if you specify a <code>DataSchemaUri</code>.</p> <p>Define your <code>DataSchema</code> as a series of key-value pairs. <code>attributes</code> and <code>excludedVariableNames</code> have an array of key-value pairs for their value. Use the following format to define your <code>DataSchema</code>.</p> <p>{ "version": "1.0",</p> <p>"recordAnnotationFieldName": "F1",</p> <p>"recordWeightFieldName": "F2",</p> <p>"targetFieldName": "F3",</p> <p>"dataFormat": "CSV",</p> <p>"dataFileContainsHeader": true,</p> <p>"attributes": [</p> <p>{ "fieldName": "F1", "fieldType": "TEXT" }, { "fieldName": "F2", "fieldType": "NUMERIC" }, { "fieldName": "F3", "fieldType": "CATEGORICAL" }, { "fieldName": "F4", "fieldType": "NUMERIC" }, { "fieldName": "F5", "fieldType": "CATEGORICAL" }, { "fieldName": "F6", "fieldType": "TEXT" }, { "fieldName": "F7", "fieldType": "WEIGHTED_INT_SEQUENCE" }, { "fieldName": "F8", "fieldType": "WEIGHTED_STRING_SEQUENCE" } ],</p> <p>"excludedVariableNames": [ "F6" ] }</p>',
+    }),
+    DataSchemaUri: S3UrlSchema.exactOptional().openapi({
+      description: 'Describes the schema location for an Amazon Redshift <code>DataSource</code>.',
+    }),
   })
   .openapi({
     required: ['DatabaseInformation', 'SelectSqlQuery', 'DatabaseCredentials', 'S3StagingLocation'],
@@ -604,44 +466,24 @@ const RedshiftDataSpecSchema = z
 
 const CreateDataSourceFromRedshiftInputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied ID that uniquely identifies the <code>DataSource</code>.',
-        }),
-    ),
-    DataSourceName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>DataSource</code>. ',
-        }),
-    ).exactOptional(),
-    DataSpec: RedshiftDataSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data specification of an Amazon Redshift <code>DataSource</code>:</p> <ul> <li> <p>DatabaseInformation -</p> <ul> <li> <p> <code>DatabaseName</code> - The name of the Amazon Redshift database.</p> </li> <li> <p> <code> ClusterIdentifier</code> - The unique ID for the Amazon Redshift cluster.</p> </li> </ul> </li> <li> <p>DatabaseCredentials - The AWS Identity and Access Management (IAM) credentials that are used to connect to the Amazon Redshift database.</p> </li> <li> <p>SelectSqlQuery - The query that is used to retrieve the observation data for the <code>Datasource</code>.</p> </li> <li> <p>S3StagingLocation - The Amazon Simple Storage Service (Amazon S3) location for staging Amazon Redshift data. The data retrieved from Amazon Redshift using the <code>SelectSqlQuery</code> query is stored in this location.</p> </li> <li> <p>DataSchemaUri - The Amazon S3 location of the <code>DataSchema</code>.</p> </li> <li> <p>DataSchema - A JSON string representing the schema. This is not required if <code>DataSchemaUri</code> is specified. </p> </li> <li> <p>DataRearrangement - A JSON string that represents the splitting and rearrangement requirements for the <code>DataSource</code>.</p> <p> Sample - <code> "{\\"splitting\\":{\\"percentBegin\\":10,\\"percentEnd\\":60}}"</code> </p> </li> </ul>',
-        }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A fully specified role Amazon Resource Name (ARN). Amazon ML assumes the role on behalf of the user to create the following:</p> <ul> <li> <p>A security group to allow Amazon ML to execute the <code>SelectSqlQuery</code> query on an Amazon Redshift cluster</p> </li> <li> <p>An Amazon S3 bucket policy to grant Amazon ML read/write permissions on the <code>S3StagingLocation</code> </p> </li> </ul>',
-        }),
-    ),
-    ComputeStatistics: ComputeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compute statistics for a <code>DataSource</code>. The statistics are generated from the observation data referenced by a <code>DataSource</code>. Amazon ML uses the statistics internally during <code>MLModel</code> training. This parameter must be set to <code>true</code> if the <code>DataSource</code> needs to be used for <code>MLModel</code> training.',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.openapi({
+      description: 'A user-supplied ID that uniquely identifies the <code>DataSource</code>.',
+    }),
+    DataSourceName: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>DataSource</code>. ',
+    }),
+    DataSpec: RedshiftDataSpecSchema.openapi({
+      description:
+        '<p>The data specification of an Amazon Redshift <code>DataSource</code>:</p> <ul> <li> <p>DatabaseInformation -</p> <ul> <li> <p> <code>DatabaseName</code> - The name of the Amazon Redshift database.</p> </li> <li> <p> <code> ClusterIdentifier</code> - The unique ID for the Amazon Redshift cluster.</p> </li> </ul> </li> <li> <p>DatabaseCredentials - The AWS Identity and Access Management (IAM) credentials that are used to connect to the Amazon Redshift database.</p> </li> <li> <p>SelectSqlQuery - The query that is used to retrieve the observation data for the <code>Datasource</code>.</p> </li> <li> <p>S3StagingLocation - The Amazon Simple Storage Service (Amazon S3) location for staging Amazon Redshift data. The data retrieved from Amazon Redshift using the <code>SelectSqlQuery</code> query is stored in this location.</p> </li> <li> <p>DataSchemaUri - The Amazon S3 location of the <code>DataSchema</code>.</p> </li> <li> <p>DataSchema - A JSON string representing the schema. This is not required if <code>DataSchemaUri</code> is specified. </p> </li> <li> <p>DataRearrangement - A JSON string that represents the splitting and rearrangement requirements for the <code>DataSource</code>.</p> <p> Sample - <code> "{\\"splitting\\":{\\"percentBegin\\":10,\\"percentEnd\\":60}}"</code> </p> </li> </ul>',
+    }),
+    RoleARN: RoleARNSchema.openapi({
+      description:
+        '<p>A fully specified role Amazon Resource Name (ARN). Amazon ML assumes the role on behalf of the user to create the following:</p> <ul> <li> <p>A security group to allow Amazon ML to execute the <code>SelectSqlQuery</code> query on an Amazon Redshift cluster</p> </li> <li> <p>An Amazon S3 bucket policy to grant Amazon ML read/write permissions on the <code>S3StagingLocation</code> </p> </li> </ul>',
+    }),
+    ComputeStatistics: ComputeStatisticsSchema.exactOptional().openapi({
+      description:
+        'The compute statistics for a <code>DataSource</code>. The statistics are generated from the observation data referenced by a <code>DataSource</code>. Amazon ML uses the statistics internally during <code>MLModel</code> training. This parameter must be set to <code>true</code> if the <code>DataSource</code> needs to be used for <code>MLModel</code> training.',
+    }),
   })
   .openapi({
     required: ['DataSourceId', 'DataSpec', 'RoleARN'],
@@ -651,14 +493,10 @@ const CreateDataSourceFromRedshiftInputSchema = z
 
 const CreateDataSourceFromS3OutputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>DataSource</code>. This value should be identical to the value of the <code>DataSourceID</code> in the request. ',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>DataSource</code>. This value should be identical to the value of the <code>DataSourceID</code> in the request. ',
+    }),
   })
   .openapi({
     description:
@@ -669,38 +507,22 @@ const CreateDataSourceFromS3OutputSchema = z
 
 const S3DataSpecSchema = z
   .object({
-    DataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data file(s) used by a <code>DataSource</code>. The URI specifies a data file or an Amazon Simple Storage Service (Amazon S3) directory or bucket containing data files.',
-        }),
-    ),
-    DataRearrangement: DataRearrangementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON string that represents the splitting and rearrangement processing to be applied to a <code>DataSource</code>. If the <code>DataRearrangement</code> parameter is not provided, all of the input data is used to create the <code>Datasource</code>.</p> <p>There are multiple parameters that control what data is used to create a datasource:</p> <ul> <li> <p> <b> <code>percentBegin</code> </b> </p> <p>Use <code>percentBegin</code> to indicate the beginning of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>percentEnd</code> </b> </p> <p>Use <code>percentEnd</code> to indicate the end of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>complement</code> </b> </p> <p>The <code>complement</code> parameter instructs Amazon ML to use the data that is not included in the range of <code>percentBegin</code> to <code>percentEnd</code> to create a datasource. The <code>complement</code> parameter is useful if you need to create complementary datasources for training and evaluation. To create a complementary datasource, use the same values for <code>percentBegin</code> and <code>percentEnd</code>, along with the <code>complement</code> parameter.</p> <p>For example, the following two datasources do not share any data, and can be used to train and evaluate a model. The first datasource has 25 percent of the data, and the second one has 75 percent of the data.</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":0, "percentEnd":25}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":0, "percentEnd":25, "complement":"true"}}</code> </p> </li> <li> <p> <b> <code>strategy</code> </b> </p> <p>To change how Amazon ML splits the data for a datasource, use the <code>strategy</code> parameter.</p> <p>The default value for the <code>strategy</code> parameter is <code>sequential</code>, meaning that Amazon ML takes all of the data records between the <code>percentBegin</code> and <code>percentEnd</code> parameters for the datasource, in the order that the records appear in the input data.</p> <p>The following two <code>DataRearrangement</code> lines are examples of sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential", "complement":"true"}}</code> </p> <p>To randomly split the input data into the proportions indicated by the percentBegin and percentEnd parameters, set the <code>strategy</code> parameter to <code>random</code> and provide a string that is used as the seed value for the random data splitting (for example, you can use the S3 path to your data as the random seed string). If you choose the random split strategy, Amazon ML assigns each row of data a pseudo-random number between 0 and 100, and then selects the rows that have an assigned number between <code>percentBegin</code> and <code>percentEnd</code>. Pseudo-random numbers are assigned using both the input seed string value and the byte offset as a seed, so changing the data results in a different split. Any existing ordering is preserved. The random splitting strategy ensures that variables in the training and evaluation data are distributed similarly. It is useful in the cases where the input data may have an implicit sort order, which would otherwise result in training and evaluation datasources containing non-similar data records.</p> <p>The following two <code>DataRearrangement</code> lines are examples of non-sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv", "complement":"true"}}</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DataSchema: DataSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A JSON string that represents the schema for an Amazon S3 <code>DataSource</code>. The <code>DataSchema</code> defines the structure of the observation data in the data file(s) referenced in the <code>DataSource</code>.</p> <p>You must provide either the <code>DataSchema</code> or the <code>DataSchemaLocationS3</code>.</p> <p>Define your <code>DataSchema</code> as a series of key-value pairs. <code>attributes</code> and <code>excludedVariableNames</code> have an array of key-value pairs for their value. Use the following format to define your <code>DataSchema</code>.</p> <p>{ "version": "1.0",</p> <p>"recordAnnotationFieldName": "F1",</p> <p>"recordWeightFieldName": "F2",</p> <p>"targetFieldName": "F3",</p> <p>"dataFormat": "CSV",</p> <p>"dataFileContainsHeader": true,</p> <p>"attributes": [</p> <p>{ "fieldName": "F1", "fieldType": "TEXT" }, { "fieldName": "F2", "fieldType": "NUMERIC" }, { "fieldName": "F3", "fieldType": "CATEGORICAL" }, { "fieldName": "F4", "fieldType": "NUMERIC" }, { "fieldName": "F5", "fieldType": "CATEGORICAL" }, { "fieldName": "F6", "fieldType": "TEXT" }, { "fieldName": "F7", "fieldType": "WEIGHTED_INT_SEQUENCE" }, { "fieldName": "F8", "fieldType": "WEIGHTED_STRING_SEQUENCE" } ],</p> <p>"excludedVariableNames": [ "F6" ] }</p>',
-        }),
-    ).exactOptional(),
-    DataSchemaLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the schema location in Amazon S3. You must provide either the <code>DataSchema</code> or the <code>DataSchemaLocationS3</code>.',
-        }),
-    ).exactOptional(),
+    DataLocationS3: S3UrlSchema.openapi({
+      description:
+        'The location of the data file(s) used by a <code>DataSource</code>. The URI specifies a data file or an Amazon Simple Storage Service (Amazon S3) directory or bucket containing data files.',
+    }),
+    DataRearrangement: DataRearrangementSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON string that represents the splitting and rearrangement processing to be applied to a <code>DataSource</code>. If the <code>DataRearrangement</code> parameter is not provided, all of the input data is used to create the <code>Datasource</code>.</p> <p>There are multiple parameters that control what data is used to create a datasource:</p> <ul> <li> <p> <b> <code>percentBegin</code> </b> </p> <p>Use <code>percentBegin</code> to indicate the beginning of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>percentEnd</code> </b> </p> <p>Use <code>percentEnd</code> to indicate the end of the range of the data used to create the Datasource. If you do not include <code>percentBegin</code> and <code>percentEnd</code>, Amazon ML includes all of the data when creating the datasource.</p> </li> <li> <p> <b> <code>complement</code> </b> </p> <p>The <code>complement</code> parameter instructs Amazon ML to use the data that is not included in the range of <code>percentBegin</code> to <code>percentEnd</code> to create a datasource. The <code>complement</code> parameter is useful if you need to create complementary datasources for training and evaluation. To create a complementary datasource, use the same values for <code>percentBegin</code> and <code>percentEnd</code>, along with the <code>complement</code> parameter.</p> <p>For example, the following two datasources do not share any data, and can be used to train and evaluate a model. The first datasource has 25 percent of the data, and the second one has 75 percent of the data.</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":0, "percentEnd":25}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":0, "percentEnd":25, "complement":"true"}}</code> </p> </li> <li> <p> <b> <code>strategy</code> </b> </p> <p>To change how Amazon ML splits the data for a datasource, use the <code>strategy</code> parameter.</p> <p>The default value for the <code>strategy</code> parameter is <code>sequential</code>, meaning that Amazon ML takes all of the data records between the <code>percentBegin</code> and <code>percentEnd</code> parameters for the datasource, in the order that the records appear in the input data.</p> <p>The following two <code>DataRearrangement</code> lines are examples of sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"sequential", "complement":"true"}}</code> </p> <p>To randomly split the input data into the proportions indicated by the percentBegin and percentEnd parameters, set the <code>strategy</code> parameter to <code>random</code> and provide a string that is used as the seed value for the random data splitting (for example, you can use the S3 path to your data as the random seed string). If you choose the random split strategy, Amazon ML assigns each row of data a pseudo-random number between 0 and 100, and then selects the rows that have an assigned number between <code>percentBegin</code> and <code>percentEnd</code>. Pseudo-random numbers are assigned using both the input seed string value and the byte offset as a seed, so changing the data results in a different split. Any existing ordering is preserved. The random splitting strategy ensures that variables in the training and evaluation data are distributed similarly. It is useful in the cases where the input data may have an implicit sort order, which would otherwise result in training and evaluation datasources containing non-similar data records.</p> <p>The following two <code>DataRearrangement</code> lines are examples of non-sequentially ordered training and evaluation datasources:</p> <p>Datasource for evaluation: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv"}}</code> </p> <p>Datasource for training: <code>{"splitting":{"percentBegin":70, "percentEnd":100, "strategy":"random", "randomSeed"="s3://my_s3_path/bucket/file.csv", "complement":"true"}}</code> </p> </li> </ul>',
+    }),
+    DataSchema: DataSchemaSchema.exactOptional().openapi({
+      description:
+        '<p> A JSON string that represents the schema for an Amazon S3 <code>DataSource</code>. The <code>DataSchema</code> defines the structure of the observation data in the data file(s) referenced in the <code>DataSource</code>.</p> <p>You must provide either the <code>DataSchema</code> or the <code>DataSchemaLocationS3</code>.</p> <p>Define your <code>DataSchema</code> as a series of key-value pairs. <code>attributes</code> and <code>excludedVariableNames</code> have an array of key-value pairs for their value. Use the following format to define your <code>DataSchema</code>.</p> <p>{ "version": "1.0",</p> <p>"recordAnnotationFieldName": "F1",</p> <p>"recordWeightFieldName": "F2",</p> <p>"targetFieldName": "F3",</p> <p>"dataFormat": "CSV",</p> <p>"dataFileContainsHeader": true,</p> <p>"attributes": [</p> <p>{ "fieldName": "F1", "fieldType": "TEXT" }, { "fieldName": "F2", "fieldType": "NUMERIC" }, { "fieldName": "F3", "fieldType": "CATEGORICAL" }, { "fieldName": "F4", "fieldType": "NUMERIC" }, { "fieldName": "F5", "fieldType": "CATEGORICAL" }, { "fieldName": "F6", "fieldType": "TEXT" }, { "fieldName": "F7", "fieldType": "WEIGHTED_INT_SEQUENCE" }, { "fieldName": "F8", "fieldType": "WEIGHTED_STRING_SEQUENCE" } ],</p> <p>"excludedVariableNames": [ "F6" ] }</p>',
+    }),
+    DataSchemaLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'Describes the schema location in Amazon S3. You must provide either the <code>DataSchema</code> or the <code>DataSchemaLocationS3</code>.',
+    }),
   })
   .openapi({
     required: ['DataLocationS3'],
@@ -710,51 +532,31 @@ const S3DataSpecSchema = z
 
 const CreateDataSourceFromS3InputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied identifier that uniquely identifies the <code>DataSource</code>. ',
-        }),
-    ),
-    DataSourceName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>DataSource</code>. ',
-        }),
-    ).exactOptional(),
-    DataSpec: S3DataSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data specification of a <code>DataSource</code>:</p> <ul> <li> <p>DataLocationS3 - The Amazon S3 location of the observation data.</p> </li> <li> <p>DataSchemaLocationS3 - The Amazon S3 location of the <code>DataSchema</code>.</p> </li> <li> <p>DataSchema - A JSON string representing the schema. This is not required if <code>DataSchemaUri</code> is specified. </p> </li> <li> <p>DataRearrangement - A JSON string that represents the splitting and rearrangement requirements for the <code>Datasource</code>. </p> <p> Sample - <code> "{\\"splitting\\":{\\"percentBegin\\":10,\\"percentEnd\\":60}}"</code> </p> </li> </ul>',
-        }),
-    ),
-    ComputeStatistics: ComputeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compute statistics for a <code>DataSource</code>. The statistics are generated from the observation data referenced by a <code>DataSource</code>. Amazon ML uses the statistics internally during <code>MLModel</code> training. This parameter must be set to <code>true</code> if the <code/>DataSource<code/> needs to be used for <code>MLModel</code> training.',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.openapi({
+      description:
+        'A user-supplied identifier that uniquely identifies the <code>DataSource</code>. ',
+    }),
+    DataSourceName: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>DataSource</code>. ',
+    }),
+    DataSpec: S3DataSpecSchema.openapi({
+      description:
+        '<p>The data specification of a <code>DataSource</code>:</p> <ul> <li> <p>DataLocationS3 - The Amazon S3 location of the observation data.</p> </li> <li> <p>DataSchemaLocationS3 - The Amazon S3 location of the <code>DataSchema</code>.</p> </li> <li> <p>DataSchema - A JSON string representing the schema. This is not required if <code>DataSchemaUri</code> is specified. </p> </li> <li> <p>DataRearrangement - A JSON string that represents the splitting and rearrangement requirements for the <code>Datasource</code>. </p> <p> Sample - <code> "{\\"splitting\\":{\\"percentBegin\\":10,\\"percentEnd\\":60}}"</code> </p> </li> </ul>',
+    }),
+    ComputeStatistics: ComputeStatisticsSchema.exactOptional().openapi({
+      description:
+        'The compute statistics for a <code>DataSource</code>. The statistics are generated from the observation data referenced by a <code>DataSource</code>. Amazon ML uses the statistics internally during <code>MLModel</code> training. This parameter must be set to <code>true</code> if the <code/>DataSource<code/> needs to be used for <code>MLModel</code> training.',
+    }),
   })
   .openapi({ required: ['DataSourceId', 'DataSpec'], title: 'CreateDataSourceFromS3Input' })
   .openapi('CreateDataSourceFromS3Input')
 
 const CreateEvaluationOutputSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-supplied ID that uniquely identifies the <code>Evaluation</code>. This value should be identical to the value of the <code>EvaluationId</code> in the request.',
-        }),
-    ).exactOptional(),
+    EvaluationId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The user-supplied ID that uniquely identifies the <code>Evaluation</code>. This value should be identical to the value of the <code>EvaluationId</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -765,36 +567,20 @@ const CreateEvaluationOutputSchema = z
 
 const CreateEvaluationInputSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied ID that uniquely identifies the <code>Evaluation</code>.',
-        }),
-    ),
-    EvaluationName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>Evaluation</code>.',
-        }),
-    ).exactOptional(),
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the <code>MLModel</code> to evaluate.</p> <p>The schema used in creating the <code>MLModel</code> must match the schema of the <code>DataSource</code> used in the <code>Evaluation</code>.</p>',
-        }),
-    ),
-    EvaluationDataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DataSource</code> for the evaluation. The schema of the <code>DataSource</code> must match the schema used to create the <code>MLModel</code>.',
-        }),
-    ),
+    EvaluationId: EntityIdSchema.openapi({
+      description: 'A user-supplied ID that uniquely identifies the <code>Evaluation</code>.',
+    }),
+    EvaluationName: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>Evaluation</code>.',
+    }),
+    MLModelId: EntityIdSchema.openapi({
+      description:
+        '<p>The ID of the <code>MLModel</code> to evaluate.</p> <p>The schema used in creating the <code>MLModel</code> must match the schema of the <code>DataSource</code> used in the <code>Evaluation</code>.</p>',
+    }),
+    EvaluationDataSourceId: EntityIdSchema.openapi({
+      description:
+        'The ID of the <code>DataSource</code> for the evaluation. The schema of the <code>DataSource</code> must match the schema used to create the <code>MLModel</code>.',
+    }),
   })
   .openapi({
     required: ['EvaluationId', 'MLModelId', 'EvaluationDataSourceId'],
@@ -804,14 +590,10 @@ const CreateEvaluationInputSchema = z
 
 const CreateMLModelOutputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>MLModel</code>. This value should be identical to the value of the <code>MLModelId</code> in the request. ',
-        }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>MLModel</code>. This value should be identical to the value of the <code>MLModelId</code> in the request. ',
+    }),
   })
   .openapi({
     description:
@@ -832,57 +614,31 @@ const RecipeSchema = z.string().max(131071).openapi('Recipe')
 
 const CreateMLModelInputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied ID that uniquely identifies the <code>MLModel</code>.',
-        }),
-    ),
-    MLModelName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
-    MLModelType: MLModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The category of supervised learning that this <code>MLModel</code> will address. Choose from the following types:</p> <ul> <li> <p>Choose <code>REGRESSION</code> if the <code>MLModel</code> will be used to predict a numeric value.</p> </li> <li> <p>Choose <code>BINARY</code> if the <code>MLModel</code> result has two possible values.</p> </li> <li> <p>Choose <code>MULTICLASS</code> if the <code>MLModel</code> result has a limited number of values.</p> </li> </ul> <p> For more information, see the <a href="https://docs.aws.amazon.com/machine-learning/latest/dg">Amazon Machine Learning Developer Guide</a>.</p>',
-        }),
-    ),
-    Parameters: TrainingParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of the training parameters in the <code>MLModel</code>. The list is implemented as a map of key-value pairs.</p> <p>The following is the current set of training parameters:</p> <ul> <li> <p> <code>sgd.maxMLModelSizeInBytes</code> - The maximum allowed size of the model. Depending on the input data, the size of the model might affect its performance.</p> <p> The value is an integer that ranges from <code>100000</code> to <code>2147483648</code>. The default value is <code>33554432</code>.</p> </li> <li> <p> <code>sgd.maxPasses</code> - The number of times that the training process traverses the observations to build the <code>MLModel</code>. The value is an integer that ranges from <code>1</code> to <code>10000</code>. The default value is <code>10</code>.</p> </li> <li> <p> <code>sgd.shuffleType</code> - Whether Amazon ML shuffles the training data. Shuffling the data improves a model's ability to find the optimal solution for a variety of data types. The valid values are <code>auto</code> and <code>none</code>. The default value is <code>none</code>. We strongly recommend that you shuffle your data.</p> </li> <li> <p> <code>sgd.l1RegularizationAmount</code> - The coefficient regularization L1 norm. It controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to zero, resulting in a sparse feature set. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L1 normalization. This parameter can't be used when <code>L2</code> is specified. Use this parameter sparingly.</p> </li> <li> <p> <code>sgd.l2RegularizationAmount</code> - The coefficient regularization L2 norm. It controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to small, nonzero values. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L2 normalization. This parameter can't be used when <code>L1</code> is specified. Use this parameter sparingly.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    TrainingDataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <code>DataSource</code> that points to the training data.' }),
-    ),
-    Recipe: RecipeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The data recipe for creating the <code>MLModel</code>. You must specify either the recipe or its URI. If you don't specify a recipe or its URI, Amazon ML creates a default.",
-        }),
-    ).exactOptional(),
-    RecipeUri: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Simple Storage Service (Amazon S3) location and file name that contains the <code>MLModel</code> recipe. You must specify either the recipe or its URI. If you don't specify a recipe or its URI, Amazon ML creates a default.",
-        }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.openapi({
+      description: 'A user-supplied ID that uniquely identifies the <code>MLModel</code>.',
+    }),
+    MLModelName: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>MLModel</code>.',
+    }),
+    MLModelType: MLModelTypeSchema.openapi({
+      description:
+        '<p>The category of supervised learning that this <code>MLModel</code> will address. Choose from the following types:</p> <ul> <li> <p>Choose <code>REGRESSION</code> if the <code>MLModel</code> will be used to predict a numeric value.</p> </li> <li> <p>Choose <code>BINARY</code> if the <code>MLModel</code> result has two possible values.</p> </li> <li> <p>Choose <code>MULTICLASS</code> if the <code>MLModel</code> result has a limited number of values.</p> </li> </ul> <p> For more information, see the <a href="https://docs.aws.amazon.com/machine-learning/latest/dg">Amazon Machine Learning Developer Guide</a>.</p>',
+    }),
+    Parameters: TrainingParametersSchema.exactOptional().openapi({
+      description:
+        "<p>A list of the training parameters in the <code>MLModel</code>. The list is implemented as a map of key-value pairs.</p> <p>The following is the current set of training parameters:</p> <ul> <li> <p> <code>sgd.maxMLModelSizeInBytes</code> - The maximum allowed size of the model. Depending on the input data, the size of the model might affect its performance.</p> <p> The value is an integer that ranges from <code>100000</code> to <code>2147483648</code>. The default value is <code>33554432</code>.</p> </li> <li> <p> <code>sgd.maxPasses</code> - The number of times that the training process traverses the observations to build the <code>MLModel</code>. The value is an integer that ranges from <code>1</code> to <code>10000</code>. The default value is <code>10</code>.</p> </li> <li> <p> <code>sgd.shuffleType</code> - Whether Amazon ML shuffles the training data. Shuffling the data improves a model's ability to find the optimal solution for a variety of data types. The valid values are <code>auto</code> and <code>none</code>. The default value is <code>none</code>. We strongly recommend that you shuffle your data.</p> </li> <li> <p> <code>sgd.l1RegularizationAmount</code> - The coefficient regularization L1 norm. It controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to zero, resulting in a sparse feature set. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L1 normalization. This parameter can't be used when <code>L2</code> is specified. Use this parameter sparingly.</p> </li> <li> <p> <code>sgd.l2RegularizationAmount</code> - The coefficient regularization L2 norm. It controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to small, nonzero values. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L2 normalization. This parameter can't be used when <code>L1</code> is specified. Use this parameter sparingly.</p> </li> </ul>",
+    }),
+    TrainingDataSourceId: EntityIdSchema.openapi({
+      description: 'The <code>DataSource</code> that points to the training data.',
+    }),
+    Recipe: RecipeSchema.exactOptional().openapi({
+      description:
+        "The data recipe for creating the <code>MLModel</code>. You must specify either the recipe or its URI. If you don't specify a recipe or its URI, Amazon ML creates a default.",
+    }),
+    RecipeUri: S3UrlSchema.exactOptional().openapi({
+      description:
+        "The Amazon Simple Storage Service (Amazon S3) location and file name that contains the <code>MLModel</code> recipe. You must specify either the recipe or its URI. If you don't specify a recipe or its URI, Amazon ML creates a default.",
+    }),
   })
   .openapi({
     required: ['MLModelId', 'MLModelType', 'TrainingDataSourceId'],
@@ -912,38 +668,22 @@ const RealtimeEndpointStatusSchema = z
 
 const RealtimeEndpointInfoSchema = z
   .object({
-    PeakRequestsPerSecond: IntegerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The maximum processing rate for the real-time endpoint for <code>MLModel</code>, measured in incoming requests per second.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the request to create the real-time endpoint for the <code>MLModel</code> was received. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    EndpointUrl: VipURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URI that specifies where to send real-time prediction requests for the <code>MLModel</code>.</p> <p> <b>Note:</b> The application must wait until the real-time endpoint is ready before using this URI.</p>',
-        }),
-    ).exactOptional(),
-    EndpointStatus: RealtimeEndpointStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The current status of the real-time endpoint for the <code>MLModel</code>. This element can have one of the following values: </p> <ul> <li> <p> <code>NONE</code> - Endpoint does not exist or was previously deleted.</p> </li> <li> <p> <code>READY</code> - Endpoint is ready to be used for real-time predictions.</p> </li> <li> <p> <code>UPDATING</code> - Updating/creating the endpoint. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    PeakRequestsPerSecond: IntegerTypeSchema.exactOptional().openapi({
+      description:
+        ' The maximum processing rate for the real-time endpoint for <code>MLModel</code>, measured in incoming requests per second.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time that the request to create the real-time endpoint for the <code>MLModel</code> was received. The time is expressed in epoch time.',
+    }),
+    EndpointUrl: VipURLSchema.exactOptional().openapi({
+      description:
+        '<p>The URI that specifies where to send real-time prediction requests for the <code>MLModel</code>.</p> <p> <b>Note:</b> The application must wait until the real-time endpoint is ready before using this URI.</p>',
+    }),
+    EndpointStatus: RealtimeEndpointStatusSchema.exactOptional().openapi({
+      description:
+        '<p> The current status of the real-time endpoint for the <code>MLModel</code>. This element can have one of the following values: </p> <ul> <li> <p> <code>NONE</code> - Endpoint does not exist or was previously deleted.</p> </li> <li> <p> <code>READY</code> - Endpoint is ready to be used for real-time predictions.</p> </li> <li> <p> <code>UPDATING</code> - Updating/creating the endpoint. </p> </li> </ul>',
+    }),
   })
   .openapi({
     description: ' Describes the real-time endpoint information for an <code>MLModel</code>.',
@@ -953,17 +693,13 @@ const RealtimeEndpointInfoSchema = z
 
 const CreateRealtimeEndpointOutputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>MLModel</code>. This value should be identical to the value of the <code>MLModelId</code> in the request.',
-        }),
-    ).exactOptional(),
-    RealtimeEndpointInfo: RealtimeEndpointInfoSchema.and(
-      z.any().openapi({ description: 'The endpoint information of the <code>MLModel</code> ' }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>MLModel</code>. This value should be identical to the value of the <code>MLModelId</code> in the request.',
+    }),
+    RealtimeEndpointInfo: RealtimeEndpointInfoSchema.exactOptional().openapi({
+      description: 'The endpoint information of the <code>MLModel</code> ',
+    }),
   })
   .openapi({
     description:
@@ -974,25 +710,19 @@ const CreateRealtimeEndpointOutputSchema = z
 
 const CreateRealtimeEndpointInputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID assigned to the <code>MLModel</code> during creation.' }),
-    ),
+    MLModelId: EntityIdSchema.openapi({
+      description: 'The ID assigned to the <code>MLModel</code> during creation.',
+    }),
   })
   .openapi({ required: ['MLModelId'], title: 'CreateRealtimeEndpointInput' })
   .openapi('CreateRealtimeEndpointInput')
 
 const DeleteBatchPredictionOutputSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>BatchPrediction</code>. This value should be identical to the value of the <code>BatchPredictionID</code> in the request.',
-        }),
-    ).exactOptional(),
+    BatchPredictionId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>BatchPrediction</code>. This value should be identical to the value of the <code>BatchPredictionID</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -1003,28 +733,19 @@ const DeleteBatchPredictionOutputSchema = z
 
 const DeleteBatchPredictionInputSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>BatchPrediction</code>.',
-        }),
-    ),
+    BatchPredictionId: EntityIdSchema.openapi({
+      description: 'A user-supplied ID that uniquely identifies the <code>BatchPrediction</code>.',
+    }),
   })
   .openapi({ required: ['BatchPredictionId'], title: 'DeleteBatchPredictionInput' })
   .openapi('DeleteBatchPredictionInput')
 
 const DeleteDataSourceOutputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>DataSource</code>. This value should be identical to the value of the <code>DataSourceID</code> in the request.',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>DataSource</code>. This value should be identical to the value of the <code>DataSourceID</code> in the request.',
+    }),
   })
   .openapi({
     description: ' Represents the output of a <code>DeleteDataSource</code> operation.',
@@ -1034,27 +755,19 @@ const DeleteDataSourceOutputSchema = z
 
 const DeleteDataSourceInputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied ID that uniquely identifies the <code>DataSource</code>.',
-        }),
-    ),
+    DataSourceId: EntityIdSchema.openapi({
+      description: 'A user-supplied ID that uniquely identifies the <code>DataSource</code>.',
+    }),
   })
   .openapi({ required: ['DataSourceId'], title: 'DeleteDataSourceInput' })
   .openapi('DeleteDataSourceInput')
 
 const DeleteEvaluationOutputSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>Evaluation</code>. This value should be identical to the value of the <code>EvaluationId</code> in the request.',
-        }),
-    ).exactOptional(),
+    EvaluationId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>Evaluation</code>. This value should be identical to the value of the <code>EvaluationId</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -1065,28 +778,20 @@ const DeleteEvaluationOutputSchema = z
 
 const DeleteEvaluationInputSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>Evaluation</code> to delete.',
-        }),
-    ),
+    EvaluationId: EntityIdSchema.openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>Evaluation</code> to delete.',
+    }),
   })
   .openapi({ required: ['EvaluationId'], title: 'DeleteEvaluationInput' })
   .openapi('DeleteEvaluationInput')
 
 const DeleteMLModelOutputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>MLModel</code>. This value should be identical to the value of the <code>MLModelID</code> in the request.',
-        }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>MLModel</code>. This value should be identical to the value of the <code>MLModelID</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -1097,30 +802,22 @@ const DeleteMLModelOutputSchema = z
 
 const DeleteMLModelInputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied ID that uniquely identifies the <code>MLModel</code>.',
-        }),
-    ),
+    MLModelId: EntityIdSchema.openapi({
+      description: 'A user-supplied ID that uniquely identifies the <code>MLModel</code>.',
+    }),
   })
   .openapi({ required: ['MLModelId'], title: 'DeleteMLModelInput' })
   .openapi('DeleteMLModelInput')
 
 const DeleteRealtimeEndpointOutputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied ID that uniquely identifies the <code>MLModel</code>. This value should be identical to the value of the <code>MLModelId</code> in the request.',
-        }),
-    ).exactOptional(),
-    RealtimeEndpointInfo: RealtimeEndpointInfoSchema.and(
-      z.any().openapi({ description: 'The endpoint information of the <code>MLModel</code> ' }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A user-supplied ID that uniquely identifies the <code>MLModel</code>. This value should be identical to the value of the <code>MLModelId</code> in the request.',
+    }),
+    RealtimeEndpointInfo: RealtimeEndpointInfoSchema.exactOptional().openapi({
+      description: 'The endpoint information of the <code>MLModel</code> ',
+    }),
   })
   .openapi({
     description:
@@ -1131,23 +828,21 @@ const DeleteRealtimeEndpointOutputSchema = z
 
 const DeleteRealtimeEndpointInputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID assigned to the <code>MLModel</code> during creation.' }),
-    ),
+    MLModelId: EntityIdSchema.openapi({
+      description: 'The ID assigned to the <code>MLModel</code> during creation.',
+    }),
   })
   .openapi({ required: ['MLModelId'], title: 'DeleteRealtimeEndpointInput' })
   .openapi('DeleteRealtimeEndpointInput')
 
 const DeleteTagsOutputSchema = z
   .object({
-    ResourceId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the ML object from which tags were deleted.' }),
-    ).exactOptional(),
-    ResourceType: TaggableResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the ML object from which tags were deleted.' }),
-    ).exactOptional(),
+    ResourceId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the ML object from which tags were deleted.',
+    }),
+    ResourceType: TaggableResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the ML object from which tags were deleted.',
+    }),
   })
   .openapi({ description: 'Amazon ML returns the following elements.', required: [] })
   .openapi('DeleteTagsOutput')
@@ -1156,17 +851,13 @@ const TagKeyListSchema = z.array(TagKeySchema).max(100).openapi('TagKeyList')
 
 const DeleteTagsInputSchema = z
   .object({
-    TagKeys: TagKeyListSchema.and(z.any().openapi({ description: 'One or more tags to delete.' })),
-    ResourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the tagged ML object. For example, <code>exampleModelId</code>.',
-        }),
-    ),
-    ResourceType: TaggableResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the tagged ML object.' }),
-    ),
+    TagKeys: TagKeyListSchema.openapi({ description: 'One or more tags to delete.' }),
+    ResourceId: EntityIdSchema.openapi({
+      description: 'The ID of the tagged ML object. For example, <code>exampleModelId</code>.',
+    }),
+    ResourceType: TaggableResourceTypeSchema.openapi({
+      description: 'The type of the tagged ML object.',
+    }),
   })
   .openapi({ required: ['TagKeys', 'ResourceId', 'ResourceType'], title: 'DeleteTagsInput' })
   .openapi('DeleteTagsInput')
@@ -1201,93 +892,49 @@ const LongTypeSchema = z
 
 const BatchPredictionSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID assigned to the <code>BatchPrediction</code> at creation. This value should be identical to the value of the <code>BatchPredictionID</code> in the request. ',
-        }),
-    ).exactOptional(),
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>MLModel</code> that generated predictions for the <code>BatchPrediction</code> request.',
-        }),
-    ).exactOptional(),
-    BatchPredictionDataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DataSource</code> that points to the group of observations to predict.',
-        }),
-    ).exactOptional(),
-    InputDataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
-        }),
-    ).exactOptional(),
-    CreatedByIamUser: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS user account that invoked the <code>BatchPrediction</code>. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the <code>BatchPrediction</code> was created. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>BatchPrediction</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>BatchPrediction</code>.',
-        }),
-    ).exactOptional(),
-    Status: EntityStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the <code>BatchPrediction</code>. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to generate predictions for a batch of observations.</p> </li> <li> <p> <code>INPROGRESS</code> - The process is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to perform a batch prediction did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The batch prediction process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>BatchPrediction</code> is marked as deleted. It is not usable.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OutputUri: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The location of an Amazon S3 bucket or directory to receive the operation results. The following substrings are not allowed in the <code>s3 key</code> portion of the <code>outputURI</code> field: ':', '//', '/./', '/../'.",
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the most recent details about processing the batch prediction request.',
-        }),
-    ).exactOptional(),
+    BatchPredictionId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID assigned to the <code>BatchPrediction</code> at creation. This value should be identical to the value of the <code>BatchPredictionID</code> in the request. ',
+    }),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>MLModel</code> that generated predictions for the <code>BatchPrediction</code> request.',
+    }),
+    BatchPredictionDataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>DataSource</code> that points to the group of observations to predict.',
+    }),
+    InputDataLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
+    }),
+    CreatedByIamUser: AwsUserArnSchema.exactOptional().openapi({
+      description:
+        'The AWS user account that invoked the <code>BatchPrediction</code>. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time that the <code>BatchPrediction</code> was created. The time is expressed in epoch time.',
+    }),
+    LastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>BatchPrediction</code>. The time is expressed in epoch time.',
+    }),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>BatchPrediction</code>.',
+    }),
+    Status: EntityStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the <code>BatchPrediction</code>. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to generate predictions for a batch of observations.</p> </li> <li> <p> <code>INPROGRESS</code> - The process is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to perform a batch prediction did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The batch prediction process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>BatchPrediction</code> is marked as deleted. It is not usable.</p> </li> </ul>',
+    }),
+    OutputUri: S3UrlSchema.exactOptional().openapi({
+      description:
+        "The location of an Amazon S3 bucket or directory to receive the operation results. The following substrings are not allowed in the <code>s3 key</code> portion of the <code>outputURI</code> field: ':', '//', '/./', '/../'.",
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'A description of the most recent details about processing the batch prediction request.',
+    }),
     ComputeTime: LongTypeSchema.exactOptional(),
     FinishedAt: EpochTimeSchema.exactOptional(),
     StartedAt: EpochTimeSchema.exactOptional(),
@@ -1305,22 +952,13 @@ const BatchPredictionsSchema = z.array(BatchPredictionSchema).openapi('BatchPred
 
 const DescribeBatchPredictionsOutputSchema = z
   .object({
-    Results: BatchPredictionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>BatchPrediction</code> objects that meet the search criteria. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the next page in the paginated results that indicates at least one more page follows.',
-        }),
-    ).exactOptional(),
+    Results: BatchPredictionsSchema.exactOptional().openapi({
+      description: 'A list of <code>BatchPrediction</code> objects that meet the search criteria. ',
+    }),
+    NextToken: StringTypeSchema.exactOptional().openapi({
+      description:
+        'The ID of the next page in the paginated results that indicates at least one more page follows.',
+    }),
   })
   .openapi({
     description:
@@ -1368,89 +1006,49 @@ const PageLimitSchema = z.int().min(1).max(100).openapi('PageLimit')
 
 const DescribeBatchPredictionsInputSchema = z
   .object({
-    FilterVariable: BatchPredictionFilterVariableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following variables to filter a list of <code>BatchPrediction</code>:</p> <ul> <li> <p> <code>CreatedAt</code> - Sets the search criteria to the <code>BatchPrediction</code> creation date.</p> </li> <li> <p> <code>Status</code> - Sets the search criteria to the <code>BatchPrediction</code> status.</p> </li> <li> <p> <code>Name</code> - Sets the search criteria to the contents of the <code>BatchPrediction</code> <b> </b> <code>Name</code>.</p> </li> <li> <p> <code>IAMUser</code> - Sets the search criteria to the user account that invoked the <code>BatchPrediction</code> creation.</p> </li> <li> <p> <code>MLModelId</code> - Sets the search criteria to the <code>MLModel</code> used in the <code>BatchPrediction</code>.</p> </li> <li> <p> <code>DataSourceId</code> - Sets the search criteria to the <code>DataSource</code> used in the <code>BatchPrediction</code>.</p> </li> <li> <p> <code>DataURI</code> - Sets the search criteria to the data file(s) used in the <code>BatchPrediction</code>. The URL can identify either a file or an Amazon Simple Storage Solution (Amazon S3) bucket or directory.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    EQ: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The equal to operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that exactly match the value specified with <code>EQ</code>.',
-        }),
-    ).exactOptional(),
-    GT: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The greater than operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that are greater than the value specified with <code>GT</code>.',
-        }),
-    ).exactOptional(),
-    LT: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The less than operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that are less than the value specified with <code>LT</code>.',
-        }),
-    ).exactOptional(),
-    GE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The greater than or equal to operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that are greater than or equal to the value specified with <code>GE</code>. ',
-        }),
-    ).exactOptional(),
-    LE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The less than or equal to operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that are less than or equal to the value specified with <code>LE</code>.',
-        }),
-    ).exactOptional(),
-    NE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The not equal to operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values not equal to the value specified with <code>NE</code>.',
-        }),
-    ).exactOptional(),
-    Prefix: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that is found at the beginning of a variable, such as <code>Name</code> or <code>Id</code>.</p> <p>For example, a <code>Batch Prediction</code> operation could have the <code>Name</code> <code>2014-09-09-HolidayGiftMailer</code>. To search for this <code>BatchPrediction</code>, select <code>Name</code> for the <code>FilterVariable</code> and any of the following strings for the <code>Prefix</code>: </p> <ul> <li> <p>2014-09</p> </li> <li> <p>2014-09-09</p> </li> <li> <p>2014-09-09-Holiday</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A two-value parameter that determines the sequence of the resulting list of <code>MLModel</code>s.</p> <ul> <li> <p> <code>asc</code> - Arranges the list in ascending order (A-Z, 0-9).</p> </li> <li> <p> <code>dsc</code> - Arranges the list in descending order (Z-A, 9-0).</p> </li> </ul> <p>Results are sorted by <code>FilterVariable</code>.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: StringTypeSchema.and(
-      z.any().openapi({ description: 'An ID of the page in the paginated results.' }),
-    ).exactOptional(),
-    Limit: PageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of pages of information to include in the result. The range of acceptable values is <code>1</code> through <code>100</code>. The default value is <code>100</code>.',
-        }),
-    ).exactOptional(),
+    FilterVariable: BatchPredictionFilterVariableSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following variables to filter a list of <code>BatchPrediction</code>:</p> <ul> <li> <p> <code>CreatedAt</code> - Sets the search criteria to the <code>BatchPrediction</code> creation date.</p> </li> <li> <p> <code>Status</code> - Sets the search criteria to the <code>BatchPrediction</code> status.</p> </li> <li> <p> <code>Name</code> - Sets the search criteria to the contents of the <code>BatchPrediction</code> <b> </b> <code>Name</code>.</p> </li> <li> <p> <code>IAMUser</code> - Sets the search criteria to the user account that invoked the <code>BatchPrediction</code> creation.</p> </li> <li> <p> <code>MLModelId</code> - Sets the search criteria to the <code>MLModel</code> used in the <code>BatchPrediction</code>.</p> </li> <li> <p> <code>DataSourceId</code> - Sets the search criteria to the <code>DataSource</code> used in the <code>BatchPrediction</code>.</p> </li> <li> <p> <code>DataURI</code> - Sets the search criteria to the data file(s) used in the <code>BatchPrediction</code>. The URL can identify either a file or an Amazon Simple Storage Solution (Amazon S3) bucket or directory.</p> </li> </ul>',
+    }),
+    EQ: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The equal to operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that exactly match the value specified with <code>EQ</code>.',
+    }),
+    GT: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The greater than operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that are greater than the value specified with <code>GT</code>.',
+    }),
+    LT: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The less than operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that are less than the value specified with <code>LT</code>.',
+    }),
+    GE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The greater than or equal to operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that are greater than or equal to the value specified with <code>GE</code>. ',
+    }),
+    LE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The less than or equal to operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values that are less than or equal to the value specified with <code>LE</code>.',
+    }),
+    NE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The not equal to operator. The <code>BatchPrediction</code> results will have <code>FilterVariable</code> values not equal to the value specified with <code>NE</code>.',
+    }),
+    Prefix: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        '<p>A string that is found at the beginning of a variable, such as <code>Name</code> or <code>Id</code>.</p> <p>For example, a <code>Batch Prediction</code> operation could have the <code>Name</code> <code>2014-09-09-HolidayGiftMailer</code>. To search for this <code>BatchPrediction</code>, select <code>Name</code> for the <code>FilterVariable</code> and any of the following strings for the <code>Prefix</code>: </p> <ul> <li> <p>2014-09</p> </li> <li> <p>2014-09-09</p> </li> <li> <p>2014-09-09-Holiday</p> </li> </ul>',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        '<p>A two-value parameter that determines the sequence of the resulting list of <code>MLModel</code>s.</p> <ul> <li> <p> <code>asc</code> - Arranges the list in ascending order (A-Z, 0-9).</p> </li> <li> <p> <code>dsc</code> - Arranges the list in descending order (Z-A, 9-0).</p> </li> </ul> <p>Results are sorted by <code>FilterVariable</code>.</p>',
+    }),
+    NextToken: StringTypeSchema.exactOptional().openapi({
+      description: 'An ID of the page in the paginated results.',
+    }),
+    Limit: PageLimitSchema.exactOptional().openapi({
+      description:
+        'The number of pages of information to include in the result. The range of acceptable values is <code>1</code> through <code>100</code>. The default value is <code>100</code>.',
+    }),
   })
   .openapi({ title: 'DescribeBatchPredictionsInput', required: [] })
   .openapi('DescribeBatchPredictionsInput')
@@ -1459,14 +1057,10 @@ const RedshiftMetadataSchema = z
   .object({
     RedshiftDatabase: RedshiftDatabaseSchema.exactOptional(),
     DatabaseUserName: RedshiftDatabaseUsernameSchema.exactOptional(),
-    SelectSqlQuery: RedshiftSelectSqlQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The SQL query that is specified during <a>CreateDataSourceFromRedshift</a>. Returns only if <code>Verbose</code> is true in GetDataSourceInput. ',
-        }),
-    ).exactOptional(),
+    SelectSqlQuery: RedshiftSelectSqlQuerySchema.exactOptional().openapi({
+      description:
+        ' The SQL query that is specified during <a>CreateDataSourceFromRedshift</a>. Returns only if <code>Verbose</code> is true in GetDataSourceInput. ',
+    }),
   })
   .openapi({
     description: 'Describes the <code>DataSource</code> details specific to Amazon Redshift.',
@@ -1478,146 +1072,80 @@ const EDPPipelineIdSchema = z.string().min(1).max(1024).openapi('EDPPipelineId')
 
 const RDSMetadataSchema = z
   .object({
-    Database: RDSDatabaseSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The database details required to connect to an Amazon RDS.' }),
-    ).exactOptional(),
+    Database: RDSDatabaseSchema.exactOptional().openapi({
+      description: 'The database details required to connect to an Amazon RDS.',
+    }),
     DatabaseUserName: RDSDatabaseUsernameSchema.exactOptional(),
-    SelectSqlQuery: RDSSelectSqlQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SQL query that is supplied during <a>CreateDataSourceFromRDS</a>. Returns only if <code>Verbose</code> is true in <code>GetDataSourceInput</code>. ',
-        }),
-    ).exactOptional(),
-    ResourceRole: EDPResourceRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role (DataPipelineDefaultResourceRole) assumed by an Amazon EC2 instance to carry out the copy task from Amazon RDS to Amazon S3. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.',
-        }),
-    ).exactOptional(),
-    ServiceRole: EDPServiceRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role (DataPipelineDefaultRole) assumed by the Data Pipeline service to monitor the progress of the copy task from Amazon RDS to Amazon S3. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.',
-        }),
-    ).exactOptional(),
-    DataPipelineId: EDPPipelineIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Data Pipeline instance that is used to carry to copy data from Amazon RDS to Amazon S3. You can use the ID to find details about the instance in the Data Pipeline console.',
-        }),
-    ).exactOptional(),
+    SelectSqlQuery: RDSSelectSqlQuerySchema.exactOptional().openapi({
+      description:
+        'The SQL query that is supplied during <a>CreateDataSourceFromRDS</a>. Returns only if <code>Verbose</code> is true in <code>GetDataSourceInput</code>. ',
+    }),
+    ResourceRole: EDPResourceRoleSchema.exactOptional().openapi({
+      description:
+        'The role (DataPipelineDefaultResourceRole) assumed by an Amazon EC2 instance to carry out the copy task from Amazon RDS to Amazon S3. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.',
+    }),
+    ServiceRole: EDPServiceRoleSchema.exactOptional().openapi({
+      description:
+        'The role (DataPipelineDefaultRole) assumed by the Data Pipeline service to monitor the progress of the copy task from Amazon RDS to Amazon S3. For more information, see <a href="https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html">Role templates</a> for data pipelines.',
+    }),
+    DataPipelineId: EDPPipelineIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the Data Pipeline instance that is used to carry to copy data from Amazon RDS to Amazon S3. You can use the ID to find details about the instance in the Data Pipeline console.',
+    }),
   })
   .openapi({ description: 'The datasource details that are specific to Amazon RDS.', required: [] })
   .openapi('RDSMetadata')
 
 const DataSourceSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID that is assigned to the <code>DataSource</code> during creation.',
-        }),
-    ).exactOptional(),
-    DataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location and name of the data in Amazon Simple Storage Service (Amazon S3) that is used by a <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
-    DataRearrangement: DataRearrangementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON string that represents the splitting and rearrangement requirement used when this <code>DataSource</code> was created.',
-        }),
-    ).exactOptional(),
-    CreatedByIamUser: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS user account from which the <code>DataSource</code> was created. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the <code>DataSource</code> was created. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>BatchPrediction</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    DataSizeInBytes: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of observations contained in the data files that the <code>DataSource</code> references.',
-        }),
-    ).exactOptional(),
-    NumberOfFiles: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of data files referenced by the <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
-    Status: EntityStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the <code>DataSource</code>. This element can have one of the following values: </p> <ul> <li> <p>PENDING - Amazon Machine Learning (Amazon ML) submitted a request to create a <code>DataSource</code>.</p> </li> <li> <p>INPROGRESS - The creation process is underway.</p> </li> <li> <p>FAILED - The request to create a <code>DataSource</code> did not run to completion. It is not usable.</p> </li> <li> <p>COMPLETED - The creation process completed successfully.</p> </li> <li> <p>DELETED - The <code>DataSource</code> is marked as deleted. It is not usable.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the most recent details about creating the <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID that is assigned to the <code>DataSource</code> during creation.',
+    }),
+    DataLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location and name of the data in Amazon Simple Storage Service (Amazon S3) that is used by a <code>DataSource</code>.',
+    }),
+    DataRearrangement: DataRearrangementSchema.exactOptional().openapi({
+      description:
+        'A JSON string that represents the splitting and rearrangement requirement used when this <code>DataSource</code> was created.',
+    }),
+    CreatedByIamUser: AwsUserArnSchema.exactOptional().openapi({
+      description:
+        'The AWS user account from which the <code>DataSource</code> was created. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time that the <code>DataSource</code> was created. The time is expressed in epoch time.',
+    }),
+    LastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>BatchPrediction</code>. The time is expressed in epoch time.',
+    }),
+    DataSizeInBytes: LongTypeSchema.exactOptional().openapi({
+      description:
+        'The total number of observations contained in the data files that the <code>DataSource</code> references.',
+    }),
+    NumberOfFiles: LongTypeSchema.exactOptional().openapi({
+      description: 'The number of data files referenced by the <code>DataSource</code>.',
+    }),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>DataSource</code>.',
+    }),
+    Status: EntityStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the <code>DataSource</code>. This element can have one of the following values: </p> <ul> <li> <p>PENDING - Amazon Machine Learning (Amazon ML) submitted a request to create a <code>DataSource</code>.</p> </li> <li> <p>INPROGRESS - The creation process is underway.</p> </li> <li> <p>FAILED - The request to create a <code>DataSource</code> did not run to completion. It is not usable.</p> </li> <li> <p>COMPLETED - The creation process completed successfully.</p> </li> <li> <p>DELETED - The <code>DataSource</code> is marked as deleted. It is not usable.</p> </li> </ul>',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'A description of the most recent details about creating the <code>DataSource</code>.',
+    }),
     RedshiftMetadata: RedshiftMetadataSchema.exactOptional(),
     RDSMetadata: RDSMetadataSchema.exactOptional(),
     RoleARN: RoleARNSchema.exactOptional(),
-    ComputeStatistics: ComputeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The parameter is <code>true</code> if statistics need to be generated from the observation data. ',
-        }),
-    ).exactOptional(),
+    ComputeStatistics: ComputeStatisticsSchema.exactOptional().openapi({
+      description:
+        ' The parameter is <code>true</code> if statistics need to be generated from the observation data. ',
+    }),
     ComputeTime: LongTypeSchema.exactOptional(),
     FinishedAt: EpochTimeSchema.exactOptional(),
     StartedAt: EpochTimeSchema.exactOptional(),
@@ -1633,21 +1161,13 @@ const DataSourcesSchema = z.array(DataSourceSchema).openapi('DataSources')
 
 const DescribeDataSourcesOutputSchema = z
   .object({
-    Results: DataSourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code>DataSource</code> that meet the search criteria. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ID of the next page in the paginated results that indicates at least one more page follows.',
-        }),
-    ).exactOptional(),
+    Results: DataSourcesSchema.exactOptional().openapi({
+      description: 'A list of <code>DataSource</code> that meet the search criteria. ',
+    }),
+    NextToken: StringTypeSchema.exactOptional().openapi({
+      description:
+        'An ID of the next page in the paginated results that indicates at least one more page follows.',
+    }),
   })
   .openapi({
     description:
@@ -1666,88 +1186,48 @@ const DataSourceFilterVariableSchema = z
 
 const DescribeDataSourcesInputSchema = z
   .object({
-    FilterVariable: DataSourceFilterVariableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following variables to filter a list of <code>DataSource</code>:</p> <ul> <li> <p> <code>CreatedAt</code> - Sets the search criteria to <code>DataSource</code> creation dates.</p> </li> <li> <p> <code>Status</code> - Sets the search criteria to <code>DataSource</code> statuses.</p> </li> <li> <p> <code>Name</code> - Sets the search criteria to the contents of <code>DataSource</code> <code>Name</code>.</p> </li> <li> <p> <code>DataUri</code> - Sets the search criteria to the URI of data files used to create the <code>DataSource</code>. The URI can identify either a file or an Amazon Simple Storage Service (Amazon S3) bucket or directory.</p> </li> <li> <p> <code>IAMUser</code> - Sets the search criteria to the user account that invoked the <code>DataSource</code> creation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    EQ: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The equal to operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that exactly match the value specified with <code>EQ</code>.',
-        }),
-    ).exactOptional(),
-    GT: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The greater than operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that are greater than the value specified with <code>GT</code>.',
-        }),
-    ).exactOptional(),
-    LT: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The less than operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that are less than the value specified with <code>LT</code>.',
-        }),
-    ).exactOptional(),
-    GE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The greater than or equal to operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that are greater than or equal to the value specified with <code>GE</code>. ',
-        }),
-    ).exactOptional(),
-    LE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The less than or equal to operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that are less than or equal to the value specified with <code>LE</code>.',
-        }),
-    ).exactOptional(),
-    NE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The not equal to operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values not equal to the value specified with <code>NE</code>.',
-        }),
-    ).exactOptional(),
-    Prefix: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that is found at the beginning of a variable, such as <code>Name</code> or <code>Id</code>.</p> <p>For example, a <code>DataSource</code> could have the <code>Name</code> <code>2014-09-09-HolidayGiftMailer</code>. To search for this <code>DataSource</code>, select <code>Name</code> for the <code>FilterVariable</code> and any of the following strings for the <code>Prefix</code>: </p> <ul> <li> <p>2014-09</p> </li> <li> <p>2014-09-09</p> </li> <li> <p>2014-09-09-Holiday</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A two-value parameter that determines the sequence of the resulting list of <code>DataSource</code>.</p> <ul> <li> <p> <code>asc</code> - Arranges the list in ascending order (A-Z, 0-9).</p> </li> <li> <p> <code>dsc</code> - Arranges the list in descending order (Z-A, 9-0).</p> </li> </ul> <p>Results are sorted by <code>FilterVariable</code>.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: StringTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the page in the paginated results.' }),
-    ).exactOptional(),
-    Limit: PageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The maximum number of <code>DataSource</code> to include in the result.',
-        }),
-    ).exactOptional(),
+    FilterVariable: DataSourceFilterVariableSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following variables to filter a list of <code>DataSource</code>:</p> <ul> <li> <p> <code>CreatedAt</code> - Sets the search criteria to <code>DataSource</code> creation dates.</p> </li> <li> <p> <code>Status</code> - Sets the search criteria to <code>DataSource</code> statuses.</p> </li> <li> <p> <code>Name</code> - Sets the search criteria to the contents of <code>DataSource</code> <code>Name</code>.</p> </li> <li> <p> <code>DataUri</code> - Sets the search criteria to the URI of data files used to create the <code>DataSource</code>. The URI can identify either a file or an Amazon Simple Storage Service (Amazon S3) bucket or directory.</p> </li> <li> <p> <code>IAMUser</code> - Sets the search criteria to the user account that invoked the <code>DataSource</code> creation.</p> </li> </ul>',
+    }),
+    EQ: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The equal to operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that exactly match the value specified with <code>EQ</code>.',
+    }),
+    GT: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The greater than operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that are greater than the value specified with <code>GT</code>.',
+    }),
+    LT: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The less than operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that are less than the value specified with <code>LT</code>.',
+    }),
+    GE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The greater than or equal to operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that are greater than or equal to the value specified with <code>GE</code>. ',
+    }),
+    LE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The less than or equal to operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values that are less than or equal to the value specified with <code>LE</code>.',
+    }),
+    NE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The not equal to operator. The <code>DataSource</code> results will have <code>FilterVariable</code> values not equal to the value specified with <code>NE</code>.',
+    }),
+    Prefix: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        '<p>A string that is found at the beginning of a variable, such as <code>Name</code> or <code>Id</code>.</p> <p>For example, a <code>DataSource</code> could have the <code>Name</code> <code>2014-09-09-HolidayGiftMailer</code>. To search for this <code>DataSource</code>, select <code>Name</code> for the <code>FilterVariable</code> and any of the following strings for the <code>Prefix</code>: </p> <ul> <li> <p>2014-09</p> </li> <li> <p>2014-09-09</p> </li> <li> <p>2014-09-09-Holiday</p> </li> </ul>',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        '<p>A two-value parameter that determines the sequence of the resulting list of <code>DataSource</code>.</p> <ul> <li> <p> <code>asc</code> - Arranges the list in ascending order (A-Z, 0-9).</p> </li> <li> <p> <code>dsc</code> - Arranges the list in descending order (Z-A, 9-0).</p> </li> </ul> <p>Results are sorted by <code>FilterVariable</code>.</p>',
+    }),
+    NextToken: StringTypeSchema.exactOptional().openapi({
+      description: 'The ID of the page in the paginated results.',
+    }),
+    Limit: PageLimitSchema.exactOptional().openapi({
+      description: ' The maximum number of <code>DataSource</code> to include in the result.',
+    }),
   })
   .openapi({ title: 'DescribeDataSourcesInput', required: [] })
   .openapi('DescribeDataSourcesInput')
@@ -1769,91 +1249,47 @@ const PerformanceMetricsSchema = z
 
 const EvaluationSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID that is assigned to the <code>Evaluation</code> at creation.',
-        }),
-    ).exactOptional(),
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the <code>MLModel</code> that is the focus of the evaluation.',
-        }),
-    ).exactOptional(),
-    EvaluationDataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DataSource</code> that is used to evaluate the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
-    InputDataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location and name of the data in Amazon Simple Storage Server (Amazon S3) that is used in the evaluation.',
-        }),
-    ).exactOptional(),
-    CreatedByIamUser: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS user account that invoked the evaluation. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the <code>Evaluation</code> was created. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>Evaluation</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>Evaluation</code>. ',
-        }),
-    ).exactOptional(),
-    Status: EntityStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the evaluation. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to evaluate an <code>MLModel</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The evaluation is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to evaluate an <code>MLModel</code> did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The evaluation process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>Evaluation</code> is marked as deleted. It is not usable.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PerformanceMetrics: PerformanceMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Measurements of how well the <code>MLModel</code> performed, using observations referenced by the <code>DataSource</code>. One of the following metrics is returned, based on the type of the <code>MLModel</code>: </p> <ul> <li> <p>BinaryAUC: A binary <code>MLModel</code> uses the Area Under the Curve (AUC) technique to measure performance. </p> </li> <li> <p>RegressionRMSE: A regression <code>MLModel</code> uses the Root Mean Square Error (RMSE) technique to measure performance. RMSE measures the difference between predicted and actual values for a single variable.</p> </li> <li> <p>MulticlassAvgFScore: A multiclass <code>MLModel</code> uses the F1 score technique to measure performance. </p> </li> </ul> <p> For more information about performance metrics, please see the <a href="https://docs.aws.amazon.com/machine-learning/latest/dg">Amazon Machine Learning Developer Guide</a>. </p>',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the most recent details about evaluating the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
+    EvaluationId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID that is assigned to the <code>Evaluation</code> at creation.',
+    }),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the <code>MLModel</code> that is the focus of the evaluation.',
+    }),
+    EvaluationDataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>DataSource</code> that is used to evaluate the <code>MLModel</code>.',
+    }),
+    InputDataLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location and name of the data in Amazon Simple Storage Server (Amazon S3) that is used in the evaluation.',
+    }),
+    CreatedByIamUser: AwsUserArnSchema.exactOptional().openapi({
+      description:
+        'The AWS user account that invoked the evaluation. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time that the <code>Evaluation</code> was created. The time is expressed in epoch time.',
+    }),
+    LastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>Evaluation</code>. The time is expressed in epoch time.',
+    }),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>Evaluation</code>. ',
+    }),
+    Status: EntityStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the evaluation. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to evaluate an <code>MLModel</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The evaluation is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to evaluate an <code>MLModel</code> did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The evaluation process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>Evaluation</code> is marked as deleted. It is not usable.</p> </li> </ul>',
+    }),
+    PerformanceMetrics: PerformanceMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>Measurements of how well the <code>MLModel</code> performed, using observations referenced by the <code>DataSource</code>. One of the following metrics is returned, based on the type of the <code>MLModel</code>: </p> <ul> <li> <p>BinaryAUC: A binary <code>MLModel</code> uses the Area Under the Curve (AUC) technique to measure performance. </p> </li> <li> <p>RegressionRMSE: A regression <code>MLModel</code> uses the Root Mean Square Error (RMSE) technique to measure performance. RMSE measures the difference between predicted and actual values for a single variable.</p> </li> <li> <p>MulticlassAvgFScore: A multiclass <code>MLModel</code> uses the F1 score technique to measure performance. </p> </li> </ul> <p> For more information about performance metrics, please see the <a href="https://docs.aws.amazon.com/machine-learning/latest/dg">Amazon Machine Learning Developer Guide</a>. </p>',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'A description of the most recent details about evaluating the <code>MLModel</code>.',
+    }),
     ComputeTime: LongTypeSchema.exactOptional(),
     FinishedAt: EpochTimeSchema.exactOptional(),
     StartedAt: EpochTimeSchema.exactOptional(),
@@ -1869,21 +1305,13 @@ const EvaluationsSchema = z.array(EvaluationSchema).openapi('Evaluations')
 
 const DescribeEvaluationsOutputSchema = z
   .object({
-    Results: EvaluationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code>Evaluation</code> that meet the search criteria. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the next page in the paginated results that indicates at least one more page follows.',
-        }),
-    ).exactOptional(),
+    Results: EvaluationsSchema.exactOptional().openapi({
+      description: 'A list of <code>Evaluation</code> that meet the search criteria. ',
+    }),
+    NextToken: StringTypeSchema.exactOptional().openapi({
+      description:
+        'The ID of the next page in the paginated results that indicates at least one more page follows.',
+    }),
   })
   .openapi({
     description:
@@ -1911,88 +1339,48 @@ const EvaluationFilterVariableSchema = z
 
 const DescribeEvaluationsInputSchema = z
   .object({
-    FilterVariable: EvaluationFilterVariableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following variable to filter a list of <code>Evaluation</code> objects:</p> <ul> <li> <p> <code>CreatedAt</code> - Sets the search criteria to the <code>Evaluation</code> creation date.</p> </li> <li> <p> <code>Status</code> - Sets the search criteria to the <code>Evaluation</code> status.</p> </li> <li> <p> <code>Name</code> - Sets the search criteria to the contents of <code>Evaluation</code> <b> </b> <code>Name</code>.</p> </li> <li> <p> <code>IAMUser</code> - Sets the search criteria to the user account that invoked an <code>Evaluation</code>.</p> </li> <li> <p> <code>MLModelId</code> - Sets the search criteria to the <code>MLModel</code> that was evaluated.</p> </li> <li> <p> <code>DataSourceId</code> - Sets the search criteria to the <code>DataSource</code> used in <code>Evaluation</code>.</p> </li> <li> <p> <code>DataUri</code> - Sets the search criteria to the data file(s) used in <code>Evaluation</code>. The URL can identify either a file or an Amazon Simple Storage Solution (Amazon S3) bucket or directory.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    EQ: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The equal to operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that exactly match the value specified with <code>EQ</code>.',
-        }),
-    ).exactOptional(),
-    GT: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The greater than operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that are greater than the value specified with <code>GT</code>.',
-        }),
-    ).exactOptional(),
-    LT: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The less than operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that are less than the value specified with <code>LT</code>.',
-        }),
-    ).exactOptional(),
-    GE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The greater than or equal to operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that are greater than or equal to the value specified with <code>GE</code>. ',
-        }),
-    ).exactOptional(),
-    LE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The less than or equal to operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that are less than or equal to the value specified with <code>LE</code>.',
-        }),
-    ).exactOptional(),
-    NE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The not equal to operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values not equal to the value specified with <code>NE</code>.',
-        }),
-    ).exactOptional(),
-    Prefix: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that is found at the beginning of a variable, such as <code>Name</code> or <code>Id</code>.</p> <p>For example, an <code>Evaluation</code> could have the <code>Name</code> <code>2014-09-09-HolidayGiftMailer</code>. To search for this <code>Evaluation</code>, select <code>Name</code> for the <code>FilterVariable</code> and any of the following strings for the <code>Prefix</code>: </p> <ul> <li> <p>2014-09</p> </li> <li> <p>2014-09-09</p> </li> <li> <p>2014-09-09-Holiday</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A two-value parameter that determines the sequence of the resulting list of <code>Evaluation</code>.</p> <ul> <li> <p> <code>asc</code> - Arranges the list in ascending order (A-Z, 0-9).</p> </li> <li> <p> <code>dsc</code> - Arranges the list in descending order (Z-A, 9-0).</p> </li> </ul> <p>Results are sorted by <code>FilterVariable</code>.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: StringTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the page in the paginated results.' }),
-    ).exactOptional(),
-    Limit: PageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The maximum number of <code>Evaluation</code> to include in the result.',
-        }),
-    ).exactOptional(),
+    FilterVariable: EvaluationFilterVariableSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following variable to filter a list of <code>Evaluation</code> objects:</p> <ul> <li> <p> <code>CreatedAt</code> - Sets the search criteria to the <code>Evaluation</code> creation date.</p> </li> <li> <p> <code>Status</code> - Sets the search criteria to the <code>Evaluation</code> status.</p> </li> <li> <p> <code>Name</code> - Sets the search criteria to the contents of <code>Evaluation</code> <b> </b> <code>Name</code>.</p> </li> <li> <p> <code>IAMUser</code> - Sets the search criteria to the user account that invoked an <code>Evaluation</code>.</p> </li> <li> <p> <code>MLModelId</code> - Sets the search criteria to the <code>MLModel</code> that was evaluated.</p> </li> <li> <p> <code>DataSourceId</code> - Sets the search criteria to the <code>DataSource</code> used in <code>Evaluation</code>.</p> </li> <li> <p> <code>DataUri</code> - Sets the search criteria to the data file(s) used in <code>Evaluation</code>. The URL can identify either a file or an Amazon Simple Storage Solution (Amazon S3) bucket or directory.</p> </li> </ul>',
+    }),
+    EQ: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The equal to operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that exactly match the value specified with <code>EQ</code>.',
+    }),
+    GT: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The greater than operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that are greater than the value specified with <code>GT</code>.',
+    }),
+    LT: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The less than operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that are less than the value specified with <code>LT</code>.',
+    }),
+    GE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The greater than or equal to operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that are greater than or equal to the value specified with <code>GE</code>. ',
+    }),
+    LE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The less than or equal to operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values that are less than or equal to the value specified with <code>LE</code>.',
+    }),
+    NE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The not equal to operator. The <code>Evaluation</code> results will have <code>FilterVariable</code> values not equal to the value specified with <code>NE</code>.',
+    }),
+    Prefix: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        '<p>A string that is found at the beginning of a variable, such as <code>Name</code> or <code>Id</code>.</p> <p>For example, an <code>Evaluation</code> could have the <code>Name</code> <code>2014-09-09-HolidayGiftMailer</code>. To search for this <code>Evaluation</code>, select <code>Name</code> for the <code>FilterVariable</code> and any of the following strings for the <code>Prefix</code>: </p> <ul> <li> <p>2014-09</p> </li> <li> <p>2014-09-09</p> </li> <li> <p>2014-09-09-Holiday</p> </li> </ul>',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        '<p>A two-value parameter that determines the sequence of the resulting list of <code>Evaluation</code>.</p> <ul> <li> <p> <code>asc</code> - Arranges the list in ascending order (A-Z, 0-9).</p> </li> <li> <p> <code>dsc</code> - Arranges the list in descending order (Z-A, 9-0).</p> </li> </ul> <p>Results are sorted by <code>FilterVariable</code>.</p>',
+    }),
+    NextToken: StringTypeSchema.exactOptional().openapi({
+      description: 'The ID of the page in the paginated results.',
+    }),
+    Limit: PageLimitSchema.exactOptional().openapi({
+      description: ' The maximum number of <code>Evaluation</code> to include in the result.',
+    }),
   })
   .openapi({ title: 'DescribeEvaluationsInput', required: [] })
   .openapi('DescribeEvaluationsInput')
@@ -2011,109 +1399,61 @@ const ScoreThresholdSchema = z.float32().openapi('ScoreThreshold')
 
 const MLModelSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to the <code>MLModel</code> at creation.' }),
-    ).exactOptional(),
-    TrainingDataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the training <code>DataSource</code>. The <code>CreateMLModel</code> operation uses the <code>TrainingDataSourceId</code>.',
-        }),
-    ).exactOptional(),
-    CreatedByIamUser: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS user account from which the <code>MLModel</code> was created. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the <code>MLModel</code> was created. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>MLModel</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    Name: MLModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
-    Status: EntityStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The current status of an <code>MLModel</code>. This element can have one of the following values: </p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to create an <code>MLModel</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The creation process is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to create an <code>MLModel</code> didn't run to completion. The model isn't usable.</p> </li> <li> <p> <code>COMPLETED</code> - The creation process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>MLModel</code> is marked as deleted. It isn't usable.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID assigned to the <code>MLModel</code> at creation.',
+    }),
+    TrainingDataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the training <code>DataSource</code>. The <code>CreateMLModel</code> operation uses the <code>TrainingDataSourceId</code>.',
+    }),
+    CreatedByIamUser: AwsUserArnSchema.exactOptional().openapi({
+      description:
+        'The AWS user account from which the <code>MLModel</code> was created. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time that the <code>MLModel</code> was created. The time is expressed in epoch time.',
+    }),
+    LastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>MLModel</code>. The time is expressed in epoch time.',
+    }),
+    Name: MLModelNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>MLModel</code>.',
+    }),
+    Status: EntityStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The current status of an <code>MLModel</code>. This element can have one of the following values: </p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to create an <code>MLModel</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The creation process is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to create an <code>MLModel</code> didn't run to completion. The model isn't usable.</p> </li> <li> <p> <code>COMPLETED</code> - The creation process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>MLModel</code> is marked as deleted. It isn't usable.</p> </li> </ul>",
+    }),
     SizeInBytes: LongTypeSchema.exactOptional(),
-    EndpointInfo: RealtimeEndpointInfoSchema.and(
-      z.any().openapi({ description: 'The current endpoint of the <code>MLModel</code>.' }),
-    ).exactOptional(),
-    TrainingParameters: TrainingParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of the training parameters in the <code>MLModel</code>. The list is implemented as a map of key-value pairs.</p> <p>The following is the current set of training parameters:</p> <ul> <li> <p> <code>sgd.maxMLModelSizeInBytes</code> - The maximum allowed size of the model. Depending on the input data, the size of the model might affect its performance.</p> <p> The value is an integer that ranges from <code>100000</code> to <code>2147483648</code>. The default value is <code>33554432</code>.</p> </li> <li> <p> <code>sgd.maxPasses</code> - The number of times that the training process traverses the observations to build the <code>MLModel</code>. The value is an integer that ranges from <code>1</code> to <code>10000</code>. The default value is <code>10</code>.</p> </li> <li> <p> <code>sgd.shuffleType</code> - Whether Amazon ML shuffles the training data. Shuffling the data improves a model's ability to find the optimal solution for a variety of data types. The valid values are <code>auto</code> and <code>none</code>. The default value is <code>none</code>.</p> </li> <li> <p> <code>sgd.l1RegularizationAmount</code> - The coefficient regularization L1 norm, which controls overfitting the data by penalizing large coefficients. This parameter tends to drive coefficients to zero, resulting in sparse feature set. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L1 normalization. This parameter can't be used when <code>L2</code> is specified. Use this parameter sparingly.</p> </li> <li> <p> <code>sgd.l2RegularizationAmount</code> - The coefficient regularization L2 norm, which controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to small, nonzero values. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L2 normalization. This parameter can't be used when <code>L1</code> is specified. Use this parameter sparingly.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    InputDataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
-        }),
-    ).exactOptional(),
-    Algorithm: AlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The algorithm used to train the <code>MLModel</code>. The following algorithm is supported:</p> <ul> <li> <p> <code>SGD</code> -- Stochastic gradient descent. The goal of <code>SGD</code> is to minimize the gradient of the loss function. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MLModelType: MLModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the <code>MLModel</code> category. The following are the available types:</p> <ul> <li> <p> <code>REGRESSION</code> - Produces a numeric result. For example, "What price should a house be listed at?"</p> </li> <li> <p> <code>BINARY</code> - Produces one of two possible results. For example, "Is this a child-friendly web site?".</p> </li> <li> <p> <code>MULTICLASS</code> - Produces one of several possible results. For example, "Is this a HIGH-, LOW-, or MEDIUM-risk trade?".</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    EndpointInfo: RealtimeEndpointInfoSchema.exactOptional().openapi({
+      description: 'The current endpoint of the <code>MLModel</code>.',
+    }),
+    TrainingParameters: TrainingParametersSchema.exactOptional().openapi({
+      description:
+        "<p>A list of the training parameters in the <code>MLModel</code>. The list is implemented as a map of key-value pairs.</p> <p>The following is the current set of training parameters:</p> <ul> <li> <p> <code>sgd.maxMLModelSizeInBytes</code> - The maximum allowed size of the model. Depending on the input data, the size of the model might affect its performance.</p> <p> The value is an integer that ranges from <code>100000</code> to <code>2147483648</code>. The default value is <code>33554432</code>.</p> </li> <li> <p> <code>sgd.maxPasses</code> - The number of times that the training process traverses the observations to build the <code>MLModel</code>. The value is an integer that ranges from <code>1</code> to <code>10000</code>. The default value is <code>10</code>.</p> </li> <li> <p> <code>sgd.shuffleType</code> - Whether Amazon ML shuffles the training data. Shuffling the data improves a model's ability to find the optimal solution for a variety of data types. The valid values are <code>auto</code> and <code>none</code>. The default value is <code>none</code>.</p> </li> <li> <p> <code>sgd.l1RegularizationAmount</code> - The coefficient regularization L1 norm, which controls overfitting the data by penalizing large coefficients. This parameter tends to drive coefficients to zero, resulting in sparse feature set. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L1 normalization. This parameter can't be used when <code>L2</code> is specified. Use this parameter sparingly.</p> </li> <li> <p> <code>sgd.l2RegularizationAmount</code> - The coefficient regularization L2 norm, which controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to small, nonzero values. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L2 normalization. This parameter can't be used when <code>L1</code> is specified. Use this parameter sparingly.</p> </li> </ul>",
+    }),
+    InputDataLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
+    }),
+    Algorithm: AlgorithmSchema.exactOptional().openapi({
+      description:
+        '<p>The algorithm used to train the <code>MLModel</code>. The following algorithm is supported:</p> <ul> <li> <p> <code>SGD</code> -- Stochastic gradient descent. The goal of <code>SGD</code> is to minimize the gradient of the loss function. </p> </li> </ul>',
+    }),
+    MLModelType: MLModelTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Identifies the <code>MLModel</code> category. The following are the available types:</p> <ul> <li> <p> <code>REGRESSION</code> - Produces a numeric result. For example, "What price should a house be listed at?"</p> </li> <li> <p> <code>BINARY</code> - Produces one of two possible results. For example, "Is this a child-friendly web site?".</p> </li> <li> <p> <code>MULTICLASS</code> - Produces one of several possible results. For example, "Is this a HIGH-, LOW-, or MEDIUM-risk trade?".</p> </li> </ul>',
+    }),
     ScoreThreshold: ScoreThresholdSchema.exactOptional(),
-    ScoreThresholdLastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>ScoreThreshold</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the most recent details about accessing the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
+    ScoreThresholdLastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>ScoreThreshold</code>. The time is expressed in epoch time.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'A description of the most recent details about accessing the <code>MLModel</code>.',
+    }),
     ComputeTime: LongTypeSchema.exactOptional(),
     FinishedAt: EpochTimeSchema.exactOptional(),
     StartedAt: EpochTimeSchema.exactOptional(),
@@ -2129,19 +1469,13 @@ const MLModelsSchema = z.array(MLModelSchema).openapi('MLModels')
 
 const DescribeMLModelsOutputSchema = z
   .object({
-    Results: MLModelsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>MLModel</code> that meet the search criteria.' }),
-    ).exactOptional(),
-    NextToken: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the next page in the paginated results that indicates at least one more page follows.',
-        }),
-    ).exactOptional(),
+    Results: MLModelsSchema.exactOptional().openapi({
+      description: 'A list of <code>MLModel</code> that meet the search criteria.',
+    }),
+    NextToken: StringTypeSchema.exactOptional().openapi({
+      description:
+        'The ID of the next page in the paginated results that indicates at least one more page follows.',
+    }),
   })
   .openapi({
     description:
@@ -2167,120 +1501,74 @@ const MLModelFilterVariableSchema = z
 
 const DescribeMLModelsInputSchema = z
   .object({
-    FilterVariable: MLModelFilterVariableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following variables to filter a list of <code>MLModel</code>:</p> <ul> <li> <p> <code>CreatedAt</code> - Sets the search criteria to <code>MLModel</code> creation date.</p> </li> <li> <p> <code>Status</code> - Sets the search criteria to <code>MLModel</code> status.</p> </li> <li> <p> <code>Name</code> - Sets the search criteria to the contents of <code>MLModel</code> <b> </b> <code>Name</code>.</p> </li> <li> <p> <code>IAMUser</code> - Sets the search criteria to the user account that invoked the <code>MLModel</code> creation.</p> </li> <li> <p> <code>TrainingDataSourceId</code> - Sets the search criteria to the <code>DataSource</code> used to train one or more <code>MLModel</code>.</p> </li> <li> <p> <code>RealtimeEndpointStatus</code> - Sets the search criteria to the <code>MLModel</code> real-time endpoint status.</p> </li> <li> <p> <code>MLModelType</code> - Sets the search criteria to <code>MLModel</code> type: binary, regression, or multi-class.</p> </li> <li> <p> <code>Algorithm</code> - Sets the search criteria to the algorithm that the <code>MLModel</code> uses.</p> </li> <li> <p> <code>TrainingDataURI</code> - Sets the search criteria to the data file(s) used in training a <code>MLModel</code>. The URL can identify either a file or an Amazon Simple Storage Service (Amazon S3) bucket or directory.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    EQ: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The equal to operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that exactly match the value specified with <code>EQ</code>.',
-        }),
-    ).exactOptional(),
-    GT: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The greater than operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that are greater than the value specified with <code>GT</code>.',
-        }),
-    ).exactOptional(),
-    LT: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The less than operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that are less than the value specified with <code>LT</code>.',
-        }),
-    ).exactOptional(),
-    GE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The greater than or equal to operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that are greater than or equal to the value specified with <code>GE</code>. ',
-        }),
-    ).exactOptional(),
-    LE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The less than or equal to operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that are less than or equal to the value specified with <code>LE</code>.',
-        }),
-    ).exactOptional(),
-    NE: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The not equal to operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values not equal to the value specified with <code>NE</code>.',
-        }),
-    ).exactOptional(),
-    Prefix: ComparatorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that is found at the beginning of a variable, such as <code>Name</code> or <code>Id</code>.</p> <p>For example, an <code>MLModel</code> could have the <code>Name</code> <code>2014-09-09-HolidayGiftMailer</code>. To search for this <code>MLModel</code>, select <code>Name</code> for the <code>FilterVariable</code> and any of the following strings for the <code>Prefix</code>: </p> <ul> <li> <p>2014-09</p> </li> <li> <p>2014-09-09</p> </li> <li> <p>2014-09-09-Holiday</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A two-value parameter that determines the sequence of the resulting list of <code>MLModel</code>.</p> <ul> <li> <p> <code>asc</code> - Arranges the list in ascending order (A-Z, 0-9).</p> </li> <li> <p> <code>dsc</code> - Arranges the list in descending order (Z-A, 9-0).</p> </li> </ul> <p>Results are sorted by <code>FilterVariable</code>.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: StringTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the page in the paginated results.' }),
-    ).exactOptional(),
-    Limit: PageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of pages of information to include in the result. The range of acceptable values is <code>1</code> through <code>100</code>. The default value is <code>100</code>.',
-        }),
-    ).exactOptional(),
+    FilterVariable: MLModelFilterVariableSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following variables to filter a list of <code>MLModel</code>:</p> <ul> <li> <p> <code>CreatedAt</code> - Sets the search criteria to <code>MLModel</code> creation date.</p> </li> <li> <p> <code>Status</code> - Sets the search criteria to <code>MLModel</code> status.</p> </li> <li> <p> <code>Name</code> - Sets the search criteria to the contents of <code>MLModel</code> <b> </b> <code>Name</code>.</p> </li> <li> <p> <code>IAMUser</code> - Sets the search criteria to the user account that invoked the <code>MLModel</code> creation.</p> </li> <li> <p> <code>TrainingDataSourceId</code> - Sets the search criteria to the <code>DataSource</code> used to train one or more <code>MLModel</code>.</p> </li> <li> <p> <code>RealtimeEndpointStatus</code> - Sets the search criteria to the <code>MLModel</code> real-time endpoint status.</p> </li> <li> <p> <code>MLModelType</code> - Sets the search criteria to <code>MLModel</code> type: binary, regression, or multi-class.</p> </li> <li> <p> <code>Algorithm</code> - Sets the search criteria to the algorithm that the <code>MLModel</code> uses.</p> </li> <li> <p> <code>TrainingDataURI</code> - Sets the search criteria to the data file(s) used in training a <code>MLModel</code>. The URL can identify either a file or an Amazon Simple Storage Service (Amazon S3) bucket or directory.</p> </li> </ul>',
+    }),
+    EQ: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The equal to operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that exactly match the value specified with <code>EQ</code>.',
+    }),
+    GT: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The greater than operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that are greater than the value specified with <code>GT</code>.',
+    }),
+    LT: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The less than operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that are less than the value specified with <code>LT</code>.',
+    }),
+    GE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The greater than or equal to operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that are greater than or equal to the value specified with <code>GE</code>. ',
+    }),
+    LE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The less than or equal to operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values that are less than or equal to the value specified with <code>LE</code>.',
+    }),
+    NE: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        'The not equal to operator. The <code>MLModel</code> results will have <code>FilterVariable</code> values not equal to the value specified with <code>NE</code>.',
+    }),
+    Prefix: ComparatorValueSchema.exactOptional().openapi({
+      description:
+        '<p>A string that is found at the beginning of a variable, such as <code>Name</code> or <code>Id</code>.</p> <p>For example, an <code>MLModel</code> could have the <code>Name</code> <code>2014-09-09-HolidayGiftMailer</code>. To search for this <code>MLModel</code>, select <code>Name</code> for the <code>FilterVariable</code> and any of the following strings for the <code>Prefix</code>: </p> <ul> <li> <p>2014-09</p> </li> <li> <p>2014-09-09</p> </li> <li> <p>2014-09-09-Holiday</p> </li> </ul>',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        '<p>A two-value parameter that determines the sequence of the resulting list of <code>MLModel</code>.</p> <ul> <li> <p> <code>asc</code> - Arranges the list in ascending order (A-Z, 0-9).</p> </li> <li> <p> <code>dsc</code> - Arranges the list in descending order (Z-A, 9-0).</p> </li> </ul> <p>Results are sorted by <code>FilterVariable</code>.</p>',
+    }),
+    NextToken: StringTypeSchema.exactOptional().openapi({
+      description: 'The ID of the page in the paginated results.',
+    }),
+    Limit: PageLimitSchema.exactOptional().openapi({
+      description:
+        'The number of pages of information to include in the result. The range of acceptable values is <code>1</code> through <code>100</code>. The default value is <code>100</code>.',
+    }),
   })
   .openapi({ title: 'DescribeMLModelsInput', required: [] })
   .openapi('DescribeMLModelsInput')
 
 const DescribeTagsOutputSchema = z
   .object({
-    ResourceId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the tagged ML object.' }),
-    ).exactOptional(),
-    ResourceType: TaggableResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the tagged ML object.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tags associated with the ML object.' }),
-    ).exactOptional(),
+    ResourceId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the tagged ML object.',
+    }),
+    ResourceType: TaggableResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the tagged ML object.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tags associated with the ML object.',
+    }),
   })
   .openapi({ description: 'Amazon ML returns the following elements.', required: [] })
   .openapi('DescribeTagsOutput')
 
 const DescribeTagsInputSchema = z
   .object({
-    ResourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the ML object. For example, <code>exampleModelId</code>. ',
-        }),
-    ),
-    ResourceType: TaggableResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the ML object.' }),
-    ),
+    ResourceId: EntityIdSchema.openapi({
+      description: 'The ID of the ML object. For example, <code>exampleModelId</code>. ',
+    }),
+    ResourceType: TaggableResourceTypeSchema.openapi({ description: 'The type of the ML object.' }),
   })
   .openapi({ required: ['ResourceId', 'ResourceType'], title: 'DescribeTagsInput' })
   .openapi('DescribeTagsInput')
@@ -2289,141 +1577,73 @@ const PresignedS3UrlSchema = z.string().openapi('PresignedS3Url')
 
 const GetBatchPredictionOutputSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ID assigned to the <code>BatchPrediction</code> at creation. This value should be identical to the value of the <code>BatchPredictionID</code> in the request.',
-        }),
-    ).exactOptional(),
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>MLModel</code> that generated predictions for the <code>BatchPrediction</code> request.',
-        }),
-    ).exactOptional(),
-    BatchPredictionDataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DataSource</code> that was used to create the <code>BatchPrediction</code>. ',
-        }),
-    ).exactOptional(),
-    InputDataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
-        }),
-    ).exactOptional(),
-    CreatedByIamUser: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS user account that invoked the <code>BatchPrediction</code>. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the <code>BatchPrediction</code> was created. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to <code>BatchPrediction</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>BatchPrediction</code>.',
-        }),
-    ).exactOptional(),
-    Status: EntityStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the <code>BatchPrediction</code>, which can be one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to generate batch predictions.</p> </li> <li> <p> <code>INPROGRESS</code> - The batch predictions are in progress.</p> </li> <li> <p> <code>FAILED</code> - The request to perform a batch prediction did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The batch prediction process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>BatchPrediction</code> is marked as deleted. It is not usable.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OutputUri: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of an Amazon S3 bucket or directory to receive the operation results.',
-        }),
-    ).exactOptional(),
-    LogUri: PresignedS3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A link to the file that contains logs of the <code>CreateBatchPrediction</code> operation.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the most recent details about processing the batch prediction request.',
-        }),
-    ).exactOptional(),
-    ComputeTime: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate CPU time in milliseconds that Amazon Machine Learning spent processing the <code>BatchPrediction</code>, normalized and scaled on computation resources. <code>ComputeTime</code> is only available if the <code>BatchPrediction</code> is in the <code>COMPLETED</code> state.',
-        }),
-    ).exactOptional(),
-    FinishedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The epoch time when Amazon Machine Learning marked the <code>BatchPrediction</code> as <code>COMPLETED</code> or <code>FAILED</code>. <code>FinishedAt</code> is only available when the <code>BatchPrediction</code> is in the <code>COMPLETED</code> or <code>FAILED</code> state.',
-        }),
-    ).exactOptional(),
-    StartedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The epoch time when Amazon Machine Learning marked the <code>BatchPrediction</code> as <code>INPROGRESS</code>. <code>StartedAt</code> isn't available if the <code>BatchPrediction</code> is in the <code>PENDING</code> state.",
-        }),
-    ).exactOptional(),
-    TotalRecordCount: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of total records that Amazon Machine Learning saw while processing the <code>BatchPrediction</code>.',
-        }),
-    ).exactOptional(),
-    InvalidRecordCount: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of invalid records that Amazon Machine Learning saw while processing the <code>BatchPrediction</code>.',
-        }),
-    ).exactOptional(),
+    BatchPredictionId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'An ID assigned to the <code>BatchPrediction</code> at creation. This value should be identical to the value of the <code>BatchPredictionID</code> in the request.',
+    }),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>MLModel</code> that generated predictions for the <code>BatchPrediction</code> request.',
+    }),
+    BatchPredictionDataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>DataSource</code> that was used to create the <code>BatchPrediction</code>. ',
+    }),
+    InputDataLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
+    }),
+    CreatedByIamUser: AwsUserArnSchema.exactOptional().openapi({
+      description:
+        'The AWS user account that invoked the <code>BatchPrediction</code>. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time when the <code>BatchPrediction</code> was created. The time is expressed in epoch time.',
+    }),
+    LastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to <code>BatchPrediction</code>. The time is expressed in epoch time.',
+    }),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>BatchPrediction</code>.',
+    }),
+    Status: EntityStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the <code>BatchPrediction</code>, which can be one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to generate batch predictions.</p> </li> <li> <p> <code>INPROGRESS</code> - The batch predictions are in progress.</p> </li> <li> <p> <code>FAILED</code> - The request to perform a batch prediction did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The batch prediction process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>BatchPrediction</code> is marked as deleted. It is not usable.</p> </li> </ul>',
+    }),
+    OutputUri: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location of an Amazon S3 bucket or directory to receive the operation results.',
+    }),
+    LogUri: PresignedS3UrlSchema.exactOptional().openapi({
+      description:
+        'A link to the file that contains logs of the <code>CreateBatchPrediction</code> operation.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'A description of the most recent details about processing the batch prediction request.',
+    }),
+    ComputeTime: LongTypeSchema.exactOptional().openapi({
+      description:
+        'The approximate CPU time in milliseconds that Amazon Machine Learning spent processing the <code>BatchPrediction</code>, normalized and scaled on computation resources. <code>ComputeTime</code> is only available if the <code>BatchPrediction</code> is in the <code>COMPLETED</code> state.',
+    }),
+    FinishedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The epoch time when Amazon Machine Learning marked the <code>BatchPrediction</code> as <code>COMPLETED</code> or <code>FAILED</code>. <code>FinishedAt</code> is only available when the <code>BatchPrediction</code> is in the <code>COMPLETED</code> or <code>FAILED</code> state.',
+    }),
+    StartedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        "The epoch time when Amazon Machine Learning marked the <code>BatchPrediction</code> as <code>INPROGRESS</code>. <code>StartedAt</code> isn't available if the <code>BatchPrediction</code> is in the <code>PENDING</code> state.",
+    }),
+    TotalRecordCount: LongTypeSchema.exactOptional().openapi({
+      description:
+        'The number of total records that Amazon Machine Learning saw while processing the <code>BatchPrediction</code>.',
+    }),
+    InvalidRecordCount: LongTypeSchema.exactOptional().openapi({
+      description:
+        'The number of invalid records that Amazon Machine Learning saw while processing the <code>BatchPrediction</code>.',
+    }),
   })
   .openapi({
     description:
@@ -2434,151 +1654,83 @@ const GetBatchPredictionOutputSchema = z
 
 const GetBatchPredictionInputSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An ID assigned to the <code>BatchPrediction</code> at creation.',
-        }),
-    ),
+    BatchPredictionId: EntityIdSchema.openapi({
+      description: 'An ID assigned to the <code>BatchPrediction</code> at creation.',
+    }),
   })
   .openapi({ required: ['BatchPredictionId'], title: 'GetBatchPredictionInput' })
   .openapi('GetBatchPredictionInput')
 
 const GetDataSourceOutputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID assigned to the <code>DataSource</code> at creation. This value should be identical to the value of the <code>DataSourceId</code> in the request.',
-        }),
-    ).exactOptional(),
-    DataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
-        }),
-    ).exactOptional(),
-    DataRearrangement: DataRearrangementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON string that represents the splitting and rearrangement requirement used when this <code>DataSource</code> was created.',
-        }),
-    ).exactOptional(),
-    CreatedByIamUser: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS user account from which the <code>DataSource</code> was created. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the <code>DataSource</code> was created. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>DataSource</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    DataSizeInBytes: LongTypeSchema.and(
-      z.any().openapi({ description: 'The total size of observations in the data files.' }),
-    ).exactOptional(),
-    NumberOfFiles: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of data files referenced by the <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
-    Status: EntityStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the <code>DataSource</code>. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon ML submitted a request to create a <code>DataSource</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The creation process is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to create a <code>DataSource</code> did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The creation process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>DataSource</code> is marked as deleted. It is not usable.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LogUri: PresignedS3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A link to the file containing logs of <code>CreateDataSourceFrom*</code> operations.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-supplied description of the most recent details about creating the <code>DataSource</code>.',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID assigned to the <code>DataSource</code> at creation. This value should be identical to the value of the <code>DataSourceId</code> in the request.',
+    }),
+    DataLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
+    }),
+    DataRearrangement: DataRearrangementSchema.exactOptional().openapi({
+      description:
+        'A JSON string that represents the splitting and rearrangement requirement used when this <code>DataSource</code> was created.',
+    }),
+    CreatedByIamUser: AwsUserArnSchema.exactOptional().openapi({
+      description:
+        'The AWS user account from which the <code>DataSource</code> was created. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time that the <code>DataSource</code> was created. The time is expressed in epoch time.',
+    }),
+    LastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>DataSource</code>. The time is expressed in epoch time.',
+    }),
+    DataSizeInBytes: LongTypeSchema.exactOptional().openapi({
+      description: 'The total size of observations in the data files.',
+    }),
+    NumberOfFiles: LongTypeSchema.exactOptional().openapi({
+      description: 'The number of data files referenced by the <code>DataSource</code>.',
+    }),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>DataSource</code>.',
+    }),
+    Status: EntityStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the <code>DataSource</code>. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon ML submitted a request to create a <code>DataSource</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The creation process is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to create a <code>DataSource</code> did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The creation process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>DataSource</code> is marked as deleted. It is not usable.</p> </li> </ul>',
+    }),
+    LogUri: PresignedS3UrlSchema.exactOptional().openapi({
+      description:
+        'A link to the file containing logs of <code>CreateDataSourceFrom*</code> operations.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'The user-supplied description of the most recent details about creating the <code>DataSource</code>.',
+    }),
     RedshiftMetadata: RedshiftMetadataSchema.exactOptional(),
     RDSMetadata: RDSMetadataSchema.exactOptional(),
     RoleARN: RoleARNSchema.exactOptional(),
-    ComputeStatistics: ComputeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The parameter is <code>true</code> if statistics need to be generated from the observation data. ',
-        }),
-    ).exactOptional(),
-    ComputeTime: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate CPU time in milliseconds that Amazon Machine Learning spent processing the <code>DataSource</code>, normalized and scaled on computation resources. <code>ComputeTime</code> is only available if the <code>DataSource</code> is in the <code>COMPLETED</code> state and the <code>ComputeStatistics</code> is set to true.',
-        }),
-    ).exactOptional(),
-    FinishedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The epoch time when Amazon Machine Learning marked the <code>DataSource</code> as <code>COMPLETED</code> or <code>FAILED</code>. <code>FinishedAt</code> is only available when the <code>DataSource</code> is in the <code>COMPLETED</code> or <code>FAILED</code> state.',
-        }),
-    ).exactOptional(),
-    StartedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The epoch time when Amazon Machine Learning marked the <code>DataSource</code> as <code>INPROGRESS</code>. <code>StartedAt</code> isn't available if the <code>DataSource</code> is in the <code>PENDING</code> state.",
-        }),
-    ).exactOptional(),
-    DataSourceSchema: DataSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The schema used by all of the data files of this <code>DataSource</code>.</p> <p> <b>Note:</b> This parameter is provided as part of the verbose format.</p>',
-        }),
-    ).exactOptional(),
+    ComputeStatistics: ComputeStatisticsSchema.exactOptional().openapi({
+      description:
+        ' The parameter is <code>true</code> if statistics need to be generated from the observation data. ',
+    }),
+    ComputeTime: LongTypeSchema.exactOptional().openapi({
+      description:
+        'The approximate CPU time in milliseconds that Amazon Machine Learning spent processing the <code>DataSource</code>, normalized and scaled on computation resources. <code>ComputeTime</code> is only available if the <code>DataSource</code> is in the <code>COMPLETED</code> state and the <code>ComputeStatistics</code> is set to true.',
+    }),
+    FinishedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The epoch time when Amazon Machine Learning marked the <code>DataSource</code> as <code>COMPLETED</code> or <code>FAILED</code>. <code>FinishedAt</code> is only available when the <code>DataSource</code> is in the <code>COMPLETED</code> or <code>FAILED</code> state.',
+    }),
+    StartedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        "The epoch time when Amazon Machine Learning marked the <code>DataSource</code> as <code>INPROGRESS</code>. <code>StartedAt</code> isn't available if the <code>DataSource</code> is in the <code>PENDING</code> state.",
+    }),
+    DataSourceSchema: DataSchemaSchema.exactOptional().openapi({
+      description:
+        '<p>The schema used by all of the data files of this <code>DataSource</code>.</p> <p> <b>Note:</b> This parameter is provided as part of the verbose format.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2597,138 +1749,76 @@ const VerboseSchema = z
 
 const GetDataSourceInputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID assigned to the <code>DataSource</code> at creation.' }),
-    ),
-    Verbose: VerboseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the <code>GetDataSource</code> operation should return <code>DataSourceSchema</code>.</p> <p>If true, <code>DataSourceSchema</code> is returned.</p> <p>If false, <code>DataSourceSchema</code> is not returned.</p>',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.openapi({
+      description: 'The ID assigned to the <code>DataSource</code> at creation.',
+    }),
+    Verbose: VerboseSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the <code>GetDataSource</code> operation should return <code>DataSourceSchema</code>.</p> <p>If true, <code>DataSourceSchema</code> is returned.</p> <p>If false, <code>DataSourceSchema</code> is not returned.</p>',
+    }),
   })
   .openapi({ required: ['DataSourceId'], title: 'GetDataSourceInput' })
   .openapi('GetDataSourceInput')
 
 const GetEvaluationOutputSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The evaluation ID which is same as the <code>EvaluationId</code> in the request.',
-        }),
-    ).exactOptional(),
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the <code>MLModel</code> that was the focus of the evaluation.',
-        }),
-    ).exactOptional(),
-    EvaluationDataSourceId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The <code>DataSource</code> used for this evaluation.' }),
-    ).exactOptional(),
-    InputDataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
-        }),
-    ).exactOptional(),
-    CreatedByIamUser: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS user account that invoked the evaluation. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the <code>Evaluation</code> was created. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>Evaluation</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>Evaluation</code>. ',
-        }),
-    ).exactOptional(),
-    Status: EntityStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the evaluation. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Language (Amazon ML) submitted a request to evaluate an <code>MLModel</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The evaluation is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to evaluate an <code>MLModel</code> did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The evaluation process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>Evaluation</code> is marked as deleted. It is not usable.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PerformanceMetrics: PerformanceMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Measurements of how well the <code>MLModel</code> performed using observations referenced by the <code>DataSource</code>. One of the following metric is returned based on the type of the <code>MLModel</code>: </p> <ul> <li> <p>BinaryAUC: A binary <code>MLModel</code> uses the Area Under the Curve (AUC) technique to measure performance. </p> </li> <li> <p>RegressionRMSE: A regression <code>MLModel</code> uses the Root Mean Square Error (RMSE) technique to measure performance. RMSE measures the difference between predicted and actual values for a single variable.</p> </li> <li> <p>MulticlassAvgFScore: A multiclass <code>MLModel</code> uses the F1 score technique to measure performance. </p> </li> </ul> <p> For more information about performance metrics, please see the <a href="https://docs.aws.amazon.com/machine-learning/latest/dg">Amazon Machine Learning Developer Guide</a>. </p>',
-        }),
-    ).exactOptional(),
-    LogUri: PresignedS3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A link to the file that contains logs of the <code>CreateEvaluation</code> operation.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the most recent details about evaluating the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
-    ComputeTime: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate CPU time in milliseconds that Amazon Machine Learning spent processing the <code>Evaluation</code>, normalized and scaled on computation resources. <code>ComputeTime</code> is only available if the <code>Evaluation</code> is in the <code>COMPLETED</code> state.',
-        }),
-    ).exactOptional(),
-    FinishedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The epoch time when Amazon Machine Learning marked the <code>Evaluation</code> as <code>COMPLETED</code> or <code>FAILED</code>. <code>FinishedAt</code> is only available when the <code>Evaluation</code> is in the <code>COMPLETED</code> or <code>FAILED</code> state.',
-        }),
-    ).exactOptional(),
-    StartedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The epoch time when Amazon Machine Learning marked the <code>Evaluation</code> as <code>INPROGRESS</code>. <code>StartedAt</code> isn't available if the <code>Evaluation</code> is in the <code>PENDING</code> state.",
-        }),
-    ).exactOptional(),
+    EvaluationId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The evaluation ID which is same as the <code>EvaluationId</code> in the request.',
+    }),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the <code>MLModel</code> that was the focus of the evaluation.',
+    }),
+    EvaluationDataSourceId: EntityIdSchema.exactOptional().openapi({
+      description: 'The <code>DataSource</code> used for this evaluation.',
+    }),
+    InputDataLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
+    }),
+    CreatedByIamUser: AwsUserArnSchema.exactOptional().openapi({
+      description:
+        'The AWS user account that invoked the evaluation. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time that the <code>Evaluation</code> was created. The time is expressed in epoch time.',
+    }),
+    LastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>Evaluation</code>. The time is expressed in epoch time.',
+    }),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>Evaluation</code>. ',
+    }),
+    Status: EntityStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the evaluation. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Language (Amazon ML) submitted a request to evaluate an <code>MLModel</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The evaluation is underway.</p> </li> <li> <p> <code>FAILED</code> - The request to evaluate an <code>MLModel</code> did not run to completion. It is not usable.</p> </li> <li> <p> <code>COMPLETED</code> - The evaluation process completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>Evaluation</code> is marked as deleted. It is not usable.</p> </li> </ul>',
+    }),
+    PerformanceMetrics: PerformanceMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>Measurements of how well the <code>MLModel</code> performed using observations referenced by the <code>DataSource</code>. One of the following metric is returned based on the type of the <code>MLModel</code>: </p> <ul> <li> <p>BinaryAUC: A binary <code>MLModel</code> uses the Area Under the Curve (AUC) technique to measure performance. </p> </li> <li> <p>RegressionRMSE: A regression <code>MLModel</code> uses the Root Mean Square Error (RMSE) technique to measure performance. RMSE measures the difference between predicted and actual values for a single variable.</p> </li> <li> <p>MulticlassAvgFScore: A multiclass <code>MLModel</code> uses the F1 score technique to measure performance. </p> </li> </ul> <p> For more information about performance metrics, please see the <a href="https://docs.aws.amazon.com/machine-learning/latest/dg">Amazon Machine Learning Developer Guide</a>. </p>',
+    }),
+    LogUri: PresignedS3UrlSchema.exactOptional().openapi({
+      description:
+        'A link to the file that contains logs of the <code>CreateEvaluation</code> operation.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'A description of the most recent details about evaluating the <code>MLModel</code>.',
+    }),
+    ComputeTime: LongTypeSchema.exactOptional().openapi({
+      description:
+        'The approximate CPU time in milliseconds that Amazon Machine Learning spent processing the <code>Evaluation</code>, normalized and scaled on computation resources. <code>ComputeTime</code> is only available if the <code>Evaluation</code> is in the <code>COMPLETED</code> state.',
+    }),
+    FinishedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The epoch time when Amazon Machine Learning marked the <code>Evaluation</code> as <code>COMPLETED</code> or <code>FAILED</code>. <code>FinishedAt</code> is only available when the <code>Evaluation</code> is in the <code>COMPLETED</code> or <code>FAILED</code> state.',
+    }),
+    StartedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        "The epoch time when Amazon Machine Learning marked the <code>Evaluation</code> as <code>INPROGRESS</code>. <code>StartedAt</code> isn't available if the <code>Evaluation</code> is in the <code>PENDING</code> state.",
+    }),
   })
   .openapi({
     description:
@@ -2739,170 +1829,93 @@ const GetEvaluationOutputSchema = z
 
 const GetEvaluationInputSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>Evaluation</code> to retrieve. The evaluation of each <code>MLModel</code> is recorded and cataloged. The ID provides the means to access the information. ',
-        }),
-    ),
+    EvaluationId: EntityIdSchema.openapi({
+      description:
+        'The ID of the <code>Evaluation</code> to retrieve. The evaluation of each <code>MLModel</code> is recorded and cataloged. The ID provides the means to access the information. ',
+    }),
   })
   .openapi({ required: ['EvaluationId'], title: 'GetEvaluationInput' })
   .openapi('GetEvaluationInput')
 
 const GetMLModelOutputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MLModel ID, which is same as the <code>MLModelId</code> in the request.',
-        }),
-    ).exactOptional(),
-    TrainingDataSourceId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the training <code>DataSource</code>.' }),
-    ).exactOptional(),
-    CreatedByIamUser: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS user account from which the <code>MLModel</code> was created. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
-        }),
-    ).exactOptional(),
-    CreatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the <code>MLModel</code> was created. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>MLModel</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    Name: MLModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
-    Status: EntityStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The current status of the <code>MLModel</code>. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to describe a <code>MLModel</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The request is processing.</p> </li> <li> <p> <code>FAILED</code> - The request did not run to completion. The ML model isn't usable.</p> </li> <li> <p> <code>COMPLETED</code> - The request completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>MLModel</code> is marked as deleted. It isn't usable.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description: 'The MLModel ID, which is same as the <code>MLModelId</code> in the request.',
+    }),
+    TrainingDataSourceId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the training <code>DataSource</code>.',
+    }),
+    CreatedByIamUser: AwsUserArnSchema.exactOptional().openapi({
+      description:
+        'The AWS user account from which the <code>MLModel</code> was created. The account type can be either an AWS root account or an AWS Identity and Access Management (IAM) user account.',
+    }),
+    CreatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time that the <code>MLModel</code> was created. The time is expressed in epoch time.',
+    }),
+    LastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>MLModel</code>. The time is expressed in epoch time.',
+    }),
+    Name: MLModelNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>MLModel</code>.',
+    }),
+    Status: EntityStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The current status of the <code>MLModel</code>. This element can have one of the following values:</p> <ul> <li> <p> <code>PENDING</code> - Amazon Machine Learning (Amazon ML) submitted a request to describe a <code>MLModel</code>.</p> </li> <li> <p> <code>INPROGRESS</code> - The request is processing.</p> </li> <li> <p> <code>FAILED</code> - The request did not run to completion. The ML model isn't usable.</p> </li> <li> <p> <code>COMPLETED</code> - The request completed successfully.</p> </li> <li> <p> <code>DELETED</code> - The <code>MLModel</code> is marked as deleted. It isn't usable.</p> </li> </ul>",
+    }),
     SizeInBytes: LongTypeSchema.exactOptional(),
-    EndpointInfo: RealtimeEndpointInfoSchema.and(
-      z.any().openapi({ description: 'The current endpoint of the <code>MLModel</code> ' }),
-    ).exactOptional(),
-    TrainingParameters: TrainingParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of the training parameters in the <code>MLModel</code>. The list is implemented as a map of key-value pairs.</p> <p>The following is the current set of training parameters:</p> <ul> <li> <p> <code>sgd.maxMLModelSizeInBytes</code> - The maximum allowed size of the model. Depending on the input data, the size of the model might affect its performance.</p> <p> The value is an integer that ranges from <code>100000</code> to <code>2147483648</code>. The default value is <code>33554432</code>.</p> </li> <li> <p> <code>sgd.maxPasses</code> - The number of times that the training process traverses the observations to build the <code>MLModel</code>. The value is an integer that ranges from <code>1</code> to <code>10000</code>. The default value is <code>10</code>.</p> </li> <li> <p> <code>sgd.shuffleType</code> - Whether Amazon ML shuffles the training data. Shuffling data improves a model's ability to find the optimal solution for a variety of data types. The valid values are <code>auto</code> and <code>none</code>. The default value is <code>none</code>. We strongly recommend that you shuffle your data.</p> </li> <li> <p> <code>sgd.l1RegularizationAmount</code> - The coefficient regularization L1 norm. It controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to zero, resulting in a sparse feature set. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L1 normalization. This parameter can't be used when <code>L2</code> is specified. Use this parameter sparingly.</p> </li> <li> <p> <code>sgd.l2RegularizationAmount</code> - The coefficient regularization L2 norm. It controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to small, nonzero values. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L2 normalization. This parameter can't be used when <code>L1</code> is specified. Use this parameter sparingly.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    InputDataLocationS3: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
-        }),
-    ).exactOptional(),
-    MLModelType: MLModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the <code>MLModel</code> category. The following are the available types: </p> <ul> <li> <p>REGRESSION -- Produces a numeric result. For example, "What price should a house be listed at?"</p> </li> <li> <p>BINARY -- Produces one of two possible results. For example, "Is this an e-commerce website?"</p> </li> <li> <p>MULTICLASS -- Produces one of several possible results. For example, "Is this a HIGH, LOW or MEDIUM risk trade?"</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ScoreThreshold: ScoreThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scoring threshold is used in binary classification <code>MLModel</code> models. It marks the boundary between a positive prediction and a negative prediction.</p> <p>Output values greater than or equal to the threshold receive a positive result from the MLModel, such as <code>true</code>. Output values less than the threshold receive a negative response from the MLModel, such as <code>false</code>.</p>',
-        }),
-    ).exactOptional(),
-    ScoreThresholdLastUpdatedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent edit to the <code>ScoreThreshold</code>. The time is expressed in epoch time.',
-        }),
-    ).exactOptional(),
-    LogUri: PresignedS3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A link to the file that contains logs of the <code>CreateMLModel</code> operation.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the most recent details about accessing the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
-    ComputeTime: LongTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate CPU time in milliseconds that Amazon Machine Learning spent processing the <code>MLModel</code>, normalized and scaled on computation resources. <code>ComputeTime</code> is only available if the <code>MLModel</code> is in the <code>COMPLETED</code> state.',
-        }),
-    ).exactOptional(),
-    FinishedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The epoch time when Amazon Machine Learning marked the <code>MLModel</code> as <code>COMPLETED</code> or <code>FAILED</code>. <code>FinishedAt</code> is only available when the <code>MLModel</code> is in the <code>COMPLETED</code> or <code>FAILED</code> state.',
-        }),
-    ).exactOptional(),
-    StartedAt: EpochTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The epoch time when Amazon Machine Learning marked the <code>MLModel</code> as <code>INPROGRESS</code>. <code>StartedAt</code> isn't available if the <code>MLModel</code> is in the <code>PENDING</code> state.",
-        }),
-    ).exactOptional(),
-    Recipe: RecipeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The recipe to use when training the <code>MLModel</code>. The <code>Recipe</code> provides detailed information about the observation data to use during training, and manipulations to perform on the observation data during training.</p> <p> <b>Note:</b> This parameter is provided as part of the verbose format.</p>',
-        }),
-    ).exactOptional(),
-    Schema: DataSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The schema used by all of the data files referenced by the <code>DataSource</code>.</p> <p> <b>Note:</b> This parameter is provided as part of the verbose format.</p>',
-        }),
-    ).exactOptional(),
+    EndpointInfo: RealtimeEndpointInfoSchema.exactOptional().openapi({
+      description: 'The current endpoint of the <code>MLModel</code> ',
+    }),
+    TrainingParameters: TrainingParametersSchema.exactOptional().openapi({
+      description:
+        "<p>A list of the training parameters in the <code>MLModel</code>. The list is implemented as a map of key-value pairs.</p> <p>The following is the current set of training parameters:</p> <ul> <li> <p> <code>sgd.maxMLModelSizeInBytes</code> - The maximum allowed size of the model. Depending on the input data, the size of the model might affect its performance.</p> <p> The value is an integer that ranges from <code>100000</code> to <code>2147483648</code>. The default value is <code>33554432</code>.</p> </li> <li> <p> <code>sgd.maxPasses</code> - The number of times that the training process traverses the observations to build the <code>MLModel</code>. The value is an integer that ranges from <code>1</code> to <code>10000</code>. The default value is <code>10</code>.</p> </li> <li> <p> <code>sgd.shuffleType</code> - Whether Amazon ML shuffles the training data. Shuffling data improves a model's ability to find the optimal solution for a variety of data types. The valid values are <code>auto</code> and <code>none</code>. The default value is <code>none</code>. We strongly recommend that you shuffle your data.</p> </li> <li> <p> <code>sgd.l1RegularizationAmount</code> - The coefficient regularization L1 norm. It controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to zero, resulting in a sparse feature set. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L1 normalization. This parameter can't be used when <code>L2</code> is specified. Use this parameter sparingly.</p> </li> <li> <p> <code>sgd.l2RegularizationAmount</code> - The coefficient regularization L2 norm. It controls overfitting the data by penalizing large coefficients. This tends to drive coefficients to small, nonzero values. If you use this parameter, start by specifying a small value, such as <code>1.0E-08</code>.</p> <p>The value is a double that ranges from <code>0</code> to <code>MAX_DOUBLE</code>. The default is to not use L2 normalization. This parameter can't be used when <code>L1</code> is specified. Use this parameter sparingly.</p> </li> </ul>",
+    }),
+    InputDataLocationS3: S3UrlSchema.exactOptional().openapi({
+      description:
+        'The location of the data file or directory in Amazon Simple Storage Service (Amazon S3).',
+    }),
+    MLModelType: MLModelTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Identifies the <code>MLModel</code> category. The following are the available types: </p> <ul> <li> <p>REGRESSION -- Produces a numeric result. For example, "What price should a house be listed at?"</p> </li> <li> <p>BINARY -- Produces one of two possible results. For example, "Is this an e-commerce website?"</p> </li> <li> <p>MULTICLASS -- Produces one of several possible results. For example, "Is this a HIGH, LOW or MEDIUM risk trade?"</p> </li> </ul>',
+    }),
+    ScoreThreshold: ScoreThresholdSchema.exactOptional().openapi({
+      description:
+        '<p>The scoring threshold is used in binary classification <code>MLModel</code> models. It marks the boundary between a positive prediction and a negative prediction.</p> <p>Output values greater than or equal to the threshold receive a positive result from the MLModel, such as <code>true</code>. Output values less than the threshold receive a negative response from the MLModel, such as <code>false</code>.</p>',
+    }),
+    ScoreThresholdLastUpdatedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent edit to the <code>ScoreThreshold</code>. The time is expressed in epoch time.',
+    }),
+    LogUri: PresignedS3UrlSchema.exactOptional().openapi({
+      description:
+        'A link to the file that contains logs of the <code>CreateMLModel</code> operation.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'A description of the most recent details about accessing the <code>MLModel</code>.',
+    }),
+    ComputeTime: LongTypeSchema.exactOptional().openapi({
+      description:
+        'The approximate CPU time in milliseconds that Amazon Machine Learning spent processing the <code>MLModel</code>, normalized and scaled on computation resources. <code>ComputeTime</code> is only available if the <code>MLModel</code> is in the <code>COMPLETED</code> state.',
+    }),
+    FinishedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        'The epoch time when Amazon Machine Learning marked the <code>MLModel</code> as <code>COMPLETED</code> or <code>FAILED</code>. <code>FinishedAt</code> is only available when the <code>MLModel</code> is in the <code>COMPLETED</code> or <code>FAILED</code> state.',
+    }),
+    StartedAt: EpochTimeSchema.exactOptional().openapi({
+      description:
+        "The epoch time when Amazon Machine Learning marked the <code>MLModel</code> as <code>INPROGRESS</code>. <code>StartedAt</code> isn't available if the <code>MLModel</code> is in the <code>PENDING</code> state.",
+    }),
+    Recipe: RecipeSchema.exactOptional().openapi({
+      description:
+        '<p>The recipe to use when training the <code>MLModel</code>. The <code>Recipe</code> provides detailed information about the observation data to use during training, and manipulations to perform on the observation data during training.</p> <p> <b>Note:</b> This parameter is provided as part of the verbose format.</p>',
+    }),
+    Schema: DataSchemaSchema.exactOptional().openapi({
+      description:
+        '<p>The schema used by all of the data files referenced by the <code>DataSource</code>.</p> <p> <b>Note:</b> This parameter is provided as part of the verbose format.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2913,17 +1926,13 @@ const GetMLModelOutputSchema = z
 
 const GetMLModelInputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to the <code>MLModel</code> at creation.' }),
-    ),
-    Verbose: VerboseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the <code>GetMLModel</code> operation should return <code>Recipe</code>.</p> <p>If true, <code>Recipe</code> is returned.</p> <p>If false, <code>Recipe</code> is not returned.</p>',
-        }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.openapi({
+      description: 'The ID assigned to the <code>MLModel</code> at creation.',
+    }),
+    Verbose: VerboseSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the <code>GetMLModel</code> operation should return <code>Recipe</code>.</p> <p>If true, <code>Recipe</code> is returned.</p> <p>If false, <code>Recipe</code> is not returned.</p>',
+    }),
   })
   .openapi({ required: ['MLModelId'], title: 'GetMLModelInput' })
   .openapi('GetMLModelInput')
@@ -2948,21 +1957,13 @@ const DetailsMapSchema = z
 
 const PredictionSchema = z
   .object({
-    predictedLabel: LabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prediction label for either a <code>BINARY</code> or <code>MULTICLASS</code> <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
-    predictedValue: FloatLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The prediction value for <code>REGRESSION</code> <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
+    predictedLabel: LabelSchema.exactOptional().openapi({
+      description:
+        'The prediction label for either a <code>BINARY</code> or <code>MULTICLASS</code> <code>MLModel</code>.',
+    }),
+    predictedValue: FloatLabelSchema.exactOptional().openapi({
+      description: 'The prediction value for <code>REGRESSION</code> <code>MLModel</code>.',
+    }),
     predictedScores: ScoreValuePerLabelMapSchema.exactOptional(),
     details: DetailsMapSchema.exactOptional(),
   })
@@ -2993,9 +1994,9 @@ const RecordSchema = z
 
 const PredictInputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier of the <code>MLModel</code>.' }),
-    ),
+    MLModelId: EntityIdSchema.openapi({
+      description: 'A unique identifier of the <code>MLModel</code>.',
+    }),
     Record: RecordSchema,
     PredictEndpoint: VipURLSchema,
   })
@@ -3008,14 +2009,10 @@ const PredictorNotMountedExceptionSchema = z.any().openapi('PredictorNotMountedE
 
 const UpdateBatchPredictionOutputSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID assigned to the <code>BatchPrediction</code> during creation. This value should be identical to the value of the <code>BatchPredictionId</code> in the request.',
-        }),
-    ).exactOptional(),
+    BatchPredictionId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID assigned to the <code>BatchPrediction</code> during creation. This value should be identical to the value of the <code>BatchPredictionId</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -3026,21 +2023,12 @@ const UpdateBatchPredictionOutputSchema = z
 
 const UpdateBatchPredictionInputSchema = z
   .object({
-    BatchPredictionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID assigned to the <code>BatchPrediction</code> during creation.',
-        }),
-    ),
-    BatchPredictionName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A new user-supplied name or description of the <code>BatchPrediction</code>.',
-        }),
-    ),
+    BatchPredictionId: EntityIdSchema.openapi({
+      description: 'The ID assigned to the <code>BatchPrediction</code> during creation.',
+    }),
+    BatchPredictionName: EntityNameSchema.openapi({
+      description: 'A new user-supplied name or description of the <code>BatchPrediction</code>.',
+    }),
   })
   .openapi({
     required: ['BatchPredictionId', 'BatchPredictionName'],
@@ -3050,14 +2038,10 @@ const UpdateBatchPredictionInputSchema = z
 
 const UpdateDataSourceOutputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID assigned to the <code>DataSource</code> during creation. This value should be identical to the value of the <code>DataSourceID</code> in the request.',
-        }),
-    ).exactOptional(),
+    DataSourceId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID assigned to the <code>DataSource</code> during creation. This value should be identical to the value of the <code>DataSourceID</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -3068,35 +2052,23 @@ const UpdateDataSourceOutputSchema = z
 
 const UpdateDataSourceInputSchema = z
   .object({
-    DataSourceId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID assigned to the <code>DataSource</code> during creation.',
-        }),
-    ),
-    DataSourceName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A new user-supplied name or description of the <code>DataSource</code> that will replace the current description. ',
-        }),
-    ),
+    DataSourceId: EntityIdSchema.openapi({
+      description: 'The ID assigned to the <code>DataSource</code> during creation.',
+    }),
+    DataSourceName: EntityNameSchema.openapi({
+      description:
+        'A new user-supplied name or description of the <code>DataSource</code> that will replace the current description. ',
+    }),
   })
   .openapi({ required: ['DataSourceId', 'DataSourceName'], title: 'UpdateDataSourceInput' })
   .openapi('UpdateDataSourceInput')
 
 const UpdateEvaluationOutputSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID assigned to the <code>Evaluation</code> during creation. This value should be identical to the value of the <code>Evaluation</code> in the request.',
-        }),
-    ).exactOptional(),
+    EvaluationId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID assigned to the <code>Evaluation</code> during creation. This value should be identical to the value of the <code>Evaluation</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -3107,35 +2079,23 @@ const UpdateEvaluationOutputSchema = z
 
 const UpdateEvaluationInputSchema = z
   .object({
-    EvaluationId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID assigned to the <code>Evaluation</code> during creation.',
-        }),
-    ),
-    EvaluationName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A new user-supplied name or description of the <code>Evaluation</code> that will replace the current content. ',
-        }),
-    ),
+    EvaluationId: EntityIdSchema.openapi({
+      description: 'The ID assigned to the <code>Evaluation</code> during creation.',
+    }),
+    EvaluationName: EntityNameSchema.openapi({
+      description:
+        'A new user-supplied name or description of the <code>Evaluation</code> that will replace the current content. ',
+    }),
   })
   .openapi({ required: ['EvaluationId', 'EvaluationName'], title: 'UpdateEvaluationInput' })
   .openapi('UpdateEvaluationInput')
 
 const UpdateMLModelOutputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID assigned to the <code>MLModel</code> during creation. This value should be identical to the value of the <code>MLModelID</code> in the request.',
-        }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID assigned to the <code>MLModel</code> during creation. This value should be identical to the value of the <code>MLModelID</code> in the request.',
+    }),
   })
   .openapi({
     description:
@@ -3146,26 +2106,16 @@ const UpdateMLModelOutputSchema = z
 
 const UpdateMLModelInputSchema = z
   .object({
-    MLModelId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID assigned to the <code>MLModel</code> during creation.' }),
-    ),
-    MLModelName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-supplied name or description of the <code>MLModel</code>.',
-        }),
-    ).exactOptional(),
-    ScoreThreshold: ScoreThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>ScoreThreshold</code> used in binary classification <code>MLModel</code> that marks the boundary between a positive prediction and a negative prediction.</p> <p>Output values greater than or equal to the <code>ScoreThreshold</code> receive a positive result from the <code>MLModel</code>, such as <code>true</code>. Output values less than the <code>ScoreThreshold</code> receive a negative response from the <code>MLModel</code>, such as <code>false</code>.</p>',
-        }),
-    ).exactOptional(),
+    MLModelId: EntityIdSchema.openapi({
+      description: 'The ID assigned to the <code>MLModel</code> during creation.',
+    }),
+    MLModelName: EntityNameSchema.exactOptional().openapi({
+      description: 'A user-supplied name or description of the <code>MLModel</code>.',
+    }),
+    ScoreThreshold: ScoreThresholdSchema.exactOptional().openapi({
+      description:
+        '<p>The <code>ScoreThreshold</code> used in binary classification <code>MLModel</code> that marks the boundary between a positive prediction and a negative prediction.</p> <p>Output values greater than or equal to the <code>ScoreThreshold</code> receive a positive result from the <code>MLModel</code>, such as <code>true</code>. Output values less than the <code>ScoreThreshold</code> receive a negative response from the <code>MLModel</code>, such as <code>false</code>.</p>',
+    }),
   })
   .openapi({ required: ['MLModelId'], title: 'UpdateMLModelInput' })
   .openapi('UpdateMLModelInput')

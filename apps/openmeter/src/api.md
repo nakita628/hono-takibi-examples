@@ -49,7 +49,8 @@ curl https://openmeter.cloud/api/v1/subscriptions \
     "timing": "immediate",
     "customerId": "01G65Z755AFWAKHE12NY0CQ9FH",
     "customerKey": "string",
-    "billingAnchor": "2023-01-01T01:01:01.001Z"
+    "billingAnchor": "2023-01-01T01:01:01.001Z",
+    "billingStartsAt": "2023-01-01T01:01:01.001Z"
   }'
 ```
 
@@ -77,7 +78,8 @@ curl https://openmeter.cloud/api/v1/subscriptions \
   "timing": "immediate",
   "customerId": "01G65Z755AFWAKHE12NY0CQ9FH",
   "customerKey": "string",
-  "billingAnchor": "2023-01-01T01:01:01.001Z"
+  "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z"
 }
 ```
 
@@ -134,6 +136,7 @@ curl https://openmeter.cloud/api/v1/subscriptions \
     "mode": "prorate_prices"
   },
   "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z",
   "settlementMode": "credit_then_invoice"
 }
 ```
@@ -402,6 +405,7 @@ curl https://openmeter.cloud/api/v1/subscriptions/01G65Z755AFWAKHE12NY0CQ9FH \
     "mode": "prorate_prices"
   },
   "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z",
   "settlementMode": "credit_then_invoice",
   "alignment": {
     "billablesMustAlign": true,
@@ -1415,6 +1419,7 @@ The key format is `/phases/{phaseKey}` or `/phases/{phaseKey}/items/{itemKey}`.
     "mode": "prorate_prices"
   },
   "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z",
   "settlementMode": "credit_then_invoice"
 }
 ```
@@ -3142,6 +3147,7 @@ Will result in a scheduling conflict if there are other subscriptions scheduled 
     "mode": "prorate_prices"
   },
   "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z",
   "settlementMode": "credit_then_invoice"
 }
 ```
@@ -3488,6 +3494,7 @@ Can be used for upgrades, downgrades, and plan changes.
       "mode": "prorate_prices"
     },
     "billingAnchor": "2023-01-01T01:01:01.001Z",
+    "billingStartsAt": "2023-01-01T01:01:01.001Z",
     "settlementMode": "credit_then_invoice"
   },
   "next": {
@@ -3527,6 +3534,7 @@ Can be used for upgrades, downgrades, and plan changes.
       "mode": "prorate_prices"
     },
     "billingAnchor": "2023-01-01T01:01:01.001Z",
+    "billingStartsAt": "2023-01-01T01:01:01.001Z",
     "settlementMode": "credit_then_invoice",
     "alignment": {
       "billablesMustAlign": true,
@@ -4231,6 +4239,7 @@ and can produce billing adjustments. Addons are not transferred to the replaceme
       "mode": "prorate_prices"
     },
     "billingAnchor": "2023-01-01T01:01:01.001Z",
+    "billingStartsAt": "2023-01-01T01:01:01.001Z",
     "settlementMode": "credit_then_invoice"
   },
   "next": {
@@ -4270,6 +4279,7 @@ and can produce billing adjustments. Addons are not transferred to the replaceme
       "mode": "prorate_prices"
     },
     "billingAnchor": "2023-01-01T01:01:01.001Z",
+    "billingStartsAt": "2023-01-01T01:01:01.001Z",
     "settlementMode": "credit_then_invoice",
     "alignment": {
       "billablesMustAlign": true,
@@ -4936,6 +4946,7 @@ Any subscription scheduled to start later will be deleted and this subscription 
     "mode": "prorate_prices"
   },
   "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z",
   "settlementMode": "credit_then_invoice"
 }
 ```
@@ -5209,6 +5220,7 @@ Cancels the scheduled cancelation.
     "mode": "prorate_prices"
   },
   "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z",
   "settlementMode": "credit_then_invoice"
 }
 ```
@@ -33939,6 +33951,7 @@ Lists all subscriptions for a customer.
         "mode": "prorate_prices"
       },
       "billingAnchor": "2023-01-01T01:01:01.001Z",
+      "billingStartsAt": "2023-01-01T01:01:01.001Z",
       "settlementMode": "credit_then_invoice"
     }
   ]
@@ -58232,7 +58245,8 @@ Change a custom subscription.
   "timing": "immediate",
   "customerId": "01G65Z755AFWAKHE12NY0CQ9FH",
   "customerKey": "string",
-  "billingAnchor": "2023-01-01T01:01:01.001Z"
+  "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z"
 }
 ```
 
@@ -58248,6 +58262,7 @@ Create a custom subscription.
 |customerId|string|false|none|The ID of the customer. Provide either the key or ID. Has presedence over the key.|
 |customerKey|string|false|none|The key of the customer. Provide either the key or ID.|
 |billingAnchor|string(date-time)|false|none|The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the subscription start time will be used.|
+|billingStartsAt|string(date-time)|false|none|When billing starts for the subscription. Nothing is billed for service before this time, while access,<br>entitlements and metering start with the subscription. Use it when the time before was already billed elsewhere,<br>for example when importing a subscription from another billing system.<br><br>It cannot be before the start of the subscription and cannot be changed later. On subscriptions billed through<br>invoice lines it must be the start of a billing period. If not provided, billing starts with the subscription.<br><br>When billing starts inside a billing period, we recommend enabling price pro-rating (`prorate_prices`) on the<br>plan. Without it that billing period's flat fees are billed in full.|
 
 <h2 id="tocS_Customer">Customer</h2>
 <!-- backwards compatibility -->
@@ -72233,7 +72248,8 @@ Change subscription based on plan.
   "timing": "immediate",
   "customerId": "01G65Z755AFWAKHE12NY0CQ9FH",
   "customerKey": "string",
-  "billingAnchor": "2023-01-01T01:01:01.001Z"
+  "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z"
 }
 ```
 
@@ -72255,6 +72271,7 @@ Create subscription based on plan.
 |customerId|string|false|none|The ID of the customer. Provide either the key or ID. Has presedence over the key.|
 |customerKey|string|false|none|The key of the customer. Provide either the key or ID.|
 |billingAnchor|string(date-time)|false|none|The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the subscription start time will be used.|
+|billingStartsAt|string(date-time)|false|none|When billing starts for the subscription. Nothing is billed for service before this time, while access,<br>entitlements and metering start with the subscription. Use it when the time before was already billed elsewhere,<br>for example when importing a subscription from another billing system.<br><br>It cannot be before the start of the subscription and cannot be changed later. On subscriptions billed through<br>invoice lines it must be the start of a billing period. If not provided, billing starts with the subscription.<br><br>When billing starts inside a billing period, we recommend enabling price pro-rating (`prorate_prices`) on the<br>plan. Without it that billing period's flat fees are billed in full.|
 
 <h2 id="tocS_PortalToken">PortalToken</h2>
 <!-- backwards compatibility -->
@@ -73853,6 +73870,7 @@ A subject is a unique identifier for a user or entity.
     "mode": "prorate_prices"
   },
   "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z",
   "settlementMode": "credit_then_invoice"
 }
 ```
@@ -73883,6 +73901,7 @@ Subscription is an exact subscription instance.
 |billingCadence|string(duration)|true|read-only|The billing cadence for the subscriptions.<br>Defines how often customers are billed using ISO8601 duration format.<br>Examples: "P1M" (monthly), "P3M" (quarterly), "P1Y" (annually).|
 |proRatingConfig|object|false|read-only|The pro-rating configuration for the subscriptions.|
 |billingAnchor|string(date-time)|true|read-only|The normalizedbilling anchor of the subscription.|
+|billingStartsAt|string(date-time)|false|read-only|When billing starts for the subscription. Nothing is billed for service before this time.<br>If not set, billing starts with the subscription.|
 |settlementMode|object|true|read-only|The settlement mode of the subscription.<br>- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced.<br>- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.<br>This is the default and most common settlement mode.|
 
 <h2 id="tocS_SubscriptionAddon">SubscriptionAddon</h2>
@@ -74321,6 +74340,7 @@ Change a subscription.
       "mode": "prorate_prices"
     },
     "billingAnchor": "2023-01-01T01:01:01.001Z",
+    "billingStartsAt": "2023-01-01T01:01:01.001Z",
     "settlementMode": "credit_then_invoice"
   },
   "next": {
@@ -74360,6 +74380,7 @@ Change a subscription.
       "mode": "prorate_prices"
     },
     "billingAnchor": "2023-01-01T01:01:01.001Z",
+    "billingStartsAt": "2023-01-01T01:01:01.001Z",
     "settlementMode": "credit_then_invoice",
     "alignment": {
       "billablesMustAlign": true,
@@ -74844,7 +74865,8 @@ A cost basis pinned to a custom-currency pair for the subscription.
   "timing": "immediate",
   "customerId": "01G65Z755AFWAKHE12NY0CQ9FH",
   "customerKey": "string",
-  "billingAnchor": "2023-01-01T01:01:01.001Z"
+  "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z"
 }
 ```
 
@@ -75076,6 +75098,7 @@ Error extensions for the Subscription Errors.
     "mode": "prorate_prices"
   },
   "billingAnchor": "2023-01-01T01:01:01.001Z",
+  "billingStartsAt": "2023-01-01T01:01:01.001Z",
   "settlementMode": "credit_then_invoice",
   "alignment": {
     "billablesMustAlign": true,
@@ -75468,6 +75491,7 @@ Expanded subscription
 |billingCadence|string(duration)|true|read-only|The billing cadence for the subscriptions.<br>Defines how often customers are billed using ISO8601 duration format.<br>Examples: "P1M" (monthly), "P3M" (quarterly), "P1Y" (annually).|
 |proRatingConfig|object|false|read-only|The pro-rating configuration for the subscriptions.|
 |billingAnchor|string(date-time)|true|read-only|The normalizedbilling anchor of the subscription.|
+|billingStartsAt|string(date-time)|false|read-only|When billing starts for the subscription. Nothing is billed for service before this time.<br>If not set, billing starts with the subscription.|
 |settlementMode|object|true|read-only|The settlement mode of the subscription.<br>- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced.<br>- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.<br>This is the default and most common settlement mode.|
 |alignment|object|false|none|Alignment details enriched with the current billing period.|
 |phases|[[SubscriptionPhaseExpanded](#schemasubscriptionphaseexpanded)]|true|none|The phases of the subscription.|
@@ -75754,6 +75778,7 @@ Included contents like Entitlement, or the Feature.
         "mode": "prorate_prices"
       },
       "billingAnchor": "2023-01-01T01:01:01.001Z",
+      "billingStartsAt": "2023-01-01T01:01:01.001Z",
       "settlementMode": "credit_then_invoice"
     }
   ]
